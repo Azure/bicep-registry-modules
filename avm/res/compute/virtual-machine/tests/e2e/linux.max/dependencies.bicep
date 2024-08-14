@@ -31,6 +31,9 @@ param sshKeyName string
 @description('Optional. The location to deploy to.')
 param location string = resourceGroup().location
 
+@description('Required. The object ID of the Backup Management Service Enterprise Application. Required for Customer-Managed-Keys.')
+param backupManagementServiceApplicationObjectId string
+
 var storageAccountCSEFileName = 'scriptExtensionMasterInstaller.ps1'
 var addressPrefix = '10.0.0.0/16'
 
@@ -220,10 +223,10 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
 }
 
 resource backupServiceKeyVaultPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('${keyVault.name}-${location}-268f6a53-9f68-4a38-ae47-166f730d86af-KeyVault-KeyVaultAdministrator-RoleAssignment')
+  name: guid('${keyVault.name}-${location}-BackupManagementService-KeyVault-KeyVaultAdministrator-RoleAssignment')
   scope: keyVault
   properties: {
-    principalId: '268f6a53-9f68-4a38-ae47-166f730d86af' // Backup Management Service Enterprise Application Object Id (Note: this is tenant specific)
+    principalId: backupManagementServiceApplicationObjectId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       '00482a5a-887f-4fb3-b363-3b7fe8e74483'

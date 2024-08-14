@@ -42,10 +42,10 @@ param rootSquash string = 'NoRootSquash'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = {
   name: storageAccountName
 
-  resource fileService 'fileServices@2021-09-01' existing = {
+  resource fileService 'fileServices@2023-04-01' existing = {
     name: fileServicesName
   }
 }
@@ -84,6 +84,9 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 

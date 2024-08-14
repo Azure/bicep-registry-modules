@@ -20,11 +20,12 @@ This module deploys a Data Factory.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.DataFactory/factories` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories) |
 | `Microsoft.DataFactory/factories/integrationRuntimes` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/integrationRuntimes) |
+| `Microsoft.DataFactory/factories/linkedservices` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/linkedservices) |
 | `Microsoft.DataFactory/factories/managedVirtualNetworks` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks) |
 | `Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks/managedPrivateEndpoints) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -130,8 +131,12 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     }
     integrationRuntimes: [
       {
+        name: 'TestRuntime'
+        type: 'SelfHosted'
+      }
+      {
         managedVirtualNetworkName: 'default'
-        name: 'AutoResolveIntegrationRuntime'
+        name: 'IRvnetManaged'
         type: 'Managed'
         typeProperties: {
           computeProperties: {
@@ -139,9 +144,29 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           }
         }
       }
+    ]
+    linkedServices: [
       {
-        name: 'TestRuntime'
-        type: 'SelfHosted'
+        name: 'SQLdbLinkedservice'
+        type: 'AzureSQLDatabase'
+        typeProperties: {
+          connectionString: '<connectionString>'
+        }
+      }
+      {
+        description: 'This is a description for the linked service using the IRvnetManaged integration runtime.'
+        integrationRuntimeName: 'IRvnetManaged'
+        name: 'LakeStoreLinkedservice'
+        parameters: {
+          storageAccountName: {
+            defaultValue: 'madeupstorageaccname'
+            type: 'String'
+          }
+        }
+        type: 'AzureBlobFS'
+        typeProperties: {
+          url: '@{concat(\'https://\', linkedService().storageAccountName, \'.dfs.core.windows.net\')}'
+        }
       }
     ]
     location: '<location>'
@@ -186,11 +211,13 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     ]
     roleAssignments: [
       {
+        name: '12093237-f40a-4f36-868f-accbeebf540c'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -264,18 +291,44 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     "integrationRuntimes": {
       "value": [
         {
+          "name": "TestRuntime",
+          "type": "SelfHosted"
+        },
+        {
           "managedVirtualNetworkName": "default",
-          "name": "AutoResolveIntegrationRuntime",
+          "name": "IRvnetManaged",
           "type": "Managed",
           "typeProperties": {
             "computeProperties": {
               "location": "AutoResolve"
             }
           }
+        }
+      ]
+    },
+    "linkedServices": {
+      "value": [
+        {
+          "name": "SQLdbLinkedservice",
+          "type": "AzureSQLDatabase",
+          "typeProperties": {
+            "connectionString": "<connectionString>"
+          }
         },
         {
-          "name": "TestRuntime",
-          "type": "SelfHosted"
+          "description": "This is a description for the linked service using the IRvnetManaged integration runtime.",
+          "integrationRuntimeName": "IRvnetManaged",
+          "name": "LakeStoreLinkedservice",
+          "parameters": {
+            "storageAccountName": {
+              "defaultValue": "madeupstorageaccname",
+              "type": "String"
+            }
+          },
+          "type": "AzureBlobFS",
+          "typeProperties": {
+            "url": "@{concat(\"https://\", linkedService().storageAccountName, \".dfs.core.windows.net\")}"
+          }
         }
       ]
     },
@@ -334,11 +387,13 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "12093237-f40a-4f36-868f-accbeebf540c",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -481,12 +536,15 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 | [`gitConfigureLater`](#parameter-gitconfigurelater) | bool | Boolean to define whether or not to configure git during template deployment. |
 | [`gitDisablePublish`](#parameter-gitdisablepublish) | bool | Disable manual publish operation in ADF studio to favor automated publish. |
 | [`gitHostName`](#parameter-githostname) | string | The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 'FactoryGitHubConfiguration'. |
+| [`gitLastCommitId`](#parameter-gitlastcommitid) | string | Add the last commit id from your git repo. |
 | [`gitProjectName`](#parameter-gitprojectname) | string | The project name. Only relevant for 'FactoryVSTSConfiguration'. |
 | [`gitRepositoryName`](#parameter-gitrepositoryname) | string | The repository name. |
 | [`gitRepoType`](#parameter-gitrepotype) | string | Repository type - can be 'FactoryVSTSConfiguration' or 'FactoryGitHubConfiguration'. Default is 'FactoryVSTSConfiguration'. |
 | [`gitRootFolder`](#parameter-gitrootfolder) | string | The root folder path name. Default is '/'. |
+| [`gitTenantId`](#parameter-gittenantid) | string | Add the tenantId of your Azure subscription. |
 | [`globalParameters`](#parameter-globalparameters) | object | List of Global Parameters for the factory. |
 | [`integrationRuntimes`](#parameter-integrationruntimes) | array | An array of objects for the configuration of an Integration Runtime. |
+| [`linkedServices`](#parameter-linkedservices) | array | An array of objects for the configuration of Linked Services. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -747,6 +805,14 @@ The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 
 - Type: string
 - Default: `''`
 
+### Parameter: `gitLastCommitId`
+
+Add the last commit id from your git repo.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 ### Parameter: `gitProjectName`
 
 The project name. Only relevant for 'FactoryVSTSConfiguration'.
@@ -779,6 +845,14 @@ The root folder path name. Default is '/'.
 - Type: string
 - Default: `'/'`
 
+### Parameter: `gitTenantId`
+
+Add the tenantId of your Azure subscription.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 ### Parameter: `globalParameters`
 
 List of Global Parameters for the factory.
@@ -790,6 +864,14 @@ List of Global Parameters for the factory.
 ### Parameter: `integrationRuntimes`
 
 An array of objects for the configuration of an Integration Runtime.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `linkedServices`
+
+An array of objects for the configuration of Linked Services.
 
 - Required: No
 - Type: array
@@ -1145,6 +1227,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-privateendpointsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-privateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `privateEndpoints.roleAssignments.principalId`
@@ -1191,6 +1274,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1264,6 +1354,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1314,6 +1405,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -1355,7 +1453,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.6.1` | Remote reference |
 
 ## Notes
 

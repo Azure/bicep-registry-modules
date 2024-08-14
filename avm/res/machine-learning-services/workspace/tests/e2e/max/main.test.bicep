@@ -17,6 +17,9 @@ param resourceLocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'mlswmax'
 
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
+
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -37,7 +40,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
     location: resourceLocation
@@ -70,6 +73,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      kind: 'Default'
       associatedApplicationInsightsResourceId: nestedDependencies.outputs.applicationInsightsResourceId
       associatedKeyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       associatedStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
@@ -104,6 +108,19 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      connections: [
+        {
+          name: 'connection'
+          category: 'ApiKey'
+          target: 'https://example.com'
+          connectionProperties: {
+            authType: 'ApiKey'
+            credentials: {
+              key: 'key'
+            }
+          }
+        }
+      ]
       description: 'The cake is a lie.'
       diagnosticSettings: [
         {
@@ -129,9 +146,15 @@ module testDeployment '../../../main.bicep' = [
       privateEndpoints: [
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            name: 'group1'
+            privateDnsZoneGroupConfigs: [
+              {
+                name: 'config1'
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           tags: {
             'hidden-title': 'This is visible in the resource name'
             Environment: 'Non-Prod'
@@ -140,18 +163,26 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            name: 'group2'
+            privateDnsZoneGroupConfigs: [
+              {
+                name: 'config2'
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
         }
       ]
       roleAssignments: [
         {
+          name: 'f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -171,6 +202,14 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      serverlessComputeSettings: {
+        serverlessComputeCustomSubnet: nestedDependencies.outputs.subnetResourceId
+        serverlessComputeNoPublicIP: true
+      }
+      managedNetworkSettings: {
+        isolationMode: 'Disabled'
+      }
+      systemDatastoresAuthMode: 'accessKey'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

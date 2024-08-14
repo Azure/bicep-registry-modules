@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "15301134976738274567"
+      "version": "0.29.47.4906",
+      "templateHash": "15510112090713187287"
     },
     "name": "Event Hub Namespace Event Hub Authorization Rules",
     "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule.",
@@ -46,7 +46,7 @@
   "resources": [
     {
       "type": "Microsoft.EventHub/namespaces/eventhubs/authorizationRules",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('eventHubName'), parameters('name'))]",
       "properties": {
         "rights": "[parameters('rights')]"

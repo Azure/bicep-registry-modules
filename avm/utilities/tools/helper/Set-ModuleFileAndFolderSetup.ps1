@@ -46,11 +46,14 @@ function Set-ModuleFileAndFolderSetup {
     )
 
     if ([String]::IsNullOrEmpty($CurrentLevelFolderPath)) {
-        # First invocation. Handling provider namespace
-        $resourceTypeIdentifier = ($FullModuleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
-        $providerNamespace, $resourceType, $childResourceType = $resourceTypeIdentifier -split '[\/|\\]', 3
-        $avmModuleRoot = ($FullModuleFolderPath -split $providerNamespace)[0]
-        $currentLevelFolderPath = Join-Path $avmModuleRoot $providerNamespace $resourceType
+        # Extract path elements
+        $repoRoot, $moduleType, $resourceTypeIdentifier = $FullModuleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}' # .*/bicep-registry-modules, res|ptn, <provider>/<resourceType>
+
+        # Split resource type identifier into components
+        $providerNamespace, $resourceType, $childResourceType = $resourceTypeIdentifier -split '[\/|\\]', 3 # <provider>, <resourceType>, <childResourceType>
+
+        # Join the required path to get up to the resource type folder
+        $CurrentLevelFolderPath = Join-Path $repoRoot 'avm' $moduleType $providerNamespace $resourceType
     }
 
     # Collect data

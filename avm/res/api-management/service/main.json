@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "9015161253443271926"
+      "version": "0.29.47.4906",
+      "templateHash": "17512486952547559585"
     },
     "name": "API Management Services",
-    "description": "This module deploys an API Management Service.",
+    "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -66,6 +66,13 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            }
+          },
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
@@ -253,7 +260,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. Additional datacenter locations of the API Management service."
+        "description": "Optional. Additional datacenter locations of the API Management service. Not supported with V2 SKUs."
       }
     },
     "name": {
@@ -279,9 +286,18 @@
     },
     "customProperties": {
       "type": "object",
-      "defaultValue": {},
+      "defaultValue": {
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA256": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA256": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256": "False"
+      },
       "metadata": {
-        "description": "Optional. Custom properties of the API Management service."
+        "description": "Optional. Custom properties of the API Management service. Not supported if SKU is Consumption."
       }
     },
     "disableGateway": {
@@ -326,7 +342,7 @@
     },
     "minApiVersion": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Limit control plane API calls to API Management service with version equal to or newer than this value."
       }
@@ -365,7 +381,7 @@
     },
     "sku": {
       "type": "string",
-      "defaultValue": "Developer",
+      "defaultValue": "Premium",
       "allowedValues": [
         "Consumption",
         "Developer",
@@ -379,21 +395,16 @@
         "description": "Optional. The pricing tier of this API Management service."
       }
     },
-    "skuCount": {
+    "skuCapacity": {
       "type": "int",
-      "defaultValue": 1,
-      "allowedValues": [
-        0,
-        1,
-        2
-      ],
+      "defaultValue": 2,
       "metadata": {
-        "description": "Optional. The instance size of this API Management service."
+        "description": "Conditional. The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/."
       }
     },
     "subnetResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in."
       }
@@ -425,9 +436,12 @@
     },
     "zones": {
       "type": "array",
-      "defaultValue": [],
+      "defaultValue": [
+        1,
+        2
+      ],
       "metadata": {
-        "description": "Optional. A list of availability zones denoting where the resource needs to come from."
+        "description": "Optional. A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku."
       }
     },
     "newGuidValue": {
@@ -472,11 +486,25 @@
         "description": "Optional. Caches."
       }
     },
+    "apiDiagnostics": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. API Diagnostics."
+      }
+    },
     "identityProviders": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Identity providers."
+      }
+    },
+    "loggers": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Loggers."
       }
     },
     "namedValues": {
@@ -513,9 +541,23 @@
       "metadata": {
         "description": "Optional. Subscriptions."
       }
+    },
+    "publicIpAddressResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network."
+      }
     }
   },
   "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
     "authorizationServerList": "[if(not(empty(parameters('authorizationServers'))), parameters('authorizationServers').secureList, createArray())]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
@@ -535,7 +577,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.apimanagement-service.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -554,29 +596,30 @@
     },
     "service": {
       "type": "Microsoft.ApiManagement/service",
-      "apiVersion": "2021-08-01",
+      "apiVersion": "2023-05-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "sku": {
         "name": "[parameters('sku')]",
-        "capacity": "[parameters('skuCount')]"
+        "capacity": "[if(contains(parameters('sku'), 'Consumption'), 0, if(contains(parameters('sku'), 'Developer'), 1, parameters('skuCapacity')))]"
       },
-      "zones": "[parameters('zones')]",
+      "zones": "[if(contains(parameters('sku'), 'Premium'), parameters('zones'), createArray())]",
       "identity": "[variables('identity')]",
       "properties": {
         "publisherEmail": "[parameters('publisherEmail')]",
         "publisherName": "[parameters('publisherName')]",
         "notificationSenderEmail": "[parameters('notificationSenderEmail')]",
         "hostnameConfigurations": "[parameters('hostnameConfigurations')]",
-        "additionalLocations": "[parameters('additionalLocations')]",
-        "customProperties": "[parameters('customProperties')]",
+        "additionalLocations": "[if(contains(parameters('sku'), 'Premium'), parameters('additionalLocations'), createArray())]",
+        "customProperties": "[if(contains(parameters('sku'), 'Consumption'), null(), parameters('customProperties'))]",
         "certificates": "[parameters('certificates')]",
         "enableClientCertificate": "[if(parameters('enableClientCertificate'), true(), null())]",
         "disableGateway": "[parameters('disableGateway')]",
         "virtualNetworkType": "[parameters('virtualNetworkType')]",
         "virtualNetworkConfiguration": "[if(not(empty(parameters('subnetResourceId'))), createObject('subnetResourceId', parameters('subnetResourceId')), null())]",
-        "apiVersionConstraint": "[if(not(empty(parameters('minApiVersion'))), createObject('minApiVersion', parameters('minApiVersion')), null())]",
+        "publicIpAddressId": "[if(not(empty(parameters('publicIpAddressResourceId'))), parameters('publicIpAddressResourceId'), null())]",
+        "apiVersionConstraint": "[if(not(empty(parameters('minApiVersion'))), createObject('minApiVersion', parameters('minApiVersion')), createObject('minApiVersion', '2021-08-01'))]",
         "restore": "[parameters('restore')]"
       }
     },
@@ -638,20 +681,20 @@
     "service_roleAssignments": {
       "copy": {
         "name": "service_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.ApiManagement/service/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.ApiManagement/service', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ApiManagement/service', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "service"
@@ -748,8 +791,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "4982579131778182813"
+              "version": "0.29.47.4906",
+              "templateHash": "13121653397859804060"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API.",
@@ -767,6 +810,13 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. Array of Policies to apply to the Service API."
+              }
+            },
+            "diagnostics": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of diagnostics to apply to the Service API."
               }
             },
             "apiManagementServiceName": {
@@ -870,6 +920,13 @@
                 "description": "Optional. Indicates if API revision is current API revision."
               }
             },
+            "loggerName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Conditional. The name of the API management service logger. Required if using api/diagnostics."
+              }
+            },
             "path": {
               "type": "string",
               "metadata": {
@@ -946,12 +1003,12 @@
             "service": {
               "existing": true,
               "type": "Microsoft.ApiManagement/service",
-              "apiVersion": "2021-08-01",
+              "apiVersion": "2023-05-01-preview",
               "name": "[parameters('apiManagementServiceName')]"
             },
             "api": {
               "type": "Microsoft.ApiManagement/service/apis",
-              "apiVersion": "2021-08-01",
+              "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "apiRevision": "[parameters('apiRevision')]",
@@ -1010,8 +1067,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "7030990401011468302"
+                      "version": "0.29.47.4906",
+                      "templateHash": "2474188503939052987"
                     },
                     "name": "API Management Service APIs Policies",
                     "description": "This module deploys an API Management Service API Policy.",
@@ -1060,7 +1117,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.ApiManagement/service/apis/policies",
-                      "apiVersion": "2021-08-01",
+                      "apiVersion": "2022-08-01",
                       "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]",
                       "properties": {
                         "format": "[parameters('format')]",
@@ -1087,6 +1144,233 @@
                       "type": "string",
                       "metadata": {
                         "description": "The resource group the API policy was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "api"
+              ]
+            },
+            "diagnostic": {
+              "copy": {
+                "name": "diagnostic",
+                "count": "[length(coalesce(parameters('diagnostics'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-diagnostics-{1}', deployment().name, copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'name')]"
+                  },
+                  "apiManagementServiceName": {
+                    "value": "[parameters('apiManagementServiceName')]"
+                  },
+                  "apiName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "loggerName": {
+                    "value": "[parameters('loggerName')]"
+                  },
+                  "alwaysLog": {
+                    "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'alwaysLog')]"
+                  },
+                  "backend": {
+                    "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'backend')]"
+                  },
+                  "frontend": {
+                    "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'frontend')]"
+                  },
+                  "httpCorrelationProtocol": {
+                    "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'httpCorrelationProtocol')]"
+                  },
+                  "logClientIp": {
+                    "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'logClientIp')]"
+                  },
+                  "metrics": {
+                    "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'metrics')]"
+                  },
+                  "operationNameFormat": {
+                    "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'operationNameFormat')]"
+                  },
+                  "samplingPercentage": {
+                    "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'samplingPercentage')]"
+                  },
+                  "verbosity": {
+                    "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'verbosity')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.29.47.4906",
+                      "templateHash": "15630166564208731013"
+                    },
+                    "name": "API Management Service APIs Diagnostics.",
+                    "description": "This module deploys an API Management Service API Diagnostics.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "apiManagementServiceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the parent API Management service."
+                      }
+                    },
+                    "apiName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the parent API."
+                      }
+                    },
+                    "loggerName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the logger."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "local",
+                      "allowedValues": [
+                        "azuremonitor",
+                        "applicationinsights",
+                        "local"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Type of diagnostic resource."
+                      }
+                    },
+                    "alwaysLog": {
+                      "type": "string",
+                      "defaultValue": "allErrors",
+                      "metadata": {
+                        "description": "Optional. Specifies for what type of messages sampling settings should not apply."
+                      }
+                    },
+                    "backend": {
+                      "type": "object",
+                      "defaultValue": {},
+                      "metadata": {
+                        "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend."
+                      }
+                    },
+                    "frontend": {
+                      "type": "object",
+                      "defaultValue": {},
+                      "metadata": {
+                        "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway."
+                      }
+                    },
+                    "httpCorrelationProtocol": {
+                      "type": "string",
+                      "defaultValue": "Legacy",
+                      "allowedValues": [
+                        "Legacy",
+                        "None",
+                        "W3C"
+                      ],
+                      "metadata": {
+                        "description": "Conditional. Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights."
+                      }
+                    },
+                    "logClientIp": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. Log the ClientIP."
+                      }
+                    },
+                    "metrics": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Conditional. Emit custom metrics via emit-metric policy. Required if using Application Insights."
+                      }
+                    },
+                    "operationNameFormat": {
+                      "type": "string",
+                      "defaultValue": "Name",
+                      "allowedValues": [
+                        "Name",
+                        "URI"
+                      ],
+                      "metadata": {
+                        "description": "Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights."
+                      }
+                    },
+                    "samplingPercentage": {
+                      "type": "int",
+                      "defaultValue": 100,
+                      "metadata": {
+                        "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged."
+                      }
+                    },
+                    "verbosity": {
+                      "type": "string",
+                      "defaultValue": "error",
+                      "allowedValues": [
+                        "error",
+                        "information",
+                        "verbose"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The verbosity level applied to traces emitted by trace policies."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.ApiManagement/service/apis/diagnostics",
+                      "apiVersion": "2022-08-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]",
+                      "properties": {
+                        "alwaysLog": "[parameters('alwaysLog')]",
+                        "backend": "[parameters('backend')]",
+                        "frontend": "[parameters('frontend')]",
+                        "httpCorrelationProtocol": "[parameters('httpCorrelationProtocol')]",
+                        "logClientIp": "[parameters('logClientIp')]",
+                        "loggerId": "[resourceId('Microsoft.ApiManagement/service/loggers', parameters('apiManagementServiceName'), parameters('loggerName'))]",
+                        "metrics": "[parameters('metrics')]",
+                        "operationNameFormat": "[parameters('operationNameFormat')]",
+                        "sampling": {
+                          "percentage": "[parameters('samplingPercentage')]",
+                          "samplingType": "fixed"
+                        },
+                        "verbosity": "[parameters('verbosity')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the API diagnostic."
+                      },
+                      "value": "[resourceId('Microsoft.ApiManagement/service/apis/diagnostics', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the API diagnostic."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the API diagnostic was deployed into."
                       },
                       "value": "[resourceGroup().name]"
                     }
@@ -1156,8 +1440,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "2022925118326989470"
+              "version": "0.29.47.4906",
+              "templateHash": "17159723717884761443"
             },
             "name": "API Management Service API Version Sets",
             "description": "This module deploys an API Management Service API Version Set.",
@@ -1188,7 +1472,7 @@
           "resources": [
             {
               "type": "Microsoft.ApiManagement/service/apiVersionSets",
-              "apiVersion": "2021-08-01",
+              "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": "[parameters('properties')]"
             }
@@ -1272,8 +1556,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "18174659605054562490"
+              "version": "0.29.47.4906",
+              "templateHash": "4256977187793378377"
             },
             "name": "API Management Service Authorization Servers",
             "description": "This module deploys an API Management Service Authorization Server.",
@@ -1409,7 +1693,7 @@
           "resources": [
             {
               "type": "Microsoft.ApiManagement/service/authorizationServers",
-              "apiVersion": "2021-08-01",
+              "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "description": "[parameters('serverDescription')]",
@@ -1515,8 +1799,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "2373122860271627831"
+              "version": "0.29.47.4906",
+              "templateHash": "2365531440872951056"
             },
             "name": "API Management Service Backends",
             "description": "This module deploys an API Management Service Backend.",
@@ -1605,12 +1889,12 @@
             "service": {
               "existing": true,
               "type": "Microsoft.ApiManagement/service",
-              "apiVersion": "2021-08-01",
+              "apiVersion": "2023-05-01-preview",
               "name": "[parameters('apiManagementServiceName')]"
             },
             "backend": {
               "type": "Microsoft.ApiManagement/service/backends",
-              "apiVersion": "2021-08-01",
+              "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "title": "[parameters('title')]",
@@ -1699,8 +1983,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "7716740574911932509"
+              "version": "0.29.47.4906",
+              "templateHash": "3234729148013684780"
             },
             "name": "API Management Service Caches",
             "description": "This module deploys an API Management Service Cache.",
@@ -1750,12 +2034,12 @@
             "service": {
               "existing": true,
               "type": "Microsoft.ApiManagement/service",
-              "apiVersion": "2021-08-01",
+              "apiVersion": "2023-05-01-preview",
               "name": "[parameters('apiManagementServiceName')]"
             },
             "cache": {
               "type": "Microsoft.ApiManagement/service/caches",
-              "apiVersion": "2021-08-01",
+              "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "description": "[parameters('description')]",
@@ -1797,6 +2081,235 @@
         "service"
       ]
     },
+    "service_apiDiagnostics": {
+      "copy": {
+        "name": "service_apiDiagnostics",
+        "count": "[length(parameters('apiDiagnostics'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Apim-Api-Diagnostic-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('name')]"
+          },
+          "apiName": {
+            "value": "[parameters('apiDiagnostics')[copyIndex()].apiName]"
+          },
+          "loggerName": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'loggerName')]"
+          },
+          "name": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'name')]"
+          },
+          "alwaysLog": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'alwaysLog')]"
+          },
+          "backend": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'backend')]"
+          },
+          "frontend": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'frontend')]"
+          },
+          "httpCorrelationProtocol": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'httpCorrelationProtocol')]"
+          },
+          "logClientIp": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'logClientIp')]"
+          },
+          "metrics": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'metrics')]"
+          },
+          "operationNameFormat": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'operationNameFormat')]"
+          },
+          "samplingPercentage": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'samplingPercentage')]"
+          },
+          "verbosity": {
+            "value": "[tryGet(parameters('apiDiagnostics')[copyIndex()], 'verbosity')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "15630166564208731013"
+            },
+            "name": "API Management Service APIs Diagnostics.",
+            "description": "This module deploys an API Management Service API Diagnostics.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the parent API Management service."
+              }
+            },
+            "apiName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the parent API."
+              }
+            },
+            "loggerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the logger."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "local",
+              "allowedValues": [
+                "azuremonitor",
+                "applicationinsights",
+                "local"
+              ],
+              "metadata": {
+                "description": "Optional. Type of diagnostic resource."
+              }
+            },
+            "alwaysLog": {
+              "type": "string",
+              "defaultValue": "allErrors",
+              "metadata": {
+                "description": "Optional. Specifies for what type of messages sampling settings should not apply."
+              }
+            },
+            "backend": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend."
+              }
+            },
+            "frontend": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway."
+              }
+            },
+            "httpCorrelationProtocol": {
+              "type": "string",
+              "defaultValue": "Legacy",
+              "allowedValues": [
+                "Legacy",
+                "None",
+                "W3C"
+              ],
+              "metadata": {
+                "description": "Conditional. Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights."
+              }
+            },
+            "logClientIp": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Log the ClientIP."
+              }
+            },
+            "metrics": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Conditional. Emit custom metrics via emit-metric policy. Required if using Application Insights."
+              }
+            },
+            "operationNameFormat": {
+              "type": "string",
+              "defaultValue": "Name",
+              "allowedValues": [
+                "Name",
+                "URI"
+              ],
+              "metadata": {
+                "description": "Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights."
+              }
+            },
+            "samplingPercentage": {
+              "type": "int",
+              "defaultValue": 100,
+              "metadata": {
+                "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged."
+              }
+            },
+            "verbosity": {
+              "type": "string",
+              "defaultValue": "error",
+              "allowedValues": [
+                "error",
+                "information",
+                "verbose"
+              ],
+              "metadata": {
+                "description": "Optional. The verbosity level applied to traces emitted by trace policies."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ApiManagement/service/apis/diagnostics",
+              "apiVersion": "2022-08-01",
+              "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]",
+              "properties": {
+                "alwaysLog": "[parameters('alwaysLog')]",
+                "backend": "[parameters('backend')]",
+                "frontend": "[parameters('frontend')]",
+                "httpCorrelationProtocol": "[parameters('httpCorrelationProtocol')]",
+                "logClientIp": "[parameters('logClientIp')]",
+                "loggerId": "[resourceId('Microsoft.ApiManagement/service/loggers', parameters('apiManagementServiceName'), parameters('loggerName'))]",
+                "metrics": "[parameters('metrics')]",
+                "operationNameFormat": "[parameters('operationNameFormat')]",
+                "sampling": {
+                  "percentage": "[parameters('samplingPercentage')]",
+                  "samplingType": "fixed"
+                },
+                "verbosity": "[parameters('verbosity')]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the API diagnostic."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/apis/diagnostics', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the API diagnostic."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the API diagnostic was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "service",
+        "service_apis",
+        "service_loggers"
+      ]
+    },
     "service_identityProviders": {
       "copy": {
         "name": "service_identityProviders",
@@ -1834,8 +2347,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "3154989001112723220"
+              "version": "0.29.47.4906",
+              "templateHash": "13129392765749462635"
             },
             "name": "API Management Service Identity Providers",
             "description": "This module deploys an API Management Service Identity Provider.",
@@ -1939,7 +2452,7 @@
           "resources": [
             {
               "type": "Microsoft.ApiManagement/service/identityProviders",
-              "apiVersion": "2021-08-01",
+              "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "type": "[parameters('type')]",
@@ -1984,6 +2497,139 @@
         "service"
       ]
     },
+    "service_loggers": {
+      "copy": {
+        "name": "service_loggers",
+        "count": "[length(parameters('loggers'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Apim-Logger-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('loggers')[copyIndex()].name]"
+          },
+          "apiManagementServiceName": {
+            "value": "[parameters('name')]"
+          },
+          "credentials": "[if(contains(parameters('loggers')[copyIndex()], 'credentials'), createObject('value', parameters('loggers')[copyIndex()].credentials), createObject('value', createObject()))]",
+          "isBuffered": "[if(contains(parameters('loggers')[copyIndex()], 'isBuffered'), createObject('value', parameters('loggers')[copyIndex()].isBuffered), createObject('value', true()))]",
+          "loggerDescription": "[if(contains(parameters('loggers')[copyIndex()], 'loggerDescription'), createObject('value', parameters('loggers')[copyIndex()].loggerDescription), createObject('value', ''))]",
+          "loggerType": "[if(contains(parameters('loggers')[copyIndex()], 'loggerType'), createObject('value', parameters('loggers')[copyIndex()].loggerType), createObject('value', 'azureMonitor'))]",
+          "targetResourceId": "[if(contains(parameters('loggers')[copyIndex()], 'targetResourceId'), createObject('value', parameters('loggers')[copyIndex()].targetResourceId), createObject('value', ''))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "12986610229102962453"
+            },
+            "name": "API Management Service Loggers",
+            "description": "This module deploys an API Management Service Logger.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Resource Name."
+              }
+            },
+            "loggerDescription": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. Logger description."
+              }
+            },
+            "isBuffered": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Whether records are buffered in the logger before publishing."
+              }
+            },
+            "loggerType": {
+              "type": "string",
+              "allowedValues": [
+                "applicationInsights",
+                "azureEventHub",
+                "azureMonitor"
+              ],
+              "metadata": {
+                "description": "Required. Logger type."
+              }
+            },
+            "targetResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. Required if loggerType = applicationInsights or azureEventHub. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource)."
+              }
+            },
+            "credentials": {
+              "type": "secureObject",
+              "metadata": {
+                "description": "Conditional. Required if loggerType = applicationInsights or azureEventHub. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ApiManagement/service/loggers",
+              "apiVersion": "2022-08-01",
+              "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+              "properties": {
+                "credentials": "[parameters('credentials')]",
+                "description": "[parameters('loggerDescription')]",
+                "isBuffered": "[parameters('isBuffered')]",
+                "loggerType": "[parameters('loggerType')]",
+                "resourceId": "[parameters('targetResourceId')]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the logger."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/loggers', parameters('apiManagementServiceName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the logger."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the named value was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "service",
+        "service_namedValues"
+      ]
+    },
     "service_namedValues": {
       "copy": {
         "name": "service_namedValues",
@@ -2021,8 +2667,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "8836145661772426348"
+              "version": "0.29.47.4906",
+              "templateHash": "3479776319506170502"
             },
             "name": "API Management Service Named Values",
             "description": "This module deploys an API Management Service Named Value.",
@@ -2083,12 +2729,12 @@
             "service": {
               "existing": true,
               "type": "Microsoft.ApiManagement/service",
-              "apiVersion": "2021-08-01",
+              "apiVersion": "2023-05-01-preview",
               "name": "[parameters('apiManagementServiceName')]"
             },
             "namedValue": {
               "type": "Microsoft.ApiManagement/service/namedValues",
-              "apiVersion": "2021-08-01",
+              "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "tags": "[parameters('tags')]",
@@ -2162,8 +2808,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "17742652979966426375"
+              "version": "0.29.47.4906",
+              "templateHash": "10271256088614129674"
             },
             "name": "API Management Service Portal Settings",
             "description": "This module deploys an API Management Service Portal Setting.",
@@ -2197,7 +2843,7 @@
           "resources": [
             {
               "type": "Microsoft.ApiManagement/service/portalsettings",
-              "apiVersion": "2021-08-01",
+              "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": "[parameters('properties')]"
             }
@@ -2259,8 +2905,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "11401408412631964174"
+              "version": "0.29.47.4906",
+              "templateHash": "11443463088593763324"
             },
             "name": "API Management Service Policies",
             "description": "This module deploys an API Management Service Policy.",
@@ -2303,7 +2949,7 @@
           "resources": [
             {
               "type": "Microsoft.ApiManagement/service/policies",
-              "apiVersion": "2021-08-01",
+              "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "format": "[parameters('format')]",
@@ -2375,8 +3021,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "11338797354163447995"
+              "version": "0.29.47.4906",
+              "templateHash": "6230115773857876317"
             },
             "name": "API Management Service Products",
             "description": "This module deploys an API Management Service Product.",
@@ -2455,7 +3101,7 @@
           "resources": [
             {
               "type": "Microsoft.ApiManagement/service/products",
-              "apiVersion": "2021-08-01",
+              "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "description": "[parameters('description')]",
@@ -2497,8 +3143,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "11861068623935926152"
+                      "version": "0.29.47.4906",
+                      "templateHash": "1052981479169082206"
                     },
                     "name": "API Management Service Products APIs",
                     "description": "This module deploys an API Management Service Product API.",
@@ -2527,7 +3173,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.ApiManagement/service/products/apis",
-                      "apiVersion": "2021-08-01",
+                      "apiVersion": "2022-08-01",
                       "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
                     }
                   ],
@@ -2587,8 +3233,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "16009390664131411394"
+                      "version": "0.29.47.4906",
+                      "templateHash": "5748451278124986706"
                     },
                     "name": "API Management Service Products Groups",
                     "description": "This module deploys an API Management Service Product Group.",
@@ -2617,7 +3263,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.ApiManagement/service/products/groups",
-                      "apiVersion": "2021-08-01",
+                      "apiVersion": "2022-08-01",
                       "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
                     }
                   ],
@@ -2744,8 +3390,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "1707587491854823408"
+              "version": "0.29.47.4906",
+              "templateHash": "9499976066778278010"
             },
             "name": "API Management Service Subscriptions",
             "description": "This module deploys an API Management Service Subscription.",
@@ -2811,12 +3457,12 @@
             "service": {
               "existing": true,
               "type": "Microsoft.ApiManagement/service",
-              "apiVersion": "2021-08-01",
+              "apiVersion": "2023-05-01-preview",
               "name": "[parameters('apiManagementServiceName')]"
             },
             "subscription": {
               "type": "Microsoft.ApiManagement/service/subscriptions",
-              "apiVersion": "2021-08-01",
+              "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "scope": "[parameters('scope')]",
@@ -2889,14 +3535,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('service', '2021-08-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('service', '2023-05-01-preview', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('service', '2021-08-01', 'full').location]"
+      "value": "[reference('service', '2023-05-01-preview', 'full').location]"
     }
   }
 }
