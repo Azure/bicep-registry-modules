@@ -53,9 +53,10 @@ module testDeployment '../../../main.bicep' = {
         aadAuthFailureMode: 'http401WithBearerChallenge'
       }
     }
-    secretsKeyVault: {
-      keyVaultName: nestedDependencies.outputs.keyVaultName
-      primaryAdminKeySecretName: 'Primary-Admin-Key'
+    secretsExportConfiguration: {
+      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+      primaryAdminKey: 'Primary-Admin-Key'
+      secondaryAdminKey: 'Secondary-Admin-Key'
     }
   }
 }

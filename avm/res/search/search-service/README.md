@@ -18,6 +18,7 @@ This module deploys a Search Service.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Search/searchServices` | [2024-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2024-03-01-preview/searchServices) |
@@ -32,9 +33,10 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/search/search-service:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Private endpoint-enabled deployment](#example-3-private-endpoint-enabled-deployment)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Deploying with a key vault reference to save secrets](#example-2-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Private endpoint-enabled deployment](#example-4-private-endpoint-enabled-deployment)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -84,7 +86,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 </details>
 <p>
 
-<<<<<<< HEAD
 ### Example 2: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving admin key secrets in a key vault.
@@ -108,9 +109,10 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     }
     disableLocalAuth: false
     location: '<location>'
-    secretsKeyVault: {
-      keyVaultName: '<keyVaultName>'
-      primaryAdminKeySecretName: 'Primary-Admin-Key'
+    secretsExportConfiguration: {
+      keyVaultResourceId: '<keyVaultResourceId>'
+      primaryAdminKey: 'Primary-Admin-Key'
+      secondaryAdminKey: 'Secondary-Admin-Key'
     }
   }
 }
@@ -146,10 +148,11 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "secretsKeyVault": {
+    "secretsExportConfiguration": {
       "value": {
-        "keyVaultName": "<keyVaultName>",
-        "primaryAdminKeySecretName": "Primary-Admin-Key"
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "primaryAdminKey": "Primary-Admin-Key",
+        "secondaryAdminKey": "Secondary-Admin-Key"
       }
     }
   }
@@ -160,9 +163,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 <p>
 
 ### Example 3: _Using large parameter set_
-=======
-### Example 2: _Using large parameter set_
->>>>>>> parent of e4e03661 (AISearchService with adminkeys in keyvault)
 
 This instance deploys the module with most of its features enabled.
 
@@ -378,7 +378,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 </details>
 <p>
 
-### Example 3: _Private endpoint-enabled deployment_
+### Example 4: _Private endpoint-enabled deployment_
 
 This instance deploys the module with private endpoints.
 
@@ -514,7 +514,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -708,10 +708,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | This value can be set to 'enabled' to avoid breaking changes on existing customer resources and templates. If set to 'disabled', traffic over public interface is not allowed, and private endpoint connections would be the exclusive access method. |
 | [`replicaCount`](#parameter-replicacount) | int | The number of replicas in the search service. If specified, it must be a value between 1 and 12 inclusive for standard SKUs or between 1 and 3 inclusive for basic SKU. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-<<<<<<< HEAD
-| [`secretsKeyVault`](#parameter-secretskeyvault) | object | Key vault reference and secret settings to add the API admin keys generated by the search-service account. |
-=======
->>>>>>> parent of e4e03661 (AISearchService with adminkeys in keyvault)
+| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`semanticSearch`](#parameter-semanticsearch) | string | Sets options that control the availability of semantic search. This configuration is only possible for certain search SKUs in certain locations. |
 | [`sharedPrivateLinkResources`](#parameter-sharedprivatelinkresources) | array | The sharedPrivateLinkResources to create as part of the search Service. |
 | [`sku`](#parameter-sku) | string | Defines the SKU of an Azure Cognitive Search Service, which determines price tier and capacity limits. |
@@ -1484,10 +1481,9 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-<<<<<<< HEAD
-### Parameter: `secretsKeyVault`
+### Parameter: `secretsExportConfiguration`
 
-Key vault reference and secret settings to add the API admin keys generated by the search-service account.
+Key vault reference and secret settings for the module's secrets export.
 
 - Required: No
 - Type: object
@@ -1496,46 +1492,36 @@ Key vault reference and secret settings to add the API admin keys generated by t
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVaultName`](#parameter-secretskeyvaultkeyvaultname) | string | The key vault name where to store the API Admin keys generated by the modules. |
+| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The key vault name where to store the API Admin keys generated by the modules. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`primaryAdminKeySecretName`](#parameter-secretskeyvaultprimaryadminkeysecretname) | string | Default to API Primary admin key . The primary admin key secret name to create. |
-| [`resourceGroupName`](#parameter-secretskeyvaultresourcegroupname) | string | Default to the resource group where this account is. The resource group name where the key vault is. |
-| [`secondaryAdminKeySecretName`](#parameter-secretskeyvaultsecondaryadminkeysecretname) | string | Default to API Secondary admin key . The secondary admin key secret name to create. |
+| [`primaryAdminKey`](#parameter-secretsexportconfigurationprimaryadminkey) | string | The primaryAdminKey secret name to create. |
+| [`secondaryAdminKey`](#parameter-secretsexportconfigurationsecondaryadminkey) | string | The secondaryAdminKey secret name to create. |
 
-### Parameter: `secretsKeyVault.keyVaultName`
+### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
 The key vault name where to store the API Admin keys generated by the modules.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `secretsKeyVault.primaryAdminKeySecretName`
+### Parameter: `secretsExportConfiguration.primaryAdminKey`
 
-Default to API Primary admin key . The primary admin key secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsKeyVault.resourceGroupName`
-
-Default to the resource group where this account is. The resource group name where the key vault is.
+The primaryAdminKey secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsKeyVault.secondaryAdminKeySecretName`
+### Parameter: `secretsExportConfiguration.secondaryAdminKey`
 
-Default to API Secondary admin key . The secondary admin key secret name to create.
+The secondaryAdminKey secret name to create.
 
 - Required: No
 - Type: string
 
-=======
->>>>>>> parent of e4e03661 (AISearchService with adminkeys in keyvault)
 ### Parameter: `semanticSearch`
 
 Sets options that control the availability of semantic search. This configuration is only possible for certain search SKUs in certain locations.
@@ -1591,6 +1577,7 @@ Tags to help categorize the resource in the Azure portal.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the search service. |
 | `resourceGroupName` | string | The name of the resource group the search service was created in. |
