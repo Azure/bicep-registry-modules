@@ -10,6 +10,7 @@ If you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integ
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -17,9 +18,10 @@ If you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integ
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Network/virtualHubs` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/virtualHubs) |
+| `Microsoft.Network/virtualHubs` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs) |
 | `Microsoft.Network/virtualHubs/hubRouteTables` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/virtualHubs/hubRouteTables) |
-| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/virtualHubs/hubVirtualNetworkConnections) |
+| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualHubs/hubVirtualNetworkConnections) |
+| `Microsoft.Network/virtualHubs/routingIntent` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs/routingIntent) |
 
 ## Usage examples
 
@@ -31,7 +33,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using Routing Intent](#example-3-using-routing-intent)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -223,7 +226,121 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Using Routing Intent_
+
+This instance deploys the module the Virtual WAN hub with Routing Intent enabled; requires an existing Virtual Hub, as well the firewall Resource ID.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
+  name: 'virtualHubDeployment'
+  params: {
+    // Required parameters
+    addressPrefix: '10.10.0.0/23'
+    name: 'nvhrtint'
+    virtualWanId: '<virtualWanId>'
+    // Non-required parameters
+    azureFirewallResourceId: '<azureFirewallResourceId>'
+    hubRouteTables: []
+    hubRoutingPreference: 'ASPath'
+    hubVirtualNetworkConnections: [
+      {
+        name: 'connection1'
+        remoteVirtualNetworkId: '<remoteVirtualNetworkId>'
+        routingConfiguration: {}
+      }
+    ]
+    internetToFirewall: false
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    privateToFirewall: true
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "addressPrefix": {
+      "value": "10.10.0.0/23"
+    },
+    "name": {
+      "value": "nvhrtint"
+    },
+    "virtualWanId": {
+      "value": "<virtualWanId>"
+    },
+    // Non-required parameters
+    "azureFirewallResourceId": {
+      "value": "<azureFirewallResourceId>"
+    },
+    "hubRouteTables": {
+      "value": []
+    },
+    "hubRoutingPreference": {
+      "value": "ASPath"
+    },
+    "hubVirtualNetworkConnections": {
+      "value": [
+        {
+          "name": "connection1",
+          "remoteVirtualNetworkId": "<remoteVirtualNetworkId>",
+          "routingConfiguration": {}
+        }
+      ]
+    },
+    "internetToFirewall": {
+      "value": false
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "privateToFirewall": {
+      "value": true
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -377,11 +494,14 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`expressRouteGatewayId`](#parameter-expressroutegatewayid) | string | Resource ID of the Express Route Gateway to link to. |
 | [`hubRouteTables`](#parameter-hubroutetables) | array | Route tables to create for the virtual hub. |
+| [`hubRoutingPreference`](#parameter-hubroutingpreference) | string | The preferred routing preference for this virtual hub. |
 | [`hubVirtualNetworkConnections`](#parameter-hubvirtualnetworkconnections) | array | Virtual network connections to create for the virtual hub. |
+| [`internetToFirewall`](#parameter-internettofirewall) | bool | Configures Routing Intent to forward Internet traffic (0.0.0.0/0) to Azure Firewall. Default is true. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`p2SVpnGatewayId`](#parameter-p2svpngatewayid) | string | Resource ID of the Point-to-Site VPN Gateway to link to. |
 | [`preferredRoutingGateway`](#parameter-preferredroutinggateway) | string | The preferred routing gateway types. |
+| [`privateToFirewall`](#parameter-privatetofirewall) | bool | Configures Routing Intent to forward Private traffic (RFC 1918) to Azure Firewall. Default is true. |
 | [`routeTableRoutes`](#parameter-routetableroutes) | array | VirtualHub route tables. |
 | [`securityPartnerProviderId`](#parameter-securitypartnerproviderid) | string | ID of the Security Partner Provider to link to. |
 | [`securityProviderName`](#parameter-securityprovidername) | string | The Security Provider name. |
@@ -453,6 +573,23 @@ Route tables to create for the virtual hub.
 - Type: array
 - Default: `[]`
 
+### Parameter: `hubRoutingPreference`
+
+The preferred routing preference for this virtual hub.
+
+- Required: No
+- Type: string
+- Default: `''`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'ASPath'
+    'ExpressRoute'
+    'VpnGateway'
+  ]
+  ```
+
 ### Parameter: `hubVirtualNetworkConnections`
 
 Virtual network connections to create for the virtual hub.
@@ -460,6 +597,14 @@ Virtual network connections to create for the virtual hub.
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `internetToFirewall`
+
+Configures Routing Intent to forward Internet traffic (0.0.0.0/0) to Azure Firewall. Default is true.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `location`
 
@@ -529,6 +674,14 @@ The preferred routing gateway types.
     'VpnGateway'
   ]
   ```
+
+### Parameter: `privateToFirewall`
+
+Configures Routing Intent to forward Private traffic (RFC 1918) to Azure Firewall. Default is true.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `routeTableRoutes`
 
@@ -620,6 +773,12 @@ Resource ID of the VPN Gateway to link to.
 ## Cross-referenced modules
 
 _None_
+
+## Notes
+
+**Configuring Routing Intent**
+
+Due to limitations with the virtual hub resource provider, to fully enable routing intent this resource will need to be invoked twice within the virtual WAN pattern. The first invocation will create the Virtual Hub, after which the resource creating the firewall can be called; then the second invocation can configure routing intent. This ensures that the resources are created in the correct order, and that the required resource ID parameters are available when they are needed.
 
 ## Data Collection
 

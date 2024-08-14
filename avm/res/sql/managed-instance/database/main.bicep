@@ -83,7 +83,9 @@ resource database 'Microsoft.Sql/managedInstances/databases@2023-08-01-preview' 
     restorableDroppedDatabaseId: empty(restorableDroppedDatabaseId) ? null : restorableDroppedDatabaseId
     storageContainerSasToken: empty(storageContainerSasToken) ? null : storageContainerSasToken
     recoverableDatabaseId: empty(recoverableDatabaseId) ? null : recoverableDatabaseId
-    longTermRetentionBackupResourceId: empty(longTermRetentionBackupResourceId) ? null : longTermRetentionBackupResourceId
+    longTermRetentionBackupResourceId: empty(longTermRetentionBackupResourceId)
+      ? null
+      : longTermRetentionBackupResourceId
   }
 }
 
@@ -91,7 +93,9 @@ resource database_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(l
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
   scope: database
 }
@@ -105,7 +109,7 @@ resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' } ]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true
@@ -124,7 +128,9 @@ module database_backupShortTermRetentionPolicy 'backup-short-term-retention-poli
     managedInstanceName: managedInstanceName
     databaseName: last(split(database.name, '/'))!
     name: backupShortTermRetentionPoliciesObj.name
-    retentionDays: contains(backupShortTermRetentionPoliciesObj, 'retentionDays') ? backupShortTermRetentionPoliciesObj.retentionDays : 35
+    retentionDays: contains(backupShortTermRetentionPoliciesObj, 'retentionDays')
+      ? backupShortTermRetentionPoliciesObj.retentionDays
+      : 35
   }
 }
 
@@ -134,10 +140,18 @@ module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy
     managedInstanceName: managedInstanceName
     databaseName: last(split(database.name, '/'))!
     name: backupLongTermRetentionPoliciesObj.name
-    weekOfYear: contains(backupLongTermRetentionPoliciesObj, 'weekOfYear') ? backupLongTermRetentionPoliciesObj.weekOfYear : 5
-    weeklyRetention: contains(backupLongTermRetentionPoliciesObj, 'weeklyRetention') ? backupLongTermRetentionPoliciesObj.weeklyRetention : 'P1M'
-    monthlyRetention: contains(backupLongTermRetentionPoliciesObj, 'monthlyRetention') ? backupLongTermRetentionPoliciesObj.monthlyRetention : 'P1Y'
-    yearlyRetention: contains(backupLongTermRetentionPoliciesObj, 'yearlyRetention') ? backupLongTermRetentionPoliciesObj.yearlyRetention : 'P5Y'
+    weekOfYear: contains(backupLongTermRetentionPoliciesObj, 'weekOfYear')
+      ? backupLongTermRetentionPoliciesObj.weekOfYear
+      : 5
+    weeklyRetention: contains(backupLongTermRetentionPoliciesObj, 'weeklyRetention')
+      ? backupLongTermRetentionPoliciesObj.weeklyRetention
+      : 'P1M'
+    monthlyRetention: contains(backupLongTermRetentionPoliciesObj, 'monthlyRetention')
+      ? backupLongTermRetentionPoliciesObj.monthlyRetention
+      : 'P1Y'
+    yearlyRetention: contains(backupLongTermRetentionPoliciesObj, 'yearlyRetention')
+      ? backupLongTermRetentionPoliciesObj.yearlyRetention
+      : 'P5Y'
   }
 }
 

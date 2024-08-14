@@ -72,6 +72,7 @@ function Initialize-DeploymentRemoval {
         # The initial sequence is a general order-recommendation
         $RemoveFirstSequence = @(
             'Microsoft.Authorization/locks',
+            'Microsoft.VirtualMachineImages/imageTemplates', # Must be removed before their MSI & should be removed before its entities permissions are removed
             'Microsoft.Authorization/roleAssignments',
             'Microsoft.Insights/diagnosticSettings',
             'Microsoft.Network/privateEndpoints/privateDnsZoneGroups',
@@ -90,8 +91,9 @@ function Initialize-DeploymentRemoval {
             'Microsoft.Sql/managedInstances',
             'Microsoft.MachineLearningServices/workspaces',
             'Microsoft.Compute/virtualMachines',
-            'Microsoft.VirtualMachineImages/imageTemplates', # Must be removed before their MSI
+            'Microsoft.ContainerInstance/containerGroups' # Must be removed before their MSI
             'Microsoft.ManagedIdentity/userAssignedIdentities',
+            'Microsoft.Databricks/workspaces'
             'Microsoft.Resources/resourceGroups'
         )
 
@@ -134,11 +136,11 @@ function Initialize-DeploymentRemoval {
         if ($PurgeTestResources) {
             # Resources
             $filteredResourceIds = (Get-AzResource).ResourceId | Where-Object { $_ -like '*dep-*' }
-            $ResourceIds += ($filteredResourceIds | Sort-Object -Unique)
+            $ResourceIds += ($filteredResourceIds | Sort-Object -Culture 'en-US' -Unique)
 
             # Resource groups
             $filteredResourceGroupIds = (Get-AzResourceGroup).ResourceId | Where-Object { $_ -like '*dep-*' }
-            $ResourceIds += ($filteredResourceGroupIds | Sort-Object -Unique)
+            $ResourceIds += ($filteredResourceGroupIds | Sort-Object -Culture 'en-US' -Unique)
         }
 
         # Invoke removal

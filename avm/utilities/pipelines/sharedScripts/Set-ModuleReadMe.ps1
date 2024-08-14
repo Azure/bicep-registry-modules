@@ -95,7 +95,7 @@ function Set-ResourceTypesSection {
 
     $RelevantResourceTypeObjects = Get-NestedResourceList $TemplateFileContent | Where-Object {
         $_.type -notin $ResourceTypesToExclude -and $_
-    } | Select-Object 'Type', 'ApiVersion' -Unique | Sort-Object Type -Culture 'en-US'
+    } | Select-Object 'Type', 'ApiVersion' -Unique | Sort-Object -Culture 'en-US' -Property 'Type'
 
     $ProgressPreference = 'SilentlyContinue'
     $VerbosePreference = 'SilentlyContinue'
@@ -248,16 +248,22 @@ function Set-DefinitionSection {
         $descriptions = $TemplateFileContent.parameters.Values.metadata.description
         # Add name as property for later reference
         $TemplateFileContent.parameters.Keys | ForEach-Object { $TemplateFileContent.parameters[$_]['name'] = $_ }
+
+        # Error handling: Throw error if any parameter is missing a category
+        if ($paramsWithoutCategory = $TemplateFileContent.parameters.Values | Where-Object { $_.metadata.description -notmatch '^\w+?\.' }) {
+            $formattedParam = $paramsWithoutCategory | ForEach-Object { [PSCustomObject]@{ name = $_.name; description = $_.metadata.description } } | ConvertTo-Json -Compress
+            Write-Error ("Each parameter description should start with a category like [Required. / Optional. / Conditional. ]. The following parameters are missing such a category: `n$formattedParam`n")
+        }
     } else {
         $descriptions = $Properties.Values.metadata.description
         # Add name as property for later reference
         $Properties.Keys | ForEach-Object { $Properties[$_]['name'] = $_ }
-    }
 
-    # Error handling: Throw error if any parameter is missing a category
-    if ($paramsWithoutCategory = $TemplateFileContent.parameters.Values | Where-Object { $_.metadata.description -notmatch '^\w+?\.' }) {
-        $formattedParam = $paramsWithoutCategory | ForEach-Object { [PSCustomObject]@{ name = $_.name; description = $_.metadata.description } } | ConvertTo-Json -Compress
-        throw ("Each parameter description should start with a category like [Required. / Optional. / Conditional. ]. The following parameters are missing such a category: `n$formattedParam`n")
+        # Error handling: Throw error if any parameter is missing a category
+        if ($paramsWithoutCategory = $Properties.Values | Where-Object { $_.metadata.description -notmatch '^\w+?\.' }) {
+            $formattedParam = $paramsWithoutCategory | ForEach-Object { [PSCustomObject]@{ name = $_.name; description = $_.metadata.description } } | ConvertTo-Json -Compress
+            Write-Error ("Each parameter description should start with a category like [Required. / Optional. / Conditional. ]. The following parameters are missing such a category: `n$formattedParam`n")
+        }
     }
 
     # Get the module parameter categories
@@ -277,9 +283,9 @@ function Set-DefinitionSection {
         # Filter to relevant items
         if (-not $Properties) {
             # Top-level invocation
-            [array] $categoryParameters = $TemplateFileContent.parameters.Values | Where-Object { $_.metadata.description -like "$category. *" } | Sort-Object -Property 'Name' -Culture 'en-US'
+            [array] $categoryParameters = $TemplateFileContent.parameters.Values | Where-Object { $_.metadata.description -like "$category. *" } | Sort-Object -Culture 'en-US' -Property 'Name'
         } else {
-            $categoryParameters = $Properties.Values | Where-Object { $_.metadata.description -like "$category. *" } | Sort-Object -Property 'Name' -Culture 'en-US'
+            $categoryParameters = $Properties.Values | Where-Object { $_.metadata.description -like "$category. *" } | Sort-Object -Culture 'en-US' -Property 'Name'
         }
 
         $tableSectionContent += @(
@@ -306,10 +312,16 @@ function Set-DefinitionSection {
                 $type = $definition['type']
                 $rawAllowedValues = $definition['allowedValues']
             } elseif ($parameter.Keys -contains 'items' -and $parameter.items.type -in @('object', 'array') -or $parameter.type -eq 'object') {
-                # Array has nested non-primitive type (array/object)
+                # Array has nested non-primitive type (array/object) - and if array, the the UDT itself is declared as the array
                 $definition = $parameter
                 $type = $parameter.type
                 $rawAllowedValues = $parameter.allowedValues
+            } elseif ($parameter.Keys -contains 'items' -and $parameter.items.keys -contains '$ref') {
+                # Array has nested non-primitive type (array) - and the parameter is defined as an array of the UDT
+                $identifier = Split-Path $parameter.items.'$ref' -Leaf
+                $definition = $TemplateFileContent.definitions[$identifier]
+                $type = $parameter.type
+                $rawAllowedValues = $definition['allowedValues']
             } else {
                 $definition = $null
                 $type = $parameter.type
@@ -318,6 +330,7 @@ function Set-DefinitionSection {
 
             $isRequired = (Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameter) ? 'Yes' : 'No'
             $description = $parameter.ContainsKey('metadata') ? $parameter['metadata']['description'].substring("$category. ".Length).Replace("`n- ", '<li>').Replace("`r`n", '<p>').Replace("`n", '<p>') : $null
+            $example = ($parameter.ContainsKey('metadata') -and $parameter['metadata'].ContainsKey('example')) ? $parameter['metadata']['example'] : $null
 
             #####################
             #   Table content   #
@@ -400,6 +413,29 @@ function Set-DefinitionSection {
                 $formattedAllowedValues = $null
             }
 
+            # Format example
+            # ==============
+            if (-not [String]::IsNullOrEmpty($example)) {
+                # allign content to the left by removing trailing whitespaces
+                $leadingSpacesToTrim = ($example -match '^(\s+).+') ? $matches[1].Length : 0
+                $exampleLines = $example -split '\n'
+                # Removing excess leading spaces
+                $example = ($exampleLines | Where-Object { -not [String]::IsNullOrEmpty($_) } | ForEach-Object { "  $_" -replace "^\s{$leadingSpacesToTrim}" } | Out-String).TrimEnd()
+
+                if ($exampleLines.count -eq 1) {
+                    $formattedExample = '- Example: `{0}`' -f $example.TrimStart()
+                } else {
+                    $formattedExample = @(
+                        '- Example:',
+                        '  ```Bicep',
+                        $example,
+                        '  ```'
+                    )
+                }
+            } else {
+                $formattedExample = $null
+            }
+
             # Build list item
             # ===============
             $listSectionContent += @(
@@ -410,7 +446,8 @@ function Set-DefinitionSection {
             ('- Required: {0}' -f $isRequired),
             ('- Type: {0}' -f $type),
             ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
-            ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null)
+            ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null),
+            ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null)
                 ''
             ) | Where-Object { $null -ne $_ }
 
@@ -558,7 +595,7 @@ function Set-DataCollectionSection {
     )
 
     # Load content, if required
-    if ($PreLoadedContent.Keys -notcontains 'TelemetryFileContent') {
+    if ($PreLoadedContent.Keys -notcontains 'TelemetryFileContent' -or -not $PreLoadedContent['TelemetryFileContent']) {
 
         $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
         try {
@@ -657,13 +694,13 @@ function Set-CrossReferencesSection {
     $dependencies = $CrossReferencedModuleList[$FullModuleIdentifier]
 
     if ($dependencies.Keys -contains 'localPathReferences' -and $dependencies['localPathReferences']) {
-        foreach ($reference in ($dependencies['localPathReferences'] | Sort-Object)) {
+        foreach ($reference in ($dependencies['localPathReferences'] | Sort-Object -Culture 'en-US')) {
             $SectionContent += ("| ``{0}`` | {1} |" -f $reference, 'Local reference')
         }
     }
 
     if ($dependencies.Keys -contains 'remoteReferences' -and $dependencies['remoteReferences']) {
-        foreach ($reference in ($dependencies['remoteReferences'] | Sort-Object)) {
+        foreach ($reference in ($dependencies['remoteReferences'] | Sort-Object -Culture 'en-US')) {
             $SectionContent += ("| ``{0}`` | {1} |" -f $reference, 'Remote reference')
         }
     }
@@ -1283,11 +1320,11 @@ function Set-UsageExamplesSection {
         $moduleNameCamelCase = $First.Tolower() + (Get-Culture).TextInfo.ToTitleCase($Rest) -Replace '-'
     }
 
-    $testFilePaths = (Get-ChildItem -Path $ModuleRoot -Recurse -Filter 'main.test.bicep').FullName | Sort-Object
+    $testFilePaths = (Get-ChildItem -Path $ModuleRoot -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US'
 
     $RequiredParametersList = $TemplateFileContent.parameters.Keys | Where-Object {
         Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $TemplateFileContent.parameters[$_]
-    } | Sort-Object
+    } | Sort-Object -Culture 'en-US'
 
     ############################
     ##   Process test files   ##
@@ -1607,17 +1644,30 @@ function Initialize-ReadMe {
 
     $moduleName = $TemplateFileContent.metadata.name
     $moduleDescription = $TemplateFileContent.metadata.description
-    $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier
+
+    if ($ReadMeFilePath -match 'avm.(?:res)') {
+        # Resource module
+        $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier
+
+        $inTemplateResourceType = (Get-NestedResourceList $TemplateFileContent).type | Select-Object -Unique | Where-Object {
+            $_ -match "^$formattedResourceType$"
+        }
+
+        if ($inTemplateResourceType) {
+            $headerType = $inTemplateResourceType
+        } else {
+            Write-Warning "No resource type like [$formattedResourceType] found in template. Falling back to it as identifier."
+            $headerType = $formattedResourceType
+        }
+    } else {
+        # Non-resource modules always need a custom identifier
+        $parentIdentifierName, $childIdentifierName = $FullModuleIdentifier -Split '[\/|\\]', 2 # e.g. 'lz' & 'sub-vending'
+        $formattedParentIdentifierName = (Get-Culture).TextInfo.ToTitleCase(($parentIdentifierName -Replace '[^0-9A-Z]', ' ')) -Replace ' '
+        $formattedChildIdentifierName = (Get-Culture).TextInfo.ToTitleCase(($childIdentifierName -Replace '[^0-9A-Z]', ' ')) -Replace ' '
+        $headerType = "$formattedParentIdentifierName/$formattedChildIdentifierName"
+    }
+
     $hasTests = (Get-ChildItem -Path (Split-Path $ReadMeFilePath) -Recurse -Filter 'main.test.bicep' -File -Force).count -gt 0
-
-    $inTemplateResourceType = (Get-NestedResourceList $TemplateFileContent).type | Select-Object -Unique | Where-Object {
-        $_ -match "^$formattedResourceType$"
-    }
-
-    if (-not $inTemplateResourceType) {
-        Write-Warning "No resource type like [$formattedResourceType] found in template. Falling back to it as identifier."
-        $inTemplateResourceType = $formattedResourceType
-    }
 
     # Orphaned readme existing?
     $orphanedReadMeFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'ORPHANED.md'
@@ -1632,7 +1682,7 @@ function Initialize-ReadMe {
     }
 
     $initialContent = @(
-        "# $moduleName ``[$inTemplateResourceType]``",
+        "# $moduleName ``[$headerType]``",
         '',
         ((Test-Path $orphanedReadMeFilePath) ? $orphanedReadMeContent : $null),
         ((Test-Path $orphanedReadMeFilePath) ? '' : $null),

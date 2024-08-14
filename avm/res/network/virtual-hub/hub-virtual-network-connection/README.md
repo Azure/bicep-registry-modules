@@ -14,7 +14,7 @@ This module deploys a Virtual Hub Virtual Network Connection.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/virtualHubs/hubVirtualNetworkConnections) |
+| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualHubs/hubVirtualNetworkConnections) |
 
 ## Parameters
 
@@ -36,7 +36,6 @@ This module deploys a Virtual Hub Virtual Network Connection.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableInternetSecurity`](#parameter-enableinternetsecurity) | bool | Enable internet security. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`routingConfiguration`](#parameter-routingconfiguration) | object | Routing Configuration indicating the associated and propagated route tables for this connection. |
 
 ### Parameter: `name`
@@ -63,14 +62,6 @@ The name of the parent virtual hub. Required if the template is used in a standa
 ### Parameter: `enableInternetSecurity`
 
 Enable internet security.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `enableTelemetry`
-
-Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool

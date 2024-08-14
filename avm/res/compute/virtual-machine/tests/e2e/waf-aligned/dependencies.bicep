@@ -1,6 +1,9 @@
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
 
+@description('Required. The name of the Maintenance Configuration to create.')
+param maintenanceConfigurationName string
+
 @description('Required. The name of the Application Security Group to create.')
 param applicationSecurityGroupName string
 
@@ -28,6 +31,9 @@ param proximityPlacementGroupName string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
+@description('Required. The object ID of the Backup Management Service Enterprise Application. Required for Customer-Managed-Keys.')
+param backupManagementServiceApplicationObjectId string
+
 var storageAccountCSEFileName = 'scriptExtensionMasterInstaller.ps1'
 var addressPrefix = '10.0.0.0/16'
 
@@ -48,6 +54,39 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         }
       }
     ]
+  }
+}
+
+resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfigurations@2023-10-01-preview' = {
+  name: maintenanceConfigurationName
+  location: location
+  properties: {
+    extensionProperties: {
+      InGuestPatchMode: 'User'
+    }
+    maintenanceScope: 'InGuestPatch'
+    maintenanceWindow: {
+      startDateTime: '2024-06-16 00:00'
+      duration: '03:55'
+      timeZone: 'W. Europe Standard Time'
+      recurEvery: '1Day'
+    }
+    visibility: 'Custom'
+    installPatches: {
+      rebootSetting: 'IfRequired'
+      windowsParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+      linuxParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+    }
   }
 }
 
@@ -217,10 +256,10 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
 }
 
 resource backupServiceKeyVaultPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('${keyVault.name}-${location}-268f6a53-9f68-4a38-ae47-166f730d86af-KeyVault-KeyVaultAdministrator-RoleAssignment')
+  name: guid('${keyVault.name}-${location}-BackupManagementService-KeyVault-KeyVaultAdministrator-RoleAssignment')
   scope: keyVault
   properties: {
-    principalId: '268f6a53-9f68-4a38-ae47-166f730d86af' // Backup Management Service Enterprise Application Object Id (Note: this is tenant specific)
+    principalId: backupManagementServiceApplicationObjectId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       '00482a5a-887f-4fb3-b363-3b7fe8e74483'
@@ -272,7 +311,7 @@ resource storageUpload 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   properties: {
     azPowerShellVersion: '9.0'
     retentionInterval: 'P1D'
-    arguments: '-StorageAccountName "${storageAccount.name}" -ResourceGroupName "${resourceGroup().name}" -ContainerName "${storageAccount::blobService::container.name}" -FileName "${storageAccountCSEFileName}"'
+    arguments: '-StorageAccountName ${storageAccount.name} -ResourceGroupName ${resourceGroup().name} -ContainerName ${storageAccount::blobService::container.name} -FileName ${storageAccountCSEFileName}'
     scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-BlobContent.ps1')
   }
   dependsOn: [
@@ -287,6 +326,9 @@ resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@202
 
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
+
+@description('The resource ID of the maintenance configuration.')
+output maintenanceConfigurationResourceId string = maintenanceConfiguration.id
 
 @description('The resource ID of the created Application Security Group.')
 output applicationSecurityGroupResourceId string = applicationSecurityGroup.id

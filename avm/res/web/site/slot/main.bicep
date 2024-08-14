@@ -11,14 +11,19 @@ param appName string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-@description('Required. Type of slot to deploy.')
+@description('Required. Type of site to deploy.')
 @allowed([
   'functionapp' // function app windows os
   'functionapp,linux' // function app linux os
   'functionapp,workflowapp' // logic app workflow
   'functionapp,workflowapp,linux' // logic app docker container
+  'functionapp,linux,container' // function app linux container
   'app,linux' // linux web app
-  'app' // normal web app
+  'app' // windows web app
+  'linux,api' // linux api app
+  'api' // windows api app
+  'app,linux,container' // linux container app
+  'app,container,windows' // windows container app
 ])
 param kind string
 
@@ -192,6 +197,17 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 resource app 'Microsoft.Web/sites@2021-03-01' existing = {
   name: appName
 }
@@ -234,30 +250,28 @@ resource slot 'Microsoft.Web/sites/slots@2022-09-01' = {
   }
 }
 
-module slot_appsettings 'config--appsettings/main.bicep' =
-  if (!empty(appSettingsKeyValuePairs)) {
-    name: '${uniqueString(deployment().name, location)}-Slot-${name}-Config-AppSettings'
-    params: {
-      slotName: slot.name
-      appName: app.name
-      kind: kind
-      storageAccountResourceId: storageAccountResourceId
-      storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
-      appInsightResourceId: appInsightResourceId
-      appSettingsKeyValuePairs: appSettingsKeyValuePairs
-    }
+module slot_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettingsKeyValuePairs)) {
+  name: '${uniqueString(deployment().name, location)}-Slot-${name}-Config-AppSettings'
+  params: {
+    slotName: slot.name
+    appName: app.name
+    kind: kind
+    storageAccountResourceId: storageAccountResourceId
+    storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
+    appInsightResourceId: appInsightResourceId
+    appSettingsKeyValuePairs: appSettingsKeyValuePairs
   }
+}
 
-module slot_authsettingsv2 'config--authsettingsv2/main.bicep' =
-  if (!empty(authSettingV2Configuration)) {
-    name: '${uniqueString(deployment().name, location)}-Slot-${name}-Config-AuthSettingsV2'
-    params: {
-      slotName: slot.name
-      appName: app.name
-      kind: kind
-      authSettingV2Configuration: authSettingV2Configuration ?? {}
-    }
+module slot_authsettingsv2 'config--authsettingsv2/main.bicep' = if (!empty(authSettingV2Configuration)) {
+  name: '${uniqueString(deployment().name, location)}-Slot-${name}-Config-AuthSettingsV2'
+  params: {
+    slotName: slot.name
+    appName: app.name
+    kind: kind
+    authSettingV2Configuration: authSettingV2Configuration ?? {}
   }
+}
 
 module slot_basicPublishingCredentialsPolicies 'basic-publishing-credentials-policy/main.bicep' = [
   for (basicPublishingCredentialsPolicy, index) in (basicPublishingCredentialsPolicies ?? []): {
@@ -283,17 +297,16 @@ module slot_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep
   }
 ]
 
-resource slot_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: slot
+resource slot_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: slot
+}
 
 resource slot_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -325,14 +338,10 @@ resource slot_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-
 ]
 
 resource slot_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(slot.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(slot.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -344,7 +353,7 @@ resource slot_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-0
   }
 ]
 
-module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-slot-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -433,6 +442,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 

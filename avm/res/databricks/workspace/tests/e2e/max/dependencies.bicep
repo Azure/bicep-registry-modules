@@ -31,6 +31,9 @@ param logAnalyticsWorkspaceName string
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
 
+@description('Required. The object ID of the Databricks Enterprise Application. Required for Customer-Managed-Keys.')
+param databricksApplicationObjectId string
+
 var addressPrefix = '10.0.0.0/16'
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
@@ -38,7 +41,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -64,7 +67,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
-resource keyVaultDisk 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVaultDisk 'Microsoft.KeyVault/vaults@2023-07-01' = {
   name: keyVaultDiskName
   location: location
   properties: {
@@ -94,7 +97,7 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Key-Vault-Crypto-User-RoleAssignment')
   scope: keyVault::key
   properties: {
-    principalId: '711330f9-cfad-4b10-a462-d82faa92027d' // AzureDatabricks Enterprise Application Object Id (Note: this is tenant specific)
+    principalId: databricksApplicationObjectId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       '12338af0-0e69-4776-bea7-57ae8d297424'
@@ -139,7 +142,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   properties: {}
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: logAnalyticsWorkspaceName
   location: location
 }
@@ -154,7 +157,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
-resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@2023-04-01' = {
+resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@2023-10-01' = {
   name: amlWorkspaceName
   location: location
   identity: {
@@ -171,7 +174,7 @@ resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@
   }
 }
 
-resource loadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
+resource loadBalancer 'Microsoft.Network/loadBalancers@2023-11-01' = {
   name: loadBalancerName
   location: location
   properties: {
@@ -193,7 +196,7 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
   }
 }
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-11-01' = {
   name: networkSecurityGroupName
   location: location
   properties: {
@@ -286,7 +289,7 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-0
   }
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-01-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -403,3 +406,6 @@ output keyVaultDiskKeyName string = keyVaultDisk::key.name
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
+
+@description('The name of the created Log Analytics Workspace.')
+output logAnalyticsWorkspaceName string = logAnalyticsWorkspace.name

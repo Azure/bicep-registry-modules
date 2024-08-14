@@ -90,43 +90,40 @@ function Remove-Deployment {
 
             # Fetch deployments
             # =================
-
-            foreach ($deploymentName in $DeploymentNames) {
-                $deploymentsInputObject = @{
-                    Name  = $deploymentName
-                    Scope = $deploymentScope
-                }
-                if (-not [String]::IsNullOrEmpty($ResourceGroupName)) {
-                    $deploymentsInputObject['resourceGroupName'] = $ResourceGroupName
-                }
-                if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
-                    $deploymentsInputObject['ManagementGroupId'] = $ManagementGroupId
-                }
-                $deployedTargetResources += Get-DeploymentTargetResourceList @deploymentsInputObject
+            $deploymentsInputObject = @{
+                DeploymentNames = $DeploymentNames
+                Scope           = $deploymentScope
+            }
+            if (-not [String]::IsNullOrEmpty($ResourceGroupName)) {
+                $deploymentsInputObject['resourceGroupName'] = $ResourceGroupName
+            }
+            if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
+                $deploymentsInputObject['ManagementGroupId'] = $ManagementGroupId
             }
 
-            if ($deployedTargetResources.Count -eq 0) {
-                throw 'No deployment target resources found.'
-            }
+            # In case the function also returns an error, we'll throw a corresponding exception at the end of this script (see below)
+            $resolveResult = Get-DeploymentTargetResourceList @deploymentsInputObject
+            $deployedTargetResources += $resolveResult.resourcesToRemove
         }
 
         [array] $deployedTargetResources = $deployedTargetResources | Select-Object -Unique
 
         Write-Verbose ('Total number of deployment target resources after fetching deployments [{0}]' -f $deployedTargetResources.Count) -Verbose
 
+        if (-not $deployedTargetResources) {
+            # Nothing to do
+            return
+        }
+
         # Pre-Filter & order items
         # ========================
-        $rawTargetResourceIdsToRemove = $deployedTargetResources | Sort-Object -Property { $_.Split('/').Count } -Descending | Select-Object -Unique
+        $rawTargetResourceIdsToRemove = $deployedTargetResources | Sort-Object -Culture 'en-US' -Property { $_.Split('/').Count } -Descending | Select-Object -Unique
         Write-Verbose ('Total number of deployment target resources after pre-filtering (duplicates) & ordering items [{0}]' -f $rawTargetResourceIdsToRemove.Count) -Verbose
 
         # Format items
         # ============
         [array] $resourcesToRemove = Get-ResourceIdsAsFormattedObjectList -ResourceIds $rawTargetResourceIdsToRemove
         Write-Verbose ('Total number of deployment target resources after formatting items [{0}]' -f $resourcesToRemove.Count) -Verbose
-
-        if ($resourcesToRemove.Count -eq 0) {
-            return
-        }
 
         # Filter resources
         # ================
@@ -174,6 +171,11 @@ function Remove-Deployment {
             }
         } else {
             Write-Verbose 'Found [0] resources to remove'
+        }
+
+        # In case any deployment was not resolved as planned we finally want to throw an exception to make this visible in the pipeline
+        if ($resolveResult.resolveError) {
+            throw ('The following error was thrown while resolving the original deployment names: [{0}]' -f $resolveResult.resolveError)
         }
     }
 

@@ -14,6 +14,9 @@ param location string = resourceGroup().location
 @description('Optional. Tags of the resource.')
 param tags object?
 
+@description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentitiesType
+
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
@@ -22,6 +25,10 @@ param logsDestination string = 'log-analytics'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. Application Insights connection string.')
+@secure()
+param appInsightsConnectionString string = ''
 
 @description('Optional. Application Insights connection string used by Dapr to export Service to Service communication telemetry.')
 @secure()
@@ -63,11 +70,32 @@ param dnsSuffix string = ''
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
+@description('Optional. Open Telemetry configuration.')
+param openTelemetryConfiguration object = {}
+
 @description('Conditional. Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param workloadProfiles array = []
 
 @description('Conditional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param infrastructureResourceGroupName string = take('ME_${name}', 63)
+
+@description('Optional. The list of storages to mount on the environment.')
+param storages storageType
+
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -83,36 +111,50 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.app-managedenvironment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.app-managedenvironment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing =
-  if (!empty(logAnalyticsWorkspaceResourceId)) {
-    name: last(split(logAnalyticsWorkspaceResourceId, '/'))!
-    scope: resourceGroup(split(logAnalyticsWorkspaceResourceId, '/')[2], split(logAnalyticsWorkspaceResourceId, '/')[4])
-  }
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = if (!empty(logAnalyticsWorkspaceResourceId)) {
+  name: last(split(logAnalyticsWorkspaceResourceId, '/'))!
+  scope: resourceGroup(split(logAnalyticsWorkspaceResourceId, '/')[2], split(logAnalyticsWorkspaceResourceId, '/')[4])
+}
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-11-02-preview' = {
   name: name
   location: location
   tags: tags
+  identity: identity
   properties: {
+    appInsightsConfiguration: {
+      connectionString: appInsightsConnectionString
+    }
     appLogsConfiguration: {
       destination: logsDestination
       logAnalyticsConfiguration: {
@@ -127,6 +169,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' = {
       certificateValue: !empty(certificateValue) ? certificateValue : null
       dnsSuffix: dnsSuffix
     }
+    openTelemetryConfiguration: !empty(openTelemetryConfiguration) ? openTelemetryConfiguration : null
     vnetConfiguration: {
       internal: internal
       infrastructureSubnetId: !empty(infrastructureSubnetId) ? infrastructureSubnetId : null
@@ -138,17 +181,43 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' = {
     zoneRedundant: zoneRedundant
     infrastructureResourceGroup: infrastructureResourceGroupName
   }
+
+  resource storage 'storages' = [
+    for storage in (storages ?? []): {
+      name: storage.shareName
+      properties: {
+        nfsAzureFile: storage.kind == 'NFS'
+          ? {
+              accessMode: storage.accessMode
+              server: '${storage.storageAccountName}.file.${environment().suffixes.storage}'
+              shareName: '/${storage.storageAccountName}/${storage.shareName}'
+            }
+          : null
+        azureFile: storage.kind == 'SMB'
+          ? {
+              accessMode: storage.accessMode
+              accountName: storage.storageAccountName
+              accountKey: listkeys(
+                resourceId('Microsoft.Storage/storageAccounts', storage.storageAccountName),
+                '2023-01-01'
+              ).keys[0].value
+              shareName: storage.shareName
+            }
+          : null
+      }
+    }
+  ]
 }
 
 resource managedEnvironment_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(managedEnvironment.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(
+      managedEnvironment.id,
+      roleAssignment.principalId,
+      roleAssignment.roleDefinitionId
+    )
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -160,17 +229,16 @@ resource managedEnvironment_roleAssignments 'Microsoft.Authorization/roleAssignm
   }
 ]
 
-resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: managedEnvironment
+resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: managedEnvironment
+}
 
 @description('The name of the resource group the Managed Environment was deployed into.')
 output resourceGroupName string = resourceGroup().name
@@ -184,12 +252,26 @@ output name string = managedEnvironment.name
 @description('The resource ID of the Managed Environment.')
 output resourceId string = managedEnvironment.id
 
+@description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string = managedEnvironment.?identity.?principalId ?? ''
+
 @description('The Default domain of the Managed Environment.')
 output defaultDomain string = managedEnvironment.properties.defaultDomain
+
+@description('The IP address of the Managed Environment.')
+output staticIp string = managedEnvironment.properties.staticIp
 
 // =============== //
 //   Definitions   //
 // =============== //
+
+type managedIdentitiesType = {
+  @description('Optional. Enables system assigned managed identity on the resource.')
+  systemAssigned: bool?
+
+  @description('Optional. The resource ID(s) to assign to the resource.')
+  userAssignedResourceIds: string[]?
+}?
 
 type lockType = {
   @description('Optional. Specify the name of lock.')
@@ -200,6 +282,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -220,4 +305,18 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
+}[]?
+
+type storageType = {
+  @description('Required. Access mode for storage: "ReadOnly" or "ReadWrite".')
+  accessMode: ('ReadOnly' | 'ReadWrite')
+
+  @description('Required. Type of storage: "SMB" or "NFS".')
+  kind: ('SMB' | 'NFS')
+
+  @description('Required. Storage account name.')
+  storageAccountName: string
+
+  @description('Required. File share name.')
+  shareName: string
 }[]?

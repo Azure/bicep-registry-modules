@@ -24,10 +24,12 @@ This module deploys a DocumentDB Database Account.
 | `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/mongodbDatabases/collections) |
 | `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlDatabases) |
 | `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlDatabases/containers) |
+| `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlRoleAssignments) |
+| `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlRoleDefinitions) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -47,8 +49,9 @@ The following section provides usage examples for the module, which were used to
 - [Deploying multiple regions](#example-8-deploying-multiple-regions)
 - [Plain](#example-9-plain)
 - [Public network restricted access with ACL](#example-10-public-network-restricted-access-with-acl)
-- [SQL Database](#example-11-sql-database)
-- [WAF-aligned](#example-12-waf-aligned)
+- [Deploying with a sql role definision and assignment](#example-11-deploying-with-a-sql-role-definision-and-assignment)
+- [SQL Database](#example-12-sql-database)
+- [WAF-aligned](#example-13-waf-aligned)
 
 ### Example 1: _Using analytical storage_
 
@@ -339,6 +342,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -477,6 +481,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -519,9 +524,16 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     name: 'kv-ref'
     // Non-required parameters
     location: '<location>'
-    secretsKeyVault: {
-      keyVaultName: '<keyVaultName>'
-      primaryReadonlyConnectionStringSecretName: 'custom-secret-name'
+    secretsExportConfiguration: {
+      keyVaultResourceId: '<keyVaultResourceId>'
+      primaryReadonlyConnectionStringSecretName: 'primaryReadonlyConnectionString'
+      primaryReadOnlyKeySecretName: 'primaryReadOnlyKey'
+      primaryWriteConnectionStringSecretName: 'primaryWriteConnectionString'
+      primaryWriteKeySecretName: 'primaryWriteKey'
+      secondaryReadonlyConnectionStringSecretName: 'secondaryReadonlyConnectionString'
+      secondaryReadonlyKeySecretName: 'secondaryReadonlyKey'
+      secondaryWriteConnectionStringSecretName: 'secondaryWriteConnectionString'
+      secondaryWriteKeySecretName: 'secondaryWriteKey'
     }
   }
 }
@@ -547,10 +559,17 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "location": {
       "value": "<location>"
     },
-    "secretsKeyVault": {
+    "secretsExportConfiguration": {
       "value": {
-        "keyVaultName": "<keyVaultName>",
-        "primaryReadonlyConnectionStringSecretName": "custom-secret-name"
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "primaryReadonlyConnectionStringSecretName": "primaryReadonlyConnectionString",
+        "primaryReadOnlyKeySecretName": "primaryReadOnlyKey",
+        "primaryWriteConnectionStringSecretName": "primaryWriteConnectionString",
+        "primaryWriteKeySecretName": "primaryWriteKey",
+        "secondaryReadonlyConnectionStringSecretName": "secondaryReadonlyConnectionString",
+        "secondaryReadonlyKeySecretName": "secondaryReadonlyKey",
+        "secondaryWriteConnectionStringSecretName": "secondaryWriteConnectionString",
+        "secondaryWriteKeySecretName": "secondaryWriteKey"
       }
     }
   }
@@ -590,6 +609,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -640,6 +660,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -897,6 +918,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -1167,6 +1189,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -1486,7 +1509,75 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 11: _SQL Database_
+### Example 11: _Deploying with a sql role definision and assignment_
+
+This instance deploys the module with sql role definision and assignment
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: 'databaseAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'role-ref'
+    // Non-required parameters
+    location: '<location>'
+    sqlRoleAssignmentsPrincipalIds: [
+      '<identityPrincipalId>'
+    ]
+    sqlRoleDefinitions: [
+      {
+        name: 'cosmos-sql-role-test'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "role-ref"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "sqlRoleAssignmentsPrincipalIds": {
+      "value": [
+        "<identityPrincipalId>"
+      ]
+    },
+    "sqlRoleDefinitions": {
+      "value": [
+        {
+          "name": "cosmos-sql-role-test"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 12: _SQL Database_
 
 This instance deploys the module with a SQL Database.
 
@@ -1741,6 +1832,14 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             paths: [
               'myPartitionKey1'
             ]
+          }
+          {
+            kind: 'Hash'
+            name: 'container-005'
+            paths: [
+              'myPartitionKey1'
+            ]
+            version: 2
           }
         ]
         name: 'all-partition-key-types'
@@ -2020,6 +2119,14 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               "paths": [
                 "myPartitionKey1"
               ]
+            },
+            {
+              "kind": "Hash",
+              "name": "container-005",
+              "paths": [
+                "myPartitionKey1"
+              ],
+              "version": 2
             }
           ],
           "name": "all-partition-key-types"
@@ -2040,7 +2147,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 12: _WAF-aligned_
+### Example 13: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -2072,9 +2179,13 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     }
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'Sql'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -2149,9 +2260,13 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "Sql",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -2205,7 +2320,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`automaticFailover`](#parameter-automaticfailover) | bool | Default to true. Enable automatic failover for regions. |
+| [`automaticFailover`](#parameter-automaticfailover) | bool | Enable automatic failover for regions. |
 | [`backupIntervalInMinutes`](#parameter-backupintervalinminutes) | int | Default to 240. An integer representing the interval in minutes between two backups. Only applies to periodic backup type. |
 | [`backupPolicyContinuousTier`](#parameter-backuppolicycontinuoustier) | string | Default to Continuous30Days. Configuration values for continuous mode backup. |
 | [`backupPolicyType`](#parameter-backuppolicytype) | string | Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used. |
@@ -2215,11 +2330,11 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 | [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | Default to Standard. The offer type for the Cosmos DB database account. |
 | [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | Default to Session. The default consistency level of the Cosmos DB account. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Default to false. Disable write operations on metadata resources (databases, containers, throughput) via account keys. |
-| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Default to false. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication. |
-| [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Default to false. Flag to indicate whether to enable storage analytics. |
-| [`enableFreeTier`](#parameter-enablefreetier) | bool | Default to false. Flag to indicate whether Free Tier is enabled. |
-| [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled. |
+| [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Disable write operations on metadata resources (databases, containers, throughput) via account keys. |
+| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication. |
+| [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Flag to indicate whether to enable storage analytics. |
+| [`enableFreeTier`](#parameter-enablefreetier) | bool | Flag to indicate whether Free Tier is enabled. |
+| [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Enables the account to write in multiple locations. Periodic backup must be used if enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gremlinDatabases`](#parameter-gremlindatabases) | array | Gremlin Databases configurations. |
 | [`location`](#parameter-location) | string | Default to current resource group scope location. Location for all resources. |
@@ -2232,9 +2347,11 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 | [`networkRestrictions`](#parameter-networkrestrictions) | object | The network configuration of this module. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`secretsKeyVault`](#parameter-secretskeyvault) | object | Key vault reference and secret settings to add the connection strings and keys generated by the cosmosdb account. |
+| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`serverVersion`](#parameter-serverversion) | string | Default to 4.2. Specifies the MongoDB server version to use. |
 | [`sqlDatabases`](#parameter-sqldatabases) | array | SQL Databases configurations. |
+| [`sqlRoleAssignmentsPrincipalIds`](#parameter-sqlroleassignmentsprincipalids) | array | SQL Role Definitions configurations. |
+| [`sqlRoleDefinitions`](#parameter-sqlroledefinitions) | array | SQL Role Definitions configurations. |
 | [`tags`](#parameter-tags) | object | Tags of the Database Account resource. |
 
 ### Parameter: `name`
@@ -2246,7 +2363,7 @@ Name of the Database Account.
 
 ### Parameter: `automaticFailover`
 
-Default to true. Enable automatic failover for regions.
+Enable automatic failover for regions.
 
 - Required: No
 - Type: bool
@@ -2513,7 +2630,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 ### Parameter: `disableKeyBasedMetadataWriteAccess`
 
-Default to false. Disable write operations on metadata resources (databases, containers, throughput) via account keys.
+Disable write operations on metadata resources (databases, containers, throughput) via account keys.
 
 - Required: No
 - Type: bool
@@ -2521,15 +2638,15 @@ Default to false. Disable write operations on metadata resources (databases, con
 
 ### Parameter: `disableLocalAuth`
 
-Default to false. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.
+Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enableAnalyticalStorage`
 
-Default to false. Flag to indicate whether to enable storage analytics.
+Flag to indicate whether to enable storage analytics.
 
 - Required: No
 - Type: bool
@@ -2537,7 +2654,7 @@ Default to false. Flag to indicate whether to enable storage analytics.
 
 ### Parameter: `enableFreeTier`
 
-Default to false. Flag to indicate whether Free Tier is enabled.
+Flag to indicate whether Free Tier is enabled.
 
 - Required: No
 - Type: bool
@@ -2545,7 +2662,7 @@ Default to false. Flag to indicate whether Free Tier is enabled.
 
 ### Parameter: `enableMultipleWriteLocations`
 
-Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled.
+Enables the account to write in multiple locations. Periodic backup must be used if enabled.
 
 - Required: No
 - Type: bool
@@ -2582,6 +2699,40 @@ Default to the location where the account is deployed. Locations enabled for the
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`failoverPriority`](#parameter-locationsfailoverpriority) | int | The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists. |
+| [`locationName`](#parameter-locationslocationname) | string | The name of the region. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`isZoneRedundant`](#parameter-locationsiszoneredundant) | bool | Default to true. Flag to indicate whether or not this region is an AvailabilityZone region. |
+
+### Parameter: `locations.failoverPriority`
+
+The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `locations.locationName`
+
+The name of the region.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `locations.isZoneRedundant`
+
+Default to true. Flag to indicate whether or not this region is an AvailabilityZone region.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `lock`
 
@@ -2770,8 +2921,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
@@ -2961,19 +3111,64 @@ The name of the private endpoint.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneGroupName`
+### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
-The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.
+The private DNS zone group to configure for the private endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneResourceIds`
+### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
-The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
+The name of the Private DNS Zone Group.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -3011,6 +3206,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-privateendpointsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-privateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `privateEndpoints.roleAssignments.principalId`
@@ -3061,6 +3257,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `privateEndpoints.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -3107,6 +3310,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -3157,6 +3361,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -3174,9 +3385,9 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `secretsKeyVault`
+### Parameter: `secretsExportConfiguration`
 
-Key vault reference and secret settings to add the connection strings and keys generated by the cosmosdb account.
+Key vault reference and secret settings for the module's secrets export.
 
 - Required: No
 - Type: object
@@ -3185,88 +3396,80 @@ Key vault reference and secret settings to add the connection strings and keys g
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVaultName`](#parameter-secretskeyvaultkeyvaultname) | string | The key vault name where to store the keys and connection strings generated by the modules. |
+| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The resource ID of the key vault where to store the secrets of this module. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`primaryReadonlyConnectionStringSecretName`](#parameter-secretskeyvaultprimaryreadonlyconnectionstringsecretname) | string | Default to Primary-Readonly-ConnectionString. The primary readonly connection string secret name to create. |
-| [`primaryReadOnlyKeySecretName`](#parameter-secretskeyvaultprimaryreadonlykeysecretname) | string | Default to Primary-Readonly-Key. The primary readonly key secret name to create. |
-| [`primaryWriteConnectionStringSecretName`](#parameter-secretskeyvaultprimarywriteconnectionstringsecretname) | string | Default to Primary-Write-ConnectionString. The primary write connection string secret name to create. |
-| [`primaryWriteKeySecretName`](#parameter-secretskeyvaultprimarywritekeysecretname) | string | Default to Primary-Write-Key. The primary write key secret name to create. |
-| [`resourceGroupName`](#parameter-secretskeyvaultresourcegroupname) | string | Default to the resource group where this account is. The resource group name where the key vault is. |
-| [`secondaryReadonlyConnectionStringSecretName`](#parameter-secretskeyvaultsecondaryreadonlyconnectionstringsecretname) | string | Default to Secondary-Readonly-ConnectionString. The primary readonly connection string secret name to create. |
-| [`secondaryReadonlyKeySecretName`](#parameter-secretskeyvaultsecondaryreadonlykeysecretname) | string | Default to Secondary-Readonly-Key. The primary readonly key secret name to create. |
-| [`secondaryWriteConnectionStringSecretName`](#parameter-secretskeyvaultsecondarywriteconnectionstringsecretname) | string | Default to Secondary-Write-ConnectionString. The primary write connection string secret name to create. |
-| [`secondaryWriteKeySecretName`](#parameter-secretskeyvaultsecondarywritekeysecretname) | string | Default to Secondary-Write-Key. The primary write key secret name to create. |
+| [`primaryReadonlyConnectionStringSecretName`](#parameter-secretsexportconfigurationprimaryreadonlyconnectionstringsecretname) | string | The primary readonly connection string secret name to create. |
+| [`primaryReadOnlyKeySecretName`](#parameter-secretsexportconfigurationprimaryreadonlykeysecretname) | string | The primary readonly key secret name to create. |
+| [`primaryWriteConnectionStringSecretName`](#parameter-secretsexportconfigurationprimarywriteconnectionstringsecretname) | string | The primary write connection string secret name to create. |
+| [`primaryWriteKeySecretName`](#parameter-secretsexportconfigurationprimarywritekeysecretname) | string | The primary write key secret name to create. |
+| [`secondaryReadonlyConnectionStringSecretName`](#parameter-secretsexportconfigurationsecondaryreadonlyconnectionstringsecretname) | string | The primary readonly connection string secret name to create. |
+| [`secondaryReadonlyKeySecretName`](#parameter-secretsexportconfigurationsecondaryreadonlykeysecretname) | string | The primary readonly key secret name to create. |
+| [`secondaryWriteConnectionStringSecretName`](#parameter-secretsexportconfigurationsecondarywriteconnectionstringsecretname) | string | The primary write connection string secret name to create. |
+| [`secondaryWriteKeySecretName`](#parameter-secretsexportconfigurationsecondarywritekeysecretname) | string | The primary write key secret name to create. |
 
-### Parameter: `secretsKeyVault.keyVaultName`
+### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
-The key vault name where to store the keys and connection strings generated by the modules.
+The resource ID of the key vault where to store the secrets of this module.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `secretsKeyVault.primaryReadonlyConnectionStringSecretName`
+### Parameter: `secretsExportConfiguration.primaryReadonlyConnectionStringSecretName`
 
-Default to Primary-Readonly-ConnectionString. The primary readonly connection string secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsKeyVault.primaryReadOnlyKeySecretName`
-
-Default to Primary-Readonly-Key. The primary readonly key secret name to create.
+The primary readonly connection string secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsKeyVault.primaryWriteConnectionStringSecretName`
+### Parameter: `secretsExportConfiguration.primaryReadOnlyKeySecretName`
 
-Default to Primary-Write-ConnectionString. The primary write connection string secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsKeyVault.primaryWriteKeySecretName`
-
-Default to Primary-Write-Key. The primary write key secret name to create.
+The primary readonly key secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsKeyVault.resourceGroupName`
+### Parameter: `secretsExportConfiguration.primaryWriteConnectionStringSecretName`
 
-Default to the resource group where this account is. The resource group name where the key vault is.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsKeyVault.secondaryReadonlyConnectionStringSecretName`
-
-Default to Secondary-Readonly-ConnectionString. The primary readonly connection string secret name to create.
+The primary write connection string secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsKeyVault.secondaryReadonlyKeySecretName`
+### Parameter: `secretsExportConfiguration.primaryWriteKeySecretName`
 
-Default to Secondary-Readonly-Key. The primary readonly key secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsKeyVault.secondaryWriteConnectionStringSecretName`
-
-Default to Secondary-Write-ConnectionString. The primary write connection string secret name to create.
+The primary write key secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsKeyVault.secondaryWriteKeySecretName`
+### Parameter: `secretsExportConfiguration.secondaryReadonlyConnectionStringSecretName`
 
-Default to Secondary-Write-Key. The primary write key secret name to create.
+The primary readonly connection string secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.secondaryReadonlyKeySecretName`
+
+The primary readonly key secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.secondaryWriteConnectionStringSecretName`
+
+The primary write connection string secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.secondaryWriteKeySecretName`
+
+The primary write key secret name to create.
 
 - Required: No
 - Type: string
@@ -3296,6 +3499,278 @@ SQL Databases configurations.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-sqldatabasesname) | string | Name of the SQL database . |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoscaleSettingsMaxThroughput`](#parameter-sqldatabasesautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. |
+| [`containers`](#parameter-sqldatabasescontainers) | array | Array of containers to deploy in the SQL database. |
+| [`throughput`](#parameter-sqldatabasesthroughput) | int | Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
+
+### Parameter: `sqlDatabases.name`
+
+Name of the SQL database .
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlDatabases.autoscaleSettingsMaxThroughput`
+
+Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlDatabases.containers`
+
+Array of containers to deploy in the SQL database.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-sqldatabasescontainersname) | string | Name of the container. |
+| [`paths`](#parameter-sqldatabasescontainerspaths) | array | List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`analyticalStorageTtl`](#parameter-sqldatabasescontainersanalyticalstoragettl) | int | Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store. |
+| [`autoscaleSettingsMaxThroughput`](#parameter-sqldatabasescontainersautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. |
+| [`conflictResolutionPolicy`](#parameter-sqldatabasescontainersconflictresolutionpolicy) | object | The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions. |
+| [`defaultTtl`](#parameter-sqldatabasescontainersdefaultttl) | int | Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don't expire by default. |
+| [`indexingPolicy`](#parameter-sqldatabasescontainersindexingpolicy) | object | Indexing policy of the container. |
+| [`kind`](#parameter-sqldatabasescontainerskind) | string | Default to Hash. Indicates the kind of algorithm used for partitioning. |
+| [`throughput`](#parameter-sqldatabasescontainersthroughput) | int | Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
+| [`uniqueKeyPolicyKeys`](#parameter-sqldatabasescontainersuniquekeypolicykeys) | array | The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
+| [`version`](#parameter-sqldatabasescontainersversion) | int | Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition. |
+
+### Parameter: `sqlDatabases.containers.name`
+
+Name of the container.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlDatabases.containers.paths`
+
+List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `sqlDatabases.containers.analyticalStorageTtl`
+
+Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlDatabases.containers.autoscaleSettingsMaxThroughput`
+
+Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlDatabases.containers.conflictResolutionPolicy`
+
+The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`mode`](#parameter-sqldatabasescontainersconflictresolutionpolicymode) | string | Indicates the conflict resolution mode. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`conflictResolutionPath`](#parameter-sqldatabasescontainersconflictresolutionpolicyconflictresolutionpath) | string | The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to 'LastWriterWins'. |
+| [`conflictResolutionProcedure`](#parameter-sqldatabasescontainersconflictresolutionpolicyconflictresolutionprocedure) | string | The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to 'Custom'. |
+
+### Parameter: `sqlDatabases.containers.conflictResolutionPolicy.mode`
+
+Indicates the conflict resolution mode.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Custom'
+    'LastWriterWins'
+  ]
+  ```
+
+### Parameter: `sqlDatabases.containers.conflictResolutionPolicy.conflictResolutionPath`
+
+The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to 'LastWriterWins'.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlDatabases.containers.conflictResolutionPolicy.conflictResolutionProcedure`
+
+The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to 'Custom'.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlDatabases.containers.defaultTtl`
+
+Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don't expire by default.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlDatabases.containers.indexingPolicy`
+
+Indexing policy of the container.
+
+- Required: No
+- Type: object
+
+### Parameter: `sqlDatabases.containers.kind`
+
+Default to Hash. Indicates the kind of algorithm used for partitioning.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Hash'
+    'MultiHash'
+  ]
+  ```
+
+### Parameter: `sqlDatabases.containers.throughput`
+
+Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlDatabases.containers.uniqueKeyPolicyKeys`
+
+The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`paths`](#parameter-sqldatabasescontainersuniquekeypolicykeyspaths) | array | List of paths must be unique for each document in the Azure Cosmos DB service. |
+
+### Parameter: `sqlDatabases.containers.uniqueKeyPolicyKeys.paths`
+
+List of paths must be unique for each document in the Azure Cosmos DB service.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `sqlDatabases.containers.version`
+
+Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition.
+
+- Required: No
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+  ]
+  ```
+
+### Parameter: `sqlDatabases.throughput`
+
+Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlRoleAssignmentsPrincipalIds`
+
+SQL Role Definitions configurations.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `sqlRoleDefinitions`
+
+SQL Role Definitions configurations.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-sqlroledefinitionsname) | string | Name of the SQL Role Definition. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataAction`](#parameter-sqlroledefinitionsdataaction) | array | An array of data actions that are allowed. |
+| [`roleName`](#parameter-sqlroledefinitionsrolename) | string | A user-friendly name for the Role Definition. Must be unique for the database account. |
+| [`roleType`](#parameter-sqlroledefinitionsroletype) | string | Indicates whether the Role Definition was built-in or user created. |
+
+### Parameter: `sqlRoleDefinitions.name`
+
+Name of the SQL Role Definition.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlRoleDefinitions.dataAction`
+
+An array of data actions that are allowed.
+
+- Required: No
+- Type: array
+
+### Parameter: `sqlRoleDefinitions.roleName`
+
+A user-friendly name for the Role Definition. Must be unique for the database account.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlRoleDefinitions.roleType`
+
+Indicates whether the Role Definition was built-in or user created.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'BuiltInRole'
+    'CustomRole'
+  ]
+  ```
+
 ### Parameter: `tags`
 
 Tags of the Database Account resource.
@@ -3308,6 +3783,8 @@ Tags of the Database Account resource.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `endpoint` | string | The endpoint of the database account. |
+| `exportedSecrets` |  | The references to the secrets exported to the provided Key Vault. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the database account. |
 | `resourceGroupName` | string | The name of the resource group the database account was created in. |
@@ -3320,7 +3797,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.7.0` | Remote reference |
 
 ## Data Collection
 

@@ -34,8 +34,10 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/key-vault/vault:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Using only defaults](#example-4-using-only-defaults)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -89,7 +91,129 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module vault 'br/public:avm/res/key-vault/vault:<version>' = {
+  name: 'vaultDeployment'
+  params: {
+    // Required parameters
+    name: 'kvvec002'
+    // Non-required parameters
+    enablePurgeProtection: false
+    enableRbacAuthorization: true
+    keys: [
+      {
+        attributes: {
+          exp: 1725109032
+          nbf: 10000
+        }
+        kty: 'EC'
+        name: 'keyName'
+        rotationPolicy: {
+          attributes: {
+            expiryTime: 'P2Y'
+          }
+          lifetimeActions: [
+            {
+              action: {
+                type: 'Rotate'
+              }
+              trigger: {
+                timeBeforeExpiry: 'P2M'
+              }
+            }
+            {
+              action: {
+                type: 'Notify'
+              }
+              trigger: {
+                timeBeforeExpiry: 'P30D'
+              }
+            }
+          ]
+        }
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "kvvec002"
+    },
+    "enablePurgeProtection": {
+      "value": false
+    },
+    "enableRbacAuthorization": {
+      "value": true
+    },
+    "keys": {
+      "value": [
+        {
+          "attributes": {
+            "exp": 1725109032,
+            "nbf": 10000
+          },
+          "kty": "EC",
+          "name": "keyName",
+          "rotationPolicy": {
+            "attributes": {
+              "expiryTime": "P2Y"
+            },
+            "lifetimeActions": [
+              {
+                "action": {
+                  "type": "Rotate"
+                },
+                "trigger": {
+                  "timeBeforeExpiry": "P2M"
+                }
+              },
+              {
+                "action": {
+                  "type": "Notify"
+                },
+                "trigger": {
+                  "timeBeforeExpiry": "P30D"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -276,11 +400,13 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     ]
     roleAssignments: [
       {
+        name: 'b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -291,34 +417,32 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    secrets: {
-      secureList: [
-        {
-          attributesExp: 1702648632
-          attributesNbf: 10000
-          contentType: 'Something'
-          name: 'secretName'
-          roleAssignments: [
-            {
-              principalId: '<principalId>'
-              principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Owner'
-            }
-            {
-              principalId: '<principalId>'
-              principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-            }
-            {
-              principalId: '<principalId>'
-              principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-            }
-          ]
-          value: 'secretValue'
-        }
-      ]
-    }
+    secrets: [
+      {
+        attributesExp: 1702648632
+        attributesNbf: 10000
+        contentType: 'Something'
+        name: 'secretName'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        value: 'secretValue'
+      }
+    ]
     softDeleteRetentionInDays: 7
     tags: {
       Environment: 'Non-Prod'
@@ -534,11 +658,13 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -551,34 +677,32 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
       ]
     },
     "secrets": {
-      "value": {
-        "secureList": [
-          {
-            "attributesExp": 1702648632,
-            "attributesNbf": 10000,
-            "contentType": "Something",
-            "name": "secretName",
-            "roleAssignments": [
-              {
-                "principalId": "<principalId>",
-                "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Owner"
-              },
-              {
-                "principalId": "<principalId>",
-                "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-              },
-              {
-                "principalId": "<principalId>",
-                "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-              }
-            ],
-            "value": "secretValue"
-          }
-        ]
-      }
+      "value": [
+        {
+          "attributesExp": 1702648632,
+          "attributesNbf": 10000,
+          "contentType": "Something",
+          "name": "secretName",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "value": "secretValue"
+        }
+      ]
     },
     "softDeleteRetentionInDays": {
       "value": 7
@@ -597,7 +721,129 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module vault 'br/public:avm/res/key-vault/vault:<version>' = {
+  name: 'vaultDeployment'
+  params: {
+    // Required parameters
+    name: 'kvvrsa002'
+    // Non-required parameters
+    enablePurgeProtection: false
+    enableRbacAuthorization: true
+    keys: [
+      {
+        attributes: {
+          exp: 1725109032
+          nbf: 10000
+        }
+        kty: 'RSA'
+        name: 'keyName'
+        rotationPolicy: {
+          attributes: {
+            expiryTime: 'P2Y'
+          }
+          lifetimeActions: [
+            {
+              action: {
+                type: 'Rotate'
+              }
+              trigger: {
+                timeBeforeExpiry: 'P2M'
+              }
+            }
+            {
+              action: {
+                type: 'Notify'
+              }
+              trigger: {
+                timeBeforeExpiry: 'P30D'
+              }
+            }
+          ]
+        }
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "kvvrsa002"
+    },
+    "enablePurgeProtection": {
+      "value": false
+    },
+    "enableRbacAuthorization": {
+      "value": true
+    },
+    "keys": {
+      "value": [
+        {
+          "attributes": {
+            "exp": 1725109032,
+            "nbf": 10000
+          },
+          "kty": "RSA",
+          "name": "keyName",
+          "rotationPolicy": {
+            "attributes": {
+              "expiryTime": "P2Y"
+            },
+            "lifetimeActions": [
+              {
+                "action": {
+                  "type": "Rotate"
+                },
+                "trigger": {
+                  "timeBeforeExpiry": "P2M"
+                }
+              },
+              {
+                "action": {
+                  "type": "Notify"
+                },
+                "trigger": {
+                  "timeBeforeExpiry": "P30D"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -625,8 +871,11 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     enableRbacAuthorization: true
     keys: [
       {
-        attributesExp: 1725109032
-        attributesNbf: 10000
+        attributes: {
+          enabled: true
+          exp: 1702648632
+          nbf: 10000
+        }
         keySize: 4096
         name: 'keyName'
         rotationPolicy: {
@@ -672,17 +921,18 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
-    secrets: {
-      secureList: [
-        {
-          attributesExp: 1702648632
-          attributesNbf: 10000
-          contentType: 'Something'
-          name: 'secretName'
-          value: 'secretValue'
+    secrets: [
+      {
+        attributes: {
+          enabled: true
+          exp: 1702648632
+          nbf: 10000
         }
-      ]
-    }
+        contentType: 'Something'
+        name: 'secretName'
+        value: 'secretValue'
+      }
+    ]
     softDeleteRetentionInDays: 7
     tags: {
       Environment: 'Non-Prod'
@@ -727,8 +977,11 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "keys": {
       "value": [
         {
-          "attributesExp": 1725109032,
-          "attributesNbf": 10000,
+          "attributes": {
+            "enabled": true,
+            "exp": 1702648632,
+            "nbf": 10000
+          },
           "keySize": 4096,
           "name": "keyName",
           "rotationPolicy": {
@@ -784,17 +1037,18 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
       ]
     },
     "secrets": {
-      "value": {
-        "secureList": [
-          {
-            "attributesExp": 1702648632,
-            "attributesNbf": 10000,
-            "contentType": "Something",
-            "name": "secretName",
-            "value": "secretValue"
-          }
-        ]
-      }
+      "value": [
+        {
+          "attributes": {
+            "enabled": true,
+            "exp": 1702648632,
+            "nbf": 10000
+          },
+          "contentType": "Something",
+          "name": "secretName",
+          "value": "secretValue"
+        }
+      ]
     },
     "softDeleteRetentionInDays": {
       "value": 7
@@ -843,7 +1097,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`secrets`](#parameter-secrets) | secureObject | All secrets to create. |
+| [`secrets`](#parameter-secrets) | array | All secrets to create. |
 | [`sku`](#parameter-sku) | string | Specifies the SKU for the vault. |
 | [`softDeleteRetentionInDays`](#parameter-softdeleteretentionindays) | int | softDelete data retention days. It accepts >=7 and <=90. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
@@ -1240,6 +1494,371 @@ All keys to create.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-keysname) | string | The name of the key. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`attributes`](#parameter-keysattributes) | object | Contains attributes of the key. |
+| [`curveName`](#parameter-keyscurvename) | string | The elliptic curve name. Only works if "keySize" equals "EC" or "EC-HSM". Default is "P-256". |
+| [`keyOps`](#parameter-keyskeyops) | array | The allowed operations on this key. |
+| [`keySize`](#parameter-keyskeysize) | int | The key size in bits. Only works if "keySize" equals "RSA" or "RSA-HSM". Default is "4096". |
+| [`kty`](#parameter-keyskty) | string | The type of the key. Default is "EC". |
+| [`releasePolicy`](#parameter-keysreleasepolicy) | object | Key release policy. |
+| [`roleAssignments`](#parameter-keysroleassignments) | array | Array of role assignments to create. |
+| [`rotationPolicy`](#parameter-keysrotationpolicy) | object | Key rotation policy. |
+| [`tags`](#parameter-keystags) | object | Resource tags. |
+
+### Parameter: `keys.name`
+
+The name of the key.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `keys.attributes`
+
+Contains attributes of the key.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-keysattributesenabled) | bool | Defines whether the key is enabled or disabled. |
+| [`exp`](#parameter-keysattributesexp) | int | Defines when the key will become invalid. Defined in seconds since 1970-01-01T00:00:00Z. |
+| [`nbf`](#parameter-keysattributesnbf) | int | If set, defines the date from which onwards the key becomes valid. Defined in seconds since 1970-01-01T00:00:00Z. |
+
+### Parameter: `keys.attributes.enabled`
+
+Defines whether the key is enabled or disabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `keys.attributes.exp`
+
+Defines when the key will become invalid. Defined in seconds since 1970-01-01T00:00:00Z.
+
+- Required: No
+- Type: int
+
+### Parameter: `keys.attributes.nbf`
+
+If set, defines the date from which onwards the key becomes valid. Defined in seconds since 1970-01-01T00:00:00Z.
+
+- Required: No
+- Type: int
+
+### Parameter: `keys.curveName`
+
+The elliptic curve name. Only works if "keySize" equals "EC" or "EC-HSM". Default is "P-256".
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'P-256'
+    'P-256K'
+    'P-384'
+    'P-521'
+  ]
+  ```
+
+### Parameter: `keys.keyOps`
+
+The allowed operations on this key.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'decrypt'
+    'encrypt'
+    'import'
+    'release'
+    'sign'
+    'unwrapKey'
+    'verify'
+    'wrapKey'
+  ]
+  ```
+
+### Parameter: `keys.keySize`
+
+The key size in bits. Only works if "keySize" equals "RSA" or "RSA-HSM". Default is "4096".
+
+- Required: No
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    2048
+    3072
+    4096
+  ]
+  ```
+
+### Parameter: `keys.kty`
+
+The type of the key. Default is "EC".
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'EC'
+    'EC-HSM'
+    'RSA'
+    'RSA-HSM'
+  ]
+  ```
+
+### Parameter: `keys.releasePolicy`
+
+Key release policy.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`contentType`](#parameter-keysreleasepolicycontenttype) | string | Content type and version of key release policy. |
+| [`data`](#parameter-keysreleasepolicydata) | string | Blob encoding the policy rules under which the key can be released. |
+
+### Parameter: `keys.releasePolicy.contentType`
+
+Content type and version of key release policy.
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.releasePolicy.data`
+
+Blob encoding the policy rules under which the key can be released.
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-keysroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-keysroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-keysroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-keysroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-keysroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-keysroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-keysroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-keysroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `keys.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `keys.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `keys.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `keys.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `keys.rotationPolicy`
+
+Key rotation policy.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`attributes`](#parameter-keysrotationpolicyattributes) | object | The attributes of key rotation policy. |
+| [`lifetimeActions`](#parameter-keysrotationpolicylifetimeactions) | array | The lifetimeActions for key rotation action. |
+
+### Parameter: `keys.rotationPolicy.attributes`
+
+The attributes of key rotation policy.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`expiryTime`](#parameter-keysrotationpolicyattributesexpirytime) | string | The expiration time for the new key version. It should be in ISO8601 format. Eg: "P90D", "P1Y". |
+
+### Parameter: `keys.rotationPolicy.attributes.expiryTime`
+
+The expiration time for the new key version. It should be in ISO8601 format. Eg: "P90D", "P1Y".
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.rotationPolicy.lifetimeActions`
+
+The lifetimeActions for key rotation action.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`action`](#parameter-keysrotationpolicylifetimeactionsaction) | object | The action of key rotation policy lifetimeAction. |
+| [`trigger`](#parameter-keysrotationpolicylifetimeactionstrigger) | object | The trigger of key rotation policy lifetimeAction. |
+
+### Parameter: `keys.rotationPolicy.lifetimeActions.action`
+
+The action of key rotation policy lifetimeAction.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-keysrotationpolicylifetimeactionsactiontype) | string | The type of action. |
+
+### Parameter: `keys.rotationPolicy.lifetimeActions.action.type`
+
+The type of action.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Notify'
+    'Rotate'
+  ]
+  ```
+
+### Parameter: `keys.rotationPolicy.lifetimeActions.trigger`
+
+The trigger of key rotation policy lifetimeAction.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`timeAfterCreate`](#parameter-keysrotationpolicylifetimeactionstriggertimeaftercreate) | string | The time duration after key creation to rotate the key. It only applies to rotate. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y". |
+| [`timeBeforeExpiry`](#parameter-keysrotationpolicylifetimeactionstriggertimebeforeexpiry) | string | The time duration before key expiring to rotate or notify. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y". |
+
+### Parameter: `keys.rotationPolicy.lifetimeActions.trigger.timeAfterCreate`
+
+The time duration after key creation to rotate the key. It only applies to rotate. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y".
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.rotationPolicy.lifetimeActions.trigger.timeBeforeExpiry`
+
+The time duration before key expiring to rotate or notify. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y".
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.tags`
+
+Resource tags.
+
+- Required: No
+- Type: object
+
 ### Parameter: `location`
 
 Location for all resources.
@@ -1553,6 +2172,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-privateendpointsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-privateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `privateEndpoints.roleAssignments.principalId`
@@ -1599,6 +2219,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1672,6 +2299,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1722,6 +2350,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -1744,7 +2379,184 @@ The principal type of the assigned principal ID.
 All secrets to create.
 
 - Required: No
-- Type: secureObject
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-secretsname) | string | The name of the secret. |
+| [`value`](#parameter-secretsvalue) | securestring | The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`attributes`](#parameter-secretsattributes) | object | Contains attributes of the secret. |
+| [`contentType`](#parameter-secretscontenttype) | string | The content type of the secret. |
+| [`roleAssignments`](#parameter-secretsroleassignments) | array | Array of role assignments to create. |
+| [`tags`](#parameter-secretstags) | object | Resource tags. |
+
+### Parameter: `secrets.name`
+
+The name of the secret.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `secrets.value`
+
+The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `secrets.attributes`
+
+Contains attributes of the secret.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-secretsattributesenabled) | bool | Defines whether the secret is enabled or disabled. |
+| [`exp`](#parameter-secretsattributesexp) | int | Defines when the secret will become invalid. Defined in seconds since 1970-01-01T00:00:00Z. |
+| [`nbf`](#parameter-secretsattributesnbf) | int | If set, defines the date from which onwards the secret becomes valid. Defined in seconds since 1970-01-01T00:00:00Z. |
+
+### Parameter: `secrets.attributes.enabled`
+
+Defines whether the secret is enabled or disabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `secrets.attributes.exp`
+
+Defines when the secret will become invalid. Defined in seconds since 1970-01-01T00:00:00Z.
+
+- Required: No
+- Type: int
+
+### Parameter: `secrets.attributes.nbf`
+
+If set, defines the date from which onwards the secret becomes valid. Defined in seconds since 1970-01-01T00:00:00Z.
+
+- Required: No
+- Type: int
+
+### Parameter: `secrets.contentType`
+
+The content type of the secret.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-secretsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-secretsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-secretsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-secretsroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-secretsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-secretsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-secretsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-secretsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `secrets.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `secrets.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `secrets.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `secrets.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `secrets.tags`
+
+Resource tags.
+
+- Required: No
+- Type: object
 
 ### Parameter: `sku`
 

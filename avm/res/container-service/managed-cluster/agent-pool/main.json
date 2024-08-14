@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "8772299678418708256"
+      "version": "0.29.47.4906",
+      "templateHash": "2004205618690542488"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
@@ -304,7 +304,7 @@
     "managedCluster": {
       "existing": true,
       "type": "Microsoft.ContainerService/managedClusters",
-      "apiVersion": "2023-07-02-preview",
+      "apiVersion": "2024-03-02-preview",
       "name": "[parameters('managedClusterName')]"
     },
     "agentPool": {

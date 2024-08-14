@@ -36,7 +36,7 @@ function Remove-ResourceListInner {
 
         foreach ($resource in $resourcesToRemove) {
             $resourceName = Split-Path $resource.resourceId -Leaf
-            $alreadyProcessed = $processedResources.count -gt 0 ? (($processedResources | Where-Object { $resource.resourceId -like ('{0}*' -f $_) }).Count -gt 0) : $false
+            $alreadyProcessed = $processedResources.count -gt 0 ? (($processedResources | Where-Object { $resource.resourceId -like ('{0}/*' -f $_) }).Count -gt 0) : $false
 
             if ($alreadyProcessed) {
                 # Skipping
@@ -54,8 +54,15 @@ function Remove-ResourceListInner {
                     [array]$processedResources += $resource.resourceId
                     [array]$resourcesToRetry = $resourcesToRetry | Where-Object { $_.resourceId -notmatch $resource.resourceId }
                 } catch {
-                    Write-Warning ('[!] Removal moved back for retry. Reason: [{0}]' -f $_.Exception.Message)
-                    [array]$resourcesToRetry += $resource
+                    if ($_.Exception.HttpStatus -in @(404, 'NotFound')) {
+                        # Skipping because resource/parent is missing. This 'exception handling' can be required in case the parent resource removal ran into an issue, but was completed regardless
+                        Write-Verbose ('[/] Skipping resource [{0}] of type [{1}]. Reason: It or its parent cannot be found.' -f $resourceName, $resource.type) -Verbose
+                        [array]$processedResources += $resource.resourceId
+                        [array]$resourcesToRetry = $resourcesToRetry | Where-Object { $_.resourceId -notmatch $resource.resourceId }
+                    } else {
+                        Write-Warning ('[!] Removal moved back for retry. Reason: [{0}]' -f $_.Exception.Message)
+                        [array]$resourcesToRetry += $resource
+                    }
                 }
             }
 
@@ -123,6 +130,6 @@ function Remove-ResourceList {
     if ($resourcesToRetry.Count -gt 0) {
         throw ('The removal failed for resources [{0}]' -f ((Split-Path $resourcesToRetry.resourceId -Leaf) -join ', '))
     } else {
-        Write-Verbose 'The removal completed successfully'
+        Write-Verbose ('The removal of the [{0}] completed successfully' -f $ResourcesToRemove.Count)
     }
 }

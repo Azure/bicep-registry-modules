@@ -15,7 +15,7 @@ This module deploys an Azure Compute Gallery Image Definition.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/galleries/images` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/images) |
+| `Microsoft.Compute/galleries/images` | [2023-07-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-03/galleries/images) |
 
 ## Parameters
 
@@ -23,11 +23,10 @@ This module deploys an Azure Compute Gallery Image Definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`identifier`](#parameter-identifier) | object | This is the gallery image definition identifier. |
 | [`name`](#parameter-name) | string | Name of the image definition. |
-| [`offer`](#parameter-offer) | string | The name of the gallery Image Definition offer. |
-| [`osType`](#parameter-ostype) | string | OS type of the image to be created. |
-| [`publisher`](#parameter-publisher) | string | The name of the gallery Image Definition publisher. |
-| [`sku`](#parameter-sku) | string | The name of the gallery Image Definition SKU. |
+| [`osState`](#parameter-osstate) | string | This property allows the user to specify the state of the OS of the image. |
+| [`osType`](#parameter-ostype) | string | This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image. |
 
 **Conditional parameters**
 
@@ -39,27 +38,59 @@ This module deploys an Azure Compute Gallery Image Definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`description`](#parameter-description) | string | The description of this gallery Image Definition resource. This property is updatable. |
-| [`endOfLife`](#parameter-endoflife) | string | The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z. |
-| [`eula`](#parameter-eula) | string | The Eula agreement for the gallery Image Definition. Has to be a valid URL. |
-| [`excludedDiskTypes`](#parameter-excludeddisktypes) | array | List of the excluded disk types (e.g., Standard_LRS). |
-| [`hyperVGeneration`](#parameter-hypervgeneration) | string | The hypervisor generation of the Virtual Machine.<li>If this value is not specified, then it is determined by the securityType parameter.<li>If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.<p> |
-| [`isAcceleratedNetworkSupported`](#parameter-isacceleratednetworksupported) | bool | Specify if the image supports accelerated networking.<p>Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.<p>This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.<p> |
+| [`architecture`](#parameter-architecture) | string | The architecture of the image. Applicable to OS disks only. |
+| [`description`](#parameter-description) | string | The description of this gallery image definition resource. This property is updatable. |
+| [`disallowed`](#parameter-disallowed) | object | Describes the disallowed disk types. |
+| [`endOfLifeDate`](#parameter-endoflifedate) | string | The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable. |
+| [`eula`](#parameter-eula) | string | The Eula agreement for the gallery image definition. |
+| [`hyperVGeneration`](#parameter-hypervgeneration) | string | The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1. |
+| [`isAcceleratedNetworkSupported`](#parameter-isacceleratednetworksupported) | bool | Specify if the image supports accelerated networking. |
 | [`isHibernateSupported`](#parameter-ishibernatesupported) | bool | Specifiy if the image supports hibernation. |
 | [`location`](#parameter-location) | string | Location for all resources. |
-| [`maxRecommendedMemory`](#parameter-maxrecommendedmemory) | int | The maximum amount of RAM in GB recommended for this image. |
-| [`maxRecommendedvCPUs`](#parameter-maxrecommendedvcpus) | int | The maximum number of the CPU cores recommended for this image. |
-| [`minRecommendedMemory`](#parameter-minrecommendedmemory) | int | The minimum amount of RAM in GB recommended for this image. |
-| [`minRecommendedvCPUs`](#parameter-minrecommendedvcpus) | int | The minimum number of the CPU cores recommended for this image. |
-| [`osState`](#parameter-osstate) | string | This property allows the user to specify whether the virtual machines created under this image are 'Generalized' or 'Specialized'. |
-| [`planName`](#parameter-planname) | string | The plan ID. |
-| [`planPublisherName`](#parameter-planpublishername) | string | The publisher ID. |
-| [`privacyStatementUri`](#parameter-privacystatementuri) | string | The privacy statement uri. Has to be a valid URL. |
-| [`productName`](#parameter-productname) | string | The product ID. |
+| [`memory`](#parameter-memory) | object | Describes the resource range (1-4000 GB RAM). |
+| [`privacyStatementUri`](#parameter-privacystatementuri) | string | The privacy statement uri. |
+| [`purchasePlan`](#parameter-purchaseplan) | object | Describes the gallery image definition purchase plan. This is used by marketplace images. |
 | [`releaseNoteUri`](#parameter-releasenoteuri) | string | The release note uri. Has to be a valid URL. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`securityType`](#parameter-securitytype) | string | The security type of the image. Requires a hyperVGeneration V2. |
-| [`tags`](#parameter-tags) | object | Tags for all resources. |
+| [`tags`](#parameter-tags) | object | Tags for all the image. |
+| [`vCPUs`](#parameter-vcpus) | object | Describes the resource range (1-128 CPU cores). |
+
+### Parameter: `identifier`
+
+This is the gallery image definition identifier.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`offer`](#parameter-identifieroffer) | string | The name of the gallery image definition offer. |
+| [`publisher`](#parameter-identifierpublisher) | string | The name of the gallery image definition publisher. |
+| [`sku`](#parameter-identifiersku) | string | The name of the gallery image definition SKU. |
+
+### Parameter: `identifier.offer`
+
+The name of the gallery image definition offer.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `identifier.publisher`
+
+The name of the gallery image definition publisher.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `identifier.sku`
+
+The name of the gallery image definition SKU.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `name`
 
@@ -68,16 +99,23 @@ Name of the image definition.
 - Required: Yes
 - Type: string
 
-### Parameter: `offer`
+### Parameter: `osState`
 
-The name of the gallery Image Definition offer.
+This property allows the user to specify the state of the OS of the image.
 
 - Required: Yes
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Generalized'
+    'Specialized'
+  ]
+  ```
 
 ### Parameter: `osType`
 
-OS type of the image to be created.
+This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image.
 
 - Required: Yes
 - Type: string
@@ -89,20 +127,6 @@ OS type of the image to be created.
   ]
   ```
 
-### Parameter: `publisher`
-
-The name of the gallery Image Definition publisher.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `sku`
-
-The name of the gallery Image Definition SKU.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `galleryName`
 
 The name of the parent Azure Shared Image Gallery. Required if the template is used in a standalone deployment.
@@ -110,39 +134,70 @@ The name of the parent Azure Shared Image Gallery. Required if the template is u
 - Required: Yes
 - Type: string
 
+### Parameter: `architecture`
+
+The architecture of the image. Applicable to OS disks only.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Arm64'
+    'x64'
+  ]
+  ```
+
 ### Parameter: `description`
 
-The description of this gallery Image Definition resource. This property is updatable.
+The description of this gallery image definition resource. This property is updatable.
 
 - Required: No
 - Type: string
 
-### Parameter: `endOfLife`
+### Parameter: `disallowed`
 
-The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z.
+Describes the disallowed disk types.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskTypes`](#parameter-disalloweddisktypes) | array | A list of disk types. |
+
+### Parameter: `disallowed.diskTypes`
+
+A list of disk types.
+
+- Required: Yes
+- Type: array
+- Example:
+  ```Bicep
+  [
+    'Standard_LRS'
+  ]
+  ```
+
+### Parameter: `endOfLifeDate`
+
+The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `eula`
 
-The Eula agreement for the gallery Image Definition. Has to be a valid URL.
+The Eula agreement for the gallery image definition.
 
 - Required: No
 - Type: string
 
-### Parameter: `excludedDiskTypes`
-
-List of the excluded disk types (e.g., Standard_LRS).
-
-- Required: No
-- Type: array
-- Default: `[]`
-
 ### Parameter: `hyperVGeneration`
 
-The hypervisor generation of the Virtual Machine.<li>If this value is not specified, then it is determined by the securityType parameter.<li>If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.<p>
+The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.
 
 - Required: No
 - Type: string
@@ -156,7 +211,7 @@ The hypervisor generation of the Virtual Machine.<li>If this value is not specif
 
 ### Parameter: `isAcceleratedNetworkSupported`
 
-Specify if the image supports accelerated networking.<p>Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.<p>This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.<p>
+Specify if the image supports accelerated networking.
 
 - Required: No
 - Type: bool
@@ -168,7 +223,6 @@ Specifiy if the image supports hibernation.
 
 - Required: No
 - Type: bool
-- Default: `False`
 
 ### Parameter: `location`
 
@@ -178,79 +232,82 @@ Location for all resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `maxRecommendedMemory`
+### Parameter: `memory`
 
-The maximum amount of RAM in GB recommended for this image.
-
-- Required: No
-- Type: int
-- Default: `16`
-
-### Parameter: `maxRecommendedvCPUs`
-
-The maximum number of the CPU cores recommended for this image.
+Describes the resource range (1-4000 GB RAM).
 
 - Required: No
-- Type: int
-- Default: `4`
-
-### Parameter: `minRecommendedMemory`
-
-The minimum amount of RAM in GB recommended for this image.
-
-- Required: No
-- Type: int
-- Default: `4`
-
-### Parameter: `minRecommendedvCPUs`
-
-The minimum number of the CPU cores recommended for this image.
-
-- Required: No
-- Type: int
-- Default: `1`
-
-### Parameter: `osState`
-
-This property allows the user to specify whether the virtual machines created under this image are 'Generalized' or 'Specialized'.
-
-- Required: No
-- Type: string
-- Default: `'Generalized'`
-- Allowed:
+- Type: object
+- Default:
   ```Bicep
-  [
-    'Generalized'
-    'Specialized'
-  ]
+  {
+      max: 16
+      min: 4
+  }
   ```
 
-### Parameter: `planName`
+**Optional parameters**
 
-The plan ID.
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`max`](#parameter-memorymax) | int | The minimum number of the resource. |
+| [`min`](#parameter-memorymin) | int | The minimum number of the resource. |
+
+### Parameter: `memory.max`
+
+The minimum number of the resource.
 
 - Required: No
-- Type: string
+- Type: int
 
-### Parameter: `planPublisherName`
+### Parameter: `memory.min`
 
-The publisher ID.
+The minimum number of the resource.
 
 - Required: No
-- Type: string
+- Type: int
 
 ### Parameter: `privacyStatementUri`
 
-The privacy statement uri. Has to be a valid URL.
+The privacy statement uri.
 
 - Required: No
 - Type: string
 
-### Parameter: `productName`
+### Parameter: `purchasePlan`
+
+Describes the gallery image definition purchase plan. This is used by marketplace images.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-purchaseplanname) | string | The plan ID. |
+| [`product`](#parameter-purchaseplanproduct) | string | The product ID. |
+| [`publisher`](#parameter-purchaseplanpublisher) | string | The publisher ID. |
+
+### Parameter: `purchasePlan.name`
+
+The plan ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `purchasePlan.product`
 
 The product ID.
 
-- Required: No
+- Required: Yes
+- Type: string
+
+### Parameter: `purchasePlan.publisher`
+
+The publisher ID.
+
+- Required: Yes
 - Type: string
 
 ### Parameter: `releaseNoteUri`
@@ -282,6 +339,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -332,6 +390,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -355,7 +420,6 @@ The security type of the image. Requires a hyperVGeneration V2.
 
 - Required: No
 - Type: string
-- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [
@@ -368,10 +432,52 @@ The security type of the image. Requires a hyperVGeneration V2.
 
 ### Parameter: `tags`
 
-Tags for all resources.
+Tags for all the image.
 
 - Required: No
 - Type: object
+- Example:
+  ```Bicep
+  {
+      key1: 'value1'
+      key2: 'value2'
+  }
+  ```
+
+### Parameter: `vCPUs`
+
+Describes the resource range (1-128 CPU cores).
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      max: 4
+      min: 1
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`max`](#parameter-vcpusmax) | int | The minimum number of the resource. |
+| [`min`](#parameter-vcpusmin) | int | The minimum number of the resource. |
+
+### Parameter: `vCPUs.max`
+
+The minimum number of the resource.
+
+- Required: No
+- Type: int
+
+### Parameter: `vCPUs.min`
+
+The minimum number of the resource.
+
+- Required: No
+- Type: int
 
 
 ## Outputs

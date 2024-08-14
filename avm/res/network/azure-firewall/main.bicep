@@ -61,9 +61,9 @@ param threatIntelMode string = 'Deny'
 
 @description('Optional. Zone numbers e.g. 1,2,3.')
 param zones array = [
-  '1'
-  '2'
-  '3'
+  1
+  2
+  3
 ]
 
 @description('Optional. The diagnostic settings of the service.')
@@ -137,21 +137,15 @@ var ipConfigurations = concat(
 
 var managementIPConfiguration = {
   name: !empty(managementIPResourceID) ? last(split(managementIPResourceID, '/')) : managementIPAddress.outputs.name
-  properties: union(
-    {
-      subnet: {
-        id: '${virtualNetworkResourceId}/subnets/AzureFirewallManagementSubnet' // The subnet name must be AzureFirewallManagementSubnet for a 'Basic' SKU tier firewall
-      }
-    },
-    (!empty(publicIPResourceID) || !empty(managementIPAddressObject))
-      ? {
-          // Use existing Management Public IP, new Management Public IP created in this module, or none if neither
-          publicIPAddress: {
-            id: !empty(managementIPResourceID) ? managementIPResourceID : managementIPAddress.outputs.resourceId
-          }
-        }
-      : {}
-  )
+  properties: {
+    subnet: {
+      id: '${virtualNetworkResourceId}/subnets/AzureFirewallManagementSubnet' // The subnet name must be AzureFirewallManagementSubnet for a 'Basic' SKU tier firewall
+    }
+    // Use existing Management Public IP, new Management Public IP created in this module, or none if neither
+    publicIPAddress: {
+      id: !empty(managementIPResourceID) ? managementIPResourceID : managementIPAddress.outputs.resourceId
+    }
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -169,138 +163,152 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.network-azurefirewall.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.network-azurefirewall.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.2.1' =
-  if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
-    name: '${uniqueString(deployment().name, location)}-Firewall-PIP'
-    params: {
-      name: publicIPAddressObject.name
-      publicIpPrefixResourceId: contains(publicIPAddressObject, 'publicIPPrefixResourceId')
-        ? (!(empty(publicIPAddressObject.publicIPPrefixResourceId))
-            ? publicIPAddressObject.publicIPPrefixResourceId
-            : '')
-        : ''
-      publicIPAllocationMethod: contains(publicIPAddressObject, 'publicIPAllocationMethod')
-        ? (!(empty(publicIPAddressObject.publicIPAllocationMethod))
-            ? publicIPAddressObject.publicIPAllocationMethod
-            : 'Static')
-        : 'Static'
-      skuName: contains(publicIPAddressObject, 'skuName')
-        ? (!(empty(publicIPAddressObject.skuName)) ? publicIPAddressObject.skuName : 'Standard')
-        : 'Standard'
-      skuTier: contains(publicIPAddressObject, 'skuTier')
-        ? (!(empty(publicIPAddressObject.skuTier)) ? publicIPAddressObject.skuTier : 'Regional')
-        : 'Regional'
-      roleAssignments: contains(publicIPAddressObject, 'roleAssignments')
-        ? (!empty(publicIPAddressObject.roleAssignments) ? publicIPAddressObject.roleAssignments : [])
-        : []
-      diagnosticSettings: publicIPAddressObject.?diagnosticSettings
-      location: location
-      lock: lock
-      tags: publicIPAddressObject.?tags ?? tags
-      zones: zones
-      enableTelemetry: publicIPAddressObject.?enableTelemetry ?? enableTelemetry
-    }
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.5.1' = if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
+  name: '${uniqueString(deployment().name, location)}-Firewall-PIP'
+  params: {
+    name: publicIPAddressObject.name
+    publicIpPrefixResourceId: contains(publicIPAddressObject, 'publicIPPrefixResourceId')
+      ? (!(empty(publicIPAddressObject.publicIPPrefixResourceId)) ? publicIPAddressObject.publicIPPrefixResourceId : '')
+      : ''
+    publicIPAllocationMethod: contains(publicIPAddressObject, 'publicIPAllocationMethod')
+      ? (!(empty(publicIPAddressObject.publicIPAllocationMethod))
+          ? publicIPAddressObject.publicIPAllocationMethod
+          : 'Static')
+      : 'Static'
+    skuName: contains(publicIPAddressObject, 'skuName')
+      ? (!(empty(publicIPAddressObject.skuName)) ? publicIPAddressObject.skuName : 'Standard')
+      : 'Standard'
+    skuTier: contains(publicIPAddressObject, 'skuTier')
+      ? (!(empty(publicIPAddressObject.skuTier)) ? publicIPAddressObject.skuTier : 'Regional')
+      : 'Regional'
+    roleAssignments: contains(publicIPAddressObject, 'roleAssignments')
+      ? (!empty(publicIPAddressObject.roleAssignments) ? publicIPAddressObject.roleAssignments : [])
+      : []
+    diagnosticSettings: publicIPAddressObject.?diagnosticSettings
+    location: location
+    lock: lock
+    tags: publicIPAddressObject.?tags ?? tags
+    zones: zones
+    enableTelemetry: publicIPAddressObject.?enableTelemetry ?? enableTelemetry
   }
+}
 
 // create a Management Public IP address if one is not provided and the flag is true
-module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.2.1' =
-  if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
-    name: '${uniqueString(deployment().name, location)}-Firewall-MIP'
-    params: {
-      name: contains(managementIPAddressObject, 'name')
-        ? (!(empty(managementIPAddressObject.name)) ? managementIPAddressObject.name : '${name}-mip')
-        : '${name}-mip'
-      publicIpPrefixResourceId: contains(managementIPAddressObject, 'managementIPPrefixResourceId')
-        ? (!(empty(managementIPAddressObject.publicIPPrefixResourceId))
-            ? managementIPAddressObject.publicIPPrefixResourceId
-            : '')
-        : ''
-      publicIPAllocationMethod: contains(managementIPAddressObject, 'managementIPAllocationMethod')
-        ? (!(empty(managementIPAddressObject.publicIPAllocationMethod))
-            ? managementIPAddressObject.publicIPAllocationMethod
-            : 'Static')
-        : 'Static'
-      skuName: contains(managementIPAddressObject, 'skuName')
-        ? (!(empty(managementIPAddressObject.skuName)) ? managementIPAddressObject.skuName : 'Standard')
-        : 'Standard'
-      skuTier: contains(managementIPAddressObject, 'skuTier')
-        ? (!(empty(managementIPAddressObject.skuTier)) ? managementIPAddressObject.skuTier : 'Regional')
-        : 'Regional'
-      roleAssignments: contains(managementIPAddressObject, 'roleAssignments')
-        ? (!empty(managementIPAddressObject.roleAssignments) ? managementIPAddressObject.roleAssignments : [])
-        : []
-      diagnosticSettings: managementIPAddressObject.?diagnosticSettings
-      location: location
-      tags: managementIPAddressObject.?tags ?? tags
-      zones: zones
-      enableTelemetry: managementIPAddressObject.?enableTelemetry ?? enableTelemetry
-    }
+module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.5.1' = if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
+  name: '${uniqueString(deployment().name, location)}-Firewall-MIP'
+  params: {
+    name: contains(managementIPAddressObject, 'name')
+      ? (!(empty(managementIPAddressObject.name)) ? managementIPAddressObject.name : '${name}-mip')
+      : '${name}-mip'
+    publicIpPrefixResourceId: contains(managementIPAddressObject, 'managementIPPrefixResourceId')
+      ? (!(empty(managementIPAddressObject.managementIPPrefixResourceId))
+          ? managementIPAddressObject.managementIPPrefixResourceId
+          : '')
+      : ''
+    publicIPAllocationMethod: contains(managementIPAddressObject, 'managementIPAllocationMethod')
+      ? (!(empty(managementIPAddressObject.managementIPAllocationMethod))
+          ? managementIPAddressObject.managementIPAllocationMethod
+          : 'Static')
+      : 'Static'
+    skuName: contains(managementIPAddressObject, 'skuName')
+      ? (!(empty(managementIPAddressObject.skuName)) ? managementIPAddressObject.skuName : 'Standard')
+      : 'Standard'
+    skuTier: contains(managementIPAddressObject, 'skuTier')
+      ? (!(empty(managementIPAddressObject.skuTier)) ? managementIPAddressObject.skuTier : 'Regional')
+      : 'Regional'
+    roleAssignments: contains(managementIPAddressObject, 'roleAssignments')
+      ? (!empty(managementIPAddressObject.roleAssignments) ? managementIPAddressObject.roleAssignments : [])
+      : []
+    diagnosticSettings: managementIPAddressObject.?diagnosticSettings
+    location: location
+    tags: managementIPAddressObject.?tags ?? tags
+    zones: zones
+    enableTelemetry: managementIPAddressObject.?enableTelemetry ?? enableTelemetry
   }
+}
 
 resource azureFirewall 'Microsoft.Network/azureFirewalls@2023-04-01' = {
   name: name
   location: location
   zones: length(zones) == 0 ? null : zones
   tags: tags
-  properties: azureSkuName == 'AZFW_VNet' ? {
-    threatIntelMode: threatIntelMode
-    firewallPolicy: !empty(firewallPolicyId) ? {
-      id: firewallPolicyId
-    } : null
-    ipConfigurations: ipConfigurations
-    managementIpConfiguration: requiresManagementIp ? managementIPConfiguration : null
-    sku: {
-      name: azureSkuName
-      tier: azureSkuTier
-    }
-    applicationRuleCollections: applicationRuleCollections ?? []
-    natRuleCollections: natRuleCollections ?? []
-    networkRuleCollections: networkRuleCollections ?? []
-  } : {
-    firewallPolicy: !empty(firewallPolicyId) ? {
-      id: firewallPolicyId
-    } : null
-    sku: {
-      name: azureSkuName
-      tier: azureSkuTier
-    }
-    hubIPAddresses: !empty(hubIPAddresses) ? hubIPAddresses : null
-    virtualHub: !empty(virtualHubId) ? {
-      id: virtualHubId
-    } : null
-  }
+  properties: azureSkuName == 'AZFW_VNet'
+    ? {
+        threatIntelMode: threatIntelMode
+        firewallPolicy: !empty(firewallPolicyId)
+          ? {
+              id: firewallPolicyId
+            }
+          : null
+        ipConfigurations: ipConfigurations
+        managementIpConfiguration: requiresManagementIp ? managementIPConfiguration : null
+        sku: {
+          name: azureSkuName
+          tier: azureSkuTier
+        }
+        applicationRuleCollections: applicationRuleCollections ?? []
+        natRuleCollections: natRuleCollections ?? []
+        networkRuleCollections: networkRuleCollections ?? []
+      }
+    : {
+        firewallPolicy: !empty(firewallPolicyId)
+          ? {
+              id: firewallPolicyId
+            }
+          : null
+        sku: {
+          name: azureSkuName
+          tier: azureSkuTier
+        }
+        hubIPAddresses: !empty(hubIPAddresses) ? hubIPAddresses : null
+        virtualHub: !empty(virtualHubId)
+          ? {
+              id: virtualHubId
+            }
+          : null
+      }
 }
 
-resource azureFirewall_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: azureFirewall
+resource azureFirewall_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: azureFirewall
+}
 
 resource azureFirewall_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -332,14 +340,10 @@ resource azureFirewall_diagnosticSettings 'Microsoft.Insights/diagnosticSettings
 ]
 
 resource azureFirewall_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(azureFirewall.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(azureFirewall.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -370,13 +374,13 @@ output ipConfAzureFirewallSubnet object = contains(azureFirewall.properties, 'ip
   ? azureFirewall.properties.ipConfigurations[0]
   : {}
 
-@description('List of Application Rule Collections.')
+@description('List of Application Rule Collections used by Azure Firewall.')
 output applicationRuleCollections array = applicationRuleCollections ?? []
 
-@description('List of Network Rule Collections.')
+@description('List of Network Rule Collections used by Azure Firewall.')
 output networkRuleCollections array = networkRuleCollections ?? []
 
-@description('Collection of NAT rule collections used by Azure Firewall.')
+@description('List of NAT rule collections used by Azure Firewall.')
 output natRuleCollections array = natRuleCollections ?? []
 
 @description('The location the resource was deployed into.')
@@ -395,6 +399,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
