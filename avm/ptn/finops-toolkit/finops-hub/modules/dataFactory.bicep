@@ -232,12 +232,7 @@ module deleteOldResources 'br/public:avm/res/resources/deployment-script:0.2.0' 
 resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: '${dataFactoryName}_triggerManager'
   location: location
-  tags: union(
-    tags ?? {},
-    contains(tagsByResource, 'Microsoft.ManagedIdentity/userAssignedIdentities')
-      ? tagsByResource['Microsoft.ManagedIdentity/userAssignedIdentities']
-      : {}
-  )
+  tags: union(tags ?? {}, tagsByResource[?'Microsoft.ManagedIdentity/userAssignedIdentities'] ?? {})
 }
 
 // Assign access to the identity
@@ -262,12 +257,7 @@ module stopHubTriggers 'br/public:avm/res/resources/deployment-script:0.2.0' = {
     name: 'stopHubTriggers'
     location: location
     kind: 'AzurePowerShell'
-    tags: union(
-      tags ?? {},
-      contains(tagsByResource, 'Microsoft.Resources/deploymentScripts')
-        ? tagsByResource['Microsoft.Resources/deploymentScripts']
-        : {}
-    )
+    tags: union(tags ?? {}, tagsByResource[?'Microsoft.Resources/deploymentScripts'] ?? {})
     azPowerShellVersion: '9.7'
     retentionInterval: 'PT1H'
     cleanupPreference: 'OnSuccess'
@@ -875,12 +865,7 @@ module startHubTriggers 'br/public:avm/res/resources/deployment-script:0.2.0' = 
   params: {
     name: 'startHubTriggers'
     location: location
-    tags: union(
-      tags ?? {},
-      contains(tagsByResource, 'Microsoft.Resources/deploymentScripts')
-        ? tagsByResource['Microsoft.Resources/deploymentScripts']
-        : {}
-    )
+    tags: union(tags ?? {}, tagsByResource[?'Microsoft.Resources/deploymentScripts'] ?? {})
     kind: 'AzurePowerShell'
     azPowerShellVersion: '9.7'
     retentionInterval: 'PT1H'

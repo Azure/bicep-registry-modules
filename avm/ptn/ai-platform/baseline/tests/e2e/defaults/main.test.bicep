@@ -23,6 +23,14 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Generated. The username to leverage for the login.')
+@secure()
+param username string = uniqueString(newGuid())
+
+@description('Generated. The password to leverage for the login.')
+@secure()
+param password string = newGuid()
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -45,6 +53,10 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
+      virtualMachineConfiguration: {
+        adminUsername: username
+        adminPassword: password
+      }
     }
   }
 ]
