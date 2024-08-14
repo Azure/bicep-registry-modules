@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "17375579299346578014"
+      "templateHash": "4127506616814902143"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -1445,13 +1445,13 @@
             "value": "[parameters('name')]"
           },
           "attributesEnabled": {
-            "value": "[tryGet(coalesce(parameters('secrets'), createArray())[copyIndex()], 'attributesEnabled')]"
+            "value": "[tryGet(tryGet(coalesce(parameters('secrets'), createArray())[copyIndex()], 'attributes'), 'enabled')]"
           },
           "attributesExp": {
-            "value": "[tryGet(coalesce(parameters('secrets'), createArray())[copyIndex()], 'attributesExp')]"
+            "value": "[tryGet(tryGet(coalesce(parameters('secrets'), createArray())[copyIndex()], 'attributes'), 'exp')]"
           },
           "attributesNbf": {
-            "value": "[tryGet(coalesce(parameters('secrets'), createArray())[copyIndex()], 'attributesNbf')]"
+            "value": "[tryGet(tryGet(coalesce(parameters('secrets'), createArray())[copyIndex()], 'attributes'), 'nbf')]"
           },
           "contentType": {
             "value": "[tryGet(coalesce(parameters('secrets'), createArray())[copyIndex()], 'contentType')]"
@@ -1732,13 +1732,13 @@
             "value": "[parameters('name')]"
           },
           "attributesEnabled": {
-            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesEnabled')]"
+            "value": "[tryGet(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributes'), 'enabled')]"
           },
           "attributesExp": {
-            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesExp')]"
+            "value": "[tryGet(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributes'), 'exp')]"
           },
           "attributesNbf": {
-            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesNbf')]"
+            "value": "[tryGet(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributes'), 'nbf')]"
           },
           "curveName": "[if(and(not(equals(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'kty'), 'RSA')), not(equals(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'kty'), 'RSA-HSM'))), createObject('value', coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'curveName'), 'P-256')), createObject('value', null()))]",
           "keyOps": {
