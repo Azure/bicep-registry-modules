@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "16074082784130976832"
+      "templateHash": "1051809202134090250"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -533,28 +533,28 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Default to Key1Key. The primary key secret name to create."
+            "description": "Optional. The accessKey1 secret name to create."
           }
         },
         "connectionString1": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Default to Key1-ConnectionString. The primary connection string secret name to create."
+            "description": "Optional. The connectionString1 secret name to create."
           }
         },
         "accessKey2": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Default to Key2-Key. The secondary key secret name to create."
+            "description": "Optional. The accessKey2 secret name to create."
           }
         },
         "connectionString2": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Default to Key2-ConnectionString. The secondary connection string secret name to create."
+            "description": "Optional. The connectionString2 secret name to create."
           }
         }
       }
