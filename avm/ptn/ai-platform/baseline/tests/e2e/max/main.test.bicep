@@ -113,7 +113,7 @@ module testDeployment '../../../main.bicep' = [
       virtualMachineConfiguration: {
         enabled: true
         name: take('${namePrefix}-vm-${serviceShort}', 15)
-        zone: 1
+        zone: 0
         size: 'Standard_DS1_v2'
         adminUsername: username
         adminPassword: password

@@ -227,7 +227,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       }
       patchMode: 'AutomaticByPlatform'
       size: 'Standard_DS1_v2'
-      zone: 1
+      zone: 0
     }
     virtualNetworkConfiguration: {
       addressPrefix: '10.1.0.0/16'
@@ -366,7 +366,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
         },
         "patchMode": "AutomaticByPlatform",
         "size": "Standard_DS1_v2",
-        "zone": 1
+        "zone": 0
       }
     },
     "virtualNetworkConfiguration": {
