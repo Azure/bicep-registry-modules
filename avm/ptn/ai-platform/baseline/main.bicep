@@ -17,7 +17,7 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Configuration for the user-assigned managed identity.')
+@description('Optional. Configuration for the user-assigned managed identities.')
 param managedIdentityConfiguration managedIdentityConfigurationType
 
 @description('Optional. Configuration for the Log Analytics workspace.')
@@ -35,8 +35,8 @@ param containerRegistryConfiguration containerRegistryConfigurationType
 @description('Optional. Configuration for Application Insights.')
 param applicationInsightsConfiguration applicationInsightsConfigurationType
 
-@description('Optional. Configuration for the AI Studio workspace hub.')
-param workspaceHubConfiguration workspaceHubConfigurationType
+@description('Optional. Configuration for the AI Studio workspace.')
+param workspaceConfiguration workspaceConfigurationType
 
 @description('Optional. Configuration for the virtual network.')
 param virtualNetworkConfiguration virtualNetworkConfigurationType
@@ -122,7 +122,7 @@ module workspaceHub_privateDnsZones 'br/public:avm/res/network/private-dns-zone:
       ]
       roleAssignments: [
         {
-          principalId: managedIdentity.properties.principalId
+          principalId: managedIdentityHub.properties.principalId
           roleDefinitionIdOrName: 'Contributor'
           principalType: 'ServicePrincipal'
         }
@@ -267,8 +267,14 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.5.3' = if (cr
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
-  name: managedIdentityConfiguration.?name ?? 'id-${name}'
+resource managedIdentityHub 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: managedIdentityConfiguration.?hubName ?? 'id-hub-${name}'
+  location: location
+  tags: tags
+}
+
+resource managedIdentityProject 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: managedIdentityConfiguration.?projectName ?? 'id-project-${name}'
   location: location
   tags: tags
 }
@@ -286,7 +292,7 @@ resource resourceGroup_roleAssignment 'Microsoft.Authorization/roleAssignments@2
       'Microsoft.Authorization/roleDefinitions',
       'acdd72a7-3385-48ef-bd42-f606fba81ae7' // Reader
     )
-    principalId: managedIdentity.properties.principalId
+    principalId: managedIdentityHub.properties.principalId
     principalType: 'ServicePrincipal'
   }
 }
@@ -309,12 +315,22 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.6.2' = {
     enablePurgeProtection: keyVaultConfiguration.?enablePurgeProtection ?? true
     roleAssignments: [
       {
-        principalId: managedIdentity.properties.principalId
+        principalId: managedIdentityHub.properties.principalId
         roleDefinitionIdOrName: 'Contributor'
         principalType: 'ServicePrincipal'
       }
       {
-        principalId: managedIdentity.properties.principalId
+        principalId: managedIdentityProject.properties.principalId
+        roleDefinitionIdOrName: 'Contributor'
+        principalType: 'ServicePrincipal'
+      }
+      {
+        principalId: managedIdentityHub.properties.principalId
+        roleDefinitionIdOrName: 'Key Vault Administrator'
+        principalType: 'ServicePrincipal'
+      }
+      {
+        principalId: managedIdentityProject.properties.principalId
         roleDefinitionIdOrName: 'Key Vault Administrator'
         principalType: 'ServicePrincipal'
       }
@@ -342,8 +358,8 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
     skuName: storageAccountConfiguration.?sku ?? 'Standard_RAGZRS'
     enableTelemetry: enableTelemetry
     allowBlobPublicAccess: false
-    allowSharedKeyAccess: storageAccountConfiguration.?allowSharedKeyAccess ?? false
-    defaultToOAuthAuthentication: !(storageAccountConfiguration.?allowSharedKeyAccess ?? false)
+    allowSharedKeyAccess: storageAccountConfiguration.?allowSharedKeyAccess ?? true
+    defaultToOAuthAuthentication: !(storageAccountConfiguration.?allowSharedKeyAccess ?? true)
     publicNetworkAccess: 'Disabled'
     networkAcls: {
       defaultAction: 'Deny'
@@ -360,17 +376,42 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
       : null
     roleAssignments: [
       {
-        principalId: managedIdentity.properties.principalId
+        principalId: managedIdentityHub.properties.principalId
         roleDefinitionIdOrName: 'Contributor'
         principalType: 'ServicePrincipal'
       }
       {
-        principalId: managedIdentity.properties.principalId
+        principalId: managedIdentityProject.properties.principalId
+        roleDefinitionIdOrName: 'Reader'
+        principalType: 'ServicePrincipal'
+      }
+      {
+        principalId: managedIdentityProject.properties.principalId
+        roleDefinitionIdOrName: 'Storage Account Contributor'
+        principalType: 'ServicePrincipal'
+      }
+      {
+        principalId: managedIdentityProject.properties.principalId
+        roleDefinitionIdOrName: 'Storage Table Data Contributor'
+        principalType: 'ServicePrincipal'
+      }
+      {
+        principalId: managedIdentityHub.properties.principalId
         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         principalType: 'ServicePrincipal'
       }
       {
-        principalId: managedIdentity.properties.principalId
+        principalId: managedIdentityProject.properties.principalId
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        principalType: 'ServicePrincipal'
+      }
+      {
+        principalId: managedIdentityHub.properties.principalId
+        roleDefinitionIdOrName: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
+        principalType: 'ServicePrincipal'
+      }
+      {
+        principalId: managedIdentityProject.properties.principalId
         roleDefinitionIdOrName: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
         principalType: 'ServicePrincipal'
       }
@@ -394,12 +435,22 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.3.1' =
     trustPolicyStatus: containerRegistryConfiguration.?trustPolicyStatus ?? 'enabled'
     roleAssignments: [
       {
-        principalId: managedIdentity.properties.principalId
+        principalId: managedIdentityHub.properties.principalId
         roleDefinitionIdOrName: 'Contributor'
         principalType: 'ServicePrincipal'
       }
       {
-        principalId: managedIdentity.properties.principalId
+        principalId: managedIdentityProject.properties.principalId
+        roleDefinitionIdOrName: 'Contributor'
+        principalType: 'ServicePrincipal'
+      }
+      {
+        principalId: managedIdentityHub.properties.principalId
+        roleDefinitionIdOrName: 'AcrPull'
+        principalType: 'ServicePrincipal'
+      }
+      {
+        principalId: managedIdentityProject.properties.principalId
         roleDefinitionIdOrName: 'AcrPull'
         principalType: 'ServicePrincipal'
       }
@@ -418,7 +469,12 @@ module applicationInsights 'br/public:avm/res/insights/component:0.3.1' = {
     workspaceResourceId: logAnalyticsWorkspace.id
     roleAssignments: [
       {
-        principalId: managedIdentity.properties.principalId
+        principalId: managedIdentityHub.properties.principalId
+        roleDefinitionIdOrName: 'Contributor'
+        principalType: 'ServicePrincipal'
+      }
+      {
+        principalId: managedIdentityProject.properties.principalId
         roleDefinitionIdOrName: 'Contributor'
         principalType: 'ServicePrincipal'
       }
@@ -430,7 +486,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.3.1' = {
 module workspaceHub 'br/public:avm/res/machine-learning-services/workspace:0.5.0' = {
   name: '${uniqueString(deployment().name, location)}-hub'
   params: {
-    name: workspaceHubConfiguration.?name ?? 'hub-${name}'
+    name: workspaceConfiguration.?name ?? 'hub-${name}'
     sku: 'Standard'
     location: location
     enableTelemetry: enableTelemetry
@@ -444,14 +500,14 @@ module workspaceHub 'br/public:avm/res/machine-learning-services/workspace:0.5.0
     }
     managedIdentities: {
       userAssignedResourceIds: [
-        managedIdentity.id
+        managedIdentityHub.id
       ]
     }
-    primaryUserAssignedIdentity: managedIdentity.id
-    computes: workspaceHubConfiguration.?computes
+    primaryUserAssignedIdentity: managedIdentityHub.id
+    computes: workspaceConfiguration.?computes
     managedNetworkSettings: {
-      isolationMode: workspaceHubConfiguration.?networkIsolationMode ?? 'AllowInternetOutbound'
-      outboundRules: workspaceHubConfiguration.?networkOutboundRules
+      isolationMode: workspaceConfiguration.?networkIsolationMode ?? 'AllowInternetOutbound'
+      outboundRules: workspaceConfiguration.?networkOutboundRules
     }
     privateEndpoints: subnetResourceId != null
       ? [
@@ -472,7 +528,7 @@ module workspaceHub 'br/public:avm/res/machine-learning-services/workspace:0.5.0
     systemDatastoresAuthMode: 'identity'
     roleAssignments: [
       {
-        principalId: managedIdentity.properties.principalId
+        principalId: managedIdentityHub.properties.principalId
         roleDefinitionIdOrName: 'Contributor'
         principalType: 'ServicePrincipal'
       }
@@ -481,6 +537,37 @@ module workspaceHub 'br/public:avm/res/machine-learning-services/workspace:0.5.0
   }
 
   dependsOn: workspaceHub_privateDnsZones
+}
+
+module workspaceProject 'br/public:avm/res/machine-learning-services/workspace:0.5.0' = {
+  name: '${uniqueString(deployment().name, location)}-project'
+  params: {
+    name: workspaceConfiguration.?projectName ?? 'project-${name}'
+    sku: 'Standard'
+    location: location
+    enableTelemetry: enableTelemetry
+    kind: 'Project'
+    hubResourceId: workspaceHub.outputs.resourceId
+    managedIdentities: {
+      userAssignedResourceIds: [
+        managedIdentityProject.id
+      ]
+    }
+    primaryUserAssignedIdentity: managedIdentityProject.id
+    roleAssignments: [
+      {
+        principalId: managedIdentityHub.properties.principalId
+        roleDefinitionIdOrName: 'Contributor'
+        principalType: 'ServicePrincipal'
+      }
+      {
+        principalId: managedIdentityProject.properties.principalId
+        roleDefinitionIdOrName: 'Contributor'
+        principalType: 'ServicePrincipal'
+      }
+    ]
+    tags: tags
+  }
 }
 
 // ============ //
@@ -514,17 +601,29 @@ output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.id
 @description('The name of the log analytics workspace.')
 output logAnalyticsWorkspaceName string = logAnalyticsWorkspace.name
 
-@description('The resource ID of the user assigned managed identity.')
-output managedIdentityResourceId string = managedIdentity.id
+@description('The resource ID of the workspace hub user assigned managed identity.')
+output managedIdentityHubResourceId string = managedIdentityHub.id
 
-@description('The name of the user assigned managed identity.')
-output managedIdentityName string = managedIdentity.name
+@description('The name of the workspace hub user assigned managed identity.')
+output managedIdentityHubName string = managedIdentityHub.name
 
-@description('The principal ID of the user assigned managed identity.')
-output managedIdentityPrincipalId string = managedIdentity.properties.principalId
+@description('The principal ID of the workspace hub user assigned managed identity.')
+output managedIdentityHubPrincipalId string = managedIdentityHub.properties.principalId
 
-@description('The client ID of the user assigned managed identity.')
-output managedIdentityClientId string = managedIdentity.properties.clientId
+@description('The client ID of the workspace hub user assigned managed identity.')
+output managedIdentityHubClientId string = managedIdentityHub.properties.clientId
+
+@description('The resource ID of the workspace project user assigned managed identity.')
+output managedIdentityProjectResourceId string = managedIdentityProject.id
+
+@description('The name of the workspace project user assigned managed identity.')
+output managedIdentityProjectName string = managedIdentityProject.name
+
+@description('The principal ID of the workspace project user assigned managed identity.')
+output managedIdentityProjectPrincipalId string = managedIdentityProject.properties.principalId
+
+@description('The client ID of the workspace project user assigned managed identity.')
+output managedIdentityProjectClientId string = managedIdentityProject.properties.clientId
 
 @description('The resource ID of the key vault.')
 output keyVaultResourceId string = keyVault.outputs.resourceId
@@ -552,6 +651,12 @@ output workspaceHubResourceId string = workspaceHub.outputs.resourceId
 
 @description('The name of the workspace hub.')
 output workspaceHubName string = workspaceHub.outputs.name
+
+@description('The resource ID of the workspace project.')
+output workspaceProjectResourceId string = workspaceProject.outputs.resourceId
+
+@description('The name of the workspace project.')
+output workspaceProjectName string = workspaceProject.outputs.name
 
 @description('The resource ID of the virtual network.')
 output virtualNetworkResourceId string = createVirtualNetwork ? virtualNetwork.outputs.resourceId : ''
@@ -582,8 +687,11 @@ output virtualMachineName string = createVirtualMachine ? virtualMachine.outputs
 // ================ //
 
 type managedIdentityConfigurationType = {
-  @description('Optional. The name of the user-assigned managed identity.')
-  name: string?
+  @description('Optional. The name of the workspace hub user-assigned managed identity.')
+  hubName: string?
+
+  @description('Optional. The name of the workspace project user-assigned managed identity.')
+  projectName: string?
 }?
 
 type logAnalyticsConfigurationType = {
@@ -631,9 +739,12 @@ type applicationInsightsConfigurationType = {
   name: string?
 }?
 
-type workspaceHubConfigurationType = {
+type workspaceConfigurationType = {
   @description('Optional. The name of the AI Studio workspace hub.')
   name: string?
+
+  @description('Optional. The name of the AI Studio workspace project.')
+  projectName: string?
 
   @description('Optional. Computes to create and attach to the workspace hub.')
   computes: array?
