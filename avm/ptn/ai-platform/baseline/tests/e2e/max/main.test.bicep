@@ -23,10 +23,6 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Generated. The username to leverage for the login.')
-@secure()
-param username string = uniqueString(newGuid())
-
 @description('Generated. The password to leverage for the login.')
 @secure()
 param password string = newGuid()
@@ -116,7 +112,7 @@ module testDeployment '../../../main.bicep' = [
         name: take('${namePrefix}-vm-${serviceShort}', 15)
         zone: 0
         size: 'Standard_DS1_v2'
-        adminUsername: username
+        adminUsername: 'localAdminUser'
         adminPassword: password
         nicConfigurationConfiguration: {
           name: '${namePrefix}-nic-${serviceShort}'
@@ -152,7 +148,7 @@ module testDeployment '../../../main.bicep' = [
         computes: [
           {
             computeType: 'ComputeInstance'
-            name: 'compute-${substring(uniqueString(baseTime), 0, 3)}'
+            name: 'c-${substring(uniqueString(baseTime), 0, 3)}-${serviceShort}'
             description: 'Default'
             location: resourceLocation
             properties: {

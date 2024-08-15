@@ -107,7 +107,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     // Non-required parameters
     virtualMachineConfiguration: {
       adminPassword: '<adminPassword>'
-      adminUsername: '<adminUsername>'
+      adminUsername: 'localAdminUser'
     }
   }
 }
@@ -133,7 +133,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     "virtualMachineConfiguration": {
       "value": {
         "adminPassword": "<adminPassword>",
-        "adminUsername": "<adminUsername>"
+        "adminUsername": "localAdminUser"
       }
     }
   }
@@ -197,7 +197,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     }
     virtualMachineConfiguration: {
       adminPassword: '<adminPassword>'
-      adminUsername: '<adminUsername>'
+      adminUsername: 'localAdminUser'
       enableAadLoginExtension: true
       enableAzureMonitorAgent: true
       enabled: true
@@ -338,7 +338,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     "virtualMachineConfiguration": {
       "value": {
         "adminPassword": "<adminPassword>",
-        "adminUsername": "<adminUsername>",
+        "adminUsername": "localAdminUser",
         "enableAadLoginExtension": true,
         "enableAzureMonitorAgent": true,
         "enabled": true,
@@ -551,7 +551,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     }
     virtualMachineConfiguration: {
       adminPassword: '<adminPassword>'
-      adminUsername: '<adminUsername>'
+      adminUsername: 'localAdminUser'
       enableAadLoginExtension: true
       enableAzureMonitorAgent: true
       maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
@@ -601,7 +601,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     "virtualMachineConfiguration": {
       "value": {
         "adminPassword": "<adminPassword>",
-        "adminUsername": "<adminUsername>",
+        "adminUsername": "localAdminUser",
         "enableAadLoginExtension": true,
         "enableAzureMonitorAgent": true,
         "maintenanceConfigurationResourceId": "<maintenanceConfigurationResourceId>",
