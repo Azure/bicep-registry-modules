@@ -371,6 +371,7 @@ output name string = kustoCluster.name
 @description('The location the resource was deployed into.')
 output location string = kustoCluster.location
 
+@description('The identity of the cluster.')
 output identity object = kustoCluster.identity
 
 // =============== //

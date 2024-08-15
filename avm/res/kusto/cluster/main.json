@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "12471729914725908005"
+      "templateHash": "14383219106382381031"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster.",
@@ -1825,6 +1825,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('kustoCluster', '2023-08-15', 'full').location]"
+    },
+    "identity": {
+      "type": "object",
+      "metadata": {
+        "description": "The identity of the cluster."
+      },
+      "value": "[reference('kustoCluster', '2023-08-15', 'full').identity]"
     }
   }
 }

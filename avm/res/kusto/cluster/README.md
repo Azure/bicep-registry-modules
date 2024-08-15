@@ -1518,6 +1518,7 @@ The resource ID of the subnet to which to deploy the Kusto Cluster.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `identity` | object | The identity of the cluster. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the resource. |
 | `resourceGroupName` | string | The resource group the resource was deployed into. |
