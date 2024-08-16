@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "704205004825298151"
+      "templateHash": "3169815650175124081"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.",
@@ -1540,7 +1540,7 @@
             "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'bearerTokenSendingMethods'), createArray('authorizationHeader'))]"
           },
           "clientAuthenticationMethod": {
-            "value": "[coalesce(variables('authorizationServerList')[copyIndex()].clientAuthenticationMethod, createArray('Basic'))]"
+            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'clientAuthenticationMethod'), createArray('Basic'))]"
           },
           "clientId": {
             "value": "[variables('authorizationServerList')[copyIndex()].clientId]"
