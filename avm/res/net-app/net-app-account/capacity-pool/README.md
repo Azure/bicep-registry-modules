@@ -15,11 +15,12 @@ This module deploys an Azure NetApp Files Capacity Pool.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-11-01/netAppAccounts/backupPolicies) |
-| `Microsoft.NetApp/netAppAccounts/backupVaults` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-05-01-preview/netAppAccounts/backupVaults) |
-| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-05-01-preview/netAppAccounts/backupVaults/backups) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-07-01/netAppAccounts/capacityPools) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-07-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/backupPolicies) |
+| `Microsoft.NetApp/netAppAccounts/backupVaults` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/backupVaults) |
+| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/backupVaults/backups) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/capacityPools) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/snapshotPolicies) |
 
 ## Parameters
 

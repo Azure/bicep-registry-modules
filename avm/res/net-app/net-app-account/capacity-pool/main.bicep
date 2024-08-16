@@ -66,11 +66,11 @@ var builtInRoleNames = {
   )
 }
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2023-07-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
   name: netAppAccountName
 }
 
-resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2023-07-01' = {
+resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2024-03-01' = {
   name: name
   parent: netAppAccount
   location: location
@@ -107,10 +107,35 @@ module capacityPool_volumes 'volume/main.bicep' = [
         ? volume.coolAccessRetrievalPolicy
         : 'Default'
       coolnessPeriod: contains(volume, 'coolnessPeriod') ? volume.coolnessPeriod : 0
+      encryptionKeySource: contains(volume, 'encryptionKeySource') ? volume.encryptionKeySource : 'Microsoft.NetApp'
+      keyVaultPrivateEndpointResourceId: contains(volume, 'keyVaultPrivateEndpointResourceId')
+        ? volume.keyVaultPrivateEndpointResourceId
+        : ''
       endpointType: contains(volume, 'endpointType') ? volume.endpointType : ''
       remoteVolumeRegion: contains(volume, 'remoteVolumeRegion') ? volume.remoteVolumeRegion : ''
       remoteVolumeResourceId: contains(volume, 'remoteVolumeResourceId') ? volume.remoteVolumeResourceId : ''
       replicationSchedule: contains(volume, 'replicationSchedule') ? volume.replicationSchedule : ''
+      snapshotPolicyId: contains(volume, 'snapshotPolicyId') ? volume.snapshotPolicyId : ''
+      snapshotPolicyName: contains(volume, 'snapshotPolicyName') ? volume.snapshotPolicyName : 'snapshotPolicy'
+      snapshotPolicyLocation: contains(volume, 'snapshotPolicyLocation') ? volume.snapshotPolicyLocation : ''
+      snapEnabled: contains(volume, 'snapEnabled') ? volume.snapEnabled : false
+      dailyHour: contains(volume, 'dailyHour') ? volume.dailyHour : 0
+      dailyMinute: contains(volume, 'dailyMinute') ? volume.dailyMinute : 0
+      dailySnapshotsToKeep: contains(volume, 'dailySnapshotsToKeep') ? volume.dailySnapshotsToKeep : 0
+      dailyUsedBytes: contains(volume, 'dailyUsedBytes') ? volume.dailyUsedBytes : 0
+      hourlyMinute: contains(volume, 'hourlyMinute') ? volume.hourlyMinute : 0
+      hourlySnapshotsToKeep: contains(volume, 'hourlySnapshotsToKeep') ? volume.hourlySnapshotsToKeep : 0
+      hourlyUsedBytes: contains(volume, 'hourlyUsedBytes') ? volume.hourlyUsedBytes : 0
+      daysOfMonth: contains(volume, 'daysOfMonth') ? volume.daysOfMonth : ''
+      monthlyHour: contains(volume, 'monthlyHour') ? volume.monthlyHour : 0
+      monthlyMinute: contains(volume, 'monthlyMinute') ? volume.monthlyMinute : 0
+      monthlySnapshotsToKeep: contains(volume, 'monthlySnapshotsToKeep') ? volume.monthlySnapshotsToKeep : 0
+      monthlyUsedBytes: contains(volume, 'monthlyUsedBytes') ? volume.monthlyUsedBytes : 0
+      weeklyDay: contains(volume, 'weeklyDay') ? volume.weeklyDay : ''
+      weeklyHour: contains(volume, 'weeklyHour') ? volume.weeklyHour : 0
+      weeklyMinute: contains(volume, 'weeklyMinute') ? volume.weeklyMinute : 0
+      weeklySnapshotsToKeep: contains(volume, 'weeklySnapshotsToKeep') ? volume.weeklySnapshotsToKeep : 0
+      weeklyUsedBytes: contains(volume, 'weeklyUsedBytes') ? volume.weeklyUsedBytes : 0
       backupPolicyName: contains(volume, 'backupPolicyName') ? volume.backupPolicyName : 'backupPolicy'
       backupPolicyLocation: contains(volume, 'backupPolicyLocation') ? volume.backupPolicyLocation : ''
       dailyBackupsToKeep: contains(volume, 'dailyBackupsToKeep') ? volume.dailyBackupsToKeep : 0
@@ -124,6 +149,7 @@ module capacityPool_volumes 'volume/main.bicep' = [
       snapshotName: contains(volume, 'snapshotName') ? volume.snapshotName : 'snapshot'
       useExistingSnapshot: contains(volume, 'useExistingSnapshot') ? volume.useExistingSnapshot : false
       volumeResourceId: contains(volume, 'volumeResourceId') ? volume.volumeResourceId : ''
+      volumeType: contains(volume, 'volumeType') ? volume.volumeType : ''
     }
   }
 ]

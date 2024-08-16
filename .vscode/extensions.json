@@ -1,7 +1,6 @@
 {
   "recommendations": [
     "esbenp.prettier-vscode",
-    "editorconfig.editorconfig",
     "ms-vscode.powershell"
   ]
 }
