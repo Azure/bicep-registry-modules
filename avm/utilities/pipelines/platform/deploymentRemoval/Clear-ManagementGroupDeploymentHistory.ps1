@@ -50,10 +50,15 @@ function Clear-ManagementGroupDeploymentHistory {
         Method  = 'GET'
         Uri     = "https://management.azure.com/providers/Microsoft.Management/managementGroups/$ManagementGroupId/providers/Microsoft.Resources/deployments/?api-version=2021-04-01"
         Headers = @{
-            Authorization = 'Bearer {0}' -f (Get-AzAccessToken).Token
+            Authorization = 'Bearer {0}' -f ((Get-AzAccessToken -AsSecureString).Token | ConvertFrom-SecureString -AsPlainText)
         }
     }
-    $response = Invoke-RestMethod @getInputObject
+    try {
+        $response = Invoke-RestMethod @getInputObject
+    } catch {
+        Write-Warning "Management Group [$ManagementGroupId] not found or not authorized. Skipping removal."
+        return
+    }
 
     if (($response | Get-Member -MemberType 'NoteProperty').Name -notcontains 'value') {
         throw ('Fetching deployments failed with error [{0}]' -f ($reponse | Out-String))
@@ -103,7 +108,7 @@ function Clear-ManagementGroupDeploymentHistory {
             Method  = 'POST'
             Uri     = 'https://management.azure.com/batch?api-version=2020-06-01'
             Headers = @{
-                Authorization  = 'Bearer {0}' -f (Get-AzAccessToken).Token
+                Authorization  = 'Bearer {0}' -f ((Get-AzAccessToken -AsSecureString).Token | ConvertFrom-SecureString -AsPlainText)
                 'Content-Type' = 'application/json'
             }
             Body    = @{

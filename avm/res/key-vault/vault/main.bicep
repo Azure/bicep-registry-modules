@@ -139,6 +139,17 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 var formattedAccessPolicies = [
   for accessPolicy in (accessPolicies ?? []): {
     applicationId: accessPolicy.?applicationId ?? ''
@@ -259,9 +270,9 @@ module keyVault_secrets 'secret/main.bicep' = [
       name: secret.name
       value: secret.value
       keyVaultName: keyVault.name
-      attributesEnabled: secret.?attributesEnabled
-      attributesExp: secret.?attributesExp
-      attributesNbf: secret.?attributesNbf
+      attributesEnabled: secret.?attributes.?enabled
+      attributesExp: secret.?attributes.?exp
+      attributesNbf: secret.?attributes.?nbf
       contentType: secret.?contentType
       tags: secret.?tags ?? tags
       roleAssignments: secret.?roleAssignments
@@ -275,9 +286,9 @@ module keyVault_keys 'key/main.bicep' = [
     params: {
       name: key.name
       keyVaultName: keyVault.name
-      attributesEnabled: key.?attributesEnabled
-      attributesExp: key.?attributesExp
-      attributesNbf: key.?attributesNbf
+      attributesEnabled: key.?attributes.?enabled
+      attributesExp: key.?attributes.?exp
+      attributesNbf: key.?attributes.?nbf
       curveName: (key.?kty != 'RSA' && key.?kty != 'RSA-HSM') ? (key.?curveName ?? 'P-256') : null
       keyOps: key.?keyOps
       keySize: (key.?kty == 'RSA' || key.?kty == 'RSA-HSM') ? (key.?keySize ?? 4096) : null
@@ -344,14 +355,10 @@ module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
 ]
 
 resource keyVault_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(keyVault.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(keyVault.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -430,6 +437,9 @@ type diagnosticSettingType = {
 }[]?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 

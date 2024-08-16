@@ -53,28 +53,32 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: 'Global'
-      criterias: [
-        {
-          criterionType: 'StaticThresholdCriterion'
-          metricName: 'Percentage CPU'
-          metricNamespace: 'microsoft.compute/virtualmachines'
-          name: 'HighCPU'
-          operator: 'GreaterThan'
-          threshold: '90'
-          timeAggregation: 'Average'
-        }
-      ]
+      criteria: {
+        allof: [
+          {
+            criterionType: 'StaticThresholdCriterion'
+            metricName: 'Percentage CPU'
+            metricNamespace: 'microsoft.compute/virtualmachines'
+            name: 'HighCPU'
+            operator: 'GreaterThan'
+            threshold: '90'
+            timeAggregation: 'Average'
+          }
+        ]
+        'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
+      }
       actions: [
         nestedDependencies.outputs.actionGroupResourceId
       ]
-      alertCriteriaType: 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
       roleAssignments: [
         {
+          name: '3ab52119-85d9-4374-a454-2410b84f19f9'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
