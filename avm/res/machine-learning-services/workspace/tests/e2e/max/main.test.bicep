@@ -108,6 +108,19 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      connections: [
+        {
+          name: 'connection'
+          category: 'ApiKey'
+          target: 'https://example.com'
+          connectionProperties: {
+            authType: 'ApiKey'
+            credentials: {
+              key: 'key'
+            }
+          }
+        }
+      ]
       description: 'The cake is a lie.'
       diagnosticSettings: [
         {
@@ -133,9 +146,15 @@ module testDeployment '../../../main.bicep' = [
       privateEndpoints: [
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            name: 'group1'
+            privateDnsZoneGroupConfigs: [
+              {
+                name: 'config1'
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           tags: {
             'hidden-title': 'This is visible in the resource name'
             Environment: 'Non-Prod'
@@ -144,18 +163,26 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            name: 'group2'
+            privateDnsZoneGroupConfigs: [
+              {
+                name: 'config2'
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
         }
       ]
       roleAssignments: [
         {
+          name: 'f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

@@ -16,7 +16,7 @@ This module deploys a Scheduled Query Rule.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/scheduledQueryRules` | [2021-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-02-01-preview/scheduledQueryRules) |
+| `Microsoft.Insights/scheduledQueryRules` | [2023-03-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-15-preview/scheduledQueryRules) |
 
 ## Usage examples
 
@@ -197,17 +197,20 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     ]
     // Non-required parameters
     alertDescription: 'My sample Alert'
+    alertDisplayName: '<alertDisplayName>'
     autoMitigate: false
     evaluationFrequency: 'PT5M'
     location: '<location>'
     queryTimeRange: 'PT5M'
     roleAssignments: [
       {
+        name: 'fa8868c7-33d3-4cd5-86a5-cbf76261035b'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -218,6 +221,10 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    ruleResolveConfiguration: {
+      autoResolved: true
+      timeToResolve: 'PT5M'
+    }
     suppressForMinutes: 'PT5M'
     tags: {
       Environment: 'Non-Prod'
@@ -283,6 +290,9 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     "alertDescription": {
       "value": "My sample Alert"
     },
+    "alertDisplayName": {
+      "value": "<alertDisplayName>"
+    },
     "autoMitigate": {
       "value": false
     },
@@ -298,11 +308,13 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     "roleAssignments": {
       "value": [
         {
+          "name": "fa8868c7-33d3-4cd5-86a5-cbf76261035b",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -313,6 +325,12 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
+    },
+    "ruleResolveConfiguration": {
+      "value": {
+        "autoResolved": true,
+        "timeToResolve": "PT5M"
+      }
     },
     "suppressForMinutes": {
       "value": "PT5M"
@@ -505,6 +523,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 | :-- | :-- | :-- |
 | [`actions`](#parameter-actions) | array | Actions to invoke when the alert fires. |
 | [`alertDescription`](#parameter-alertdescription) | string | The description of the scheduled query rule. |
+| [`alertDisplayName`](#parameter-alertdisplayname) | string | The display name of the scheduled query rule. |
 | [`autoMitigate`](#parameter-automitigate) | bool | The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert. |
 | [`enabled`](#parameter-enabled) | bool | The flag which indicates whether this scheduled query rule is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -513,6 +532,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`queryTimeRange`](#parameter-querytimerange) | string | If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`ruleResolveConfiguration`](#parameter-ruleresolveconfiguration) | object | Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. |
 | [`severity`](#parameter-severity) | int | Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kind LogAlert. |
 | [`skipQueryValidation`](#parameter-skipqueryvalidation) | bool | The flag which indicates whether the provided query should be validated or not. Relevant only for rules of the kind LogAlert. |
 | [`suppressForMinutes`](#parameter-suppressforminutes) | string | Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled.Relevant only for rules of the kind LogAlert. |
@@ -563,6 +583,13 @@ The description of the scheduled query rule.
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `alertDisplayName`
+
+The display name of the scheduled query rule.
+
+- Required: No
+- Type: string
 
 ### Parameter: `autoMitigate`
 
@@ -649,6 +676,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -699,6 +727,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -715,6 +750,13 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `ruleResolveConfiguration`
+
+Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert.
+
+- Required: No
+- Type: object
 
 ### Parameter: `severity`
 

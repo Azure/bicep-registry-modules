@@ -6,7 +6,7 @@ Parses AVM module CSV file
 Depending on the parameter, the correct CSV file will be parsed and returned a an object
 
 .PARAMETER ModuleIndex
-Mandatory. Type of CSV file, that should be parsed ('Bicep-Resource', 'Bicep-Pattern')
+Mandatory. Type of CSV file, that should be parsed ('Bicep-Resource', 'Bicep-Pattern', 'Bicep-Utility')
 
 .EXAMPLE
 Get-AvmCsvData -ModuleIndex 'Bicep-Resource'
@@ -17,13 +17,14 @@ Function Get-AvmCsvData {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
-        [ValidateSet('Bicep-Resource', 'Bicep-Pattern')]
+        [ValidateSet('Bicep-Resource', 'Bicep-Pattern', 'Bicep-Utility')]
         [string] $ModuleIndex
     )
 
     # CSV file URLs
     $BicepResourceUrl = 'https://aka.ms/avm/index/bicep/res/csv'
     $BicepPatternUrl = 'https://aka.ms/avm/index/bicep/ptn/csv'
+    $BicepUtilityUrl = 'https://aka.ms/avm/index/bicep/utl/csv'
 
     # Retrieve the CSV file
     switch ($ModuleIndex) {
@@ -37,6 +38,13 @@ Function Get-AvmCsvData {
         'Bicep-Pattern' {
             try {
                 $unfilteredCSV = Invoke-WebRequest -Uri $BicepPatternUrl
+            } catch {
+                throw 'Unable to retrieve CSV file - Check network connection.'
+            }
+        }
+        'Bicep-Utility' {
+            try {
+                $unfilteredCSV = Invoke-WebRequest -Uri $BicepUtilityUrl
             } catch {
                 throw 'Unable to retrieve CSV file - Check network connection.'
             }
