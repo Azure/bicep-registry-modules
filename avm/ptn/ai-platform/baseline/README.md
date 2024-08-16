@@ -107,7 +107,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     // Non-required parameters
     virtualMachineConfiguration: {
       adminPassword: '<adminPassword>'
-      adminUsername: '<adminUsername>'
+      adminUsername: 'localAdminUser'
     }
   }
 }
@@ -133,7 +133,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     "virtualMachineConfiguration": {
       "value": {
         "adminPassword": "<adminPassword>",
-        "adminUsername": "<adminUsername>"
+        "adminUsername": "localAdminUser"
       }
     }
   }
@@ -187,7 +187,8 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       name: 'log-aipbmax'
     }
     managedIdentityConfiguration: {
-      name: 'id-aipbmax'
+      hubName: 'id-hub-aipbmax'
+      projectName: 'id-project-aipbmax'
     }
     storageAccountConfiguration: {
       allowSharedKeyAccess: true
@@ -196,7 +197,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     }
     virtualMachineConfiguration: {
       adminPassword: '<adminPassword>'
-      adminUsername: '<adminUsername>'
+      adminUsername: 'localAdminUser'
       enableAadLoginExtension: true
       enableAzureMonitorAgent: true
       enabled: true
@@ -239,7 +240,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
     }
-    workspaceHubConfiguration: {
+    workspaceConfiguration: {
       computes: [
         {
           computeType: 'ComputeInstance'
@@ -261,6 +262,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
           type: 'FQDN'
         }
       }
+      projectName: 'project-aipbmax'
     }
   }
 }
@@ -322,7 +324,8 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     },
     "managedIdentityConfiguration": {
       "value": {
-        "name": "id-aipbmax"
+        "hubName": "id-hub-aipbmax",
+        "projectName": "id-project-aipbmax"
       }
     },
     "storageAccountConfiguration": {
@@ -335,7 +338,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     "virtualMachineConfiguration": {
       "value": {
         "adminPassword": "<adminPassword>",
-        "adminUsername": "<adminUsername>",
+        "adminUsername": "localAdminUser",
         "enableAadLoginExtension": true,
         "enableAzureMonitorAgent": true,
         "enabled": true,
@@ -381,7 +384,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
         }
       }
     },
-    "workspaceHubConfiguration": {
+    "workspaceConfiguration": {
       "value": {
         "computes": [
           {
@@ -403,7 +406,8 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
             "destination": "pypi.org",
             "type": "FQDN"
           }
-        }
+        },
+        "projectName": "project-aipbmax"
       }
     }
   }
@@ -547,14 +551,14 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     }
     virtualMachineConfiguration: {
       adminPassword: '<adminPassword>'
-      adminUsername: '<adminUsername>'
+      adminUsername: 'localAdminUser'
       enableAadLoginExtension: true
       enableAzureMonitorAgent: true
       maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
       patchMode: 'AutomaticByPlatform'
       zone: 1
     }
-    workspaceHubConfiguration: {
+    workspaceConfiguration: {
       networkIsolationMode: 'AllowOnlyApprovedOutbound'
       networkOutboundRules: {
         rule: {
@@ -597,7 +601,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     "virtualMachineConfiguration": {
       "value": {
         "adminPassword": "<adminPassword>",
-        "adminUsername": "<adminUsername>",
+        "adminUsername": "localAdminUser",
         "enableAadLoginExtension": true,
         "enableAzureMonitorAgent": true,
         "maintenanceConfigurationResourceId": "<maintenanceConfigurationResourceId>",
@@ -605,7 +609,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
         "zone": 1
       }
     },
-    "workspaceHubConfiguration": {
+    "workspaceConfiguration": {
       "value": {
         "networkIsolationMode": "AllowOnlyApprovedOutbound",
         "networkOutboundRules": {
@@ -647,12 +651,12 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 | [`keyVaultConfiguration`](#parameter-keyvaultconfiguration) | object | Configuration for the key vault. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`logAnalyticsConfiguration`](#parameter-loganalyticsconfiguration) | object | Configuration for the Log Analytics workspace. |
-| [`managedIdentityConfiguration`](#parameter-managedidentityconfiguration) | object | Configuration for the user-assigned managed identity. |
+| [`managedIdentityConfiguration`](#parameter-managedidentityconfiguration) | object | Configuration for the user-assigned managed identities. |
 | [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | Configuration for the storage account. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 | [`virtualMachineConfiguration`](#parameter-virtualmachineconfiguration) | secureObject | Configuration for the virtual machine. |
 | [`virtualNetworkConfiguration`](#parameter-virtualnetworkconfiguration) | object | Configuration for the virtual network. |
-| [`workspaceHubConfiguration`](#parameter-workspacehubconfiguration) | object | Configuration for the AI Studio workspace hub. |
+| [`workspaceConfiguration`](#parameter-workspaceconfiguration) | object | Configuration for the AI Studio workspace. |
 
 ### Parameter: `name`
 
@@ -889,7 +893,7 @@ The name of the Log Analytics workspace.
 
 ### Parameter: `managedIdentityConfiguration`
 
-Configuration for the user-assigned managed identity.
+Configuration for the user-assigned managed identities.
 
 - Required: No
 - Type: object
@@ -898,11 +902,19 @@ Configuration for the user-assigned managed identity.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-managedidentityconfigurationname) | string | The name of the user-assigned managed identity. |
+| [`hubName`](#parameter-managedidentityconfigurationhubname) | string | The name of the workspace hub user-assigned managed identity. |
+| [`projectName`](#parameter-managedidentityconfigurationprojectname) | string | The name of the workspace project user-assigned managed identity. |
 
-### Parameter: `managedIdentityConfiguration.name`
+### Parameter: `managedIdentityConfiguration.hubName`
 
-The name of the user-assigned managed identity.
+The name of the workspace hub user-assigned managed identity.
+
+- Required: No
+- Type: string
+
+### Parameter: `managedIdentityConfiguration.projectName`
+
+The name of the workspace project user-assigned managed identity.
 
 - Required: No
 - Type: string
@@ -1043,9 +1055,9 @@ The resource ID of an existing network security group to associate with the subn
 - Required: No
 - Type: string
 
-### Parameter: `workspaceHubConfiguration`
+### Parameter: `workspaceConfiguration`
 
-Configuration for the AI Studio workspace hub.
+Configuration for the AI Studio workspace.
 
 - Required: No
 - Type: object
@@ -1054,26 +1066,27 @@ Configuration for the AI Studio workspace hub.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`computes`](#parameter-workspacehubconfigurationcomputes) | array | Computes to create and attach to the workspace hub. |
-| [`name`](#parameter-workspacehubconfigurationname) | string | The name of the AI Studio workspace hub. |
-| [`networkIsolationMode`](#parameter-workspacehubconfigurationnetworkisolationmode) | string | The network isolation mode of the workspace hub. Defaults to 'AllowInternetOutbound'. |
-| [`networkOutboundRules`](#parameter-workspacehubconfigurationnetworkoutboundrules) | object | The outbound rules for the managed network of the workspace hub. |
+| [`computes`](#parameter-workspaceconfigurationcomputes) | array | Computes to create and attach to the workspace hub. |
+| [`name`](#parameter-workspaceconfigurationname) | string | The name of the AI Studio workspace hub. |
+| [`networkIsolationMode`](#parameter-workspaceconfigurationnetworkisolationmode) | string | The network isolation mode of the workspace hub. Defaults to 'AllowInternetOutbound'. |
+| [`networkOutboundRules`](#parameter-workspaceconfigurationnetworkoutboundrules) | object | The outbound rules for the managed network of the workspace hub. |
+| [`projectName`](#parameter-workspaceconfigurationprojectname) | string | The name of the AI Studio workspace project. |
 
-### Parameter: `workspaceHubConfiguration.computes`
+### Parameter: `workspaceConfiguration.computes`
 
 Computes to create and attach to the workspace hub.
 
 - Required: No
 - Type: array
 
-### Parameter: `workspaceHubConfiguration.name`
+### Parameter: `workspaceConfiguration.name`
 
 The name of the AI Studio workspace hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `workspaceHubConfiguration.networkIsolationMode`
+### Parameter: `workspaceConfiguration.networkIsolationMode`
 
 The network isolation mode of the workspace hub. Defaults to 'AllowInternetOutbound'.
 
@@ -1087,7 +1100,7 @@ The network isolation mode of the workspace hub. Defaults to 'AllowInternetOutbo
   ]
   ```
 
-### Parameter: `workspaceHubConfiguration.networkOutboundRules`
+### Parameter: `workspaceConfiguration.networkOutboundRules`
 
 The outbound rules for the managed network of the workspace hub.
 
@@ -1098,14 +1111,21 @@ The outbound rules for the managed network of the workspace hub.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`>Any_other_property<`](#parameter-workspacehubconfigurationnetworkoutboundrules>any_other_property<) | object | The outbound rule. The name of the rule is the object key. |
+| [`>Any_other_property<`](#parameter-workspaceconfigurationnetworkoutboundrules>any_other_property<) | object | The outbound rule. The name of the rule is the object key. |
 
-### Parameter: `workspaceHubConfiguration.networkOutboundRules.>Any_other_property<`
+### Parameter: `workspaceConfiguration.networkOutboundRules.>Any_other_property<`
 
 The outbound rule. The name of the rule is the object key.
 
 - Required: Yes
 - Type: object
+
+### Parameter: `workspaceConfiguration.projectName`
+
+The name of the AI Studio workspace project.
+
+- Required: No
+- Type: string
 
 
 ## Outputs
@@ -1127,10 +1147,14 @@ The outbound rule. The name of the rule is the object key.
 | `location` | string | The location the module was deployed to. |
 | `logAnalyticsWorkspaceName` | string | The name of the log analytics workspace. |
 | `logAnalyticsWorkspaceResourceId` | string | The resource ID of the log analytics workspace. |
-| `managedIdentityClientId` | string | The client ID of the user assigned managed identity. |
-| `managedIdentityName` | string | The name of the user assigned managed identity. |
-| `managedIdentityPrincipalId` | string | The principal ID of the user assigned managed identity. |
-| `managedIdentityResourceId` | string | The resource ID of the user assigned managed identity. |
+| `managedIdentityHubClientId` | string | The client ID of the workspace hub user assigned managed identity. |
+| `managedIdentityHubName` | string | The name of the workspace hub user assigned managed identity. |
+| `managedIdentityHubPrincipalId` | string | The principal ID of the workspace hub user assigned managed identity. |
+| `managedIdentityHubResourceId` | string | The resource ID of the workspace hub user assigned managed identity. |
+| `managedIdentityProjectClientId` | string | The client ID of the workspace project user assigned managed identity. |
+| `managedIdentityProjectName` | string | The name of the workspace project user assigned managed identity. |
+| `managedIdentityProjectPrincipalId` | string | The principal ID of the workspace project user assigned managed identity. |
+| `managedIdentityProjectResourceId` | string | The resource ID of the workspace project user assigned managed identity. |
 | `resourceGroupName` | string | The name of the resource group the module was deployed to. |
 | `storageAccountName` | string | The name of the storage account. |
 | `storageAccountResourceId` | string | The resource ID of the storage account. |
@@ -1142,6 +1166,8 @@ The outbound rule. The name of the rule is the object key.
 | `virtualNetworkSubnetResourceId` | string | The resource ID of the subnet in the virtual network. |
 | `workspaceHubName` | string | The name of the workspace hub. |
 | `workspaceHubResourceId` | string | The resource ID of the workspace hub. |
+| `workspaceProjectName` | string | The name of the workspace project. |
+| `workspaceProjectResourceId` | string | The resource ID of the workspace project. |
 
 ## Cross-referenced modules
 
