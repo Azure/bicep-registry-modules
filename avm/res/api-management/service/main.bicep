@@ -313,7 +313,7 @@ module service_authorizationServers 'authorization-server/main.bicep' = [
       authorizationEndpoint: authorizationServer.authorizationEndpoint
       authorizationMethods: authorizationServer.?authorizationMethods ?? ['GET']
       bearerTokenSendingMethods: authorizationServer.?bearerTokenSendingMethods ?? ['authorizationHeader']
-      clientAuthenticationMethod: authorizationServer.clientAuthenticationMethod ?? ['Basic']
+      clientAuthenticationMethod: authorizationServer.?clientAuthenticationMethod ?? ['Basic']
       clientId: authorizationServer.clientId
       clientSecret: authorizationServer.clientSecret
       clientRegistrationEndpoint: authorizationServer.?clientRegistrationEndpoint ?? ''
