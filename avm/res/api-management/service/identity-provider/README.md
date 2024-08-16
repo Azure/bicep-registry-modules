@@ -74,9 +74,11 @@ The client library to be used in the developer portal. Only applies to AAD and A
 
 - Required: No
 - Type: string
+- Default: `''`
 - Allowed:
   ```Bicep
   [
+    ''
     'ADAL'
     'MSAL-2'
   ]
