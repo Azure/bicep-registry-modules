@@ -30,6 +30,7 @@ This module deploys an API Management Service Identity Provider.
 | :-- | :-- | :-- |
 | [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
 | [`clientId`](#parameter-clientid) | string | Client ID of the Application in the external Identity Provider. Required if identity provider is used. |
+| [`clientLibrary`](#parameter-clientlibrary) | string | The client library to be used in the developer portal. Only applies to AAD and AAD B2C Identity Provider. |
 | [`clientSecret`](#parameter-clientsecret) | securestring | Client secret of the Application in external Identity Provider, used to authenticate login request. Required if identity provider is used. |
 
 **Optional parameters**
@@ -66,6 +67,20 @@ Client ID of the Application in the external Identity Provider. Required if iden
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `clientLibrary`
+
+The client library to be used in the developer portal. Only applies to AAD and AAD B2C Identity Provider.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ADAL'
+    'MSAL-2'
+  ]
+  ```
 
 ### Parameter: `clientSecret`
 
