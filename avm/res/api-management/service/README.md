@@ -893,6 +893,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         ]
         authority: '<authority>'
         clientId: 'apimClientid'
+        clientLibrary: 'MSAL-2'
         clientSecret: '<clientSecret>'
         name: 'aad'
         signinTenant: 'mytenant.onmicrosoft.com'
@@ -1113,6 +1114,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           ],
           "authority": "<authority>",
           "clientId": "apimClientid",
+          "clientLibrary": "MSAL-2",
           "clientSecret": "<clientSecret>",
           "name": "aad",
           "signinTenant": "mytenant.onmicrosoft.com"
