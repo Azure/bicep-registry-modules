@@ -14,7 +14,7 @@ param authority string = ''
 @description('Conditional. Client ID of the Application in the external Identity Provider. Required if identity provider is used.')
 param clientId string = ''
 
-@description('Conditional. The client library to be used in the developer portal. Only applies to AAD and AAD B2C Identity Provider.')
+@description('Optional. The client library to be used in the developer portal. Only applies to AAD and AAD B2C Identity Provider.')
 @allowed([
   'ADAL'
   'MSAL-2'
