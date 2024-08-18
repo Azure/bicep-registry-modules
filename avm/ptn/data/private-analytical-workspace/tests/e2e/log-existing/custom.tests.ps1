@@ -134,7 +134,7 @@ Describe 'Validate deployment' {
 
         It 'Check Azure Log Analytics Workspace Defaults' {
 
-            $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName -Name $logAnalyticsWorkspaceName
+            $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName -name $logAnalyticsWorkspaceName
 
             $log.Sku | Should -Be 'PerGB2018'
             $log.RetentionInDays | Should -Be 53
@@ -167,6 +167,12 @@ Describe 'Validate deployment' {
             $kv.PublicNetworkAccess | Should -Be 'Disabled'
             $kv.NetworkAcls.Bypass | Should -Be 'None'
             $kv.NetworkAcls.DefaultAction | Should -Be 'Deny'
+
+            $diag = Get-AzDiagnosticSettingCategory -ResourceId $keyVaultResourceId
+            $diag.Count | Should -Be 3 # AuditEvent, AzurePolicyEvaluationDetails, AllMetrics
+
+
+
 
             # TODO
             #$kv.NetworkAcls.IpAddressRanges  | Should -Be ''
