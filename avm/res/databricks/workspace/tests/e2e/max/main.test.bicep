@@ -23,7 +23,7 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Required. The object id of the AzureDatabricks Enterprise Application. This value is tenant-specific and its value must be configured in the CI secrets as \'CUSTOM-AzureDatabricks-EnterpriseApplication-ObjectId\'')
+@description('Required. The object id of the AzureDatabricks Enterprise Application. This value is tenant-specific and its value must be configured in the secrets Key Vault as \'CUSTOM-AzureDatabricksEnterpriseApplicationObjectId\'.')
 @secure()
 param azureDatabricksEnterpriseApplicationObjectId string
 

@@ -16,7 +16,7 @@ param resourceLocation string = deployment().location
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Required. The thenant Id of the lighthouse tenant. This value is tenant-specific and its value must be configured in the CI secrets as \'CUSTOM-Lighthouse-ManagedBy-TenantId\'')
+@description('Required. The thenant Id of the lighthouse tenant. This value is tenant-specific and its value must be configured in the secrets Key Vault as \'CUSTOM-LighthouseManagedByTenantId\'.')
 @secure()
 param lighthouseManagedByTenantId string
 

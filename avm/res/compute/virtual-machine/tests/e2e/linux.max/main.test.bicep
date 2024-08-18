@@ -20,7 +20,7 @@ param serviceShort string = 'cvmlinmax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Required. The object id of the Backup Management Service Enterprise Application. This value is tenant-specific and its value must be configured in the CI secrets as \'CUSTOM-BackupManagementService-EnterpriseApplication-ObjectId\'')
+@description('Required. The object id of the Backup Management Service Enterprise Application. This value is tenant-specific and its value must be configured in the secrets Key Vault as \'CUSTOM-BackupManagementServiceEnterpriseApplicationObjectId\'.')
 @secure()
 param backupManagementServiceEnterpriseApplicationObjectId string
 
