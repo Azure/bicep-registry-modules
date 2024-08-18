@@ -15,7 +15,7 @@ This module deploys a Container App.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/containerApps` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-05-01/containerApps) |
+| `Microsoft.App/containerApps` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-03-01/containerApps) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -674,6 +674,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | [`disableIngress`](#parameter-disableingress) | bool | Bool to disable all ingress traffic for the container app. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`exposedPort`](#parameter-exposedport) | int | Exposed Port in containers for TCP traffic from ingress. |
+| [`includeAddOns`](#parameter-includeaddons) | bool | Toggle to include the service configuration. |
 | [`ingressAllowInsecure`](#parameter-ingressallowinsecure) | bool | Bool indicating if HTTP connections to is allowed. If set to false HTTP connections are automatically redirected to HTTPS connections. |
 | [`ingressExternal`](#parameter-ingressexternal) | bool | Bool indicating if the App exposes an external HTTP endpoint. |
 | [`ingressTargetPort`](#parameter-ingresstargetport) | int | Target Port in containers for traffic from ingress. |
@@ -691,6 +692,8 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | [`scaleMinReplicas`](#parameter-scaleminreplicas) | int | Minimum number of container replicas. Defaults to 3 if not set. |
 | [`scaleRules`](#parameter-scalerules) | array | Scaling rules. |
 | [`secrets`](#parameter-secrets) | secureObject | The secrets of the Container App. |
+| [`service`](#parameter-service) | object | Dev ContainerApp service type. |
+| [`serviceBinds`](#parameter-servicebinds) | array | List of container app services bound to the app. |
 | [`stickySessionsAffinity`](#parameter-stickysessionsaffinity) | string | Bool indicating if the Container App should enable session affinity. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`trafficLabel`](#parameter-trafficlabel) | string | Associates a traffic label with a revision. Label name should be consist of lower case alphanumeric characters or dashes. |
@@ -1183,6 +1186,14 @@ Exposed Port in containers for TCP traffic from ingress.
 - Type: int
 - Default: `0`
 
+### Parameter: `includeAddOns`
+
+Toggle to include the service configuration.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `ingressAllowInsecure`
 
 Bool indicating if HTTP connections to is allowed. If set to false HTTP connections are automatically redirected to HTTPS connections.
@@ -1464,6 +1475,42 @@ The secrets of the Container App.
 - Required: No
 - Type: secureObject
 - Default: `{}`
+
+### Parameter: `service`
+
+Dev ContainerApp service type.
+
+- Required: No
+- Type: object
+- Default: `{}`
+
+### Parameter: `serviceBinds`
+
+List of container app services bound to the app.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-servicebindsname) | string | The name of the service. |
+| [`serviceId`](#parameter-servicebindsserviceid) | string | The service ID. |
+
+### Parameter: `serviceBinds.name`
+
+The name of the service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `serviceBinds.serviceId`
+
+The service ID.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `stickySessionsAffinity`
 
