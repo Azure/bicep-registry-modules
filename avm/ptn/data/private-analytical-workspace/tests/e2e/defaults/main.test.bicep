@@ -43,6 +43,10 @@ module testDeployment '../../../main.bicep' = [
     params: {
       // You parameters go here
       name: '${namePrefix}${serviceShort}001'
+      tags: {
+        Owner: 'Contoso'
+        CostCenter: '123-456-789'
+      }
     }
   }
 ]

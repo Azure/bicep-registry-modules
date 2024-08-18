@@ -50,7 +50,10 @@ module testDeployment '../../../main.bicep' = [
       //    principalType: 'Group'
       //  }
       //]
-      tags: { Owner: 'Contoso', 'Cost Center': '2345-324' }
+      tags: {
+        Owner: 'Contoso'
+        CostCenter: '123-456-789'
+      }
       enableTelemetry: true
       enableDatabricks: true
       //virtualNetworkResourceId: null

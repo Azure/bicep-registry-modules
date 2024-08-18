@@ -54,6 +54,10 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       enableDatabricks: true
+      tags: {
+        Owner: 'Contoso'
+        CostCenter: '123-456-789'
+      }
     }
   }
 ]

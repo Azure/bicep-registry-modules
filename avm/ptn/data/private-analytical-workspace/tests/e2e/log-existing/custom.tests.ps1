@@ -6,6 +6,8 @@ param (
 Describe 'Validate deployment' {
 
     BeforeAll {
+        $namePrefix = $TestInputData.DeploymentOutputs.namePrefix.Value
+
         $resourceId = $TestInputData.DeploymentOutputs.resourceId.Value
         $name = $TestInputData.DeploymentOutputs.name.Value
         $location = $TestInputData.DeploymentOutputs.location.Value
@@ -100,10 +102,10 @@ Describe 'Validate deployment' {
 
         It 'Check Tags' {
 
-            $tag1 = 'Environment'
-            $tag1Val = 'Non-Prod'
-            $tag2 = 'Role'
-            $tag2Val = 'DeploymentValidation'
+            $tag1 = 'Owner'
+            $tag1Val = 'Contoso'
+            $tag2 = 'CostCenter'
+            $tag2Val = '123-456-789'
 
             $t = Get-AzTag -ResourceId $resourceId
             $t.Properties.TagsProperty[$tag1] | Should -Be $tag1Val
@@ -151,6 +153,8 @@ Describe 'Validate deployment' {
         It 'Check Azure Key Vault Defaults' {
 
             $kv = Get-AzKeyVault -ResourceGroupName $keyVaultResourceGroupName -VaultName $keyVaultName
+            $kv | Should -Not -BeNullOrEmpty
+            $kv
 
             $kv.Sku | Should -Be 'Premium'
 
@@ -168,8 +172,24 @@ Describe 'Validate deployment' {
             $kv.NetworkAcls.Bypass | Should -Be 'None'
             $kv.NetworkAcls.DefaultAction | Should -Be 'Deny'
 
-            $diag = Get-AzDiagnosticSettingCategory -ResourceId $keyVaultResourceId
-            $diag.Count | Should -Be 3 # AuditEvent, AzurePolicyEvaluationDetails, AllMetrics
+            $kvDiag = Get-AzDiagnosticSettingCategory -ResourceId $keyVaultResourceId
+            $kvDiag | Should -Not -BeNullOrEmpty
+            kvDiag
+            $kvDiag.Count | Should -Be 3 # AuditEvent, AzurePolicyEvaluationDetails, AllMetrics
+
+            $kvPEP = Get-AzPrivateEndpoint -ResourceGroupName $keyVaultResourceGroupName -Name "$($keyVaultName)-PEP"
+            $kvPEP | Should -Not -BeNullOrEmpty
+            $kvPEP
+            # $kvPEP TODO - do more checks
+
+            $kvZone = Get-AzPrivateDnsZone -ResourceGroupName $keyVaultResourceGroupName -Name "privatelink.vaultcore.azure.net"
+            $kvZone | Should -Not -BeNullOrEmpty
+            $kvZone
+            $kvZone.NumberOfRecordSets | Should -Be 2 # SOA + A
+            $kvZone.NumberOfVirtualNetworkLinks | Should -Be 1
+            $kvZone.Tags.Owner | Should -Be "Contoso"
+            $kvZone.Tags.CostCenter | Should -Be "123-456-789"
+
 
 
 

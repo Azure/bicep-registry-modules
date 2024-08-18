@@ -6,6 +6,8 @@ param (
 Describe 'Validate deployment' {
 
     BeforeAll {
+        $namePrefix = $TestInputData.DeploymentOutputs.namePrefix.Value
+
         $resourceId = $TestInputData.DeploymentOutputs.resourceId.Value
         $name = $TestInputData.DeploymentOutputs.name.Value
         $location = $TestInputData.DeploymentOutputs.location.Value
@@ -106,7 +108,7 @@ Describe 'Validate deployment' {
 
         It 'Check Azure Log Analytics Workspace Defaults' {
 
-            $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName -Name $logAnalyticsWorkspaceName
+            $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName -name $logAnalyticsWorkspaceName
 
             $log.Sku | Should -Be 'PerGB2018'
             $log.RetentionInDays | Should -Be 365

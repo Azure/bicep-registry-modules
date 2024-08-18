@@ -50,10 +50,11 @@ module testDeployment '../../../main.bicep' = [
       //    principalType: 'Group'
       //  }
       //]
+
       tags: {
         'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
+        Owner: 'Contoso'
+        CostCenter: '123-456-789'
       }
       enableTelemetry: true
       enableDatabricks: true

@@ -55,8 +55,8 @@ module testDeployment '../../../main.bicep' = [
       logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       enableDatabricks: true
       tags: {
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
+        Owner: 'Contoso'
+        CostCenter: '123-456-789'
       }
     }
   }

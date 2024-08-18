@@ -77,7 +77,13 @@ This instance deploys the module with the minimum set of required parameters.
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
   name: 'privateAnalyticalWorkspaceDeployment'
   params: {
+    // Required parameters
     name: 'dpawmin001'
+    // Non-required parameters
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
   }
 }
 ```
@@ -94,8 +100,16 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "dpawmin001"
+    },
+    // Non-required parameters
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
     }
   }
 }
@@ -122,6 +136,10 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     // Non-required parameters
     enableDatabricks: true
     keyVaultResourceId: '<keyVaultResourceId>'
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
   }
 }
 ```
@@ -148,6 +166,12 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     },
     "keyVaultResourceId": {
       "value": "<keyVaultResourceId>"
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
     }
   }
 }
@@ -175,8 +199,8 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     enableDatabricks: true
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     tags: {
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
     }
   }
 }
@@ -207,8 +231,8 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     },
     "tags": {
       "value": {
-        "Environment": "Non-Prod",
-        "Role": "DeploymentValidation"
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
       }
     }
   }
@@ -251,7 +275,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     enableTelemetry: true
     location: '<location>'
     tags: {
-      'Cost Center': '2345-324'
+      CostCenter: '123-456-789'
       Owner: 'Contoso'
     }
   }
@@ -301,7 +325,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     },
     "tags": {
       "value": {
-        "Cost Center": "2345-324",
+        "CostCenter": "123-456-789",
         "Owner": "Contoso"
       }
     }
@@ -345,9 +369,9 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     enableTelemetry: true
     location: '<location>'
     tags: {
-      Environment: 'Non-Prod'
+      CostCenter: '123-456-789'
       'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
+      Owner: 'Contoso'
     }
   }
 }
@@ -396,9 +420,9 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     },
     "tags": {
       "value": {
-        "Environment": "Non-Prod",
+        "CostCenter": "123-456-789",
         "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
+        "Owner": "Contoso"
       }
     }
   }
@@ -746,6 +770,7 @@ This option allows the solution to be connected to a VNET that the customer prov
 | `logAnalyticsWorkspaceResourceGroupName` | string | The name of the Azure Log Analytics Workspace resource group. |
 | `logAnalyticsWorkspaceResourceId` | string | The resource ID of the Azure Log Analytics Workspace. |
 | `name` | string | The name of the resource. |
+| `namePrefix` | string | Name of the private analytical workspace solution and its components. |
 | `resourceGroupName` | string | The name of the managed resource group. |
 | `resourceId` | string | The resource ID of the resource. |
 | `virtualNetworkLocation` | string | The location of the Azure Virtual Network. |
