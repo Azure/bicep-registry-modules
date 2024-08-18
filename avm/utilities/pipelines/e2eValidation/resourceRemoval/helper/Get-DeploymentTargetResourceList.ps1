@@ -123,6 +123,9 @@ Optional. The ID of the management group to fetch deployments from. Relevant for
 .PARAMETER Scope
 Mandatory. The scope to search in
 
+.PARAMETER DoThrow
+Optional. Throw an exception if a deployment cannot be found. If not set, a warning is returned instead.
+
 .EXAMPLE
 Get-DeploymentTargetResourceListInner -Name 'keyvault-12356' -Scope 'resourcegroup'
 
@@ -159,7 +162,10 @@ function Get-DeploymentTargetResourceListInner {
             'managementgroup',
             'tenant'
         )]
-        [string] $Scope
+        [string] $Scope,
+
+        [Parameter(Mandatory = $false)]
+        [switch] $DoThrow
     )
 
     $resultSet = [System.Collections.ArrayList]@()
@@ -178,7 +184,13 @@ function Get-DeploymentTargetResourceListInner {
                 if ($op = Get-DeploymentOperationAtScope @baseInputObject -ResourceGroupName $resourceGroupName -SubscriptionId $currentContext.Subscription.Id) {
                     [array]$deploymentTargets = $op.TargetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
                 } else {
-                    throw 'NoDeploymentFound'
+                    $message = "Deployment [$Name] in scope [$Scope] of Resource Group [$ResourceGroupName] not found."
+                    if ($DoThrow) {
+                        throw $message
+                    } else {
+                        Write-Warning $message
+                        return $false
+                    }
                 }
             } else {
                 # In case the resource group itself was already deleted, there is no need to try and fetch deployments from it
@@ -191,7 +203,13 @@ function Get-DeploymentTargetResourceListInner {
             if ($op = Get-DeploymentOperationAtScope @baseInputObject -SubscriptionId $currentContext.Subscription.Id) {
                 [array]$deploymentTargets = $op.TargetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
             } else {
-                throw 'NoDeploymentFound'
+                $message = "Deployment [$Name] in scope [$Scope] not found."
+                if ($DoThrow) {
+                    throw $message
+                } else {
+                    Write-Warning $message
+                    return $false
+                }
             }
             break
         }
@@ -199,7 +217,13 @@ function Get-DeploymentTargetResourceListInner {
             if ($op = Get-DeploymentOperationAtScope @baseInputObject -ManagementGroupId $ManagementGroupId) {
                 [array]$deploymentTargets = $op.TargetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
             } else {
-                throw 'NoDeploymentFound'
+                $message = "Deployment [$Name] in scope [$Scope] not found."
+                if ($DoThrow) {
+                    throw $message
+                } else {
+                    Write-Warning $message
+                    return $false
+                }
             }
             break
         }
@@ -207,7 +231,13 @@ function Get-DeploymentTargetResourceListInner {
             if ($op = Get-DeploymentOperationAtScope @baseInputObject) {
                 [array]$deploymentTargets = $op.TargetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
             } else {
-                throw 'NoDeploymentFound'
+                $message = "Deployment [$Name] in scope [$Scope] not found."
+                if ($DoThrow) {
+                    throw $message
+                } else {
+                    Write-Warning $message
+                    return $false
+                }
             }
             break
         }
@@ -248,7 +278,7 @@ function Get-DeploymentTargetResourceListInner {
                 }
             }
             Write-Verbose ('Found [subscription] deployment [{0}]' -f $deployment)
-            [array]$resultSet += Get-DeploymentTargetResourceListInner -Name $name -Scope 'subscription'
+            [array]$resultSet += Get-DeploymentTargetResourceListInner -Name $name -Scope 'subscription' -ErrorAction
         } elseif ($deployment -match '/managementgroups/') {
             # Management Group Level Child Deployments #
             ############################################
@@ -361,7 +391,7 @@ function Get-DeploymentTargetResourceList {
                 $innerInputObject['ManagementGroupId'] = $ManagementGroupId
             }
             try {
-                $targetResources = Get-DeploymentTargetResourceListInner @innerInputObject
+                $targetResources = Get-DeploymentTargetResourceListInner @innerInputObject -DoThrow # Specifying [-DoThrow] for top-level deployments that we definitely want to resolve
                 Write-Verbose ('Found & resolved deployment [{0}]. [{1}] resources found to remove.' -f $deploymentNameObject.Name, $targetResources.Count) -Verbose
                 $deploymentNameObject.Resolved = $true
                 $resourcesToRemove += $targetResources
