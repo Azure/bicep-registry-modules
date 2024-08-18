@@ -108,6 +108,19 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      connections: [
+        {
+          name: 'connection'
+          category: 'ApiKey'
+          target: 'https://example.com'
+          connectionProperties: {
+            authType: 'ApiKey'
+            credentials: {
+              key: 'key'
+            }
+          }
+        }
+      ]
       description: 'The cake is a lie.'
       diagnosticSettings: [
         {
