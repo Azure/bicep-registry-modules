@@ -278,7 +278,7 @@ function Get-DeploymentTargetResourceListInner {
                 }
             }
             Write-Verbose ('Found [subscription] deployment [{0}]' -f $deployment)
-            [array]$resultSet += Get-DeploymentTargetResourceListInner -Name $name -Scope 'subscription' -ErrorAction
+            [array]$resultSet += Get-DeploymentTargetResourceListInner -Name $name -Scope 'subscription'
         } elseif ($deployment -match '/managementgroups/') {
             # Management Group Level Child Deployments #
             ############################################
