@@ -2071,7 +2071,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`logsConfiguration`](#parameter-logsconfiguration) | object | The logs settings configuration. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`MSDeployConfiguration`](#parameter-msdeployconfiguration) | object | The extension MSDeployment configuration. |
+| [`msDeployConfiguration`](#parameter-msdeployconfiguration) | object | The extension MSDeployment configuration. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`redundancyMode`](#parameter-redundancymode) | string | Site redundancy mode. |
@@ -2505,7 +2505,7 @@ The resource ID(s) to assign to the resource.
 - Required: No
 - Type: array
 
-### Parameter: `MSDeployConfiguration`
+### Parameter: `msDeployConfiguration`
 
 The extension MSDeployment configuration.
 

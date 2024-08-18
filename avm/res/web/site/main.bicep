@@ -75,7 +75,7 @@ param storageAccountUseIdentityAuthentication bool = false
 param apiManagementConfiguration object?
 
 @description('Optional. The extension MSDeployment configuration.')
-param MSDeployConfiguration object?
+param msDeployConfiguration object?
 
 @description('Optional. Resource ID of the app insight to leverage for this resource.')
 param appInsightResourceId string?
@@ -320,11 +320,11 @@ module app_websettings 'config--web/main.bicep' = if (!empty(apiManagementConfig
   }
 }
 
-module extension_msdeploy 'extensions--msdeploy/main.bicep' = if (!empty(MSDeployConfiguration)) {
+module extension_msdeploy 'extensions--msdeploy/main.bicep' = if (!empty(msDeployConfiguration)) {
   name: '${uniqueString(deployment().name, location)}-Site-Extension-MSDeploy'
   params: {
     appName: app.name
-    MSDeployConfiguration: MSDeployConfiguration ?? {}
+    msDeployConfiguration: msDeployConfiguration ?? {}
   }
 }
 
@@ -350,7 +350,7 @@ module app_slots 'slot/main.bicep' = [
       storageAccountUseIdentityAuthentication: slot.?storageAccountUseIdentityAuthentication ?? storageAccountUseIdentityAuthentication
       appInsightResourceId: slot.?appInsightResourceId ?? appInsightResourceId
       authSettingV2Configuration: slot.?authSettingV2Configuration ?? authSettingV2Configuration
-      MSDeployConfiguration: slot.?MSDeployConfiguration ?? MSDeployConfiguration
+      msDeployConfiguration: slot.?msDeployConfiguration ?? msDeployConfiguration
       diagnosticSettings: slot.?diagnosticSettings
       roleAssignments: slot.?roleAssignments
       appSettingsKeyValuePairs: slot.?appSettingsKeyValuePairs ?? appSettingsKeyValuePairs

@@ -69,7 +69,7 @@ This module deploys a Web or Function App Deployment Slot.
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`MSDeployConfiguration`](#parameter-msdeployconfiguration) | object | The extension MSDeployment configuration. |
+| [`msDeployConfiguration`](#parameter-msdeployconfiguration) | object | The extension MSDeployment configuration. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Allow or block all public traffic. |
 | [`redundancyMode`](#parameter-redundancymode) | string | Site redundancy mode. |
@@ -495,7 +495,7 @@ The resource ID(s) to assign to the resource.
 - Required: No
 - Type: array
 
-### Parameter: `MSDeployConfiguration`
+### Parameter: `msDeployConfiguration`
 
 The extension MSDeployment configuration.
 

@@ -590,7 +590,7 @@
         "description": "Optional. The auth settings V2 configuration."
       }
     },
-    "MSDeployConfiguration": {
+    "msDeployConfiguration": {
       "type": "object",
       "nullable": true,
       "metadata": {
@@ -1457,7 +1457,7 @@
       ]
     },
     "slot_extensionMSdeploy": {
-      "condition": "[not(empty(parameters('MSDeployConfiguration')))]",
+      "condition": "[not(empty(parameters('msDeployConfiguration')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Site-Extension-MSDeploy', uniqueString(deployment().name, parameters('location')))]",
@@ -1470,8 +1470,8 @@
           "appName": {
             "value": "[parameters('appName')]"
           },
-          "MSDeployConfiguration": {
-            "value": "[coalesce(parameters('MSDeployConfiguration'), createObject())]"
+          "msDeployConfiguration": {
+            "value": "[coalesce(parameters('msDeployConfiguration'), createObject())]"
           }
         },
         "template": {
@@ -1495,7 +1495,7 @@
                 "description": "Required. The name of the parent site resource."
               }
             },
-            "MSDeployConfiguration": {
+            "msDeployConfiguration": {
               "type": "object",
               "nullable": true,
               "metadata": {
@@ -1515,7 +1515,7 @@
               "apiVersion": "2023-12-01",
               "name": "[format('{0}/{1}', parameters('appName'), 'MSDeploy')]",
               "kind": "MSDeploy",
-              "properties": "[parameters('MSDeployConfiguration')]",
+              "properties": "[parameters('msDeployConfiguration')]",
               "dependsOn": [
                 "app"
               ]

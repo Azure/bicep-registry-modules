@@ -19,7 +19,7 @@
         "description": "Required. The name of the parent site resource."
       }
     },
-    "MSDeployConfiguration": {
+    "msDeployConfiguration": {
       "type": "object",
       "nullable": true,
       "metadata": {
@@ -39,7 +39,7 @@
       "apiVersion": "2023-12-01",
       "name": "[format('{0}/{1}', parameters('appName'), 'MSDeploy')]",
       "kind": "MSDeploy",
-      "properties": "[parameters('MSDeployConfiguration')]",
+      "properties": "[parameters('msDeployConfiguration')]",
       "dependsOn": [
         "app"
       ]

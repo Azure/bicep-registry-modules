@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 param appName string
 
 @description('Required. Sets the MSDeployment Properties.')
-param MSDeployConfiguration object?
+param msDeployConfiguration object?
 
 resource app 'Microsoft.Web/sites@2022-09-01' existing = {
   name: appName
@@ -15,7 +15,7 @@ resource msdeploy 'Microsoft.Web/sites/extensions@2023-12-01' = {
   name: 'MSDeploy'
   kind: 'MSDeploy'
   parent: app
-  properties: MSDeployConfiguration
+  properties: msDeployConfiguration
 }
 
 @description('The name of the MSDeploy Package.')

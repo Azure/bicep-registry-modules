@@ -72,7 +72,7 @@ param appSettingsKeyValuePairs object?
 param authSettingV2Configuration object?
 
 @description('Optional. The extension MSDeployment configuration.')
-param MSDeployConfiguration object?
+param msDeployConfiguration object?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -300,11 +300,11 @@ module slot_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep
   }
 ]
 
-module slot_extensionMSdeploy 'extensions--msdeploy/main.bicep' = if (!empty(MSDeployConfiguration)) {
+module slot_extensionMSdeploy 'extensions--msdeploy/main.bicep' = if (!empty(msDeployConfiguration)) {
   name: '${uniqueString(deployment().name, location)}-Site-Extension-MSDeploy'
   params: {
     appName: app.name
-    MSDeployConfiguration: MSDeployConfiguration ?? {}
+    msDeployConfiguration: msDeployConfiguration ?? {}
   }
 }
 
