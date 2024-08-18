@@ -223,15 +223,17 @@ runs:
           # Fetch & add custom secrets, if any
           # -----------------------------------
           $keyVaultName = "${{ env.KEY_VAULT_NAME }}"
-          # Note: Also requires at least Key Vault Secrets User role assignment
-          $customKeyVaultSecrets = Get-AzKeyVaultSecret -VaultName $keyVaultName | Where-Object { $_.Name -match '^CUSTOM-.+' }
+          if(-not [String]::IsNullOrEmpty($keyVaultName)) {
+            # Note: This action requires at least 'Key Vault Secrets User' permissions
+            $customKeyVaultSecrets = Get-AzKeyVaultSecret -VaultName $keyVaultName | Where-Object { $_.Name -match '^CUSTOM-.+' }
 
-          foreach($customSecret in $customKeyVaultSecrets) {
-            $formattedName = $customSecret.Name -replace '^CUSTOM-' # e.g. 'CUSTOM-mySecret' -> 'mySecret'
-            if($moduleTemplatePossibleParameters -contains $formattedName) {
-              Write-Verbose ('Setting value for parameter [{0}]' -f $formattedName) -Verbose
-              $functionInput.AdditionalParameters += @{
-                $formattedName = (Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $customSecret.Name).SecretValue
+            foreach($customSecret in $customKeyVaultSecrets) {
+              $formattedName = $customSecret.Name -replace '^CUSTOM-' # e.g. 'CUSTOM-mySecret' -> 'mySecret'
+              if($moduleTemplatePossibleParameters -contains $formattedName) {
+                Write-Verbose ('Setting value for parameter [{0}]' -f $formattedName) -Verbose
+                $functionInput.AdditionalParameters += @{
+                  $formattedName = (Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $customSecret.Name).SecretValue
+                }
               }
             }
           }
@@ -300,15 +302,17 @@ runs:
           # Fetch & add custom secrets, if any
           # -----------------------------------
           $keyVaultName = "${{ env.KEY_VAULT_NAME }}"
-          # Note: Also requires at least Key Vault Secrets User role assignment
-          $customKeyVaultSecrets = Get-AzKeyVaultSecret -VaultName $keyVaultName | Where-Object { $_.Name -match '^CUSTOM-.+' }
+          if(-not [String]::IsNullOrEmpty($keyVaultName)) {
+            # Note: This action requires at least 'Key Vault Secrets User' permissions
+            $customKeyVaultSecrets = Get-AzKeyVaultSecret -VaultName $keyVaultName | Where-Object { $_.Name -match '^CUSTOM-.+' }
 
-          foreach($customSecret in $customKeyVaultSecrets) {
-            $formattedName = $customSecret.Name -replace '^CUSTOM-' # e.g. 'CUSTOM-mySecret' -> 'mySecret'
-            if($moduleTemplatePossibleParameters -contains $formattedName) {
-              Write-Verbose ('Setting value for parameter [{0}]' -f $formattedName) -Verbose
-              $functionInput.AdditionalParameters += @{
-                $formattedName = (Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $customSecret.Name).SecretValue
+            foreach($customSecret in $customKeyVaultSecrets) {
+              $formattedName = $customSecret.Name -replace '^CUSTOM-' # e.g. 'CUSTOM-mySecret' -> 'mySecret'
+              if($moduleTemplatePossibleParameters -contains $formattedName) {
+                Write-Verbose ('Setting value for parameter [{0}]' -f $formattedName) -Verbose
+                $functionInput.AdditionalParameters += @{
+                  $formattedName = (Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $customSecret.Name).SecretValue
+                }
               }
             }
           }
