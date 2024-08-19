@@ -174,7 +174,7 @@ Describe 'Validate deployment' {
 
             $kvDiag = Get-AzDiagnosticSettingCategory -ResourceId $keyVaultResourceId
             $kvDiag | Should -Not -BeNullOrEmpty
-            kvDiag
+            $kvDiag
             $kvDiag.Count | Should -Be 3 # AuditEvent, AzurePolicyEvaluationDetails, AllMetrics
 
             $kvPEP = Get-AzPrivateEndpoint -ResourceGroupName $keyVaultResourceGroupName -Name "$($keyVaultName)-PEP"
