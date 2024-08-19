@@ -217,6 +217,16 @@ Describe 'Validate deployment' {
             $adbZone.NumberOfVirtualNetworkLinks | Should -Be 1
             $adbZone.Tags.Owner | Should -Be "Contoso"
             $adbZone.Tags.CostCenter | Should -Be "123-456-789"
+
+            $adbAuthPEP = Get-AzPrivateEndpoint -ResourceGroupName $databricksResourceGroupName -Name "$($databricksName)-auth-PEP"
+            $adbAuthPEP | Should -Not -BeNullOrEmpty
+            $adbAuthPEP
+            # $adbAuthPEP TODO - do more checks
+
+            $adbUiPEP = Get-AzPrivateEndpoint -ResourceGroupName $databricksResourceGroupName -Name "$($databricksName)ui-PEP"
+            $adbUiPEP | Should -Not -BeNullOrEmpty
+            $adbUiPEP
+            # $adbUiPEP TODO - do more checks
         }
     }
 }
