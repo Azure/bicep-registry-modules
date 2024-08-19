@@ -551,7 +551,6 @@ The disks sku name. Can be .
   [
     'Premium_LRS'
     'Premium_ZRS'
-    'Premium_ZRS'
     'PremiumV2_LRS'
     'Standard_LRS'
     'StandardSSD_LRS'
