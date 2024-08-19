@@ -1,0 +1,71 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.29.47.4906",
+      "templateHash": "2006653133597094766"
+    },
+    "name": "Site Deployment Extension ",
+    "description": "This module deploys a Site extension for MSDeploy.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "appName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the parent site resource."
+      }
+    },
+    "msDeployConfiguration": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Required. Sets the MSDeployment Properties."
+      }
+    }
+  },
+  "resources": {
+    "app": {
+      "existing": true,
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-09-01",
+      "name": "[parameters('appName')]"
+    },
+    "msdeploy": {
+      "type": "Microsoft.Web/sites/extensions",
+      "apiVersion": "2023-12-01",
+      "name": "[format('{0}/{1}', parameters('appName'), 'MSDeploy')]",
+      "kind": "MSDeploy",
+      "properties": "[parameters('msDeployConfiguration')]",
+      "dependsOn": [
+        "app"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the MSDeploy Package."
+      },
+      "value": "MSDeploy"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Site Extension."
+      },
+      "value": "[resourceId('Microsoft.Web/sites/extensions', parameters('appName'), 'MSDeploy')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the site config was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
