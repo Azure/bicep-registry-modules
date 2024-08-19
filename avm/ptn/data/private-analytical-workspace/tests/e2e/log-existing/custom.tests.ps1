@@ -115,9 +115,10 @@ Describe 'Validate deployment' {
             $t.Properties.TagsProperty[$tag1] | Should -Be $tag1Val
             $t.Properties.TagsProperty[$tag2] | Should -Be $tag2Val
 
-            $t = Get-AzTag -ResourceId $logAnalyticsWorkspaceResourceId
-            $t.Properties.TagsProperty[$tag1] | Should -Be $tag1Val
-            $t.Properties.TagsProperty[$tag2] | Should -Be $tag2Val
+            # Existing log has different tags
+            #$t = Get-AzTag -ResourceId $logAnalyticsWorkspaceResourceId
+            #$t.Properties.TagsProperty[$tag1] | Should -Be $tag1Val
+            #$t.Properties.TagsProperty[$tag2] | Should -Be $tag2Val
 
             $t = Get-AzTag -ResourceId $keyVaultResourceId
             $t.Properties.TagsProperty[$tag1] | Should -Be $tag1Val
