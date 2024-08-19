@@ -188,7 +188,7 @@ function Get-DeploymentTargetResourceListInner {
                     if ($DoThrow) {
                         throw $message
                     } else {
-                        Write-Warning $message
+                        Write-Warning "$message. Ignoring, as nested deployment."
                         return
                     }
                 }
@@ -207,7 +207,7 @@ function Get-DeploymentTargetResourceListInner {
                 if ($DoThrow) {
                     throw $message
                 } else {
-                    Write-Warning $message
+                    Write-Warning "$message. Ignoring, as nested deployment."
                     return
                 }
             }
@@ -221,7 +221,7 @@ function Get-DeploymentTargetResourceListInner {
                 if ($DoThrow) {
                     throw $message
                 } else {
-                    Write-Warning $message
+                    Write-Warning "$message. Ignoring, as nested deployment."
                     return
                 }
             }
@@ -235,7 +235,7 @@ function Get-DeploymentTargetResourceListInner {
                 if ($DoThrow) {
                     throw $message
                 } else {
-                    Write-Warning $message
+                    Write-Warning "$message. Ignoring, as nested deployment."
                     return
                 }
             }
