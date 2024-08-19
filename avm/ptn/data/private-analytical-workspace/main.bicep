@@ -662,9 +662,6 @@ module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.3.1' = if (creat
 // Outputs      //
 // ============ //
 
-@description('Name of the private analytical workspace solution and its components.')
-output namePrefix string = name
-
 @description('The resource ID of the resource.')
 output resourceId string = vnetCfg.resourceId
 

@@ -6,7 +6,6 @@ param (
 Describe 'Validate deployment' {
 
     BeforeAll {
-        $namePrefix = $TestInputData.DeploymentOutputs.namePrefix.Value
 
         $resourceId = $TestInputData.DeploymentOutputs.resourceId.Value
         $name = $TestInputData.DeploymentOutputs.name.Value

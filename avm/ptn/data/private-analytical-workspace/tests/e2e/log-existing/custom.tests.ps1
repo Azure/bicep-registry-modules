@@ -6,7 +6,6 @@ param (
 Describe 'Validate deployment' {
 
     BeforeAll {
-        $namePrefix = $TestInputData.DeploymentOutputs.namePrefix.Value
 
         $resourceId = $TestInputData.DeploymentOutputs.resourceId.Value
         $name = $TestInputData.DeploymentOutputs.name.Value
@@ -200,6 +199,7 @@ Describe 'Validate deployment' {
             #diag settings
             #private links
             #role assignments
+            # $adb | Format-List
         }
     }
 
@@ -209,6 +209,10 @@ Describe 'Validate deployment' {
         }
 
         It 'Check Azure Databricks Defaults' {
+
+            $adb = Get-AzDatabricksWorkspace -ResourceGroupName $databricksResourceGroupName -Name $databricksName
+            $adb | Should -Not -BeNullOrEmpty
+            $adb
 
             $adbZone = Get-AzPrivateDnsZone -ResourceGroupName $databricksResourceGroupName -Name "privatelink.azuredatabricks.net"
             $adbZone | Should -Not -BeNullOrEmpty

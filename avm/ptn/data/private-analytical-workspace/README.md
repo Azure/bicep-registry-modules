@@ -770,7 +770,6 @@ This option allows the solution to be connected to a VNET that the customer prov
 | `logAnalyticsWorkspaceResourceGroupName` | string | The name of the Azure Log Analytics Workspace resource group. |
 | `logAnalyticsWorkspaceResourceId` | string | The resource ID of the Azure Log Analytics Workspace. |
 | `name` | string | The name of the resource. |
-| `namePrefix` | string | Name of the private analytical workspace solution and its components. |
 | `resourceGroupName` | string | The name of the managed resource group. |
 | `resourceId` | string | The resource ID of the resource. |
 | `virtualNetworkLocation` | string | The location of the Azure Virtual Network. |
