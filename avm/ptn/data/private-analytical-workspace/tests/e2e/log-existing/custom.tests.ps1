@@ -202,4 +202,21 @@ Describe 'Validate deployment' {
             #role assignments
         }
     }
+
+    Context 'Azure Databricks Tests' {
+
+        BeforeAll {
+        }
+
+        It 'Check Azure Databricks Defaults' {
+
+            $adbZone = Get-AzPrivateDnsZone -ResourceGroupName $databricksResourceGroupName -Name "privatelink.azuredatabricks.net"
+            $adbZone | Should -Not -BeNullOrEmpty
+            $adbZone
+            $adbZone.NumberOfRecordSets | Should -Be 4 # SOA + 3xA
+            $adbZone.NumberOfVirtualNetworkLinks | Should -Be 1
+            $adbZone.Tags.Owner | Should -Be "Contoso"
+            $adbZone.Tags.CostCenter | Should -Be "123-456-789"
+        }
+    }
 }
