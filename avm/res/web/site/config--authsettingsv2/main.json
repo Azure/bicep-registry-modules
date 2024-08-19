@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "13561813663473459290"
+      "templateHash": "15126303852151434516"
     },
     "name": "Site Auth Settings V2 Config",
     "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -26,6 +26,7 @@
         "functionapp,workflowapp",
         "functionapp,workflowapp,linux",
         "functionapp,linux,container",
+        "functionapp,linux,container,azurecontainerapps",
         "app,linux",
         "app",
         "linux,api",
