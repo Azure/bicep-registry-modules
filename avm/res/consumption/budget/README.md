@@ -26,7 +26,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/consumption/budget:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using only defaults](#example-2-using-only-defaults)
+- [Using `thresholdType` `Forecasted`](#example-2-using-thresholdtype-forecasted)
 - [Using large parameter set](#example-3-using-large-parameter-set)
 - [WAF-aligned](#example-4-waf-aligned)
 
@@ -90,7 +90,7 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 2: _Using `thresholdType` `Forecasted`_
 
 This instance deploys the module with the minimum set of required parameters.
 
