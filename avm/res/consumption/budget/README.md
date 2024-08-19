@@ -92,7 +92,7 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 
 ### Example 2: _Using `thresholdType` `Forecasted`_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with the minimum set of required parameters and `thresholdType` `Forecasted`.
 
 
 <details>
@@ -105,7 +105,7 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
   params: {
     // Required parameters
     amount: 500
-    name: 'cbmin001'
+    name: 'cbfcst001'
     // Non-required parameters
     contactEmails: [
       'dummy@contoso.com'
@@ -133,7 +133,7 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
       "value": 500
     },
     "name": {
-      "value": "cbmin001"
+      "value": "cbfcst001"
     },
     // Non-required parameters
     "contactEmails": {

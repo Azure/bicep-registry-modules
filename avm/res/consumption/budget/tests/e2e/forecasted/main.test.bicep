@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using `thresholdType` `Forecasted`'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata description = 'This instance deploys the module with the minimum set of required parameters and `thresholdType` `Forecasted`.'
 
 // ========== //
 // Parameters //
@@ -11,7 +11,7 @@ metadata description = 'This instance deploys the module with the minimum set of
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cbmin'
+param serviceShort string = 'cbfcst'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
