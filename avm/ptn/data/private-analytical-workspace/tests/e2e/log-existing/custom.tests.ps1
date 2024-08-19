@@ -213,7 +213,7 @@ Describe 'Validate deployment' {
             $adbZone = Get-AzPrivateDnsZone -ResourceGroupName $databricksResourceGroupName -Name "privatelink.azuredatabricks.net"
             $adbZone | Should -Not -BeNullOrEmpty
             $adbZone
-            $adbZone.NumberOfRecordSets | Should -Be 4 # SOA + 3xA
+            $adbZone.NumberOfRecordSets | Should -Be 5 # SOA + 4xA
             $adbZone.NumberOfVirtualNetworkLinks | Should -Be 1
             $adbZone.Tags.Owner | Should -Be "Contoso"
             $adbZone.Tags.CostCenter | Should -Be "123-456-789"
