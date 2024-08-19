@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "13594058281073706360"
+      "version": "0.29.47.4906",
+      "templateHash": "14437175207078546495"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module.",
@@ -186,6 +186,20 @@
         "description": "Optional. Resource ID of the VPN Gateway to link to."
       }
     },
+    "internetToFirewall": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Configures Routing Intent to forward Internet traffic (0.0.0.0/0) to Azure Firewall. Default is true."
+      }
+    },
+    "privateToFirewall": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Configures Routing Intent to forward Private traffic (RFC 1918) to Azure Firewall. Default is true."
+      }
+    },
     "hubRouteTables": {
       "type": "array",
       "defaultValue": [],
@@ -276,10 +290,112 @@
         "virtualHub"
       ]
     },
+    "virtualHub_routingIntent": {
+      "condition": "[and(not(empty(parameters('azureFirewallResourceId'))), or(parameters('internetToFirewall'), parameters('privateToFirewall')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-routingIntent', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "virtualHubName": {
+            "value": "[parameters('name')]"
+          },
+          "azureFirewallResourceId": {
+            "value": "[parameters('azureFirewallResourceId')]"
+          },
+          "internetToFirewall": {
+            "value": "[parameters('internetToFirewall')]"
+          },
+          "privateToFirewall": {
+            "value": "[parameters('privateToFirewall')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "9080948373192033748"
+            },
+            "name": "Virtual Hub Routing Intent",
+            "description": "This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "azureFirewallResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Hub firewall Resource ID."
+              }
+            },
+            "virtualHubName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Virtual Hub."
+              }
+            },
+            "privateToFirewall": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Configures Routing Intent to forward Private traffic to the firewall (RFC1918)."
+              }
+            },
+            "internetToFirewall": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0)."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualHubs/routingIntent",
+              "apiVersion": "2023-11-01",
+              "name": "[format('{0}/{1}', parameters('virtualHubName'), 'defaultRouteTable')]",
+              "properties": {
+                "routingPolicies": "[if(and(equals(parameters('internetToFirewall'), true()), equals(parameters('privateToFirewall'), true())), createArray(createObject('name', '_policy_PublicTraffic', 'destinations', createArray('Internet'), 'nextHop', parameters('azureFirewallResourceId')), createObject('name', '_policy_PrivateTraffic', 'destinations', createArray('PrivateTraffic'), 'nextHop', parameters('azureFirewallResourceId'))), if(and(equals(parameters('internetToFirewall'), true()), equals(parameters('privateToFirewall'), false())), createArray(createObject('name', '_policy_PublicTraffic', 'destinations', createArray('Internet'), 'nextHop', parameters('azureFirewallResourceId'))), if(and(equals(parameters('internetToFirewall'), false()), equals(parameters('privateToFirewall'), true())), createArray(createObject('name', '_policy_PrivateTraffic', 'destinations', createArray('PrivateTraffic'), 'nextHop', parameters('azureFirewallResourceId'))), null())))]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Routing Intent configuration."
+              },
+              "value": "defaultRouteTable"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Routing Intent configuration."
+              },
+              "value": "[resourceId('Microsoft.Network/virtualHubs/routingIntent', parameters('virtualHubName'), 'defaultRouteTable')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the Routing Intent configuration was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "virtualHub"
+      ]
+    },
     "virtualHub_routeTables": {
       "copy": {
         "name": "virtualHub_routeTables",
-        "count": "[length(parameters('hubRouteTables'))]"
+        "count": "[length(coalesce(parameters('hubRouteTables'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -294,10 +410,10 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('hubRouteTables')[copyIndex()].name]"
+            "value": "[coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].name]"
           },
-          "labels": "[if(contains(parameters('hubRouteTables')[copyIndex()], 'labels'), createObject('value', parameters('hubRouteTables')[copyIndex()].labels), createObject('value', createArray()))]",
-          "routes": "[if(contains(parameters('hubRouteTables')[copyIndex()], 'routes'), createObject('value', parameters('hubRouteTables')[copyIndex()].routes), createObject('value', createArray()))]"
+          "labels": "[if(contains(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'labels'), createObject('value', coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].labels), createObject('value', createArray()))]",
+          "routes": "[if(contains(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'routes'), createObject('value', coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].routes), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -305,8 +421,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "7178717349327479453"
+              "version": "0.29.47.4906",
+              "templateHash": "2767725465951482406"
             },
             "name": "Virtual Hub Route Tables",
             "description": "This module deploys a Virtual Hub Route Table.",
@@ -412,8 +528,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "3505452198428635330"
+              "version": "0.29.47.4906",
+              "templateHash": "12641692391238745355"
             },
             "name": "Virtual Hub Virtual Network Connections",
             "description": "This module deploys a Virtual Hub Virtual Network Connection.",
@@ -456,7 +572,7 @@
           "resources": [
             {
               "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
               "properties": {
                 "enableInternetSecurity": "[parameters('enableInternetSecurity')]",
