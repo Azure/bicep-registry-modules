@@ -189,7 +189,6 @@ function Get-DeploymentTargetResourceListInner {
                         throw $message
                     } else {
                         Write-Warning $message
-                        return $false
                     }
                 }
             } else {
@@ -208,7 +207,6 @@ function Get-DeploymentTargetResourceListInner {
                     throw $message
                 } else {
                     Write-Warning $message
-                    return $false
                 }
             }
             break
@@ -236,7 +234,6 @@ function Get-DeploymentTargetResourceListInner {
                     throw $message
                 } else {
                     Write-Warning $message
-                    return $false
                 }
             }
             break
