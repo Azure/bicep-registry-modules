@@ -154,8 +154,9 @@ Describe 'Validate deployment' {
                 $kv.SoftDeleteRetentionInDays | Should -Be 90
                 $kv.EnablePurgeProtection | Should -Be $true
                 $kv.PublicNetworkAccess | Should -Be 'Disabled'
-                $kv.NetworkAcls.Bypass | Should -Be 'None'
+                $kv.AccessPolicies | Should -BeNullOrEmpty
                 $kv.NetworkAcls.DefaultAction | Should -Be 'Deny'
+                $kv.NetworkAcls.Bypass | Should -Be 'None'
                 $kv.NetworkAcls.IpAddressRanges | Should -BeNullOrEmpty
                 $kv.NetworkAcls.VirtualNetworkResourceIds | Should -BeNullOrEmpty
                 $kv.Tags.Owner | Should -Be "Contoso"
@@ -163,8 +164,15 @@ Describe 'Validate deployment' {
 
                 $kvDiag = Get-AzDiagnosticSettingCategory -ResourceId $keyVaultResourceId
                 $kvDiag | Should -Not -BeNullOrEmpty
-                $kvDiag.ProvisioningState | Should -Be "Succeeded"
+                #$kvDiag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
                 $kvDiag.Count | Should -Be 3 # AuditEvent, AzurePolicyEvaluationDetails, AllMetrics
+                $kvDiag | ForEach-Object {
+                    It "Has Log $_.Name" {
+                        $_.Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
+                    }
+                }
+
+
 
 
 
