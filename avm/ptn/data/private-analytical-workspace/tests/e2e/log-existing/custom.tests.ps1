@@ -125,15 +125,9 @@ Describe 'Validate deployment' {
                 $log.ForceCmkForQuery | Should -Be $true
                 $log.PrivateLinkScopedResources | Should -BeNullOrEmpty
                 $log.DefaultDataCollectionRuleResourceId | Should -BeNullOrEmpty
+                $log.WorkspaceFeatures.EnableLogAccessUsingOnlyResourcePermissions | Should -Be $true
                 $log.Tags.Owner | Should -Be "Contoso"
                 $log.Tags.CostCenter | Should -Be "123-456-789"
-
-
-
-#WorkspaceCapping                    : Microsoft.Azure.Management.OperationalInsights.Models.WorkspaceCapping
-#WorkspaceFeatures                   : Microsoft.Azure.Commands.OperationalInsights.Models.PSWorkspaceFeatures
-
-
             }
         }
 
