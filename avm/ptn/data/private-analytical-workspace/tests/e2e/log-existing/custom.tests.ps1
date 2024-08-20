@@ -131,6 +131,9 @@ Describe 'Validate deployment' {
             }
         }
 
+
+
+
         Context 'Secrets - Azure Key Vault Tests' {
 
             BeforeAll {
@@ -143,29 +146,25 @@ Describe 'Validate deployment' {
 
                 #$kv.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
                 $kv.Sku | Should -Be 'Premium'
-
                 $kv.EnabledForDeployment | Should -Be $false
                 $kv.EnabledForTemplateDeployment | Should -Be $false
                 $kv.EnabledForDiskEncryption | Should -Be $false
-
-                $kv.EnabledForRBACAuthorization | Should -BeNullOrEmpty #-Be $true
-
+                $kv.EnableRbacAuthorization | Should -Be $true
                 $kv.EnableSoftDelete | Should -Be $true
                 $kv.SoftDeleteRetentionInDays | Should -Be 90
                 $kv.EnablePurgeProtection | Should -Be $true
-
                 $kv.PublicNetworkAccess | Should -Be 'Disabled'
                 $kv.NetworkAcls.Bypass | Should -Be 'None'
                 $kv.NetworkAcls.DefaultAction | Should -Be 'Deny'
-
-
-
+                $kv.NetworkAcls.IpAddressRanges | Should -BeNullOrEmpty
+                $kv.NetworkAcls.VirtualNetworkResourceIds | Should -BeNullOrEmpty
+                $kv.Tags.Owner | Should -Be "Contoso"
+                $kv.Tags.CostCenter | Should -Be "123-456-789"
 
                 $kvDiag = Get-AzDiagnosticSettingCategory -ResourceId $keyVaultResourceId
                 $kvDiag | Should -Not -BeNullOrEmpty
                 $kvDiag.ProvisioningState | Should -Be "Succeeded"
                 $kvDiag.Count | Should -Be 3 # AuditEvent, AzurePolicyEvaluationDetails, AllMetrics
-
 
 
 
@@ -195,6 +194,10 @@ Describe 'Validate deployment' {
             }
         }
 
+
+
+
+
         Context 'Azure Databricks Tests' {
 
             BeforeAll {
@@ -206,7 +209,7 @@ Describe 'Validate deployment' {
                 $adb | Should -Not -BeNullOrEmpty
                 $adb.ProvisioningState | Should -Be "Succeeded"
                 $adb.CustomPrivateSubnetNameValue | Should -Be "dbw-backend-subnet"
-                $adb.CustomPublicSubnetNameValue | Should -Be "dbw-backend-subnet"
+                $adb.CustomPublicSubnetNameValue | Should -Be "dbw-frontend-subnet"
                 $adb.CustomVirtualNetworkIdValue | Should -Be $virtualNetworkResourceId
                 $adb.EnableNoPublicIP | Should -Be $true
                 $adb.IsUcEnabled | Should -Be $true
