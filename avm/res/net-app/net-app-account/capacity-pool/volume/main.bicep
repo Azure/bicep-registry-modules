@@ -227,7 +227,11 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
     coolAccessRetrievalPolicy: coolAccessRetrievalPolicy
     coolnessPeriod: coolnessPeriod
     encryptionKeySource: encryptionKeySource
-    keyVaultPrivateEndpointResourceId: keyVaultPrivateEndpointResourceId
+    ...(encryptionKeySource != 'Microsoft.NetApp'
+      ? {
+          keyVaultPrivateEndpointResourceId: keyVaultPrivateEndpointResourceId
+        }
+      : {})
     ...(volumeType != ''
       ? {
           volumeType: volumeType

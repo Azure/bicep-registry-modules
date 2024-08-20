@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "11132604092738793703"
+      "templateHash": "4309703310956110255"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File.",
@@ -474,12 +474,24 @@
           "size": {
             "value": "[parameters('capacityPools')[copyIndex()].size]"
           },
-          "serviceLevel": "[if(contains(parameters('capacityPools')[copyIndex()], 'serviceLevel'), createObject('value', parameters('capacityPools')[copyIndex()].serviceLevel), createObject('value', 'Standard'))]",
-          "qosType": "[if(contains(parameters('capacityPools')[copyIndex()], 'qosType'), createObject('value', parameters('capacityPools')[copyIndex()].qosType), createObject('value', 'Auto'))]",
-          "volumes": "[if(contains(parameters('capacityPools')[copyIndex()], 'volumes'), createObject('value', parameters('capacityPools')[copyIndex()].volumes), createObject('value', createArray()))]",
-          "coolAccess": "[if(contains(parameters('capacityPools')[copyIndex()], 'coolAccess'), createObject('value', parameters('capacityPools')[copyIndex()].coolAccess), createObject('value', false()))]",
-          "roleAssignments": "[if(contains(parameters('capacityPools')[copyIndex()], 'roleAssignments'), createObject('value', parameters('capacityPools')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "encryptionType": "[if(contains(parameters('capacityPools')[copyIndex()], 'encryptionType'), createObject('value', parameters('capacityPools')[copyIndex()].encryptionType), createObject('value', 'Single'))]",
+          "serviceLevel": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'serviceLevel'), 'Standard')]"
+          },
+          "qosType": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'qosType'), 'Auto')]"
+          },
+          "volumes": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'volumes'), createArray())]"
+          },
+          "coolAccess": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'coolAccess'), false())]"
+          },
+          "roleAssignments": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'roleAssignments'), createArray())]"
+          },
+          "encryptionType": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'encryptionType'), 'Single')]"
+          },
           "tags": {
             "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'tags'), parameters('tags'))]"
           }
@@ -492,7 +504,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "7385683223810464585"
+              "templateHash": "2991493712029822030"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -927,7 +939,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "11220316061842286679"
+                      "templateHash": "6870432140728658293"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -1418,7 +1430,7 @@
                       "apiVersion": "2024-03-01",
                       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
                       "location": "[parameters('location')]",
-                      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource'), 'keyVaultPrivateEndpointResourceId', parameters('keyVaultPrivateEndpointResourceId')), if(not(equals(parameters('volumeType'), '')), createObject('volumeType', parameters('volumeType'), 'dataProtection', createObject('replication', createObject('endpointType', parameters('endpointType'), 'remoteVolumeRegion', parameters('remoteVolumeRegion'), 'remoteVolumeResourceId', parameters('remoteVolumeResourceId'), 'replicationSchedule', parameters('replicationSchedule')), 'snapshot', createObject('snapshotPolicyId', parameters('snapshotPolicyId')))), createObject()), createObject('networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', parameters('subnetResourceId'), 'exportPolicy', if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null()))))]",
+                      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', parameters('keyVaultPrivateEndpointResourceId')), createObject()), if(not(equals(parameters('volumeType'), '')), createObject('volumeType', parameters('volumeType'), 'dataProtection', createObject('replication', createObject('endpointType', parameters('endpointType'), 'remoteVolumeRegion', parameters('remoteVolumeRegion'), 'remoteVolumeResourceId', parameters('remoteVolumeResourceId'), 'replicationSchedule', parameters('replicationSchedule')), 'snapshot', createObject('snapshotPolicyId', parameters('snapshotPolicyId')))), createObject()), createObject('networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', parameters('subnetResourceId'), 'exportPolicy', if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null()))))]",
                       "zones": "[parameters('zones')]",
                       "dependsOn": [
                         "netAppAccount::capacityPool"
