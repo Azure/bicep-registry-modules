@@ -26,8 +26,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/consumption/budget:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using `thresholdType` `Forecasted`](#example-2-using-thresholdtype-forecasted)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -89,7 +90,71 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using `thresholdType` `Forecasted`_
+
+This instance deploys the module with the minimum set of required parameters and `thresholdType` `Forecasted`.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module budget 'br/public:avm/res/consumption/budget:<version>' = {
+  name: 'budgetDeployment'
+  params: {
+    // Required parameters
+    amount: 500
+    name: 'cbfcst001'
+    // Non-required parameters
+    contactEmails: [
+      'dummy@contoso.com'
+    ]
+    location: '<location>'
+    thresholdType: 'Forecasted'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "amount": {
+      "value": 500
+    },
+    "name": {
+      "value": "cbfcst001"
+    },
+    // Non-required parameters
+    "contactEmails": {
+      "value": [
+        "dummy@contoso.com"
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "thresholdType": {
+      "value": "Forecasted"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -175,7 +240,7 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
