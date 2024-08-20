@@ -116,6 +116,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         size: 4398046511104
         volumes: [
           {
+            encryptionKeySource: '<encryptionKeySource>'
             exportPolicyRules: [
               {
                 allowedClients: '0.0.0.0/0'
@@ -145,6 +146,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
           }
           {
+            encryptionKeySource: '<encryptionKeySource>'
             exportPolicyRules: [
               {
                 allowedClients: '0.0.0.0/0'
@@ -252,6 +254,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "size": 4398046511104,
           "volumes": [
             {
+              "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicyRules": [
                 {
                   "allowedClients": "0.0.0.0/0",
@@ -281,6 +284,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               ]
             },
             {
+              "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicyRules": [
                 {
                   "allowedClients": "0.0.0.0/0",
@@ -398,6 +402,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         size: 4398046511104
         volumes: [
           {
+            encryptionKeySource: '<encryptionKeySource>'
             exportPolicyRules: [
               {
                 allowedClients: '0.0.0.0/0'
@@ -427,6 +432,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
           }
           {
+            encryptionKeySource: '<encryptionKeySource>'
             name: 'nanaanfs3-vol-002'
             networkFeatures: 'Standard'
             protocolTypes: [
@@ -521,6 +527,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "size": 4398046511104,
           "volumes": [
             {
+              "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicyRules": [
                 {
                   "allowedClients": "0.0.0.0/0",
@@ -550,6 +557,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               ]
             },
             {
+              "encryptionKeySource": "<encryptionKeySource>",
               "name": "nanaanfs3-vol-002",
               "networkFeatures": "Standard",
               "protocolTypes": [
