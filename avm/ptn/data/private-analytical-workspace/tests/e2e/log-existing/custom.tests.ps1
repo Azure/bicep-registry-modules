@@ -70,7 +70,6 @@ Describe 'Validate deployment' {
 
             $r = Get-AzResource -ResourceId $resourceId
             $r | Should -Not -BeNullOrEmpty
-            $r | Format-List
             $r.ProvisioningState | Should -Be "Succeeded"
             $r.Name | Should -Be $name
             $r.Location | Should -Be $location
@@ -78,7 +77,6 @@ Describe 'Validate deployment' {
 
             $r = Get-AzResource -ResourceId $virtualNetworkResourceId
             $r | Should -Not -BeNullOrEmpty
-            $r | Format-List
             $r.ProvisioningState | Should -Be "Succeeded"
             $r.Name | Should -Be $virtualNetworkName
             $r.Location | Should -Be $virtualNetworkLocation
@@ -86,7 +84,6 @@ Describe 'Validate deployment' {
 
             $r = Get-AzResource -ResourceId $logAnalyticsWorkspaceResourceId
             $r | Should -Not -BeNullOrEmpty
-            $r | Format-List
             $r.ProvisioningState | Should -Be "Succeeded"
             $r.Name | Should -Be $logAnalyticsWorkspaceName
             $r.Location | Should -Be $logAnalyticsWorkspaceLocation
@@ -94,7 +91,6 @@ Describe 'Validate deployment' {
 
             $r = Get-AzResource -ResourceId $keyVaultResourceId
             $r | Should -Not -BeNullOrEmpty
-            $r | Format-List
             $r.ProvisioningState | Should -Be "Succeeded"
             $r.Name | Should -Be $keyVaultName
             $r.Location | Should -Be $keyVaultLocation
@@ -102,7 +98,6 @@ Describe 'Validate deployment' {
 
             $r = Get-AzResource -ResourceId $databricksResourceId
             $r | Should -Not -BeNullOrEmpty
-            $r | Format-List
             $r.ProvisioningState | Should -Be "Succeeded"
             $r.Name | Should -Be $databricksName
             $r.Location | Should -Be $databricksLocation
@@ -118,13 +113,27 @@ Describe 'Validate deployment' {
 
                 $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName -name $logAnalyticsWorkspaceName
                 $log | Should -Not -BeNullOrEmpty
-                $log | Format-List
 
                 $log.ProvisioningState | Should -Be "Succeeded"
                 $log.Sku | Should -Be 'PerGB2018'
                 $log.RetentionInDays | Should -Be 53
                 $log.WorkspaceCapping.DailyQuotaGb | Should -Be 22
                 $log.WorkspaceCapping.DataIngestionStatus | Should -Be 'RespectQuota'
+                $log.CapacityReservationLevel | Should -BeNullOrEmpty
+                $log.PublicNetworkAccessForIngestion | Should -Be "Enabled"
+                $log.PublicNetworkAccessForQuery | Should -Be "Enabled"
+                $log.ForceCmkForQuery | Should -Be $true
+                $log.PrivateLinkScopedResources | Should -BeNullOrEmpty
+                $log.DefaultDataCollectionRuleResourceId | Should -BeNullOrEmpty
+                $log.Tags.Owner | Should -Be "Contoso"
+                $log.Tags.CostCenter | Should -Be "123-456-789"
+
+
+
+#WorkspaceCapping                    : Microsoft.Azure.Management.OperationalInsights.Models.WorkspaceCapping
+#WorkspaceFeatures                   : Microsoft.Azure.Commands.OperationalInsights.Models.PSWorkspaceFeatures
+
+
             }
         }
 
@@ -137,9 +146,8 @@ Describe 'Validate deployment' {
 
                 $kv = Get-AzKeyVault -ResourceGroupName $keyVaultResourceGroupName -VaultName $keyVaultName
                 $kv | Should -Not -BeNullOrEmpty
-                $kv | Format-List
 
-                $kv.ProvisioningState | Should -Be "Succeeded"
+                #$kv.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
                 $kv.Sku | Should -Be 'Premium'
 
                 $kv.EnabledForDeployment | Should -Be $false
@@ -156,21 +164,24 @@ Describe 'Validate deployment' {
                 $kv.NetworkAcls.Bypass | Should -Be 'None'
                 $kv.NetworkAcls.DefaultAction | Should -Be 'Deny'
 
+
+
+
                 $kvDiag = Get-AzDiagnosticSettingCategory -ResourceId $keyVaultResourceId
                 $kvDiag | Should -Not -BeNullOrEmpty
-                $kvDiag | Format-List
                 $kvDiag.ProvisioningState | Should -Be "Succeeded"
                 $kvDiag.Count | Should -Be 3 # AuditEvent, AzurePolicyEvaluationDetails, AllMetrics
 
+
+
+
                 $kvPEP = Get-AzPrivateEndpoint -ResourceGroupName $keyVaultResourceGroupName -Name "$($keyVaultName)-PEP"
                 $kvPEP | Should -Not -BeNullOrEmpty
-                $kvPEP | Format-List
                 $kvPEP.ProvisioningState | Should -Be "Succeeded"
                 # $kvPEP TODO - do more checks
 
                 $kvZone = Get-AzPrivateDnsZone -ResourceGroupName $keyVaultResourceGroupName -Name "privatelink.vaultcore.azure.net"
                 $kvZone | Should -Not -BeNullOrEmpty
-                $kvZone | Format-List
                 $kvZone.ProvisioningState | Should -Be "Succeeded"
                 $kvZone.NumberOfRecordSets | Should -Be 2 # SOA + A
                 $kvZone.NumberOfVirtualNetworkLinks | Should -Be 1
@@ -186,6 +197,7 @@ Describe 'Validate deployment' {
                 #diag settings
                 #private links
                 #role assignments
+                #$log | Format-List
             }
         }
 
@@ -198,7 +210,6 @@ Describe 'Validate deployment' {
 
                 $adb = Get-AzDatabricksWorkspace -ResourceGroupName $databricksResourceGroupName -Name $databricksName
                 $adb | Should -Not -BeNullOrEmpty
-                $adb | Format-List
                 $adb.ProvisioningState | Should -Be "Succeeded"
                 $adb.CustomPrivateSubnetNameValue | Should -Be "dbw-backend-subnet"
                 $adb.CustomPublicSubnetNameValue | Should -Be "dbw-backend-subnet"
@@ -226,24 +237,30 @@ Describe 'Validate deployment' {
 
                 $adbZone = Get-AzPrivateDnsZone -ResourceGroupName $databricksResourceGroupName -Name "privatelink.azuredatabricks.net"
                 $adbZone | Should -Not -BeNullOrEmpty
-                $adbZone | Format-List
                 $adbZone.ProvisioningState | Should -Be "Succeeded"
                 $adbZone.NumberOfRecordSets | Should -Be 5 # SOA + 4xA
                 $adbZone.NumberOfVirtualNetworkLinks | Should -Be 1
                 $adbZone.Tag.Owner | Should -Be "Contoso"
                 $adbZone.Tag.CostCenter | Should -Be "123-456-789"
 
+
+
+
+
                 $adbAuthPEP = Get-AzPrivateEndpoint -ResourceGroupName $databricksResourceGroupName -Name "$($databricksName)-auth-PEP"
                 $adbAuthPEP | Should -Not -BeNullOrEmpty
-                $adbAuthPEP | Format-List
                 $adbAuthPEP.ProvisioningState | Should -Be "Succeeded"
                 # $adbAuthPEP TODO - do more checks
 
-                $adbUiPEP = Get-AzPrivateEndpoint -ResourceGroupName $databricksResourceGroupName -Name "$($databricksName)ui-PEP"
+                $adbUiPEP = Get-AzPrivateEndpoint -ResourceGroupName $databricksResourceGroupName -Name "$($databricksName)-ui-PEP"
                 $adbUiPEP | Should -Not -BeNullOrEmpty
-                $adbUiPEP | Format-List
                 $adbUiPEP.ProvisioningState | Should -Be "Succeeded"
                 # $adbUiPEP TODO - do more checks
+
+
+
+
+
             }
         }
 
