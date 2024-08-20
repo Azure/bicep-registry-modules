@@ -54,15 +54,19 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    publicNetworkAccess: 'disabled'
+    publicNetworkAccess: 'Disabled'
     privateEndpoints: [
       {
         applicationSecurityGroupResourceIds: [
           nestedDependencies.outputs.applicationSecurityGroupResourceId
         ]
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+            }
+          ]
+        }
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
         tags: {
           Environment: 'Non-Prod'
@@ -70,9 +74,13 @@ module testDeployment '../../../main.bicep' = {
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+            }
+          ]
+        }
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
       }
     ]
