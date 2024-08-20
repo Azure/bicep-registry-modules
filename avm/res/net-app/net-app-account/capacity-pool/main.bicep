@@ -105,62 +105,58 @@ module capacityPool_volumes 'volume/main.bicep' = [
       name: volume.name
       location: location
       serviceLevel: serviceLevel
-      creationToken: contains(volume, 'creationToken') ? volume.creationToken : volume.name
+      creationToken: volume.?creationToken ?? volume.name
       usageThreshold: volume.usageThreshold
-      protocolTypes: contains(volume, 'protocolTypes') ? volume.protocolTypes : []
+      protocolTypes: volume.?protocolTypes ?? []
       subnetResourceId: volume.subnetResourceId
-      exportPolicyRules: contains(volume, 'exportPolicyRules') ? volume.exportPolicyRules : []
-      roleAssignments: contains(volume, 'roleAssignments') ? volume.roleAssignments : []
+      exportPolicyRules: volume.?exportPolicyRules ?? []
+      roleAssignments: volume.?roleAssignments ?? []
       networkFeatures: volume.?networkFeatures
       zones: volume.?zones
-      coolAccess: contains(volume, 'coolAccess') ? volume.coolAccess : false
-      coolAccessRetrievalPolicy: contains(volume, 'coolAccessRetrievalPolicy')
-        ? volume.coolAccessRetrievalPolicy
-        : 'Default'
-      coolnessPeriod: contains(volume, 'coolnessPeriod') ? volume.coolnessPeriod : 0
-      encryptionKeySource: contains(volume, 'encryptionKeySource') ? volume.encryptionKeySource : 'Microsoft.NetApp'
-      keyVaultPrivateEndpointResourceId: contains(volume, 'keyVaultPrivateEndpointResourceId')
-        ? volume.keyVaultPrivateEndpointResourceId
-        : ''
-      endpointType: contains(volume, 'endpointType') ? volume.endpointType : ''
-      remoteVolumeRegion: contains(volume, 'remoteVolumeRegion') ? volume.remoteVolumeRegion : ''
-      remoteVolumeResourceId: contains(volume, 'remoteVolumeResourceId') ? volume.remoteVolumeResourceId : ''
-      replicationSchedule: contains(volume, 'replicationSchedule') ? volume.replicationSchedule : ''
-      snapshotPolicyId: contains(volume, 'snapshotPolicyId') ? volume.snapshotPolicyId : ''
-      snapshotPolicyName: contains(volume, 'snapshotPolicyName') ? volume.snapshotPolicyName : 'snapshotPolicy'
-      snapshotPolicyLocation: contains(volume, 'snapshotPolicyLocation') ? volume.snapshotPolicyLocation : ''
-      snapEnabled: contains(volume, 'snapEnabled') ? volume.snapEnabled : false
-      dailyHour: contains(volume, 'dailyHour') ? volume.dailyHour : 0
-      dailyMinute: contains(volume, 'dailyMinute') ? volume.dailyMinute : 0
-      dailySnapshotsToKeep: contains(volume, 'dailySnapshotsToKeep') ? volume.dailySnapshotsToKeep : 0
-      dailyUsedBytes: contains(volume, 'dailyUsedBytes') ? volume.dailyUsedBytes : 0
-      hourlyMinute: contains(volume, 'hourlyMinute') ? volume.hourlyMinute : 0
-      hourlySnapshotsToKeep: contains(volume, 'hourlySnapshotsToKeep') ? volume.hourlySnapshotsToKeep : 0
-      hourlyUsedBytes: contains(volume, 'hourlyUsedBytes') ? volume.hourlyUsedBytes : 0
-      daysOfMonth: contains(volume, 'daysOfMonth') ? volume.daysOfMonth : ''
-      monthlyHour: contains(volume, 'monthlyHour') ? volume.monthlyHour : 0
-      monthlyMinute: contains(volume, 'monthlyMinute') ? volume.monthlyMinute : 0
-      monthlySnapshotsToKeep: contains(volume, 'monthlySnapshotsToKeep') ? volume.monthlySnapshotsToKeep : 0
-      monthlyUsedBytes: contains(volume, 'monthlyUsedBytes') ? volume.monthlyUsedBytes : 0
-      weeklyDay: contains(volume, 'weeklyDay') ? volume.weeklyDay : ''
-      weeklyHour: contains(volume, 'weeklyHour') ? volume.weeklyHour : 0
-      weeklyMinute: contains(volume, 'weeklyMinute') ? volume.weeklyMinute : 0
-      weeklySnapshotsToKeep: contains(volume, 'weeklySnapshotsToKeep') ? volume.weeklySnapshotsToKeep : 0
-      weeklyUsedBytes: contains(volume, 'weeklyUsedBytes') ? volume.weeklyUsedBytes : 0
-      backupPolicyName: contains(volume, 'backupPolicyName') ? volume.backupPolicyName : 'backupPolicy'
-      backupPolicyLocation: contains(volume, 'backupPolicyLocation') ? volume.backupPolicyLocation : ''
-      dailyBackupsToKeep: contains(volume, 'dailyBackupsToKeep') ? volume.dailyBackupsToKeep : 0
-      backupEnabled: contains(volume, 'backupEnabled') ? volume.backupEnabled : false
-      monthlyBackupsToKeep: contains(volume, 'monthlyBackupsToKeep') ? volume.monthlyBackupsToKeep : 0
-      weeklyBackupsToKeep: contains(volume, 'weeklyBackupsToKeep') ? volume.weeklyBackupsToKeep : 0
-      backupVaultName: contains(volume, 'backupVaultName') ? volume.backupVaultName : 'vault'
-      backupVaultLocation: contains(volume, 'backupVaultLocation') ? volume.backupVaultLocation : ''
-      backupName: contains(volume, 'backupName') ? volume.backupName : 'backup'
-      backupLabel: contains(volume, 'backupLabel') ? volume.backupLabel : ''
-      snapshotName: contains(volume, 'snapshotName') ? volume.snapshotName : 'snapshot'
-      useExistingSnapshot: contains(volume, 'useExistingSnapshot') ? volume.useExistingSnapshot : false
-      volumeResourceId: contains(volume, 'volumeResourceId') ? volume.volumeResourceId : ''
-      volumeType: contains(volume, 'volumeType') ? volume.volumeType : ''
+      coolAccess: volume.?coolAccess ?? false
+      coolAccessRetrievalPolicy: volume.?coolAccessRetrievalPolicy ?? 'Default'
+      coolnessPeriod: volume.?coolnessPeriod ?? 0
+      encryptionKeySource: volume.?encryptionKeySource ?? 'Microsoft.NetApp'
+      keyVaultPrivateEndpointResourceId: volume.?keyVaultPrivateEndpointResourceId ?? ''
+      endpointType: volume.?endpointType ?? ''
+      remoteVolumeRegion: volume.?remoteVolumeRegion ?? ''
+      remoteVolumeResourceId: volume.?remoteVolumeResourceId ?? ''
+      replicationSchedule: volume.?replicationSchedule ?? ''
+      snapshotPolicyId: volume.?snapshotPolicyId ?? ''
+      snapshotPolicyName: volume.?snapshotPolicyName ?? 'snapshotPolicy'
+      snapshotPolicyLocation: volume.?snapshotPolicyLocation ?? ''
+      snapEnabled: volume.?snapEnabled ?? false
+      dailyHour: volume.?dailyHour ?? 0
+      dailyMinute: volume.?dailyMinute ?? 0
+      dailySnapshotsToKeep: volume.?dailySnapshotsToKeep ?? 0
+      dailyUsedBytes: volume.?dailyUsedBytes ?? 0
+      hourlyMinute: volume.?hourlyMinute ?? 0
+      hourlySnapshotsToKeep: volume.?hourlySnapshotsToKeep ?? 0
+      hourlyUsedBytes: volume.?hourlyUsedBytes ?? 0
+      daysOfMonth: volume.?daysOfMonth ?? ''
+      monthlyHour: volume.?monthlyHour ?? 0
+      monthlyMinute: volume.?monthlyMinute ?? 0
+      monthlySnapshotsToKeep: volume.?monthlySnapshotsToKeep ?? 0
+      monthlyUsedBytes: volume.?monthlyUsedBytes ?? 0
+      weeklyDay: volume.?weeklyDay ?? ''
+      weeklyHour: volume.?weeklyHour ?? 0
+      weeklyMinute: volume.?weeklyMinute ?? 0
+      weeklySnapshotsToKeep: volume.?weeklySnapshotsToKeep ?? 0
+      weeklyUsedBytes: volume.?weeklyUsedBytes ?? 0
+      backupPolicyName: volume.?backupPolicyName ?? 'backupPolicy'
+      backupPolicyLocation: volume.?backupPolicyLocation ?? ''
+      dailyBackupsToKeep: volume.?dailyBackupsToKeep ?? 0
+      backupEnabled: volume.?backupEnabled ?? false
+      monthlyBackupsToKeep: volume.?monthlyBackupsToKeep ?? 0
+      weeklyBackupsToKeep: volume.?weeklyBackupsToKeep ?? 0
+      backupVaultName: volume.?backupVaultName ?? 'vault'
+      backupVaultLocation: volume.?backupVaultLocation ?? ''
+      backupName: volume.?backupName ?? 'backup'
+      backupLabel: volume.?backupLabel ?? ''
+      snapshotName: volume.?snapshotName ?? 'snapshot'
+      useExistingSnapshot: volume.?useExistingSnapshot ?? false
+      volumeResourceId: volume.?volumeResourceId ?? ''
+      volumeType: volume.?volumeType ?? ''
     }
   }
 ]

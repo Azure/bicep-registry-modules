@@ -22,7 +22,7 @@ param serviceShort string = 'nanaanfs3'
 param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. The source of the encryption key.')
-param encryptionKeySource string
+param encryptionKeySource string = 'Microsoft.NetApp'
 
 // ============ //
 // Dependencies //
