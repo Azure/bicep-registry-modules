@@ -24,6 +24,7 @@ This module deploys a Web or Function App.
 | `Microsoft.Web/sites` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/sites) |
 | `Microsoft.Web/sites/basicPublishingCredentialsPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
 | `Microsoft.Web/sites/config` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
+| `Microsoft.Web/sites/extensions` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites/extensions) |
 | `Microsoft.Web/sites/hybridConnectionNamespaces/relays` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/sites/hybridConnectionNamespaces/relays) |
 | `Microsoft.Web/sites/slots` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/sites/slots) |
 | `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
@@ -2070,6 +2071,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`logsConfiguration`](#parameter-logsconfiguration) | object | The logs settings configuration. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`msDeployConfiguration`](#parameter-msdeployconfiguration) | object | The extension MSDeployment configuration. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`redundancyMode`](#parameter-redundancymode) | string | Site redundancy mode. |
@@ -2502,6 +2504,13 @@ The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
+
+### Parameter: `msDeployConfiguration`
+
+The extension MSDeployment configuration.
+
+- Required: No
+- Type: object
 
 ### Parameter: `privateEndpoints`
 

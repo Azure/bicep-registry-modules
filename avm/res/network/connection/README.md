@@ -333,6 +333,7 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
 | [`peer`](#parameter-peer) | object | The remote peer. Used for connection connectionType [ExpressRoute]. |
 | [`routingWeight`](#parameter-routingweight) | int | The weight added to routes learned from this BGP speaker. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`trafficSelectorPolicies`](#parameter-trafficselectorpolicies) | array | The traffic selector policies to be considered by this connection. |
 | [`useLocalAzureIpAddress`](#parameter-uselocalazureipaddress) | bool | Use private local Azure IP for the connection. Only available for IPSec Virtual Network Gateways that use the Azure Private IP Property. |
 | [`usePolicyBasedTrafficSelectors`](#parameter-usepolicybasedtrafficselectors) | bool | Enable policy-based traffic selectors. |
 | [`virtualNetworkGateway2`](#parameter-virtualnetworkgateway2) | object | The remote Virtual Network Gateway. Used for connection connectionType [Vnet2Vnet]. |
@@ -541,6 +542,14 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `trafficSelectorPolicies`
+
+The traffic selector policies to be considered by this connection.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `useLocalAzureIpAddress`
 
