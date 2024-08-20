@@ -213,7 +213,7 @@ var formattedRoleAssignments = [
 resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
   name: netAppAccountName
 
-  resource capacityPool 'capacityPools@2023-07-01' existing = {
+  resource capacityPool 'capacityPools@2024-03-01' existing = {
     name: capacityPoolName
   }
 }
