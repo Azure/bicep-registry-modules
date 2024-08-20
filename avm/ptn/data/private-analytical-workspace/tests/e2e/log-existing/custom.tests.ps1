@@ -224,8 +224,8 @@ Describe 'Validate deployment' {
                 $adb.PublicNetworkAccess | Should -Be "Disabled"
                 $adb.RequiredNsgRule | Should -Be "NoAzureDatabricksRules"
                 $adb.SkuName | Should -Be "premium"
-                $adb.Tag.Owner | Should -Be "Contoso"
-                $adb.Tag.CostCenter | Should -Be "123-456-789"
+                $adb.Tags.Owner | Should -Be "Contoso"
+                $adb.Tags.CostCenter | Should -Be "123-456-789"
 
 
 
