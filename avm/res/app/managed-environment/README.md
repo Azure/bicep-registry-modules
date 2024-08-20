@@ -772,7 +772,7 @@ Whether or not to encrypt peer traffic.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `roleAssignments`
 

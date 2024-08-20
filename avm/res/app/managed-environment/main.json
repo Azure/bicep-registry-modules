@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "7943835735953238295"
+      "templateHash": "13961196804563097956"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment).",
@@ -287,7 +287,7 @@
     },
     "peerTrafficEncryption": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Whether or not to encrypt peer traffic."
       }

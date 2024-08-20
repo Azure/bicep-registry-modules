@@ -54,7 +54,7 @@ param platformReservedCidr string = ''
 param platformReservedDnsIP string = ''
 
 @description('Optional. Whether or not to encrypt peer traffic.')
-param peerTrafficEncryption bool = false
+param peerTrafficEncryption bool = true
 
 @description('Optional. Whether or not this Managed Environment is zone-redundant.')
 param zoneRedundant bool = true
