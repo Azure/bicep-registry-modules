@@ -2070,6 +2070,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`logsConfiguration`](#parameter-logsconfiguration) | object | The logs settings configuration. |
+| [`managedEnvironmentId`](#parameter-managedenvironmentid) | string | Azure Resource Manager ID of the customers selected Managed Environment on which to host this app. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`msDeployConfiguration`](#parameter-msdeployconfiguration) | object | The extension MSDeployment configuration. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
@@ -2105,6 +2106,7 @@ Type of site to deploy.
     'functionapp'
     'functionapp,linux'
     'functionapp,linux,container'
+    'functionapp,linux,container,azurecontainerapps'
     'functionapp,workflowapp'
     'functionapp,workflowapp,linux'
     'linux,api'
@@ -2476,6 +2478,13 @@ The logs settings configuration.
 
 - Required: No
 - Type: object
+
+### Parameter: `managedEnvironmentId`
+
+Azure Resource Manager ID of the customers selected Managed Environment on which to host this app.
+
+- Required: No
+- Type: string
 
 ### Parameter: `managedIdentities`
 

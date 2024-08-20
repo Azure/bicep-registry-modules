@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "10365569853837835680"
+      "templateHash": "7467350205860855506"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -474,6 +474,7 @@
         "functionapp,workflowapp",
         "functionapp,workflowapp,linux",
         "functionapp,linux,container",
+        "functionapp,linux,container,azurecontainerapps",
         "app,linux",
         "app",
         "linux,api",
@@ -489,6 +490,13 @@
       "type": "string",
       "metadata": {
         "description": "Required. The resource ID of the app service plan to use for the site."
+      }
+    },
+    "managedEnvironmentId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Azure Resource Manager ID of the customers selected Managed Environment on which to host this app."
       }
     },
     "httpsOnly": {
@@ -836,6 +844,7 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
+        "managedEnvironmentId": "[if(not(empty(parameters('managedEnvironmentId'))), parameters('managedEnvironmentId'), null())]",
         "serverFarmId": "[parameters('serverFarmResourceId')]",
         "clientAffinityEnabled": "[parameters('clientAffinityEnabled')]",
         "httpsOnly": "[parameters('httpsOnly')]",
@@ -976,7 +985,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "12675357375151621299"
+              "templateHash": "8777070640548664577"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting.",
@@ -997,6 +1006,7 @@
                 "functionapp,workflowapp",
                 "functionapp,workflowapp,linux",
                 "functionapp,linux,container",
+                "functionapp,linux,container,azurecontainerapps",
                 "app,linux",
                 "app",
                 "linux,api",
@@ -1132,7 +1142,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "13561813663473459290"
+              "templateHash": "15126303852151434516"
             },
             "name": "Site Auth Settings V2 Config",
             "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -1153,6 +1163,7 @@
                 "functionapp,workflowapp",
                 "functionapp,workflowapp,linux",
                 "functionapp,linux,container",
+                "functionapp,linux,container,azurecontainerapps",
                 "app,linux",
                 "app",
                 "linux,api",
@@ -1643,7 +1654,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "7829278659048205305"
+              "templateHash": "8134670421794628910"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -2117,6 +2128,7 @@
                 "functionapp,workflowapp",
                 "functionapp,workflowapp,linux",
                 "functionapp,linux,container",
+                "functionapp,linux,container,azurecontainerapps",
                 "app,linux",
                 "app",
                 "linux,api",
@@ -2591,7 +2603,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "13666935650242306720"
+                      "templateHash": "7111332561212908044"
                     },
                     "name": "Site Slot App Settings",
                     "description": "This module deploys a Site Slot App Setting.",
@@ -2618,6 +2630,7 @@
                         "functionapp,workflowapp",
                         "functionapp,workflowapp,linux",
                         "functionapp,linux,container",
+                        "functionapp,linux,container,azurecontainerapps",
                         "app,linux",
                         "app",
                         "linux,api",
@@ -2766,7 +2779,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "4716088455151443747"
+                      "templateHash": "3412962465179136371"
                     },
                     "name": "Site Slot Auth Settings V2 Config",
                     "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -2793,6 +2806,7 @@
                         "functionapp,workflowapp",
                         "functionapp,workflowapp,linux",
                         "functionapp,linux,container",
+                        "functionapp,linux,container,azurecontainerapps",
                         "app,linux",
                         "app",
                         "linux,api",
