@@ -157,8 +157,8 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
                 id: subnet.networkSecurityGroupResourceId
               }
             : null
-          privateEndpointNetworkPolicies: subnet.?privateEndpointNetworkPolicies ?? null
-          privateLinkServiceNetworkPolicies: subnet.?privateLinkServiceNetworkPolicies ?? null
+          privateEndpointNetworkPolicies: subnet.?privateEndpointNetworkPolicies
+          privateLinkServiceNetworkPolicies: subnet.?privateLinkServiceNetworkPolicies
           routeTable: contains(subnet, 'routeTableResourceId') && !empty(subnet.routeTableResourceId)
             ? {
                 id: subnet.routeTableResourceId
