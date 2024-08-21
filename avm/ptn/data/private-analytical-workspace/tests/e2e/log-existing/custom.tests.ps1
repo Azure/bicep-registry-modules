@@ -166,9 +166,9 @@ Describe 'Validate deployment' {
                 $kvDiag | Should -Not -BeNullOrEmpty
                 #$kvDiag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
                 $kvDiag.Count | Should -Be 3 # AuditEvent, AzurePolicyEvaluationDetails, AllMetrics
-                $kvDiag | ForEach-Object {
-                    It "Has Log $_.Name" {
-                        $_.Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
+                foreach ($i in $kvDiag) {
+                    It "Has Log $i.Name" {
+                        $i.Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
                     }
                 }
 
@@ -176,10 +176,21 @@ Describe 'Validate deployment' {
 
 
 
-                $kvPEP = Get-AzPrivateEndpoint -ResourceGroupName $keyVaultResourceGroupName -Name "$($keyVaultName)-PEP"
+                $kvPEP = Get-AzPrivateEndpoint -ResourceGroupName $keyVaultResourceGroupName -Name "$($kv.VaultName)-PEP"
                 $kvPEP | Should -Not -BeNullOrEmpty
                 $kvPEP.ProvisioningState | Should -Be "Succeeded"
                 # $kvPEP TODO - do more checks
+
+
+
+
+
+
+
+
+
+
+
 
                 $kvZone = Get-AzPrivateDnsZone -ResourceGroupName $keyVaultResourceGroupName -Name "privatelink.vaultcore.azure.net"
                 $kvZone | Should -Not -BeNullOrEmpty
