@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "5987985858923473876"
+      "templateHash": "4309703310956110255"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File.",
@@ -398,7 +398,7 @@
     },
     "netAppAccount": {
       "type": "Microsoft.NetApp/netAppAccounts",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[parameters('name')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
@@ -474,12 +474,24 @@
           "size": {
             "value": "[parameters('capacityPools')[copyIndex()].size]"
           },
-          "serviceLevel": "[if(contains(parameters('capacityPools')[copyIndex()], 'serviceLevel'), createObject('value', parameters('capacityPools')[copyIndex()].serviceLevel), createObject('value', 'Standard'))]",
-          "qosType": "[if(contains(parameters('capacityPools')[copyIndex()], 'qosType'), createObject('value', parameters('capacityPools')[copyIndex()].qosType), createObject('value', 'Auto'))]",
-          "volumes": "[if(contains(parameters('capacityPools')[copyIndex()], 'volumes'), createObject('value', parameters('capacityPools')[copyIndex()].volumes), createObject('value', createArray()))]",
-          "coolAccess": "[if(contains(parameters('capacityPools')[copyIndex()], 'coolAccess'), createObject('value', parameters('capacityPools')[copyIndex()].coolAccess), createObject('value', false()))]",
-          "roleAssignments": "[if(contains(parameters('capacityPools')[copyIndex()], 'roleAssignments'), createObject('value', parameters('capacityPools')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "encryptionType": "[if(contains(parameters('capacityPools')[copyIndex()], 'encryptionType'), createObject('value', parameters('capacityPools')[copyIndex()].encryptionType), createObject('value', 'Single'))]",
+          "serviceLevel": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'serviceLevel'), 'Standard')]"
+          },
+          "qosType": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'qosType'), 'Auto')]"
+          },
+          "volumes": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'volumes'), createArray())]"
+          },
+          "coolAccess": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'coolAccess'), false())]"
+          },
+          "roleAssignments": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'roleAssignments'), createArray())]"
+          },
+          "encryptionType": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'encryptionType'), 'Single')]"
+          },
           "tags": {
             "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'tags'), parameters('tags'))]"
           }
@@ -492,7 +504,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "2003436184027921318"
+              "templateHash": "2991493712029822030"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -689,12 +701,12 @@
             "netAppAccount": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts",
-              "apiVersion": "2023-07-01",
+              "apiVersion": "2024-03-01",
               "name": "[parameters('netAppAccountName')]"
             },
             "capacityPool": {
               "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-              "apiVersion": "2023-07-01",
+              "apiVersion": "2024-03-01",
               "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -762,42 +774,162 @@
                   "serviceLevel": {
                     "value": "[parameters('serviceLevel')]"
                   },
-                  "creationToken": "[if(contains(parameters('volumes')[copyIndex()], 'creationToken'), createObject('value', parameters('volumes')[copyIndex()].creationToken), createObject('value', parameters('volumes')[copyIndex()].name))]",
+                  "creationToken": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'creationToken'), parameters('volumes')[copyIndex()].name)]"
+                  },
                   "usageThreshold": {
                     "value": "[parameters('volumes')[copyIndex()].usageThreshold]"
                   },
-                  "protocolTypes": "[if(contains(parameters('volumes')[copyIndex()], 'protocolTypes'), createObject('value', parameters('volumes')[copyIndex()].protocolTypes), createObject('value', createArray()))]",
+                  "protocolTypes": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'protocolTypes'), createArray())]"
+                  },
                   "subnetResourceId": {
                     "value": "[parameters('volumes')[copyIndex()].subnetResourceId]"
                   },
-                  "exportPolicyRules": "[if(contains(parameters('volumes')[copyIndex()], 'exportPolicyRules'), createObject('value', parameters('volumes')[copyIndex()].exportPolicyRules), createObject('value', createArray()))]",
-                  "roleAssignments": "[if(contains(parameters('volumes')[copyIndex()], 'roleAssignments'), createObject('value', parameters('volumes')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+                  "exportPolicyRules": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'exportPolicyRules'), createArray())]"
+                  },
+                  "roleAssignments": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'roleAssignments'), createArray())]"
+                  },
                   "networkFeatures": {
                     "value": "[tryGet(parameters('volumes')[copyIndex()], 'networkFeatures')]"
                   },
                   "zones": {
                     "value": "[tryGet(parameters('volumes')[copyIndex()], 'zones')]"
                   },
-                  "coolAccess": "[if(contains(parameters('volumes')[copyIndex()], 'coolAccess'), createObject('value', parameters('volumes')[copyIndex()].coolAccess), createObject('value', false()))]",
-                  "coolAccessRetrievalPolicy": "[if(contains(parameters('volumes')[copyIndex()], 'coolAccessRetrievalPolicy'), createObject('value', parameters('volumes')[copyIndex()].coolAccessRetrievalPolicy), createObject('value', 'Default'))]",
-                  "coolnessPeriod": "[if(contains(parameters('volumes')[copyIndex()], 'coolnessPeriod'), createObject('value', parameters('volumes')[copyIndex()].coolnessPeriod), createObject('value', 0))]",
-                  "endpointType": "[if(contains(parameters('volumes')[copyIndex()], 'endpointType'), createObject('value', parameters('volumes')[copyIndex()].endpointType), createObject('value', ''))]",
-                  "remoteVolumeRegion": "[if(contains(parameters('volumes')[copyIndex()], 'remoteVolumeRegion'), createObject('value', parameters('volumes')[copyIndex()].remoteVolumeRegion), createObject('value', ''))]",
-                  "remoteVolumeResourceId": "[if(contains(parameters('volumes')[copyIndex()], 'remoteVolumeResourceId'), createObject('value', parameters('volumes')[copyIndex()].remoteVolumeResourceId), createObject('value', ''))]",
-                  "replicationSchedule": "[if(contains(parameters('volumes')[copyIndex()], 'replicationSchedule'), createObject('value', parameters('volumes')[copyIndex()].replicationSchedule), createObject('value', ''))]",
-                  "backupPolicyName": "[if(contains(parameters('volumes')[copyIndex()], 'backupPolicyName'), createObject('value', parameters('volumes')[copyIndex()].backupPolicyName), createObject('value', 'backupPolicy'))]",
-                  "backupPolicyLocation": "[if(contains(parameters('volumes')[copyIndex()], 'backupPolicyLocation'), createObject('value', parameters('volumes')[copyIndex()].backupPolicyLocation), createObject('value', ''))]",
-                  "dailyBackupsToKeep": "[if(contains(parameters('volumes')[copyIndex()], 'dailyBackupsToKeep'), createObject('value', parameters('volumes')[copyIndex()].dailyBackupsToKeep), createObject('value', 0))]",
-                  "backupEnabled": "[if(contains(parameters('volumes')[copyIndex()], 'backupEnabled'), createObject('value', parameters('volumes')[copyIndex()].backupEnabled), createObject('value', false()))]",
-                  "monthlyBackupsToKeep": "[if(contains(parameters('volumes')[copyIndex()], 'monthlyBackupsToKeep'), createObject('value', parameters('volumes')[copyIndex()].monthlyBackupsToKeep), createObject('value', 0))]",
-                  "weeklyBackupsToKeep": "[if(contains(parameters('volumes')[copyIndex()], 'weeklyBackupsToKeep'), createObject('value', parameters('volumes')[copyIndex()].weeklyBackupsToKeep), createObject('value', 0))]",
-                  "backupVaultName": "[if(contains(parameters('volumes')[copyIndex()], 'backupVaultName'), createObject('value', parameters('volumes')[copyIndex()].backupVaultName), createObject('value', 'vault'))]",
-                  "backupVaultLocation": "[if(contains(parameters('volumes')[copyIndex()], 'backupVaultLocation'), createObject('value', parameters('volumes')[copyIndex()].backupVaultLocation), createObject('value', ''))]",
-                  "backupName": "[if(contains(parameters('volumes')[copyIndex()], 'backupName'), createObject('value', parameters('volumes')[copyIndex()].backupName), createObject('value', 'backup'))]",
-                  "backupLabel": "[if(contains(parameters('volumes')[copyIndex()], 'backupLabel'), createObject('value', parameters('volumes')[copyIndex()].backupLabel), createObject('value', ''))]",
-                  "snapshotName": "[if(contains(parameters('volumes')[copyIndex()], 'snapshotName'), createObject('value', parameters('volumes')[copyIndex()].snapshotName), createObject('value', 'snapshot'))]",
-                  "useExistingSnapshot": "[if(contains(parameters('volumes')[copyIndex()], 'useExistingSnapshot'), createObject('value', parameters('volumes')[copyIndex()].useExistingSnapshot), createObject('value', false()))]",
-                  "volumeResourceId": "[if(contains(parameters('volumes')[copyIndex()], 'volumeResourceId'), createObject('value', parameters('volumes')[copyIndex()].volumeResourceId), createObject('value', ''))]"
+                  "coolAccess": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'coolAccess'), false())]"
+                  },
+                  "coolAccessRetrievalPolicy": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'coolAccessRetrievalPolicy'), 'Default')]"
+                  },
+                  "coolnessPeriod": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'coolnessPeriod'), 0)]"
+                  },
+                  "encryptionKeySource": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'encryptionKeySource'), 'Microsoft.NetApp')]"
+                  },
+                  "keyVaultPrivateEndpointResourceId": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'keyVaultPrivateEndpointResourceId'), '')]"
+                  },
+                  "endpointType": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'endpointType'), '')]"
+                  },
+                  "remoteVolumeRegion": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'remoteVolumeRegion'), '')]"
+                  },
+                  "remoteVolumeResourceId": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'remoteVolumeResourceId'), '')]"
+                  },
+                  "replicationSchedule": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'replicationSchedule'), '')]"
+                  },
+                  "snapshotPolicyId": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'snapshotPolicyId'), '')]"
+                  },
+                  "snapshotPolicyName": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'snapshotPolicyName'), 'snapshotPolicy')]"
+                  },
+                  "snapshotPolicyLocation": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'snapshotPolicyLocation'), '')]"
+                  },
+                  "snapEnabled": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'snapEnabled'), false())]"
+                  },
+                  "dailyHour": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'dailyHour'), 0)]"
+                  },
+                  "dailyMinute": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'dailyMinute'), 0)]"
+                  },
+                  "dailySnapshotsToKeep": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'dailySnapshotsToKeep'), 0)]"
+                  },
+                  "dailyUsedBytes": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'dailyUsedBytes'), 0)]"
+                  },
+                  "hourlyMinute": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'hourlyMinute'), 0)]"
+                  },
+                  "hourlySnapshotsToKeep": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'hourlySnapshotsToKeep'), 0)]"
+                  },
+                  "hourlyUsedBytes": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'hourlyUsedBytes'), 0)]"
+                  },
+                  "daysOfMonth": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'daysOfMonth'), '')]"
+                  },
+                  "monthlyHour": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'monthlyHour'), 0)]"
+                  },
+                  "monthlyMinute": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'monthlyMinute'), 0)]"
+                  },
+                  "monthlySnapshotsToKeep": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'monthlySnapshotsToKeep'), 0)]"
+                  },
+                  "monthlyUsedBytes": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'monthlyUsedBytes'), 0)]"
+                  },
+                  "weeklyDay": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklyDay'), '')]"
+                  },
+                  "weeklyHour": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklyHour'), 0)]"
+                  },
+                  "weeklyMinute": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklyMinute'), 0)]"
+                  },
+                  "weeklySnapshotsToKeep": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklySnapshotsToKeep'), 0)]"
+                  },
+                  "weeklyUsedBytes": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklyUsedBytes'), 0)]"
+                  },
+                  "backupPolicyName": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupPolicyName'), 'backupPolicy')]"
+                  },
+                  "backupPolicyLocation": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupPolicyLocation'), '')]"
+                  },
+                  "dailyBackupsToKeep": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'dailyBackupsToKeep'), 0)]"
+                  },
+                  "backupEnabled": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupEnabled'), false())]"
+                  },
+                  "monthlyBackupsToKeep": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'monthlyBackupsToKeep'), 0)]"
+                  },
+                  "weeklyBackupsToKeep": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklyBackupsToKeep'), 0)]"
+                  },
+                  "backupVaultName": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupVaultName'), 'vault')]"
+                  },
+                  "backupVaultLocation": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupVaultLocation'), '')]"
+                  },
+                  "backupName": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupName'), 'backup')]"
+                  },
+                  "backupLabel": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupLabel'), '')]"
+                  },
+                  "snapshotName": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'snapshotName'), 'snapshot')]"
+                  },
+                  "useExistingSnapshot": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'useExistingSnapshot'), false())]"
+                  },
+                  "volumeResourceId": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'volumeResourceId'), '')]"
+                  },
+                  "volumeType": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'volumeType'), '')]"
+                  }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -807,7 +939,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "1599719170493782479"
+                      "templateHash": "6870432140728658293"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -920,6 +1052,18 @@
                         "description": "Optional. determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)."
                       }
                     },
+                    "encryptionKeySource": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The source of the encryption key."
+                      }
+                    },
+                    "keyVaultPrivateEndpointResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The resource ID of the key vault private endpoint."
+                      }
+                    },
                     "endpointType": {
                       "type": "string",
                       "metadata": {
@@ -1021,10 +1165,144 @@
                         "description": "Optional. The name of the snapshot."
                       }
                     },
+                    "snapshotPolicyId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. Snapshot Policy ResourceId."
+                      }
+                    },
+                    "snapshotPolicyName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The name of the snapshot policy."
+                      }
+                    },
+                    "snapshotPolicyLocation": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]",
+                      "metadata": {
+                        "description": "Optional. The location of the snapshot policy."
+                      }
+                    },
+                    "dailyHour": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. The daily snapshot hour."
+                      }
+                    },
+                    "dailyMinute": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. The daily snapshot minute."
+                      }
+                    },
+                    "dailySnapshotsToKeep": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. Daily snapshot count to keep."
+                      }
+                    },
+                    "dailyUsedBytes": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. Daily snapshot used bytes."
+                      }
+                    },
+                    "hourlyMinute": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. The hourly snapshot minute."
+                      }
+                    },
+                    "hourlySnapshotsToKeep": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. Hourly snapshot count to keep."
+                      }
+                    },
+                    "hourlyUsedBytes": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. Hourly snapshot used bytes."
+                      }
+                    },
+                    "daysOfMonth": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The monthly snapshot day."
+                      }
+                    },
+                    "monthlyHour": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. The monthly snapshot hour."
+                      }
+                    },
+                    "monthlyMinute": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. The monthly snapshot minute."
+                      }
+                    },
+                    "monthlySnapshotsToKeep": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. Monthly snapshot count to keep."
+                      }
+                    },
+                    "monthlyUsedBytes": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. Monthly snapshot used bytes."
+                      }
+                    },
+                    "weeklyDay": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The weekly snapshot day."
+                      }
+                    },
+                    "weeklyHour": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. The weekly snapshot hour."
+                      }
+                    },
+                    "weeklyMinute": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. The weekly snapshot minute."
+                      }
+                    },
+                    "weeklySnapshotsToKeep": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. Weekly snapshot count to keep."
+                      }
+                    },
+                    "weeklyUsedBytes": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. Weekly snapshot used bytes."
+                      }
+                    },
+                    "snapEnabled": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. Indicates whether the snapshot policy is enabled."
+                      }
+                    },
                     "volumeResourceId": {
                       "type": "string",
                       "metadata": {
                         "description": "Optional. The resource ID of the volume."
+                      }
+                    },
+                    "volumeType": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The type of the volume. DataProtection volumes are used for replication."
                       }
                     },
                     "name": {
@@ -1135,7 +1413,7 @@
                     "netAppAccount::capacityPool": {
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-                      "apiVersion": "2023-07-01",
+                      "apiVersion": "2024-03-01",
                       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]",
                       "dependsOn": [
                         "netAppAccount"
@@ -1144,24 +1422,62 @@
                     "netAppAccount": {
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts",
-                      "apiVersion": "2023-07-01",
+                      "apiVersion": "2024-03-01",
                       "name": "[parameters('netAppAccountName')]"
                     },
                     "volume": {
                       "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
-                      "apiVersion": "2023-07-01",
+                      "apiVersion": "2024-03-01",
                       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
                       "location": "[parameters('location')]",
-                      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod')), if(not(equals(parameters('endpointType'), '')), createObject('dataProtection', createObject('replication', createObject('endpointType', parameters('endpointType'), 'remoteVolumeRegion', parameters('remoteVolumeRegion'), 'remoteVolumeResourceId', parameters('remoteVolumeResourceId'), 'replicationSchedule', parameters('replicationSchedule')))), createObject()), createObject('networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', parameters('subnetResourceId'), 'exportPolicy', if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null()))))]",
+                      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', parameters('keyVaultPrivateEndpointResourceId')), createObject()), if(not(equals(parameters('volumeType'), '')), createObject('volumeType', parameters('volumeType'), 'dataProtection', createObject('replication', createObject('endpointType', parameters('endpointType'), 'remoteVolumeRegion', parameters('remoteVolumeRegion'), 'remoteVolumeResourceId', parameters('remoteVolumeResourceId'), 'replicationSchedule', parameters('replicationSchedule')), 'snapshot', createObject('snapshotPolicyId', parameters('snapshotPolicyId')))), createObject()), createObject('networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', parameters('subnetResourceId'), 'exportPolicy', if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null()))))]",
                       "zones": "[parameters('zones')]",
                       "dependsOn": [
                         "netAppAccount::capacityPool"
                       ]
                     },
+                    "snapshotPolicies": {
+                      "condition": "[parameters('snapEnabled')]",
+                      "type": "Microsoft.NetApp/netAppAccounts/snapshotPolicies",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('snapshotPolicyName'))]",
+                      "location": "[parameters('snapshotPolicyLocation')]",
+                      "properties": {
+                        "enabled": "[parameters('snapEnabled')]",
+                        "dailySchedule": {
+                          "hour": "[parameters('dailyHour')]",
+                          "minute": "[parameters('dailyMinute')]",
+                          "snapshotsToKeep": "[parameters('dailySnapshotsToKeep')]",
+                          "usedBytes": "[parameters('dailyUsedBytes')]"
+                        },
+                        "hourlySchedule": {
+                          "minute": "[parameters('hourlyMinute')]",
+                          "snapshotsToKeep": "[parameters('hourlySnapshotsToKeep')]",
+                          "usedBytes": "[parameters('hourlyUsedBytes')]"
+                        },
+                        "monthlySchedule": {
+                          "daysOfMonth": "[parameters('daysOfMonth')]",
+                          "hour": "[parameters('monthlyHour')]",
+                          "minute": "[parameters('monthlyMinute')]",
+                          "snapshotsToKeep": "[parameters('monthlySnapshotsToKeep')]",
+                          "usedBytes": "[parameters('monthlyUsedBytes')]"
+                        },
+                        "weeklySchedule": {
+                          "day": "[parameters('weeklyDay')]",
+                          "hour": "[parameters('weeklyHour')]",
+                          "minute": "[parameters('weeklyMinute')]",
+                          "snapshotsToKeep": "[parameters('weeklySnapshotsToKeep')]",
+                          "usedBytes": "[parameters('weeklyUsedBytes')]"
+                        }
+                      },
+                      "dependsOn": [
+                        "netAppAccount"
+                      ]
+                    },
                     "backupPolicies": {
                       "condition": "[parameters('backupEnabled')]",
                       "type": "Microsoft.NetApp/netAppAccounts/backupPolicies",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-03-01",
                       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupPolicyName'))]",
                       "location": "[parameters('backupPolicyLocation')]",
                       "properties": {
@@ -1177,7 +1493,7 @@
                     "backupVaults": {
                       "condition": "[parameters('backupEnabled')]",
                       "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
-                      "apiVersion": "2023-05-01-preview",
+                      "apiVersion": "2024-03-01",
                       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]",
                       "location": "[parameters('backupVaultLocation')]",
                       "properties": {},
@@ -1188,7 +1504,7 @@
                     "backups": {
                       "condition": "[parameters('backupEnabled')]",
                       "type": "Microsoft.NetApp/netAppAccounts/backupVaults/backups",
-                      "apiVersion": "2023-05-01-preview",
+                      "apiVersion": "2024-03-01",
                       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('backupVaultName'), parameters('backupName'))]",
                       "properties": "[if(parameters('backupEnabled'), createObject('label', parameters('backupLabel'), 'snapshotName', parameters('snapshotName'), 'useExistingSnapshot', parameters('useExistingSnapshot'), 'volumeResourceId', parameters('volumeResourceId')), createObject())]",
                       "dependsOn": [
@@ -1245,7 +1561,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('volume', '2023-07-01', 'full').location]"
+                      "value": "[reference('volume', '2024-03-01', 'full').location]"
                     }
                   }
                 }
@@ -1283,7 +1599,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('capacityPool', '2023-07-01', 'full').location]"
+              "value": "[reference('capacityPool', '2024-03-01', 'full').location]"
             },
             "volumeResourceId": {
               "type": "string",
@@ -1327,7 +1643,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('netAppAccount', '2023-07-01', 'full').location]"
+      "value": "[reference('netAppAccount', '2024-03-01', 'full').location]"
     },
     "volumeResourceId": {
       "type": "string",
