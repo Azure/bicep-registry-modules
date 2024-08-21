@@ -102,6 +102,7 @@ Type of site to deploy.
     'functionapp'
     'functionapp,linux'
     'functionapp,linux,container'
+    'functionapp,linux,container,azurecontainerapps'
     'functionapp,workflowapp'
     'functionapp,workflowapp,linux'
     'linux,api'
