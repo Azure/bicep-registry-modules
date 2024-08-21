@@ -75,3 +75,24 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+output resourceId string = testDeployment[0].outputs.resourceId
+output name string = testDeployment[0].outputs.name
+output location string = testDeployment[0].outputs.location
+output resourceGroupName string = testDeployment[0].outputs.resourceGroupName
+output virtualNetworkResourceId string = testDeployment[0].outputs.virtualNetworkResourceId
+output virtualNetworkName string = testDeployment[0].outputs.virtualNetworkName
+output virtualNetworkLocation string = testDeployment[0].outputs.virtualNetworkLocation
+output virtualNetworkResourceGroupName string = testDeployment[0].outputs.virtualNetworkResourceGroupName
+output logAnalyticsWorkspaceResourceId string = testDeployment[0].outputs.logAnalyticsWorkspaceResourceId
+output logAnalyticsWorkspaceName string = testDeployment[0].outputs.logAnalyticsWorkspaceName
+output logAnalyticsWorkspaceLocation string = testDeployment[0].outputs.logAnalyticsWorkspaceLocation
+output logAnalyticsWorkspaceResourceGroupName string = testDeployment[0].outputs.logAnalyticsWorkspaceResourceGroupName
+output keyVaultResourceId string = testDeployment[0].outputs.keyVaultResourceId
+output keyVaultName string = testDeployment[0].outputs.keyVaultName
+output keyVaultLocation string = testDeployment[0].outputs.keyVaultLocation
+output keyVaultResourceGroupName string = testDeployment[0].outputs.keyVaultResourceGroupName
+output databricksResourceId string = testDeployment[0].outputs.databricksResourceId
+output databricksName string = testDeployment[0].outputs.databricksName
+output databricksLocation string = testDeployment[0].outputs.databricksLocation
+output databricksResourceGroupName string = testDeployment[0].outputs.databricksResourceGroupName
