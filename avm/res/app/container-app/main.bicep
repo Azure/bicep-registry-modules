@@ -41,6 +41,12 @@ param stickySessionsAffinity string = 'none'
 @description('Optional. Ingress transport protocol.')
 param ingressTransport string = 'auto'
 
+@description('Optional. Dev ContainerApp service type.')
+param service object = {}
+
+@description('Optional. Toggle to include the service configuration.')
+param includeAddOns bool = false
+
 @description('Optional. Bool indicating if HTTP connections to is allowed. If set to false HTTP connections are automatically redirected to HTTPS connections.')
 param ingressAllowInsecure bool = true
 
@@ -55,6 +61,9 @@ param scaleMinReplicas int = 3
 
 @description('Optional. Scaling rules.')
 param scaleRules array = []
+
+@description('Optional. List of container app services bound to the app.')
+param serviceBinds serviceBind[]?
 
 @allowed([
   'Multiple'
@@ -195,7 +204,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
+resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
   name: name
   tags: tags
   location: location
@@ -240,6 +249,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
               : null
             transport: ingressTransport
           }
+          service: (includeAddOns && !empty(service)) ? service : null
       maxInactiveRevisions: maxInactiveRevisions
       registries: !empty(registries) ? registries : null
       secrets: secretList
@@ -253,6 +263,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
         minReplicas: scaleMinReplicas
         rules: !empty(scaleRules) ? scaleRules : null
       }
+      serviceBinds: (includeAddOns && !empty(serviceBinds)) ? serviceBinds : null
       volumes: !empty(volumes) ? volumes : null
     }
     workloadProfileName: workloadProfileName
@@ -374,6 +385,14 @@ type container = {
 
   @description('Optional. Container volume mounts.')
   volumeMounts: volumeMount[]?
+}
+
+type serviceBind = {
+  @description('Required. The name of the service.')
+  name: string
+
+  @description('Required. The service ID.')
+  serviceId: string
 }
 
 type environmentVar = {
