@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "7765825140175449922"
+      "version": "0.29.47.4906",
+      "templateHash": "3958927691309409101"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet).",
@@ -245,6 +245,13 @@
         "description": "Required. An Array of 1 or more IP Address Prefixes for the Virtual Network."
       }
     },
+    "virtualNetworkBgpCommunity": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The BGP community associated with the virtual network."
+      }
+    },
     "subnets": {
       "type": "array",
       "defaultValue": [],
@@ -378,17 +385,17 @@
               "name": "[parameters('subnets')[copyIndex('subnets')].name]",
               "properties": {
                 "addressPrefix": "[parameters('subnets')[copyIndex('subnets')].addressPrefix]",
-                "addressPrefixes": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'addressPrefixes'), parameters('subnets')[copyIndex('subnets')].addressPrefixes, createArray())]",
-                "applicationGatewayIPConfigurations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'applicationGatewayIPConfigurations'), parameters('subnets')[copyIndex('subnets')].applicationGatewayIPConfigurations, createArray())]",
-                "delegations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'delegations'), parameters('subnets')[copyIndex('subnets')].delegations, createArray())]",
-                "ipAllocations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'ipAllocations'), parameters('subnets')[copyIndex('subnets')].ipAllocations, createArray())]",
+                "addressPrefixes": "[tryGet(parameters('subnets')[copyIndex('subnets')], 'addressPrefixes')]",
+                "applicationGatewayIPConfigurations": "[tryGet(parameters('subnets')[copyIndex('subnets')], 'applicationGatewayIPConfigurations')]",
+                "delegations": "[tryGet(parameters('subnets')[copyIndex('subnets')], 'delegations')]",
+                "ipAllocations": "[tryGet(parameters('subnets')[copyIndex('subnets')], 'ipAllocations')]",
                 "natGateway": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'natGatewayResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].natGatewayResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].natGatewayResourceId), null())]",
                 "networkSecurityGroup": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'networkSecurityGroupResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].networkSecurityGroupResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].networkSecurityGroupResourceId), null())]",
-                "privateEndpointNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'privateEndpointNetworkPolicies'), parameters('subnets')[copyIndex('subnets')].privateEndpointNetworkPolicies, null())]",
-                "privateLinkServiceNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'privateLinkServiceNetworkPolicies'), parameters('subnets')[copyIndex('subnets')].privateLinkServiceNetworkPolicies, null())]",
+                "privateEndpointNetworkPolicies": "[coalesce(tryGet(parameters('subnets')[copyIndex('subnets')], 'privateEndpointNetworkPolicies'), null())]",
+                "privateLinkServiceNetworkPolicies": "[coalesce(tryGet(parameters('subnets')[copyIndex('subnets')], 'privateLinkServiceNetworkPolicies'), null())]",
                 "routeTable": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'routeTableResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].routeTableResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].routeTableResourceId), null())]",
-                "serviceEndpoints": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'serviceEndpoints'), parameters('subnets')[copyIndex('subnets')].serviceEndpoints, createArray())]",
-                "serviceEndpointPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'serviceEndpointPolicies'), parameters('subnets')[copyIndex('subnets')].serviceEndpointPolicies, createArray())]"
+                "serviceEndpoints": "[tryGet(parameters('subnets')[copyIndex('subnets')], 'serviceEndpoints')]",
+                "serviceEndpointPolicies": "[tryGet(parameters('subnets')[copyIndex('subnets')], 'serviceEndpointPolicies')]"
               }
             }
           }
@@ -396,6 +403,7 @@
         "addressSpace": {
           "addressPrefixes": "[parameters('addressPrefixes')]"
         },
+        "bgpCommunities": "[if(not(empty(parameters('virtualNetworkBgpCommunity'))), createObject('virtualNetworkCommunity', parameters('virtualNetworkBgpCommunity')), null())]",
         "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanResourceId'))), createObject('id', parameters('ddosProtectionPlanResourceId')), null())]",
         "dhcpOptions": "[if(not(empty(parameters('dnsServers'))), createObject('dnsServers', array(parameters('dnsServers'))), null())]",
         "enableDdosProtection": "[not(empty(parameters('ddosProtectionPlanResourceId')))]",
@@ -468,7 +476,7 @@
       "scope": "[format('Microsoft.Network/virtualNetworks/{0}', parameters('name'))]",
       "name": "[guid(resourceId('Microsoft.Network/virtualNetworks', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+        "roleDefinitionId": "[coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
         "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
         "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
         "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
@@ -505,18 +513,42 @@
           "addressPrefix": {
             "value": "[parameters('subnets')[copyIndex()].addressPrefix]"
           },
-          "addressPrefixes": "[if(contains(parameters('subnets')[copyIndex()], 'addressPrefixes'), createObject('value', parameters('subnets')[copyIndex()].addressPrefixes), createObject('value', createArray()))]",
-          "applicationGatewayIPConfigurations": "[if(contains(parameters('subnets')[copyIndex()], 'applicationGatewayIPConfigurations'), createObject('value', parameters('subnets')[copyIndex()].applicationGatewayIPConfigurations), createObject('value', createArray()))]",
-          "delegations": "[if(contains(parameters('subnets')[copyIndex()], 'delegations'), createObject('value', parameters('subnets')[copyIndex()].delegations), createObject('value', createArray()))]",
-          "ipAllocations": "[if(contains(parameters('subnets')[copyIndex()], 'ipAllocations'), createObject('value', parameters('subnets')[copyIndex()].ipAllocations), createObject('value', createArray()))]",
-          "natGatewayResourceId": "[if(contains(parameters('subnets')[copyIndex()], 'natGatewayResourceId'), createObject('value', parameters('subnets')[copyIndex()].natGatewayResourceId), createObject('value', ''))]",
-          "networkSecurityGroupResourceId": "[if(contains(parameters('subnets')[copyIndex()], 'networkSecurityGroupResourceId'), createObject('value', parameters('subnets')[copyIndex()].networkSecurityGroupResourceId), createObject('value', ''))]",
-          "privateEndpointNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex()], 'privateEndpointNetworkPolicies'), createObject('value', parameters('subnets')[copyIndex()].privateEndpointNetworkPolicies), createObject('value', ''))]",
-          "privateLinkServiceNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex()], 'privateLinkServiceNetworkPolicies'), createObject('value', parameters('subnets')[copyIndex()].privateLinkServiceNetworkPolicies), createObject('value', ''))]",
-          "roleAssignments": "[if(contains(parameters('subnets')[copyIndex()], 'roleAssignments'), createObject('value', parameters('subnets')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "routeTableResourceId": "[if(contains(parameters('subnets')[copyIndex()], 'routeTableResourceId'), createObject('value', parameters('subnets')[copyIndex()].routeTableResourceId), createObject('value', ''))]",
-          "serviceEndpointPolicies": "[if(contains(parameters('subnets')[copyIndex()], 'serviceEndpointPolicies'), createObject('value', parameters('subnets')[copyIndex()].serviceEndpointPolicies), createObject('value', createArray()))]",
-          "serviceEndpoints": "[if(contains(parameters('subnets')[copyIndex()], 'serviceEndpoints'), createObject('value', parameters('subnets')[copyIndex()].serviceEndpoints), createObject('value', createArray()))]"
+          "addressPrefixes": {
+            "value": "[tryGet(parameters('subnets')[copyIndex()], 'addressPrefixes')]"
+          },
+          "applicationGatewayIPConfigurations": {
+            "value": "[tryGet(parameters('subnets')[copyIndex()], 'applicationGatewayIPConfiguration')]"
+          },
+          "delegations": {
+            "value": "[tryGet(parameters('subnets')[copyIndex()], 'delegations')]"
+          },
+          "ipAllocations": {
+            "value": "[tryGet(parameters('subnets')[copyIndex()], 'ipAllocations')]"
+          },
+          "natGatewayResourceId": {
+            "value": "[tryGet(parameters('subnets')[copyIndex()], 'natGatewayResourceId')]"
+          },
+          "networkSecurityGroupResourceId": {
+            "value": "[tryGet(parameters('subnets')[copyIndex()], 'networkSecurityGroupResourceId')]"
+          },
+          "privateEndpointNetworkPolicies": {
+            "value": "[tryGet(parameters('subnets')[copyIndex()], 'privateEndpointNetworkPolicies')]"
+          },
+          "privateLinkServiceNetworkPolicies": {
+            "value": "[tryGet(parameters('subnets')[copyIndex()], 'privateLinkServiceNetworkPolicies')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(parameters('subnets')[copyIndex()], 'roleAssignments')]"
+          },
+          "routeTableResourceId": {
+            "value": "[tryGet(parameters('subnets')[copyIndex()], 'routeTableResourceId')]"
+          },
+          "serviceEndpointPolicies": {
+            "value": "[tryGet(parameters('subnets')[copyIndex()], 'serviceEndpointPolicies')]"
+          },
+          "serviceEndpoints": {
+            "value": "[tryGet(parameters('subnets')[copyIndex()], 'serviceEndpoints')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -525,8 +557,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "9634407864982934565"
+              "version": "0.29.47.4906",
+              "templateHash": "15624641872302253560"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet.",
@@ -762,7 +794,7 @@
               "scope": "[format('Microsoft.Network/virtualNetworks/{0}/subnets/{1}', parameters('virtualNetworkName'), parameters('name'))]",
               "name": "[guid(resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                "roleDefinitionId": "[coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
                 "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
                 "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
                 "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
@@ -838,12 +870,24 @@
           "remoteVirtualNetworkId": {
             "value": "[parameters('peerings')[copyIndex()].remoteVirtualNetworkId]"
           },
-          "name": "[if(contains(parameters('peerings')[copyIndex()], 'name'), createObject('value', parameters('peerings')[copyIndex()].name), createObject('value', format('{0}-{1}', parameters('name'), last(split(parameters('peerings')[copyIndex()].remoteVirtualNetworkId, '/')))))]",
-          "allowForwardedTraffic": "[if(contains(parameters('peerings')[copyIndex()], 'allowForwardedTraffic'), createObject('value', parameters('peerings')[copyIndex()].allowForwardedTraffic), createObject('value', true()))]",
-          "allowGatewayTransit": "[if(contains(parameters('peerings')[copyIndex()], 'allowGatewayTransit'), createObject('value', parameters('peerings')[copyIndex()].allowGatewayTransit), createObject('value', false()))]",
-          "allowVirtualNetworkAccess": "[if(contains(parameters('peerings')[copyIndex()], 'allowVirtualNetworkAccess'), createObject('value', parameters('peerings')[copyIndex()].allowVirtualNetworkAccess), createObject('value', true()))]",
-          "doNotVerifyRemoteGateways": "[if(contains(parameters('peerings')[copyIndex()], 'doNotVerifyRemoteGateways'), createObject('value', parameters('peerings')[copyIndex()].doNotVerifyRemoteGateways), createObject('value', true()))]",
-          "useRemoteGateways": "[if(contains(parameters('peerings')[copyIndex()], 'useRemoteGateways'), createObject('value', parameters('peerings')[copyIndex()].useRemoteGateways), createObject('value', false()))]"
+          "name": {
+            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'name'), format('{0}-{1}', parameters('name'), last(split(parameters('peerings')[copyIndex()].remoteVirtualNetworkId, '/'))))]"
+          },
+          "allowForwardedTraffic": {
+            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'allowForwardedTraffic'), true())]"
+          },
+          "allowGatewayTransit": {
+            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'allowGatewayTransit'), false())]"
+          },
+          "allowVirtualNetworkAccess": {
+            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'allowVirtualNetworkAccess'), true())]"
+          },
+          "doNotVerifyRemoteGateways": {
+            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'doNotVerifyRemoteGateways'), true())]"
+          },
+          "useRemoteGateways": {
+            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'useRemoteGateways'), false())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -851,8 +895,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "39994426069187924"
+              "version": "0.29.47.4906",
+              "templateHash": "1725716682351191048"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering.",
@@ -983,12 +1027,24 @@
           "remoteVirtualNetworkId": {
             "value": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]"
           },
-          "name": "[if(contains(parameters('peerings')[copyIndex()], 'remotePeeringName'), createObject('value', parameters('peerings')[copyIndex()].remotePeeringName), createObject('value', format('{0}-{1}', last(split(parameters('peerings')[copyIndex()].remoteVirtualNetworkId, '/')), parameters('name'))))]",
-          "allowForwardedTraffic": "[if(contains(parameters('peerings')[copyIndex()], 'remotePeeringAllowForwardedTraffic'), createObject('value', parameters('peerings')[copyIndex()].remotePeeringAllowForwardedTraffic), createObject('value', true()))]",
-          "allowGatewayTransit": "[if(contains(parameters('peerings')[copyIndex()], 'remotePeeringAllowGatewayTransit'), createObject('value', parameters('peerings')[copyIndex()].remotePeeringAllowGatewayTransit), createObject('value', false()))]",
-          "allowVirtualNetworkAccess": "[if(contains(parameters('peerings')[copyIndex()], 'remotePeeringAllowVirtualNetworkAccess'), createObject('value', parameters('peerings')[copyIndex()].remotePeeringAllowVirtualNetworkAccess), createObject('value', true()))]",
-          "doNotVerifyRemoteGateways": "[if(contains(parameters('peerings')[copyIndex()], 'remotePeeringDoNotVerifyRemoteGateways'), createObject('value', parameters('peerings')[copyIndex()].remotePeeringDoNotVerifyRemoteGateways), createObject('value', true()))]",
-          "useRemoteGateways": "[if(contains(parameters('peerings')[copyIndex()], 'remotePeeringUseRemoteGateways'), createObject('value', parameters('peerings')[copyIndex()].remotePeeringUseRemoteGateways), createObject('value', false()))]"
+          "name": {
+            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'remotePeeringName'), format('{0}-{1}', last(split(parameters('peerings')[copyIndex()].remoteVirtualNetworkId, '/')), parameters('name')))]"
+          },
+          "allowForwardedTraffic": {
+            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'remotePeeringAllowForwardedTraffic'), true())]"
+          },
+          "allowGatewayTransit": {
+            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'remotePeeringAllowGatewayTransit'), false())]"
+          },
+          "allowVirtualNetworkAccess": {
+            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'remotePeeringAllowVirtualNetworkAccess'), true())]"
+          },
+          "doNotVerifyRemoteGateways": {
+            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'remotePeeringDoNotVerifyRemoteGateways'), true())]"
+          },
+          "useRemoteGateways": {
+            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'remotePeeringUseRemoteGateways'), false())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -996,8 +1052,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "39994426069187924"
+              "version": "0.29.47.4906",
+              "templateHash": "1725716682351191048"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering.",

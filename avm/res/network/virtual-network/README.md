@@ -747,6 +747,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`subnets`](#parameter-subnets) | array | An Array of subnets to deploy to the Virtual Network. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`virtualNetworkBgpCommunity`](#parameter-virtualnetworkbgpcommunity) | string | The BGP community associated with the virtual network. |
 | [`vnetEncryption`](#parameter-vnetencryption) | bool | Indicates if encryption is enabled on virtual network and if VM without encryption is allowed in encrypted VNet. Requires the EnableVNetEncryption feature to be registered for the subscription and a supported region to use this property. |
 | [`vnetEncryptionEnforcement`](#parameter-vnetencryptionenforcement) | string | If the encrypted VNet allows VM that does not support encryption. Can only be used when vnetEncryption is enabled. |
 
@@ -1097,6 +1098,13 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `virtualNetworkBgpCommunity`
+
+The BGP community associated with the virtual network.
+
+- Required: No
+- Type: string
 
 ### Parameter: `vnetEncryption`
 

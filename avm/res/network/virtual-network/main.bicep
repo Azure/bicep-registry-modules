@@ -11,6 +11,9 @@ param location string = resourceGroup().location
 @description('Required. An Array of 1 or more IP Address Prefixes for the Virtual Network.')
 param addressPrefixes array
 
+@description('Optional. The BGP community associated with the virtual network.')
+param virtualNetworkBgpCommunity string?
+
 @description('Optional. An Array of subnets to deploy to the Virtual Network.')
 param subnets array = []
 
@@ -101,6 +104,11 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
     addressSpace: {
       addressPrefixes: addressPrefixes
     }
+    bgpCommunities: !empty(virtualNetworkBgpCommunity)
+      ? {
+          virtualNetworkCommunity: virtualNetworkBgpCommunity!
+        }
+      : null
     ddosProtectionPlan: !empty(ddosProtectionPlanResourceId)
       ? {
           id: ddosProtectionPlanResourceId
@@ -124,12 +132,10 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
         name: subnet.name
         properties: {
           addressPrefix: subnet.addressPrefix
-          addressPrefixes: contains(subnet, 'addressPrefixes') ? subnet.addressPrefixes : []
-          applicationGatewayIPConfigurations: contains(subnet, 'applicationGatewayIPConfigurations')
-            ? subnet.applicationGatewayIPConfigurations
-            : []
-          delegations: contains(subnet, 'delegations') ? subnet.delegations : []
-          ipAllocations: contains(subnet, 'ipAllocations') ? subnet.ipAllocations : []
+          addressPrefixes: subnet.?addressPrefixes
+          applicationGatewayIPConfigurations: subnet.?applicationGatewayIPConfigurations
+          delegations: subnet.?delegations
+          ipAllocations: subnet.?ipAllocations
           natGateway: contains(subnet, 'natGatewayResourceId') && !empty(subnet.natGatewayResourceId)
             ? {
                 id: subnet.natGatewayResourceId
@@ -140,19 +146,15 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
                 id: subnet.networkSecurityGroupResourceId
               }
             : null
-          privateEndpointNetworkPolicies: contains(subnet, 'privateEndpointNetworkPolicies')
-            ? subnet.privateEndpointNetworkPolicies
-            : null
-          privateLinkServiceNetworkPolicies: contains(subnet, 'privateLinkServiceNetworkPolicies')
-            ? subnet.privateLinkServiceNetworkPolicies
-            : null
+          privateEndpointNetworkPolicies: subnet.?privateEndpointNetworkPolicies ?? null
+          privateLinkServiceNetworkPolicies: subnet.?privateLinkServiceNetworkPolicies ?? null
           routeTable: contains(subnet, 'routeTableResourceId') && !empty(subnet.routeTableResourceId)
             ? {
                 id: subnet.routeTableResourceId
               }
             : null
-          serviceEndpoints: contains(subnet, 'serviceEndpoints') ? subnet.serviceEndpoints : []
-          serviceEndpointPolicies: contains(subnet, 'serviceEndpointPolicies') ? subnet.serviceEndpointPolicies : []
+          serviceEndpoints: subnet.?serviceEndpoints
+          serviceEndpointPolicies: subnet.?serviceEndpointPolicies
         }
       }
     ]
@@ -175,26 +177,18 @@ module virtualNetwork_subnets 'subnet/main.bicep' = [
       virtualNetworkName: virtualNetwork.name
       name: subnet.name
       addressPrefix: subnet.addressPrefix
-      addressPrefixes: contains(subnet, 'addressPrefixes') ? subnet.addressPrefixes : []
-      applicationGatewayIPConfigurations: contains(subnet, 'applicationGatewayIPConfigurations')
-        ? subnet.applicationGatewayIPConfigurations
-        : []
-      delegations: contains(subnet, 'delegations') ? subnet.delegations : []
-      ipAllocations: contains(subnet, 'ipAllocations') ? subnet.ipAllocations : []
-      natGatewayResourceId: contains(subnet, 'natGatewayResourceId') ? subnet.natGatewayResourceId : ''
-      networkSecurityGroupResourceId: contains(subnet, 'networkSecurityGroupResourceId')
-        ? subnet.networkSecurityGroupResourceId
-        : ''
-      privateEndpointNetworkPolicies: contains(subnet, 'privateEndpointNetworkPolicies')
-        ? subnet.privateEndpointNetworkPolicies
-        : ''
-      privateLinkServiceNetworkPolicies: contains(subnet, 'privateLinkServiceNetworkPolicies')
-        ? subnet.privateLinkServiceNetworkPolicies
-        : ''
-      roleAssignments: contains(subnet, 'roleAssignments') ? subnet.roleAssignments : []
-      routeTableResourceId: contains(subnet, 'routeTableResourceId') ? subnet.routeTableResourceId : ''
-      serviceEndpointPolicies: contains(subnet, 'serviceEndpointPolicies') ? subnet.serviceEndpointPolicies : []
-      serviceEndpoints: contains(subnet, 'serviceEndpoints') ? subnet.serviceEndpoints : []
+      addressPrefixes: subnet.?addressPrefixes
+      applicationGatewayIPConfigurations: subnet.?applicationGatewayIPConfiguration
+      delegations: subnet.?delegations
+      ipAllocations: subnet.?ipAllocations
+      natGatewayResourceId: subnet.?natGatewayResourceId
+      networkSecurityGroupResourceId: subnet.?networkSecurityGroupResourceId
+      privateEndpointNetworkPolicies: subnet.?privateEndpointNetworkPolicies
+      privateLinkServiceNetworkPolicies: subnet.?privateLinkServiceNetworkPolicies
+      roleAssignments: subnet.?roleAssignments
+      routeTableResourceId: subnet.?routeTableResourceId
+      serviceEndpointPolicies: subnet.?serviceEndpointPolicies
+      serviceEndpoints: subnet.?serviceEndpoints
     }
   }
 ]
@@ -206,16 +200,12 @@ module virtualNetwork_peering_local 'virtual-network-peering/main.bicep' = [
     params: {
       localVnetName: virtualNetwork.name
       remoteVirtualNetworkId: peering.remoteVirtualNetworkId
-      name: contains(peering, 'name') ? peering.name : '${name}-${last(split(peering.remoteVirtualNetworkId, '/'))}'
-      allowForwardedTraffic: contains(peering, 'allowForwardedTraffic') ? peering.allowForwardedTraffic : true
-      allowGatewayTransit: contains(peering, 'allowGatewayTransit') ? peering.allowGatewayTransit : false
-      allowVirtualNetworkAccess: contains(peering, 'allowVirtualNetworkAccess')
-        ? peering.allowVirtualNetworkAccess
-        : true
-      doNotVerifyRemoteGateways: contains(peering, 'doNotVerifyRemoteGateways')
-        ? peering.doNotVerifyRemoteGateways
-        : true
-      useRemoteGateways: contains(peering, 'useRemoteGateways') ? peering.useRemoteGateways : false
+      name: peering.?name ?? '${name}-${last(split(peering.remoteVirtualNetworkId, '/'))}'
+      allowForwardedTraffic: peering.?allowForwardedTraffic ?? true
+      allowGatewayTransit: peering.?allowGatewayTransit ?? false
+      allowVirtualNetworkAccess: peering.?allowVirtualNetworkAccess ?? true
+      doNotVerifyRemoteGateways: peering.?doNotVerifyRemoteGateways ?? true
+      useRemoteGateways: peering.?useRemoteGateways ?? false
     }
   }
 ]
@@ -230,24 +220,12 @@ module virtualNetwork_peering_remote 'virtual-network-peering/main.bicep' = [
     params: {
       localVnetName: last(split(peering.remoteVirtualNetworkId, '/'))!
       remoteVirtualNetworkId: virtualNetwork.id
-      name: contains(peering, 'remotePeeringName')
-        ? peering.remotePeeringName
-        : '${last(split(peering.remoteVirtualNetworkId, '/'))}-${name}'
-      allowForwardedTraffic: contains(peering, 'remotePeeringAllowForwardedTraffic')
-        ? peering.remotePeeringAllowForwardedTraffic
-        : true
-      allowGatewayTransit: contains(peering, 'remotePeeringAllowGatewayTransit')
-        ? peering.remotePeeringAllowGatewayTransit
-        : false
-      allowVirtualNetworkAccess: contains(peering, 'remotePeeringAllowVirtualNetworkAccess')
-        ? peering.remotePeeringAllowVirtualNetworkAccess
-        : true
-      doNotVerifyRemoteGateways: contains(peering, 'remotePeeringDoNotVerifyRemoteGateways')
-        ? peering.remotePeeringDoNotVerifyRemoteGateways
-        : true
-      useRemoteGateways: contains(peering, 'remotePeeringUseRemoteGateways')
-        ? peering.remotePeeringUseRemoteGateways
-        : false
+      name: peering.?remotePeeringName ?? '${last(split(peering.remoteVirtualNetworkId, '/'))}-${name}'
+      allowForwardedTraffic: peering.?remotePeeringAllowForwardedTraffic ?? true
+      allowGatewayTransit: peering.?remotePeeringAllowGatewayTransit ?? false
+      allowVirtualNetworkAccess: peering.?remotePeeringAllowVirtualNetworkAccess ?? true
+      doNotVerifyRemoteGateways: peering.?remotePeeringDoNotVerifyRemoteGateways ?? true
+      useRemoteGateways: peering.?remotePeeringUseRemoteGateways ?? false
     }
   }
 ]
@@ -296,9 +274,7 @@ resource virtualNetwork_roleAssignments 'Microsoft.Authorization/roleAssignments
   for (roleAssignment, index) in (roleAssignments ?? []): {
     name: guid(virtualNetwork.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : roleAssignment.roleDefinitionIdOrName
+      roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? roleAssignment.roleDefinitionIdOrName
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
