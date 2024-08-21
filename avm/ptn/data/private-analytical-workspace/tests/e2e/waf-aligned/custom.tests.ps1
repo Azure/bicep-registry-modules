@@ -113,7 +113,6 @@ Describe 'Validate Pattern deployment' {
 
                 $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName -name $logAnalyticsWorkspaceName
                 $log | Should -Not -BeNullOrEmpty
-
                 $log.ProvisioningState | Should -Be "Succeeded"
                 $log.Sku | Should -Be 'PerGB2018'
                 $log.RetentionInDays | Should -Be 35
@@ -128,6 +127,7 @@ Describe 'Validate Pattern deployment' {
                 $log.WorkspaceFeatures.EnableLogAccessUsingOnlyResourcePermissions | Should -Be $true
                 $log.Tags.Owner | Should -Be "Contoso"
                 $log.Tags.CostCenter | Should -Be "123-456-789"
+                # TODO Role, Lock - How?
             }
         }
 
@@ -157,14 +157,21 @@ Describe 'Validate Pattern deployment' {
                 $kv.NetworkAcls.VirtualNetworkResourceIds | Should -BeNullOrEmpty
                 $kv.Tags.Owner | Should -Be "Contoso"
                 $kv.Tags.CostCenter | Should -Be "123-456-789"
+                # TODO Role, Lock - How?
 
-                $kvDiag = Get-AzDiagnosticSettingCategory -ResourceId $keyVaultResourceId
+                $kvDiag  = Get-AzDiagnosticSetting -ResourceId $keyVaultResourceId -Name avm-diagnostic-settings
                 $kvDiag | Should -Not -BeNullOrEmpty
                 #$kvDiag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-                $kvDiag.Count | Should -Be 3 # AuditEvent, AzurePolicyEvaluationDetails, AllMetrics
-                $kvDiag[0].Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
-                $kvDiag[1].Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
-                $kvDiag[2].Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
+                $kvDiag.Type | Should -Be "Microsoft.Insights/diagnosticSettings"
+                $kvDiag.WorkspaceId | Should -Be $logAnalyticsWorkspaceResourceId
+
+                $kvDiagCat = Get-AzDiagnosticSettingCategory -ResourceId $keyVaultResourceId
+                $kvDiagCat | Should -Not -BeNullOrEmpty
+                #$kvDiagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
+                $kvDiagCat.Count | Should -Be 3 # AuditEvent, AzurePolicyEvaluationDetails, AllMetrics
+                $kvDiagCat[0].Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
+                $kvDiagCat[1].Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
+                $kvDiagCat[2].Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
 
                 $kvPEP = Get-AzPrivateEndpoint -ResourceGroupName $keyVaultResourceGroupName -Name "$($kv.VaultName)-PEP"
                 $kvPEP | Should -Not -BeNullOrEmpty
@@ -178,6 +185,7 @@ Describe 'Validate Pattern deployment' {
                 $kvPEP.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
                 $kvPEP.Tag.Owner | Should -Be "Contoso"
                 $kvPEP.Tag.CostCenter | Should -Be "123-456-789"
+                # TODO Role, Lock - How?
 
                 $kvZone = Get-AzPrivateDnsZone -ResourceGroupName $keyVaultResourceGroupName -Name "privatelink.vaultcore.azure.net"
                 $kvZone | Should -Not -BeNullOrEmpty
@@ -186,17 +194,7 @@ Describe 'Validate Pattern deployment' {
                 $kvZone.NumberOfVirtualNetworkLinks | Should -Be 1
                 $kvZone.Tags.Owner | Should -Be "Contoso"
                 $kvZone.Tags.CostCenter | Should -Be "123-456-789"
-
-
-
-
-
-
-
-                # TODO
-                #$kv.NetworkAcls.IpAddressRanges  | Should -Be ''
-                #role assignments
-                #$log | Format-List
+                # TODO Role, Lock - How?
             }
         }
 
@@ -234,6 +232,11 @@ Describe 'Validate Pattern deployment' {
 
 
 
+
+
+                # TODO
+                #role assignments, lock
+                #$log | Format-List
 
 
 
