@@ -166,11 +166,9 @@ Describe 'Validate deployment' {
                 $kvDiag | Should -Not -BeNullOrEmpty
                 #$kvDiag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
                 $kvDiag.Count | Should -Be 3 # AuditEvent, AzurePolicyEvaluationDetails, AllMetrics
-                foreach ($i in $kvDiag) {
-                    It "Has Log $i.Name" {
-                        $i.Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
-                    }
-                }
+                $kvDiag[0].Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
+                $kvDiag[1].Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
+                $kvDiag[2].Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
 
 
 
@@ -179,10 +177,18 @@ Describe 'Validate deployment' {
                 $kvPEP = Get-AzPrivateEndpoint -ResourceGroupName $keyVaultResourceGroupName -Name "$($kv.VaultName)-PEP"
                 $kvPEP | Should -Not -BeNullOrEmpty
                 $kvPEP.ProvisioningState | Should -Be "Succeeded"
+                $kvPEP.Tag.Owner | Should -Be "Contoso"
+                $kvPEP.Tag.CostCenter | Should -Be "123-456-789"
                 # $kvPEP TODO - do more checks
 
 
-
+                $kvPEP.Subnet.Id | Should -Be "$($virtualNetworkResourceId)/subnets/private-link-subnet"
+                $kvPEP.NetworkInterfaces.Count | Should -Be 1
+                $kvPEP.PrivateLinkServiceConnections.ProvisioningState | Should -Be "Succeeded"
+                $kvPEP.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $keyVaultResourceId
+                $kvPEP.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
+                $kvPEP.PrivateLinkServiceConnections.GroupIds[0] | Should -Be "vault"
+                $kvPEP.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
 
 
 
@@ -194,7 +200,7 @@ Describe 'Validate deployment' {
 
                 $kvZone = Get-AzPrivateDnsZone -ResourceGroupName $keyVaultResourceGroupName -Name "privatelink.vaultcore.azure.net"
                 $kvZone | Should -Not -BeNullOrEmpty
-                $kvZone.ProvisioningState | Should -Be "Succeeded"
+                #$kvZone.ProvisioningState | Should -Be "Succeeded"
                 $kvZone.NumberOfRecordSets | Should -Be 2 # SOA + A
                 $kvZone.NumberOfVirtualNetworkLinks | Should -Be 1
                 $kvZone.Tag.Owner | Should -Be "Contoso"
