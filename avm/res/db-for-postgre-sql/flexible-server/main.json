@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "7994830003785276851"
+      "templateHash": "11155893103946575130"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -464,7 +464,12 @@
     },
     "maintenanceWindow": {
       "type": "object",
-      "defaultValue": {},
+      "defaultValue": {
+        "customWindow": "Enabled",
+        "dayOfWeek": 0,
+        "startHour": 1,
+        "startMinute": 0
+      },
       "metadata": {
         "description": "Optional. Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'."
       }
@@ -686,7 +691,7 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.DBforPostgreSQL/flexibleServers/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.DBforPostgreSQL/flexibleServers', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.DBforPostgreSQL/flexibleServers', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
         "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",

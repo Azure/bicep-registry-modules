@@ -117,7 +117,12 @@ param managedIdentities managedIdentitiesType
 param customerManagedKey customerManagedKeyType
 
 @description('Optional. Properties for the maintenence window. If provided, \'customWindow\' property must exist and set to \'Enabled\'.')
-param maintenanceWindow object = {}
+param maintenanceWindow object = {
+  customWindow: 'Enabled'
+  dayOfWeek: 0
+  startHour: 1
+  startMinute: 0
+}
 
 @description('Conditional. Required if \'createMode\' is set to \'PointInTimeRestore\'.')
 param pointInTimeUTC string = ''
@@ -304,7 +309,7 @@ resource flexibleServer_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
 
 resource flexibleServer_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
-    name: guid(flexibleServer.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    name: roleAssignment.?name ?? guid(flexibleServer.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
       roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
