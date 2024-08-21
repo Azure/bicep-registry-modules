@@ -1,6 +1,6 @@
-# Site Auth Settings V2 Config `[Microsoft.Web/sites/config]`
+# Site Deployment Extension  `[Microsoft.Web/sites/extensions]`
 
-This module deploys a Site Auth Settings V2 Configuration.
+This module deploys a Site extension for MSDeploy.
 
 ## Navigation
 
@@ -14,7 +14,7 @@ This module deploys a Site Auth Settings V2 Configuration.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Web/sites/config` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
+| `Microsoft.Web/sites/extensions` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites/extensions) |
 
 ## Parameters
 
@@ -22,61 +22,31 @@ This module deploys a Site Auth Settings V2 Configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`authSettingV2Configuration`](#parameter-authsettingv2configuration) | object | The auth settings V2 configuration. |
-| [`kind`](#parameter-kind) | string | Type of site to deploy. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`appName`](#parameter-appname) | string | The name of the parent site resource. Required if the template is used in a standalone deployment. |
-
-### Parameter: `authSettingV2Configuration`
-
-The auth settings V2 configuration.
-
-- Required: Yes
-- Type: object
-
-### Parameter: `kind`
-
-Type of site to deploy.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'api'
-    'app'
-    'app,container,windows'
-    'app,linux'
-    'app,linux,container'
-    'functionapp'
-    'functionapp,linux'
-    'functionapp,linux,container'
-    'functionapp,linux,container,azurecontainerapps'
-    'functionapp,workflowapp'
-    'functionapp,workflowapp,linux'
-    'linux,api'
-  ]
-  ```
+| [`appName`](#parameter-appname) | string | The name of the parent site resource. |
+| [`msDeployConfiguration`](#parameter-msdeployconfiguration) | object | Sets the MSDeployment Properties. |
 
 ### Parameter: `appName`
 
-The name of the parent site resource. Required if the template is used in a standalone deployment.
+The name of the parent site resource.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `msDeployConfiguration`
+
+Sets the MSDeployment Properties.
+
+- Required: No
+- Type: object
 
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the site config. |
+| `name` | string | The name of the MSDeploy Package. |
 | `resourceGroupName` | string | The resource group the site config was deployed into. |
-| `resourceId` | string | The resource ID of the site config. |
+| `resourceId` | string | The resource ID of the Site Extension. |
 
 ## Cross-referenced modules
 
