@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "364014764379639426"
+      "templateHash": "13961196804563097956"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment).",
@@ -285,6 +285,13 @@
         "description": "Conditional. An IP address from the IP range defined by \"platformReservedCidr\" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
     },
+    "peerTrafficEncryption": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Whether or not to encrypt peer traffic."
+      }
+    },
     "zoneRedundant": {
       "type": "bool",
       "defaultValue": true,
@@ -372,7 +379,7 @@
         "count": "[length(coalesce(parameters('storages'), createArray()))]"
       },
       "type": "Microsoft.App/managedEnvironments/storages",
-      "apiVersion": "2023-11-02-preview",
+      "apiVersion": "2024-02-02-preview",
       "name": "[format('{0}/{1}', parameters('name'), coalesce(parameters('storages'), createArray())[copyIndex()].shareName)]",
       "properties": {
         "nfsAzureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'NFS'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'server', format('{0}.file.{1}', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, environment().suffixes.storage), 'shareName', format('/{0}/{1}', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, coalesce(parameters('storages'), createArray())[copyIndex()].shareName)), null())]",
@@ -413,7 +420,7 @@
     },
     "managedEnvironment": {
       "type": "Microsoft.App/managedEnvironments",
-      "apiVersion": "2023-11-02-preview",
+      "apiVersion": "2024-02-02-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -437,6 +444,11 @@
           "dnsSuffix": "[parameters('dnsSuffix')]"
         },
         "openTelemetryConfiguration": "[if(not(empty(parameters('openTelemetryConfiguration'))), parameters('openTelemetryConfiguration'), null())]",
+        "peerTrafficConfiguration": {
+          "encryption": {
+            "enabled": "[parameters('peerTrafficEncryption')]"
+          }
+        },
         "vnetConfiguration": {
           "internal": "[parameters('internal')]",
           "infrastructureSubnetId": "[if(not(empty(parameters('infrastructureSubnetId'))), parameters('infrastructureSubnetId'), null())]",
@@ -502,7 +514,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('managedEnvironment', '2023-11-02-preview', 'full').location]"
+      "value": "[reference('managedEnvironment', '2024-02-02-preview', 'full').location]"
     },
     "name": {
       "type": "string",
@@ -523,7 +535,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('managedEnvironment', '2023-11-02-preview', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('managedEnvironment', '2024-02-02-preview', 'full'), 'identity'), 'principalId'), '')]"
     },
     "defaultDomain": {
       "type": "string",

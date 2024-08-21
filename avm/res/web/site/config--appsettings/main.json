@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "12675357375151621299"
+      "templateHash": "8777070640548664577"
     },
     "name": "Site App Settings",
     "description": "This module deploys a Site App Setting.",
@@ -27,6 +27,7 @@
         "functionapp,workflowapp",
         "functionapp,workflowapp,linux",
         "functionapp,linux,container",
+        "functionapp,linux,container,azurecontainerapps",
         "app,linux",
         "app",
         "linux,api",
