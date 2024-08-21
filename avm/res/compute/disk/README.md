@@ -256,11 +256,13 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
     publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
+        name: '89cc419c-8383-461d-9a70-5cfae4045a8d'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -333,11 +335,13 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "89cc419c-8383-461d-9a70-5cfae4045a8d",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -472,7 +476,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used. |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones). |
 | [`name`](#parameter-name) | string | The name of the disk that is being created. |
 | [`sku`](#parameter-sku) | string | The disks sku name. Can be . |
 
@@ -515,7 +519,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 
 ### Parameter: `availabilityZone`
 
-If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used.
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones).
 
 - Required: Yes
 - Type: int
@@ -546,7 +550,6 @@ The disks sku name. Can be .
   ```Bicep
   [
     'Premium_LRS'
-    'Premium_ZRS'
     'Premium_ZRS'
     'PremiumV2_LRS'
     'Standard_LRS'
@@ -833,6 +836,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -879,6 +883,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string

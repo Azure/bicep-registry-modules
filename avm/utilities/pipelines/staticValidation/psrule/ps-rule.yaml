@@ -80,3 +80,4 @@ rule:
     - Azure.KeyVault.PurgeProtect
     - Azure.VM.UseHybridUseBenefit
     - Azure.AppConfig.PurgeProtect
+    - Azure.MySQL.MaintenanceWindow # Must be excluded until https://msdata.visualstudio.com/Database%20Systems/_workitems/edit/2788114 is fixed

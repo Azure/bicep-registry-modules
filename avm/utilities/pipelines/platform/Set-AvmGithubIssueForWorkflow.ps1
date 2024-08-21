@@ -88,6 +88,7 @@ function Set-AvmGithubIssueForWorkflow {
         if ($workflowRun.conclusion -eq 'failure') {
             $issueName = "[Failed pipeline] $($workflowRun.workflowName)"
             $failedrun = "Failed run: $($workflowRun.url)"
+            $moduleName = $workflowRun.workflowName.Replace('.', '/')
 
             if ($issues.title -notcontains $issueName) {
                 if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Create')) {
@@ -100,7 +101,6 @@ function Set-AvmGithubIssueForWorkflow {
 "@
 
                     if ($workflowRun.workflowName -match 'avm.(?:res|ptn)') {
-                        $moduleName = $workflowRun.workflowName.Replace('.', '/')
                         $moduleIndex = $moduleName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
                         # get CSV data
                         $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
