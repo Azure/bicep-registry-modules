@@ -3,7 +3,7 @@ param (
     [hashtable] $TestInputData = @{}
 )
 
-Describe 'Validate deployment' {
+Describe 'Validate Pattern deployment' {
 
     BeforeAll {
 
@@ -33,7 +33,7 @@ Describe 'Validate deployment' {
         $databricksResourceGroupName = $TestInputData.DeploymentOutputs.databricksResourceGroupName.Value
     }
 
-    Context 'Common Tests' {
+    Context 'Pattern Tests' {
 
         BeforeAll {
         }
@@ -109,15 +109,15 @@ Describe 'Validate deployment' {
             BeforeAll {
             }
 
-            It 'Check Azure Log Analytics Workspace Defaults' {
+            It 'Check Azure Log Analytics Workspace' {
 
                 $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName -name $logAnalyticsWorkspaceName
                 $log | Should -Not -BeNullOrEmpty
 
                 $log.ProvisioningState | Should -Be "Succeeded"
                 $log.Sku | Should -Be 'PerGB2018'
-                $log.RetentionInDays | Should -Be 53
-                $log.WorkspaceCapping.DailyQuotaGb | Should -Be 22
+                $log.RetentionInDays | Should -Be 35
+                $log.WorkspaceCapping.DailyQuotaGb | Should -Be 1
                 $log.WorkspaceCapping.DataIngestionStatus | Should -Be 'RespectQuota'
                 $log.CapacityReservationLevel | Should -BeNullOrEmpty
                 $log.PublicNetworkAccessForIngestion | Should -Be "Enabled"
@@ -131,21 +131,17 @@ Describe 'Validate deployment' {
             }
         }
 
-
-
-
         Context 'Secrets - Azure Key Vault Tests' {
 
             BeforeAll {
             }
 
-            It 'Check Azure Key Vault Defaults' {
+            It 'Check Azure Key Vault' {
 
                 $kv = Get-AzKeyVault -ResourceGroupName $keyVaultResourceGroupName -VaultName $keyVaultName
                 $kv | Should -Not -BeNullOrEmpty
-
                 #$kv.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-                $kv.Sku | Should -Be 'Premium'
+                $kv.Sku | Should -Be 'Standard'
                 $kv.EnabledForDeployment | Should -Be $false
                 $kv.EnabledForTemplateDeployment | Should -Be $false
                 $kv.EnabledForDiskEncryption | Should -Be $false
@@ -170,18 +166,9 @@ Describe 'Validate deployment' {
                 $kvDiag[1].Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
                 $kvDiag[2].Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
 
-
-
-
-
                 $kvPEP = Get-AzPrivateEndpoint -ResourceGroupName $keyVaultResourceGroupName -Name "$($kv.VaultName)-PEP"
                 $kvPEP | Should -Not -BeNullOrEmpty
                 $kvPEP.ProvisioningState | Should -Be "Succeeded"
-                $kvPEP.Tag.Owner | Should -Be "Contoso"
-                $kvPEP.Tag.CostCenter | Should -Be "123-456-789"
-                # $kvPEP TODO - do more checks
-
-
                 $kvPEP.Subnet.Id | Should -Be "$($virtualNetworkResourceId)/subnets/private-link-subnet"
                 $kvPEP.NetworkInterfaces.Count | Should -Be 1
                 $kvPEP.PrivateLinkServiceConnections.ProvisioningState | Should -Be "Succeeded"
@@ -189,22 +176,18 @@ Describe 'Validate deployment' {
                 $kvPEP.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
                 $kvPEP.PrivateLinkServiceConnections.GroupIds | Should -Be "vault"
                 $kvPEP.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
-
-
-
-
-
-
-
-
+                $kvPEP.Tag.Owner | Should -Be "Contoso"
+                $kvPEP.Tag.CostCenter | Should -Be "123-456-789"
 
                 $kvZone = Get-AzPrivateDnsZone -ResourceGroupName $keyVaultResourceGroupName -Name "privatelink.vaultcore.azure.net"
                 $kvZone | Should -Not -BeNullOrEmpty
                 #$kvZone.ProvisioningState | Should -Be "Succeeded"
                 $kvZone.NumberOfRecordSets | Should -Be 2 # SOA + A
                 $kvZone.NumberOfVirtualNetworkLinks | Should -Be 1
-                $kvZone.Tag.Owner | Should -Be "Contoso"
-                $kvZone.Tag.CostCenter | Should -Be "123-456-789"
+                $kvZone.Tags.Owner | Should -Be "Contoso"
+                $kvZone.Tags.CostCenter | Should -Be "123-456-789"
+
+
 
 
 
@@ -212,8 +195,6 @@ Describe 'Validate deployment' {
 
                 # TODO
                 #$kv.NetworkAcls.IpAddressRanges  | Should -Be ''
-                #diag settings
-                #private links
                 #role assignments
                 #$log | Format-List
             }
@@ -228,7 +209,7 @@ Describe 'Validate deployment' {
             BeforeAll {
             }
 
-            It 'Check Azure Databricks Defaults' {
+            It 'Check Azure Databricks' {
 
                 $adb = Get-AzDatabricksWorkspace -ResourceGroupName $databricksResourceGroupName -Name $databricksName
                 $adb | Should -Not -BeNullOrEmpty
