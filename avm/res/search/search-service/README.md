@@ -392,7 +392,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   name: 'searchServiceDeployment'
   params: {
     // Required parameters
-    name: 'ssspe001'
+    name: 'ssspe2001'
     // Non-required parameters
     location: '<location>'
     privateEndpoints: [
@@ -461,7 +461,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssspe001"
+      "value": "ssspe2001"
     },
     // Non-required parameters
     "location": {
@@ -1640,7 +1640,6 @@ Tags to help categorize the resource in the Azure portal.
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the search service. |
-| `privateEndpoints` | array | The private endpoints of the search service. |
 | `resourceGroupName` | string | The name of the resource group the search service was created in. |
 | `resourceId` | string | The resource ID of the search service. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |

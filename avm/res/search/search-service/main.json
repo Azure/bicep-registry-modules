@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "17248953607027738115"
+      "templateHash": "14562557958357334116"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service.",
@@ -633,7 +633,7 @@
         "Disabled"
       ],
       "metadata": {
-        "description": "Optional. This value can be set to 'enabled' to avoid breaking changes on existing customer resources and templates. If set to 'disabled', traffic over public interface is not allowed, and private endpoint connections would be the exclusive access method."
+        "description": "Optional. This value can be set to 'Enabled' to avoid breaking changes on existing customer resources and templates. If set to 'Disabled', traffic over public interface is not allowed, and private endpoint connections would be the exclusive access method."
       }
     },
     "secretsExportConfiguration": {
@@ -1631,9 +1631,6 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": {
-            "value": "[coalesce(tryGet(parameters('sharedPrivateLinkResources')[copyIndex()], 'name'), format('spl-{0}-{1}-{2}', last(split(resourceId('Microsoft.Search/searchServices', parameters('name')), '/')), parameters('sharedPrivateLinkResources')[copyIndex()].groupId, copyIndex()))]"
-          },
           "name": {
             "value": "[coalesce(tryGet(parameters('sharedPrivateLinkResources')[copyIndex()], 'name'), format('spl-{0}-{1}-{2}', last(split(resourceId('Microsoft.Search/searchServices', parameters('name')), '/')), parameters('sharedPrivateLinkResources')[copyIndex()].groupId, copyIndex()))]"
           },
