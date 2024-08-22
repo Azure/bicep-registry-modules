@@ -124,8 +124,8 @@ var formattedRoleAssignments = [
       : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
   })
 ]
-
 #disable-next-line no-deployments-resources
+
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.netapp-netappaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
@@ -164,7 +164,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2023-07-01' = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' = {
   name: name
   tags: tags
   identity: identity
@@ -224,12 +224,12 @@ module netAppAccount_capacityPools 'capacity-pool/main.bicep' = [
       name: capacityPool.name
       location: location
       size: capacityPool.size
-      serviceLevel: contains(capacityPool, 'serviceLevel') ? capacityPool.serviceLevel : 'Standard'
-      qosType: contains(capacityPool, 'qosType') ? capacityPool.qosType : 'Auto'
-      volumes: contains(capacityPool, 'volumes') ? capacityPool.volumes : []
-      coolAccess: contains(capacityPool, 'coolAccess') ? capacityPool.coolAccess : false
-      roleAssignments: contains(capacityPool, 'roleAssignments') ? capacityPool.roleAssignments : []
-      encryptionType: contains(capacityPool, 'encryptionType') ? capacityPool.encryptionType : 'Single'
+      serviceLevel: capacityPool.?serviceLevel ?? 'Standard'
+      qosType: capacityPool.?qosType ?? 'Auto'
+      volumes: capacityPool.?volumes ?? []
+      coolAccess: capacityPool.?coolAccess ?? false
+      roleAssignments: capacityPool.?roleAssignments ?? []
+      encryptionType: capacityPool.?encryptionType ?? 'Single'
       tags: capacityPool.?tags ?? tags
     }
   }
