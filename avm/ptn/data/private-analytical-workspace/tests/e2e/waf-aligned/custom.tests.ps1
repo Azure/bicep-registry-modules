@@ -208,7 +208,7 @@ Describe 'Validate Pattern deployment' {
                 $nsgPL.FlushConnection | Should -Be $false
                 $nsgPL.NetworkInterfaces | Should -BeNullOrEmpty
                 $nsgPL.SecurityRules.Count | Should -Be 1
-                $nsgPL.DefaultSecurityRules.Count | Should -Be 4
+                $nsgPL.DefaultSecurityRules.Count | Should -Be 6
                 $nsgPL.Subnets.Count | Should -Be 1
                 $nsgPL.Tag.Owner | Should -Be "Contoso"
                 $nsgPL.Tag.CostCenter | Should -Be "123-456-789"
@@ -222,7 +222,7 @@ Describe 'Validate Pattern deployment' {
 
 
 
-
+#TODO NSG DIAG
                 #NSG + rules
                 #kvIpRules
                 #dbwIpRules
