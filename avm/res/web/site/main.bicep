@@ -15,6 +15,7 @@ param location string = resourceGroup().location
   'functionapp,workflowapp' // logic app workflow
   'functionapp,workflowapp,linux' // logic app docker container
   'functionapp,linux,container' // function app linux container
+  'functionapp,linux,container,azurecontainerapps' // function app linux container azure container apps
   'app,linux' // linux web app
   'app' // windows web app
   'linux,api' // linux api app
@@ -26,6 +27,9 @@ param kind string
 
 @description('Required. The resource ID of the app service plan to use for the site.')
 param serverFarmResourceId string
+
+@description('Optional. Azure Resource Manager ID of the customers selected Managed Environment on which to host this app.')
+param managedEnvironmentId string?
 
 @description('Optional. Configures a site to accept only HTTPS requests. Issues redirect for HTTP requests.')
 param httpsOnly bool = true
@@ -248,6 +252,7 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
   tags: tags
   identity: identity
   properties: {
+    managedEnvironmentId: !empty(managedEnvironmentId) ? managedEnvironmentId : null
     serverFarmId: serverFarmResourceId
     clientAffinityEnabled: clientAffinityEnabled
     httpsOnly: httpsOnly
