@@ -147,7 +147,7 @@ Describe 'Validate Pattern deployment' {
                 $vnet.Subnets[1].ServiceEndpoints | Should -BeNullOrEmpty
                 $vnet.Subnets[1].ServiceEndpointPolicies | Should -BeNullOrEmpty
                 $vnet.Subnets[1].Delegations.Count | Should -Be 1
-                $vnet.Subnets[1].Delegations[0] | Should -Be "Microsoft.Databricks/workspaces"
+                $vnet.Subnets[1].Delegations[0].Name | Should -Be "Microsoft.Databricks/workspaces"
                 $vnet.Subnets[1].IpAllocations | Should -BeNullOrEmpty
                 $vnet.Subnets[1].RouteTable | Should -BeNullOrEmpty
                 $vnet.Subnets[1].NatGateway | Should -BeNullOrEmpty
@@ -167,7 +167,7 @@ Describe 'Validate Pattern deployment' {
                 $vnet.Subnets[2].ServiceEndpoints | Should -BeNullOrEmpty
                 $vnet.Subnets[2].ServiceEndpointPolicies | Should -BeNullOrEmpty
                 $vnet.Subnets[2].Delegations.Count | Should -Be 1
-                $vnet.Subnets[2].Delegations[0] | Should -Be "Microsoft.Databricks/workspaces"
+                $vnet.Subnets[2].Delegations[0].Name | Should -Be "Microsoft.Databricks/workspaces"
                 $vnet.Subnets[2].IpAllocations | Should -BeNullOrEmpty
                 $vnet.Subnets[2].RouteTable | Should -BeNullOrEmpty
                 $vnet.Subnets[2].NatGateway | Should -BeNullOrEmpty
