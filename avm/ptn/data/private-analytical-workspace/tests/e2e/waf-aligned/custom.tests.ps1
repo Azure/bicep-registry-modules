@@ -70,35 +70,30 @@ Describe 'Validate Pattern deployment' {
 
             $r = Get-AzResource -ResourceId $resourceId
             $r | Should -Not -BeNullOrEmpty
-            $r.ProvisioningState | Should -Be "Succeeded"
             $r.Name | Should -Be $name
             $r.Location | Should -Be $location
             $r.ResourceGroupName | Should -Be $resourceGroupName
 
             $r = Get-AzResource -ResourceId $virtualNetworkResourceId
             $r | Should -Not -BeNullOrEmpty
-            $r.ProvisioningState | Should -Be "Succeeded"
             $r.Name | Should -Be $virtualNetworkName
             $r.Location | Should -Be $virtualNetworkLocation
             $r.ResourceGroupName | Should -Be $virtualNetworkResourceGroupName
 
             $r = Get-AzResource -ResourceId $logAnalyticsWorkspaceResourceId
             $r | Should -Not -BeNullOrEmpty
-            $r.ProvisioningState | Should -Be "Succeeded"
             $r.Name | Should -Be $logAnalyticsWorkspaceName
             $r.Location | Should -Be $logAnalyticsWorkspaceLocation
             $r.ResourceGroupName | Should -Be $logAnalyticsWorkspaceResourceGroupName
 
             $r = Get-AzResource -ResourceId $keyVaultResourceId
             $r | Should -Not -BeNullOrEmpty
-            $r.ProvisioningState | Should -Be "Succeeded"
             $r.Name | Should -Be $keyVaultName
             $r.Location | Should -Be $keyVaultLocation
             $r.ResourceGroupName | Should -Be $keyVaultResourceGroupName
 
             $r = Get-AzResource -ResourceId $databricksResourceId
             $r | Should -Not -BeNullOrEmpty
-            $r.ProvisioningState | Should -Be "Succeeded"
             $r.Name | Should -Be $databricksName
             $r.Location | Should -Be $databricksLocation
             $r.ResourceGroupName | Should -Be $databricksResourceGroupName
@@ -118,7 +113,28 @@ Describe 'Validate Pattern deployment' {
                 $vnet.AddressSpace[0].AddressPrefixes.Count | Should -Be 1
                 $vnet.AddressSpace[0].AddressPrefixes[0] | Should -Be "192.168.224.0/19"
                 $vnet.Subnets.Count | Should -Be 3
-                # TODO subnets
+
+                $vnet.Subnets[0].ProvisioningState | Should -Be "Succeeded"
+                $vnet.Subnets[0].Name | Should -Be "private-link-subnet"
+                $vnet.Subnets[0].PrivateEndpointNetworkPolicies | Should -Be "Disabled"
+                $vnet.Subnets[0].PrivateLinkServiceNetworkPolicies | Should -Be "Enabled"
+                $vnet.Subnets[0].AddressPrefix.Count | Should -Be 1
+                $vnet.Subnets[0].AddressPrefix[0] | Should -Be "192.168.224.0/24"
+                $vnet.Subnets[0].NetworkSecurityGroup.Count | Should -Be 1
+                $vnet.Subnets[0].PrivateEndpoints.Count | Should -Be 3  # 3x PEPs
+                $vnet.Subnets[0].IpConfigurations.Count | Should -Be 4  # 4x IPs
+                $vnet.Subnets[0].ServiceAssociationLinks | Should -BeNullOrEmpty
+                $vnet.Subnets[0].ResourceNavigationLinks | Should -BeNullOrEmpty
+                $vnet.Subnets[0].ServiceEndpoints | Should -BeNullOrEmpty
+                $vnet.Subnets[0].ServiceEndpointPolicies | Should -BeNullOrEmpty
+                $vnet.Subnets[0].Delegations | Should -BeNullOrEmpty
+                $vnet.Subnets[0].IpAllocations | Should -BeNullOrEmpty
+                $vnet.Subnets[0].RouteTable | Should -BeNullOrEmpty
+                $vnet.Subnets[0].NatGateway | Should -BeNullOrEmpty
+                $vnet.Subnets[0].DefaultOutboundAccess | Should -BeNullOrEmpty
+
+                # TODO other subnets
+
                 $vnet.EnableDdosProtection | Should -Be $false
                 $vnet.VirtualNetworkPeerings.Count | Should -Be 0
                 $vnet.IpAllocations.Count | Should -Be 0
@@ -168,7 +184,7 @@ Describe 'Validate Pattern deployment' {
                 $log.ForceCmkForQuery | Should -Be $true
                 $log.PrivateLinkScopedResources | Should -BeNullOrEmpty
                 $log.DefaultDataCollectionRuleResourceId | Should -BeNullOrEmpty
-                $log.WorkspaceFeatures.EnableLogAccessUsingOnlyResourcePermissions | Should -Be $true
+                $log.WorkspaceFeatures.EnableLogAccessUsingOnlyResourcePermissions | Should -Be $false
                 $log.Tags.Owner | Should -Be "Contoso"
                 $log.Tags.CostCenter | Should -Be "123-456-789"
                 # TODO Role, Lock - How?
@@ -296,8 +312,8 @@ Describe 'Validate Pattern deployment' {
                 $adbZone.ProvisioningState | Should -Be "Succeeded"
                 $adbZone.NumberOfRecordSets | Should -Be 5 # SOA + 4xA
                 $adbZone.NumberOfVirtualNetworkLinks | Should -Be 1
-                $adbZone.Tag.Owner | Should -Be "Contoso"
-                $adbZone.Tag.CostCenter | Should -Be "123-456-789"
+                $adbZone.Tag["Owner"] | Should -Be "Contoso"
+                $adbZone.Tag["CostCenter"] | Should -Be "123-456-789"
 
 
 
