@@ -141,7 +141,7 @@ Describe 'Validate Pattern deployment' {
                 $vnet.Subnets[1].AddressPrefix[0] | Should -Be "192.168.228.0/23"
                 $vnet.Subnets[1].NetworkSecurityGroup.Count | Should -Be 1
                 $vnet.Subnets[1].PrivateEndpoints | Should -BeNullOrEmpty
-                $vnet.Subnets[1].IpConfigurations.Count | Should -BeNullOrEmpty
+                $vnet.Subnets[1].IpConfigurations | Should -BeNullOrEmpty
                 $vnet.Subnets[1].ServiceAssociationLinks | Should -BeNullOrEmpty
                 $vnet.Subnets[1].ResourceNavigationLinks | Should -BeNullOrEmpty
                 $vnet.Subnets[1].ServiceEndpoints | Should -BeNullOrEmpty
@@ -161,7 +161,7 @@ Describe 'Validate Pattern deployment' {
                 $vnet.Subnets[2].AddressPrefix[0] | Should -Be "192.168.230.0/23"
                 $vnet.Subnets[2].NetworkSecurityGroup.Count | Should -Be 1
                 $vnet.Subnets[2].PrivateEndpoints | Should -BeNullOrEmpty
-                $vnet.Subnets[2].IpConfigurations.Count | Should -BeNullOrEmpty
+                $vnet.Subnets[2].IpConfigurations | Should -BeNullOrEmpty
                 $vnet.Subnets[2].ServiceAssociationLinks | Should -BeNullOrEmpty
                 $vnet.Subnets[2].ResourceNavigationLinks | Should -BeNullOrEmpty
                 $vnet.Subnets[2].ServiceEndpoints | Should -BeNullOrEmpty
@@ -315,7 +315,7 @@ Describe 'Validate Pattern deployment' {
 
                 $adb = Get-AzDatabricksWorkspace -ResourceGroupName $databricksResourceGroupName -Name $databricksName
                 $adb | Should -Not -BeNullOrEmpty
-                adb.ProvisioningState | Should -Be "Succeeded"
+                $adb.ProvisioningState | Should -Be "Succeeded"
                 $adb.CustomPrivateSubnetNameValue | Should -Be "dbw-backend-subnet"
                 $adb.CustomPublicSubnetNameValue | Should -Be "dbw-frontend-subnet"
                 $adb.CustomVirtualNetworkIdValue | Should -Be $virtualNetworkResourceId
