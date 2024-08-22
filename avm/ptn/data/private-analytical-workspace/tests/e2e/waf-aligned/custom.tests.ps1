@@ -122,7 +122,7 @@ Describe 'Validate Pattern deployment' {
                 $vnet.Subnets[0].AddressPrefix[0] | Should -Be "192.168.224.0/24"
                 $vnet.Subnets[0].NetworkSecurityGroup.Count | Should -Be 1
                 $vnet.Subnets[0].PrivateEndpoints.Count | Should -Be 3  # 3x PEPs
-                $vnet.Subnets[0].IpConfigurations.Count | Should -Be 4  # 4x IPs
+                $vnet.Subnets[0].IpConfigurations.Count | Should -Be 5  # 5x IPs
                 $vnet.Subnets[0].ServiceAssociationLinks | Should -BeNullOrEmpty
                 $vnet.Subnets[0].ResourceNavigationLinks | Should -BeNullOrEmpty
                 $vnet.Subnets[0].ServiceEndpoints | Should -BeNullOrEmpty
@@ -286,8 +286,8 @@ Describe 'Validate Pattern deployment' {
                 $adb.PublicNetworkAccess | Should -Be "Disabled"
                 $adb.RequiredNsgRule | Should -Be "NoAzureDatabricksRules"
                 $adb.SkuName | Should -Be "premium"
-                $adb.Tags.Owner | Should -Be "Contoso"
-                $adb.Tags.CostCenter | Should -Be "123-456-789"
+                $adb.Tag["Owner"] | Should -Be "Contoso"
+                $adb.Tag["CostCenter"] | Should -Be "123-456-789"
 
 
 
@@ -312,9 +312,8 @@ Describe 'Validate Pattern deployment' {
                 $adbZone.ProvisioningState | Should -Be "Succeeded"
                 $adbZone.NumberOfRecordSets | Should -Be 5 # SOA + 4xA
                 $adbZone.NumberOfVirtualNetworkLinks | Should -Be 1
-                $adbZone.Tag["Owner"] | Should -Be "Contoso"
-                $adbZone.Tag["CostCenter"] | Should -Be "123-456-789"
-
+                $adbZone.Tags.Owner | Should -Be "Contoso"
+                $adbZone.Tags.CostCenter | Should -Be "123-456-789"
 
 
 
