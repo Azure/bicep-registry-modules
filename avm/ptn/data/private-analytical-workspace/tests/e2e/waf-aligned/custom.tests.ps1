@@ -147,7 +147,8 @@ Describe 'Validate Pattern deployment' {
                 $vnet.Subnets[1].ServiceEndpoints | Should -BeNullOrEmpty
                 $vnet.Subnets[1].ServiceEndpointPolicies | Should -BeNullOrEmpty
                 $vnet.Subnets[1].Delegations.Count | Should -Be 1
-                $vnet.Subnets[1].Delegations[0].Name | Should -Be "Microsoft.Databricks/workspaces"
+                $vnet.Subnets[1].Delegations[0].ProvisioningState | Should -Be "Succeeded"
+                $vnet.Subnets[1].Delegations[0].ServiceName | Should -Be "Microsoft.Databricks/workspaces"
                 $vnet.Subnets[1].IpAllocations | Should -BeNullOrEmpty
                 $vnet.Subnets[1].RouteTable | Should -BeNullOrEmpty
                 $vnet.Subnets[1].NatGateway | Should -BeNullOrEmpty
@@ -167,7 +168,8 @@ Describe 'Validate Pattern deployment' {
                 $vnet.Subnets[2].ServiceEndpoints | Should -BeNullOrEmpty
                 $vnet.Subnets[2].ServiceEndpointPolicies | Should -BeNullOrEmpty
                 $vnet.Subnets[2].Delegations.Count | Should -Be 1
-                $vnet.Subnets[2].Delegations[0].Name | Should -Be "Microsoft.Databricks/workspaces"
+                $vnet.Subnets[2].Delegations[0].ProvisioningState | Should -Be "Succeeded"
+                $vnet.Subnets[2].Delegations[0].ServiceName | Should -Be "Microsoft.Databricks/workspaces"
                 $vnet.Subnets[2].IpAllocations | Should -BeNullOrEmpty
                 $vnet.Subnets[2].RouteTable | Should -BeNullOrEmpty
                 $vnet.Subnets[2].NatGateway | Should -BeNullOrEmpty
@@ -199,6 +201,31 @@ Describe 'Validate Pattern deployment' {
                 $vnetDiagCat.Count | Should -Be 2 # VMProtectionAlerts, AllMetrics
                 $vnetDiagCat[0].Name | Should -BeIn @('VMProtectionAlerts', 'AllMetrics')
                 $vnetDiagCat[1].Name | Should -BeIn @('VMProtectionAlerts', 'AllMetrics')
+
+                $nsgPL = Get-AzResource -ResourceId $vnet.Subnets[0].NetworkSecurityGroup[0].Id | Get-AzNetworkSecurityGroup
+                $nsgPL | Should -Not -BeNullOrEmpty
+                $nsgPL.ProvisioningState | Should -Be "Succeeded"
+                $nsgPL.FlushConnection | Should -Be $false
+                $nsgPL.NetworkInterfaces | Should -BeNullOrEmpty
+                $nsgPL.SecurityRules.Count | Should -Be 1
+                $nsgPL.DefaultSecurityRules.Count | Should -Be 4
+                $nsgPL.Subnets.Count | Should -Be 1
+                $nsgPL.Tag.Owner | Should -Be "Contoso"
+                $nsgPL.Tag.CostCenter | Should -Be "123-456-789"
+                # TODO Role, Lock - How?
+
+
+
+                $nsgDbwFe = Get-AzResource -ResourceId $vnet.Subnets[1].NetworkSecurityGroup[0].Id | Get-AzNetworkSecurityGroup
+                $nsgDbwBa = Get-AzResource -ResourceId $vnet.Subnets[2].NetworkSecurityGroup[0].Id | Get-AzNetworkSecurityGroup
+
+
+
+
+
+                #NSG + rules
+                #kvIpRules
+                #dbwIpRules
             }
         }
 
