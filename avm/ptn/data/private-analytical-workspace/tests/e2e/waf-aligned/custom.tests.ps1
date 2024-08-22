@@ -104,6 +104,50 @@ Describe 'Validate Pattern deployment' {
             $r.ResourceGroupName | Should -Be $databricksResourceGroupName
         }
 
+        Context 'Network - Azure Virtual Network Tests' {
+
+            BeforeAll {
+            }
+
+            It 'Check Azure Virtual Network' {
+
+                $vnet = Get-AzVirtualNetwork -ResourceGroupName $virtualNetworkResourceGroupName -Name $virtualNetworkName
+                $vnet | Should -Not -BeNullOrEmpty
+                $vnet.ProvisioningState | Should -Be "Succeeded"
+                $vnet.AddressSpace.Count | Should -Be 1
+                $vnet.AddressSpace[0].AddressPrefixes.Count | Should -Be 1
+                $vnet.AddressSpace[0].AddressPrefixes[0] | Should -Be "192.168.224.0/19"
+                $vnet.Subnets.Count | Should -Be 3
+                # TODO subnets
+                $vnet.EnableDdosProtection | Should -Be $false
+                $vnet.VirtualNetworkPeerings.Count | Should -Be 0
+                $vnet.IpAllocations.Count | Should -Be 0
+                $vnet.DhcpOptions.DnsServers | Should -BeNullOrEmpty
+                $vnet.FlowTimeoutInMinutes | Should -BeNullOrEmpty
+                $vnet.BgpCommunities | Should -BeNullOrEmpty
+                $vnet.Encryption | Should -BeNullOrEmpty
+                $vnet.DdosProtectionPlan | Should -BeNullOrEmpty
+                $vnet.ExtendedLocation | Should -BeNullOrEmpty
+                $vnet.Tags.Owner | Should -Be "Contoso"
+                $vnet.Tags.CostCenter | Should -Be "123-456-789"
+                # TODO Role, Lock - How?
+
+                $vnetDiag  = Get-AzDiagnosticSetting -ResourceId $virtualNetworkResourceId -Name avm-diagnostic-settings
+                $vnetDiag | Should -Not -BeNullOrEmpty
+                #$vnetDiag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
+                $vnetDiag.Type | Should -Be "Microsoft.Insights/diagnosticSettings"
+                $vnetDiag.WorkspaceId | Should -Be $logAnalyticsWorkspaceResourceId
+
+                $vnetDiagCat = Get-AzDiagnosticSettingCategory -ResourceId $virtualNetworkResourceId
+                $vnetDiagCat | Should -Not -BeNullOrEmpty
+                #$vnetDiagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
+
+                $vnetDiagCat.Count | Should -Be 2 # VMProtectionAlerts, AllMetrics
+                $vnetDiagCat[0].Name | Should -BeIn @('VMProtectionAlerts', 'AllMetrics')
+                $vnetDiagCat[1].Name | Should -BeIn @('VMProtectionAlerts', 'AllMetrics')
+            }
+        }
+
         Context 'Monitoring - Azure Log Analytics Workspace Tests' {
 
             BeforeAll {
@@ -197,6 +241,12 @@ Describe 'Validate Pattern deployment' {
                 # TODO Role, Lock - How?
             }
         }
+
+
+
+
+
+
 
 
 
