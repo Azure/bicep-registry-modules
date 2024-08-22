@@ -133,7 +133,45 @@ Describe 'Validate Pattern deployment' {
                 $vnet.Subnets[0].NatGateway | Should -BeNullOrEmpty
                 $vnet.Subnets[0].DefaultOutboundAccess | Should -BeNullOrEmpty
 
-                # TODO other subnets
+                $vnet.Subnets[1].ProvisioningState | Should -Be "Succeeded"
+                $vnet.Subnets[1].Name | Should -Be "dbw-frontend-subnet"
+                $vnet.Subnets[1].PrivateEndpointNetworkPolicies | Should -Be "Disabled"
+                $vnet.Subnets[1].PrivateLinkServiceNetworkPolicies | Should -Be "Enabled"
+                $vnet.Subnets[1].AddressPrefix.Count | Should -Be 1
+                $vnet.Subnets[1].AddressPrefix[0] | Should -Be "192.168.228.0/23"
+                $vnet.Subnets[1].NetworkSecurityGroup.Count | Should -Be 1
+                $vnet.Subnets[1].PrivateEndpoints | Should -BeNullOrEmpty
+                $vnet.Subnets[1].IpConfigurations.Count | Should -BeNullOrEmpty
+                $vnet.Subnets[1].ServiceAssociationLinks | Should -BeNullOrEmpty
+                $vnet.Subnets[1].ResourceNavigationLinks | Should -BeNullOrEmpty
+                $vnet.Subnets[1].ServiceEndpoints | Should -BeNullOrEmpty
+                $vnet.Subnets[1].ServiceEndpointPolicies | Should -BeNullOrEmpty
+                $vnet.Subnets[1].Delegations.Count | Should -Be 1
+                $vnet.Subnets[1].Delegations[0] | Should -Be "Microsoft.Databricks/workspaces"
+                $vnet.Subnets[1].IpAllocations | Should -BeNullOrEmpty
+                $vnet.Subnets[1].RouteTable | Should -BeNullOrEmpty
+                $vnet.Subnets[1].NatGateway | Should -BeNullOrEmpty
+                $vnet.Subnets[1].DefaultOutboundAccess | Should -BeNullOrEmpty
+
+                $vnet.Subnets[2].ProvisioningState | Should -Be "Succeeded"
+                $vnet.Subnets[2].Name | Should -Be "dbw-backend-subnet"
+                $vnet.Subnets[2].PrivateEndpointNetworkPolicies | Should -Be "Disabled"
+                $vnet.Subnets[2].PrivateLinkServiceNetworkPolicies | Should -Be "Enabled"
+                $vnet.Subnets[2].AddressPrefix.Count | Should -Be 1
+                $vnet.Subnets[2].AddressPrefix[0] | Should -Be "192.168.230.0/23"
+                $vnet.Subnets[2].NetworkSecurityGroup.Count | Should -Be 1
+                $vnet.Subnets[2].PrivateEndpoints | Should -BeNullOrEmpty
+                $vnet.Subnets[2].IpConfigurations.Count | Should -BeNullOrEmpty
+                $vnet.Subnets[2].ServiceAssociationLinks | Should -BeNullOrEmpty
+                $vnet.Subnets[2].ResourceNavigationLinks | Should -BeNullOrEmpty
+                $vnet.Subnets[2].ServiceEndpoints | Should -BeNullOrEmpty
+                $vnet.Subnets[2].ServiceEndpointPolicies | Should -BeNullOrEmpty
+                $vnet.Subnets[2].Delegations.Count | Should -Be 1
+                $vnet.Subnets[2].Delegations[0] | Should -Be "Microsoft.Databricks/workspaces"
+                $vnet.Subnets[2].IpAllocations | Should -BeNullOrEmpty
+                $vnet.Subnets[2].RouteTable | Should -BeNullOrEmpty
+                $vnet.Subnets[2].NatGateway | Should -BeNullOrEmpty
+                $vnet.Subnets[2].DefaultOutboundAccess | Should -BeNullOrEmpty
 
                 $vnet.EnableDdosProtection | Should -Be $false
                 $vnet.VirtualNetworkPeerings.Count | Should -Be 0
@@ -144,8 +182,8 @@ Describe 'Validate Pattern deployment' {
                 $vnet.Encryption | Should -BeNullOrEmpty
                 $vnet.DdosProtectionPlan | Should -BeNullOrEmpty
                 $vnet.ExtendedLocation | Should -BeNullOrEmpty
-                $vnet.Tags.Owner | Should -Be "Contoso"
-                $vnet.Tags.CostCenter | Should -Be "123-456-789"
+                $vnet.Tag.Owner | Should -Be "Contoso"
+                $vnet.Tag.CostCenter | Should -Be "123-456-789"
                 # TODO Role, Lock - How?
 
                 $vnetDiag  = Get-AzDiagnosticSetting -ResourceId $virtualNetworkResourceId -Name avm-diagnostic-settings
@@ -249,7 +287,7 @@ Describe 'Validate Pattern deployment' {
 
                 $kvZone = Get-AzPrivateDnsZone -ResourceGroupName $keyVaultResourceGroupName -Name "privatelink.vaultcore.azure.net"
                 $kvZone | Should -Not -BeNullOrEmpty
-                #$kvZone.ProvisioningState | Should -Be "Succeeded"
+                #$kvZone.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
                 $kvZone.NumberOfRecordSets | Should -Be 2 # SOA + A
                 $kvZone.NumberOfVirtualNetworkLinks | Should -Be 1
                 $kvZone.Tags.Owner | Should -Be "Contoso"
@@ -277,7 +315,7 @@ Describe 'Validate Pattern deployment' {
 
                 $adb = Get-AzDatabricksWorkspace -ResourceGroupName $databricksResourceGroupName -Name $databricksName
                 $adb | Should -Not -BeNullOrEmpty
-                $adb.ProvisioningState | Should -Be "Succeeded"
+                adb.ProvisioningState | Should -Be "Succeeded"
                 $adb.CustomPrivateSubnetNameValue | Should -Be "dbw-backend-subnet"
                 $adb.CustomPublicSubnetNameValue | Should -Be "dbw-frontend-subnet"
                 $adb.CustomVirtualNetworkIdValue | Should -Be $virtualNetworkResourceId
@@ -309,7 +347,7 @@ Describe 'Validate Pattern deployment' {
 
                 $adbZone = Get-AzPrivateDnsZone -ResourceGroupName $databricksResourceGroupName -Name "privatelink.azuredatabricks.net"
                 $adbZone | Should -Not -BeNullOrEmpty
-                $adbZone.ProvisioningState | Should -Be "Succeeded"
+                #$adbZone.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
                 $adbZone.NumberOfRecordSets | Should -Be 5 # SOA + 4xA
                 $adbZone.NumberOfVirtualNetworkLinks | Should -Be 1
                 $adbZone.Tags.Owner | Should -Be "Contoso"
