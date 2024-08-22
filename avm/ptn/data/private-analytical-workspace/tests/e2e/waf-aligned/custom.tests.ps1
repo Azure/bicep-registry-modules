@@ -386,6 +386,9 @@ Describe 'Validate Pattern deployment' {
 
 
 
+
+
+
         It 'Check Tags' {
 
             $tag1 = 'Owner'
