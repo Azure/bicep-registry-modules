@@ -89,9 +89,10 @@ param storageSizeGB int = 32
   '13'
   '14'
   '15'
+  '16'
 ])
 @description('Optional. PostgreSQL Server version.')
-param version string = '15'
+param version string = '16'
 
 @allowed([
   'Disabled'

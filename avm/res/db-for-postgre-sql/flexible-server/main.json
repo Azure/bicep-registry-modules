@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "11155893103946575130"
+      "templateHash": "6369286683210643119"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -413,13 +413,14 @@
     },
     "version": {
       "type": "string",
-      "defaultValue": "15",
+      "defaultValue": "16",
       "allowedValues": [
         "11",
         "12",
         "13",
         "14",
-        "15"
+        "15",
+        "16"
       ],
       "metadata": {
         "description": "Optional. PostgreSQL Server version."
