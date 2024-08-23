@@ -18,7 +18,6 @@ param clientId string = ''
 @allowed([
   'ADAL'
   'MSAL-2'
-  ''
 ])
 param clientLibrary string = ''
 
