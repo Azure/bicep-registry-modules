@@ -177,7 +177,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       }
     ]
     geoRedundantBackup: 'Enabled'
-    highAvailability: 'SameZone'
+    highAvailability: 'ZoneRedundant'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -322,7 +322,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": "Enabled"
     },
     "highAvailability": {
-      "value": "SameZone"
+      "value": "ZoneRedundant"
     },
     "location": {
       "value": "<location>"

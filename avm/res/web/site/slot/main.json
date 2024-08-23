@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "7829278659048205305"
+      "templateHash": "8134670421794628910"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -480,6 +480,7 @@
         "functionapp,workflowapp",
         "functionapp,workflowapp,linux",
         "functionapp,linux,container",
+        "functionapp,linux,container,azurecontainerapps",
         "app,linux",
         "app",
         "linux,api",
@@ -954,7 +955,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "13666935650242306720"
+              "templateHash": "7111332561212908044"
             },
             "name": "Site Slot App Settings",
             "description": "This module deploys a Site Slot App Setting.",
@@ -981,6 +982,7 @@
                 "functionapp,workflowapp",
                 "functionapp,workflowapp,linux",
                 "functionapp,linux,container",
+                "functionapp,linux,container,azurecontainerapps",
                 "app,linux",
                 "app",
                 "linux,api",
@@ -1129,7 +1131,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "4716088455151443747"
+              "templateHash": "3412962465179136371"
             },
             "name": "Site Slot Auth Settings V2 Config",
             "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -1156,6 +1158,7 @@
                 "functionapp,workflowapp",
                 "functionapp,workflowapp,linux",
                 "functionapp,linux,container",
+                "functionapp,linux,container,azurecontainerapps",
                 "app,linux",
                 "app",
                 "linux,api",
