@@ -273,10 +273,9 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'Public Repo'
           displayName: 'Public Artifact Repo'
-          status: 'Disabled'
+          status: 'Enabled'
           uri: 'https://github.com/Azure/azure-devtestlab.git'
           sourceType: 'GitHub'
-          branchRef: 'master'
           folderPath: '/Artifacts'
         }
         {
@@ -287,6 +286,21 @@ module testDeployment '../../../main.bicep' = [
           sourceType: 'GitHub'
           branchRef: 'master'
           armTemplateFolderPath: '/Environments'
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            resourceType: 'DevTest Lab'
+            labName: '${namePrefix}${serviceShort}001'
+          }
+        }
+        {
+          name: 'Private Repo'
+          displayName: 'Private Artifact Repo'
+          status: 'Disabled'
+          uri: 'https://github.com/Azure/azure-devtestlab.git'
+          folderPath: '/Artifacts'
+          armTemplateFolderPath: '/ArmTemplates'
+          branchRef: 'main'
+          securityToken: guid(baseTime)
         }
       ]
       costs: {

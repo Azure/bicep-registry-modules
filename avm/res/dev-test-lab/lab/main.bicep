@@ -301,13 +301,13 @@ module lab_artifactSources 'artifactsource/main.bicep' = [
       name: artifactSource.name
       tags: artifactSource.?tags ?? tags
       displayName: artifactSource.?displayName ?? artifactSource.name
-      branchRef: artifactSource.?branchRef ?? ''
-      folderPath: artifactSource.?folderPath ?? ''
-      armTemplateFolderPath: artifactSource.?armTemplateFolderPath ?? ''
-      sourceType: artifactSource.?sourceType ?? ''
+      branchRef: artifactSource.?branchRef ?? null
+      folderPath: artifactSource.?folderPath ?? null
+      armTemplateFolderPath: artifactSource.?armTemplateFolderPath ?? null
+      sourceType: artifactSource.?sourceType ?? null
       status: artifactSource.?status ?? 'Enabled'
       uri: artifactSource.uri
-      securityToken: artifactSource.?securityToken ?? ''
+      securityToken: artifactSource.?securityToken ?? null
     }
   }
 ]
@@ -420,28 +420,28 @@ type artifactsourcesType = {
   @description('Optional. The tags of the artifact source.')
   tags: object?
 
-  @description('Optional. The display name of the artifact source.')
+  @description('Optional. The display name of the artifact source. Default is the name of the artifact source.')
   displayName: string?
 
-  @description('Optional. The branch reference of the artifact source.')
+  @description('Optional. The artifact source\'s branch reference (e.g. main or master).')
   branchRef: string?
 
-  @description('Optional. The folder path of the artifact source.')
+  @description('Conditional. The folder containing artifacts. At least one folder path is required. Required if "armTemplateFolderPath" is empty.')
   folderPath: string?
 
-  @description('Optional. The ARM template folder path of the artifact source.')
+  @description('Conditional. The folder containing Azure Resource Manager templates. Required if "folderPath" is empty.')
   armTemplateFolderPath: string?
 
-  @description('Optional. The source type of the artifact source.')
-  sourceType: string?
+  @description('Optional. The artifact source\'s type.')
+  sourceType: 'GitHub' | 'StorageAccount' | 'VsoGit'?
 
-  @description('Optional. The status of the artifact source.')
-  status: string
+  @description('Optional. Indicates if the artifact source is enabled (values: Enabled, Disabled). Default is "Enabled".')
+  status: 'Enabled' | 'Disabled'?
 
-  @description('Required. The URI of the artifact source.')
+  @description('Required. The artifact source\'s URI.')
   uri: string
 
-  @description('Optional. The security token of the artifact source.')
+  @description('Optional. The security token to authenticate to the artifact source.')
   @secure()
   securityToken: string?
 }[]
