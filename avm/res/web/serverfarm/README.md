@@ -48,7 +48,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     // Required parameters
     name: 'wsfmin001'
     skuCapacity: 2
-    skuName: 'S1'
+    skuName: 'P1v3'
     // Non-required parameters
     location: '<location>'
   }
@@ -75,7 +75,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": 2
     },
     "skuName": {
-      "value": "S1"
+      "value": "P1v3"
     },
     // Non-required parameters
     "location": {
@@ -103,8 +103,8 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   params: {
     // Required parameters
     name: 'wsfmax001'
-    skuCapacity: 1
-    skuName: 'S1'
+    skuCapacity: 2
+    skuName: 'P1v3'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -149,7 +149,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zoneRedundant: false
+    zoneRedundant: true
   }
 }
 ```
@@ -171,10 +171,10 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": "wsfmax001"
     },
     "skuCapacity": {
-      "value": 1
+      "value": 2
     },
     "skuName": {
-      "value": "S1"
+      "value": "P1v3"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -235,7 +235,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     },
     "zoneRedundant": {
-      "value": false
+      "value": true
     }
   }
 }
@@ -287,7 +287,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zoneRedundant: false
   }
 }
 ```
@@ -349,9 +348,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "zoneRedundant": {
-      "value": false
     }
   }
 }
