@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "3169815650175124081"
+      "templateHash": "17385483787660298242"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.",
@@ -2392,12 +2392,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "3770915598176387430"
+              "templateHash": "12757169124799431378"
             },
             "name": "API Management Service Identity Providers",
             "description": "This module deploys an API Management Service Identity Provider.",
@@ -2433,11 +2434,10 @@
             },
             "clientLibrary": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "allowedValues": [
                 "ADAL",
-                "MSAL-2",
-                ""
+                "MSAL-2"
               ],
               "metadata": {
                 "description": "Optional. The client library to be used in the developer portal. Only applies to AAD and AAD B2C Identity Provider."
@@ -2510,8 +2510,14 @@
           "variables": {
             "isAadB2C": "[equals(parameters('type'), 'aadB2C')]"
           },
-          "resources": [
-            {
+          "resources": {
+            "service": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/service",
+              "apiVersion": "2023-05-01-preview",
+              "name": "[parameters('apiManagementServiceName')]"
+            },
+            "identityProvider": {
               "type": "Microsoft.ApiManagement/service/identityProviders",
               "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
@@ -2527,9 +2533,12 @@
                 "clientId": "[parameters('clientId')]",
                 "clientLibrary": "[parameters('clientLibrary')]",
                 "clientSecret": "[parameters('clientSecret')]"
-              }
+              },
+              "dependsOn": [
+                "service"
+              ]
             }
-          ],
+          },
           "outputs": {
             "resourceId": {
               "type": "string",
