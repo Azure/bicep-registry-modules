@@ -19,7 +19,7 @@ param clientId string = ''
   'ADAL'
   'MSAL-2'
 ])
-param clientLibrary string = ''
+param clientLibrary string?
 
 @description('Conditional. Client secret of the Application in external Identity Provider, used to authenticate login request. Required if identity provider is used.')
 @secure()
