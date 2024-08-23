@@ -18,6 +18,7 @@ param location string = resourceGroup().location
   'functionapp,workflowapp' // logic app workflow
   'functionapp,workflowapp,linux' // logic app docker container
   'functionapp,linux,container' // function app linux container
+  'functionapp,linux,container,azurecontainerapps' // function app linux container azure container apps
   'app,linux' // linux web app
   'app' // windows web app
   'linux,api' // linux api app
@@ -70,6 +71,9 @@ param appSettingsKeyValuePairs object?
 
 @description('Optional. The auth settings V2 configuration.')
 param authSettingV2Configuration object?
+
+@description('Optional. The extension MSDeployment configuration.')
+param msDeployConfiguration object?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -296,6 +300,14 @@ module slot_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep
     }
   }
 ]
+
+module slot_extensionMSdeploy 'extensions--msdeploy/main.bicep' = if (!empty(msDeployConfiguration)) {
+  name: '${uniqueString(deployment().name, location)}-Site-Extension-MSDeploy'
+  params: {
+    appName: app.name
+    msDeployConfiguration: msDeployConfiguration ?? {}
+  }
+}
 
 resource slot_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
