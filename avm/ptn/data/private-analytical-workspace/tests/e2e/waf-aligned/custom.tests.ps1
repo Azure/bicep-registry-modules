@@ -220,8 +220,8 @@ Describe 'Validate Pattern deployment' {
                 $nsgDbwFe.ProvisioningState | Should -Be "Succeeded"
                 $nsgDbwFe.FlushConnection | Should -Be $false
                 $nsgDbwFe.NetworkInterfaces | Should -BeNullOrEmpty
-                $nsgDbwFe.SecurityRules.Count | Should -Be 1
-                $nsgDbwFe.DefaultSecurityRules.Count | Should -Be 8
+                $nsgDbwFe.SecurityRules.Count | Should -Be 7
+                $nsgDbwFe.DefaultSecurityRules.Count | Should -Be 6
                 $nsgDbwFe.Subnets.Count | Should -Be 1
                 $nsgDbwFe.Subnets[0].Id | Should -Be "$($virtualNetworkResourceId)/subnets/dbw-frontend-subnet"
                 $nsgDbwFe.Tag.Owner | Should -Be "Contoso"
@@ -233,8 +233,8 @@ Describe 'Validate Pattern deployment' {
                 $nsgDbwBa.ProvisioningState | Should -Be "Succeeded"
                 $nsgDbwBa.FlushConnection | Should -Be $false
                 $nsgDbwBa.NetworkInterfaces | Should -BeNullOrEmpty
-                $nsgDbwBa.SecurityRules.Count | Should -Be 1
-                $nsgDbwBa.DefaultSecurityRules.Count | Should -Be 8
+                $nsgDbwBa.SecurityRules.Count | Should -Be 7
+                $nsgDbwBa.DefaultSecurityRules.Count | Should -Be 6
                 $nsgDbwBa.Subnets.Count | Should -Be 1
                 $nsgDbwBa.Subnets[0].Id | Should -Be "$($virtualNetworkResourceId)/subnets/dbw-backend-subnet"
                 $nsgDbwBa.Tag.Owner | Should -Be "Contoso"
