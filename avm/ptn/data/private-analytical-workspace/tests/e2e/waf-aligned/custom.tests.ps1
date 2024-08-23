@@ -215,6 +215,19 @@ Describe 'Validate Pattern deployment' {
                 $nsgPL.Tag.CostCenter | Should -Be "123-456-789"
                 # TODO Role, Lock - How?
 
+                $nsgDiag  = Get-AzDiagnosticSetting -ResourceId $nsgPL.Id -Name avm-diagnostic-settings
+                $nsgDiag | Should -Not -BeNullOrEmpty
+                #$nsgDiag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
+                $nsgDiag.Type | Should -Be "Microsoft.Insights/diagnosticSettings"
+                $nsgDiag.WorkspaceId | Should -Be $logAnalyticsWorkspaceResourceId
+
+                $nsgDiagCat = Get-AzDiagnosticSettingCategory -ResourceId $nsgPL.Id
+                $nsgDiagCat | Should -Not -BeNullOrEmpty
+                #$nsgDiagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
+                $nsgDiagCat.Count | Should -Be 2 # NetworkSecurityGroupEvent, NetworkSecurityGroupRuleCounter
+                $nsgDiagCat[0].Name | Should -BeIn @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
+                $nsgDiagCat[1].Name | Should -BeIn @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
+
                 $nsgDbwFe = Get-AzResource -ResourceId $vnet.Subnets[1].NetworkSecurityGroup[0].Id | Get-AzNetworkSecurityGroup
                 $nsgDbwFe | Should -Not -BeNullOrEmpty
                 $nsgDbwFe.ProvisioningState | Should -Be "Succeeded"
@@ -227,6 +240,19 @@ Describe 'Validate Pattern deployment' {
                 $nsgDbwFe.Tag.Owner | Should -Be "Contoso"
                 $nsgDbwFe.Tag.CostCenter | Should -Be "123-456-789"
                 # TODO Role, Lock - How?
+
+                $nsgDiag  = Get-AzDiagnosticSetting -ResourceId $nsgDbwFe.Id -Name avm-diagnostic-settings
+                $nsgDiag | Should -Not -BeNullOrEmpty
+                #$nsgDiag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
+                $nsgDiag.Type | Should -Be "Microsoft.Insights/diagnosticSettings"
+                $nsgDiag.WorkspaceId | Should -Be $logAnalyticsWorkspaceResourceId
+
+                $nsgDiagCat = Get-AzDiagnosticSettingCategory -ResourceId $nsgDbwFe.Id
+                $nsgDiagCat | Should -Not -BeNullOrEmpty
+                #$nsgDiagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
+                $nsgDiagCat.Count | Should -Be 2 # NetworkSecurityGroupEvent, NetworkSecurityGroupRuleCounter
+                $nsgDiagCat[0].Name | Should -BeIn @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
+                $nsgDiagCat[1].Name | Should -BeIn @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
 
                 $nsgDbwBa = Get-AzResource -ResourceId $vnet.Subnets[2].NetworkSecurityGroup[0].Id | Get-AzNetworkSecurityGroup
                 $nsgDbwBa | Should -Not -BeNullOrEmpty
@@ -259,7 +285,6 @@ Describe 'Validate Pattern deployment' {
 
 
 
-#TODO NSG DIAG
                 #NSG + rules
                 #kvIpRules
                 #dbwIpRules
