@@ -16,7 +16,7 @@ param name string
   'I1v2'
   '''
 })
-param skuName string = 'P1v3'
+param skuName string = 'P1V3'
 
 @description('Required. Number of workers associated with the App Service Plan.')
 param skuCapacity int = 3

@@ -43,7 +43,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
-      skuName: 'P1v3'
+      skuName: 'P1V3'
       skuCapacity: 3
       zoneRedundant: true
     }

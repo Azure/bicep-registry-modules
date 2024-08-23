@@ -203,7 +203,7 @@
     },
     "skuName": {
       "type": "string",
-      "defaultValue": "P1v3",
+      "defaultValue": "P1V3",
       "metadata": {
         "example": "  'F1'\n  'B1'\n  'P1v3'\n  'I1v2'\n  ",
         "description": "Required. The name of the SKU will Determine the tier, size, family of the App Service Plan."
