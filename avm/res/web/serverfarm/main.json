@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "7697651733559482703"
+      "templateHash": "17595041277025684224"
     },
     "name": "App Service Plan",
     "description": "This module deploys an App Service Plan.",
@@ -203,6 +203,7 @@
     },
     "skuName": {
       "type": "string",
+      "defaultValue": "P1v3",
       "metadata": {
         "example": "  'F1'\n  'B1'\n  'P1v3'\n  'I1v2'\n  ",
         "description": "Required. The name of the SKU will Determine the tier, size, family of the App Service Plan."
@@ -210,6 +211,7 @@
     },
     "skuCapacity": {
       "type": "int",
+      "defaultValue": 3,
       "metadata": {
         "description": "Required. Number of workers associated with the App Service Plan."
       }

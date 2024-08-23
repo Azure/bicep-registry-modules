@@ -47,10 +47,10 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   params: {
     // Required parameters
     name: 'wsfmin001'
-    skuCapacity: 2
-    skuName: 'P1v3'
     // Non-required parameters
     location: '<location>'
+    skuCapacity: 3
+    skuName: 'P1v3'
   }
 }
 ```
@@ -71,15 +71,15 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     "name": {
       "value": "wsfmin001"
     },
-    "skuCapacity": {
-      "value": 2
-    },
-    "skuName": {
-      "value": "P1v3"
-    },
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "skuCapacity": {
+      "value": 3
+    },
+    "skuName": {
+      "value": "P1v3"
     }
   }
 }
@@ -103,8 +103,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   params: {
     // Required parameters
     name: 'wsfmax001'
-    skuCapacity: 2
-    skuName: 'P1v3'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -144,6 +142,8 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    skuCapacity: 3
+    skuName: 'P1v3'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -169,12 +169,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     // Required parameters
     "name": {
       "value": "wsfmax001"
-    },
-    "skuCapacity": {
-      "value": 2
-    },
-    "skuName": {
-      "value": "P1v3"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -227,6 +221,12 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         }
       ]
     },
+    "skuCapacity": {
+      "value": 3
+    },
+    "skuName": {
+      "value": "P1v3"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -259,8 +259,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   params: {
     // Required parameters
     name: 'wsfwaf001'
-    skuCapacity: 2
-    skuName: 'P1v3'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -282,6 +280,8 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       kind: 'CanNotDelete'
       name: 'lock'
     }
+    skuCapacity: 3
+    skuName: 'P1v3'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -306,12 +306,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     // Required parameters
     "name": {
       "value": "wsfwaf001"
-    },
-    "skuCapacity": {
-      "value": 2
-    },
-    "skuName": {
-      "value": "P1v3"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -341,6 +335,12 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         "kind": "CanNotDelete",
         "name": "lock"
       }
+    },
+    "skuCapacity": {
+      "value": 3
+    },
+    "skuName": {
+      "value": "P1v3"
     },
     "tags": {
       "value": {
@@ -404,15 +404,17 @@ Name of the app service plan.
 
 Number of workers associated with the App Service Plan.
 
-- Required: Yes
+- Required: No
 - Type: int
+- Default: `3`
 
 ### Parameter: `skuName`
 
 The name of the SKU will Determine the tier, size, family of the App Service Plan.
 
-- Required: Yes
+- Required: No
 - Type: string
+- Default: `'P1v3'`
 - Example:
   ```Bicep
   'F1'

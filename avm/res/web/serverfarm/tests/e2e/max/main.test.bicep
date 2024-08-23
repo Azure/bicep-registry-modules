@@ -65,7 +65,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
       skuName: 'P1v3'
-      skuCapacity: 2
+      skuCapacity: 3
       perSiteScaling: true
       zoneRedundant: true
       kind: 'App'
