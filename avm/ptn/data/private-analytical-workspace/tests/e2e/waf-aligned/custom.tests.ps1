@@ -210,14 +210,51 @@ Describe 'Validate Pattern deployment' {
                 $nsgPL.SecurityRules.Count | Should -Be 1
                 $nsgPL.DefaultSecurityRules.Count | Should -Be 6
                 $nsgPL.Subnets.Count | Should -Be 1
+                $nsgPL.Subnets[0].Id | Should -Be "$($virtualNetworkResourceId)/subnets/private-link-subnet"
                 $nsgPL.Tag.Owner | Should -Be "Contoso"
                 $nsgPL.Tag.CostCenter | Should -Be "123-456-789"
                 # TODO Role, Lock - How?
 
-
-
                 $nsgDbwFe = Get-AzResource -ResourceId $vnet.Subnets[1].NetworkSecurityGroup[0].Id | Get-AzNetworkSecurityGroup
+                $nsgDbwFe | Should -Not -BeNullOrEmpty
+                $nsgDbwFe.ProvisioningState | Should -Be "Succeeded"
+                $nsgDbwFe.FlushConnection | Should -Be $false
+                $nsgDbwFe.NetworkInterfaces | Should -BeNullOrEmpty
+                $nsgDbwFe.SecurityRules.Count | Should -Be 1
+                $nsgDbwFe.DefaultSecurityRules.Count | Should -Be 8
+                $nsgDbwFe.Subnets.Count | Should -Be 1
+                $nsgDbwFe.Subnets[0].Id | Should -Be "$($virtualNetworkResourceId)/subnets/dbw-frontend-subnet"
+                $nsgDbwFe.Tag.Owner | Should -Be "Contoso"
+                $nsgDbwFe.Tag.CostCenter | Should -Be "123-456-789"
+                # TODO Role, Lock - How?
+
                 $nsgDbwBa = Get-AzResource -ResourceId $vnet.Subnets[2].NetworkSecurityGroup[0].Id | Get-AzNetworkSecurityGroup
+                $nsgDbwBa | Should -Not -BeNullOrEmpty
+                $nsgDbwBa.ProvisioningState | Should -Be "Succeeded"
+                $nsgDbwBa.FlushConnection | Should -Be $false
+                $nsgDbwBa.NetworkInterfaces | Should -BeNullOrEmpty
+                $nsgDbwBa.SecurityRules.Count | Should -Be 1
+                $nsgDbwBa.DefaultSecurityRules.Count | Should -Be 8
+                $nsgDbwBa.Subnets.Count | Should -Be 1
+                $nsgDbwBa.Subnets[0].Id | Should -Be "$($virtualNetworkResourceId)/subnets/dbw-backend-subnet"
+                $nsgDbwBa.Tag.Owner | Should -Be "Contoso"
+                $nsgDbwBa.Tag.CostCenter | Should -Be "123-456-789"
+                # TODO Role, Lock - How?
+
+                $nsgDiag  = Get-AzDiagnosticSetting -ResourceId $nsgDbwBa.Id -Name avm-diagnostic-settings
+                $nsgDiag | Should -Not -BeNullOrEmpty
+                #$nsgDiag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
+                $nsgDiag.Type | Should -Be "Microsoft.Insights/diagnosticSettings"
+                $nsgDiag.WorkspaceId | Should -Be $logAnalyticsWorkspaceResourceId
+
+                $nsgDiagCat = Get-AzDiagnosticSettingCategory -ResourceId $nsgDbwBa.Id
+                $nsgDiagCat | Should -Not -BeNullOrEmpty
+                #$nsgDiagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
+                $nsgDiagCat.Count | Should -Be 2 # NetworkSecurityGroupEvent, NetworkSecurityGroupRuleCounter
+                $nsgDiagCat[0].Name | Should -BeIn @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
+                $nsgDiagCat[1].Name | Should -BeIn @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
+
+
 
 
 
