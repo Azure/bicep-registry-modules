@@ -53,12 +53,18 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   params: {
     // Required parameters
     name: 'dfpsfsmin001'
-    skuName: 'Standard_B2s'
-    tier: 'Burstable'
+    skuName: 'Standard_D2s_v3'
+    tier: 'GeneralPurpose'
     // Non-required parameters
-    administratorLogin: 'adminUserName'
-    administratorLoginPassword: '<administratorLoginPassword>'
+    administrators: [
+      {
+        objectId: '<objectId>'
+        principalName: '<principalName>'
+        principalType: 'ServicePrincipal'
+      }
+    ]
     geoRedundantBackup: 'Enabled'
+    highAvailability: 'ZoneRedundant'
     location: '<location>'
   }
 }
@@ -81,20 +87,26 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": "dfpsfsmin001"
     },
     "skuName": {
-      "value": "Standard_B2s"
+      "value": "Standard_D2s_v3"
     },
     "tier": {
-      "value": "Burstable"
+      "value": "GeneralPurpose"
     },
     // Non-required parameters
-    "administratorLogin": {
-      "value": "adminUserName"
-    },
-    "administratorLoginPassword": {
-      "value": "<administratorLoginPassword>"
+    "administrators": {
+      "value": [
+        {
+          "objectId": "<objectId>",
+          "principalName": "<principalName>",
+          "principalType": "ServicePrincipal"
+        }
+      ]
     },
     "geoRedundantBackup": {
       "value": "Enabled"
+    },
+    "highAvailability": {
+      "value": "ZoneRedundant"
     },
     "location": {
       "value": "<location>"
@@ -697,7 +709,14 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       }
     ]
     geoRedundantBackup: 'Enabled'
+    highAvailability: 'ZoneRedundant'
     location: '<location>'
+    maintenanceWindow: {
+      customWindow: 'Enabled'
+      dayOfWeek: 0
+      startHour: 1
+      startMinute: 0
+    }
     privateDnsZoneArmResourceId: '<privateDnsZoneArmResourceId>'
     tags: {
       Environment: 'Non-Prod'
@@ -782,8 +801,19 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     "geoRedundantBackup": {
       "value": "Enabled"
     },
+    "highAvailability": {
+      "value": "ZoneRedundant"
+    },
     "location": {
       "value": "<location>"
+    },
+    "maintenanceWindow": {
+      "value": {
+        "customWindow": "Enabled",
+        "dayOfWeek": 0,
+        "startHour": 1,
+        "startMinute": 0
+      }
     },
     "privateDnsZoneArmResourceId": {
       "value": "<privateDnsZoneArmResourceId>"
@@ -1314,7 +1344,15 @@ Properties for the maintenence window. If provided, 'customWindow' property must
 
 - Required: No
 - Type: object
-- Default: `{}`
+- Default:
+  ```Bicep
+  {
+      customWindow: 'Enabled'
+      dayOfWeek: 0
+      startHour: 1
+      startMinute: 0
+  }
+  ```
 
 ### Parameter: `passwordAuth`
 
@@ -1361,6 +1399,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1407,6 +1446,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1472,7 +1518,7 @@ PostgreSQL Server version.
 
 - Required: No
 - Type: string
-- Default: `'15'`
+- Default: `'16'`
 - Allowed:
   ```Bicep
   [
@@ -1481,6 +1527,7 @@ PostgreSQL Server version.
     '13'
     '14'
     '15'
+    '16'
   ]
   ```
 
