@@ -57,6 +57,7 @@ module testDeployment '../../../main.bicep' = [
       location: enforcedLocation
       skuName: 'P1v3'
       skuCapacity: 3
+      zoneRedundant: true
       kind: 'App'
       lock: {
         name: 'lock'

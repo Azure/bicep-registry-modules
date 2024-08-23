@@ -51,6 +51,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     location: '<location>'
     skuCapacity: 3
     skuName: 'P1v3'
+    zoneRedundant: true
   }
 }
 ```
@@ -80,6 +81,9 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     },
     "skuName": {
       "value": "P1v3"
+    },
+    "zoneRedundant": {
+      "value": true
     }
   }
 }
@@ -287,6 +291,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    zoneRedundant: true
   }
 }
 ```
@@ -348,6 +353,9 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "zoneRedundant": {
+      "value": true
     }
   }
 }
