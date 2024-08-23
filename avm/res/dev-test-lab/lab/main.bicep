@@ -106,7 +106,7 @@ param schedules array = []
 param notificationchannels array = []
 
 @description('Optional. Artifact sources to create for the lab.')
-param artifactsources array = []
+param artifactsources artifactsourcesType = []
 
 @description('Optional. Costs to create for the lab.')
 param costs object = {}
@@ -233,9 +233,9 @@ module lab_virtualNetworks 'virtualnetwork/main.bicep' = [
       name: virtualNetwork.name
       tags: virtualNetwork.?tags ?? tags
       externalProviderResourceId: virtualNetwork.externalProviderResourceId
-      description: contains(virtualNetwork, 'description') ? virtualNetwork.description : ''
-      allowedSubnets: contains(virtualNetwork, 'allowedSubnets') ? virtualNetwork.allowedSubnets : []
-      subnetOverrides: contains(virtualNetwork, 'subnetOverrides') ? virtualNetwork.subnetOverrides : []
+      description: virtualNetwork.?description ?? ''
+      allowedSubnets: virtualNetwork.?allowedSubnets ?? []
+      subnetOverrides: virtualNetwork.?subnetOverrides ?? []
     }
   }
 ]
@@ -247,11 +247,11 @@ module lab_policies 'policyset/policy/main.bicep' = [
       labName: lab.name
       name: policy.name
 
-      description: contains(policy, 'description') ? policy.description : ''
+      description: policy.?description ?? ''
       evaluatorType: policy.evaluatorType
-      factData: contains(policy, 'factData') ? policy.factData : ''
+      factData: policy.?factData ?? ''
       factName: policy.factName
-      status: contains(policy, 'status') ? policy.status : 'Enabled'
+      status: policy.?status ?? 'Enabled'
       threshold: policy.threshold
     }
   }
@@ -265,18 +265,14 @@ module lab_schedules 'schedule/main.bicep' = [
       name: schedule.name
       tags: schedule.?tags ?? tags
       taskType: schedule.taskType
-      dailyRecurrence: contains(schedule, 'dailyRecurrence') ? schedule.dailyRecurrence : {}
-      hourlyRecurrence: contains(schedule, 'hourlyRecurrence') ? schedule.hourlyRecurrence : {}
-      weeklyRecurrence: contains(schedule, 'weeklyRecurrence') ? schedule.weeklyRecurrence : {}
-      status: contains(schedule, 'status') ? schedule.status : 'Enabled'
-      targetResourceId: contains(schedule, 'targetResourceId') ? schedule.targetResourceId : ''
-      timeZoneId: contains(schedule, 'timeZoneId') ? schedule.timeZoneId : 'Pacific Standard time'
-      notificationSettingsStatus: contains(schedule, 'notificationSettingsStatus')
-        ? schedule.notificationSettingsStatus
-        : 'Disabled'
-      notificationSettingsTimeInMinutes: contains(schedule, 'notificationSettingsTimeInMinutes')
-        ? schedule.notificationSettingsTimeInMinutes
-        : 30
+      dailyRecurrence: schedule.?dailyRecurrence ?? {}
+      hourlyRecurrence: schedule.?hourlyRecurrence ?? {}
+      weeklyRecurrence: schedule.?weeklyRecurrence ?? {}
+      status: schedule.?status ?? 'Enabled'
+      targetResourceId: schedule.?targetResourceId ?? ''
+      timeZoneId: schedule.?timeZoneId ?? 'Pacific Standard time'
+      notificationSettingsStatus: schedule.?notificationSettingsStatus ?? 'Disabled'
+      notificationSettingsTimeInMinutes: schedule.?notificationSettingsTimeInMinutes ?? 30
     }
   }
 ]
@@ -288,13 +284,11 @@ module lab_notificationChannels 'notificationchannel/main.bicep' = [
       labName: lab.name
       name: notificationChannel.name
       tags: notificationChannel.?tags ?? tags
-      description: contains(notificationChannel, 'description') ? notificationChannel.description : ''
+      description: notificationChannel.?description ?? ''
       events: notificationChannel.events
-      emailRecipient: contains(notificationChannel, 'emailRecipient') ? notificationChannel.emailRecipient : ''
-      webHookUrl: contains(notificationChannel, 'webhookUrl') ? notificationChannel.webhookUrl : ''
-      notificationLocale: contains(notificationChannel, 'notificationLocale')
-        ? notificationChannel.notificationLocale
-        : 'en'
+      emailRecipient: notificationChannel.?emailRecipient ?? ''
+      webHookUrl: notificationChannel.?webhookUrl ?? ''
+      notificationLocale: notificationChannel.?notificationLocale ?? 'en'
     }
   }
 ]
@@ -306,15 +300,14 @@ module lab_artifactSources 'artifactsource/main.bicep' = [
       labName: lab.name
       name: artifactSource.name
       tags: artifactSource.?tags ?? tags
-      displayName: contains(artifactSource, 'displayName') ? artifactSource.displayName : artifactSource.name
-      branchRef: contains(artifactSource, 'branchRef') ? artifactSource.branchRef : ''
-      folderPath: contains(artifactSource, 'folderPath') ? artifactSource.folderPath : ''
-      armTemplateFolderPath: contains(artifactSource, 'armTemplateFolderPath')
-        ? artifactSource.armTemplateFolderPath
-        : ''
-      sourceType: contains(artifactSource, 'sourceType') ? artifactSource.sourceType : ''
-      status: contains(artifactSource, 'status') ? artifactSource.status : 'Enabled'
+      displayName: artifactSource.?displayName ?? artifactSource.name
+      branchRef: artifactSource.?branchRef ?? ''
+      folderPath: artifactSource.?folderPath ?? ''
+      armTemplateFolderPath: artifactSource.?armTemplateFolderPath ?? ''
+      sourceType: artifactSource.?sourceType ?? ''
+      status: artifactSource.?status ?? 'Enabled'
       uri: artifactSource.uri
+      securityToken: artifactSource.?securityToken ?? ''
     }
   }
 ]
@@ -324,42 +317,22 @@ module lab_costs 'cost/main.bicep' = if (!empty(costs)) {
   params: {
     labName: lab.name
     tags: costs.?tags ?? tags
-    currencyCode: contains(costs, 'currencyCode') ? costs.currencyCode : 'USD'
+    currencyCode: costs.?currencyCode ?? 'USD'
     cycleType: costs.cycleType
-    cycleStartDateTime: contains(costs, 'cycleStartDateTime') ? costs.cycleStartDateTime : ''
-    cycleEndDateTime: contains(costs, 'cycleEndDateTime') ? costs.cycleEndDateTime : ''
-    status: contains(costs, 'status') ? costs.status : 'Enabled'
-    target: contains(costs, 'target') ? costs.target : 0
-    thresholdValue25DisplayOnChart: contains(costs, 'thresholdValue25DisplayOnChart')
-      ? costs.thresholdValue25DisplayOnChart
-      : 'Disabled'
-    thresholdValue25SendNotificationWhenExceeded: contains(costs, 'thresholdValue25SendNotificationWhenExceeded')
-      ? costs.thresholdValue25SendNotificationWhenExceeded
-      : 'Disabled'
-    thresholdValue50DisplayOnChart: contains(costs, 'thresholdValue50DisplayOnChart')
-      ? costs.thresholdValue50DisplayOnChart
-      : 'Disabled'
-    thresholdValue50SendNotificationWhenExceeded: contains(costs, 'thresholdValue50SendNotificationWhenExceeded')
-      ? costs.thresholdValue50SendNotificationWhenExceeded
-      : 'Disabled'
-    thresholdValue75DisplayOnChart: contains(costs, 'thresholdValue75DisplayOnChart')
-      ? costs.thresholdValue75DisplayOnChart
-      : 'Disabled'
-    thresholdValue75SendNotificationWhenExceeded: contains(costs, 'thresholdValue75SendNotificationWhenExceeded')
-      ? costs.thresholdValue75SendNotificationWhenExceeded
-      : 'Disabled'
-    thresholdValue100DisplayOnChart: contains(costs, 'thresholdValue100DisplayOnChart')
-      ? costs.thresholdValue100DisplayOnChart
-      : 'Disabled'
-    thresholdValue100SendNotificationWhenExceeded: contains(costs, 'thresholdValue100SendNotificationWhenExceeded')
-      ? costs.thresholdValue100SendNotificationWhenExceeded
-      : 'Disabled'
-    thresholdValue125DisplayOnChart: contains(costs, 'thresholdValue125DisplayOnChart')
-      ? costs.thresholdValue125DisplayOnChart
-      : 'Disabled'
-    thresholdValue125SendNotificationWhenExceeded: contains(costs, 'thresholdValue125SendNotificationWhenExceeded')
-      ? costs.thresholdValue125SendNotificationWhenExceeded
-      : 'Disabled'
+    cycleStartDateTime: costs.?cycleStartDateTime ?? ''
+    cycleEndDateTime: costs.?cycleEndDateTime ?? ''
+    status: costs.?status ?? 'Enabled'
+    target: costs.?target ?? 0
+    thresholdValue25DisplayOnChart: costs.?thresholdValue25DisplayOnChart ?? 'Disabled'
+    thresholdValue25SendNotificationWhenExceeded: costs.?thresholdValue25SendNotificationWhenExceeded ?? 'Disabled'
+    thresholdValue50DisplayOnChart: costs.?thresholdValue50DisplayOnChart ?? 'Disabled'
+    thresholdValue50SendNotificationWhenExceeded: costs.?thresholdValue50SendNotificationWhenExceeded ?? 'Disabled'
+    thresholdValue75DisplayOnChart: costs.?thresholdValue75DisplayOnChart ?? 'Disabled'
+    thresholdValue75SendNotificationWhenExceeded: costs.?thresholdValue75SendNotificationWhenExceeded ?? 'Disabled'
+    thresholdValue100DisplayOnChart: costs.?thresholdValue100DisplayOnChart ?? 'Disabled'
+    thresholdValue100SendNotificationWhenExceeded: costs.?thresholdValue100SendNotificationWhenExceeded ?? 'Disabled'
+    thresholdValue125DisplayOnChart: costs.?thresholdValue125DisplayOnChart ?? 'Disabled'
+    thresholdValue125SendNotificationWhenExceeded: costs.?thresholdValue125SendNotificationWhenExceeded ?? 'Disabled'
   }
 }
 
@@ -439,3 +412,36 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+type artifactsourcesType = {
+  @description('Required. The name of the artifact source.')
+  name: string
+
+  @description('Optional. The tags of the artifact source.')
+  tags: object?
+
+  @description('Optional. The display name of the artifact source.')
+  displayName: string?
+
+  @description('Optional. The branch reference of the artifact source.')
+  branchRef: string?
+
+  @description('Optional. The folder path of the artifact source.')
+  folderPath: string?
+
+  @description('Optional. The ARM template folder path of the artifact source.')
+  armTemplateFolderPath: string?
+
+  @description('Optional. The source type of the artifact source.')
+  sourceType: string?
+
+  @description('Optional. The status of the artifact source.')
+  status: string
+
+  @description('Required. The URI of the artifact source.')
+  uri: string
+
+  @description('Optional. The security token of the artifact source.')
+  @secure()
+  securityToken: string?
+}[]
