@@ -18,7 +18,7 @@ param serviceShort string = 'wsfwaf'
 param namePrefix string = '#_namePrefix_#'
 
 #disable-next-line no-hardcoded-location // Just a value to avoid ongoing capacity challenges
-var enforcedLocation = 'eastus'
+var enforcedLocation = 'australiaeast'
 
 // ============ //
 // Dependencies //
@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
-      skuName: 'P1v2'
+      skuName: 'P1v3'
       skuCapacity: 3
       zoneRedundant: true
       kind: 'App'

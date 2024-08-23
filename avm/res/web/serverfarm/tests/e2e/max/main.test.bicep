@@ -18,7 +18,7 @@ param serviceShort string = 'wsfmax'
 param namePrefix string = '#_namePrefix_#'
 
 #disable-next-line no-hardcoded-location // Just a value to avoid ongoing capacity challenges
-var enforcedLocation = 'eastus'
+var enforcedLocation = 'australiaeast'
 
 // ============ //
 // Dependencies //
