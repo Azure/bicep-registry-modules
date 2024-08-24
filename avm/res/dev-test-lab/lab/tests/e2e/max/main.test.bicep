@@ -251,9 +251,7 @@ module testDeployment '../../../main.bicep' = [
           name: 'autoShutdown'
           description: 'Integration configured for auto-shutdown'
           events: [
-            {
-              eventName: 'AutoShutdown'
-            }
+            'AutoShutdown'
           ]
           emailRecipient: 'mail@contosodtlmail.com'
           webHookUrl: 'https://webhook.contosotest.com'
@@ -262,9 +260,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'costThreshold'
           events: [
-            {
-              eventName: 'Cost'
-            }
+            'Cost'
           ]
           webHookUrl: 'https://webhook.contosotest.com'
         }

@@ -103,7 +103,7 @@ param policies array = []
 param schedules array = []
 
 @description('Conditional. Notification Channels to create for the lab. Required if the schedules property "notificationSettingsStatus" is set to "Enabled.')
-param notificationchannels array = []
+param notificationchannels notificationChannelType
 
 @description('Optional. Artifact sources to create for the lab.')
 param artifactsources artifactsourcesType
@@ -284,10 +284,10 @@ module lab_notificationChannels 'notificationchannel/main.bicep' = [
       labName: lab.name
       name: notificationChannel.name
       tags: notificationChannel.?tags ?? tags
-      description: notificationChannel.?description ?? ''
+      description: notificationChannel.?description ?? null
       events: notificationChannel.events
-      emailRecipient: notificationChannel.?emailRecipient ?? ''
-      webHookUrl: notificationChannel.?webhookUrl ?? ''
+      emailRecipient: notificationChannel.?emailRecipient ?? null
+      webHookUrl: notificationChannel.?webHookUrl ?? null
       notificationLocale: notificationChannel.?notificationLocale ?? 'en'
     }
   }
@@ -519,3 +519,26 @@ type costsType = {
   @description('Optional. Target cost threshold at 125% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded.')
   thresholdValue125SendNotificationWhenExceeded: 'Enabled' | 'Disabled'?
 }?
+
+type notificationChannelType = {
+  @description('Required. The name of the notification channel.')
+  name: 'autoShutdown' | 'costThreshold'
+
+  @description('Optional. The tags of the notification channel.')
+  tags: object?
+
+  @description('Optional. The description of the notification.')
+  description: string?
+
+  @description('Required. The list of event for which this notification is enabled. Can be "AutoShutdown" or "Cost".')
+  events: string[]
+
+  @description('Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webHookUrl" is empty.')
+  emailRecipient: string?
+
+  @description('Conditional. The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty.')
+  webHookUrl: string?
+
+  @description('Optional. The locale to use when sending a notification (fallback for unsupported languages is EN).')
+  notificationLocale: string?
+}[]
