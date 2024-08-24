@@ -307,6 +307,7 @@ module testDeployment '../../../main.bicep' = [
         status: 'Enabled'
         cycleType: 'CalendarMonth'
         target: 450
+        currencyCode: 'AUD'
         thresholdValue100DisplayOnChart: 'Enabled'
         thresholdValue100SendNotificationWhenExceeded: 'Enabled'
       }

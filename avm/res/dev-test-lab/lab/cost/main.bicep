@@ -18,10 +18,10 @@ param cycleType string
 param tags object?
 
 @sys.description('Conditional. Reporting cycle start date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z). Required if cycleType is set to "Custom".')
-param cycleStartDateTime string = ''
+param cycleStartDateTime string?
 
 @sys.description('Conditional. Reporting cycle end date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z). Required if cycleType is set to "Custom".')
-param cycleEndDateTime string = ''
+param cycleEndDateTime string?
 
 @allowed([
   'Enabled'
@@ -120,8 +120,8 @@ resource cost 'Microsoft.DevTestLab/labs/costs@2018-09-15' = {
     endDateTime: cycleEndDateTime
     targetCost: {
       target: target
-      cycleStartDateTime: cycleStartDateTime
-      cycleEndDateTime: cycleEndDateTime
+      cycleStartDateTime: cycleStartDateTime ?? null
+      cycleEndDateTime: cycleEndDateTime ?? null
       cycleType: cycleType
       status: status
       costThresholds: [

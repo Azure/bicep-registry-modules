@@ -109,7 +109,7 @@ param notificationchannels array = []
 param artifactsources artifactsourcesType
 
 @description('Optional. Costs to create for the lab.')
-param costs object = {}
+param costs costsType
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -318,9 +318,9 @@ module lab_costs 'cost/main.bicep' = if (!empty(costs)) {
     labName: lab.name
     tags: costs.?tags ?? tags
     currencyCode: costs.?currencyCode ?? 'USD'
-    cycleType: costs.cycleType
-    cycleStartDateTime: costs.?cycleStartDateTime ?? ''
-    cycleEndDateTime: costs.?cycleEndDateTime ?? ''
+    cycleType: costs!.cycleType
+    cycleStartDateTime: costs.?cycleStartDateTime ?? null
+    cycleEndDateTime: costs.?cycleEndDateTime ?? null
     status: costs.?status ?? 'Enabled'
     target: costs.?target ?? 0
     thresholdValue25DisplayOnChart: costs.?thresholdValue25DisplayOnChart ?? 'Disabled'
@@ -466,3 +466,56 @@ type virtualNetworkType = {
   @description('Optional. The subnet overrides of the virtual network.')
   subnetOverrides: subnetOverrideType[]
 }[]
+
+type costsType = {
+  @description('Optional. The tags of the resource.')
+  tags: object?
+
+  @description('Required. Reporting cycle type.')
+  cycleType: 'Custom' | 'CalendarMonth'
+
+  @description('Conditional. Reporting cycle start date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z). Required if cycleType is set to "Custom".')
+  cycleStartDateTime: string?
+
+  @description('Conditional. Reporting cycle end date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z). Required if cycleType is set to "Custom".')
+  cycleEndDateTime: string?
+
+  @description('Optional. Target cost status.')
+  status: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Lab target cost (e.g. 100). The target cost will appear in the "Cost trend" chart to allow tracking lab spending relative to the target cost for the current reporting cycleSetting the target cost to 0 will disable all thresholds.')
+  target: int?
+
+  @description('Optional. The currency code of the cost. Default is "USD".')
+  currencyCode: string?
+
+  @description('Optional. Target Cost threshold at 25% display on chart. Indicates whether this threshold will be displayed on cost charts.')
+  thresholdValue25DisplayOnChart: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target cost threshold at 25% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded.')
+  thresholdValue25SendNotificationWhenExceeded: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target Cost threshold at 50% display on chart. Indicates whether this threshold will be displayed on cost charts.')
+  thresholdValue50DisplayOnChart: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target cost threshold at 50% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded.')
+  thresholdValue50SendNotificationWhenExceeded: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target Cost threshold at 75% display on chart. Indicates whether this threshold will be displayed on cost charts.')
+  thresholdValue75DisplayOnChart: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target cost threshold at 75% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded.')
+  thresholdValue75SendNotificationWhenExceeded: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target Cost threshold at 100% display on chart. Indicates whether this threshold will be displayed on cost charts.')
+  thresholdValue100DisplayOnChart: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target cost threshold at 100% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded.')
+  thresholdValue100SendNotificationWhenExceeded: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target Cost threshold at 125% display on chart. Indicates whether this threshold will be displayed on cost charts.')
+  thresholdValue125DisplayOnChart: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target cost threshold at 125% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded.')
+  thresholdValue125SendNotificationWhenExceeded: 'Enabled' | 'Disabled'?
+}?
