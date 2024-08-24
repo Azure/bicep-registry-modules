@@ -18,3 +18,20 @@ function Test-VerifyDnsZone($Name, $ResourceGroupName, $Tags, $NumberOfRecordSet
 
     Test-VerifyTagsForResource -ResourceId $z.ResourceId -Tags $Tags
 }
+
+
+function Test-VerifyPrivateEndpoint($Name, $ResourceGroupName, $Tags, $SubnetName, $ServiceId, $GroupId)
+{
+    $pep = Get-AzPrivateEndpoint -ResourceGroupName $ResourceGroupName -Name $Name
+    $pep | Should -Not -BeNullOrEmpty
+    $pep.ProvisioningState | Should -Be "Succeeded"
+    $pep.Subnet.Id | Should -Be "$($virtualNetworkResourceId)/subnets/$($SubnetName)"
+    $pep.NetworkInterfaces.Count | Should -Be 1
+    $pep.PrivateLinkServiceConnections.ProvisioningState | Should -Be "Succeeded"
+    $pep.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $ServiceId
+    $pep.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
+    $pep.PrivateLinkServiceConnections.GroupIds | Should -Be $GroupId
+    $pep.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
+
+    Test-VerifyTagsForResource -ResourceId $pep.Id -Tags $Tags
+}

@@ -356,18 +356,7 @@ Describe 'Validate Pattern deployment' {
                 $kvDiagCat.Count | Should -Be $logs.Count
                 for ($i = 0; $i -lt $kvDiagCat.Count; $i++) { $kvDiagCat[$i].Name | Should -BeIn $logs }
 
-                $kvPEP = Get-AzPrivateEndpoint -ResourceGroupName $keyVaultResourceGroupName -Name "$($kv.VaultName)-PEP"
-                $kvPEP | Should -Not -BeNullOrEmpty
-                $kvPEP.ProvisioningState | Should -Be "Succeeded"
-                $kvPEP.Subnet.Id | Should -Be "$($virtualNetworkResourceId)/subnets/private-link-subnet"
-                $kvPEP.NetworkInterfaces.Count | Should -Be 1
-                $kvPEP.PrivateLinkServiceConnections.ProvisioningState | Should -Be "Succeeded"
-                $kvPEP.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $keyVaultResourceId
-                $kvPEP.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
-                $kvPEP.PrivateLinkServiceConnections.GroupIds | Should -Be "vault"
-                $kvPEP.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
-                $kvPEP.Tag.Owner | Should -Be "Contoso"
-                $kvPEP.Tag.CostCenter | Should -Be "123-456-789"
+                Test-VerifyPrivateEndpoint -Name "$($kv.VaultName)-PEP" -ResourceGroupName $keyVaultResourceGroupName -Tags $expectedTags -SubnetName "private-link-subnet" -ServiceId $keyVaultResourceId -GroupId "vault"
                 # TODO Role, Lock - How?
 
                 Test-VerifyDnsZone -Name "privatelink.vaultcore.azure.net" -ResourceGroupName $keyVaultResourceGroupName -Tags $expectedTags -NumberOfRecordSets 2 # SOA + A
@@ -469,8 +458,7 @@ Describe 'Validate Pattern deployment' {
                 $adb.VnetAddressPrefixType | Should -Be "String"
                 $adb.VnetAddressPrefixValue | Should -Be "10.139"
                 #Skip $adb.WorkspaceId
-                $adb.Tag["Owner"] | Should -Be "Contoso"
-                $adb.Tag["CostCenter"] | Should -Be "123-456-789"
+                Test-VerifyTagsForResource -ResourceId $adb.Id -Tags $expectedTags
                 # TODO Role, Lock - How?
 
                 $adbDiag  = Get-AzDiagnosticSetting -ResourceId $databricksResourceId -Name avm-diagnostic-settings
@@ -495,32 +483,10 @@ Describe 'Validate Pattern deployment' {
                 $adbDiagCat.Count | Should -Be $logs.Count
                 for ($i = 0; $i -lt $adbDiagCat.Count; $i++) { $adbDiagCat[$i].Name | Should -BeIn $logs }
 
-                $adbAuthPEP = Get-AzPrivateEndpoint -ResourceGroupName $databricksResourceGroupName -Name "$($databricksName)-auth-PEP"
-                $adbAuthPEP | Should -Not -BeNullOrEmpty
-                $adbAuthPEP.ProvisioningState | Should -Be "Succeeded"
-                $adbAuthPEP.Subnet.Id | Should -Be "$($virtualNetworkResourceId)/subnets/private-link-subnet"
-                $adbAuthPEP.NetworkInterfaces.Count | Should -Be 1
-                $adbAuthPEP.PrivateLinkServiceConnections.ProvisioningState | Should -Be "Succeeded"
-                $adbAuthPEP.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $databricksResourceId
-                $adbAuthPEP.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
-                $adbAuthPEP.PrivateLinkServiceConnections.GroupIds | Should -Be "browser_authentication"
-                $adbAuthPEP.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
-                $adbAuthPEP.Tag.Owner | Should -Be "Contoso"
-                $adbAuthPEP.Tag.CostCenter | Should -Be "123-456-789"
+                Test-VerifyPrivateEndpoint -Name "$($databricksName)-auth-PEP" -ResourceGroupName $databricksResourceGroupName -Tags $expectedTags -SubnetName "private-link-subnet" -ServiceId $databricksResourceId -GroupId "browser_authentication"
                 # TODO Role, Lock - How?
 
-                $adbUiPEP = Get-AzPrivateEndpoint -ResourceGroupName $databricksResourceGroupName -Name "$($databricksName)-ui-PEP"
-                $adbUiPEP | Should -Not -BeNullOrEmpty
-                $adbUiPEP.ProvisioningState | Should -Be "Succeeded"
-                $adbUiPEP.Subnet.Id | Should -Be "$($virtualNetworkResourceId)/subnets/private-link-subnet"
-                $adbUiPEP.NetworkInterfaces.Count | Should -Be 1
-                $adbUiPEP.PrivateLinkServiceConnections.ProvisioningState | Should -Be "Succeeded"
-                $adbUiPEP.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $databricksResourceId
-                $adbUiPEP.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
-                $adbUiPEP.PrivateLinkServiceConnections.GroupIds | Should -Be "databricks_ui_api"
-                $adbUiPEP.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
-                $adbUiPEP.Tag.Owner | Should -Be "Contoso"
-                $adbUiPEP.Tag.CostCenter | Should -Be "123-456-789"
+                Test-VerifyPrivateEndpoint -Name "$($databricksName)-ui-PEP" -ResourceGroupName $databricksResourceGroupName -Tags $expectedTags -SubnetName "private-link-subnet" -ServiceId $databricksResourceId -GroupId "databricks_ui_api"
                 # TODO Role, Lock - How?
 
                 Test-VerifyDnsZone -Name "privatelink.azuredatabricks.net" -ResourceGroupName $databricksResourceGroupName -Tags $expectedTags -NumberOfRecordSets 5 # SOA + 4xA
@@ -529,7 +495,7 @@ Describe 'Validate Pattern deployment' {
 
 
 
-                Test-VerifyTagsForResource -ResourceId $databricksResourceId -Tags $expectedTags
+
 
 
 
