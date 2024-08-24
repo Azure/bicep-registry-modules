@@ -191,18 +191,8 @@ Describe 'Validate Pattern deployment' {
                 $vnet.Tag.CostCenter | Should -Be "123-456-789"
                 # TODO Role, Lock - How?
 
-                $vnetDiag  = Get-AzDiagnosticSetting -ResourceId $virtualNetworkResourceId -Name avm-diagnostic-settings
-                $vnetDiag | Should -Not -BeNullOrEmpty
-                #$vnetDiag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-                $vnetDiag.Type | Should -Be "Microsoft.Insights/diagnosticSettings"
-                $vnetDiag.WorkspaceId | Should -Be $logAnalyticsWorkspaceResourceId
-
-                $vnetDiagCat = Get-AzDiagnosticSettingCategory -ResourceId $virtualNetworkResourceId
-                $vnetDiagCat | Should -Not -BeNullOrEmpty
-                #$vnetDiagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
                 $logs = @('VMProtectionAlerts', 'AllMetrics')
-                $vnetDiagCat.Count | Should -Be $logs.Count
-                for ($i = 0; $i -lt $vnetDiagCat.Count; $i++) { $vnetDiagCat[$i].Name | Should -BeIn $logs }
+                Test-VerifyDiagSettings -ResourceId $virtualNetworkResourceId -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $logs
 
                 $nsgPL = Get-AzResource -ResourceId $vnet.Subnets[0].NetworkSecurityGroup[0].Id | Get-AzNetworkSecurityGroup
                 $nsgPL | Should -Not -BeNullOrEmpty
@@ -218,18 +208,8 @@ Describe 'Validate Pattern deployment' {
                 # TODO Role, Lock - How?
                 # Do we have to check for specific rules?
 
-                $nsgDiag  = Get-AzDiagnosticSetting -ResourceId $nsgPL.Id -Name avm-diagnostic-settings
-                $nsgDiag | Should -Not -BeNullOrEmpty
-                #$nsgDiag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-                $nsgDiag.Type | Should -Be "Microsoft.Insights/diagnosticSettings"
-                $nsgDiag.WorkspaceId | Should -Be $logAnalyticsWorkspaceResourceId
-
-                $nsgDiagCat = Get-AzDiagnosticSettingCategory -ResourceId $nsgPL.Id
-                $nsgDiagCat | Should -Not -BeNullOrEmpty
-                #$nsgDiagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
                 $logs = @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
-                $nsgDiagCat.Count | Should -Be $logs.Count
-                for ($i = 0; $i -lt $nsgDiagCat.Count; $i++) { $nsgDiagCat[$i].Name | Should -BeIn $logs }
+                Test-VerifyDiagSettings -ResourceId $nsgPL.Id -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $logs
 
                 $nsgDbwFe = Get-AzResource -ResourceId $vnet.Subnets[1].NetworkSecurityGroup[0].Id | Get-AzNetworkSecurityGroup
                 $nsgDbwFe | Should -Not -BeNullOrEmpty
@@ -245,18 +225,8 @@ Describe 'Validate Pattern deployment' {
                 # TODO Role, Lock - How?
                 # Do we have to check for specific rules?
 
-                $nsgDiag  = Get-AzDiagnosticSetting -ResourceId $nsgDbwFe.Id -Name avm-diagnostic-settings
-                $nsgDiag | Should -Not -BeNullOrEmpty
-                #$nsgDiag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-                $nsgDiag.Type | Should -Be "Microsoft.Insights/diagnosticSettings"
-                $nsgDiag.WorkspaceId | Should -Be $logAnalyticsWorkspaceResourceId
-
-                $nsgDiagCat = Get-AzDiagnosticSettingCategory -ResourceId $nsgDbwFe.Id
-                $nsgDiagCat | Should -Not -BeNullOrEmpty
-                #$nsgDiagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
                 $logs = @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
-                $nsgDiagCat.Count | Should -Be $logs.Count
-                for ($i = 0; $i -lt $nsgDiagCat.Count; $i++) { $nsgDiagCat[$i].Name | Should -BeIn $logs }
+                Test-VerifyDiagSettings -ResourceId $nsgDbwFe.Id -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $logs
 
                 $nsgDbwBa = Get-AzResource -ResourceId $vnet.Subnets[2].NetworkSecurityGroup[0].Id | Get-AzNetworkSecurityGroup
                 $nsgDbwBa | Should -Not -BeNullOrEmpty
@@ -272,18 +242,8 @@ Describe 'Validate Pattern deployment' {
                 # TODO Role, Lock - How?
                 # Do we have to check for specific rules?
 
-                $nsgDiag  = Get-AzDiagnosticSetting -ResourceId $nsgDbwBa.Id -Name avm-diagnostic-settings
-                $nsgDiag | Should -Not -BeNullOrEmpty
-                #$nsgDiag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-                $nsgDiag.Type | Should -Be "Microsoft.Insights/diagnosticSettings"
-                $nsgDiag.WorkspaceId | Should -Be $logAnalyticsWorkspaceResourceId
-
-                $nsgDiagCat = Get-AzDiagnosticSettingCategory -ResourceId $nsgDbwBa.Id
-                $nsgDiagCat | Should -Not -BeNullOrEmpty
-                #$nsgDiagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
                 $logs = @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
-                $nsgDiagCat.Count | Should -Be $logs.Count
-                for ($i = 0; $i -lt $nsgDiagCat.Count; $i++) { $nsgDiagCat[$i].Name | Should -BeIn $logs }
+                Test-VerifyDiagSettings -ResourceId $nsgDbwBa.Id -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $logs
             }
         }
 
@@ -343,18 +303,8 @@ Describe 'Validate Pattern deployment' {
                 $kv.Tags.CostCenter | Should -Be "123-456-789"
                 # TODO Role, Lock - How?
 
-                $kvDiag  = Get-AzDiagnosticSetting -ResourceId $keyVaultResourceId -Name avm-diagnostic-settings
-                $kvDiag | Should -Not -BeNullOrEmpty
-                #$kvDiag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-                $kvDiag.Type | Should -Be "Microsoft.Insights/diagnosticSettings"
-                $kvDiag.WorkspaceId | Should -Be $logAnalyticsWorkspaceResourceId
-
-                $kvDiagCat = Get-AzDiagnosticSettingCategory -ResourceId $keyVaultResourceId
-                $kvDiagCat | Should -Not -BeNullOrEmpty
-                #$kvDiagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
                 $logs = @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
-                $kvDiagCat.Count | Should -Be $logs.Count
-                for ($i = 0; $i -lt $kvDiagCat.Count; $i++) { $kvDiagCat[$i].Name | Should -BeIn $logs }
+                Test-VerifyDiagSettings -ResourceId $keyVaultResourceId -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $logs
 
                 Test-VerifyPrivateEndpoint -Name "$($kv.VaultName)-PEP" -ResourceGroupName $keyVaultResourceGroupName -Tags $expectedTags -SubnetName "private-link-subnet" -ServiceId $keyVaultResourceId -GroupId "vault"
                 # TODO Role, Lock - How?
@@ -461,15 +411,7 @@ Describe 'Validate Pattern deployment' {
                 Test-VerifyTagsForResource -ResourceId $adb.Id -Tags $expectedTags
                 # TODO Role, Lock - How?
 
-                $adbDiag  = Get-AzDiagnosticSetting -ResourceId $databricksResourceId -Name avm-diagnostic-settings
-                $adbDiag | Should -Not -BeNullOrEmpty
-                #$adbDiag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-                $adbDiag.Type | Should -Be "Microsoft.Insights/diagnosticSettings"
-                $adbDiag.WorkspaceId | Should -Be $logAnalyticsWorkspaceResourceId
 
-                $adbDiagCat = Get-AzDiagnosticSettingCategory -ResourceId $databricksResourceId
-                $adbDiagCat | Should -Not -BeNullOrEmpty
-                #$adbDiagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
                 $logs = @(
                     'dbfs', 'clusters', 'accounts', 'jobs', 'notebook',
                     'ssh', 'workspace', 'secrets', 'sqlPermissions', 'instancePools',
@@ -480,8 +422,7 @@ Describe 'Validate Pattern deployment' {
                     'BrickStoreHttpGateway', 'Dashboards', 'CloudStorageMetadata', 'PredictiveOptimization', 'DataMonitoring',
                     'Ingestion', 'MarketplaceConsumer', 'LineageTracking'
                     )
-                $adbDiagCat.Count | Should -Be $logs.Count
-                for ($i = 0; $i -lt $adbDiagCat.Count; $i++) { $adbDiagCat[$i].Name | Should -BeIn $logs }
+                Test-VerifyDiagSettings -ResourceId $databricksResourceId -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $logs
 
                 Test-VerifyPrivateEndpoint -Name "$($databricksName)-auth-PEP" -ResourceGroupName $databricksResourceGroupName -Tags $expectedTags -SubnetName "private-link-subnet" -ServiceId $databricksResourceId -GroupId "browser_authentication"
                 # TODO Role, Lock - How?

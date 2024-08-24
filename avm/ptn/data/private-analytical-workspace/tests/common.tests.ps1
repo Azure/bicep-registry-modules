@@ -35,3 +35,18 @@ function Test-VerifyPrivateEndpoint($Name, $ResourceGroupName, $Tags, $SubnetNam
 
     Test-VerifyTagsForResource -ResourceId $pep.Id -Tags $Tags
 }
+
+function Test-VerifyDiagSettings($ResourceId, $LogAnalyticsWorkspaceResourceId, $Logs)
+{
+    $diag  = Get-AzDiagnosticSetting -ResourceId $ResourceId -Name avm-diagnostic-settings
+    $diag | Should -Not -BeNullOrEmpty
+    #$diag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
+    $diag.Type | Should -Be "Microsoft.Insights/diagnosticSettings"
+    $diag.WorkspaceId | Should -Be $LogAnalyticsWorkspaceResourceId
+
+    $diagCat = Get-AzDiagnosticSettingCategory -ResourceId $ResourceId
+    $diagCat | Should -Not -BeNullOrEmpty
+    #$diagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
+    $diagCat.Count | Should -Be $Logs.Count
+    for ($i = 0; $i -lt $diagCat.Count; $i++) { $diagCat[$i].Name | Should -BeIn $Logs }
+}
