@@ -8,6 +8,7 @@ Describe 'Validate Pattern deployment' {
     BeforeAll {
 
         . $PSScriptRoot/../../common.tests.ps1
+        $expectedTags = @{Owner='Contoso'; CostCenter='123-456-789'}
 
         $resourceId = $TestInputData.DeploymentOutputs.resourceId.Value
         $name = $TestInputData.DeploymentOutputs.name.Value
@@ -369,13 +370,7 @@ Describe 'Validate Pattern deployment' {
                 $kvPEP.Tag.CostCenter | Should -Be "123-456-789"
                 # TODO Role, Lock - How?
 
-                $kvZone = Get-AzPrivateDnsZone -ResourceGroupName $keyVaultResourceGroupName -Name "privatelink.vaultcore.azure.net"
-                $kvZone | Should -Not -BeNullOrEmpty
-                #$kvZone.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-                $kvZone.NumberOfRecordSets | Should -Be 2 # SOA + A
-                $kvZone.NumberOfVirtualNetworkLinks | Should -Be 1
-                $kvZone.Tags.Owner | Should -Be "Contoso"
-                $kvZone.Tags.CostCenter | Should -Be "123-456-789"
+                Test-VerifyDnsZone -Name "privatelink.vaultcore.azure.net" -ResourceGroupName $keyVaultResourceGroupName -Tags $expectedTags -NumberOfRecordSets 2 # SOA + A
                 # TODO Role, Lock - How?
             }
         }
@@ -528,13 +523,13 @@ Describe 'Validate Pattern deployment' {
                 $adbUiPEP.Tag.CostCenter | Should -Be "123-456-789"
                 # TODO Role, Lock - How?
 
-                Test-VerifyDnsZone -Name "privatelink.azuredatabricks.net" -ResourceGroupName $databricksResourceGroupName -NumberOfRecordSets 5 # SOA + 4xA
+                Test-VerifyDnsZone -Name "privatelink.azuredatabricks.net" -ResourceGroupName $databricksResourceGroupName -Tags $expectedTags -NumberOfRecordSets 5 # SOA + 4xA
                 # TODO Role, Lock - How?
 
 
 
-                $tags = @{Owner='Contoso'; CostCenter='123-456-789'}
-                Test-VerifyTagsForResource -ResourceId $databricksResourceId -Tags $tags
+
+                Test-VerifyTagsForResource -ResourceId $databricksResourceId -Tags $expectedTags
 
 
 
@@ -547,56 +542,5 @@ Describe 'Validate Pattern deployment' {
 
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        It 'Check Tags' {
-
-            $tag1 = 'Owner'
-            $tag1Val = 'Contoso'
-            $tag2 = 'CostCenter'
-            $tag2Val = '123-456-789'
-
-            $t = Get-AzTag -ResourceId $resourceId
-            $t.Properties.TagsProperty[$tag1] | Should -Be $tag1Val
-            $t.Properties.TagsProperty[$tag2] | Should -Be $tag2Val
-
-            $t = Get-AzTag -ResourceId $virtualNetworkResourceId
-            $t.Properties.TagsProperty[$tag1] | Should -Be $tag1Val
-            $t.Properties.TagsProperty[$tag2] | Should -Be $tag2Val
-
-            # Existing log has different tags
-            #$t = Get-AzTag -ResourceId $logAnalyticsWorkspaceResourceId
-            #$t.Properties.TagsProperty[$tag1] | Should -Be $tag1Val
-            #$t.Properties.TagsProperty[$tag2] | Should -Be $tag2Val
-
-            $t = Get-AzTag -ResourceId $keyVaultResourceId
-            $t.Properties.TagsProperty[$tag1] | Should -Be $tag1Val
-            $t.Properties.TagsProperty[$tag2] | Should -Be $tag2Val
-
-            $t = Get-AzTag -ResourceId $databricksResourceId
-            $t.Properties.TagsProperty[$tag1] | Should -Be $tag1Val
-            $t.Properties.TagsProperty[$tag2] | Should -Be $tag2Val
-        }
     }
-
-
-
-
-
-
 }
