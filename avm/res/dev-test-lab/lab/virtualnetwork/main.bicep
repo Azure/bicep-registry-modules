@@ -93,5 +93,5 @@ type subnetOverrideType = {
   usePublicIpAddressPermission: 'Allow' | 'Deny' | 'Default'?
 
   @sys.description('Optional. The virtual network pool associated with this subnet.')
-  virtualNetworkPoolName: string
+  virtualNetworkPoolName: string?
 }
