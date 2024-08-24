@@ -3,11 +3,11 @@ param (
     [hashtable] $TestInputData = @{}
 )
 
-. ".\..\..\common.tests.ps1"
-
 Describe 'Validate Pattern deployment' {
 
     BeforeAll {
+
+        . "./../../common.tests.ps1"
 
         $resourceId = $TestInputData.DeploymentOutputs.resourceId.Value
         $name = $TestInputData.DeploymentOutputs.name.Value
