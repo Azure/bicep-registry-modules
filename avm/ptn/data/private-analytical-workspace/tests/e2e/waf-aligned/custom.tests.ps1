@@ -197,10 +197,9 @@ Describe 'Validate Pattern deployment' {
                 $vnetDiagCat = Get-AzDiagnosticSettingCategory -ResourceId $virtualNetworkResourceId
                 $vnetDiagCat | Should -Not -BeNullOrEmpty
                 #$vnetDiagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-
-                $vnetDiagCat.Count | Should -Be 2 # VMProtectionAlerts, AllMetrics
-                $vnetDiagCat[0].Name | Should -BeIn @('VMProtectionAlerts', 'AllMetrics')
-                $vnetDiagCat[1].Name | Should -BeIn @('VMProtectionAlerts', 'AllMetrics')
+                $logs = @('VMProtectionAlerts', 'AllMetrics')
+                $vnetDiagCat.Count | Should -Be $logs.Count
+                for ($i = 0; $i -lt $vnetDiagCat.Count; $i++) { $vnetDiagCat[$i].Name | Should -BeIn $logs }
 
                 $nsgPL = Get-AzResource -ResourceId $vnet.Subnets[0].NetworkSecurityGroup[0].Id | Get-AzNetworkSecurityGroup
                 $nsgPL | Should -Not -BeNullOrEmpty
@@ -225,9 +224,9 @@ Describe 'Validate Pattern deployment' {
                 $nsgDiagCat = Get-AzDiagnosticSettingCategory -ResourceId $nsgPL.Id
                 $nsgDiagCat | Should -Not -BeNullOrEmpty
                 #$nsgDiagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-                $nsgDiagCat.Count | Should -Be 2 # NetworkSecurityGroupEvent, NetworkSecurityGroupRuleCounter
-                $nsgDiagCat[0].Name | Should -BeIn @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
-                $nsgDiagCat[1].Name | Should -BeIn @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
+                $logs = @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
+                $nsgDiagCat.Count | Should -Be $logs.Count
+                for ($i = 0; $i -lt $nsgDiagCat.Count; $i++) { $nsgDiagCat[$i].Name | Should -BeIn $logs }
 
                 $nsgDbwFe = Get-AzResource -ResourceId $vnet.Subnets[1].NetworkSecurityGroup[0].Id | Get-AzNetworkSecurityGroup
                 $nsgDbwFe | Should -Not -BeNullOrEmpty
@@ -252,9 +251,9 @@ Describe 'Validate Pattern deployment' {
                 $nsgDiagCat = Get-AzDiagnosticSettingCategory -ResourceId $nsgDbwFe.Id
                 $nsgDiagCat | Should -Not -BeNullOrEmpty
                 #$nsgDiagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-                $nsgDiagCat.Count | Should -Be 2 # NetworkSecurityGroupEvent, NetworkSecurityGroupRuleCounter
-                $nsgDiagCat[0].Name | Should -BeIn @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
-                $nsgDiagCat[1].Name | Should -BeIn @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
+                $logs = @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
+                $nsgDiagCat.Count | Should -Be $logs.Count
+                for ($i = 0; $i -lt $nsgDiagCat.Count; $i++) { $nsgDiagCat[$i].Name | Should -BeIn $logs }
 
                 $nsgDbwBa = Get-AzResource -ResourceId $vnet.Subnets[2].NetworkSecurityGroup[0].Id | Get-AzNetworkSecurityGroup
                 $nsgDbwBa | Should -Not -BeNullOrEmpty
@@ -279,9 +278,9 @@ Describe 'Validate Pattern deployment' {
                 $nsgDiagCat = Get-AzDiagnosticSettingCategory -ResourceId $nsgDbwBa.Id
                 $nsgDiagCat | Should -Not -BeNullOrEmpty
                 #$nsgDiagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-                $nsgDiagCat.Count | Should -Be 2 # NetworkSecurityGroupEvent, NetworkSecurityGroupRuleCounter
-                $nsgDiagCat[0].Name | Should -BeIn @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
-                $nsgDiagCat[1].Name | Should -BeIn @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
+                $logs = @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
+                $nsgDiagCat.Count | Should -Be $logs.Count
+                for ($i = 0; $i -lt $nsgDiagCat.Count; $i++) { $nsgDiagCat[$i].Name | Should -BeIn $logs }
             }
         }
 
@@ -350,10 +349,9 @@ Describe 'Validate Pattern deployment' {
                 $kvDiagCat = Get-AzDiagnosticSettingCategory -ResourceId $keyVaultResourceId
                 $kvDiagCat | Should -Not -BeNullOrEmpty
                 #$kvDiagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-                $kvDiagCat.Count | Should -Be 3 # AuditEvent, AzurePolicyEvaluationDetails, AllMetrics
-                $kvDiagCat[0].Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
-                $kvDiagCat[1].Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
-                $kvDiagCat[2].Name | Should -BeIn @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
+                $logs = @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
+                $kvDiagCat.Count | Should -Be $logs.Count
+                for ($i = 0; $i -lt $kvDiagCat.Count; $i++) { $kvDiagCat[$i].Name | Should -BeIn $logs }
 
                 $kvPEP = Get-AzPrivateEndpoint -ResourceGroupName $keyVaultResourceGroupName -Name "$($kv.VaultName)-PEP"
                 $kvPEP | Should -Not -BeNullOrEmpty
@@ -363,7 +361,7 @@ Describe 'Validate Pattern deployment' {
                 $kvPEP.PrivateLinkServiceConnections.ProvisioningState | Should -Be "Succeeded"
                 $kvPEP.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $keyVaultResourceId
                 $kvPEP.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
-                $kvPEP.PrivateLinkServiceConnections.GroupIds | Should -Be "vault"
+                $kvPEP.PrivateLinkServiceConnections.GroupIds[0] | Should -Be "vault"
                 $kvPEP.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
                 $kvPEP.Tag.Owner | Should -Be "Contoso"
                 $kvPEP.Tag.CostCenter | Should -Be "123-456-789"
@@ -379,16 +377,6 @@ Describe 'Validate Pattern deployment' {
                 # TODO Role, Lock - How?
             }
         }
-
-
-
-
-
-
-
-
-
-
 
         Context 'Azure Databricks Tests' {
 
@@ -488,17 +476,55 @@ Describe 'Validate Pattern deployment' {
                 $adb.Tag["CostCenter"] | Should -Be "123-456-789"
                 # TODO Role, Lock - How?
 
+                $adbDiag  = Get-AzDiagnosticSetting -ResourceId $databricksResourceId -Name avm-diagnostic-settings
+                $adbDiag | Should -Not -BeNullOrEmpty
+                #$adbDiag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
+                $adbDiag.Type | Should -Be "Microsoft.Insights/diagnosticSettings"
+                $adbDiag.WorkspaceId | Should -Be $logAnalyticsWorkspaceResourceId
 
+                $adbDiagCat = Get-AzDiagnosticSettingCategory -ResourceId $databricksResourceId
+                $adbDiagCat | Should -Not -BeNullOrEmpty
+                #$adbDiagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
+                $logs = @(
+                    'dbfs', 'clusters', 'accounts', 'jobs', 'notebook',
+                    'ssh', 'workspace', 'secrets', 'sqlPermissions', 'instancePools',
+                    'sqlanalytics', 'genie', 'globalInitScripts', 'iamRole', 'mlflowExperiment',
+                    'featureStore', 'RemoteHistoryService', 'mlflowAcledArtifact', 'databrickssql', 'deltaPipelines',
+                    'modelRegistry', 'repos', 'unityCatalog', 'gitCredentials', 'webTerminal',
+                    'serverlessRealTimeInference', 'clusterLibraries', 'partnerHub', 'clamAVScan', 'capsule8Dataplane',
+                    'BrickStoreHttpGateway', 'Dashboards', 'CloudStorageMetadata', 'PredictiveOptimization', 'DataMonitoring',
+                    'Ingestion', 'MarketplaceConsumer', 'LineageTracking'
+                    )
+                $adbDiagCat.Count | Should -Be $logs.Count
+                for ($i = 0; $i -lt $adbDiagCat.Count; $i++) { $adbDiagCat[$i].Name | Should -BeIn $logs }
 
+                $adbAuthPEP = Get-AzPrivateEndpoint -ResourceGroupName $databricksResourceGroupName -Name "$($databricksName)-auth-PEP"
+                $adbAuthPEP | Should -Not -BeNullOrEmpty
+                $adbAuthPEP.ProvisioningState | Should -Be "Succeeded"
+                $adbAuthPEP.Subnet.Id | Should -Be "$($virtualNetworkResourceId)/subnets/private-link-subnet"
+                $adbAuthPEP.NetworkInterfaces.Count | Should -Be 1
+                $adbAuthPEP.PrivateLinkServiceConnections.ProvisioningState | Should -Be "Succeeded"
+                $adbAuthPEP.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $databricksResourceId
+                $adbAuthPEP.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
+                $adbAuthPEP.PrivateLinkServiceConnections.GroupIds[0] | Should -Be "browser_authentication"
+                $adbAuthPEP.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
+                $adbAuthPEP.Tag.Owner | Should -Be "Contoso"
+                $adbAuthPEP.Tag.CostCenter | Should -Be "123-456-789"
+                # TODO Role, Lock - How?
 
-
-
-
-                #KV pubacc, ACL pub ip
-                #$log | Format-List
-
-
-
+                $adbUiPEP = Get-AzPrivateEndpoint -ResourceGroupName $databricksResourceGroupName -Name "$($databricksName)-ui-PEP"
+                $adbUiPEP | Should -Not -BeNullOrEmpty
+                $adbUiPEP.ProvisioningState | Should -Be "Succeeded"
+                $adbUiPEP.Subnet.Id | Should -Be "$($virtualNetworkResourceId)/subnets/private-link-subnet"
+                $adbUiPEP.NetworkInterfaces.Count | Should -Be 1
+                $adbUiPEP.PrivateLinkServiceConnections.ProvisioningState | Should -Be "Succeeded"
+                $adbUiPEP.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $databricksResourceId
+                $adbUiPEP.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
+                $adbUiPEP.PrivateLinkServiceConnections.GroupIds[0] | Should -Be "databricks_ui_api"
+                $adbUiPEP.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
+                $adbUiPEP.Tag.Owner | Should -Be "Contoso"
+                $adbUiPEP.Tag.CostCenter | Should -Be "123-456-789"
+                # TODO Role, Lock - How?
 
                 $adbZone = Get-AzPrivateDnsZone -ResourceGroupName $databricksResourceGroupName -Name "privatelink.azuredatabricks.net"
                 $adbZone | Should -Not -BeNullOrEmpty
@@ -507,23 +533,15 @@ Describe 'Validate Pattern deployment' {
                 $adbZone.NumberOfVirtualNetworkLinks | Should -Be 1
                 $adbZone.Tags.Owner | Should -Be "Contoso"
                 $adbZone.Tags.CostCenter | Should -Be "123-456-789"
+                # TODO Role, Lock - How?
 
 
 
 
-                $adbAuthPEP = Get-AzPrivateEndpoint -ResourceGroupName $databricksResourceGroupName -Name "$($databricksName)-auth-PEP"
-                $adbAuthPEP | Should -Not -BeNullOrEmpty
-                $adbAuthPEP.ProvisioningState | Should -Be "Succeeded"
-                # $adbAuthPEP TODO - do more checks
-
-                $adbUiPEP = Get-AzPrivateEndpoint -ResourceGroupName $databricksResourceGroupName -Name "$($databricksName)-ui-PEP"
-                $adbUiPEP | Should -Not -BeNullOrEmpty
-                $adbUiPEP.ProvisioningState | Should -Be "Succeeded"
-                # $adbUiPEP TODO - do more checks
 
 
-#TODO Diag
-
+                #KV pubacc, ACL pub ip
+                #$log | Format-List
 
                 #kvIpRules
                 #dbwIpRules
