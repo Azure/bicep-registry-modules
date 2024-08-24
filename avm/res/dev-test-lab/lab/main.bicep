@@ -94,7 +94,7 @@ param encryptionType string = 'EncryptionAtRestWithPlatformKey'
 param encryptionDiskEncryptionSetId string = ''
 
 @description('Optional. Virtual networks to create for the lab.')
-param virtualnetworks array = []
+param virtualnetworks virtualNetworkType
 
 @description('Optional. Policies to create for the lab.')
 param policies array = []
@@ -106,7 +106,7 @@ param schedules array = []
 param notificationchannels array = []
 
 @description('Optional. Artifact sources to create for the lab.')
-param artifactsources artifactsourcesType = []
+param artifactsources artifactsourcesType
 
 @description('Optional. Costs to create for the lab.')
 param costs object = {}
@@ -444,4 +444,25 @@ type artifactsourcesType = {
   @description('Optional. The security token to authenticate to the artifact source.')
   @secure()
   securityToken: string?
+}[]
+
+import { allowedSubnetType, subnetOverrideType } from 'virtualnetwork/main.bicep'
+type virtualNetworkType = {
+  @description('Required. The name of the virtual network.')
+  name: string
+
+  @description('Optional. The tags of the virtual network.')
+  tags: object?
+
+  @description('Required. The external provider resource ID of the virtual network.')
+  externalProviderResourceId: string
+
+  @description('Optional. The description of the virtual network.')
+  description: string?
+
+  @description('Optional. The allowed subnets of the virtual network.')
+  allowedSubnets: allowedSubnetType[]
+
+  @description('Optional. The subnet overrides of the virtual network.')
+  subnetOverrides: subnetOverrideType[]
 }[]
