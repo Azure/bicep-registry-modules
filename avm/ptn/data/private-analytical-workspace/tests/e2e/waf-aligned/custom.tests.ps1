@@ -361,7 +361,7 @@ Describe 'Validate Pattern deployment' {
                 $kvPEP.PrivateLinkServiceConnections.ProvisioningState | Should -Be "Succeeded"
                 $kvPEP.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $keyVaultResourceId
                 $kvPEP.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
-                $kvPEP.PrivateLinkServiceConnections.GroupIds[0] | Should -Be "vault"
+                $kvPEP.PrivateLinkServiceConnections.GroupIds | Should -Be "vault"
                 $kvPEP.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
                 $kvPEP.Tag.Owner | Should -Be "Contoso"
                 $kvPEP.Tag.CostCenter | Should -Be "123-456-789"
@@ -506,7 +506,7 @@ Describe 'Validate Pattern deployment' {
                 $adbAuthPEP.PrivateLinkServiceConnections.ProvisioningState | Should -Be "Succeeded"
                 $adbAuthPEP.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $databricksResourceId
                 $adbAuthPEP.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
-                $adbAuthPEP.PrivateLinkServiceConnections.GroupIds[0] | Should -Be "browser_authentication"
+                $adbAuthPEP.PrivateLinkServiceConnections.GroupIds | Should -Be "browser_authentication"
                 $adbAuthPEP.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
                 $adbAuthPEP.Tag.Owner | Should -Be "Contoso"
                 $adbAuthPEP.Tag.CostCenter | Should -Be "123-456-789"
@@ -520,7 +520,7 @@ Describe 'Validate Pattern deployment' {
                 $adbUiPEP.PrivateLinkServiceConnections.ProvisioningState | Should -Be "Succeeded"
                 $adbUiPEP.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $databricksResourceId
                 $adbUiPEP.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
-                $adbUiPEP.PrivateLinkServiceConnections.GroupIds[0] | Should -Be "databricks_ui_api"
+                $adbUiPEP.PrivateLinkServiceConnections.GroupIds | Should -Be "databricks_ui_api"
                 $adbUiPEP.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
                 $adbUiPEP.Tag.Owner | Should -Be "Contoso"
                 $adbUiPEP.Tag.CostCenter | Should -Be "123-456-789"
