@@ -1,4 +1,4 @@
-Function Test-VerifyTagsForResource($ResourceId, $Tags)
+function Test-VerifyTagsForResource($ResourceId, $Tags)
 {
     $t = Get-AzTag -ResourceId $ResourceId
     $t | Should -Not -BeNullOrEmpty
@@ -8,7 +8,7 @@ Function Test-VerifyTagsForResource($ResourceId, $Tags)
     }
 }
 
-Function Test-VerifyDnsZone($Name, $ResourceGroupName, $NumberOfRecordSets)
+function Test-VerifyDnsZone($Name, $ResourceGroupName, $NumberOfRecordSets)
 {
     $z = Get-AzPrivateDnsZone -ResourceGroupName $ResourceGroupName -Name $Name
     $z | Should -Not -BeNullOrEmpty
