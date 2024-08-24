@@ -1,9 +1,9 @@
-. "$PSScriptRoot\..\common.tests.ps1"
-
 param (
     [Parameter(Mandatory = $false)]
     [hashtable] $TestInputData = @{}
 )
+
+. ".\..\..\common.tests.ps1"
 
 Describe 'Validate Pattern deployment' {
 
@@ -533,6 +533,8 @@ Describe 'Validate Pattern deployment' {
 
 
 
+                $tags = @{Owner='Contoso'; CostCenter='123-456-789'}
+                Test-VerifyTagsForResource -ResourceId $databricksResourceId -Tags $tags
 
 
 
