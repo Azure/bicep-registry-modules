@@ -1,3 +1,5 @@
+. "$PSScriptRoot\..\common.tests.ps1"
+
 param (
     [Parameter(Mandatory = $false)]
     [hashtable] $TestInputData = @{}
@@ -526,13 +528,7 @@ Describe 'Validate Pattern deployment' {
                 $adbUiPEP.Tag.CostCenter | Should -Be "123-456-789"
                 # TODO Role, Lock - How?
 
-                $adbZone = Get-AzPrivateDnsZone -ResourceGroupName $databricksResourceGroupName -Name "privatelink.azuredatabricks.net"
-                $adbZone | Should -Not -BeNullOrEmpty
-                #$adbZone.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-                $adbZone.NumberOfRecordSets | Should -Be 5 # SOA + 4xA
-                $adbZone.NumberOfVirtualNetworkLinks | Should -Be 1
-                $adbZone.Tags.Owner | Should -Be "Contoso"
-                $adbZone.Tags.CostCenter | Should -Be "123-456-789"
+                Test-VerifyDnsZone -Name "privatelink.azuredatabricks.net" -ResourceGroupName $databricksResourceGroupName -NumberOfRecordSets 5 # SOA + 4xA
                 # TODO Role, Lock - How?
 
 
