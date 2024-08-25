@@ -187,7 +187,7 @@ function Test-VerifyLogAnalyticsWorkspace($LogAnalyticsWorkspaceResourceGroupNam
     return $log
 }
 
-function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $LogAnalyticsWorkspaceResourceId, $Sku, $RetentionInDays, $PEPName, $NumberOfRecordSets, $SubnetName, $PublicNetworkAccess) {
+function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $LogAnalyticsWorkspaceResourceId, $Sku, $RetentionInDays, $PEPName, $NumberOfRecordSets, $SubnetName, $PublicNetworkAccess, $IpAddressRanges) {
     $kv = Get-AzKeyVault -ResourceGroupName $KeyVaultResourceGroupName -VaultName $KeyVaultName
     $kv | Should -Not -BeNullOrEmpty
     #$kv.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
@@ -203,7 +203,15 @@ function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $
     $kv.AccessPolicies | Should -BeNullOrEmpty
     $kv.NetworkAcls.DefaultAction | Should -Be 'Deny'
     $kv.NetworkAcls.Bypass | Should -Be 'None'
-    $kv.NetworkAcls.IpAddressRanges | Should -BeNullOrEmpty
+    if ( $IpAddressRanges -eq $null ) { $kv.NetworkAcls.IpAddressRanges | Should -BeNullOrEmpty }
+    else {
+        $kv.NetworkAcls.IpAddressRanges.Count | Should -Be $IpAddressRanges.Count
+
+        foreach ($ip in $IpAddressRanges) {
+            $kv.NetworkAcls.IpAddressRanges[$IpAddressRanges.IndexOf($ip)] | Should -Be $ip
+        }
+    }
+
     $kv.NetworkAcls.VirtualNetworkResourceIds | Should -BeNullOrEmpty
 
     Test-VerifyTagsForResource -ResourceId $kv.ResourceId -Tags $Tags

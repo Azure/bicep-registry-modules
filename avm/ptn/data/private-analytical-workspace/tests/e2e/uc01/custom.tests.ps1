@@ -105,7 +105,7 @@ Describe 'Validate Pattern deployment' {
 
                 Test-VerifyKeyVault -KeyVaultResourceGroupName $keyVaultResourceGroupName -KeyVaultName $keyVaultName -Tags $expectedTags `
                     -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku 'Premium' -RetentionInDays 90 -PEPName '-PEP' `
-                    -NumberOfRecordSets 2 -SubnetName 'private-link-subnet' -PublicNetworkAccess 'Enabled'
+                    -NumberOfRecordSets 2 -SubnetName 'private-link-subnet' -PublicNetworkAccess 'Enabled' -IpAddressRanges @('104.43.16.94/32')
             }
         }
 
