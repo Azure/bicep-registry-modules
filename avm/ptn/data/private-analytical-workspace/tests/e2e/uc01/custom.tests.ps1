@@ -8,7 +8,7 @@ Describe 'Validate Pattern deployment' {
     BeforeAll {
 
         . $PSScriptRoot/../../common.tests.ps1
-        $expectedTags = @{Owner='Contoso'; CostCenter='123-456-789'}
+        $expectedTags = @{Owner = 'Contoso'; CostCenter = '123-456-789' }
 
         $resourceId = $TestInputData.DeploymentOutputs.resourceId.Value
         $name = $TestInputData.DeploymentOutputs.name.Value
@@ -43,11 +43,11 @@ Describe 'Validate Pattern deployment' {
 
         It 'Check Output Variables' {
 
-            Test-VerifyOutputVariables -ResourceId $resourceId -Name $name -Location $location -ResourceGroupName $resourceGroupName
-            Test-VerifyOutputVariables -ResourceId $virtualNetworkResourceId -Name $virtualNetworkName -Location $virtualNetworkLocation -ResourceGroupName $virtualNetworkResourceGroupName
-            Test-VerifyOutputVariables -ResourceId $logAnalyticsWorkspaceResourceId -Name $logAnalyticsWorkspaceName -Location $logAnalyticsWorkspaceLocation -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName
-            Test-VerifyOutputVariables -ResourceId $keyVaultResourceId -Name $keyVaultName -Location $keyVaultLocation -ResourceGroupName $keyVaultResourceGroupName
-            Test-VerifyOutputVariables -ResourceId $databricksResourceId -Name $databricksName -Location $databricksLocation -ResourceGroupName $databricksResourceGroupName
+            Test-VerifyOutputVariables -ResourceId $resourceId -name $name -Location $location -ResourceGroupName $resourceGroupName
+            Test-VerifyOutputVariables -ResourceId $virtualNetworkResourceId -name $virtualNetworkName -Location $virtualNetworkLocation -ResourceGroupName $virtualNetworkResourceGroupName
+            Test-VerifyOutputVariables -ResourceId $logAnalyticsWorkspaceResourceId -name $logAnalyticsWorkspaceName -Location $logAnalyticsWorkspaceLocation -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName
+            Test-VerifyOutputVariables -ResourceId $keyVaultResourceId -name $keyVaultName -Location $keyVaultLocation -ResourceGroupName $keyVaultResourceGroupName
+            Test-VerifyOutputVariables -ResourceId $databricksResourceId -name $databricksName -Location $databricksLocation -ResourceGroupName $databricksResourceGroupName
         }
 
         Context 'Network - Azure Virtual Network Tests' {
@@ -58,28 +58,28 @@ Describe 'Validate Pattern deployment' {
             It 'Check Azure Virtual Network' {
 
                 $vnet = Test-VerifyVirtualNetwork -VirtualNetworkResourceGroupName $virtualNetworkResourceGroupName -VirtualNetworkName $virtualNetworkName `
-                    -Tags $expectedTags -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -AddressPrefix "192.168.224.0/19" -NumberOfSubnets 3
+                    -Tags $expectedTags -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -AddressPrefix '192.168.224.0/19' -NumberOfSubnets 3
 
-                Test-VerifySubnet -Subnet $vnet.Subnets[0] -SubnetName "private-link-subnet" -SubnetAddressPrefix "192.168.224.0/24" `
+                Test-VerifySubnet -Subnet $vnet.Subnets[0] -SubnetName 'private-link-subnet' -SubnetAddressPrefix '192.168.224.0/24' `
                     -NumberOfSecurityGroups 1 -NumberOfPrivateEndpoints 3 -NumberOfIpConfigurations 5 -DelegationServiceName $null
 
-                Test-VerifySubnet -Subnet $vnet.Subnets[1] -SubnetName "dbw-frontend-subnet" -SubnetAddressPrefix "192.168.228.0/23" `
-                    -NumberOfSecurityGroups 1 -NumberOfPrivateEndpoints $null -NumberOfIpConfigurations $null -DelegationServiceName "Microsoft.Databricks/workspaces"
+                Test-VerifySubnet -Subnet $vnet.Subnets[1] -SubnetName 'dbw-frontend-subnet' -SubnetAddressPrefix '192.168.228.0/23' `
+                    -NumberOfSecurityGroups 1 -NumberOfPrivateEndpoints $null -NumberOfIpConfigurations $null -DelegationServiceName 'Microsoft.Databricks/workspaces'
 
-                Test-VerifySubnet -Subnet $vnet.Subnets[2] -SubnetName "dbw-backend-subnet" -SubnetAddressPrefix "192.168.230.0/23" `
-                    -NumberOfSecurityGroups 1 -NumberOfPrivateEndpoints $null -NumberOfIpConfigurations $null -DelegationServiceName "Microsoft.Databricks/workspaces"
+                Test-VerifySubnet -Subnet $vnet.Subnets[2] -SubnetName 'dbw-backend-subnet' -SubnetAddressPrefix '192.168.230.0/23' `
+                    -NumberOfSecurityGroups 1 -NumberOfPrivateEndpoints $null -NumberOfIpConfigurations $null -DelegationServiceName 'Microsoft.Databricks/workspaces'
 
                 $nsgLogs = @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
                 Test-VerifyNetworkSecurityGroup -NetworkSecurityGroupResourceId $vnet.Subnets[0].NetworkSecurityGroup[0].Id `
-                    -Tags $expectedTags -VirtualNetworkResourceId $virtualNetworkResourceId -SubnetName "private-link-subnet" `
+                    -Tags $expectedTags -VirtualNetworkResourceId $virtualNetworkResourceId -SubnetName 'private-link-subnet' `
                     -NumberOfSecurityRules 1 -NumberOfDefaultSecurityRules 6 -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $nsgLogs
 
                 Test-VerifyNetworkSecurityGroup -NetworkSecurityGroupResourceId $vnet.Subnets[1].NetworkSecurityGroup[0].Id `
-                    -Tags $expectedTags -VirtualNetworkResourceId $virtualNetworkResourceId -SubnetName "dbw-frontend-subnet" `
+                    -Tags $expectedTags -VirtualNetworkResourceId $virtualNetworkResourceId -SubnetName 'dbw-frontend-subnet' `
                     -NumberOfSecurityRules 7 -NumberOfDefaultSecurityRules 6 -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $nsgLogs
 
                 Test-VerifyNetworkSecurityGroup -NetworkSecurityGroupResourceId $vnet.Subnets[2].NetworkSecurityGroup[0].Id `
-                    -Tags $expectedTags -VirtualNetworkResourceId $virtualNetworkResourceId -SubnetName "dbw-backend-subnet" `
+                    -Tags $expectedTags -VirtualNetworkResourceId $virtualNetworkResourceId -SubnetName 'dbw-backend-subnet' `
                     -NumberOfSecurityRules 7 -NumberOfDefaultSecurityRules 6 -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $nsgLogs
             }
         }
@@ -92,7 +92,7 @@ Describe 'Validate Pattern deployment' {
             It 'Check Azure Log Analytics Workspace' {
 
                 Test-VerifyLogAnalyticsWorkspace -LogAnalyticsWorkspaceResourceGroupName $logAnalyticsWorkspaceResourceGroupName `
-                    -LogAnalyticsWorkspaceName $logAnalyticsWorkspaceName -Tags $expectedTags -Sku "PerGB2018" -RetentionInDays 35 -DailyQuotaGb 1
+                    -LogAnalyticsWorkspaceName $logAnalyticsWorkspaceName -Tags $expectedTags -Sku 'PerGB2018' -RetentionInDays 365 -DailyQuotaGb 1
             }
         }
 
@@ -104,7 +104,7 @@ Describe 'Validate Pattern deployment' {
             It 'Check Azure Key Vault' {
 
                 Test-VerifyKeyVault -KeyVaultResourceGroupName $keyVaultResourceGroupName -KeyVaultName $keyVaultName -Tags $expectedTags `
-                    -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku "Standard" -RetentionInDays 90 -PEPName "-PEP" -NumberOfRecordSets 2 -SubnetName "private-link-subnet"
+                    -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku 'Premium' -RetentionInDays 90 -PEPName '-PEP' -NumberOfRecordSets 2 -SubnetName 'private-link-subnet'
             }
         }
 
@@ -116,9 +116,9 @@ Describe 'Validate Pattern deployment' {
             It 'Check Azure Databricks' {
 
                 Test-VerifyDatabricks -DatabricksResourceGroupName $databricksResourceGroupName -DatabricksName $databricksName -Tags $expectedTags `
-                    -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku "premium" -VirtualNetworkResourceId $virtualNetworkResourceId `
-                    -PrivateSubnetName "dbw-backend-subnet" -PublicSubnetName "dbw-frontend-subnet" -PEPName1 "-auth-PEP" -PEPName2 "-ui-PEP" `
-                    -NumberOfRecordSets 5 -PLSubnetName "private-link-subnet"
+                    -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku 'premium' -VirtualNetworkResourceId $virtualNetworkResourceId `
+                    -PrivateSubnetName 'dbw-backend-subnet' -PublicSubnetName 'dbw-frontend-subnet' -PEPName1 '-auth-PEP' -PEPName2 '-ui-PEP' `
+                    -NumberOfRecordSets 5 -PLSubnetName 'private-link-subnet' -PublicNetworkAccess 'Enabled'
 
 
 

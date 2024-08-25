@@ -1,15 +1,12 @@
-function Test-VerifyLock($ResourceId)
-{
+function Test-VerifyLock($ResourceId) {
     # TODO: Not Implemented Yet - How to test it?
 }
 
-function Test-VerifyRoleAssignment($ResourceId)
-{
+function Test-VerifyRoleAssignment($ResourceId) {
     # TODO: Not Implemented Yet - How to test it?
 }
 
-function Test-VerifyOutputVariables($ResourceId, $Name, $Location, $ResourceGroupName)
-{
+function Test-VerifyOutputVariables($ResourceId, $Name, $Location, $ResourceGroupName) {
     $ResourceId | Should -Not -BeNullOrEmpty
     $Name | Should -Not -BeNullOrEmpty
     $Location | Should -Not -BeNullOrEmpty
@@ -22,22 +19,19 @@ function Test-VerifyOutputVariables($ResourceId, $Name, $Location, $ResourceGrou
     $r.ResourceGroupName | Should -Be $ResourceGroupName
 }
 
-function Test-VerifyTagsForResource($ResourceId, $Tags)
-{
+function Test-VerifyTagsForResource($ResourceId, $Tags) {
     $t = Get-AzTag -ResourceId $ResourceId
     $t | Should -Not -BeNullOrEmpty
-    foreach ($key in $Tags.Keys)
-    {
+    foreach ($key in $Tags.Keys) {
         $t.Properties.TagsProperty[$key] | Should -Be $Tags[$key]
     }
 }
 
-function Test-VerifyDiagSettings($ResourceId, $LogAnalyticsWorkspaceResourceId, $Logs)
-{
-    $diag  = Get-AzDiagnosticSetting -ResourceId $ResourceId -Name avm-diagnostic-settings
+function Test-VerifyDiagSettings($ResourceId, $LogAnalyticsWorkspaceResourceId, $Logs) {
+    $diag = Get-AzDiagnosticSetting -ResourceId $ResourceId -Name avm-diagnostic-settings
     $diag | Should -Not -BeNullOrEmpty
     #$diag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-    $diag.Type | Should -Be "Microsoft.Insights/diagnosticSettings"
+    $diag.Type | Should -Be 'Microsoft.Insights/diagnosticSettings'
     $diag.WorkspaceId | Should -Be $LogAnalyticsWorkspaceResourceId
 
     $diagCat = Get-AzDiagnosticSettingCategory -ResourceId $ResourceId
@@ -47,11 +41,10 @@ function Test-VerifyDiagSettings($ResourceId, $LogAnalyticsWorkspaceResourceId, 
     for ($i = 0; $i -lt $diagCat.Count; $i++) { $diagCat[$i].Name | Should -BeIn $Logs }
 }
 
-function Test-VerifyVirtualNetwork($VirtualNetworkResourceGroupName, $VirtualNetworkName, $Tags, $LogAnalyticsWorkspaceResourceId, $AddressPrefix, $NumberOfSubnets)
-{
+function Test-VerifyVirtualNetwork($VirtualNetworkResourceGroupName, $VirtualNetworkName, $Tags, $LogAnalyticsWorkspaceResourceId, $AddressPrefix, $NumberOfSubnets) {
     $vnet = Get-AzVirtualNetwork -ResourceGroupName $VirtualNetworkResourceGroupName -Name $VirtualNetworkName
     $vnet | Should -Not -BeNullOrEmpty
-    $vnet.ProvisioningState | Should -Be "Succeeded"
+    $vnet.ProvisioningState | Should -Be 'Succeeded'
     $vnet.AddressSpace.Count | Should -Be 1
     $vnet.AddressSpace[0].AddressPrefixes.Count | Should -Be 1
     $vnet.AddressSpace[0].AddressPrefixes[0] | Should -Be $AddressPrefix
@@ -77,12 +70,11 @@ function Test-VerifyVirtualNetwork($VirtualNetworkResourceGroupName, $VirtualNet
     return $vnet
 }
 
-function Test-VerifySubnet($Subnet, $SubnetName, $SubnetAddressPrefix, $NumberOfSecurityGroups, $NumberOfPrivateEndpoints, $NumberOfIpConfigurations, $DelegationServiceName)
-{
-    $Subnet.ProvisioningState | Should -Be "Succeeded"
+function Test-VerifySubnet($Subnet, $SubnetName, $SubnetAddressPrefix, $NumberOfSecurityGroups, $NumberOfPrivateEndpoints, $NumberOfIpConfigurations, $DelegationServiceName) {
+    $Subnet.ProvisioningState | Should -Be 'Succeeded'
     $Subnet.Name | Should -Be $SubnetName
-    $Subnet.PrivateEndpointNetworkPolicies | Should -Be "Disabled"
-    $Subnet.PrivateLinkServiceNetworkPolicies | Should -Be "Enabled"
+    $Subnet.PrivateEndpointNetworkPolicies | Should -Be 'Disabled'
+    $Subnet.PrivateLinkServiceNetworkPolicies | Should -Be 'Enabled'
     $Subnet.AddressPrefix.Count | Should -Be 1
     $Subnet.AddressPrefix[0] | Should -Be $SubnetAddressPrefix
     $Subnet.NetworkSecurityGroup.Count | Should -Be $NumberOfSecurityGroups
@@ -99,10 +91,9 @@ function Test-VerifySubnet($Subnet, $SubnetName, $SubnetAddressPrefix, $NumberOf
     $Subnet.ServiceEndpointPolicies | Should -BeNullOrEmpty
 
     if ( $DelegationServiceName -eq $null ) { $Subnet.Delegations | Should -BeNullOrEmpty }
-    else
-    {
+    else {
         $Subnet.Delegations.Count | Should -Be 1
-        $Subnet.Delegations[0].ProvisioningState | Should -Be "Succeeded"
+        $Subnet.Delegations[0].ProvisioningState | Should -Be 'Succeeded'
         $Subnet.Delegations[0].ServiceName | Should -Be $DelegationServiceName
     }
 
@@ -114,12 +105,11 @@ function Test-VerifySubnet($Subnet, $SubnetName, $SubnetAddressPrefix, $NumberOf
     return $Subnet
 }
 
-function Test-VerifyNetworkSecurityGroup($NetworkSecurityGroupResourceId, $Tags, $VirtualNetworkResourceId, $SubnetName, $NumberOfSecurityRules, $NumberOfDefaultSecurityRules, $LogAnalyticsWorkspaceResourceId, $Logs)
-{
+function Test-VerifyNetworkSecurityGroup($NetworkSecurityGroupResourceId, $Tags, $VirtualNetworkResourceId, $SubnetName, $NumberOfSecurityRules, $NumberOfDefaultSecurityRules, $LogAnalyticsWorkspaceResourceId, $Logs) {
     # TODO: Do we have to check for specific rules?
     $nsg = Get-AzResource -ResourceId $NetworkSecurityGroupResourceId | Get-AzNetworkSecurityGroup
     $nsg | Should -Not -BeNullOrEmpty
-    $nsg.ProvisioningState | Should -Be "Succeeded"
+    $nsg.ProvisioningState | Should -Be 'Succeeded'
     $nsg.FlushConnection | Should -Be $false
     $nsg.NetworkInterfaces | Should -BeNullOrEmpty
     $nsg.SecurityRules.Count | Should -Be $NumberOfSecurityRules
@@ -136,8 +126,7 @@ function Test-VerifyNetworkSecurityGroup($NetworkSecurityGroupResourceId, $Tags,
     return $nsg
 }
 
-function Test-VerifyDnsZone($Name, $ResourceGroupName, $Tags, $NumberOfRecordSets)
-{
+function Test-VerifyDnsZone($Name, $ResourceGroupName, $Tags, $NumberOfRecordSets) {
     $z = Get-AzPrivateDnsZone -ResourceGroupName $ResourceGroupName -Name $Name
     $z | Should -Not -BeNullOrEmpty
     #$z.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
@@ -152,18 +141,17 @@ function Test-VerifyDnsZone($Name, $ResourceGroupName, $Tags, $NumberOfRecordSet
     return $z
 }
 
-function Test-VerifyPrivateEndpoint($Name, $ResourceGroupName, $Tags, $SubnetName, $ServiceId, $GroupId)
-{
+function Test-VerifyPrivateEndpoint($Name, $ResourceGroupName, $Tags, $SubnetName, $ServiceId, $GroupId) {
     $pep = Get-AzPrivateEndpoint -ResourceGroupName $ResourceGroupName -Name $Name
     $pep | Should -Not -BeNullOrEmpty
-    $pep.ProvisioningState | Should -Be "Succeeded"
+    $pep.ProvisioningState | Should -Be 'Succeeded'
     $pep.Subnet.Id | Should -Be "$($virtualNetworkResourceId)/subnets/$($SubnetName)"
     $pep.NetworkInterfaces.Count | Should -Be 1
-    $pep.PrivateLinkServiceConnections.ProvisioningState | Should -Be "Succeeded"
+    $pep.PrivateLinkServiceConnections.ProvisioningState | Should -Be 'Succeeded'
     $pep.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $ServiceId
     $pep.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
     $pep.PrivateLinkServiceConnections.GroupIds | Should -Be $GroupId
-    $pep.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
+    $pep.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be 'Approved'
 
     Test-VerifyTagsForResource -ResourceId $pep.Id -Tags $Tags
 
@@ -173,18 +161,17 @@ function Test-VerifyPrivateEndpoint($Name, $ResourceGroupName, $Tags, $SubnetNam
     return $pep
 }
 
-function Test-VerifyLogAnalyticsWorkspace($LogAnalyticsWorkspaceResourceGroupName, $LogAnalyticsWorkspaceName, $Tags, $Sku, $RetentionInDays, $DailyQuotaGb)
-{
+function Test-VerifyLogAnalyticsWorkspace($LogAnalyticsWorkspaceResourceGroupName, $LogAnalyticsWorkspaceName, $Tags, $Sku, $RetentionInDays, $DailyQuotaGb) {
     $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $LogAnalyticsWorkspaceResourceGroupName -name $LogAnalyticsWorkspaceName
     $log | Should -Not -BeNullOrEmpty
-    $log.ProvisioningState | Should -Be "Succeeded"
+    $log.ProvisioningState | Should -Be 'Succeeded'
     $log.Sku | Should -Be $Sku
     $log.RetentionInDays | Should -Be $RetentionInDays
     $log.WorkspaceCapping.DailyQuotaGb | Should -Be $DailyQuotaGb
     $log.WorkspaceCapping.DataIngestionStatus | Should -Be 'RespectQuota'
     $log.CapacityReservationLevel | Should -BeNullOrEmpty
-    $log.PublicNetworkAccessForIngestion | Should -Be "Enabled"
-    $log.PublicNetworkAccessForQuery | Should -Be "Enabled"
+    $log.PublicNetworkAccessForIngestion | Should -Be 'Enabled'
+    $log.PublicNetworkAccessForQuery | Should -Be 'Enabled'
     $log.ForceCmkForQuery | Should -Be $true
     $log.PrivateLinkScopedResources | Should -BeNullOrEmpty
     $log.DefaultDataCollectionRuleResourceId | Should -BeNullOrEmpty
@@ -200,8 +187,7 @@ function Test-VerifyLogAnalyticsWorkspace($LogAnalyticsWorkspaceResourceGroupNam
     return $log
 }
 
-function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $LogAnalyticsWorkspaceResourceId, $Sku, $RetentionInDays, $PEPName, $NumberOfRecordSets, $SubnetName)
-{
+function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $LogAnalyticsWorkspaceResourceId, $Sku, $RetentionInDays, $PEPName, $NumberOfRecordSets, $SubnetName) {
     $kv = Get-AzKeyVault -ResourceGroupName $KeyVaultResourceGroupName -VaultName $KeyVaultName
     $kv | Should -Not -BeNullOrEmpty
     #$kv.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
@@ -225,9 +211,9 @@ function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $
     $logs = @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
     Test-VerifyDiagSettings -ResourceId $kv.ResourceId -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId -Logs $logs
 
-    Test-VerifyPrivateEndpoint -Name "$($kv.VaultName)$($PEPName)" -ResourceGroupName $KeyVaultResourceGroupName -Tags $Tags -SubnetName $SubnetName -ServiceId $kv.ResourceId -GroupId "vault"
+    Test-VerifyPrivateEndpoint -Name "$($kv.VaultName)$($PEPName)" -ResourceGroupName $KeyVaultResourceGroupName -Tags $Tags -SubnetName $SubnetName -ServiceId $kv.ResourceId -GroupId 'vault'
 
-    Test-VerifyDnsZone -Name "privatelink.vaultcore.azure.net" -ResourceGroupName $KeyVaultResourceGroupName -Tags $Tags -NumberOfRecordSets $NumberOfRecordSets
+    Test-VerifyDnsZone -Name 'privatelink.vaultcore.azure.net' -ResourceGroupName $KeyVaultResourceGroupName -Tags $Tags -NumberOfRecordSets $NumberOfRecordSets
 
     Test-VerifyLock -ResourceId $kv.ResourceId
     Test-VerifyRoleAssignment -ResourceId $kv.ResourceId
@@ -235,11 +221,10 @@ function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $
     return $kv
 }
 
-function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $Tags, $LogAnalyticsWorkspaceResourceId, $Sku, $VirtualNetworkResourceId, $PrivateSubnetName, $PublicSubnetName, $PEPName1, $PEPName2, $NumberOfRecordSets, $PLSubnetName)
-{
+function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $Tags, $LogAnalyticsWorkspaceResourceId, $Sku, $VirtualNetworkResourceId, $PrivateSubnetName, $PublicSubnetName, $PEPName1, $PEPName2, $NumberOfRecordSets, $PLSubnetName, $PublicNetworkAccess) {
     $adb = Get-AzDatabricksWorkspace -ResourceGroupName $DatabricksResourceGroupName -Name $DatabricksName
     $adb | Should -Not -BeNullOrEmpty
-    $adb.ProvisioningState | Should -Be "Succeeded"
+    $adb.ProvisioningState | Should -Be 'Succeeded'
     $adb.AccessConnectorId | Should -BeNullOrEmpty
     $adb.AccessConnectorIdentityType | Should -BeNullOrEmpty
     $adb.AccessConnectorUserAssignedIdentityId | Should -BeNullOrEmpty
@@ -250,18 +235,18 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     $adb.ComplianceSecurityProfileComplianceStandard | Should -BeNullOrEmpty
     $adb.ComplianceSecurityProfileValue | Should -BeNullOrEmpty
     #Skip $adb.CreatedByApplicationId, $adb.CreatedByOid, $adb.CreatedByPuid, $adb.CreatedDateTime,
-    $adb.CustomPrivateSubnetNameType | Should -Be "String"
+    $adb.CustomPrivateSubnetNameType | Should -Be 'String'
     $adb.CustomPrivateSubnetNameValue | Should -Be $PrivateSubnetName
-    $adb.CustomPublicSubnetNameType | Should -Be "String"
+    $adb.CustomPublicSubnetNameType | Should -Be 'String'
     $adb.CustomPublicSubnetNameValue | Should -Be $PublicSubnetName
-    $adb.CustomVirtualNetworkIdType | Should -Be "String"
+    $adb.CustomVirtualNetworkIdType | Should -Be 'String'
     $adb.CustomVirtualNetworkIdValue | Should -Be $VirtualNetworkResourceId
     $adb.DefaultCatalogInitialName | Should -BeNullOrEmpty
     $adb.DefaultCatalogInitialType | Should -BeNullOrEmpty
     $adb.DefaultStorageFirewall | Should -BeNullOrEmpty
     $adb.DiskEncryptionSetId | Should -BeNullOrEmpty
     $adb.EnableNoPublicIP | Should -Be $true
-    $adb.EnableNoPublicIPType | Should -Be "Bool"
+    $adb.EnableNoPublicIPType | Should -Be 'Bool'
     $adb.EncryptionKeyName | Should -BeNullOrEmpty
     $adb.EncryptionKeySource | Should -BeNullOrEmpty
     $adb.EncryptionKeyVaultUri | Should -BeNullOrEmpty
@@ -278,13 +263,13 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     $adb.ManagedDiskIdentityPrincipalId | Should -BeNullOrEmpty
     $adb.ManagedDiskIdentityTenantId | Should -BeNullOrEmpty
     $adb.ManagedDiskIdentityType | Should -BeNullOrEmpty
-    $adb.ManagedDiskKeySource | Should -Be "Microsoft.Keyvault"
+    $adb.ManagedDiskKeySource | Should -Be 'Microsoft.Keyvault'
     $adb.ManagedDiskKeyVaultPropertiesKeyName | Should -BeNullOrEmpty
     $adb.ManagedDiskKeyVaultPropertiesKeyVaultUri | Should -BeNullOrEmpty
     $adb.ManagedDiskKeyVaultPropertiesKeyVersion | Should -BeNullOrEmpty
     $adb.ManagedDiskRotationToLatestKeyVersionEnabled | Should -BeNullOrEmpty
     #Skip $adb.ManagedResourceGroupId
-    $adb.ManagedServiceKeySource | Should -Be "Microsoft.Keyvault"
+    $adb.ManagedServiceKeySource | Should -Be 'Microsoft.Keyvault'
     $adb.ManagedServicesKeyVaultPropertiesKeyName | Should -BeNullOrEmpty
     $adb.ManagedServicesKeyVaultPropertiesKeyVaultUri | Should -BeNullOrEmpty
     $adb.ManagedServicesKeyVaultPropertiesKeyVersion | Should -BeNullOrEmpty
@@ -292,37 +277,37 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     $adb.NatGatewayNameType | Should -BeNullOrEmpty
     $adb.NatGatewayNameValue | Should -BeNullOrEmpty
     $adb.PrepareEncryption | Should -Be $true
-    $adb.PrepareEncryptionType | Should -Be "Bool"
+    $adb.PrepareEncryptionType | Should -Be 'Bool'
     $adb.PrivateEndpointConnection.Count | Should -Be 2
 
     $adb.PrivateEndpointConnection[0].GroupId.Count | Should -Be 1
-    $adb.PrivateEndpointConnection[0].GroupId[0] | Should -Be "databricks_ui_api"
-    $adb.PrivateEndpointConnection[0].PrivateLinkServiceConnectionStateStatus | Should -Be "Approved"
-    $adb.PrivateEndpointConnection[0].ProvisioningState | Should -Be "Succeeded"
+    $adb.PrivateEndpointConnection[0].GroupId[0] | Should -Be 'databricks_ui_api'
+    $adb.PrivateEndpointConnection[0].PrivateLinkServiceConnectionStateStatus | Should -Be 'Approved'
+    $adb.PrivateEndpointConnection[0].ProvisioningState | Should -Be 'Succeeded'
 
     $adb.PrivateEndpointConnection[1].GroupId.Count | Should -Be 1
-    $adb.PrivateEndpointConnection[1].GroupId[0] | Should -Be "browser_authentication"
-    $adb.PrivateEndpointConnection[1].PrivateLinkServiceConnectionStateStatus | Should -Be "Approved"
-    $adb.PrivateEndpointConnection[1].ProvisioningState | Should -Be "Succeeded"
+    $adb.PrivateEndpointConnection[1].GroupId[0] | Should -Be 'browser_authentication'
+    $adb.PrivateEndpointConnection[1].PrivateLinkServiceConnectionStateStatus | Should -Be 'Approved'
+    $adb.PrivateEndpointConnection[1].ProvisioningState | Should -Be 'Succeeded'
 
-    $adb.PublicIPNameType | Should -Be "String"
-    $adb.PublicIPNameValue | Should -Be "nat-gw-public-ip"
-    $adb.PublicNetworkAccess | Should -Be "Disabled"
+    $adb.PublicIPNameType | Should -Be 'String'
+    $adb.PublicIPNameValue | Should -Be 'nat-gw-public-ip'
+    $adb.PublicNetworkAccess | Should -Be $PublicNetworkAccess
     $adb.RequireInfrastructureEncryption | Should -Be $false
-    $adb.RequireInfrastructureEncryptionType | Should -Be "Bool"
-    $adb.RequiredNsgRule | Should -Be "NoAzureDatabricksRules"
+    $adb.RequireInfrastructureEncryptionType | Should -Be 'Bool'
+    $adb.RequiredNsgRule | Should -Be 'NoAzureDatabricksRules'
     $adb.ResourceGroupName | Should -Be $DatabricksResourceGroupName
     #Skip $adb.ResourceTagType, $adb.ResourceTagValue
     $adb.SkuName | Should -Be $Sku
     $adb.SkuTier | Should -BeNullOrEmpty
     #Skip $adb.StorageAccount**
     #Skip $adb.SystemData**
-    $adb.Type | Should -Be "Microsoft.Databricks/workspaces"
+    $adb.Type | Should -Be 'Microsoft.Databricks/workspaces'
     $adb.UiDefinitionUri | Should -BeNullOrEmpty
     #Skip $adb.UpdatedBy**
     #Skip $adb.Url
-    $adb.VnetAddressPrefixType | Should -Be "String"
-    $adb.VnetAddressPrefixValue | Should -Be "10.139"
+    $adb.VnetAddressPrefixType | Should -Be 'String'
+    $adb.VnetAddressPrefixValue | Should -Be '10.139'
     #Skip $adb.WorkspaceId
 
     Test-VerifyTagsForResource -ResourceId $adb.Id -Tags $Tags
@@ -336,13 +321,13 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
         'serverlessRealTimeInference', 'clusterLibraries', 'partnerHub', 'clamAVScan', 'capsule8Dataplane',
         'BrickStoreHttpGateway', 'Dashboards', 'CloudStorageMetadata', 'PredictiveOptimization', 'DataMonitoring',
         'Ingestion', 'MarketplaceConsumer', 'LineageTracking'
-        )
+    )
     Test-VerifyDiagSettings -ResourceId $adb.Id -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId -Logs $logs
 
-    Test-VerifyPrivateEndpoint -Name "$($DatabricksName)$($PEPName1)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId "browser_authentication"
-    Test-VerifyPrivateEndpoint -Name "$($DatabricksName)$($PEPName2)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId "databricks_ui_api"
+    Test-VerifyPrivateEndpoint -Name "$($DatabricksName)$($PEPName1)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId 'browser_authentication'
+    Test-VerifyPrivateEndpoint -Name "$($DatabricksName)$($PEPName2)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId 'databricks_ui_api'
 
-    Test-VerifyDnsZone -Name "privatelink.azuredatabricks.net" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -NumberOfRecordSets $NumberOfRecordSets
+    Test-VerifyDnsZone -Name 'privatelink.azuredatabricks.net' -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -NumberOfRecordSets $NumberOfRecordSets
 
     Test-VerifyLock -ResourceId $adb.Id
     Test-VerifyRoleAssignment -ResourceId $adb.Id
