@@ -120,18 +120,6 @@ Describe 'Validate Pattern deployment' {
                     -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku 'premium' -VirtualNetworkResourceId $virtualNetworkResourceId `
                     -PrivateSubnetName 'dbw-backend-subnet' -PublicSubnetName 'dbw-frontend-subnet' -PEPName1 '-auth-PEP' -PEPName2 '-ui-PEP' `
                     -NumberOfRecordSets 5 -PLSubnetName 'private-link-subnet' -PublicNetworkAccess 'Enabled' -RequiredNsgRule 'AllRules'
-
-
-
-
-
-                #KV pubacc, ACL pub ip
-                #$log | Format-List
-
-                #kvIpRules
-                #dbwIpRules
-
-
             }
         }
     }
