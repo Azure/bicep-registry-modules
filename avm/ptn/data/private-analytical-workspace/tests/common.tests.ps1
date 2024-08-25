@@ -1,3 +1,13 @@
+function Test-VerifyLock($ResourceId)
+{
+    # TODO: Not Implemented Yet - How to test it?
+}
+
+function Test-VerifyRoleAssignment($ResourceId)
+{
+    # TODO: Not Implemented Yet - How to test it?
+}
+
 function Test-VerifyOutputVariables($ResourceId, $Name, $Location, $ResourceGroupName)
 {
     $ResourceId | Should -Not -BeNullOrEmpty
@@ -66,6 +76,7 @@ function Test-VerifyDiagSettings($ResourceId, $LogAnalyticsWorkspaceResourceId, 
 
 function Test-VerifyNetworkSecurityGroup($NetworkSecurityGroupResourceId, $Tags, $VirtualNetworkResourceId, $SubnetName, $NumberOfSecurityRules, $NumberOfDefaultSecurityRules, $LogAnalyticsWorkspaceResourceId, $Logs)
 {
+    # TODO: Do we have to check for specific rules?
     $nsg = Get-AzResource -ResourceId $NetworkSecurityGroupResourceId | Get-AzNetworkSecurityGroup
     $nsg | Should -Not -BeNullOrEmpty
     $nsg.ProvisioningState | Should -Be "Succeeded"
@@ -78,6 +89,9 @@ function Test-VerifyNetworkSecurityGroup($NetworkSecurityGroupResourceId, $Tags,
 
     Test-VerifyTagsForResource -ResourceId $NetworkSecurityGroupResourceId -Tags $Tags
     Test-VerifyDiagSettings -ResourceId $NetworkSecurityGroupResourceId -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId -Logs $Logs
+
+    Test-VerifyLock -ResourceId $NetworkSecurityGroupResourceId
+    Test-VerifyRoleAssignment -ResourceId $NetworkSecurityGroupResourceId
 }
 
 function Test-VerifySubnet($Subnet, $SubnetName, $SubnetAddressPrefix, $NumberOfSecurityGroups, $NumberOfPrivateEndpoints, $NumberOfIpConfigurations, $DelegationServiceName)
