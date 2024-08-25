@@ -63,6 +63,7 @@ The following section provides usage examples for the module, which were used to
 - [Using defaults with provided existing Azure Log Analytics Workspace](#example-3-using-defaults-with-provided-existing-azure-log-analytics-workspace)
 - [Using large parameter set](#example-4-using-large-parameter-set)
 - [WAF-aligned](#example-5-waf-aligned)
+- [Use Case 1](#example-6-use-case-1)
 
 ### Example 1: _Using only defaults_
 
@@ -422,6 +423,80 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
       "value": {
         "CostCenter": "123-456-789",
         "hidden-title": "This is visible in the resource name",
+        "Owner": "Contoso"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 6: _Use Case 1_
+
+Greenfield, isolated deployment from the enterprise network.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  name: 'privateAnalyticalWorkspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'dpawuc01001'
+    // Non-required parameters
+    advancedOptions: {
+      networkAcls: {
+        ipRules: [
+          '104.43.16.94'
+        ]
+      }
+    }
+    enableDatabricks: true
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawuc01001"
+    },
+    // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "networkAcls": {
+          "ipRules": [
+            "104.43.16.94"
+          ]
+        }
+      }
+    },
+    "enableDatabricks": {
+      "value": true
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
         "Owner": "Contoso"
       }
     }
