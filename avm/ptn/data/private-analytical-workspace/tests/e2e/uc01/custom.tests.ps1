@@ -92,7 +92,7 @@ Describe 'Validate Pattern deployment' {
             It 'Check Azure Log Analytics Workspace' {
 
                 Test-VerifyLogAnalyticsWorkspace -LogAnalyticsWorkspaceResourceGroupName $logAnalyticsWorkspaceResourceGroupName `
-                    -LogAnalyticsWorkspaceName $logAnalyticsWorkspaceName -Tags $expectedTags -Sku 'PerGB2018' -RetentionInDays 365 -DailyQuotaGb 1
+                    -LogAnalyticsWorkspaceName $logAnalyticsWorkspaceName -Tags $expectedTags -Sku 'PerGB2018' -RetentionInDays 365 -DailyQuotaGb -1
             }
         }
 
@@ -104,7 +104,8 @@ Describe 'Validate Pattern deployment' {
             It 'Check Azure Key Vault' {
 
                 Test-VerifyKeyVault -KeyVaultResourceGroupName $keyVaultResourceGroupName -KeyVaultName $keyVaultName -Tags $expectedTags `
-                    -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku 'Premium' -RetentionInDays 90 -PEPName '-PEP' -NumberOfRecordSets 2 -SubnetName 'private-link-subnet'
+                    -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku 'Premium' -RetentionInDays 90 -PEPName '-PEP' `
+                    -NumberOfRecordSets 2 -SubnetName 'private-link-subnet' -PublicNetworkAccess 'Enabled'
             }
         }
 
@@ -118,7 +119,7 @@ Describe 'Validate Pattern deployment' {
                 Test-VerifyDatabricks -DatabricksResourceGroupName $databricksResourceGroupName -DatabricksName $databricksName -Tags $expectedTags `
                     -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku 'premium' -VirtualNetworkResourceId $virtualNetworkResourceId `
                     -PrivateSubnetName 'dbw-backend-subnet' -PublicSubnetName 'dbw-frontend-subnet' -PEPName1 '-auth-PEP' -PEPName2 '-ui-PEP' `
-                    -NumberOfRecordSets 5 -PLSubnetName 'private-link-subnet' -PublicNetworkAccess 'Enabled'
+                    -NumberOfRecordSets 5 -PLSubnetName 'private-link-subnet' -PublicNetworkAccess 'Enabled' -RequiredNsgRule 'AllRules'
 
 
 

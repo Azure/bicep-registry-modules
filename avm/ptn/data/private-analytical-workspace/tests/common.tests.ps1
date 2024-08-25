@@ -187,7 +187,7 @@ function Test-VerifyLogAnalyticsWorkspace($LogAnalyticsWorkspaceResourceGroupNam
     return $log
 }
 
-function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $LogAnalyticsWorkspaceResourceId, $Sku, $RetentionInDays, $PEPName, $NumberOfRecordSets, $SubnetName) {
+function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $LogAnalyticsWorkspaceResourceId, $Sku, $RetentionInDays, $PEPName, $NumberOfRecordSets, $SubnetName, $PublicNetworkAccess) {
     $kv = Get-AzKeyVault -ResourceGroupName $KeyVaultResourceGroupName -VaultName $KeyVaultName
     $kv | Should -Not -BeNullOrEmpty
     #$kv.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
@@ -199,7 +199,7 @@ function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $
     $kv.EnableSoftDelete | Should -Be $true
     $kv.SoftDeleteRetentionInDays | Should -Be $RetentionInDays
     $kv.EnablePurgeProtection | Should -Be $true
-    $kv.PublicNetworkAccess | Should -Be 'Disabled'
+    $kv.PublicNetworkAccess | Should -Be $PublicNetworkAccess
     $kv.AccessPolicies | Should -BeNullOrEmpty
     $kv.NetworkAcls.DefaultAction | Should -Be 'Deny'
     $kv.NetworkAcls.Bypass | Should -Be 'None'
@@ -221,7 +221,7 @@ function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $
     return $kv
 }
 
-function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $Tags, $LogAnalyticsWorkspaceResourceId, $Sku, $VirtualNetworkResourceId, $PrivateSubnetName, $PublicSubnetName, $PEPName1, $PEPName2, $NumberOfRecordSets, $PLSubnetName, $PublicNetworkAccess) {
+function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $Tags, $LogAnalyticsWorkspaceResourceId, $Sku, $VirtualNetworkResourceId, $PrivateSubnetName, $PublicSubnetName, $PEPName1, $PEPName2, $NumberOfRecordSets, $PLSubnetName, $PublicNetworkAccess, $RequiredNsgRule) {
     $adb = Get-AzDatabricksWorkspace -ResourceGroupName $DatabricksResourceGroupName -Name $DatabricksName
     $adb | Should -Not -BeNullOrEmpty
     $adb.ProvisioningState | Should -Be 'Succeeded'
@@ -295,7 +295,7 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     $adb.PublicNetworkAccess | Should -Be $PublicNetworkAccess
     $adb.RequireInfrastructureEncryption | Should -Be $false
     $adb.RequireInfrastructureEncryptionType | Should -Be 'Bool'
-    $adb.RequiredNsgRule | Should -Be 'NoAzureDatabricksRules'
+    $adb.RequiredNsgRule | Should -Be $RequiredNsgRule
     $adb.ResourceGroupName | Should -Be $DatabricksResourceGroupName
     #Skip $adb.ResourceTagType, $adb.ResourceTagValue
     $adb.SkuName | Should -Be $Sku
