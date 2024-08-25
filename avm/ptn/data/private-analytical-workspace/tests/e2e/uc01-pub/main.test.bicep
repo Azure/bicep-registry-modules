@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Use Case 1'
-metadata description = 'Greenfield, isolated deployment from the enterprise network.'
+metadata name = 'Use Case 1 - allowed IP address'
+metadata description = 'Greenfield, isolated deployment from the enterprise network - allowed IP address.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-data-privateanalyticalworksp
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dpawuc01'
+param serviceShort string = 'dpawuc01pub'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'

@@ -62,8 +62,9 @@ The following section provides usage examples for the module, which were used to
 - [Using defaults with provided existing Azure Key Vault](#example-2-using-defaults-with-provided-existing-azure-key-vault)
 - [Using defaults with provided existing Azure Log Analytics Workspace](#example-3-using-defaults-with-provided-existing-azure-log-analytics-workspace)
 - [Using large parameter set](#example-4-using-large-parameter-set)
-- [Use Case 1](#example-5-use-case-1)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Use Case 1 - fully private](#example-5-use-case-1---fully-private)
+- [Use Case 1 - allowed IP address](#example-6-use-case-1---allowed-ip-address)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -337,9 +338,9 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 5: _Use Case 1_
+### Example 5: _Use Case 1 - fully private_
 
-Greenfield, isolated deployment from the enterprise network.
+Greenfield, isolated deployment from the enterprise network - fully private.
 
 
 <details>
@@ -351,7 +352,65 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
-    name: 'dpawuc01001'
+    name: 'dpawuc01priv001'
+    // Non-required parameters
+    enableDatabricks: true
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawuc01priv001"
+    },
+    // Non-required parameters
+    "enableDatabricks": {
+      "value": true
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 6: _Use Case 1 - allowed IP address_
+
+Greenfield, isolated deployment from the enterprise network - allowed IP address.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  name: 'privateAnalyticalWorkspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'dpawuc01pub001'
     // Non-required parameters
     advancedOptions: {
       networkAcls: {
@@ -383,7 +442,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawuc01001"
+      "value": "dpawuc01pub001"
     },
     // Non-required parameters
     "advancedOptions": {
@@ -411,7 +470,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
