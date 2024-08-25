@@ -8,7 +8,7 @@ Describe 'Validate Pattern deployment' {
     BeforeAll {
 
         . $PSScriptRoot/../../common.tests.ps1
-        $expectedTags = @{Owner='Contoso'; CostCenter='123-456-789'}
+        $expectedTags = @{Owner='Contoso'; CostCenter='123-456-789'; Err='Test'}
 
         $resourceId = $TestInputData.DeploymentOutputs.resourceId.Value
         $name = $TestInputData.DeploymentOutputs.name.Value
@@ -194,56 +194,26 @@ Describe 'Validate Pattern deployment' {
                 $logs = @('VMProtectionAlerts', 'AllMetrics')
                 Test-VerifyDiagSettings -ResourceId $virtualNetworkResourceId -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $logs
 
-                $nsgPL = Get-AzResource -ResourceId $vnet.Subnets[0].NetworkSecurityGroup[0].Id | Get-AzNetworkSecurityGroup
-                $nsgPL | Should -Not -BeNullOrEmpty
-                $nsgPL.ProvisioningState | Should -Be "Succeeded"
-                $nsgPL.FlushConnection | Should -Be $false
-                $nsgPL.NetworkInterfaces | Should -BeNullOrEmpty
-                $nsgPL.SecurityRules.Count | Should -Be 1
-                $nsgPL.DefaultSecurityRules.Count | Should -Be 6
-                $nsgPL.Subnets.Count | Should -Be 1
-                $nsgPL.Subnets[0].Id | Should -Be "$($virtualNetworkResourceId)/subnets/private-link-subnet"
-                $nsgPL.Tag.Owner | Should -Be "Contoso"
-                $nsgPL.Tag.CostCenter | Should -Be "123-456-789"
+                $logs = @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
+                Test-VerifyNetworkSecurityGroup -NetworkSecurityGroupResourceId $vnet.Subnets[0].NetworkSecurityGroup[0].Id `
+                    -Tags $expectedTags -VirtualNetworkResourceId $virtualNetworkResourceId -SubnetName "private-link-subnet" `
+                    -NumberOfSecurityRules 1 -NumberOfDefaultSecurityRules 6 -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $logs
                 # TODO Role, Lock - How?
                 # Do we have to check for specific rules?
 
                 $logs = @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
-                Test-VerifyDiagSettings -ResourceId $nsgPL.Id -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $logs
-
-                $nsgDbwFe = Get-AzResource -ResourceId $vnet.Subnets[1].NetworkSecurityGroup[0].Id | Get-AzNetworkSecurityGroup
-                $nsgDbwFe | Should -Not -BeNullOrEmpty
-                $nsgDbwFe.ProvisioningState | Should -Be "Succeeded"
-                $nsgDbwFe.FlushConnection | Should -Be $false
-                $nsgDbwFe.NetworkInterfaces | Should -BeNullOrEmpty
-                $nsgDbwFe.SecurityRules.Count | Should -Be 7
-                $nsgDbwFe.DefaultSecurityRules.Count | Should -Be 6
-                $nsgDbwFe.Subnets.Count | Should -Be 1
-                $nsgDbwFe.Subnets[0].Id | Should -Be "$($virtualNetworkResourceId)/subnets/dbw-frontend-subnet"
-                $nsgDbwFe.Tag.Owner | Should -Be "Contoso"
-                $nsgDbwFe.Tag.CostCenter | Should -Be "123-456-789"
+                Test-VerifyNetworkSecurityGroup -NetworkSecurityGroupResourceId $vnet.Subnets[1].NetworkSecurityGroup[0].Id `
+                    -Tags $expectedTags -VirtualNetworkResourceId $virtualNetworkResourceId -SubnetName "dbw-frontend-subnet" `
+                    -NumberOfSecurityRules 7 -NumberOfDefaultSecurityRules 6 -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $logs
                 # TODO Role, Lock - How?
                 # Do we have to check for specific rules?
 
                 $logs = @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
-                Test-VerifyDiagSettings -ResourceId $nsgDbwFe.Id -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $logs
-
-                $nsgDbwBa = Get-AzResource -ResourceId $vnet.Subnets[2].NetworkSecurityGroup[0].Id | Get-AzNetworkSecurityGroup
-                $nsgDbwBa | Should -Not -BeNullOrEmpty
-                $nsgDbwBa.ProvisioningState | Should -Be "Succeeded"
-                $nsgDbwBa.FlushConnection | Should -Be $false
-                $nsgDbwBa.NetworkInterfaces | Should -BeNullOrEmpty
-                $nsgDbwBa.SecurityRules.Count | Should -Be 7
-                $nsgDbwBa.DefaultSecurityRules.Count | Should -Be 6
-                $nsgDbwBa.Subnets.Count | Should -Be 1
-                $nsgDbwBa.Subnets[0].Id | Should -Be "$($virtualNetworkResourceId)/subnets/dbw-backend-subnet"
-                $nsgDbwBa.Tag.Owner | Should -Be "Contoso"
-                $nsgDbwBa.Tag.CostCenter | Should -Be "123-456-789"
+                Test-VerifyNetworkSecurityGroup -NetworkSecurityGroupResourceId $vnet.Subnets[2].NetworkSecurityGroup[0].Id `
+                    -Tags $expectedTags -VirtualNetworkResourceId $virtualNetworkResourceId -SubnetName "dbw-backend-subnet" `
+                    -NumberOfSecurityRules 7 -NumberOfDefaultSecurityRules 6 -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $logs
                 # TODO Role, Lock - How?
                 # Do we have to check for specific rules?
-
-                $logs = @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
-                Test-VerifyDiagSettings -ResourceId $nsgDbwBa.Id -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $logs
             }
         }
 

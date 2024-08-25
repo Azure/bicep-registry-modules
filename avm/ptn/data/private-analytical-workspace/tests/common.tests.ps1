@@ -19,7 +19,6 @@ function Test-VerifyDnsZone($Name, $ResourceGroupName, $Tags, $NumberOfRecordSet
     Test-VerifyTagsForResource -ResourceId $z.ResourceId -Tags $Tags
 }
 
-
 function Test-VerifyPrivateEndpoint($Name, $ResourceGroupName, $Tags, $SubnetName, $ServiceId, $GroupId)
 {
     $pep = Get-AzPrivateEndpoint -ResourceGroupName $ResourceGroupName -Name $Name
@@ -49,4 +48,20 @@ function Test-VerifyDiagSettings($ResourceId, $LogAnalyticsWorkspaceResourceId, 
     #$diagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
     $diagCat.Count | Should -Be $Logs.Count
     for ($i = 0; $i -lt $diagCat.Count; $i++) { $diagCat[$i].Name | Should -BeIn $Logs }
+}
+
+function Test-VerifyNetworkSecurityGroup($NetworkSecurityGroupResourceId, $Tags, $VirtualNetworkResourceId, $SubnetName, $NumberOfSecurityRules, $NumberOfDefaultSecurityRules, $LogAnalyticsWorkspaceResourceId, $Logs)
+{
+    $nsg = Get-AzResource -ResourceId $NetworkSecurityGroupResourceId | Get-AzNetworkSecurityGroup
+    $nsg | Should -Not -BeNullOrEmpty
+    $nsg.ProvisioningState | Should -Be "Succeeded"
+    $nsg.FlushConnection | Should -Be $false
+    $nsg.NetworkInterfaces | Should -BeNullOrEmpty
+    $nsg.SecurityRules.Count | Should -Be $NumberOfSecurityRules
+    $nsg.DefaultSecurityRules.Count | Should -Be $NumberOfDefaultSecurityRules
+    $nsg.Subnets.Count | Should -Be 1
+    $nsg.Subnets[0].Id | Should -Be "$($VirtualNetworkResourceId)/subnets/$($SubnetName)"
+
+    Test-VerifyTagsForResource -ResourceId $NetworkSecurityGroupResourceId -Tags $Tags
+    Test-VerifyDiagSettings -ResourceId $NetworkSecurityGroupResourceId -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId -Logs $Logs
 }
