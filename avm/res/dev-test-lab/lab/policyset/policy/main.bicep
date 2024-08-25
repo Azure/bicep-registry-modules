@@ -11,7 +11,7 @@ param labName string
 param name string
 
 @sys.description('Optional. The description of the policy.')
-param description string = ''
+param description string?
 
 @allowed([
   'AllowedValuesPolicy'
@@ -21,7 +21,7 @@ param description string = ''
 param evaluatorType string
 
 @sys.description('Optional. The fact data of the policy.')
-param factData string = ''
+param factData string?
 
 @allowed([
   'EnvironmentTemplate'
