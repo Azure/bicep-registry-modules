@@ -80,7 +80,7 @@ function Test-VerifyVirtualNetwork($VirtualNetworkResourceGroupName, $VirtualNet
 function Test-VerifySubnet($Subnet, $SubnetName, $SubnetAddressPrefix, $NumberOfSecurityGroups, $NumberOfPrivateEndpoints, $NumberOfIpConfigurations, $DelegationServiceName)
 {
     $Subnet.ProvisioningState | Should -Be "Succeeded"
-    $Subnet.Name | Should -Be SubnetName
+    $Subnet.Name | Should -Be $SubnetName
     $Subnet.PrivateEndpointNetworkPolicies | Should -Be "Disabled"
     $Subnet.PrivateLinkServiceNetworkPolicies | Should -Be "Enabled"
     $Subnet.AddressPrefix.Count | Should -Be 1
