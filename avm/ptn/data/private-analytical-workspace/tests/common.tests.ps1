@@ -136,6 +136,43 @@ function Test-VerifyNetworkSecurityGroup($NetworkSecurityGroupResourceId, $Tags,
     return $nsg
 }
 
+function Test-VerifyDnsZone($Name, $ResourceGroupName, $Tags, $NumberOfRecordSets)
+{
+    $z = Get-AzPrivateDnsZone -ResourceGroupName $ResourceGroupName -Name $Name
+    $z | Should -Not -BeNullOrEmpty
+    #$z.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
+    $z.NumberOfRecordSets | Should -Be $NumberOfRecordSets
+    $z.NumberOfVirtualNetworkLinks | Should -Be 1
+
+    Test-VerifyTagsForResource -ResourceId $z.ResourceId -Tags $Tags
+
+    Test-VerifyLock -ResourceId $z.ResourceId
+    Test-VerifyRoleAssignment -ResourceId $z.ResourceId
+
+    return $z
+}
+
+function Test-VerifyPrivateEndpoint($Name, $ResourceGroupName, $Tags, $SubnetName, $ServiceId, $GroupId)
+{
+    $pep = Get-AzPrivateEndpoint -ResourceGroupName $ResourceGroupName -Name $Name
+    $pep | Should -Not -BeNullOrEmpty
+    $pep.ProvisioningState | Should -Be "Succeeded"
+    $pep.Subnet.Id | Should -Be "$($virtualNetworkResourceId)/subnets/$($SubnetName)"
+    $pep.NetworkInterfaces.Count | Should -Be 1
+    $pep.PrivateLinkServiceConnections.ProvisioningState | Should -Be "Succeeded"
+    $pep.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $ServiceId
+    $pep.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
+    $pep.PrivateLinkServiceConnections.GroupIds | Should -Be $GroupId
+    $pep.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
+
+    Test-VerifyTagsForResource -ResourceId $pep.Id -Tags $Tags
+
+    Test-VerifyLock -ResourceId $pep.Id
+    Test-VerifyRoleAssignment -ResourceId $pep.Id
+
+    return $pep
+}
+
 function Test-VerifyLogAnalyticsWorkspace($LogAnalyticsWorkspaceResourceGroupName, $LogAnalyticsWorkspaceName, $Tags, $Sku, $RetentionInDays, $DailyQuotaGb)
 {
     $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $LogAnalyticsWorkspaceResourceGroupName -name $LogAnalyticsWorkspaceName
@@ -198,39 +235,117 @@ function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $
     return $kv
 }
 
-function Test-VerifyDnsZone($Name, $ResourceGroupName, $Tags, $NumberOfRecordSets)
+function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $Tags, $LogAnalyticsWorkspaceResourceId, $Sku, $VirtualNetworkResourceId, $PrivateSubnetName, $PublicSubnetName, $PEPName1, $PEPName2, $NumberOfRecordSets, $PLSubnetName)
 {
-    $z = Get-AzPrivateDnsZone -ResourceGroupName $ResourceGroupName -Name $Name
-    $z | Should -Not -BeNullOrEmpty
-    #$z.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-    $z.NumberOfRecordSets | Should -Be $NumberOfRecordSets
-    $z.NumberOfVirtualNetworkLinks | Should -Be 1
+    $adb = Get-AzDatabricksWorkspace -ResourceGroupName $DatabricksResourceGroupName -Name $DatabricksName
+    $adb | Should -Not -BeNullOrEmpty
+    $adb.ProvisioningState | Should -Be "Succeeded"
+    $adb.AccessConnectorId | Should -BeNullOrEmpty
+    $adb.AccessConnectorIdentityType | Should -BeNullOrEmpty
+    $adb.AccessConnectorUserAssignedIdentityId | Should -BeNullOrEmpty
+    $adb.AmlWorkspaceIdType | Should -BeNullOrEmpty
+    $adb.AmlWorkspaceIdValue | Should -BeNullOrEmpty
+    #Skip $adb.Authorization
+    $adb.AutomaticClusterUpdateValue | Should -BeNullOrEmpty
+    $adb.ComplianceSecurityProfileComplianceStandard | Should -BeNullOrEmpty
+    $adb.ComplianceSecurityProfileValue | Should -BeNullOrEmpty
+    #Skip $adb.CreatedByApplicationId, $adb.CreatedByOid, $adb.CreatedByPuid, $adb.CreatedDateTime,
+    $adb.CustomPrivateSubnetNameType | Should -Be "String"
+    $adb.CustomPrivateSubnetNameValue | Should -Be $PrivateSubnetName
+    $adb.CustomPublicSubnetNameType | Should -Be "String"
+    $adb.CustomPublicSubnetNameValue | Should -Be $PublicSubnetName
+    $adb.CustomVirtualNetworkIdType | Should -Be "String"
+    $adb.CustomVirtualNetworkIdValue | Should -Be $VirtualNetworkResourceId
+    $adb.DefaultCatalogInitialName | Should -BeNullOrEmpty
+    $adb.DefaultCatalogInitialType | Should -BeNullOrEmpty
+    $adb.DefaultStorageFirewall | Should -BeNullOrEmpty
+    $adb.DiskEncryptionSetId | Should -BeNullOrEmpty
+    $adb.EnableNoPublicIP | Should -Be $true
+    $adb.EnableNoPublicIPType | Should -Be "Bool"
+    $adb.EncryptionKeyName | Should -BeNullOrEmpty
+    $adb.EncryptionKeySource | Should -BeNullOrEmpty
+    $adb.EncryptionKeyVaultUri | Should -BeNullOrEmpty
+    $adb.EncryptionKeyVersion | Should -BeNullOrEmpty
+    $adb.EncryptionType | Should -BeNullOrEmpty
+    $adb.EnhancedSecurityMonitoringValue | Should -BeNullOrEmpty
+    #Skip $adb.Id | Should -Be $databricksResourceId
+    $adb.IsUcEnabled | Should -Be $true
+    $adb.LoadBalancerBackendPoolNameType | Should -BeNullOrEmpty
+    $adb.LoadBalancerBackendPoolNameValue | Should -BeNullOrEmpty
+    $adb.LoadBalancerIdType | Should -BeNullOrEmpty
+    $adb.LoadBalancerIdValue | Should -BeNullOrEmpty
+    #Skip $adb.Location | Should -Be $databricksLocation
+    $adb.ManagedDiskIdentityPrincipalId | Should -BeNullOrEmpty
+    $adb.ManagedDiskIdentityTenantId | Should -BeNullOrEmpty
+    $adb.ManagedDiskIdentityType | Should -BeNullOrEmpty
+    $adb.ManagedDiskKeySource | Should -Be "Microsoft.Keyvault"
+    $adb.ManagedDiskKeyVaultPropertiesKeyName | Should -BeNullOrEmpty
+    $adb.ManagedDiskKeyVaultPropertiesKeyVaultUri | Should -BeNullOrEmpty
+    $adb.ManagedDiskKeyVaultPropertiesKeyVersion | Should -BeNullOrEmpty
+    $adb.ManagedDiskRotationToLatestKeyVersionEnabled | Should -BeNullOrEmpty
+    #Skip $adb.ManagedResourceGroupId
+    $adb.ManagedServiceKeySource | Should -Be "Microsoft.Keyvault"
+    $adb.ManagedServicesKeyVaultPropertiesKeyName | Should -BeNullOrEmpty
+    $adb.ManagedServicesKeyVaultPropertiesKeyVaultUri | Should -BeNullOrEmpty
+    $adb.ManagedServicesKeyVaultPropertiesKeyVersion | Should -BeNullOrEmpty
+    $adb.Name | Should -Be $DatabricksName
+    $adb.NatGatewayNameType | Should -BeNullOrEmpty
+    $adb.NatGatewayNameValue | Should -BeNullOrEmpty
+    $adb.PrepareEncryption | Should -Be $true
+    $adb.PrepareEncryptionType | Should -Be "Bool"
+    $adb.PrivateEndpointConnection.Count | Should -Be 2
 
-    Test-VerifyTagsForResource -ResourceId $z.ResourceId -Tags $Tags
+    $adb.PrivateEndpointConnection[0].GroupId.Count | Should -Be 1
+    $adb.PrivateEndpointConnection[0].GroupId[0] | Should -Be "databricks_ui_api"
+    $adb.PrivateEndpointConnection[0].PrivateLinkServiceConnectionStateStatus | Should -Be "Approved"
+    $adb.PrivateEndpointConnection[0].ProvisioningState | Should -Be "Succeeded"
 
-    Test-VerifyLock -ResourceId $z.ResourceId
-    Test-VerifyRoleAssignment -ResourceId $z.ResourceId
+    $adb.PrivateEndpointConnection[1].GroupId.Count | Should -Be 1
+    $adb.PrivateEndpointConnection[1].GroupId[0] | Should -Be "browser_authentication"
+    $adb.PrivateEndpointConnection[1].PrivateLinkServiceConnectionStateStatus | Should -Be "Approved"
+    $adb.PrivateEndpointConnection[1].ProvisioningState | Should -Be "Succeeded"
 
-    return $z
-}
+    $adb.PublicIPNameType | Should -Be "String"
+    $adb.PublicIPNameValue | Should -Be "nat-gw-public-ip"
+    $adb.PublicNetworkAccess | Should -Be "Disabled"
+    $adb.RequireInfrastructureEncryption | Should -Be $false
+    $adb.RequireInfrastructureEncryptionType | Should -Be "Bool"
+    $adb.RequiredNsgRule | Should -Be "NoAzureDatabricksRules"
+    $adb.ResourceGroupName | Should -Be $DatabricksResourceGroupName
+    #Skip $adb.ResourceTagType, $adb.ResourceTagValue
+    $adb.SkuName | Should -Be $Sku
+    $adb.SkuTier | Should -BeNullOrEmpty
+    #Skip $adb.StorageAccount**
+    #Skip $adb.SystemData**
+    $adb.Type | Should -Be "Microsoft.Databricks/workspaces"
+    $adb.UiDefinitionUri | Should -BeNullOrEmpty
+    #Skip $adb.UpdatedBy**
+    #Skip $adb.Url
+    $adb.VnetAddressPrefixType | Should -Be "String"
+    $adb.VnetAddressPrefixValue | Should -Be "10.139"
+    #Skip $adb.WorkspaceId
 
-function Test-VerifyPrivateEndpoint($Name, $ResourceGroupName, $Tags, $SubnetName, $ServiceId, $GroupId)
-{
-    $pep = Get-AzPrivateEndpoint -ResourceGroupName $ResourceGroupName -Name $Name
-    $pep | Should -Not -BeNullOrEmpty
-    $pep.ProvisioningState | Should -Be "Succeeded"
-    $pep.Subnet.Id | Should -Be "$($virtualNetworkResourceId)/subnets/$($SubnetName)"
-    $pep.NetworkInterfaces.Count | Should -Be 1
-    $pep.PrivateLinkServiceConnections.ProvisioningState | Should -Be "Succeeded"
-    $pep.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $ServiceId
-    $pep.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
-    $pep.PrivateLinkServiceConnections.GroupIds | Should -Be $GroupId
-    $pep.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
+    Test-VerifyTagsForResource -ResourceId $adb.Id -Tags $Tags
 
-    Test-VerifyTagsForResource -ResourceId $pep.Id -Tags $Tags
+    $logs = @(
+        'dbfs', 'clusters', 'accounts', 'jobs', 'notebook',
+        'ssh', 'workspace', 'secrets', 'sqlPermissions', 'instancePools',
+        'sqlanalytics', 'genie', 'globalInitScripts', 'iamRole', 'mlflowExperiment',
+        'featureStore', 'RemoteHistoryService', 'mlflowAcledArtifact', 'databrickssql', 'deltaPipelines',
+        'modelRegistry', 'repos', 'unityCatalog', 'gitCredentials', 'webTerminal',
+        'serverlessRealTimeInference', 'clusterLibraries', 'partnerHub', 'clamAVScan', 'capsule8Dataplane',
+        'BrickStoreHttpGateway', 'Dashboards', 'CloudStorageMetadata', 'PredictiveOptimization', 'DataMonitoring',
+        'Ingestion', 'MarketplaceConsumer', 'LineageTracking'
+        )
+    Test-VerifyDiagSettings -ResourceId $adb.Id -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId -Logs $logs
 
-    Test-VerifyLock -ResourceId $pep.Id
-    Test-VerifyRoleAssignment -ResourceId $pep.Id
+    Test-VerifyPrivateEndpoint -Name "$($DatabricksName)$($PEPName1)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId "browser_authentication"
+    Test-VerifyPrivateEndpoint -Name "$($DatabricksName)$($PEPName2)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId "databricks_ui_api"
 
-    return $pep
+    Test-VerifyDnsZone -Name "privatelink.azuredatabricks.net" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -NumberOfRecordSets $NumberOfRecordSets
+
+    Test-VerifyLock -ResourceId $adb.Id
+    Test-VerifyRoleAssignment -ResourceId $adb.Id
+
+    return $adb
 }

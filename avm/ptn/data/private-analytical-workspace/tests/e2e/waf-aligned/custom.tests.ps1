@@ -108,12 +108,6 @@ Describe 'Validate Pattern deployment' {
             }
         }
 
-
-
-
-
-
-
         Context 'Azure Databricks Tests' {
 
             BeforeAll {
@@ -121,120 +115,10 @@ Describe 'Validate Pattern deployment' {
 
             It 'Check Azure Databricks' {
 
-                $adb = Get-AzDatabricksWorkspace -ResourceGroupName $databricksResourceGroupName -Name $databricksName
-                $adb | Should -Not -BeNullOrEmpty
-                $adb.ProvisioningState | Should -Be "Succeeded"
-                $adb.AccessConnectorId | Should -BeNullOrEmpty
-                $adb.AccessConnectorIdentityType | Should -BeNullOrEmpty
-                $adb.AccessConnectorUserAssignedIdentityId | Should -BeNullOrEmpty
-                $adb.AmlWorkspaceIdType | Should -BeNullOrEmpty
-                $adb.AmlWorkspaceIdValue | Should -BeNullOrEmpty
-                #Skip $adb.Authorization
-                $adb.AutomaticClusterUpdateValue | Should -BeNullOrEmpty
-                $adb.ComplianceSecurityProfileComplianceStandard | Should -BeNullOrEmpty
-                $adb.ComplianceSecurityProfileValue | Should -BeNullOrEmpty
-                #Skip $adb.CreatedByApplicationId, $adb.CreatedByOid, $adb.CreatedByPuid, $adb.CreatedDateTime,
-                $adb.CustomPrivateSubnetNameType | Should -Be "String"
-                $adb.CustomPrivateSubnetNameValue | Should -Be "dbw-backend-subnet"
-                $adb.CustomPublicSubnetNameType | Should -Be "String"
-                $adb.CustomPublicSubnetNameValue | Should -Be "dbw-frontend-subnet"
-                $adb.CustomVirtualNetworkIdType | Should -Be "String"
-                $adb.CustomVirtualNetworkIdValue | Should -Be $virtualNetworkResourceId
-                $adb.DefaultCatalogInitialName | Should -BeNullOrEmpty
-                $adb.DefaultCatalogInitialType | Should -BeNullOrEmpty
-                $adb.DefaultStorageFirewall | Should -BeNullOrEmpty
-                $adb.DiskEncryptionSetId | Should -BeNullOrEmpty
-                $adb.EnableNoPublicIP | Should -Be $true
-                $adb.EnableNoPublicIPType | Should -Be "Bool"
-                $adb.EncryptionKeyName | Should -BeNullOrEmpty
-                $adb.EncryptionKeySource | Should -BeNullOrEmpty
-                $adb.EncryptionKeyVaultUri | Should -BeNullOrEmpty
-                $adb.EncryptionKeyVersion | Should -BeNullOrEmpty
-                $adb.EncryptionType | Should -BeNullOrEmpty
-                $adb.EnhancedSecurityMonitoringValue | Should -BeNullOrEmpty
-                $adb.Id | Should -Be $databricksResourceId
-                $adb.IsUcEnabled | Should -Be $true
-                $adb.LoadBalancerBackendPoolNameType | Should -BeNullOrEmpty
-                $adb.LoadBalancerBackendPoolNameValue | Should -BeNullOrEmpty
-                $adb.LoadBalancerIdType | Should -BeNullOrEmpty
-                $adb.LoadBalancerIdValue | Should -BeNullOrEmpty
-                $adb.Location | Should -Be $databricksLocation
-                $adb.ManagedDiskIdentityPrincipalId | Should -BeNullOrEmpty
-                $adb.ManagedDiskIdentityTenantId | Should -BeNullOrEmpty
-                $adb.ManagedDiskIdentityType | Should -BeNullOrEmpty
-                $adb.ManagedDiskKeySource | Should -Be "Microsoft.Keyvault"
-                $adb.ManagedDiskKeyVaultPropertiesKeyName | Should -BeNullOrEmpty
-                $adb.ManagedDiskKeyVaultPropertiesKeyVaultUri | Should -BeNullOrEmpty
-                $adb.ManagedDiskKeyVaultPropertiesKeyVersion | Should -BeNullOrEmpty
-                $adb.ManagedDiskRotationToLatestKeyVersionEnabled | Should -BeNullOrEmpty
-                #Skip $adb.ManagedResourceGroupId
-                $adb.ManagedServiceKeySource | Should -Be "Microsoft.Keyvault"
-                $adb.ManagedServicesKeyVaultPropertiesKeyName | Should -BeNullOrEmpty
-                $adb.ManagedServicesKeyVaultPropertiesKeyVaultUri | Should -BeNullOrEmpty
-                $adb.ManagedServicesKeyVaultPropertiesKeyVersion | Should -BeNullOrEmpty
-                $adb.Name | Should -Be $databricksName
-                $adb.NatGatewayNameType | Should -BeNullOrEmpty
-                $adb.NatGatewayNameValue | Should -BeNullOrEmpty
-                $adb.PrepareEncryption | Should -Be $true
-                $adb.PrepareEncryptionType | Should -Be "Bool"
-                $adb.PrivateEndpointConnection.Count | Should -Be 2
-
-                $adb.PrivateEndpointConnection[0].GroupId.Count | Should -Be 1
-                $adb.PrivateEndpointConnection[0].GroupId[0] | Should -Be "databricks_ui_api"
-                $adb.PrivateEndpointConnection[0].PrivateLinkServiceConnectionStateStatus | Should -Be "Approved"
-                $adb.PrivateEndpointConnection[0].ProvisioningState | Should -Be "Succeeded"
-
-                $adb.PrivateEndpointConnection[1].GroupId.Count | Should -Be 1
-                $adb.PrivateEndpointConnection[1].GroupId[0] | Should -Be "browser_authentication"
-                $adb.PrivateEndpointConnection[1].PrivateLinkServiceConnectionStateStatus | Should -Be "Approved"
-                $adb.PrivateEndpointConnection[1].ProvisioningState | Should -Be "Succeeded"
-
-                $adb.PublicIPNameType | Should -Be "String"
-                $adb.PublicIPNameValue | Should -Be "nat-gw-public-ip"
-                $adb.PublicNetworkAccess | Should -Be "Disabled"
-                $adb.RequireInfrastructureEncryption | Should -Be $false
-                $adb.RequireInfrastructureEncryptionType | Should -Be "Bool"
-                $adb.RequiredNsgRule | Should -Be "NoAzureDatabricksRules"
-                $adb.ResourceGroupName | Should -Be $databricksResourceGroupName
-                #Skip $adb.ResourceTagType, $adb.ResourceTagValue
-                $adb.SkuName | Should -Be "premium"
-                $adb.SkuTier | Should -BeNullOrEmpty
-                #Skip $adb.StorageAccount**
-                #Skip $adb.SystemData**
-                $adb.Type | Should -Be "Microsoft.Databricks/workspaces"
-                $adb.UiDefinitionUri | Should -BeNullOrEmpty
-                #Skip $adb.UpdatedBy**
-                #Skip $adb.Url
-                $adb.VnetAddressPrefixType | Should -Be "String"
-                $adb.VnetAddressPrefixValue | Should -Be "10.139"
-                #Skip $adb.WorkspaceId
-                Test-VerifyTagsForResource -ResourceId $adb.Id -Tags $expectedTags
-                # TODO Role, Lock - How?
-
-
-                $logs = @(
-                    'dbfs', 'clusters', 'accounts', 'jobs', 'notebook',
-                    'ssh', 'workspace', 'secrets', 'sqlPermissions', 'instancePools',
-                    'sqlanalytics', 'genie', 'globalInitScripts', 'iamRole', 'mlflowExperiment',
-                    'featureStore', 'RemoteHistoryService', 'mlflowAcledArtifact', 'databrickssql', 'deltaPipelines',
-                    'modelRegistry', 'repos', 'unityCatalog', 'gitCredentials', 'webTerminal',
-                    'serverlessRealTimeInference', 'clusterLibraries', 'partnerHub', 'clamAVScan', 'capsule8Dataplane',
-                    'BrickStoreHttpGateway', 'Dashboards', 'CloudStorageMetadata', 'PredictiveOptimization', 'DataMonitoring',
-                    'Ingestion', 'MarketplaceConsumer', 'LineageTracking'
-                    )
-                Test-VerifyDiagSettings -ResourceId $databricksResourceId -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $logs
-
-                Test-VerifyPrivateEndpoint -Name "$($databricksName)-auth-PEP" -ResourceGroupName $databricksResourceGroupName -Tags $expectedTags -SubnetName "private-link-subnet" -ServiceId $databricksResourceId -GroupId "browser_authentication"
-                # TODO Role, Lock - How?
-
-                Test-VerifyPrivateEndpoint -Name "$($databricksName)-ui-PEP" -ResourceGroupName $databricksResourceGroupName -Tags $expectedTags -SubnetName "private-link-subnet" -ServiceId $databricksResourceId -GroupId "databricks_ui_api"
-                # TODO Role, Lock - How?
-
-                Test-VerifyDnsZone -Name "privatelink.azuredatabricks.net" -ResourceGroupName $databricksResourceGroupName -Tags $expectedTags -NumberOfRecordSets 5 # SOA + 4xA
-                # TODO Role, Lock - How?
-
-
-
+                Test-VerifyDatabricks -DatabricksResourceGroupName $databricksResourceGroupName -DatabricksName $databricksName -Tags $expectedTags `
+                    -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku "premium" -VirtualNetworkResourceId $virtualNetworkResourceId `
+                    -PrivateSubnetName "dbw-backend-subnet" -PublicSubnetName "dbw-frontend-subnet" -PEPName1 "-auth-PEP" -PEPName2 "-ui-PEP" `
+                    -NumberOfRecordSets 5 -PLSubnetName "dbw-backend-subnet"
 
 
 
