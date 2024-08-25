@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "15375903043323950090"
+      "version": "0.29.47.4906",
+      "templateHash": "10895784239828351157"
     },
     "name": "Network Manager Security Admin Configurations",
     "description": "This module deploys an Network Manager Security Admin Configuration.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
@@ -299,8 +299,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "8668259874629593485"
+              "version": "0.29.47.4906",
+              "templateHash": "10012310325610818113"
             },
             "name": "Network Manager Security Admin Configuration Rule Collections",
             "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
@@ -593,8 +593,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "9624028360077804841"
+                      "version": "0.29.47.4906",
+                      "templateHash": "17218572797495425587"
                     },
                     "name": "Network Manager Security Admin Configuration Rule Collection Rules",
                     "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",

@@ -41,6 +41,12 @@ param stickySessionsAffinity string = 'none'
 @description('Optional. Ingress transport protocol.')
 param ingressTransport string = 'auto'
 
+@description('Optional. Dev ContainerApp service type.')
+param service object = {}
+
+@description('Optional. Toggle to include the service configuration.')
+param includeAddOns bool = false
+
 @description('Optional. Bool indicating if HTTP connections to is allowed. If set to false HTTP connections are automatically redirected to HTTPS connections.')
 param ingressAllowInsecure bool = true
 
@@ -55,6 +61,9 @@ param scaleMinReplicas int = 3
 
 @description('Optional. Scaling rules.')
 param scaleRules array = []
+
+@description('Optional. List of container app services bound to the app.')
+param serviceBinds serviceBind[]?
 
 @allowed([
   'Multiple'
@@ -165,6 +174,17 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.app-containerapp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -184,7 +204,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
+resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
   name: name
   tags: tags
   location: location
@@ -194,35 +214,42 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
     configuration: {
       activeRevisionsMode: activeRevisionsMode
       dapr: !empty(dapr) ? dapr : null
-      ingress: disableIngress ? null : {
-        allowInsecure: ingressTransport != 'tcp' ? ingressAllowInsecure : false
-        customDomains: !empty(customDomains) ? customDomains : null
-        corsPolicy: corsPolicy != null && ingressTransport != 'tcp' ? {
-          allowCredentials: corsPolicy.?allowCredentials ?? false
-          allowedHeaders: corsPolicy.?allowedHeaders ?? []
-          allowedMethods: corsPolicy.?allowedMethods ?? []
-          allowedOrigins: corsPolicy.?allowedOrigins ?? []
-          exposeHeaders: corsPolicy.?exposeHeaders ?? []
-          maxAge: corsPolicy.?maxAge
-        } : null
-        clientCertificateMode: ingressTransport != 'tcp' ? clientCertificateMode : null
-        exposedPort: exposedPort
-        external: ingressExternal
-        ipSecurityRestrictions: !empty(ipSecurityRestrictions) ? ipSecurityRestrictions : null
-        targetPort: ingressTargetPort
-        stickySessions: {
-          affinity: stickySessionsAffinity
-        }
-        traffic: ingressTransport != 'tcp' ? [
-          {
-            label: trafficLabel
-            latestRevision: trafficLatestRevision
-            revisionName: trafficRevisionName
-            weight: trafficWeight
+      ingress: disableIngress
+        ? null
+        : {
+            allowInsecure: ingressTransport != 'tcp' ? ingressAllowInsecure : false
+            customDomains: !empty(customDomains) ? customDomains : null
+            corsPolicy: corsPolicy != null && ingressTransport != 'tcp'
+              ? {
+                  allowCredentials: corsPolicy.?allowCredentials ?? false
+                  allowedHeaders: corsPolicy.?allowedHeaders ?? []
+                  allowedMethods: corsPolicy.?allowedMethods ?? []
+                  allowedOrigins: corsPolicy.?allowedOrigins ?? []
+                  exposeHeaders: corsPolicy.?exposeHeaders ?? []
+                  maxAge: corsPolicy.?maxAge
+                }
+              : null
+            clientCertificateMode: ingressTransport != 'tcp' ? clientCertificateMode : null
+            exposedPort: exposedPort
+            external: ingressExternal
+            ipSecurityRestrictions: !empty(ipSecurityRestrictions) ? ipSecurityRestrictions : null
+            targetPort: ingressTargetPort
+            stickySessions: {
+              affinity: stickySessionsAffinity
+            }
+            traffic: ingressTransport != 'tcp'
+              ? [
+                  {
+                    label: trafficLabel
+                    latestRevision: trafficLatestRevision
+                    revisionName: trafficRevisionName
+                    weight: trafficWeight
+                  }
+                ]
+              : null
+            transport: ingressTransport
           }
-        ] : null
-        transport: ingressTransport
-      }
+          service: (includeAddOns && !empty(service)) ? service : null
       maxInactiveRevisions: maxInactiveRevisions
       registries: !empty(registries) ? registries : null
       secrets: secretList
@@ -236,6 +263,7 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
         minReplicas: scaleMinReplicas
         rules: !empty(scaleRules) ? scaleRules : null
       }
+      serviceBinds: (includeAddOns && !empty(serviceBinds)) ? serviceBinds : null
       volumes: !empty(volumes) ? volumes : null
     }
     workloadProfileName: workloadProfileName
@@ -253,14 +281,11 @@ resource containerApp_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!emp
   scope: containerApp
 }
 
-resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [ for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(containerApp.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(containerApp.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -276,7 +301,7 @@ resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2
 output resourceId string = containerApp.id
 
 @description('The configuration of ingress fqdn.')
-output fqdn string = disableIngress ? 'IngressDisabled' :  containerApp.properties.configuration.ingress.fqdn
+output fqdn string = disableIngress ? 'IngressDisabled' : containerApp.properties.configuration.ingress.fqdn
 
 @description('The name of the resource group the Container App was deployed into.')
 output resourceGroupName string = resourceGroup().name
@@ -311,6 +336,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -357,6 +385,14 @@ type container = {
 
   @description('Optional. Container volume mounts.')
   volumeMounts: volumeMount[]?
+}
+
+type serviceBind = {
+  @description('Required. The name of the service.')
+  name: string
+
+  @description('Required. The service ID.')
+  serviceId: string
 }
 
 type environmentVar = {

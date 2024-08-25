@@ -180,6 +180,9 @@ output location string = privateEndpoint.location
 @description('The custom DNS configurations of the private endpoint.')
 output customDnsConfig customDnsConfigType = privateEndpoint.properties.customDnsConfigs
 
+@description('The IDs of the network interfaces associated with the private endpoint.')
+output networkInterfaceIds array = privateEndpoint.properties.networkInterfaces
+
 @description('The group Id for the private endpoint Group.')
 output groupId string = !empty(privateEndpoint.properties.manualPrivateLinkServiceConnections) && length(privateEndpoint.properties.manualPrivateLinkServiceConnections[0].properties.?groupIds) > 0
   ? privateEndpoint.properties.manualPrivateLinkServiceConnections[0].properties.?groupIds[0] ?? ''

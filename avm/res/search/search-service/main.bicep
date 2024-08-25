@@ -53,12 +53,12 @@ param privateEndpoints privateEndpointType
 @description('Optional. The sharedPrivateLinkResources to create as part of the search Service.')
 param sharedPrivateLinkResources array = []
 
-@description('Optional. This value can be set to \'enabled\' to avoid breaking changes on existing customer resources and templates. If set to \'disabled\', traffic over public interface is not allowed, and private endpoint connections would be the exclusive access method.')
+@description('Optional. This value can be set to \'Enabled\' to avoid breaking changes on existing customer resources and templates. If set to \'Disabled\', traffic over public interface is not allowed, and private endpoint connections would be the exclusive access method.')
 @allowed([
-  'enabled'
-  'disabled'
+  'Enabled'
+  'Disabled'
 ])
-param publicNetworkAccess string = 'enabled'
+param publicNetworkAccess string = 'Enabled'
 
 @description('Optional. The number of replicas in the search service. If specified, it must be a value between 1 and 12 inclusive for standard SKUs or between 1 and 3 inclusive for basic SKU.')
 @minValue(1)
@@ -145,9 +145,20 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.search-searchservice.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.search-searchservice.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -182,7 +193,7 @@ resource searchService 'Microsoft.Search/searchServices@2024-03-01-preview' = {
     networkRuleSet: networkRuleSet
     partitionCount: partitionCount
     replicaCount: replicaCount
-    publicNetworkAccess: publicNetworkAccess
+    publicNetworkAccess: toLower(publicNetworkAccess)
     semanticSearch: semanticSearch
   }
 }
@@ -228,14 +239,10 @@ resource searchService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!em
 }
 
 resource searchService_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(searchService.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(searchService.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -247,7 +254,7 @@ resource searchService_roleAssignments 'Microsoft.Authorization/roleAssignments@
   }
 ]
 
-module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-searchService-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -288,8 +295,7 @@ module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoin
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -308,9 +314,7 @@ module searchService_sharedPrivateLinkResources 'shared-private-link-resource/ma
   for (sharedPrivateLinkResource, index) in sharedPrivateLinkResources: {
     name: '${uniqueString(deployment().name, location)}-searchService-SharedPrivateLink-${index}'
     params: {
-      name: contains(sharedPrivateLinkResource, 'name')
-        ? sharedPrivateLinkResource.name
-        : 'spl-${last(split(searchService.id, '/'))}-${sharedPrivateLinkResource.groupId}-${index}'
+      name: sharedPrivateLinkResource.?name ?? 'spl-${last(split(searchService.id, '/'))}-${sharedPrivateLinkResource.groupId}-${index}'
       searchServiceName: searchService.name
       privateLinkResourceId: sharedPrivateLinkResource.privateLinkResourceId
       groupId: sharedPrivateLinkResource.groupId
@@ -339,6 +343,17 @@ output systemAssignedMIPrincipalId string = searchService.?identity.?principalId
 @description('The location the resource was deployed into.')
 output location string = searchService.location
 
+@description('The private endpoints of the search service.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: searchService_privateEndpoints[i].outputs.name
+    resourceId: searchService_privateEndpoints[i].outputs.resourceId
+    groupId: searchService_privateEndpoints[i].outputs.groupId
+    customDnsConfig: searchService_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: searchService_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -360,6 +375,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -398,11 +416,20 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
