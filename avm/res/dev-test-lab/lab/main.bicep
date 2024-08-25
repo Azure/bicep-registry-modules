@@ -100,7 +100,7 @@ param virtualnetworks virtualNetworkType
 param policies policiesType
 
 @description('Optional. Schedules to create for the lab.')
-param schedules array = []
+param schedules scheduleType
 
 @description('Conditional. Notification Channels to create for the lab. Required if the schedules property "notificationSettingsStatus" is set to "Enabled.')
 param notificationchannels notificationChannelType
@@ -241,7 +241,7 @@ module lab_virtualNetworks 'virtualnetwork/main.bicep' = [
 ]
 
 module lab_policies 'policyset/policy/main.bicep' = [
-  for (policy, index) in policies: {
+  for (policy, index) in (policies ?? []): {
     name: '${uniqueString(deployment().name, location)}-Lab-PolicySets-Policy-${index}'
     params: {
       labName: lab.name
@@ -257,7 +257,7 @@ module lab_policies 'policyset/policy/main.bicep' = [
 ]
 
 module lab_schedules 'schedule/main.bicep' = [
-  for (schedule, index) in schedules: {
+  for (schedule, index) in (schedules ?? []): {
     name: '${uniqueString(deployment().name, location)}-Lab-Schedules-${index}'
     params: {
       labName: lab.name
@@ -270,14 +270,13 @@ module lab_schedules 'schedule/main.bicep' = [
       status: schedule.?status ?? 'Enabled'
       targetResourceId: schedule.?targetResourceId ?? ''
       timeZoneId: schedule.?timeZoneId ?? 'Pacific Standard time'
-      notificationSettingsStatus: schedule.?notificationSettingsStatus ?? 'Disabled'
-      notificationSettingsTimeInMinutes: schedule.?notificationSettingsTimeInMinutes ?? 30
+      notificationSettings: schedule.?notificationSettings ?? {}
     }
   }
 ]
 
 module lab_notificationChannels 'notificationchannel/main.bicep' = [
-  for (notificationChannel, index) in notificationchannels: {
+  for (notificationChannel, index) in (notificationchannels ?? []): {
     name: '${uniqueString(deployment().name, location)}-Lab-NotificationChannels-${index}'
     params: {
       labName: lab.name
@@ -540,7 +539,7 @@ type notificationChannelType = {
 
   @description('Optional. The locale to use when sending a notification (fallback for unsupported languages is EN).')
   notificationLocale: string?
-}[]
+}[]?
 
 type policiesType = {
   @description('Required. The name of the policy.')
@@ -573,4 +572,37 @@ type policiesType = {
 
   @description('Required. The threshold of the policy (i.e. a number for MaxValuePolicy, and a JSON array of values for AllowedValuesPolicy).')
   threshold: string
-}[]
+}[]?
+
+import { dailyRecurrenceType, hourlyRecurrenceType, notificationSettingsType, weeklyRecurrenceType } from 'schedule/main.bicep'
+type scheduleType = {
+  @description('Required. The name of the schedule.')
+  name: 'LabVmsShutdown' | 'LabVmAutoStart'
+
+  @description('Optional. The tags of the schedule.')
+  tags: object?
+
+  @description('Required. The task type of the schedule (e.g. LabVmsShutdownTask, LabVmsStartupTask).')
+  taskType: 'LabVmsShutdownTask' | 'LabVmsStartupTask'
+
+  @description('Optional. The daily recurrence of the schedule.')
+  dailyRecurrence: dailyRecurrenceType
+
+  @description('Optional. If the schedule will occur multiple times a day, specify the hourly recurrence.')
+  hourlyRecurrence: hourlyRecurrenceType
+
+  @description('Optional. If the schedule will occur only some days of the week, specify the weekly recurrence.')
+  weeklyRecurrence: weeklyRecurrenceType
+
+  @description('Optional. The status of the schedule (i.e. Enabled, Disabled). Default is "Enabled".')
+  status: 'Disabled' | 'Enabled'?
+
+  @description('Optional. The resource ID to which the schedule belongs.')
+  targetResourceId: string?
+
+  @description('Optional. The time zone ID of the schedule. Defaults to "Pacific Standard time".')
+  timeZoneId: string?
+
+  @description('Optional. The notification settings for the schedule.')
+  notificationSettings: notificationSettingsType
+}[]?

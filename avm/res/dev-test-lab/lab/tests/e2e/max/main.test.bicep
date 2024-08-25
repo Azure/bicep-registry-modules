@@ -226,8 +226,11 @@ module testDeployment '../../../main.bicep' = [
           dailyRecurrence: {
             time: '0000'
           }
-          notificationSettingsStatus: 'Enabled'
-          notificationSettingsTimeInMinutes: 30
+          notificationSettings: {
+            status: 'Enabled'
+            timeInMinutes: 30
+          }
+          //broken
         }
         {
           name: 'LabVmAutoStart'
