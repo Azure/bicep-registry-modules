@@ -163,6 +163,41 @@ function Test-VerifyLogAnalyticsWorkspace($LogAnalyticsWorkspaceResourceGroupNam
     return $log
 }
 
+function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $LogAnalyticsWorkspaceResourceId, $Sku, $RetentionInDays, $PEPName, $NumberOfRecordSets, $SubnetName)
+{
+    $kv = Get-AzKeyVault -ResourceGroupName $KeyVaultResourceGroupName -VaultName $KeyVaultName
+    $kv | Should -Not -BeNullOrEmpty
+    #$kv.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
+    $kv.Sku | Should -Be $Sku
+    $kv.EnabledForDeployment | Should -Be $false
+    $kv.EnabledForTemplateDeployment | Should -Be $false
+    $kv.EnabledForDiskEncryption | Should -Be $false
+    $kv.EnableRbacAuthorization | Should -Be $true
+    $kv.EnableSoftDelete | Should -Be $true
+    $kv.SoftDeleteRetentionInDays | Should -Be $RetentionInDays
+    $kv.EnablePurgeProtection | Should -Be $true
+    $kv.PublicNetworkAccess | Should -Be 'Disabled'
+    $kv.AccessPolicies | Should -BeNullOrEmpty
+    $kv.NetworkAcls.DefaultAction | Should -Be 'Deny'
+    $kv.NetworkAcls.Bypass | Should -Be 'None'
+    $kv.NetworkAcls.IpAddressRanges | Should -BeNullOrEmpty
+    $kv.NetworkAcls.VirtualNetworkResourceIds | Should -BeNullOrEmpty
+
+    Test-VerifyTagsForResource -ResourceId $kv.ResourceId -Tags $Tags
+
+    $logs = @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
+    Test-VerifyDiagSettings -ResourceId $kv.ResourceId -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId -Logs $logs
+
+    Test-VerifyPrivateEndpoint -Name "$($kv.VaultName)$($PEPName)" -ResourceGroupName $KeyVaultResourceGroupName -Tags $Tags -SubnetName $SubnetName -ServiceId $kv.ResourceId -GroupId "vault"
+
+    Test-VerifyDnsZone -Name "privatelink.vaultcore.azure.net" -ResourceGroupName $KeyVaultResourceGroupName -Tags $Tags -NumberOfRecordSets $NumberOfRecordSets
+
+    Test-VerifyLock -ResourceId $kv.ResourceId
+    Test-VerifyRoleAssignment -ResourceId $kv.ResourceId
+
+    return $kv
+}
+
 function Test-VerifyDnsZone($Name, $ResourceGroupName, $Tags, $NumberOfRecordSets)
 {
     $z = Get-AzPrivateDnsZone -ResourceGroupName $ResourceGroupName -Name $Name
@@ -172,6 +207,9 @@ function Test-VerifyDnsZone($Name, $ResourceGroupName, $Tags, $NumberOfRecordSet
     $z.NumberOfVirtualNetworkLinks | Should -Be 1
 
     Test-VerifyTagsForResource -ResourceId $z.ResourceId -Tags $Tags
+
+    Test-VerifyLock -ResourceId $z.ResourceId
+    Test-VerifyRoleAssignment -ResourceId $z.ResourceId
 
     return $z
 }
@@ -190,6 +228,9 @@ function Test-VerifyPrivateEndpoint($Name, $ResourceGroupName, $Tags, $SubnetNam
     $pep.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
 
     Test-VerifyTagsForResource -ResourceId $pep.Id -Tags $Tags
+
+    Test-VerifyLock -ResourceId $pep.Id
+    Test-VerifyRoleAssignment -ResourceId $pep.Id
 
     return $pep
 }

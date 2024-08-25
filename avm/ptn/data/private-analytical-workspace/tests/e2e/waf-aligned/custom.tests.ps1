@@ -103,37 +103,16 @@ Describe 'Validate Pattern deployment' {
 
             It 'Check Azure Key Vault' {
 
-                $kv = Get-AzKeyVault -ResourceGroupName $keyVaultResourceGroupName -VaultName $keyVaultName
-                $kv | Should -Not -BeNullOrEmpty
-                #$kv.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-                $kv.Sku | Should -Be 'Standard'
-                $kv.EnabledForDeployment | Should -Be $false
-                $kv.EnabledForTemplateDeployment | Should -Be $false
-                $kv.EnabledForDiskEncryption | Should -Be $false
-                $kv.EnableRbacAuthorization | Should -Be $true
-                $kv.EnableSoftDelete | Should -Be $true
-                $kv.SoftDeleteRetentionInDays | Should -Be 90
-                $kv.EnablePurgeProtection | Should -Be $true
-                $kv.PublicNetworkAccess | Should -Be 'Disabled'
-                $kv.AccessPolicies | Should -BeNullOrEmpty
-                $kv.NetworkAcls.DefaultAction | Should -Be 'Deny'
-                $kv.NetworkAcls.Bypass | Should -Be 'None'
-                $kv.NetworkAcls.IpAddressRanges | Should -BeNullOrEmpty
-                $kv.NetworkAcls.VirtualNetworkResourceIds | Should -BeNullOrEmpty
-                $kv.Tags.Owner | Should -Be "Contoso"
-                $kv.Tags.CostCenter | Should -Be "123-456-789"
-                # TODO Role, Lock - How?
-
-                $logs = @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
-                Test-VerifyDiagSettings -ResourceId $keyVaultResourceId -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $logs
-
-                Test-VerifyPrivateEndpoint -Name "$($kv.VaultName)-PEP" -ResourceGroupName $keyVaultResourceGroupName -Tags $expectedTags -SubnetName "private-link-subnet" -ServiceId $keyVaultResourceId -GroupId "vault"
-                # TODO Role, Lock - How?
-
-                Test-VerifyDnsZone -Name "privatelink.vaultcore.azure.net" -ResourceGroupName $keyVaultResourceGroupName -Tags $expectedTags -NumberOfRecordSets 2 # SOA + A
-                # TODO Role, Lock - How?
+                Test-VerifyKeyVault -KeyVaultResourceGroupName $keyVaultResourceGroupName -KeyVaultName $keyVaultName -Tags $expectedTags `
+                    -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku "Standard" -RetentionInDays 90 -PEPName "-PEP" -NumberOfRecordSets 2 -SubnetName "private-link-subnet"
             }
         }
+
+
+
+
+
+
 
         Context 'Azure Databricks Tests' {
 
