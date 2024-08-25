@@ -91,24 +91,8 @@ Describe 'Validate Pattern deployment' {
 
             It 'Check Azure Log Analytics Workspace' {
 
-                $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName -name $logAnalyticsWorkspaceName
-                $log | Should -Not -BeNullOrEmpty
-                $log.ProvisioningState | Should -Be "Succeeded"
-                $log.Sku | Should -Be 'PerGB2018'
-                $log.RetentionInDays | Should -Be 35
-                $log.WorkspaceCapping.DailyQuotaGb | Should -Be 1
-                $log.WorkspaceCapping.DataIngestionStatus | Should -Be 'RespectQuota'
-                $log.CapacityReservationLevel | Should -BeNullOrEmpty
-                $log.PublicNetworkAccessForIngestion | Should -Be "Enabled"
-                $log.PublicNetworkAccessForQuery | Should -Be "Enabled"
-                $log.ForceCmkForQuery | Should -Be $true
-                $log.PrivateLinkScopedResources | Should -BeNullOrEmpty
-                $log.DefaultDataCollectionRuleResourceId | Should -BeNullOrEmpty
-                $log.WorkspaceFeatures.EnableLogAccessUsingOnlyResourcePermissions | Should -Be $false
-                $log.Tags.Owner | Should -Be "Contoso"
-                $log.Tags.CostCenter | Should -Be "123-456-789"
-                # No DIAG for LAW
-                # TODO Role, Lock - How?
+                Test-VerifyLogAnalyticsWorkspace -LogAnalyticsWorkspaceResourceGroupName $logAnalyticsWorkspaceResourceGroupName `
+                    -LogAnalyticsWorkspaceName $logAnalyticsWorkspaceName -Tags $expectedTags -Sku "PerGB2018" -RetentionInDays 35 -DailyQuotaGb 1
             }
         }
 

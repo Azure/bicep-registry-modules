@@ -136,6 +136,33 @@ function Test-VerifyNetworkSecurityGroup($NetworkSecurityGroupResourceId, $Tags,
     return $nsg
 }
 
+function Test-VerifyLogAnalyticsWorkspace($LogAnalyticsWorkspaceResourceGroupName, $LogAnalyticsWorkspaceName, $Tags, $Sku, $RetentionInDays, $DailyQuotaGb)
+{
+    $log = Get-AzOperationalInsightsWorkspace -ResourceGroupName $LogAnalyticsWorkspaceResourceGroupName -name $LogAnalyticsWorkspaceName
+    $log | Should -Not -BeNullOrEmpty
+    $log.ProvisioningState | Should -Be "Succeeded"
+    $log.Sku | Should -Be $Sku
+    $log.RetentionInDays | Should -Be $RetentionInDays
+    $log.WorkspaceCapping.DailyQuotaGb | Should -Be $DailyQuotaGb
+    $log.WorkspaceCapping.DataIngestionStatus | Should -Be 'RespectQuota'
+    $log.CapacityReservationLevel | Should -BeNullOrEmpty
+    $log.PublicNetworkAccessForIngestion | Should -Be "Enabled"
+    $log.PublicNetworkAccessForQuery | Should -Be "Enabled"
+    $log.ForceCmkForQuery | Should -Be $true
+    $log.PrivateLinkScopedResources | Should -BeNullOrEmpty
+    $log.DefaultDataCollectionRuleResourceId | Should -BeNullOrEmpty
+    $log.WorkspaceFeatures.EnableLogAccessUsingOnlyResourcePermissions | Should -Be $false
+
+    Test-VerifyTagsForResource -ResourceId $log.ResourceId -Tags $Tags
+
+    # No DIAG for LAW itself
+
+    Test-VerifyLock -ResourceId $log.ResourceId
+    Test-VerifyRoleAssignment -ResourceId $log.ResourceId
+
+    return $log
+}
+
 function Test-VerifyDnsZone($Name, $ResourceGroupName, $Tags, $NumberOfRecordSets)
 {
     $z = Get-AzPrivateDnsZone -ResourceGroupName $ResourceGroupName -Name $Name
