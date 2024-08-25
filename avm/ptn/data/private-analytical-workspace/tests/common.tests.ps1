@@ -32,33 +32,6 @@ function Test-VerifyTagsForResource($ResourceId, $Tags)
     }
 }
 
-function Test-VerifyDnsZone($Name, $ResourceGroupName, $Tags, $NumberOfRecordSets)
-{
-    $z = Get-AzPrivateDnsZone -ResourceGroupName $ResourceGroupName -Name $Name
-    $z | Should -Not -BeNullOrEmpty
-    #$z.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-    $z.NumberOfRecordSets | Should -Be $NumberOfRecordSets
-    $z.NumberOfVirtualNetworkLinks | Should -Be 1
-
-    Test-VerifyTagsForResource -ResourceId $z.ResourceId -Tags $Tags
-}
-
-function Test-VerifyPrivateEndpoint($Name, $ResourceGroupName, $Tags, $SubnetName, $ServiceId, $GroupId)
-{
-    $pep = Get-AzPrivateEndpoint -ResourceGroupName $ResourceGroupName -Name $Name
-    $pep | Should -Not -BeNullOrEmpty
-    $pep.ProvisioningState | Should -Be "Succeeded"
-    $pep.Subnet.Id | Should -Be "$($virtualNetworkResourceId)/subnets/$($SubnetName)"
-    $pep.NetworkInterfaces.Count | Should -Be 1
-    $pep.PrivateLinkServiceConnections.ProvisioningState | Should -Be "Succeeded"
-    $pep.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $ServiceId
-    $pep.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
-    $pep.PrivateLinkServiceConnections.GroupIds | Should -Be $GroupId
-    $pep.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
-
-    Test-VerifyTagsForResource -ResourceId $pep.Id -Tags $Tags
-}
-
 function Test-VerifyDiagSettings($ResourceId, $LogAnalyticsWorkspaceResourceId, $Logs)
 {
     $diag  = Get-AzDiagnosticSetting -ResourceId $ResourceId -Name avm-diagnostic-settings
@@ -74,24 +47,34 @@ function Test-VerifyDiagSettings($ResourceId, $LogAnalyticsWorkspaceResourceId, 
     for ($i = 0; $i -lt $diagCat.Count; $i++) { $diagCat[$i].Name | Should -BeIn $Logs }
 }
 
-function Test-VerifyNetworkSecurityGroup($NetworkSecurityGroupResourceId, $Tags, $VirtualNetworkResourceId, $SubnetName, $NumberOfSecurityRules, $NumberOfDefaultSecurityRules, $LogAnalyticsWorkspaceResourceId, $Logs)
+function Test-VerifyVirtualNetwork($VirtualNetworkResourceGroupName, $VirtualNetworkName, $Tags, $LogAnalyticsWorkspaceResourceId, $AddressPrefix, $NumberOfSubnets)
 {
-    # TODO: Do we have to check for specific rules?
-    $nsg = Get-AzResource -ResourceId $NetworkSecurityGroupResourceId | Get-AzNetworkSecurityGroup
-    $nsg | Should -Not -BeNullOrEmpty
-    $nsg.ProvisioningState | Should -Be "Succeeded"
-    $nsg.FlushConnection | Should -Be $false
-    $nsg.NetworkInterfaces | Should -BeNullOrEmpty
-    $nsg.SecurityRules.Count | Should -Be $NumberOfSecurityRules
-    $nsg.DefaultSecurityRules.Count | Should -Be $NumberOfDefaultSecurityRules
-    $nsg.Subnets.Count | Should -Be 1
-    $nsg.Subnets[0].Id | Should -Be "$($VirtualNetworkResourceId)/subnets/$($SubnetName)"
+    $vnet = Get-AzVirtualNetwork -ResourceGroupName $VirtualNetworkResourceGroupName -Name $VirtualNetworkName
+    $vnet | Should -Not -BeNullOrEmpty
+    $vnet.ProvisioningState | Should -Be "Succeeded"
+    $vnet.AddressSpace.Count | Should -Be 1
+    $vnet.AddressSpace[0].AddressPrefixes.Count | Should -Be 1
+    $vnet.AddressSpace[0].AddressPrefixes[0] | Should -Be $AddressPrefix
+    $vnet.EnableDdosProtection | Should -Be $false
+    $vnet.VirtualNetworkPeerings.Count | Should -Be 0
+    $vnet.Subnets.Count | Should -Be $NumberOfSubnets
+    $vnet.IpAllocations.Count | Should -Be 0
+    $vnet.DhcpOptions.DnsServers | Should -BeNullOrEmpty
+    $vnet.FlowTimeoutInMinutes | Should -BeNullOrEmpty
+    $vnet.BgpCommunities | Should -BeNullOrEmpty
+    $vnet.Encryption | Should -BeNullOrEmpty
+    $vnet.DdosProtectionPlan | Should -BeNullOrEmpty
+    $vnet.ExtendedLocation | Should -BeNullOrEmpty
 
-    Test-VerifyTagsForResource -ResourceId $NetworkSecurityGroupResourceId -Tags $Tags
-    Test-VerifyDiagSettings -ResourceId $NetworkSecurityGroupResourceId -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId -Logs $Logs
+    Test-VerifyTagsForResource -ResourceId $vnet.Id -Tags $Tags
 
-    Test-VerifyLock -ResourceId $NetworkSecurityGroupResourceId
-    Test-VerifyRoleAssignment -ResourceId $NetworkSecurityGroupResourceId
+    $logs = @('VMProtectionAlerts', 'AllMetrics')
+    Test-VerifyDiagSettings -ResourceId $vnet.Id -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId -Logs $logs
+
+    Test-VerifyLock -ResourceId $vnet.Id
+    Test-VerifyRoleAssignment -ResourceId $vnet.Id
+
+    return $vnet
 }
 
 function Test-VerifySubnet($Subnet, $SubnetName, $SubnetAddressPrefix, $NumberOfSecurityGroups, $NumberOfPrivateEndpoints, $NumberOfIpConfigurations, $DelegationServiceName)
@@ -127,4 +110,59 @@ function Test-VerifySubnet($Subnet, $SubnetName, $SubnetAddressPrefix, $NumberOf
     $Subnet.RouteTable | Should -BeNullOrEmpty
     $Subnet.NatGateway | Should -BeNullOrEmpty
     $Subnet.DefaultOutboundAccess | Should -BeNullOrEmpty
+
+    return $Subnet
+}
+
+function Test-VerifyNetworkSecurityGroup($NetworkSecurityGroupResourceId, $Tags, $VirtualNetworkResourceId, $SubnetName, $NumberOfSecurityRules, $NumberOfDefaultSecurityRules, $LogAnalyticsWorkspaceResourceId, $Logs)
+{
+    # TODO: Do we have to check for specific rules?
+    $nsg = Get-AzResource -ResourceId $NetworkSecurityGroupResourceId | Get-AzNetworkSecurityGroup
+    $nsg | Should -Not -BeNullOrEmpty
+    $nsg.ProvisioningState | Should -Be "Succeeded"
+    $nsg.FlushConnection | Should -Be $false
+    $nsg.NetworkInterfaces | Should -BeNullOrEmpty
+    $nsg.SecurityRules.Count | Should -Be $NumberOfSecurityRules
+    $nsg.DefaultSecurityRules.Count | Should -Be $NumberOfDefaultSecurityRules
+    $nsg.Subnets.Count | Should -Be 1
+    $nsg.Subnets[0].Id | Should -Be "$($VirtualNetworkResourceId)/subnets/$($SubnetName)"
+
+    Test-VerifyTagsForResource -ResourceId $NetworkSecurityGroupResourceId -Tags $Tags
+    Test-VerifyDiagSettings -ResourceId $NetworkSecurityGroupResourceId -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId -Logs $Logs
+
+    Test-VerifyLock -ResourceId $NetworkSecurityGroupResourceId
+    Test-VerifyRoleAssignment -ResourceId $NetworkSecurityGroupResourceId
+
+    return $nsg
+}
+
+function Test-VerifyDnsZone($Name, $ResourceGroupName, $Tags, $NumberOfRecordSets)
+{
+    $z = Get-AzPrivateDnsZone -ResourceGroupName $ResourceGroupName -Name $Name
+    $z | Should -Not -BeNullOrEmpty
+    #$z.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
+    $z.NumberOfRecordSets | Should -Be $NumberOfRecordSets
+    $z.NumberOfVirtualNetworkLinks | Should -Be 1
+
+    Test-VerifyTagsForResource -ResourceId $z.ResourceId -Tags $Tags
+
+    return $z
+}
+
+function Test-VerifyPrivateEndpoint($Name, $ResourceGroupName, $Tags, $SubnetName, $ServiceId, $GroupId)
+{
+    $pep = Get-AzPrivateEndpoint -ResourceGroupName $ResourceGroupName -Name $Name
+    $pep | Should -Not -BeNullOrEmpty
+    $pep.ProvisioningState | Should -Be "Succeeded"
+    $pep.Subnet.Id | Should -Be "$($virtualNetworkResourceId)/subnets/$($SubnetName)"
+    $pep.NetworkInterfaces.Count | Should -Be 1
+    $pep.PrivateLinkServiceConnections.ProvisioningState | Should -Be "Succeeded"
+    $pep.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $ServiceId
+    $pep.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
+    $pep.PrivateLinkServiceConnections.GroupIds | Should -Be $GroupId
+    $pep.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be "Approved"
+
+    Test-VerifyTagsForResource -ResourceId $pep.Id -Tags $Tags
+
+    return $pep
 }

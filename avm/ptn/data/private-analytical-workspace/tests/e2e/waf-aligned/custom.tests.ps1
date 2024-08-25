@@ -57,26 +57,8 @@ Describe 'Validate Pattern deployment' {
 
             It 'Check Azure Virtual Network' {
 
-                $vnet = Get-AzVirtualNetwork -ResourceGroupName $virtualNetworkResourceGroupName -Name $virtualNetworkName
-                $vnet | Should -Not -BeNullOrEmpty
-                $vnet.ProvisioningState | Should -Be "Succeeded"
-                $vnet.AddressSpace.Count | Should -Be 1
-                $vnet.AddressSpace[0].AddressPrefixes.Count | Should -Be 1
-                $vnet.AddressSpace[0].AddressPrefixes[0] | Should -Be "192.168.224.0/19"
-                $vnet.EnableDdosProtection | Should -Be $false
-                $vnet.VirtualNetworkPeerings.Count | Should -Be 0
-                $vnet.IpAllocations.Count | Should -Be 0
-                $vnet.DhcpOptions.DnsServers | Should -BeNullOrEmpty
-                $vnet.FlowTimeoutInMinutes | Should -BeNullOrEmpty
-                $vnet.BgpCommunities | Should -BeNullOrEmpty
-                $vnet.Encryption | Should -BeNullOrEmpty
-                $vnet.DdosProtectionPlan | Should -BeNullOrEmpty
-                $vnet.ExtendedLocation | Should -BeNullOrEmpty
-                $vnet.Tag.Owner | Should -Be "Contoso"
-                $vnet.Tag.CostCenter | Should -Be "123-456-789"
-                # TODO Role, Lock - How?
-
-                $vnet.Subnets.Count | Should -Be 3
+                $vnet = Test-VerifyVirtualNetwork -VirtualNetworkResourceGroupName $virtualNetworkResourceGroupName -VirtualNetworkName $virtualNetworkName `
+                    -Tags $expectedTags -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -AddressPrefix "192.168.224.0/19" -NumberOfSubnets 3
 
                 Test-VerifySubnet -Subnet $vnet.Subnets[0] -SubnetName "private-link-subnet" -SubnetAddressPrefix "192.168.224.0/24" `
                     -NumberOfSecurityGroups 1 -NumberOfPrivateEndpoints 3 -NumberOfIpConfigurations 5 -DelegationServiceName $null
@@ -86,9 +68,6 @@ Describe 'Validate Pattern deployment' {
 
                 Test-VerifySubnet -Subnet $vnet.Subnets[2] -SubnetName "dbw-backend-subnet" -SubnetAddressPrefix "192.168.230.0/23" `
                     -NumberOfSecurityGroups 1 -NumberOfPrivateEndpoints $null -NumberOfIpConfigurations $null -DelegationServiceName "Microsoft.Databricks/workspaces"
-
-                $logs = @('VMProtectionAlerts', 'AllMetrics')
-                Test-VerifyDiagSettings -ResourceId $virtualNetworkResourceId -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $logs
 
                 $nsgLogs = @('NetworkSecurityGroupEvent', 'NetworkSecurityGroupRuleCounter')
                 Test-VerifyNetworkSecurityGroup -NetworkSecurityGroupResourceId $vnet.Subnets[0].NetworkSecurityGroup[0].Id `
