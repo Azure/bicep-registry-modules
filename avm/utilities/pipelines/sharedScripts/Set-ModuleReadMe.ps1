@@ -776,7 +776,7 @@ function Set-CrossReferencesSection {
 
     $dependencies = $CrossReferencedModuleList[$FullModuleIdentifier]
 
-    if ($dependencies -and -not $dependencies['localPathReferences'] -and -not $dependencies['remoteReferences']) {
+    if (-not $dependencies -or ($dependencies -and -not $dependencies['localPathReferences'] -and -not $dependencies['remoteReferences'])) {
         # no cross references in the template
         return $ReadMeFileContent
     }

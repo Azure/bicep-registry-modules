@@ -7,7 +7,6 @@ This module deploys a Digital Twins Instance Event Grid Endpoint.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -90,10 +89,3 @@ The name of the Digital Twin Endpoint.
 | `name` | string | The name of the Endpoint. |
 | `resourceGroupName` | string | The name of the resource group the resource was created in. |
 | `resourceId` | string | The resource ID of the Endpoint. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
