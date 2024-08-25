@@ -8,7 +8,7 @@ Describe 'Validate Pattern deployment' {
     BeforeAll {
 
         . $PSScriptRoot/../../common.tests.ps1
-        $expectedTags = @{Owner='Contoso'; CostCenter='123-456-789'; Err='Test'}
+        $expectedTags = @{Owner='Contoso'; CostCenter='123-456-789'}
 
         $resourceId = $TestInputData.DeploymentOutputs.resourceId.Value
         $name = $TestInputData.DeploymentOutputs.name.Value
@@ -43,63 +43,11 @@ Describe 'Validate Pattern deployment' {
 
         It 'Check Output Variables' {
 
-            $resourceId | Should -Not -BeNullOrEmpty
-            $name | Should -Not -BeNullOrEmpty
-            $location | Should -Not -BeNullOrEmpty
-            $resourceGroupName | Should -Not -BeNullOrEmpty
-
-            $virtualNetworkResourceId | Should -Not -BeNullOrEmpty
-            $virtualNetworkName | Should -Not -BeNullOrEmpty
-            $virtualNetworkLocation | Should -Not -BeNullOrEmpty
-            $virtualNetworkResourceGroupName | Should -Not -BeNullOrEmpty
-
-            $logAnalyticsWorkspaceResourceId | Should -Not -BeNullOrEmpty
-            $logAnalyticsWorkspaceName | Should -Not -BeNullOrEmpty
-            $logAnalyticsWorkspaceLocation | Should -Not -BeNullOrEmpty
-            $logAnalyticsWorkspaceResourceGroupName | Should -Not -BeNullOrEmpty
-
-            $keyVaultResourceId | Should -Not -BeNullOrEmpty
-            $keyVaultName | Should -Not -BeNullOrEmpty
-            $keyVaultLocation | Should -Not -BeNullOrEmpty
-            $keyVaultResourceGroupName | Should -Not -BeNullOrEmpty
-
-            $databricksResourceId | Should -Not -BeNullOrEmpty
-            $databricksName | Should -Not -BeNullOrEmpty
-            $databricksLocation | Should -Not -BeNullOrEmpty
-            $databricksResourceGroupName | Should -Not -BeNullOrEmpty
-        }
-
-        It 'Check Mandatory Objects' {
-
-            $r = Get-AzResource -ResourceId $resourceId
-            $r | Should -Not -BeNullOrEmpty
-            $r.Name | Should -Be $name
-            $r.Location | Should -Be $location
-            $r.ResourceGroupName | Should -Be $resourceGroupName
-
-            $r = Get-AzResource -ResourceId $virtualNetworkResourceId
-            $r | Should -Not -BeNullOrEmpty
-            $r.Name | Should -Be $virtualNetworkName
-            $r.Location | Should -Be $virtualNetworkLocation
-            $r.ResourceGroupName | Should -Be $virtualNetworkResourceGroupName
-
-            $r = Get-AzResource -ResourceId $logAnalyticsWorkspaceResourceId
-            $r | Should -Not -BeNullOrEmpty
-            $r.Name | Should -Be $logAnalyticsWorkspaceName
-            $r.Location | Should -Be $logAnalyticsWorkspaceLocation
-            $r.ResourceGroupName | Should -Be $logAnalyticsWorkspaceResourceGroupName
-
-            $r = Get-AzResource -ResourceId $keyVaultResourceId
-            $r | Should -Not -BeNullOrEmpty
-            $r.Name | Should -Be $keyVaultName
-            $r.Location | Should -Be $keyVaultLocation
-            $r.ResourceGroupName | Should -Be $keyVaultResourceGroupName
-
-            $r = Get-AzResource -ResourceId $databricksResourceId
-            $r | Should -Not -BeNullOrEmpty
-            $r.Name | Should -Be $databricksName
-            $r.Location | Should -Be $databricksLocation
-            $r.ResourceGroupName | Should -Be $databricksResourceGroupName
+            Test-VerifyOutputVariables -ResourceId $resourceId -Name $name -Location $location -ResourceGroupName $resourceGroupName
+            Test-VerifyOutputVariables -ResourceId $virtualNetworkResourceId -Name $virtualNetworkName -Location $virtualNetworkLocation -ResourceGroupName $virtualNetworkResourceGroupName
+            Test-VerifyOutputVariables -ResourceId $logAnalyticsWorkspaceResourceId -Name $logAnalyticsWorkspaceName -Location $logAnalyticsWorkspaceLocation -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName
+            Test-VerifyOutputVariables -ResourceId $keyVaultResourceId -Name $keyVaultName -Location $keyVaultLocation -ResourceGroupName $keyVaultResourceGroupName
+            Test-VerifyOutputVariables -ResourceId $databricksResourceId -Name $databricksName -Location $databricksLocation -ResourceGroupName $databricksResourceGroupName
         }
 
         Context 'Network - Azure Virtual Network Tests' {
@@ -115,69 +63,6 @@ Describe 'Validate Pattern deployment' {
                 $vnet.AddressSpace.Count | Should -Be 1
                 $vnet.AddressSpace[0].AddressPrefixes.Count | Should -Be 1
                 $vnet.AddressSpace[0].AddressPrefixes[0] | Should -Be "192.168.224.0/19"
-                $vnet.Subnets.Count | Should -Be 3
-
-                $vnet.Subnets[0].ProvisioningState | Should -Be "Succeeded"
-                $vnet.Subnets[0].Name | Should -Be "private-link-subnet"
-                $vnet.Subnets[0].PrivateEndpointNetworkPolicies | Should -Be "Disabled"
-                $vnet.Subnets[0].PrivateLinkServiceNetworkPolicies | Should -Be "Enabled"
-                $vnet.Subnets[0].AddressPrefix.Count | Should -Be 1
-                $vnet.Subnets[0].AddressPrefix[0] | Should -Be "192.168.224.0/24"
-                $vnet.Subnets[0].NetworkSecurityGroup.Count | Should -Be 1
-                $vnet.Subnets[0].PrivateEndpoints.Count | Should -Be 3  # 3x PEPs
-                $vnet.Subnets[0].IpConfigurations.Count | Should -Be 5  # 5x IPs
-                $vnet.Subnets[0].ServiceAssociationLinks | Should -BeNullOrEmpty
-                $vnet.Subnets[0].ResourceNavigationLinks | Should -BeNullOrEmpty
-                $vnet.Subnets[0].ServiceEndpoints | Should -BeNullOrEmpty
-                $vnet.Subnets[0].ServiceEndpointPolicies | Should -BeNullOrEmpty
-                $vnet.Subnets[0].Delegations | Should -BeNullOrEmpty
-                $vnet.Subnets[0].IpAllocations | Should -BeNullOrEmpty
-                $vnet.Subnets[0].RouteTable | Should -BeNullOrEmpty
-                $vnet.Subnets[0].NatGateway | Should -BeNullOrEmpty
-                $vnet.Subnets[0].DefaultOutboundAccess | Should -BeNullOrEmpty
-
-                $vnet.Subnets[1].ProvisioningState | Should -Be "Succeeded"
-                $vnet.Subnets[1].Name | Should -Be "dbw-frontend-subnet"
-                $vnet.Subnets[1].PrivateEndpointNetworkPolicies | Should -Be "Disabled"
-                $vnet.Subnets[1].PrivateLinkServiceNetworkPolicies | Should -Be "Enabled"
-                $vnet.Subnets[1].AddressPrefix.Count | Should -Be 1
-                $vnet.Subnets[1].AddressPrefix[0] | Should -Be "192.168.228.0/23"
-                $vnet.Subnets[1].NetworkSecurityGroup.Count | Should -Be 1
-                $vnet.Subnets[1].PrivateEndpoints | Should -BeNullOrEmpty
-                $vnet.Subnets[1].IpConfigurations | Should -BeNullOrEmpty
-                $vnet.Subnets[1].ServiceAssociationLinks | Should -BeNullOrEmpty
-                $vnet.Subnets[1].ResourceNavigationLinks | Should -BeNullOrEmpty
-                $vnet.Subnets[1].ServiceEndpoints | Should -BeNullOrEmpty
-                $vnet.Subnets[1].ServiceEndpointPolicies | Should -BeNullOrEmpty
-                $vnet.Subnets[1].Delegations.Count | Should -Be 1
-                $vnet.Subnets[1].Delegations[0].ProvisioningState | Should -Be "Succeeded"
-                $vnet.Subnets[1].Delegations[0].ServiceName | Should -Be "Microsoft.Databricks/workspaces"
-                $vnet.Subnets[1].IpAllocations | Should -BeNullOrEmpty
-                $vnet.Subnets[1].RouteTable | Should -BeNullOrEmpty
-                $vnet.Subnets[1].NatGateway | Should -BeNullOrEmpty
-                $vnet.Subnets[1].DefaultOutboundAccess | Should -BeNullOrEmpty
-
-                $vnet.Subnets[2].ProvisioningState | Should -Be "Succeeded"
-                $vnet.Subnets[2].Name | Should -Be "dbw-backend-subnet"
-                $vnet.Subnets[2].PrivateEndpointNetworkPolicies | Should -Be "Disabled"
-                $vnet.Subnets[2].PrivateLinkServiceNetworkPolicies | Should -Be "Enabled"
-                $vnet.Subnets[2].AddressPrefix.Count | Should -Be 1
-                $vnet.Subnets[2].AddressPrefix[0] | Should -Be "192.168.230.0/23"
-                $vnet.Subnets[2].NetworkSecurityGroup.Count | Should -Be 1
-                $vnet.Subnets[2].PrivateEndpoints | Should -BeNullOrEmpty
-                $vnet.Subnets[2].IpConfigurations | Should -BeNullOrEmpty
-                $vnet.Subnets[2].ServiceAssociationLinks | Should -BeNullOrEmpty
-                $vnet.Subnets[2].ResourceNavigationLinks | Should -BeNullOrEmpty
-                $vnet.Subnets[2].ServiceEndpoints | Should -BeNullOrEmpty
-                $vnet.Subnets[2].ServiceEndpointPolicies | Should -BeNullOrEmpty
-                $vnet.Subnets[2].Delegations.Count | Should -Be 1
-                $vnet.Subnets[2].Delegations[0].ProvisioningState | Should -Be "Succeeded"
-                $vnet.Subnets[2].Delegations[0].ServiceName | Should -Be "Microsoft.Databricks/workspaces"
-                $vnet.Subnets[2].IpAllocations | Should -BeNullOrEmpty
-                $vnet.Subnets[2].RouteTable | Should -BeNullOrEmpty
-                $vnet.Subnets[2].NatGateway | Should -BeNullOrEmpty
-                $vnet.Subnets[2].DefaultOutboundAccess | Should -BeNullOrEmpty
-
                 $vnet.EnableDdosProtection | Should -Be $false
                 $vnet.VirtualNetworkPeerings.Count | Should -Be 0
                 $vnet.IpAllocations.Count | Should -Be 0
@@ -190,6 +75,17 @@ Describe 'Validate Pattern deployment' {
                 $vnet.Tag.Owner | Should -Be "Contoso"
                 $vnet.Tag.CostCenter | Should -Be "123-456-789"
                 # TODO Role, Lock - How?
+
+                $vnet.Subnets.Count | Should -Be 3
+
+                Test-VerifySubnet -Subnet $vnet.Subnets[0] -SubnetName "private-link-subnet" -SubnetAddressPrefix "192.168.224.0/24" `
+                    -NumberOfSecurityGroups 1 -NumberOfPrivateEndpoints 3 -NumberOfIpConfigurations 5 -DelegationServiceName $null
+
+                Test-VerifySubnet -Subnet $vnet.Subnets[1] -SubnetName "dbw-frontend-subnet" -SubnetAddressPrefix "192.168.228.0/23" `
+                    -NumberOfSecurityGroups 1 -NumberOfPrivateEndpoints $null -NumberOfIpConfigurations $null -DelegationServiceName "Microsoft.Databricks/workspaces"
+
+                Test-VerifySubnet -Subnet $vnet.Subnets[2] -SubnetName "dbw-backend-subnet" -SubnetAddressPrefix "192.168.230.0/23" `
+                    -NumberOfSecurityGroups 1 -NumberOfPrivateEndpoints $null -NumberOfIpConfigurations $null -DelegationServiceName "Microsoft.Databricks/workspaces"
 
                 $logs = @('VMProtectionAlerts', 'AllMetrics')
                 Test-VerifyDiagSettings -ResourceId $virtualNetworkResourceId -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Logs $logs

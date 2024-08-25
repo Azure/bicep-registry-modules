@@ -1,3 +1,17 @@
+function Test-VerifyOutputVariables($ResourceId, $Name, $Location, $ResourceGroupName)
+{
+    $ResourceId | Should -Not -BeNullOrEmpty
+    $Name | Should -Not -BeNullOrEmpty
+    $Location | Should -Not -BeNullOrEmpty
+    $ResourceGroupName | Should -Not -BeNullOrEmpty
+
+    $r = Get-AzResource -ResourceId $ResourceId
+    $r | Should -Not -BeNullOrEmpty
+    $r.Name | Should -Be $Name
+    $r.Location | Should -Be $Location
+    $r.ResourceGroupName | Should -Be $ResourceGroupName
+}
+
 function Test-VerifyTagsForResource($ResourceId, $Tags)
 {
     $t = Get-AzTag -ResourceId $ResourceId
@@ -64,4 +78,39 @@ function Test-VerifyNetworkSecurityGroup($NetworkSecurityGroupResourceId, $Tags,
 
     Test-VerifyTagsForResource -ResourceId $NetworkSecurityGroupResourceId -Tags $Tags
     Test-VerifyDiagSettings -ResourceId $NetworkSecurityGroupResourceId -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId -Logs $Logs
+}
+
+function Test-VerifySubnet($Subnet, $SubnetName, $SubnetAddressPrefix, $NumberOfSecurityGroups, $NumberOfPrivateEndpoints, $NumberOfIpConfigurations, $DelegationServiceName)
+{
+    $Subnet.ProvisioningState | Should -Be "Succeeded"
+    $Subnet.Name | Should -Be SubnetName
+    $Subnet.PrivateEndpointNetworkPolicies | Should -Be "Disabled"
+    $Subnet.PrivateLinkServiceNetworkPolicies | Should -Be "Enabled"
+    $Subnet.AddressPrefix.Count | Should -Be 1
+    $Subnet.AddressPrefix[0] | Should -Be $SubnetAddressPrefix
+    $Subnet.NetworkSecurityGroup.Count | Should -Be $NumberOfSecurityGroups
+
+    if ( $NumberOfPrivateEndpoints -eq $null ) { $Subnet.PrivateEndpoints | Should -BeNullOrEmpty }
+    else { $Subnet.PrivateEndpoints | Should -Be $NumberOfPrivateEndpoints }
+
+    if ( $NumberOfIpConfigurations -eq $null ) { $Subnet.IpConfigurations | Should -BeNullOrEmpty }
+    else { $Subnet.IpConfigurations | Should -Be $NumberOfIpConfigurations }
+
+    $Subnet.ServiceAssociationLinks | Should -BeNullOrEmpty
+    $Subnet.ResourceNavigationLinks | Should -BeNullOrEmpty
+    $Subnet.ServiceEndpoints | Should -BeNullOrEmpty
+    $Subnet.ServiceEndpointPolicies | Should -BeNullOrEmpty
+
+    if ( $DelegationServiceName -eq $null ) { $Subnet.Delegations | Should -BeNullOrEmpty }
+    else
+    {
+        $Subnet.Delegations.Count | Should -Be 1
+        $Subnet.Delegations[0].ProvisioningState | Should -Be "Succeeded"
+        $Subnet.Delegations[0].ServiceName | Should -Be $DelegationServiceName
+    }
+
+    $Subnet.IpAllocations | Should -BeNullOrEmpty
+    $Subnet.RouteTable | Should -BeNullOrEmpty
+    $Subnet.NatGateway | Should -BeNullOrEmpty
+    $Subnet.DefaultOutboundAccess | Should -BeNullOrEmpty
 }
