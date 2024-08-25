@@ -57,11 +57,11 @@ resource artifactsource 'Microsoft.DevTestLab/labs/artifactsources@2018-09-15' =
   tags: tags
   properties: {
     displayName: displayName
-    branchRef: branchRef ?? null
-    folderPath: folderPath ?? null
-    armTemplateFolderPath: armTemplateFolderPath ?? null
-    securityToken: securityToken ?? null
-    sourceType: sourceType ?? null
+    branchRef: branchRef
+    folderPath: folderPath
+    armTemplateFolderPath: armTemplateFolderPath
+    securityToken: securityToken
+    sourceType: sourceType
     status: status
     uri: uri
   }

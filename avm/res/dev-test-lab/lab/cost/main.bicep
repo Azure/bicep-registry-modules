@@ -120,8 +120,8 @@ resource cost 'Microsoft.DevTestLab/labs/costs@2018-09-15' = {
     endDateTime: cycleEndDateTime
     targetCost: {
       target: target
-      cycleStartDateTime: cycleStartDateTime ?? null
-      cycleEndDateTime: cycleEndDateTime ?? null
+      cycleStartDateTime: cycleStartDateTime
+      cycleEndDateTime: cycleEndDateTime
       cycleType: cycleType
       status: status
       costThresholds: [

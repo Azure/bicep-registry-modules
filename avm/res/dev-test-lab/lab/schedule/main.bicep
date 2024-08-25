@@ -89,3 +89,7 @@ output resourceId string = schedule.id
 
 @sys.description('The name of the resource group the schedule was created in.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //

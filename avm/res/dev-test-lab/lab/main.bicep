@@ -97,7 +97,7 @@ param encryptionDiskEncryptionSetId string = ''
 param virtualnetworks virtualNetworkType
 
 @description('Optional. Policies to create for the lab.')
-param policies array = []
+param policies policiesType
 
 @description('Optional. Schedules to create for the lab.')
 param schedules array = []
@@ -246,7 +246,6 @@ module lab_policies 'policyset/policy/main.bicep' = [
     params: {
       labName: lab.name
       name: policy.name
-
       description: policy.?description ?? ''
       evaluatorType: policy.evaluatorType
       factData: policy.?factData ?? ''
@@ -284,10 +283,10 @@ module lab_notificationChannels 'notificationchannel/main.bicep' = [
       labName: lab.name
       name: notificationChannel.name
       tags: notificationChannel.?tags ?? tags
-      description: notificationChannel.?description ?? null
+      description: notificationChannel.?description
       events: notificationChannel.events
-      emailRecipient: notificationChannel.?emailRecipient ?? null
-      webHookUrl: notificationChannel.?webHookUrl ?? null
+      emailRecipient: notificationChannel.?emailRecipient
+      webHookUrl: notificationChannel.?webHookUrl
       notificationLocale: notificationChannel.?notificationLocale ?? 'en'
     }
   }
@@ -301,13 +300,13 @@ module lab_artifactSources 'artifactsource/main.bicep' = [
       name: artifactSource.name
       tags: artifactSource.?tags ?? tags
       displayName: artifactSource.?displayName ?? artifactSource.name
-      branchRef: artifactSource.?branchRef ?? null
-      folderPath: artifactSource.?folderPath ?? null
-      armTemplateFolderPath: artifactSource.?armTemplateFolderPath ?? null
-      sourceType: artifactSource.?sourceType ?? null
+      branchRef: artifactSource.?branchRef
+      folderPath: artifactSource.?folderPath
+      armTemplateFolderPath: artifactSource.?armTemplateFolderPath
+      sourceType: artifactSource.?sourceType
       status: artifactSource.?status ?? 'Enabled'
       uri: artifactSource.uri
-      securityToken: artifactSource.?securityToken ?? null
+      securityToken: artifactSource.?securityToken
     }
   }
 ]
@@ -319,8 +318,8 @@ module lab_costs 'cost/main.bicep' = if (!empty(costs)) {
     tags: costs.?tags ?? tags
     currencyCode: costs.?currencyCode ?? 'USD'
     cycleType: costs!.cycleType
-    cycleStartDateTime: costs.?cycleStartDateTime ?? null
-    cycleEndDateTime: costs.?cycleEndDateTime ?? null
+    cycleStartDateTime: costs.?cycleStartDateTime
+    cycleEndDateTime: costs.?cycleEndDateTime
     status: costs.?status ?? 'Enabled'
     target: costs.?target ?? 0
     thresholdValue25DisplayOnChart: costs.?thresholdValue25DisplayOnChart ?? 'Disabled'
@@ -541,4 +540,37 @@ type notificationChannelType = {
 
   @description('Optional. The locale to use when sending a notification (fallback for unsupported languages is EN).')
   notificationLocale: string?
+}[]
+
+type policiesType = {
+  @description('Required. The name of the policy.')
+  name: string
+
+  @description('Optional. The description of the policy.')
+  description: string?
+
+  @description('Required. The evaluator type of the policy (i.e. AllowedValuesPolicy, MaxValuePolicy).')
+  evaluatorType: 'AllowedValuesPolicy' | 'MaxValuePolicy'
+
+  @description('Optional. The fact data of the policy.')
+  factData: string?
+
+  @description('Required. The fact name of the policy.')
+  factName:
+    | 'EnvironmentTemplate'
+    | 'GalleryImage'
+    | 'LabPremiumVmCount'
+    | 'LabTargetCost'
+    | 'LabVmCount'
+    | 'LabVmSize'
+    | 'ScheduleEditPermission'
+    | 'UserOwnedLabPremiumVmCount'
+    | 'UserOwnedLabVmCount'
+    | 'UserOwnedLabVmCountInSubnet'
+
+  @description('Optional. The status of the policy.')
+  status: 'Disabled' | 'Enabled'?
+
+  @description('Required. The threshold of the policy (i.e. a number for MaxValuePolicy, and a JSON array of values for AllowedValuesPolicy).')
+  threshold: string
 }[]
