@@ -118,7 +118,7 @@ Describe 'Validate Pattern deployment' {
                 Test-VerifyDatabricks -DatabricksResourceGroupName $databricksResourceGroupName -DatabricksName $databricksName -Tags $expectedTags `
                     -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku "premium" -VirtualNetworkResourceId $virtualNetworkResourceId `
                     -PrivateSubnetName "dbw-backend-subnet" -PublicSubnetName "dbw-frontend-subnet" -PEPName1 "-auth-PEP" -PEPName2 "-ui-PEP" `
-                    -NumberOfRecordSets 5 -PLSubnetName "dbw-backend-subnet"
+                    -NumberOfRecordSets 5 -PLSubnetName "private-link-subnet"
 
 
 

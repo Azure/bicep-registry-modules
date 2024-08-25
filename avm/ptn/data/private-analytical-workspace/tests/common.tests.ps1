@@ -88,10 +88,10 @@ function Test-VerifySubnet($Subnet, $SubnetName, $SubnetAddressPrefix, $NumberOf
     $Subnet.NetworkSecurityGroup.Count | Should -Be $NumberOfSecurityGroups
 
     if ( $NumberOfPrivateEndpoints -eq $null ) { $Subnet.PrivateEndpoints | Should -BeNullOrEmpty }
-    else { $Subnet.PrivateEndpoints | Should -Be $NumberOfPrivateEndpoints }
+    else { $Subnet.PrivateEndpoints.Count | Should -Be $NumberOfPrivateEndpoints }
 
     if ( $NumberOfIpConfigurations -eq $null ) { $Subnet.IpConfigurations | Should -BeNullOrEmpty }
-    else { $Subnet.IpConfigurations | Should -Be $NumberOfIpConfigurations }
+    else { $Subnet.IpConfigurations.Count | Should -Be $NumberOfIpConfigurations }
 
     $Subnet.ServiceAssociationLinks | Should -BeNullOrEmpty
     $Subnet.ResourceNavigationLinks | Should -BeNullOrEmpty
