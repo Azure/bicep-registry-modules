@@ -230,7 +230,6 @@ module testDeployment '../../../main.bicep' = [
             status: 'Enabled'
             timeInMinutes: 30
           }
-          //broken
         }
         {
           name: 'LabVmAutoStart'

@@ -264,9 +264,9 @@ module lab_schedules 'schedule/main.bicep' = [
       name: schedule.name
       tags: schedule.?tags ?? tags
       taskType: schedule.taskType
-      dailyRecurrence: schedule.?dailyRecurrence ?? {}
-      hourlyRecurrence: schedule.?hourlyRecurrence ?? {}
-      weeklyRecurrence: schedule.?weeklyRecurrence ?? {}
+      dailyRecurrence: schedule.?dailyRecurrence
+      hourlyRecurrence: schedule.?hourlyRecurrence
+      weeklyRecurrence: schedule.?weeklyRecurrence
       status: schedule.?status ?? 'Enabled'
       targetResourceId: schedule.?targetResourceId ?? ''
       timeZoneId: schedule.?timeZoneId ?? 'Pacific Standard time'
@@ -442,7 +442,7 @@ type artifactsourcesType = {
   @description('Optional. The security token to authenticate to the artifact source.')
   @secure()
   securityToken: string?
-}[]
+}[]?
 
 import { allowedSubnetType, subnetOverrideType } from 'virtualnetwork/main.bicep'
 type virtualNetworkType = {
@@ -463,7 +463,7 @@ type virtualNetworkType = {
 
   @description('Optional. The subnet overrides of the virtual network.')
   subnetOverrides: subnetOverrideType[]?
-}[]
+}[]?
 
 type costsType = {
   @description('Optional. The tags of the resource.')

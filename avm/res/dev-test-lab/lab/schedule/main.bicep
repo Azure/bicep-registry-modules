@@ -59,9 +59,9 @@ resource schedule 'Microsoft.DevTestLab/labs/schedules@2018-09-15' = {
   tags: tags
   properties: {
     taskType: taskType
-    dailyRecurrence: dailyRecurrence ?? {}
-    hourlyRecurrence: hourlyRecurrence ?? {}
-    weeklyRecurrence: weeklyRecurrence ?? {}
+    dailyRecurrence: dailyRecurrence
+    hourlyRecurrence: hourlyRecurrence
+    weeklyRecurrence: weeklyRecurrence
     status: status
     targetResourceId: targetResourceId
     timeZoneId: timeZoneId
