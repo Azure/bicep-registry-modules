@@ -346,7 +346,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 ### Example 5: _Minimal Deployment - fully private_
 
-Greenfield, isolated deployment from the enterprise network - fully private.
+Isolated network deployment (Minimalistic) - fully private.
 
 
 <details>
@@ -404,7 +404,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 ### Example 6: _Minimal Deployment - allowed IP address_
 
-Greenfield, isolated deployment from the enterprise network - allowed IP address.
+Isolated network deployment (Minimalistic) - allowed IP address.
 
 
 <details>
@@ -478,7 +478,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 ### Example 7: _Use Case 1 - fully private_
 
-Minimal deployment from the enterprise network - fully private.
+Isolated network deployment - fully private.
 
 
 <details>
@@ -536,7 +536,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 ### Example 8: _Use Case 1 - allowed IP address_
 
-Minimal deployment from the enterprise network - allowed IP address.
+Isolated network deployment - allowed IP address.
 
 
 <details>
@@ -1283,7 +1283,7 @@ For example, refer to the documentation here: https://learn.microsoft.com/en-us/
 
 ### Supported Use Cases
 
-#### Use Case 1: Greenfield, isolated deployment from the enterprise network
+#### Use Case 1: Greenfield, isolated network deployment
 
 This use case is fairly simple to provision while ensuring security.
 Ideal for rapid problem-solving that requires an analytical workspace for swift development.

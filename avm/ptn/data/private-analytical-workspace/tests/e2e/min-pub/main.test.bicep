@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Minimal Deployment - allowed IP address'
-metadata description = 'Greenfield, isolated deployment from the enterprise network - allowed IP address.'
+metadata description = 'Isolated network deployment (Minimalistic) - allowed IP address.'
 
 // ========== //
 // Parameters //

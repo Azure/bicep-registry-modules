@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Use Case 1 - fully private'
-metadata description = 'Minimal deployment from the enterprise network - fully private.'
+metadata description = 'Isolated network deployment - fully private.'
 
 // ========== //
 // Parameters //
