@@ -43,11 +43,11 @@ Describe 'Validate Pattern deployment' {
 
         It 'Check Output Variables' {
 
-            Test-VerifyOutputVariables -ResourceId $resourceId -name $name -Location $location -ResourceGroupName $resourceGroupName
-            Test-VerifyOutputVariables -ResourceId $virtualNetworkResourceId -name $virtualNetworkName -Location $virtualNetworkLocation -ResourceGroupName $virtualNetworkResourceGroupName
-            Test-VerifyOutputVariables -ResourceId $logAnalyticsWorkspaceResourceId -name $logAnalyticsWorkspaceName -Location $logAnalyticsWorkspaceLocation -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName
-            Test-VerifyOutputVariables -ResourceId $keyVaultResourceId -name $keyVaultName -Location $keyVaultLocation -ResourceGroupName $keyVaultResourceGroupName
-            Test-VerifyOutputVariables -ResourceId $databricksResourceId -name $databricksName -Location $databricksLocation -ResourceGroupName $databricksResourceGroupName
+            Test-VerifyOutputVariables -MustBeNullOrEmpty $false -ResourceId $resourceId -name $name -Location $location -ResourceGroupName $resourceGroupName
+            Test-VerifyOutputVariables -MustBeNullOrEmpty $false -ResourceId $virtualNetworkResourceId -name $virtualNetworkName -Location $virtualNetworkLocation -ResourceGroupName $virtualNetworkResourceGroupName
+            Test-VerifyOutputVariables -MustBeNullOrEmpty $false -ResourceId $logAnalyticsWorkspaceResourceId -name $logAnalyticsWorkspaceName -Location $logAnalyticsWorkspaceLocation -ResourceGroupName $logAnalyticsWorkspaceResourceGroupName
+            Test-VerifyOutputVariables -MustBeNullOrEmpty $false -ResourceId $keyVaultResourceId -name $keyVaultName -Location $keyVaultLocation -ResourceGroupName $keyVaultResourceGroupName
+            Test-VerifyOutputVariables -MustBeNullOrEmpty $false -ResourceId $databricksResourceId -name $databricksName -Location $databricksLocation -ResourceGroupName $databricksResourceGroupName
         }
 
         Context 'Network - Azure Virtual Network Tests' {

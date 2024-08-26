@@ -62,9 +62,11 @@ The following section provides usage examples for the module, which were used to
 - [Using defaults with provided existing Azure Key Vault](#example-2-using-defaults-with-provided-existing-azure-key-vault)
 - [Using defaults with provided existing Azure Log Analytics Workspace](#example-3-using-defaults-with-provided-existing-azure-log-analytics-workspace)
 - [Using large parameter set](#example-4-using-large-parameter-set)
-- [Use Case 1 - fully private](#example-5-use-case-1---fully-private)
-- [Use Case 1 - allowed IP address](#example-6-use-case-1---allowed-ip-address)
-- [WAF-aligned](#example-7-waf-aligned)
+- [Minimal Deployment - fully private](#example-5-minimal-deployment---fully-private)
+- [Minimal Deployment - allowed IP address](#example-6-minimal-deployment---allowed-ip-address)
+- [Use Case 1 - fully private](#example-7-use-case-1---fully-private)
+- [Use Case 1 - allowed IP address](#example-8-use-case-1---allowed-ip-address)
+- [WAF-aligned](#example-9-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -338,7 +340,139 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 5: _Use Case 1 - fully private_
+### Example 5: _Minimal Deployment - fully private_
+
+Greenfield, isolated deployment from the enterprise network - fully private.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  name: 'privateAnalyticalWorkspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'dpawminpriv001'
+    // Non-required parameters
+    enableDatabricks: false
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawminpriv001"
+    },
+    // Non-required parameters
+    "enableDatabricks": {
+      "value": false
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 6: _Minimal Deployment - allowed IP address_
+
+Greenfield, isolated deployment from the enterprise network - allowed IP address.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  name: 'privateAnalyticalWorkspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'dpawminpub001'
+    // Non-required parameters
+    advancedOptions: {
+      networkAcls: {
+        ipRules: [
+          '104.43.16.94'
+        ]
+      }
+    }
+    enableDatabricks: false
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawminpub001"
+    },
+    // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "networkAcls": {
+          "ipRules": [
+            "104.43.16.94"
+          ]
+        }
+      }
+    },
+    "enableDatabricks": {
+      "value": false
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Use Case 1 - fully private_
 
 Greenfield, isolated deployment from the enterprise network - fully private.
 
@@ -396,7 +530,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 6: _Use Case 1 - allowed IP address_
+### Example 8: _Use Case 1 - allowed IP address_
 
 Greenfield, isolated deployment from the enterprise network - allowed IP address.
 
@@ -470,7 +604,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 9: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
