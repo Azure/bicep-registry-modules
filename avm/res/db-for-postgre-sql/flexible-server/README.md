@@ -53,8 +53,8 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   params: {
     // Required parameters
     name: 'dfpsfsmin001'
-    skuName: 'Standard_B2s'
-    tier: 'Burstable'
+    skuName: 'Standard_D2s_v3'
+    tier: 'GeneralPurpose'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -81,10 +81,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": "dfpsfsmin001"
     },
     "skuName": {
-      "value": "Standard_B2s"
+      "value": "Standard_D2s_v3"
     },
     "tier": {
-      "value": "Burstable"
+      "value": "GeneralPurpose"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -471,7 +471,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       }
     ]
     geoRedundantBackup: 'Disabled'
-    highAvailability: 'SameZone'
     location: '<location>'
     roleAssignments: [
       {
@@ -594,9 +593,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     },
     "geoRedundantBackup": {
       "value": "Disabled"
-    },
-    "highAvailability": {
-      "value": "SameZone"
     },
     "location": {
       "value": "<location>"
@@ -1254,7 +1250,7 @@ The mode for high availability.
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
+- Default: `'ZoneRedundant'`
 - Allowed:
   ```Bicep
   [
