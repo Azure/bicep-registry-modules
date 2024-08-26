@@ -483,6 +483,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       }
     ]
     geoRedundantBackup: 'Disabled'
+    highAvailability: 'SameZone'
     location: '<location>'
     roleAssignments: [
       {
@@ -605,6 +606,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     },
     "geoRedundantBackup": {
       "value": "Disabled"
+    },
+    "highAvailability": {
+      "value": "SameZone"
     },
     "location": {
       "value": "<location>"
