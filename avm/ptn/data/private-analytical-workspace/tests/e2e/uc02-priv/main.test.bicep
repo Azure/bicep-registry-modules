@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Use Case 2 - fully private'
-metadata description = 'Implementation in an Existing, Enterprise-Specific Virtual Network for a New Deployment - fully private.'
+metadata description = 'Deployment in an Existing, Enterprise-Specific Virtual Network - fully private.'
 
 // ========== //
 // Parameters //

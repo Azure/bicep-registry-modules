@@ -478,7 +478,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 ### Example 7: _Use Case 1 - fully private_
 
-Isolated deployment from the enterprise network - fully private.
+Minimal deployment from the enterprise network - fully private.
 
 
 <details>
@@ -536,7 +536,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 ### Example 8: _Use Case 1 - allowed IP address_
 
-Isolated deployment from the enterprise network - allowed IP address.
+Minimal deployment from the enterprise network - allowed IP address.
 
 
 <details>
@@ -610,7 +610,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 ### Example 9: _Use Case 2 - fully private_
 
-Implementation in an Existing, Enterprise-Specific Virtual Network for a New Deployment - fully private.
+Deployment in an Existing, Enterprise-Specific Virtual Network - fully private.
 
 
 <details>
@@ -692,7 +692,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 ### Example 10: _Use Case 2 - allowed IP address_
 
-Implementation in an Existing, Enterprise-Specific Virtual Network for a New Deployment - allowed IP address.
+Deployment in an Existing, Enterprise-Specific Virtual Network - allowed IP address.
 
 
 <details>

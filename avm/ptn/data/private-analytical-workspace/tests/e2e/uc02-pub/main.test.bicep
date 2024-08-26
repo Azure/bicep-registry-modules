@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Use Case 2 - allowed IP address'
-metadata description = 'Implementation in an Existing, Enterprise-Specific Virtual Network for a New Deployment - allowed IP address.'
+metadata description = 'Deployment in an Existing, Enterprise-Specific Virtual Network - allowed IP address.'
 
 // ========== //
 // Parameters //
