@@ -231,7 +231,9 @@ function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $
         Test-VerifyPrivateEndpoint -Name "$($kv.VaultName)$($PEPName)" -ResourceGroupName $KeyVaultResourceGroupName -Tags $Tags -SubnetName $SubnetName -ServiceId $kv.ResourceId -GroupId 'vault'
     }
 
-    Test-VerifyDnsZone -Name 'privatelink.vaultcore.azure.net' -ResourceGroupName $KeyVaultResourceGroupName -Tags $Tags -NumberOfRecordSets $NumberOfRecordSets
+    if ( $NumberOfRecordSets -ne 0 ) {
+        Test-VerifyDnsZone -Name 'privatelink.vaultcore.azure.net' -ResourceGroupName $KeyVaultResourceGroupName -Tags $Tags -NumberOfRecordSets $NumberOfRecordSets
+    }
 
     Test-VerifyLock -ResourceId $kv.ResourceId
     Test-VerifyRoleAssignment -ResourceId $kv.ResourceId
@@ -349,7 +351,9 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
         Test-VerifyPrivateEndpoint -Name "$($DatabricksName)$($PEPName2)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId 'databricks_ui_api'
     }
 
-    Test-VerifyDnsZone -Name 'privatelink.azuredatabricks.net' -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -NumberOfRecordSets $NumberOfRecordSets
+    if ( $NumberOfRecordSets -ne 0 ) {
+        Test-VerifyDnsZone -Name 'privatelink.azuredatabricks.net' -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -NumberOfRecordSets $NumberOfRecordSets
+    }
 
     Test-VerifyLock -ResourceId $adb.Id
     Test-VerifyRoleAssignment -ResourceId $adb.Id
