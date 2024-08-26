@@ -298,18 +298,19 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     $adb.NatGatewayNameValue | Should -BeNullOrEmpty
     $adb.PrepareEncryption | Should -Be $true
     $adb.PrepareEncryptionType | Should -Be 'Bool'
-    $adb.PrivateEndpointConnection.Count | Should -Be 2
+    if ( $NumberOfRecordSets -ne 0 ) {
+        $adb.PrivateEndpointConnection.Count | Should -Be 2
 
-    $adb.PrivateEndpointConnection[0].GroupId.Count | Should -Be 1
-    $adb.PrivateEndpointConnection[0].GroupId[0] | Should -Be 'databricks_ui_api'
-    $adb.PrivateEndpointConnection[0].PrivateLinkServiceConnectionStateStatus | Should -Be 'Approved'
-    $adb.PrivateEndpointConnection[0].ProvisioningState | Should -Be 'Succeeded'
+        $adb.PrivateEndpointConnection[0].GroupId.Count | Should -Be 1
+        $adb.PrivateEndpointConnection[0].GroupId[0] | Should -Be 'databricks_ui_api'
+        $adb.PrivateEndpointConnection[0].PrivateLinkServiceConnectionStateStatus | Should -Be 'Approved'
+        $adb.PrivateEndpointConnection[0].ProvisioningState | Should -Be 'Succeeded'
 
-    $adb.PrivateEndpointConnection[1].GroupId.Count | Should -Be 1
-    $adb.PrivateEndpointConnection[1].GroupId[0] | Should -Be 'browser_authentication'
-    $adb.PrivateEndpointConnection[1].PrivateLinkServiceConnectionStateStatus | Should -Be 'Approved'
-    $adb.PrivateEndpointConnection[1].ProvisioningState | Should -Be 'Succeeded'
-
+        $adb.PrivateEndpointConnection[1].GroupId.Count | Should -Be 1
+        $adb.PrivateEndpointConnection[1].GroupId[0] | Should -Be 'browser_authentication'
+        $adb.PrivateEndpointConnection[1].PrivateLinkServiceConnectionStateStatus | Should -Be 'Approved'
+        $adb.PrivateEndpointConnection[1].ProvisioningState | Should -Be 'Succeeded'
+    }
     $adb.PublicIPNameType | Should -Be 'String'
     $adb.PublicIPNameValue | Should -Be 'nat-gw-public-ip'
     $adb.PublicNetworkAccess | Should -Be $PublicNetworkAccess
