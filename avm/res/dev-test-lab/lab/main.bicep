@@ -226,7 +226,7 @@ resource lab_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?
 }
 
 module lab_virtualNetworks 'virtualnetwork/main.bicep' = [
-  for (virtualNetwork, index) in virtualnetworks: {
+  for (virtualNetwork, index) in (virtualnetworks ?? []): {
     name: '${uniqueString(deployment().name, location)}-Lab-VirtualNetwork-${index}'
     params: {
       labName: lab.name
@@ -292,7 +292,7 @@ module lab_notificationChannels 'notificationchannel/main.bicep' = [
 ]
 
 module lab_artifactSources 'artifactsource/main.bicep' = [
-  for (artifactSource, index) in artifactsources: {
+  for (artifactSource, index) in (artifactsources ?? []): {
     name: '${uniqueString(deployment().name, location)}-Lab-ArtifactSources-${index}'
     params: {
       labName: lab.name

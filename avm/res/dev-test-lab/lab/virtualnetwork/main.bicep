@@ -59,7 +59,7 @@ type allowedSubnetType = {
   @sys.description('Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny)).')
   allowPublicIp: 'Allow' | 'Deny' | 'Default'?
 
-  @sys.description('The resource ID of the allowed subnet.')
+  @sys.description('Required. The resource ID of the allowed subnet.')
   resourceId: string
 
   @sys.description('Required. The name of the subnet as seen in the lab.')
