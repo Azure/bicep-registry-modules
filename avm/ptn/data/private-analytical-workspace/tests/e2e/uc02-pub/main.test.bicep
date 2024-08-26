@@ -82,10 +82,10 @@ module testDeployment '../../../main.bicep' = [
         networkAcls: { ipRules: ['104.43.16.94'] }
         virtualNetwork: {
           subnetNamePrivateLink: 'private-link-subnet'
-          databricks: {
-            subnetNameFrontend: 'dbw-frontend-subnet'
-            subnetNameBackend: 'dbw-backend-subnet'
-          }
+        }
+        databricks: {
+          subnetNameFrontend: 'dbw-frontend-subnet'
+          subnetNameBackend: 'dbw-backend-subnet'
         }
       }
     }

@@ -625,11 +625,11 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     name: 'dpawuc02priv001'
     // Non-required parameters
     advancedOptions: {
+      databricks: {
+        subnetNameBackend: 'dbw-backend-subnet'
+        subnetNameFrontend: 'dbw-frontend-subnet'
+      }
       virtualNetwork: {
-        databricks: {
-          subnetNameBackend: 'dbw-backend-subnet'
-          subnetNameFrontend: 'dbw-frontend-subnet'
-        }
         subnetNamePrivateLink: 'private-link-subnet'
       }
     }
@@ -662,11 +662,11 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     // Non-required parameters
     "advancedOptions": {
       "value": {
+        "databricks": {
+          "subnetNameBackend": "dbw-backend-subnet",
+          "subnetNameFrontend": "dbw-frontend-subnet"
+        },
         "virtualNetwork": {
-          "databricks": {
-            "subnetNameBackend": "dbw-backend-subnet",
-            "subnetNameFrontend": "dbw-frontend-subnet"
-          },
           "subnetNamePrivateLink": "private-link-subnet"
         }
       }
@@ -707,16 +707,16 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     name: 'dpawuc02pub001'
     // Non-required parameters
     advancedOptions: {
+      databricks: {
+        subnetNameBackend: 'dbw-backend-subnet'
+        subnetNameFrontend: 'dbw-frontend-subnet'
+      }
       networkAcls: {
         ipRules: [
           '104.43.16.94'
         ]
       }
       virtualNetwork: {
-        databricks: {
-          subnetNameBackend: 'dbw-backend-subnet'
-          subnetNameFrontend: 'dbw-frontend-subnet'
-        }
         subnetNamePrivateLink: 'private-link-subnet'
       }
     }
@@ -749,16 +749,16 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     // Non-required parameters
     "advancedOptions": {
       "value": {
+        "databricks": {
+          "subnetNameBackend": "dbw-backend-subnet",
+          "subnetNameFrontend": "dbw-frontend-subnet"
+        },
         "networkAcls": {
           "ipRules": [
             "104.43.16.94"
           ]
         },
         "virtualNetwork": {
-          "databricks": {
-            "subnetNameBackend": "dbw-backend-subnet",
-            "subnetNameFrontend": "dbw-frontend-subnet"
-          },
           "subnetNamePrivateLink": "private-link-subnet"
         }
       }
