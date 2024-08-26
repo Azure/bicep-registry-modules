@@ -1,6 +1,6 @@
 # API Management Services `[Microsoft.ApiManagement/service]`
 
-This module deploys an API Management Service.
+This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.
 
 ## Navigation
 
@@ -16,7 +16,7 @@ This module deploys an API Management Service.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ApiManagement/service` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2023-05-01-preview/service) |
+| `Microsoft.ApiManagement/service` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/service) |
 | `Microsoft.ApiManagement/service/apis` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis) |
 | `Microsoft.ApiManagement/service/apis/diagnostics` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/diagnostics) |
 | `Microsoft.ApiManagement/service/apis/policies` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/policies) |
@@ -45,12 +45,74 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/api-management/service:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Test deploying apim v2 sku](#example-3-test-deploying-apim-v2-sku)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Deploying a Consumption SKU](#example-1-deploying-a-consumption-sku)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Deploying a Developer SKU](#example-3-deploying-a-developer-sku)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Deploying an APIM v2 sku](#example-5-deploying-an-apim-v2-sku)
+- [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Deploying a Consumption SKU_
+
+This instance deploys the module using a Consumption SKU.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module service 'br/public:avm/res/api-management/service:<version>' = {
+  name: 'serviceDeployment'
+  params: {
+    // Required parameters
+    name: 'apiscon001'
+    publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
+    publisherName: 'az-amorg-x-001'
+    // Non-required parameters
+    location: '<location>'
+    sku: 'Consumption'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "apiscon001"
+    },
+    "publisherEmail": {
+      "value": "apimgmt-noreply@mail.windowsazure.com"
+    },
+    "publisherName": {
+      "value": "az-amorg-x-001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "sku": {
+      "value": "Consumption"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -106,7 +168,67 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Deploying a Developer SKU_
+
+This instance deploys the module using a Developer SKU.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module service 'br/public:avm/res/api-management/service:<version>' = {
+  name: 'serviceDeployment'
+  params: {
+    // Required parameters
+    name: 'apisdev001'
+    publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
+    publisherName: 'az-amorg-x-001'
+    // Non-required parameters
+    location: '<location>'
+    sku: 'Developer'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "apisdev001"
+    },
+    "publisherEmail": {
+      "value": "apimgmt-noreply@mail.windowsazure.com"
+    },
+    "publisherName": {
+      "value": "az-amorg-x-001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "sku": {
+      "value": "Developer"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -294,11 +416,13 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publicIpAddressResourceId: '<publicIpAddressResourceId>'
     roleAssignments: [
       {
+        name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -554,11 +678,13 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "6352c3e3-ac6b-43d5-ac43-1077ff373721",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -598,9 +724,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 </details>
 <p>
 
-### Example 3: _Test deploying apim v2 sku_
+### Example 5: _Deploying an APIM v2 sku_
 
-This instance deploys the module using a v2 SKU with the minimum set of required parameters.
+This instance deploys the module using a v2 SKU.
 
 
 <details>
@@ -658,7 +784,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1113,6 +1239,12 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`publisherEmail`](#parameter-publisheremail) | string | The email address of the owner of the service. |
 | [`publisherName`](#parameter-publishername) | string | The name of the owner of the service. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`skuCapacity`](#parameter-skucapacity) | int | The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -1125,7 +1257,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`backends`](#parameter-backends) | array | Backends. |
 | [`caches`](#parameter-caches) | array | Caches. |
 | [`certificates`](#parameter-certificates) | array | List of Certificates that need to be installed in the API Management service. Max supported certificates that can be installed is 10. |
-| [`customProperties`](#parameter-customproperties) | object | Custom properties of the API Management service. |
+| [`customProperties`](#parameter-customproperties) | object | Custom properties of the API Management service. Not supported if SKU is Consumption. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableGateway`](#parameter-disablegateway) | bool | Property only valid for an API Management service deployed in multiple locations. This can be used to disable the gateway in master region. |
 | [`enableClientCertificate`](#parameter-enableclientcertificate) | bool | Property only meant to be used for Consumption SKU Service. This enforces a client certificate to be presented on each request to the gateway. This also enables the ability to authenticate the certificate in the policy on the gateway. |
@@ -1147,12 +1279,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 | [`restore`](#parameter-restore) | bool | Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | The pricing tier of this API Management service. |
-| [`skuCount`](#parameter-skucount) | int | The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. |
 | [`subscriptions`](#parameter-subscriptions) | array | Subscriptions. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkType`](#parameter-virtualnetworktype) | string | The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. |
-| [`zones`](#parameter-zones) | array | A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs. |
+| [`zones`](#parameter-zones) | array | A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku. |
 
 ### Parameter: `name`
 
@@ -1174,6 +1305,14 @@ The name of the owner of the service.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `skuCapacity`
+
+The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/.
+
+- Required: No
+- Type: int
+- Default: `2`
 
 ### Parameter: `additionalLocations`
 
@@ -1241,7 +1380,7 @@ List of Certificates that need to be installed in the API Management service. Ma
 
 ### Parameter: `customProperties`
 
-Custom properties of the API Management service.
+Custom properties of the API Management service. Not supported if SKU is Consumption.
 
 - Required: No
 - Type: object
@@ -1617,6 +1756,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1667,6 +1807,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -1701,23 +1848,6 @@ The pricing tier of this API Management service.
     'Premium'
     'Standard'
     'StandardV2'
-  ]
-  ```
-
-### Parameter: `skuCount`
-
-The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0.
-
-- Required: No
-- Type: int
-- Default: `2`
-- Allowed:
-  ```Bicep
-  [
-    0
-    1
-    2
-    3
   ]
   ```
 
@@ -1761,7 +1891,7 @@ The type of VPN in which API Management service needs to be configured in. None 
 
 ### Parameter: `zones`
 
-A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs.
+A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku.
 
 - Required: No
 - Type: array

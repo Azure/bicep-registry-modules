@@ -1,0 +1,42 @@
+# Workflow for adding labels to newly created PRs
+name: .Platform - Set AVM GitHub PR labels
+
+on:
+  pull_request_target:
+    types: [opened, ready_for_review]
+
+jobs:
+  SetAvmGitHubPrLabels:
+    if: github.repository == 'Azure/bicep-registry-modules'
+    name: Set-AvmGitHubPrLabels
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: tibdex/github-app-token@v2
+        id: generate-token
+        with:
+          app_id: ${{ secrets.TEAM_LINTER_APP_ID }}
+          private_key: ${{ secrets.TEAM_LINTER_PRIVATE_KEY }}
+      - name: "Run scripts"
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Set-AvmGitHubPrLabels.ps1')
+
+          $functionInput = @{
+            RepoRoot = $env:GITHUB_WORKSPACE
+            Repo     = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
+            PrUrl = "${{ github.event.pull_request.url }}"
+          }
+
+          Write-Verbose "Invoke task with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          Set-AvmGitHubPrLabels @functionInput -Verbose # -WhatIf

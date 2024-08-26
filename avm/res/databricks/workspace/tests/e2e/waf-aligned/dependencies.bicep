@@ -34,6 +34,9 @@ param virtualNetworkName string
 @description('Required. The object ID of the Databricks Enterprise Application. Required for Customer-Managed-Keys.')
 param databricksApplicationObjectId string
 
+@description('Required. The name of the Access Connector to create.')
+param accessConnectorName string
+
 var addressPrefix = '10.0.0.0/16'
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
@@ -359,6 +362,31 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   }
 }
 
+resource blobStoragePrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: 'privatelink.blob.${environment().suffixes.storage}'
+  location: 'global'
+
+  resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
+    name: '${virtualNetwork.name}-vnetlink'
+    location: 'global'
+    properties: {
+      virtualNetwork: {
+        id: virtualNetwork.id
+      }
+      registrationEnabled: false
+    }
+  }
+}
+
+resource accessConnector 'Microsoft.Databricks/accessConnectors@2024-05-01' = {
+  name: accessConnectorName
+  location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {}
+}
+
 @description('The resource ID of the created Virtual Network Default Subnet.')
 output defaultSubnetResourceId string = virtualNetwork.properties.subnets[0].id
 
@@ -371,8 +399,11 @@ output customPrivateSubnetName string = virtualNetwork.properties.subnets[2].nam
 @description('The resource ID of the created Virtual Network.')
 output virtualNetworkResourceId string = virtualNetwork.id
 
-@description('The resource ID of the created Private DNS Zone.')
+@description('The resource ID of the created Private DNS Zone for databricks.')
 output privateDNSZoneResourceId string = privateDNSZone.id
+
+@description('The resource ID of the created Private DNS Zone for blob storage.')
+output blobStoragePrivateDNSZoneResourceId string = blobStoragePrivateDNSZone.id
 
 @description('The resource ID of the created Azure Machine Learning Workspace.')
 output machineLearningWorkspaceResourceId string = machineLearningWorkspace.id
@@ -397,3 +428,9 @@ output keyVaultDiskKeyName string = keyVaultDisk::key.name
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
+
+@description('The name of the created Log Analytics Workspace.')
+output logAnalyticsWorkspaceName string = logAnalyticsWorkspace.name
+
+@description('The resource ID of the created access connector.')
+output accessConnectorResourceId string = accessConnector.id

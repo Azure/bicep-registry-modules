@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Using `deployments` in parameter set'
+metadata name = 'Using `AIServices` with `deployments` in parameter set'
 metadata description = '''
 This instance deploys the module with the AI model deployment feature.'
 
@@ -43,7 +43,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // ============== //
 
 module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: if (true == false) {
+  for iteration in ['init', 'idem']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}-ai'
     params: {

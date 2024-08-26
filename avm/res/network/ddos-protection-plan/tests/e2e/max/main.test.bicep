@@ -11,9 +11,6 @@ metadata description = 'This instance deploys the module with most of its featur
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-network.ddosprotectionplans-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ndppmax'
 
@@ -21,7 +18,7 @@ param serviceShort string = 'ndppmax'
 param namePrefix string = '#_namePrefix_#'
 
 // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-#disable-next-line no-hardcoded-location 
+#disable-next-line no-hardcoded-location
 var enforcedLocation = 'northeurope'
 
 // ============ //
@@ -60,11 +57,13 @@ module testDeployment '../../../main.bicep' = {
     }
     roleAssignments: [
       {
+        name: '60339368-138d-4667-988a-5431c156f6ff'
         roleDefinitionIdOrName: 'Owner'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
       {
+        name: guid('Custom seed ${namePrefix}${serviceShort}')
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'

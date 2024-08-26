@@ -112,7 +112,21 @@ module testDeployment '../../../main.bicep' = [
                 ]
                 roleAssignments: [
                   {
-                    roleDefinitionIdOrName: 'Reader'
+                    name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
+                    roleDefinitionIdOrName: 'Owner'
+                    principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                    principalType: 'ServicePrincipal'
+                  }
+                  {
+                    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+                    principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                    principalType: 'ServicePrincipal'
+                  }
+                  {
+                    roleDefinitionIdOrName: subscriptionResourceId(
+                      'Microsoft.Authorization/roleDefinitions',
+                      'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+                    )
                     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
                     principalType: 'ServicePrincipal'
                   }
@@ -139,7 +153,21 @@ module testDeployment '../../../main.bicep' = [
           enableIPForwarding: true
           roleAssignments: [
             {
-              roleDefinitionIdOrName: 'Reader'
+              name: '95fc1cc2-05ed-4f5a-a22c-a6ca852df7e7'
+              roleDefinitionIdOrName: 'Owner'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId(
+                'Microsoft.Authorization/roleDefinitions',
+                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              )
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
@@ -321,11 +349,13 @@ module testDeployment '../../../main.bicep' = [
       proximityPlacementGroupResourceId: nestedDependencies.outputs.proximityPlacementGroupResourceId
       roleAssignments: [
         {
+          name: 'c70e8c48-6945-4607-9695-1098ba5a86ed'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

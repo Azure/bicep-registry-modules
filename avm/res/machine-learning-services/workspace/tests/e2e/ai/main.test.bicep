@@ -42,6 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
     applicationInsightsName: 'dep-${namePrefix}-appI-${serviceShort}'
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
     secondaryStorageAccountName: 'dep${namePrefix}st${serviceShort}2'
+    aiServicesName: 'dep-${namePrefix}-ai-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -63,6 +64,26 @@ module testDeployment '../../../main.bicep' = [
       associatedStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
       sku: 'Basic'
       kind: 'Hub'
+      connections: [
+        {
+          name: 'ai'
+          category: 'AIServices'
+          target: nestedDependencies.outputs.aiServicesEndpoint
+          connectionProperties: {
+            authType: 'ApiKey'
+            credentials: {
+              key: 'key'
+            }
+          }
+          metadata: {
+            ApiType: 'Azure'
+            ResourceId: nestedDependencies.outputs.aiServicesResourceId
+            Location: resourceLocation
+            ApiVersion: '2023-07-01-preview'
+            DeploymentApiVersion: '2023-10-01-preview'
+          }
+        }
+      ]
       workspaceHubConfig: {
         additionalWorkspaceStorageAccounts: [nestedDependencies.outputs.secondaryStorageAccountResourceId]
         defaultWorkspaceResourceGroup: resourceGroup.id
