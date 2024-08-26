@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "13121653397859804060"
+      "templateHash": "17160750790361326516"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API.",
@@ -270,7 +270,9 @@
           "apiName": {
             "value": "[parameters('name')]"
           },
-          "format": "[if(contains(coalesce(parameters('policies'), createArray())[copyIndex()], 'format'), createObject('value', coalesce(parameters('policies'), createArray())[copyIndex()].format), createObject('value', 'xml'))]",
+          "format": {
+            "value": "[coalesce(tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format'), 'xml')]"
+          },
           "value": {
             "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
           }

@@ -1284,7 +1284,7 @@ The mode for high availability.
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
+- Default: `'ZoneRedundant'`
 - Allowed:
   ```Bicep
   [
@@ -1518,7 +1518,7 @@ PostgreSQL Server version.
 
 - Required: No
 - Type: string
-- Default: `'15'`
+- Default: `'16'`
 - Allowed:
   ```Bicep
   [
@@ -1527,6 +1527,7 @@ PostgreSQL Server version.
     '13'
     '14'
     '15'
+    '16'
   ]
   ```
 
