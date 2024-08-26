@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Use Case 1 - fully private'
-metadata description = 'Isolated deployment from the enterprise network - fully private.'
+metadata name = 'Use Case 2 - fully private'
+metadata description = 'Implementation in an Existing, Enterprise-Specific Virtual Network for a New Deployment - fully private.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-data-privateanalyticalworksp
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dpawuc01priv'
+param serviceShort string = 'dpawuc02priv'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -23,6 +23,27 @@ param namePrefix string = '#_namePrefix_#'
 // ============ //
 // Dependencies //
 // ============ //
+
+var subnetName01 = 'private-link-subnet'
+var subnetName02 = 'dbw-frontend-subnet'
+var subnetName03 = 'dbw-backend-subnet'
+
+resource resourceGroupVnet 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: '${resourceGroupName}-vnet'
+  location: resourceLocation
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroupVnet
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    location: resourceLocation
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    subnetName01: subnetName01
+    subnetName02: subnetName02
+    subnetName03: subnetName03
+  }
+}
 
 // General resources
 // =================
@@ -54,12 +75,19 @@ module testDeployment '../../../main.bicep' = [
         CostCenter: '123-456-789'
       }
       enableDatabricks: true
-      //virtualNetworkResourceId: null
+      virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
       //logAnalyticsWorkspaceResourceId: null
       //keyVaultResourceId: null
-      //advancedOptions: {
-      //  networkAcls: { ipRules: ['104.43.16.94'] }
-      //}
+      advancedOptions: {
+        //  networkAcls: { ipRules: ['104.43.16.94'] }
+        virtualNetwork: {
+          subnetNamePrivateLink: 'private-link-subnet'
+          databricks: {
+            subnetNameFrontend: 'dbw-frontend-subnet'
+            subnetNameBackend: 'dbw-backend-subnet'
+          }
+        }
+      }
     }
   }
 ]

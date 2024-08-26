@@ -68,7 +68,9 @@ The following section provides usage examples for the module, which were used to
 - [Minimal Deployment - allowed IP address](#example-6-minimal-deployment---allowed-ip-address)
 - [Use Case 1 - fully private](#example-7-use-case-1---fully-private)
 - [Use Case 1 - allowed IP address](#example-8-use-case-1---allowed-ip-address)
-- [WAF-aligned](#example-9-waf-aligned)
+- [Use Case 2 - fully private](#example-9-use-case-2---fully-private)
+- [Use Case 2 - allowed IP address](#example-10-use-case-2---allowed-ip-address)
+- [WAF-aligned](#example-11-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -476,7 +478,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 ### Example 7: _Use Case 1 - fully private_
 
-Greenfield, isolated deployment from the enterprise network - fully private.
+Isolated deployment from the enterprise network - fully private.
 
 
 <details>
@@ -534,7 +536,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 ### Example 8: _Use Case 1 - allowed IP address_
 
-Greenfield, isolated deployment from the enterprise network - allowed IP address.
+Isolated deployment from the enterprise network - allowed IP address.
 
 
 <details>
@@ -606,7 +608,181 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 9: _WAF-aligned_
+### Example 9: _Use Case 2 - fully private_
+
+Implementation in an Existing, Enterprise-Specific Virtual Network for a New Deployment - fully private.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  name: 'privateAnalyticalWorkspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'dpawuc02priv001'
+    // Non-required parameters
+    advancedOptions: {
+      virtualNetwork: {
+        databricks: {
+          subnetNameBackend: 'dbw-backend-subnet'
+          subnetNameFrontend: 'dbw-frontend-subnet'
+        }
+        subnetNamePrivateLink: 'private-link-subnet'
+      }
+    }
+    enableDatabricks: true
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawuc02priv001"
+    },
+    // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "virtualNetwork": {
+          "databricks": {
+            "subnetNameBackend": "dbw-backend-subnet",
+            "subnetNameFrontend": "dbw-frontend-subnet"
+          },
+          "subnetNamePrivateLink": "private-link-subnet"
+        }
+      }
+    },
+    "enableDatabricks": {
+      "value": true
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    },
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 10: _Use Case 2 - allowed IP address_
+
+Implementation in an Existing, Enterprise-Specific Virtual Network for a New Deployment - allowed IP address.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  name: 'privateAnalyticalWorkspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'dpawuc02pub001'
+    // Non-required parameters
+    advancedOptions: {
+      networkAcls: {
+        ipRules: [
+          '104.43.16.94'
+        ]
+      }
+      virtualNetwork: {
+        databricks: {
+          subnetNameBackend: 'dbw-backend-subnet'
+          subnetNameFrontend: 'dbw-frontend-subnet'
+        }
+        subnetNamePrivateLink: 'private-link-subnet'
+      }
+    }
+    enableDatabricks: true
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawuc02pub001"
+    },
+    // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "networkAcls": {
+          "ipRules": [
+            "104.43.16.94"
+          ]
+        },
+        "virtualNetwork": {
+          "databricks": {
+            "subnetNameBackend": "dbw-backend-subnet",
+            "subnetNameFrontend": "dbw-frontend-subnet"
+          },
+          "subnetNamePrivateLink": "private-link-subnet"
+        }
+      }
+    },
+    "enableDatabricks": {
+      "value": true
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    },
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 11: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
