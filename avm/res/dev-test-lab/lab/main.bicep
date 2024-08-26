@@ -459,10 +459,10 @@ type virtualNetworkType = {
   description: string?
 
   @description('Optional. The allowed subnets of the virtual network.')
-  allowedSubnets: allowedSubnetType[]
+  allowedSubnets: allowedSubnetType[]?
 
   @description('Optional. The subnet overrides of the virtual network.')
-  subnetOverrides: subnetOverrideType[]
+  subnetOverrides: subnetOverrideType[]?
 }[]
 
 type costsType = {
@@ -567,7 +567,7 @@ type policiesType = {
     | 'UserOwnedLabVmCount'
     | 'UserOwnedLabVmCountInSubnet'
 
-  @description('Optional. The status of the policy.')
+  @description('Optional. The status of the policy. Default is "Enabled".')
   status: 'Disabled' | 'Enabled'?
 
   @description('Required. The threshold of the policy (i.e. a number for MaxValuePolicy, and a JSON array of values for AllowedValuesPolicy).')
@@ -586,13 +586,13 @@ type scheduleType = {
   taskType: 'LabVmsShutdownTask' | 'LabVmsStartupTask'
 
   @description('Optional. The daily recurrence of the schedule.')
-  dailyRecurrence: dailyRecurrenceType
+  dailyRecurrence: dailyRecurrenceType?
 
   @description('Optional. If the schedule will occur multiple times a day, specify the hourly recurrence.')
-  hourlyRecurrence: hourlyRecurrenceType
+  hourlyRecurrence: hourlyRecurrenceType?
 
   @description('Optional. If the schedule will occur only some days of the week, specify the weekly recurrence.')
-  weeklyRecurrence: weeklyRecurrenceType
+  weeklyRecurrence: weeklyRecurrenceType?
 
   @description('Optional. The status of the schedule (i.e. Enabled, Disabled). Default is "Enabled".')
   status: 'Disabled' | 'Enabled'?
@@ -604,5 +604,5 @@ type scheduleType = {
   timeZoneId: string?
 
   @description('Optional. The notification settings for the schedule.')
-  notificationSettings: notificationSettingsType
+  notificationSettings: notificationSettingsType?
 }[]?

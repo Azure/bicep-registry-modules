@@ -59,9 +59,9 @@ resource schedule 'Microsoft.DevTestLab/labs/schedules@2018-09-15' = {
   tags: tags
   properties: {
     taskType: taskType
-    dailyRecurrence: dailyRecurrence
-    hourlyRecurrence: hourlyRecurrence
-    weeklyRecurrence: weeklyRecurrence
+    dailyRecurrence: dailyRecurrence ?? {}
+    hourlyRecurrence: hourlyRecurrence ?? {}
+    weeklyRecurrence: weeklyRecurrence ?? {}
     status: status
     targetResourceId: targetResourceId
     timeZoneId: timeZoneId
@@ -91,7 +91,7 @@ type dailyRecurrenceType = {
 @export()
 type hourlyRecurrenceType = {
   @sys.description('Required. Minutes of the hour the schedule will run.')
-  minute: string
+  minute: int
 }?
 
 @export()
