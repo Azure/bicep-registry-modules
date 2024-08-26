@@ -84,6 +84,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     managedIdentities: {
       systemAssigned: true
     }
+    skuName: 'Automatic'
   }
 }
 ```
@@ -141,6 +142,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": {
         "systemAssigned": true
       }
+    },
+    "skuName": {
+      "value": "Automatic"
     }
   }
 }
@@ -1654,6 +1658,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Allow or deny public network access for AKS. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceCidr`](#parameter-servicecidr) | string | A CIDR notation IP range from which to assign service cluster IPs. It must not overlap with any Subnet IP ranges. |
+| [`skuName`](#parameter-skuname) | string | Name of a managed cluster SKU. |
 | [`skuTier`](#parameter-skutier) | string | Tier of a managed cluster SKU. |
 | [`sshPublicKey`](#parameter-sshpublickey) | string | Specifies the SSH RSA public key string for the Linux nodes. |
 | [`supportPlan`](#parameter-supportplan) | string | The support plan for the Managed Cluster. |
@@ -3291,6 +3296,21 @@ A CIDR notation IP range from which to assign service cluster IPs. It must not o
 
 - Required: No
 - Type: string
+
+### Parameter: `skuName`
+
+Name of a managed cluster SKU.
+
+- Required: No
+- Type: string
+- Default: `'Base'`
+- Allowed:
+  ```Bicep
+  [
+    'Automatic'
+    'Base'
+  ]
+  ```
 
 ### Parameter: `skuTier`
 

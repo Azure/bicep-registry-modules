@@ -76,6 +76,13 @@ param backendPoolType string = 'NodeIPConfiguration'
 ])
 param outboundType string = 'loadBalancer'
 
+@description('Optional. Name of a managed cluster SKU.')
+@allowed([
+  'Base'
+  'Automatic'
+])
+param skuName string = 'Base'
+
 @description('Optional. Tier of a managed cluster SKU.')
 @allowed([
   'Free'
@@ -525,7 +532,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
   tags: tags
   identity: identity
   sku: {
-    name: 'Base'
+    name: skuName
     tier: skuTier
   }
   properties: {
