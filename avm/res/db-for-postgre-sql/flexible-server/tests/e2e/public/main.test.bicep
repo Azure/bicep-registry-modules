@@ -144,6 +144,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       geoRedundantBackup: 'Disabled'
+      highAvailability: 'SameZone'
       location: resourceLocation
       storageSizeGB: 1024
       version: '14'
