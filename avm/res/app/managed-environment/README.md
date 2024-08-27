@@ -143,12 +143,12 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amemax001'
     // Non-required parameters
+    appInsightsConnectionString: '<appInsightsConnectionString>'
     certificateKeyVaultProperties: {
       identity: '<identity>'
       keyVaultUrl: '<keyVaultUrl>'
     }
     dnsSuffix: 'contoso.com'
-    appInsightsConnectionString: '<appInsightsConnectionString>'
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
@@ -248,6 +248,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amemax001"
     },
     // Non-required parameters
+    "appInsightsConnectionString": {
+      "value": "<appInsightsConnectionString>"
+    },
     "certificateKeyVaultProperties": {
       "value": {
         "identity": "<identity>",
@@ -256,9 +259,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     },
     "dnsSuffix": {
       "value": "contoso.com"
-    },
-    "appInsightsConnectionString": {
-      "value": "<appInsightsConnectionString>"
     },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
@@ -548,8 +548,8 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`certificateKeyVaultProperties`](#parameter-certificatekeyvaultproperties) | object | A key vault reference to the certificate to use for the custom domain. |
 | [`appInsightsConnectionString`](#parameter-appinsightsconnectionstring) | securestring | Application Insights connection string. |
+| [`certificateKeyVaultProperties`](#parameter-certificatekeyvaultproperties) | object | A key vault reference to the certificate to use for the custom domain. |
 | [`certificatePassword`](#parameter-certificatepassword) | securestring | Password of the certificate used by the custom domain. |
 | [`certificateValue`](#parameter-certificatevalue) | securestring | Certificate to use for the custom domain. PFX or PEM. |
 | [`daprAIConnectionString`](#parameter-dapraiconnectionstring) | securestring | Application Insights connection string used by Dapr to export Service to Service communication telemetry. |
@@ -637,6 +637,14 @@ Workload profiles configured for the Managed Environment. Required if zoneRedund
 - Type: array
 - Default: `[]`
 
+### Parameter: `appInsightsConnectionString`
+
+Application Insights connection string.
+
+- Required: No
+- Type: securestring
+- Default: `''`
+
 ### Parameter: `certificateKeyVaultProperties`
 
 A key vault reference to the certificate to use for the custom domain.
@@ -664,14 +672,6 @@ A key vault URL referencing the wildcard certificate that will be used for the c
 
 - Required: Yes
 - Type: string
-
-### Parameter: `appInsightsConnectionString`
-
-Application Insights connection string.
-
-- Required: No
-- Type: securestring
-- Default: `''`
 
 ### Parameter: `certificatePassword`
 
