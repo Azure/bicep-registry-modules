@@ -233,9 +233,9 @@ module lab_virtualNetworks 'virtualnetwork/main.bicep' = [
       name: virtualNetwork.name
       tags: virtualNetwork.?tags ?? tags
       externalProviderResourceId: virtualNetwork.externalProviderResourceId
-      description: virtualNetwork.?description ?? ''
-      allowedSubnets: virtualNetwork.?allowedSubnets ?? []
-      subnetOverrides: virtualNetwork.?subnetOverrides ?? []
+      description: virtualNetwork.?description
+      allowedSubnets: virtualNetwork.?allowedSubnets
+      subnetOverrides: virtualNetwork.?subnetOverrides
     }
   }
 ]
@@ -246,9 +246,9 @@ module lab_policies 'policyset/policy/main.bicep' = [
     params: {
       labName: lab.name
       name: policy.name
-      description: policy.?description ?? ''
+      description: policy.?description
       evaluatorType: policy.evaluatorType
-      factData: policy.?factData ?? ''
+      factData: policy.?factData
       factName: policy.factName
       status: policy.?status ?? 'Enabled'
       threshold: policy.threshold
@@ -268,9 +268,9 @@ module lab_schedules 'schedule/main.bicep' = [
       hourlyRecurrence: schedule.?hourlyRecurrence
       weeklyRecurrence: schedule.?weeklyRecurrence
       status: schedule.?status ?? 'Enabled'
-      targetResourceId: schedule.?targetResourceId ?? ''
+      targetResourceId: schedule.?targetResourceId
       timeZoneId: schedule.?timeZoneId ?? 'Pacific Standard time'
-      notificationSettings: schedule.?notificationSettings ?? {}
+      notificationSettings: schedule.?notificationSettings
     }
   }
 ]

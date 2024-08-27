@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "4106109878413250617"
+      "templateHash": "17290806626721732157"
     },
     "name": "DevTest Labs",
     "description": "This module deploys a DevTest Lab.",
@@ -1255,13 +1255,13 @@
             "value": "[coalesce(parameters('virtualnetworks'), createArray())[copyIndex()].externalProviderResourceId]"
           },
           "description": {
-            "value": "[coalesce(tryGet(coalesce(parameters('virtualnetworks'), createArray())[copyIndex()], 'description'), '')]"
+            "value": "[tryGet(coalesce(parameters('virtualnetworks'), createArray())[copyIndex()], 'description')]"
           },
           "allowedSubnets": {
-            "value": "[coalesce(tryGet(coalesce(parameters('virtualnetworks'), createArray())[copyIndex()], 'allowedSubnets'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('virtualnetworks'), createArray())[copyIndex()], 'allowedSubnets')]"
           },
           "subnetOverrides": {
-            "value": "[coalesce(tryGet(coalesce(parameters('virtualnetworks'), createArray())[copyIndex()], 'subnetOverrides'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('virtualnetworks'), createArray())[copyIndex()], 'subnetOverrides')]"
           }
         },
         "template": {
@@ -1272,10 +1272,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "12427896599892037170"
+              "templateHash": "18309816581107210302"
             },
             "name": "DevTest Lab Virtual Networks",
-            "description": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines.",
+            "description": "This module deploys a DevTest Lab Virtual Network.\r\n\r\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
@@ -1519,13 +1519,13 @@
             "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].name]"
           },
           "description": {
-            "value": "[coalesce(tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'description'), '')]"
+            "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'description')]"
           },
           "evaluatorType": {
             "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].evaluatorType]"
           },
           "factData": {
-            "value": "[coalesce(tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'factData'), '')]"
+            "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'factData')]"
           },
           "factName": {
             "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].factName]"
@@ -1544,7 +1544,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "11274254149183116532"
+              "templateHash": "10307787353498465860"
             },
             "name": "DevTest Lab Policy Sets Policies",
             "description": "This module deploys a DevTest Lab Policy Sets Policy.\r\n\r\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings.",
@@ -1629,9 +1629,9 @@
               "apiVersion": "2018-09-15",
               "name": "[format('{0}/{1}/{2}', parameters('labName'), 'default', parameters('name'))]",
               "properties": {
-                "description": "[parameters('description')]",
+                "description": "[coalesce(parameters('description'), '')]",
                 "evaluatorType": "[parameters('evaluatorType')]",
-                "factData": "[parameters('factData')]",
+                "factData": "[coalesce(parameters('factData'), '')]",
                 "factName": "[parameters('factName')]",
                 "status": "[parameters('status')]",
                 "threshold": "[parameters('threshold')]"
@@ -1706,13 +1706,13 @@
             "value": "[coalesce(tryGet(coalesce(parameters('schedules'), createArray())[copyIndex()], 'status'), 'Enabled')]"
           },
           "targetResourceId": {
-            "value": "[coalesce(tryGet(coalesce(parameters('schedules'), createArray())[copyIndex()], 'targetResourceId'), '')]"
+            "value": "[tryGet(coalesce(parameters('schedules'), createArray())[copyIndex()], 'targetResourceId')]"
           },
           "timeZoneId": {
             "value": "[coalesce(tryGet(coalesce(parameters('schedules'), createArray())[copyIndex()], 'timeZoneId'), 'Pacific Standard time')]"
           },
           "notificationSettings": {
-            "value": "[coalesce(tryGet(coalesce(parameters('schedules'), createArray())[copyIndex()], 'notificationSettings'), createObject())]"
+            "value": "[tryGet(coalesce(parameters('schedules'), createArray())[copyIndex()], 'notificationSettings')]"
           }
         },
         "template": {
@@ -1723,10 +1723,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "15799847804637325711"
+              "templateHash": "9010276477624635732"
             },
             "name": "DevTest Lab Schedules",
-            "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines.",
+            "description": "This module deploys a DevTest Lab Schedule.\r\n\r\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
