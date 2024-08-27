@@ -661,6 +661,117 @@ Defines the organization in which the pool will be used.
 - Required: Yes
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-organizationprofilekind) | string | Azure DevOps organization profile. |
+| [`organizations`](#parameter-organizationprofileorganizations) | array | The list of Azure DevOps organizations the pool should be present in.. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`permissionProfile`](#parameter-organizationprofilepermissionprofile) | object | The type of permission which determines which accounts are admins on the Azure DevOps pool. |
+
+### Parameter: `organizationProfile.kind`
+
+Azure DevOps organization profile.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDevOps'
+  ]
+  ```
+
+### Parameter: `organizationProfile.organizations`
+
+The list of Azure DevOps organizations the pool should be present in..
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`url`](#parameter-organizationprofileorganizationsurl) | string | The Azure DevOps organization URL in which the pool should be created. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`parallelism`](#parameter-organizationprofileorganizationsparallelism) | int | How many machines can be created at maximum in this organization out of the maximumConcurrency of the pool. |
+| [`projects`](#parameter-organizationprofileorganizationsprojects) | array | List of projects in which the pool should be created. |
+
+### Parameter: `organizationProfile.organizations.url`
+
+The Azure DevOps organization URL in which the pool should be created.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `organizationProfile.organizations.parallelism`
+
+How many machines can be created at maximum in this organization out of the maximumConcurrency of the pool.
+
+- Required: No
+- Type: int
+
+### Parameter: `organizationProfile.organizations.projects`
+
+List of projects in which the pool should be created.
+
+- Required: No
+- Type: array
+
+### Parameter: `organizationProfile.permissionProfile`
+
+The type of permission which determines which accounts are admins on the Azure DevOps pool.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groups`](#parameter-organizationprofilepermissionprofilegroups) | array | Group email addresses. |
+| [`kind`](#parameter-organizationprofilepermissionprofilekind) | string | Determines who has admin permissions to the Azure DevOps pool. |
+| [`users`](#parameter-organizationprofilepermissionprofileusers) | array | User email addresses. |
+
+### Parameter: `organizationProfile.permissionProfile.groups`
+
+Group email addresses.
+
+- Required: No
+- Type: array
+
+### Parameter: `organizationProfile.permissionProfile.kind`
+
+Determines who has admin permissions to the Azure DevOps pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CreatorOnly'
+    'Inherit'
+    'SpecificAccounts'
+  ]
+  ```
+
+### Parameter: `organizationProfile.permissionProfile.users`
+
+User email addresses.
+
+- Required: No
+- Type: array
+
 ### Parameter: `diagnosticSettings`
 
 The diagnostic settings of the service.

@@ -286,21 +286,7 @@ type imageType = {
   resourceId: string?
 }[]
 
-type organizationGitHubType = {
-  @description('Required. GitHub organization profile.')
-  kind: 'GitHub'
-
-  @description('Required. The list of GitHub organizations/repositories the pool should be present in.')
-  organizations: {
-    @description('Required. The GitHub organization URL in which the pool should be created.')
-    url: string
-
-    @description('Optional. List of repositories in which the pool should be created.')
-    repositories: string[]?
-  }[]
-}
-
-type organizationAzureDevOpsType = {
+type organizationProfileType = {
   @description('Required. Azure DevOps organization profile.')
   kind: 'AzureDevOps'
 
@@ -330,9 +316,6 @@ type organizationAzureDevOpsType = {
     parallelism: int?
   }[]
 }
-
-@discriminator('kind')
-type organizationProfileType = organizationGitHubType | organizationAzureDevOpsType
 
 type dataDiskType = {
   @description('Optional. The type of caching to be enabled for the data disks. The default value for caching is readwrite. For information about the caching options see: https://blogs.msdn.microsoft.com/windowsazurestorage/2012/06/27/exploring-windows-azure-drives-disks-and-images/.')

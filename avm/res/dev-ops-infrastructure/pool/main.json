@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "13514609454867966180"
+      "templateHash": "9138966756251042726"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource.",
@@ -167,48 +167,7 @@
         }
       }
     },
-    "organizationGitHubType": {
-      "type": "object",
-      "properties": {
-        "kind": {
-          "type": "string",
-          "allowedValues": [
-            "GitHub"
-          ],
-          "metadata": {
-            "description": "Required. GitHub organization profile."
-          }
-        },
-        "organizations": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "url": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. The GitHub organization URL in which the pool should be created."
-                }
-              },
-              "repositories": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. List of repositories in which the pool should be created."
-                }
-              }
-            }
-          },
-          "metadata": {
-            "description": "Required. The list of GitHub organizations/repositories the pool should be present in."
-          }
-        }
-      }
-    },
-    "organizationAzureDevOpsType": {
+    "organizationProfileType": {
       "type": "object",
       "properties": {
         "kind": {
@@ -295,20 +254,6 @@
           },
           "metadata": {
             "description": "Required. The list of Azure DevOps organizations the pool should be present in.."
-          }
-        }
-      }
-    },
-    "organizationProfileType": {
-      "type": "object",
-      "discriminator": {
-        "propertyName": "kind",
-        "mapping": {
-          "GitHub": {
-            "$ref": "#/definitions/organizationGitHubType"
-          },
-          "AzureDevOps": {
-            "$ref": "#/definitions/organizationAzureDevOpsType"
           }
         }
       }
