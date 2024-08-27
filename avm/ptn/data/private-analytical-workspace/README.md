@@ -798,7 +798,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
-    name: 'dpawuc02priv001'
+    name: 'dpawuc03priv001'
     // Non-required parameters
     advancedOptions: {
       databricks: {
@@ -835,7 +835,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawuc02priv001"
+      "value": "dpawuc03priv001"
     },
     // Non-required parameters
     "advancedOptions": {
@@ -888,7 +888,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
-    name: 'dpawuc02pub001'
+    name: 'dpawuc03pub001'
     // Non-required parameters
     advancedOptions: {
       databricks: {
@@ -930,7 +930,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawuc02pub001"
+      "value": "dpawuc03pub001"
     },
     // Non-required parameters
     "advancedOptions": {
