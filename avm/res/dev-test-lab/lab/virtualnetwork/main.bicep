@@ -49,3 +49,49 @@ output resourceId string = virtualNetwork.id
 
 @sys.description('The name of the resource group the lab virtual network was created in.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+type allowedSubnetType = {
+  @sys.description('Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny)).')
+  allowPublicIp: 'Allow' | 'Deny' | 'Default'?
+
+  @sys.description('Required. The resource ID of the allowed subnet.')
+  resourceId: string
+
+  @sys.description('Required. The name of the subnet as seen in the lab.')
+  labSubnetName: string
+}
+
+@export()
+type subnetOverrideType = {
+  @sys.description('Required. The name given to the subnet within the lab.')
+  labSubnetName: string
+
+  @sys.description('Required. The resource ID of the subnet.')
+  resourceId: string
+
+  @sys.description('Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny)).')
+  sharedPublicIpAddressConfiguration: {
+    @sys.description('Required. Backend ports that virtual machines on this subnet are allowed to expose.')
+    allowedPorts: {
+      @sys.description('Required. Backend port of the target virtual machine.')
+      backendPort: int
+
+      @sys.description('Required. Protocol type of the port.')
+      transportProtocol: 'Tcp' | 'Udp'
+    }[]
+  }
+
+  @sys.description('Optional. Indicates whether this subnet can be used during virtual machine creation (i.e. Allow, Deny).')
+  useInVmCreationPermission: 'Allow' | 'Deny' | 'Default'?
+
+  @sys.description('Optional. Indicates whether public IP addresses can be assigned to virtual machines on this subnet (i.e. Allow, Deny).')
+  usePublicIpAddressPermission: 'Allow' | 'Deny' | 'Default'?
+
+  @sys.description('Optional. The virtual network pool associated with this subnet.')
+  virtualNetworkPoolName: string?
+}

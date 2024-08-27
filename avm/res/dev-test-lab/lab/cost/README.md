@@ -73,7 +73,6 @@ Reporting cycle end date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z)
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `cycleStartDateTime`
 
@@ -81,7 +80,6 @@ Reporting cycle start date in the zulu time format (e.g. 2023-12-01T00:00:00.000
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `labName`
 
