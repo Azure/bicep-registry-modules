@@ -38,6 +38,9 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    certname: 'dep-${namePrefix}-cert-${serviceShort}'
+    certDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }
 }
 
@@ -63,6 +66,11 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       internal: true
+      dnsSuffix: 'contoso.com'
+      certificateKeyVaultProperties: {
+        identity: nestedDependencies.outputs.managedIdentityResourceId
+        keyVaultUrl: '${nestedDependencies.outputs.keyVaultUri}secrets/${split(nestedDependencies.outputs.certificateSecretUrl, '/')[4]}'
+      }
       dockerBridgeCidr: '172.16.0.1/28'
       platformReservedCidr: '172.17.17.0/24'
       platformReservedDnsIP: '172.17.17.17'

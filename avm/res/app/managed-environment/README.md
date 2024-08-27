@@ -142,6 +142,11 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amemax001'
     // Non-required parameters
+    certificateKeyVaultProperties: {
+      identity: '<identity>'
+      keyVaultUrl: '<keyVaultUrl>'
+    }
+    dnsSuffix: 'contoso.com'
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
@@ -212,6 +217,15 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amemax001"
     },
     // Non-required parameters
+    "certificateKeyVaultProperties": {
+      "value": {
+        "identity": "<identity>",
+        "keyVaultUrl": "<keyVaultUrl>"
+      }
+    },
+    "dnsSuffix": {
+      "value": "contoso.com"
+    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
@@ -561,10 +575,10 @@ A key vault reference to the certificate to use for the custom domain.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`identityResourceId`](#parameter-certificatekeyvaultpropertiesidentityresourceid) | string | The resoource ID of the identity. This is the identity that will be used to access the key vault. |
+| [`identity`](#parameter-certificatekeyvaultpropertiesidentity) | string | The resoource ID of the identity. This is the identity that will be used to access the key vault. |
 | [`keyVaultUrl`](#parameter-certificatekeyvaultpropertieskeyvaulturl) | string | A key vault URL referencing the wildcard certificate that will be used for the custom domain. |
 
-### Parameter: `certificateKeyVaultProperties.identityResourceId`
+### Parameter: `certificateKeyVaultProperties.identity`
 
 The resoource ID of the identity. This is the identity that will be used to access the key vault.
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "8646941725999048594"
+      "templateHash": "8471965537357659154"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment).",
@@ -130,7 +130,7 @@
     "certificateKeyVaultPropertiesType": {
       "type": "object",
       "properties": {
-        "identityResourceId": {
+        "identity": {
           "type": "string",
           "metadata": {
             "description": "Required. The resoource ID of the identity. This is the identity that will be used to access the key vault."

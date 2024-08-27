@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "16063130167042223341"
+      "templateHash": "8208951986195706770"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -542,6 +542,26 @@
             "metadata": {
               "description": "Optional. The name of RAI policy."
             }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "endpointsType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Type of the endpoint."
+          }
+        },
+        "endpoint": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The endpoint URI."
           }
         }
       },
@@ -1661,6 +1681,13 @@
         "description": "The service endpoint of the cognitive services account."
       },
       "value": "[reference('cognitiveService').endpoint]"
+    },
+    "endpoints": {
+      "$ref": "#/definitions/endpointsType",
+      "metadata": {
+        "description": "All endpoints available for the cognitive services account, types depends on the cognitive service kind."
+      },
+      "value": "[reference('cognitiveService').endpoints]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",

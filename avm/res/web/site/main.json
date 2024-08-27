@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "6862642055194235361"
+      "templateHash": "12782824420940859695"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -703,13 +703,6 @@
         "description": "Optional. Size of the function container."
       }
     },
-    "customDomainVerificationId": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification."
-      }
-    },
     "dailyMemoryTimeQuota": {
       "type": "int",
       "nullable": true,
@@ -835,7 +828,6 @@
         "clientCertMode": "[parameters('clientCertMode')]",
         "cloningInfo": "[parameters('cloningInfo')]",
         "containerSize": "[parameters('containerSize')]",
-        "customDomainVerificationId": "[parameters('customDomainVerificationId')]",
         "dailyMemoryTimeQuota": "[parameters('dailyMemoryTimeQuota')]",
         "enabled": "[parameters('enabled')]",
         "hostNameSslStates": "[parameters('hostNameSslStates')]",
@@ -926,7 +918,7 @@
       ]
     },
     "app_appsettings": {
-      "condition": "[not(empty(parameters('appSettingsKeyValuePairs')))]",
+      "condition": "[or(or(not(empty(parameters('appSettingsKeyValuePairs'))), not(empty(parameters('appInsightResourceId')))), not(empty(parameters('storageAccountResourceId'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Site-Config-AppSettings', uniqueString(deployment().name, parameters('location')))]",
@@ -4627,6 +4619,13 @@
         "description": "Default hostname of the app."
       },
       "value": "[reference('app').defaultHostName]"
+    },
+    "customDomainVerificationId": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification."
+      },
+      "value": "[reference('app').customDomainVerificationId]"
     }
   }
 }

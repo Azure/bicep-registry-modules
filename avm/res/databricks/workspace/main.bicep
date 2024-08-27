@@ -96,8 +96,22 @@ param publicNetworkAccess string = 'Enabled'
 ])
 param requiredNsgRules string = 'AllRules'
 
+@description('Optional. Determines whether the managed storage account should be private or public. For best security practices, it is recommended to set it to Enabled.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  ''
+])
+param privateStorageAccount string = ''
+
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType
+
+@description('Optional. Configuration details for private endpoints for the managed workspace storage account, required when privateStorageAccount is set to Enabled. For security reasons, it is recommended to use private endpoints whenever possible.')
+param storageAccountPrivateEndpoints privateEndpointType
+
+@description('Conditional. The resource ID of the associated access connector for private access to the managed workspace storage account. Required if privateStorageAccount is enabled.')
+param accessConnectorResourceId string = ''
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -156,143 +170,155 @@ resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing 
   }
 }
 
-resource workspace 'Microsoft.Databricks/workspaces@2023-02-01' = {
+resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
   name: name
   location: location
   tags: tags
   sku: {
     name: skuName
   }
-  properties: {
-    managedResourceGroupId: !empty(managedResourceGroupResourceId)
-      ? managedResourceGroupResourceId
-      : '${subscription().id}/resourceGroups/rg-${name}-managed'
-    parameters: union(
-      // Always added parameters
-      {
-        enableNoPublicIp: {
-          value: disablePublicIp
-        }
-        prepareEncryption: {
-          value: prepareEncryption
-        }
-        vnetAddressPrefix: {
-          value: vnetAddressPrefix
-        }
-        requireInfrastructureEncryption: {
-          value: requireInfrastructureEncryption
-        }
-      },
-      // Parameters only added if not empty
-      !empty(customVirtualNetworkResourceId)
+  // This union is required because the defaultStorageFirewall property is optional and cannot be null or ''
+  properties: union(
+    {
+      managedResourceGroupId: !empty(managedResourceGroupResourceId)
+        ? managedResourceGroupResourceId
+        : '${subscription().id}/resourceGroups/rg-${name}-managed'
+      parameters: union(
+        // Always added parameters
+        {
+          enableNoPublicIp: {
+            value: disablePublicIp
+          }
+          prepareEncryption: {
+            value: prepareEncryption
+          }
+          vnetAddressPrefix: {
+            value: vnetAddressPrefix
+          }
+          requireInfrastructureEncryption: {
+            value: requireInfrastructureEncryption
+          }
+        },
+        // Parameters only added if not empty
+        !empty(customVirtualNetworkResourceId)
+          ? {
+              customVirtualNetworkId: {
+                value: customVirtualNetworkResourceId
+              }
+            }
+          : {},
+        !empty(amlWorkspaceResourceId)
+          ? {
+              amlWorkspaceId: {
+                value: amlWorkspaceResourceId
+              }
+            }
+          : {},
+        !empty(customPrivateSubnetName)
+          ? {
+              customPrivateSubnetName: {
+                value: customPrivateSubnetName
+              }
+            }
+          : {},
+        !empty(customPublicSubnetName)
+          ? {
+              customPublicSubnetName: {
+                value: customPublicSubnetName
+              }
+            }
+          : {},
+        !empty(loadBalancerBackendPoolName)
+          ? {
+              loadBalancerBackendPoolName: {
+                value: loadBalancerBackendPoolName
+              }
+            }
+          : {},
+        !empty(loadBalancerResourceId)
+          ? {
+              loadBalancerId: {
+                value: loadBalancerResourceId
+              }
+            }
+          : {},
+        !empty(natGatewayName)
+          ? {
+              natGatewayName: {
+                value: natGatewayName
+              }
+            }
+          : {},
+        !empty(publicIpName)
+          ? {
+              publicIpName: {
+                value: publicIpName
+              }
+            }
+          : {},
+        !empty(storageAccountName)
+          ? {
+              storageAccountName: {
+                value: storageAccountName
+              }
+            }
+          : {},
+        !empty(storageAccountSkuName)
+          ? {
+              storageAccountSkuName: {
+                value: storageAccountSkuName
+              }
+            }
+          : {}
+      )
+      // createdBy: {} // This is a read-only property
+      // managedDiskIdentity: {} // This is a read-only property
+      // storageAccountIdentity: {} // This is a read-only property
+      // updatedBy: {} // This is a read-only property
+      publicNetworkAccess: publicNetworkAccess
+      requiredNsgRules: requiredNsgRules
+      encryption: !empty(customerManagedKey) || !empty(customerManagedKeyManagedDisk)
         ? {
-            customVirtualNetworkId: {
-              value: customVirtualNetworkResourceId
+            entities: {
+              managedServices: !empty(customerManagedKey)
+                ? {
+                    keySource: 'Microsoft.Keyvault'
+                    keyVaultProperties: {
+                      keyVaultUri: cMKKeyVault.properties.vaultUri
+                      keyName: customerManagedKey!.keyName
+                      keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
+                        ? customerManagedKey!.keyVersion!
+                        : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                    }
+                  }
+                : null
+              managedDisk: !empty(customerManagedKeyManagedDisk)
+                ? {
+                    keySource: 'Microsoft.Keyvault'
+                    keyVaultProperties: {
+                      keyVaultUri: cMKManagedDiskKeyVault.properties.vaultUri
+                      keyName: customerManagedKeyManagedDisk!.keyName
+                      keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion ?? '')
+                        ? customerManagedKeyManagedDisk!.keyVersion!
+                        : last(split(cMKManagedDiskKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                    }
+                    rotationToLatestKeyVersionEnabled: customerManagedKeyManagedDisk.?rotationToLatestKeyVersionEnabled ?? true
+                  }
+                : null
             }
           }
-        : {},
-      !empty(amlWorkspaceResourceId)
-        ? {
-            amlWorkspaceId: {
-              value: amlWorkspaceResourceId
-            }
-          }
-        : {},
-      !empty(customPrivateSubnetName)
-        ? {
-            customPrivateSubnetName: {
-              value: customPrivateSubnetName
-            }
-          }
-        : {},
-      !empty(customPublicSubnetName)
-        ? {
-            customPublicSubnetName: {
-              value: customPublicSubnetName
-            }
-          }
-        : {},
-      !empty(loadBalancerBackendPoolName)
-        ? {
-            loadBalancerBackendPoolName: {
-              value: loadBalancerBackendPoolName
-            }
-          }
-        : {},
-      !empty(loadBalancerResourceId)
-        ? {
-            loadBalancerId: {
-              value: loadBalancerResourceId
-            }
-          }
-        : {},
-      !empty(natGatewayName)
-        ? {
-            natGatewayName: {
-              value: natGatewayName
-            }
-          }
-        : {},
-      !empty(publicIpName)
-        ? {
-            publicIpName: {
-              value: publicIpName
-            }
-          }
-        : {},
-      !empty(storageAccountName)
-        ? {
-            storageAccountName: {
-              value: storageAccountName
-            }
-          }
-        : {},
-      !empty(storageAccountSkuName)
-        ? {
-            storageAccountSkuName: {
-              value: storageAccountSkuName
-            }
-          }
-        : {}
-    )
-    // createdBy: {} // This is a read-only property
-    // managedDiskIdentity: {} // This is a read-only property
-    // storageAccountIdentity: {} // This is a read-only property
-    // updatedBy: {} // This is a read-only property
-    publicNetworkAccess: publicNetworkAccess
-    requiredNsgRules: requiredNsgRules
-    encryption: !empty(customerManagedKey) || !empty(customerManagedKeyManagedDisk)
+        : null
+    },
+    !empty(privateStorageAccount)
       ? {
-          entities: {
-            managedServices: !empty(customerManagedKey)
-              ? {
-                  keySource: 'Microsoft.Keyvault'
-                  keyVaultProperties: {
-                    keyVaultUri: cMKKeyVault.properties.vaultUri
-                    keyName: customerManagedKey!.keyName
-                    keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                      ? customerManagedKey!.keyVersion!
-                      : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-                  }
-                }
-              : null
-            managedDisk: !empty(customerManagedKeyManagedDisk)
-              ? {
-                  keySource: 'Microsoft.Keyvault'
-                  keyVaultProperties: {
-                    keyVaultUri: cMKManagedDiskKeyVault.properties.vaultUri
-                    keyName: customerManagedKeyManagedDisk!.keyName
-                    keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion ?? '')
-                      ? customerManagedKeyManagedDisk!.keyVersion!
-                      : last(split(cMKManagedDiskKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-                  }
-                  rotationToLatestKeyVersionEnabled: customerManagedKeyManagedDisk.?rotationToLatestKeyVersionEnabled ?? true
-                }
-              : null
+          defaultStorageFirewall: privateStorageAccount
+          accessConnector: {
+            id: accessConnectorResourceId
+            identityType: 'SystemAssigned'
           }
         }
-      : null
-  }
+      : {}
+  )
 }
 
 resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
@@ -350,7 +376,7 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
 ]
 
 @batchSize(1)
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.3' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -403,6 +429,68 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
   }
 ]
 
+// To reuse at multiple places instead to repeat the same code
+var _storageAccountName = workspace.properties.parameters.storageAccountName.value
+var _storageAccountId = resourceId(
+  last(split(workspace.properties.managedResourceGroupId, '/')),
+  'microsoft.storage/storageAccounts',
+  workspace.properties.parameters.storageAccountName.value
+)
+
+@batchSize(1)
+module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.3' = [
+  for (privateEndpoint, index) in (storageAccountPrivateEndpoints ?? []): if (privateStorageAccount == 'Enabled') {
+    name: '${uniqueString(deployment().name, location)}-workspacestorage-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${_storageAccountName}-${privateEndpoint.service}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${_storageAccountName}-${privateEndpoint.service}-${index}'
+              properties: {
+                privateLinkServiceId: _storageAccountId
+                groupIds: [
+                  privateEndpoint.service
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${_storageAccountName}-${privateEndpoint.service}-${index}'
+              properties: {
+                privateLinkServiceId: _storageAccountId
+                groupIds: [
+                  privateEndpoint.service
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
+  }
+]
+
 @description('The name of the deployed databricks workspace.')
 output name string = workspace.name
 
@@ -422,14 +510,10 @@ output managedResourceGroupId string = workspace.properties.managedResourceGroup
 output managedResourceGroupName string = last(split(workspace.properties.managedResourceGroupId, '/'))
 
 @description('The name of the DBFS storage account.')
-output storageAccountName string = workspace.properties.parameters.storageAccountName.value
+output storageAccountName string = _storageAccountName
 
 @description('The resource ID of the DBFS storage account.')
-output storageAccountId string = resourceId(
-  last(split(workspace.properties.managedResourceGroupId, '/')),
-  'microsoft.storage/storageAccounts',
-  workspace.properties.parameters.storageAccountName.value
-)
+output storageAccountId string = _storageAccountId
 
 @description('The workspace URL which is of the format \'adb-{workspaceId}.{random}.azuredatabricks.net\'.')
 output workspaceUrl string = workspace.properties.workspaceUrl
