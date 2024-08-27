@@ -41,6 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
@@ -197,6 +198,8 @@ module testDeployment '../../../main.bicep' = [
       ]
       enableAutomaticUpdates: true
       patchMode: 'AutomaticByPlatform'
+      bypassPlatformSafetyChecksOnUserSchedule: true
+      maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
       encryptionAtHost: false
       extensionAntiMalwareConfig: {
         enabled: true

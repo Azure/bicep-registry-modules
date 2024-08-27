@@ -1,4 +1,4 @@
-# Policy Insights Remediations `[Microsoft.PolicyInsights/remediations]`
+# Policy Insights Remediations `[PolicyInsights/Remediation]`
 
 This module deploys a Policy Insights Remediation.
 

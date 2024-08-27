@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "17107961067773605935"
+      "version": "0.28.1.47646",
+      "templateHash": "17607291889971078318"
     },
     "name": "Resource-scoped role assignment",
     "description": "This module deploys a Role Assignment for a specific resource.",
@@ -136,7 +136,7 @@
     {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.ptn.authorization-resourceroleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",

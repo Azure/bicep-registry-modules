@@ -417,6 +417,13 @@ The name of the SKU will Determine the tier, size, family of the App Service Pla
 
 - Required: Yes
 - Type: string
+- Example:
+  ```Bicep
+  'F1'
+  'B1'
+  'P1v3'
+  'I1v2'
+  ```
 
 ### Parameter: `reserved`
 

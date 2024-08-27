@@ -71,8 +71,12 @@ param resourceSelectors array = []
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: take('46d3xbcp.ptn.authorization-policyassignment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}', 64)
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: take(
+    '46d3xbcp.ptn.authorization-policyassignment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
+    64
+  )
   location: location
   properties: {
     mode: 'Incremental'
@@ -160,13 +164,29 @@ module policyAssignment_rg 'modules/resource-group.bicep' = if (!empty(resourceG
 }
 
 @sys.description('Policy Assignment Name.')
-output name string = empty(subscriptionId) && empty(resourceGroupName) ? policyAssignment_mg.outputs.name : (!empty(subscriptionId) && empty(resourceGroupName) ? policyAssignment_sub.outputs.name : policyAssignment_rg.outputs.name)
+output name string = empty(subscriptionId) && empty(resourceGroupName)
+  ? policyAssignment_mg.outputs.name
+  : (!empty(subscriptionId) && empty(resourceGroupName)
+      ? policyAssignment_sub.outputs.name
+      : policyAssignment_rg.outputs.name)
 
 @sys.description('Policy Assignment principal ID.')
-output principalId string = empty(subscriptionId) && empty(resourceGroupName) ? policyAssignment_mg.outputs.principalId : (!empty(subscriptionId) && empty(resourceGroupName) ? policyAssignment_sub.outputs.principalId : policyAssignment_rg.outputs.principalId)
+output principalId string = empty(subscriptionId) && empty(resourceGroupName)
+  ? policyAssignment_mg.outputs.principalId
+  : (!empty(subscriptionId) && empty(resourceGroupName)
+      ? policyAssignment_sub.outputs.principalId
+      : policyAssignment_rg.outputs.principalId)
 
 @sys.description('Policy Assignment resource ID.')
-output resourceId string = empty(subscriptionId) && empty(resourceGroupName) ? policyAssignment_mg.outputs.resourceId : (!empty(subscriptionId) && empty(resourceGroupName) ? policyAssignment_sub.outputs.resourceId : policyAssignment_rg.outputs.resourceId)
+output resourceId string = empty(subscriptionId) && empty(resourceGroupName)
+  ? policyAssignment_mg.outputs.resourceId
+  : (!empty(subscriptionId) && empty(resourceGroupName)
+      ? policyAssignment_sub.outputs.resourceId
+      : policyAssignment_rg.outputs.resourceId)
 
 @sys.description('The location the resource was deployed into.')
-output location string = empty(subscriptionId) && empty(resourceGroupName) ? policyAssignment_mg.outputs.location : (!empty(subscriptionId) && empty(resourceGroupName) ? policyAssignment_sub.outputs.location : policyAssignment_rg.outputs.location)
+output location string = empty(subscriptionId) && empty(resourceGroupName)
+  ? policyAssignment_mg.outputs.location
+  : (!empty(subscriptionId) && empty(resourceGroupName)
+      ? policyAssignment_sub.outputs.location
+      : policyAssignment_rg.outputs.location)

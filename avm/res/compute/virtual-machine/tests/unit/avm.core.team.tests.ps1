@@ -6,30 +6,30 @@ If you wish to add your own Pester tests for you module create a new <something>
 #>
 
 param (
-  [Parameter(Mandatory = $false)]
-  [array] $moduleFolderPaths,
+    [Parameter(Mandatory = $false)]
+    [array] $moduleFolderPaths,
 
-  [Parameter(Mandatory = $false)]
-  [string] $repoRootPath
+    [Parameter(Mandatory = $false)]
+    [string] $repoRootPath
 )
 
 BeforeAll {
-  . (Join-Path $RepoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-IsParameterRequired.ps1')
+    . (Join-Path $RepoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-IsParameterRequired.ps1')
 
-  if ($moduleFolderPaths.Count -gt 1) {
-    $topLevelModuleTemplatePath = $moduleFolderPaths | Sort-Object -Culture 'en-US' | Select-Object -First 1
-  } else {
-    $topLevelModuleTemplatePath = $moduleFolderPaths
-  }
+    if ($moduleFolderPaths.Count -gt 1) {
+        $topLevelModuleTemplatePath = $moduleFolderPaths | Sort-Object -Culture 'en-US' | Select-Object -First 1
+    } else {
+        $topLevelModuleTemplatePath = $moduleFolderPaths
+    }
 
-  $moduleJsonContentHashtable = Get-Content -Path (Join-Path $topLevelModuleTemplatePath 'main.json') | ConvertFrom-Json -AsHashtable
+    $moduleJsonContentHashtable = Get-Content -Path (Join-Path $topLevelModuleTemplatePath 'main.json') | ConvertFrom-Json -AsHashtable
 }
 
 Describe 'AVM Core Team Module Specific Tests' {
-  Context 'WAF - Reliability Pillar - Parameter Tests' {
-    It 'VM Module Availability Zone Parameter Should Not Have A Default Value Set' {
-      $isRequired = Get-IsParameterRequired -TemplateFileContent $moduleJsonContentHashtable -Parameter $moduleJsonContentHashtable.parameters.zone
-      $isRequired | Should -Be $true
+    Context 'WAF - Reliability Pillar - Parameter Tests' {
+        It 'VM Module Availability Zone Parameter Should Not Have A Default Value Set' {
+            $isRequired = Get-IsParameterRequired -TemplateFileContent $moduleJsonContentHashtable -Parameter $moduleJsonContentHashtable.parameters.zone
+            $isRequired | Should -Be $true
+        }
     }
-  }
 }

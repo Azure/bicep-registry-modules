@@ -11,8 +11,8 @@ param name string
 @description('Optional. Logger description.')
 param loggerDescription string
 
-@description('Optional. Whether records are buffered in the logger before publishing. Default is assumed to be true.')
-param isBuffered bool
+@description('Optional. Whether records are buffered in the logger before publishing.')
+param isBuffered bool = true
 
 @description('Required. Logger type.')
 @allowed([
@@ -25,6 +25,7 @@ param loggerType string
 @description('Conditional. Required if loggerType = applicationInsights or azureEventHub. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource).')
 param targetResourceId string
 
+@secure()
 @description('Conditional. Required if loggerType = applicationInsights or azureEventHub. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger.')
 param credentials object
 

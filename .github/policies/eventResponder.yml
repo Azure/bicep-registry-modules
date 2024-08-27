@@ -192,3 +192,19 @@ configuration:
         then:
           - addLabel:
               label: "Type: Security Bug :lock:"
+
+      - description: "ITA25 - If a new PR is opened, inform module owners about the usage of the Needs Core Team label"
+        if:
+          - or:
+              - payloadType: Pull_Request
+          - isAction:
+              action: Opened
+        then:
+          - addReply:
+              reply: |
+                > [!IMPORTANT]
+                > If this is a module-related PR, being submitted by the sole owner of the module, the AVM core team must review and approve it (as module owners can't approve their own PRs).
+                >
+                > **To indicate this PR needs the core team''s attention, apply the "Needs: Core Team 🧞" label!**
+                >
+                > The core team will only review and approve PRs that have this label applied!

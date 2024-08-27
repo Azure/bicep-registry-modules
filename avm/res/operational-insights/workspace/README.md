@@ -325,6 +325,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    useDeployedWorkspaceForDiagnosticSettings: true
     useResourcePermissions: true
   }
 }
@@ -645,6 +646,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         "Role": "DeploymentValidation"
       }
     },
+    "useDeployedWorkspaceForDiagnosticSettings": {
+      "value": true
+    },
     "useResourcePermissions": {
       "value": true
     }
@@ -855,11 +859,13 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     publicNetworkAccessForQuery: 'Disabled'
     roleAssignments: [
       {
+        name: 'c3d53092-840c-4025-9c02-9bcb7895789c'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -1171,11 +1177,13 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "roleAssignments": {
       "value": [
         {
+          "name": "c3d53092-840c-4025-9c02-9bcb7895789c",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -1717,6 +1725,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 | [`storageInsightsConfigs`](#parameter-storageinsightsconfigs) | array | List of storage accounts to be read by the workspace. |
 | [`tables`](#parameter-tables) | array | LAW custom tables to be deployed. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`useDeployedWorkspaceForDiagnosticSettings`](#parameter-usedeployedworkspacefordiagnosticsettings) | bool | Instead of using an external reference, use the deployed instance as the target for its diagnostic settings. |
 | [`useResourcePermissions`](#parameter-useresourcepermissions) | bool | Set to 'true' to use resource or workspace permissions and 'false' (or leave empty) to require workspace permissions. |
 
 ### Parameter: `name`
@@ -2068,6 +2077,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -2114,6 +2124,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -2194,6 +2211,14 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `useDeployedWorkspaceForDiagnosticSettings`
+
+Instead of using an external reference, use the deployed instance as the target for its diagnostic settings.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `useResourcePermissions`
 
