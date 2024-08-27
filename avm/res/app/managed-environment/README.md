@@ -15,7 +15,8 @@ This module deploys an App Managed Environment (also known as a Container App En
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/managedEnvironments` | [2023-11-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-11-02-preview/managedEnvironments) |
+| `Microsoft.App/managedEnvironments` | [2024-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-02-02-preview/managedEnvironments) |
+| `Microsoft.App/managedEnvironments/storages` | [2024-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-02-02-preview/managedEnvironments/storages) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -147,6 +148,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       keyVaultUrl: '<keyVaultUrl>'
     }
     dnsSuffix: 'contoso.com'
+    appInsightsConnectionString: '<appInsightsConnectionString>'
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
@@ -162,15 +164,30 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         '<managedIdentityResourceId>'
       ]
     }
+    openTelemetryConfiguration: {
+      logsConfiguration: {
+        destinations: [
+          'appInsights'
+        ]
+      }
+      tracesConfiguration: {
+        destinations: [
+          'appInsights'
+        ]
+      }
+    }
+    peerTrafficEncryption: true
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     roleAssignments: [
       {
+        name: '43fc5250-f111-472b-8722-f1cb4a0e754b'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -179,6 +196,20 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    storages: [
+      {
+        accessMode: 'ReadWrite'
+        kind: 'SMB'
+        shareName: 'smbfileshare'
+        storageAccountName: '<storageAccountName>'
+      }
+      {
+        accessMode: 'ReadWrite'
+        kind: 'NFS'
+        shareName: 'nfsfileshare'
+        storageAccountName: '<storageAccountName>'
       }
     ]
     tags: {
@@ -226,6 +257,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "dnsSuffix": {
       "value": "contoso.com"
     },
+    "appInsightsConnectionString": {
+      "value": "<appInsightsConnectionString>"
+    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
@@ -255,6 +289,23 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         ]
       }
     },
+    "openTelemetryConfiguration": {
+      "value": {
+        "logsConfiguration": {
+          "destinations": [
+            "appInsights"
+          ]
+        },
+        "tracesConfiguration": {
+          "destinations": [
+            "appInsights"
+          ]
+        }
+      }
+    },
+    "peerTrafficEncryption": {
+      "value": true
+    },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
     },
@@ -264,11 +315,13 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "roleAssignments": {
       "value": [
         {
+          "name": "43fc5250-f111-472b-8722-f1cb4a0e754b",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -277,6 +330,22 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "storages": {
+      "value": [
+        {
+          "accessMode": "ReadWrite",
+          "kind": "SMB",
+          "shareName": "smbfileshare",
+          "storageAccountName": "<storageAccountName>"
+        },
+        {
+          "accessMode": "ReadWrite",
+          "kind": "NFS",
+          "shareName": "nfsfileshare",
+          "storageAccountName": "<storageAccountName>"
         }
       ]
     },
@@ -480,6 +549,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`certificateKeyVaultProperties`](#parameter-certificatekeyvaultproperties) | object | A key vault reference to the certificate to use for the custom domain. |
+| [`appInsightsConnectionString`](#parameter-appinsightsconnectionstring) | securestring | Application Insights connection string. |
 | [`certificatePassword`](#parameter-certificatepassword) | securestring | Password of the certificate used by the custom domain. |
 | [`certificateValue`](#parameter-certificatevalue) | securestring | Certificate to use for the custom domain. PFX or PEM. |
 | [`daprAIConnectionString`](#parameter-dapraiconnectionstring) | securestring | Application Insights connection string used by Dapr to export Service to Service communication telemetry. |
@@ -490,7 +560,10 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`logsDestination`](#parameter-logsdestination) | string | Logs destination. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`openTelemetryConfiguration`](#parameter-opentelemetryconfiguration) | object | Open Telemetry configuration. |
+| [`peerTrafficEncryption`](#parameter-peertrafficencryption) | bool | Whether or not to encrypt peer traffic. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`storages`](#parameter-storages) | array | The list of storages to mount on the environment. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Whether or not this Managed Environment is zone-redundant. |
 
@@ -591,6 +664,14 @@ A key vault URL referencing the wildcard certificate that will be used for the c
 
 - Required: Yes
 - Type: string
+
+### Parameter: `appInsightsConnectionString`
+
+Application Insights connection string.
+
+- Required: No
+- Type: securestring
+- Default: `''`
 
 ### Parameter: `certificatePassword`
 
@@ -720,6 +801,22 @@ The resource ID(s) to assign to the resource.
 - Required: No
 - Type: array
 
+### Parameter: `openTelemetryConfiguration`
+
+Open Telemetry configuration.
+
+- Required: No
+- Type: object
+- Default: `{}`
+
+### Parameter: `peerTrafficEncryption`
+
+Whether or not to encrypt peer traffic.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
@@ -742,6 +839,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -792,6 +890,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -808,6 +913,64 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `storages`
+
+The list of storages to mount on the environment.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`accessMode`](#parameter-storagesaccessmode) | string | Access mode for storage: "ReadOnly" or "ReadWrite". |
+| [`kind`](#parameter-storageskind) | string | Type of storage: "SMB" or "NFS". |
+| [`shareName`](#parameter-storagessharename) | string | File share name. |
+| [`storageAccountName`](#parameter-storagesstorageaccountname) | string | Storage account name. |
+
+### Parameter: `storages.accessMode`
+
+Access mode for storage: "ReadOnly" or "ReadWrite".
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ReadOnly'
+    'ReadWrite'
+  ]
+  ```
+
+### Parameter: `storages.kind`
+
+Type of storage: "SMB" or "NFS".
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NFS'
+    'SMB'
+  ]
+  ```
+
+### Parameter: `storages.shareName`
+
+File share name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `storages.storageAccountName`
+
+Storage account name.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `tags`
 

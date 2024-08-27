@@ -59,9 +59,9 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       }
     ]
     imageSource: {
-      offer: 'Windows-10'
+      offer: 'Windows-11'
       publisher: 'MicrosoftWindowsDesktop'
-      sku: 'win10-22h2-ent'
+      sku: 'win11-23h2-ent'
       type: 'PlatformImage'
       version: 'latest'
     }
@@ -108,9 +108,9 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     },
     "imageSource": {
       "value": {
-        "offer": "Windows-10",
+        "offer": "Windows-11",
         "publisher": "MicrosoftWindowsDesktop",
-        "sku": "win10-22h2-ent",
+        "sku": "win11-23h2-ent",
         "type": "PlatformImage",
         "version": "latest"
       }
@@ -189,9 +189,9 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       }
     ]
     imageSource: {
-      offer: '0001-com-ubuntu-server-lunar'
+      offer: 'ubuntu-24_04-lts'
       publisher: 'canonical'
-      sku: '23_04-gen2'
+      sku: 'server'
       type: 'PlatformImage'
       version: 'latest'
     }
@@ -212,11 +212,13 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     osDiskSizeGB: 127
     roleAssignments: [
       {
+        name: 'bb257a92-dc06-4831-9b74-ee5442d8ce0f'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -312,9 +314,9 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     },
     "imageSource": {
       "value": {
-        "offer": "0001-com-ubuntu-server-lunar",
+        "offer": "ubuntu-24_04-lts",
         "publisher": "canonical",
-        "sku": "23_04-gen2",
+        "sku": "server",
         "type": "PlatformImage",
         "version": "latest"
       }
@@ -351,11 +353,13 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     "roleAssignments": {
       "value": [
         {
+          "name": "bb257a92-dc06-4831-9b74-ee5442d8ce0f",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -719,6 +723,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -765,6 +770,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
