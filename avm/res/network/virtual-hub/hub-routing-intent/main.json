@@ -1,0 +1,73 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.29.47.4906",
+      "templateHash": "9080948373192033748"
+    },
+    "name": "Virtual Hub Routing Intent",
+    "description": "This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "azureFirewallResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Hub firewall Resource ID."
+      }
+    },
+    "virtualHubName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Virtual Hub."
+      }
+    },
+    "privateToFirewall": {
+      "type": "bool",
+      "metadata": {
+        "description": "Required. Configures Routing Intent to forward Private traffic to the firewall (RFC1918)."
+      }
+    },
+    "internetToFirewall": {
+      "type": "bool",
+      "metadata": {
+        "description": "Required. Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualHubs/routingIntent",
+      "apiVersion": "2023-11-01",
+      "name": "[format('{0}/{1}', parameters('virtualHubName'), 'defaultRouteTable')]",
+      "properties": {
+        "routingPolicies": "[if(and(equals(parameters('internetToFirewall'), true()), equals(parameters('privateToFirewall'), true())), createArray(createObject('name', '_policy_PublicTraffic', 'destinations', createArray('Internet'), 'nextHop', parameters('azureFirewallResourceId')), createObject('name', '_policy_PrivateTraffic', 'destinations', createArray('PrivateTraffic'), 'nextHop', parameters('azureFirewallResourceId'))), if(and(equals(parameters('internetToFirewall'), true()), equals(parameters('privateToFirewall'), false())), createArray(createObject('name', '_policy_PublicTraffic', 'destinations', createArray('Internet'), 'nextHop', parameters('azureFirewallResourceId'))), if(and(equals(parameters('internetToFirewall'), false()), equals(parameters('privateToFirewall'), true())), createArray(createObject('name', '_policy_PrivateTraffic', 'destinations', createArray('PrivateTraffic'), 'nextHop', parameters('azureFirewallResourceId'))), null())))]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Routing Intent configuration."
+      },
+      "value": "defaultRouteTable"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Routing Intent configuration."
+      },
+      "value": "[resourceId('Microsoft.Network/virtualHubs/routingIntent', parameters('virtualHubName'), 'defaultRouteTable')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the Routing Intent configuration was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
