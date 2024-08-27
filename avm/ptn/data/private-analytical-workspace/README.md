@@ -61,18 +61,16 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/data/private-analytical-workspace:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using defaults with provided existing Azure Key Vault](#example-2-using-defaults-with-provided-existing-azure-key-vault)
-- [Using defaults with provided existing Azure Log Analytics Workspace](#example-3-using-defaults-with-provided-existing-azure-log-analytics-workspace)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [Minimal Deployment - fully private](#example-5-minimal-deployment---fully-private)
-- [Minimal Deployment - allowed IP address](#example-6-minimal-deployment---allowed-ip-address)
-- [Use Case 1 - fully private](#example-7-use-case-1---fully-private)
-- [Use Case 1 - allowed IP address](#example-8-use-case-1---allowed-ip-address)
-- [Use Case 2 - fully private](#example-9-use-case-2---fully-private)
-- [Use Case 2 - allowed IP address](#example-10-use-case-2---allowed-ip-address)
-- [Use Case 3 - fully private](#example-11-use-case-3---fully-private)
-- [Use Case 3 - allowed IP address](#example-12-use-case-3---allowed-ip-address)
-- [WAF-aligned](#example-13-waf-aligned)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [Minimal Deployment - fully private](#example-3-minimal-deployment---fully-private)
+- [Minimal Deployment - allowed IP address](#example-4-minimal-deployment---allowed-ip-address)
+- [Use Case 1 - fully private](#example-5-use-case-1---fully-private)
+- [Use Case 1 - allowed IP address](#example-6-use-case-1---allowed-ip-address)
+- [Use Case 2 - fully private](#example-7-use-case-2---fully-private)
+- [Use Case 2 - allowed IP address](#example-8-use-case-2---allowed-ip-address)
+- [Use Case 3 - fully private](#example-9-use-case-3---fully-private)
+- [Use Case 3 - allowed IP address](#example-10-use-case-3---allowed-ip-address)
+- [WAF-aligned](#example-11-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -128,131 +126,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 2: _Using defaults with provided existing Azure Key Vault_
-
-This instance deploys the module with the minimum set of required parameters and with provided existing Azure Key Vault.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
-  name: 'privateAnalyticalWorkspaceDeployment'
-  params: {
-    // Required parameters
-    name: 'dpawminkv001'
-    // Non-required parameters
-    enableDatabricks: true
-    keyVaultResourceId: '<keyVaultResourceId>'
-    tags: {
-      CostCenter: '123-456-789'
-      Owner: 'Contoso'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "dpawminkv001"
-    },
-    // Non-required parameters
-    "enableDatabricks": {
-      "value": true
-    },
-    "keyVaultResourceId": {
-      "value": "<keyVaultResourceId>"
-    },
-    "tags": {
-      "value": {
-        "CostCenter": "123-456-789",
-        "Owner": "Contoso"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 3: _Using defaults with provided existing Azure Log Analytics Workspace_
-
-This instance deploys the module with the minimum set of required parameters and with provided existing Azure Log Analytics Workspace.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
-  name: 'privateAnalyticalWorkspaceDeployment'
-  params: {
-    // Required parameters
-    name: 'dpawminlog001'
-    // Non-required parameters
-    enableDatabricks: true
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
-    tags: {
-      CostCenter: '123-456-789'
-      Owner: 'Contoso'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "dpawminlog001"
-    },
-    // Non-required parameters
-    "enableDatabricks": {
-      "value": true
-    },
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
-    "tags": {
-      "value": {
-        "CostCenter": "123-456-789",
-        "Owner": "Contoso"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _Using large parameter set_
+### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -346,7 +220,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 5: _Minimal Deployment - fully private_
+### Example 3: _Minimal Deployment - fully private_
 
 Isolated network deployment (Minimalistic) - fully private.
 
@@ -404,7 +278,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 6: _Minimal Deployment - allowed IP address_
+### Example 4: _Minimal Deployment - allowed IP address_
 
 Isolated network deployment (Minimalistic) - allowed IP address.
 
@@ -478,7 +352,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 7: _Use Case 1 - fully private_
+### Example 5: _Use Case 1 - fully private_
 
 Isolated network deployment - fully private.
 
@@ -536,7 +410,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 8: _Use Case 1 - allowed IP address_
+### Example 6: _Use Case 1 - allowed IP address_
 
 Isolated network deployment - allowed IP address.
 
@@ -610,7 +484,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 9: _Use Case 2 - fully private_
+### Example 7: _Use Case 2 - fully private_
 
 Deployment in an Existing, Enterprise-Specific Virtual Network - fully private.
 
@@ -692,7 +566,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 10: _Use Case 2 - allowed IP address_
+### Example 8: _Use Case 2 - allowed IP address_
 
 Deployment in an Existing, Enterprise-Specific Virtual Network - allowed IP address.
 
@@ -784,7 +658,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 11: _Use Case 3 - fully private_
+### Example 9: _Use Case 3 - fully private_
 
 Integration with existing core Infrastructure - fully private.
 
@@ -874,7 +748,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 12: _Use Case 3 - allowed IP address_
+### Example 10: _Use Case 3 - allowed IP address_
 
 Integration with existing core Infrastructure - allowed IP address.
 
@@ -974,7 +848,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-### Example 13: _WAF-aligned_
+### Example 11: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
