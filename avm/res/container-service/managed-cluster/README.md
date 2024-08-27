@@ -59,10 +59,18 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         count: 3
         mode: 'System'
         name: 'systempool'
-        vmSize: 'Standard_DS2_v2'
+        securityProfile: {
+          sshAccess: 'Disabled'
+        }
+        vmSize: 'Standard_DS4_v2'
       }
     ]
     // Non-required parameters
+    disableLocalAccounts: true
+    enableKeyvaultSecretsProvider: true
+    enableSecretRotation: true
+    kedaAddon: true
+    kubernetesVersion: '1.28'
     location: '<location>'
     maintenanceConfiguration: {
       maintenanceWindow: {
@@ -84,7 +92,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     managedIdentities: {
       systemAssigned: true
     }
+    outboundType: 'managedNATGateway'
+    publicNetworkAccess: 'Enabled'
     skuName: 'Automatic'
+    webApplicationRoutingEnabled: true
   }
 }
 ```
@@ -111,11 +122,29 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "count": 3,
           "mode": "System",
           "name": "systempool",
-          "vmSize": "Standard_DS2_v2"
+          "securityProfile": {
+            "sshAccess": "Disabled"
+          },
+          "vmSize": "Standard_DS4_v2"
         }
       ]
     },
     // Non-required parameters
+    "disableLocalAccounts": {
+      "value": true
+    },
+    "enableKeyvaultSecretsProvider": {
+      "value": true
+    },
+    "enableSecretRotation": {
+      "value": true
+    },
+    "kedaAddon": {
+      "value": true
+    },
+    "kubernetesVersion": {
+      "value": "1.28"
+    },
     "location": {
       "value": "<location>"
     },
@@ -143,8 +172,17 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         "systemAssigned": true
       }
     },
+    "outboundType": {
+      "value": "managedNATGateway"
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
     "skuName": {
       "value": "Automatic"
+    },
+    "webApplicationRoutingEnabled": {
+      "value": true
     }
   }
 }
@@ -682,23 +720,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     // Non-required parameters
     location: '<location>'
-    maintenanceConfiguration: {
-      maintenanceWindow: {
-        durationHours: 4
-        schedule: {
-          absoluteMonthly: '<absoluteMonthly>'
-          daily: '<daily>'
-          relativeMonthly: '<relativeMonthly>'
-          weekly: {
-            dayOfWeek: 'Sunday'
-            intervalWeeks: 1
-          }
-        }
-        startDate: '2024-07-03'
-        startTime: '00:00'
-        utcOffset: '+00:00'
-      }
-    }
     managedIdentities: {
       systemAssigned: true
     }
@@ -735,25 +756,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "maintenanceConfiguration": {
-      "value": {
-        "maintenanceWindow": {
-          "durationHours": 4,
-          "schedule": {
-            "absoluteMonthly": "<absoluteMonthly>",
-            "daily": "<daily>",
-            "relativeMonthly": "<relativeMonthly>",
-            "weekly": {
-              "dayOfWeek": "Sunday",
-              "intervalWeeks": 1
-            }
-          },
-          "startDate": "2024-07-03",
-          "startTime": "00:00",
-          "utcOffset": "+00:00"
-        }
-      }
     },
     "managedIdentities": {
       "value": {
@@ -1378,23 +1380,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     enableAzureDefender: true
     enablePrivateCluster: true
     location: '<location>'
-    maintenanceConfiguration: {
-      maintenanceWindow: {
-        durationHours: 4
-        schedule: {
-          absoluteMonthly: '<absoluteMonthly>'
-          daily: '<daily>'
-          relativeMonthly: '<relativeMonthly>'
-          weekly: {
-            dayOfWeek: 'Sunday'
-            intervalWeeks: 1
-          }
-        }
-        startDate: '2024-07-03'
-        startTime: '00:00'
-        utcOffset: '+00:00'
-      }
-    }
     managedIdentities: {
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
@@ -1551,25 +1536,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "location": {
       "value": "<location>"
-    },
-    "maintenanceConfiguration": {
-      "value": {
-        "maintenanceWindow": {
-          "durationHours": 4,
-          "schedule": {
-            "absoluteMonthly": "<absoluteMonthly>",
-            "daily": "<daily>",
-            "relativeMonthly": "<relativeMonthly>",
-            "weekly": {
-              "dayOfWeek": "Sunday",
-              "intervalWeeks": 1
-            }
-          },
-          "startDate": "2024-07-03",
-          "startTime": "00:00",
-          "utcOffset": "+00:00"
-        }
-      }
     },
     "managedIdentities": {
       "value": {
