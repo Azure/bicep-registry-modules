@@ -227,9 +227,7 @@ function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $
     $logs = @('AuditEvent', 'AzurePolicyEvaluationDetails', 'AllMetrics')
     Test-VerifyDiagSettings -ResourceId $kv.ResourceId -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId -Logs $logs
 
-    if ( $PEPName -ne $null ) {
-        Test-VerifyPrivateEndpoint -Name "$($kv.VaultName)$($PEPName)" -ResourceGroupName $KeyVaultResourceGroupName -Tags $Tags -SubnetName $SubnetName -ServiceId $kv.ResourceId -GroupId 'vault'
-    }
+    Test-VerifyPrivateEndpoint -Name "$($kv.VaultName)$($PEPName)" -ResourceGroupName $KeyVaultResourceGroupName -Tags $Tags -SubnetName $SubnetName -ServiceId $kv.ResourceId -GroupId 'vault'
 
     if ( $NumberOfRecordSets -ne 0 ) {
         Test-VerifyDnsZone -Name 'privatelink.vaultcore.azure.net' -ResourceGroupName $KeyVaultResourceGroupName -Tags $Tags -NumberOfRecordSets $NumberOfRecordSets
@@ -298,19 +296,19 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     $adb.NatGatewayNameValue | Should -BeNullOrEmpty
     $adb.PrepareEncryption | Should -Be $true
     $adb.PrepareEncryptionType | Should -Be 'Bool'
-    if ( $NumberOfRecordSets -ne 0 ) {
-        $adb.PrivateEndpointConnection.Count | Should -Be 2
 
-        $adb.PrivateEndpointConnection[0].GroupId.Count | Should -Be 1
-        $adb.PrivateEndpointConnection[0].GroupId[0] | Should -Be 'databricks_ui_api'
-        $adb.PrivateEndpointConnection[0].PrivateLinkServiceConnectionStateStatus | Should -Be 'Approved'
-        $adb.PrivateEndpointConnection[0].ProvisioningState | Should -Be 'Succeeded'
+    $adb.PrivateEndpointConnection.Count | Should -Be 2
 
-        $adb.PrivateEndpointConnection[1].GroupId.Count | Should -Be 1
-        $adb.PrivateEndpointConnection[1].GroupId[0] | Should -Be 'browser_authentication'
-        $adb.PrivateEndpointConnection[1].PrivateLinkServiceConnectionStateStatus | Should -Be 'Approved'
-        $adb.PrivateEndpointConnection[1].ProvisioningState | Should -Be 'Succeeded'
-    }
+    $adb.PrivateEndpointConnection[0].GroupId.Count | Should -Be 1
+    $adb.PrivateEndpointConnection[0].GroupId[0] | Should -Be 'databricks_ui_api'
+    $adb.PrivateEndpointConnection[0].PrivateLinkServiceConnectionStateStatus | Should -Be 'Approved'
+    $adb.PrivateEndpointConnection[0].ProvisioningState | Should -Be 'Succeeded'
+
+    $adb.PrivateEndpointConnection[1].GroupId.Count | Should -Be 1
+    $adb.PrivateEndpointConnection[1].GroupId[0] | Should -Be 'browser_authentication'
+    $adb.PrivateEndpointConnection[1].PrivateLinkServiceConnectionStateStatus | Should -Be 'Approved'
+    $adb.PrivateEndpointConnection[1].ProvisioningState | Should -Be 'Succeeded'
+
     $adb.PublicIPNameType | Should -Be 'String'
     $adb.PublicIPNameValue | Should -Be 'nat-gw-public-ip'
     $adb.PublicNetworkAccess | Should -Be $PublicNetworkAccess
@@ -345,12 +343,8 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     )
     Test-VerifyDiagSettings -ResourceId $adb.Id -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId -Logs $logs
 
-    if ( $PEPName1 -ne $null ) {
-        Test-VerifyPrivateEndpoint -Name "$($DatabricksName)$($PEPName1)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId 'browser_authentication'
-    }
-    if ( $PEPName2 -ne $null ) {
-        Test-VerifyPrivateEndpoint -Name "$($DatabricksName)$($PEPName2)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId 'databricks_ui_api'
-    }
+    Test-VerifyPrivateEndpoint -Name "$($DatabricksName)$($PEPName1)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId 'browser_authentication'
+    Test-VerifyPrivateEndpoint -Name "$($DatabricksName)$($PEPName2)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId 'databricks_ui_api'
 
     if ( $NumberOfRecordSets -ne 0 ) {
         Test-VerifyDnsZone -Name 'privatelink.azuredatabricks.net' -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -NumberOfRecordSets $NumberOfRecordSets

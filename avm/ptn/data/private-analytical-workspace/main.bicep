@@ -528,21 +528,19 @@ module kv 'br/public:avm/res/key-vault/vault:0.7.0' = if (createNewKV) {
       defaultAction: 'Deny'
       ipRules: kvIpRules
     }
-    privateEndpoints: createNewVNET
-      ? [
-          // Private endpoint for Key Vault only for new VNET
-          {
-            name: '${name}-kv-pep'
-            location: location
-            subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
-            privateDnsZoneResourceIds: [dnsZoneKv.outputs.resourceId]
-            tags: tags
-            enableTelemetry: enableTelemetry
-            lock: lock
-            roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
-          }
-        ]
-      : []
+    privateEndpoints: [
+      // Private endpoint for Key Vault only for new VNET
+      {
+        name: '${name}-kv-pep'
+        location: location
+        subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
+        privateDnsZoneResourceIds: createNewVNET ? [dnsZoneKv.outputs.resourceId] : []
+        tags: tags
+        enableTelemetry: enableTelemetry
+        lock: lock
+        roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+      }
+    ]
     publicNetworkAccess: empty(kvIpRules) ? 'Disabled' : 'Enabled'
     roleAssignments: empty(kvMultipleRoleAssignments) ? [] : kvMultipleRoleAssignments
     sku: advancedOptions.?keyVault.?sku == 'standard' ? 'standard' : kvDefaultSku
@@ -598,32 +596,30 @@ module dbw 'br/public:avm/res/databricks/workspace:0.6.0' = if (enableDatabricks
     lock: lock
     managedResourceGroupResourceId: null // Maybe in the future we can support custom RG
     prepareEncryption: true
-    privateEndpoints: createNewVNET
-      ? [
-          {
-            name: '${name}-dbw-ui-pep'
-            location: location
-            service: 'databricks_ui_api'
-            subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
-            privateDnsZoneResourceIds: [dnsZoneDbw.outputs.resourceId]
-            tags: tags
-            enableTelemetry: enableTelemetry
-            lock: lock
-            roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
-          }
-          {
-            name: '${name}-dbw-auth-pep'
-            location: location
-            service: 'browser_authentication'
-            subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
-            privateDnsZoneResourceIds: [dnsZoneDbw.outputs.resourceId]
-            tags: tags
-            enableTelemetry: enableTelemetry
-            lock: lock
-            roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
-          }
-        ]
-      : [] // In customer provided VNET, customer must create PEPs on their own
+    privateEndpoints: [
+      {
+        name: '${name}-dbw-ui-pep'
+        location: location
+        service: 'databricks_ui_api'
+        subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
+        privateDnsZoneResourceIds: createNewVNET ? [dnsZoneDbw.outputs.resourceId] : []
+        tags: tags
+        enableTelemetry: enableTelemetry
+        lock: lock
+        roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+      }
+      {
+        name: '${name}-dbw-auth-pep'
+        location: location
+        service: 'browser_authentication'
+        subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
+        privateDnsZoneResourceIds: createNewVNET ? [dnsZoneDbw.outputs.resourceId] : []
+        tags: tags
+        enableTelemetry: enableTelemetry
+        lock: lock
+        roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+      }
+    ]
     // Allow Public Network Access
     // Enabled means You can connect to your Databricks workspace either publicly, via public IP addresses, or privately, using a private endpoint.
     publicNetworkAccess: empty(dbwIpRules) ? 'Disabled' : 'Enabled'

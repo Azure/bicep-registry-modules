@@ -1273,12 +1273,10 @@ Certain Azure services within the solution can be reached via a public endpoint 
 This solution invariably demands a Virtual network presence.
 At the very least, it necessitates a single subnet to cater to private link endpoints.
 The incorporation of additional optional services implies further prerequisites for the network,
-such as subnets, their sizes, network security groups, NSG access control lists,
-private endpoints, DNS zones, etc.
+such as subnets, their sizes, network security groups, NSG access control lists, (sometimes) private endpoints, DNS zones, etc.
 For instance, activating the Azure Databricks service would automatically generate a virtual network and its essential components per established best practices.</br>
 When an enterprise's virtual network is supplied by either the network or cloud team, it has to comply with the requirements of the services being activated.
-It's crucial that Network Security Groups, Network Security Group Rules, DNS Zones and DNS forwarding, private endpoints,
-and domain zones for services like Key Vault and Azure Databricks, along with subnet delegations, are all set up correctly.
+It's crucial that Network Security Groups, Network Security Group Rules, DNS Zones and DNS forwarding, (sometimes) private endpoints, and domain zones for services like Key Vault and Azure Databricks, along with subnet delegations, are all set up correctly.
 For example, refer to the documentation here: https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/vnet-inject#--virtual-network-requirements.
 
 ### Supported Use Cases
@@ -1374,7 +1372,7 @@ Choosing this option allows you to tailor the infrastructure, but typically requ
 This case presents a balance between an extended deployment timeline and compliance with corporate policies and infrastructure requirements.</br>
 
 Complexity could be notably high on the Virtual Network side.</br>
-Anticipate the need for virtual network peering arrangements using a hub and spoke design, route tables, configuration of DNS, private zones, private endpoints, DNS forwarding for private links, virtual network delegations, and so on.</br>
+Anticipate the need for virtual network peering arrangements using a hub and spoke design, route tables, configuration of DNS, private zones, (sometimes) private endpoints, DNS forwarding for private links, virtual network delegations, and so on.</br>
 Additionally, various analytics services may each have distinct virtual network requirements.
 
 This use case does not require any public IP addresses to be exposed.</br>
@@ -1412,7 +1410,7 @@ If the parameter ```keyVaultResourceId``` is left unspecified or set to ```null`
 Additional creation configurations for the Azure Key Vault are available under the parameter ```advancedOptions.keyVault.*```.</br>
 
 This use case resembles use case [Storing Secrets - Key Vault for Use Case 1](#kv-uc1).
-The difference is that the customer usually needs full private access in own virtual network and must configure private endpoints for the created Azure Key Vault.
+The difference is that the customer usually needs full private access in own virtual network and must configure (sometimes) private endpoints for the created Azure Key Vault.
 This includes registering DNS records pointing to the private IP address under the private endpoint for Network Interface Card.
 Additionally, the customer must create or use an existing Azure Key Vault private DNS zone to support private endpoint resolution
 and integrate it with enterprise DNS and DNS forwarding mechanisms.
@@ -1435,14 +1433,14 @@ If the parameter ```enableDatabricks``` is set to ```true```, a new Azure Databr
 Additional creation configurations for the Azure Databricks are available under the parameter ```advancedOptions.databricks.*```.</br>
 
 This use case resembles use case [Analytical Service - Azure Databricks for Use Case 1](#adb-uc1).
-The difference is that the customer usually needs full private access in own virtual network and must configure private endpoints for the created Azure Databricks.
+The difference is that the customer usually needs full private access in own virtual network and must configure (sometimes) private endpoints for the created Azure Databricks.
 This includes registering DNS records pointing to the private IP address under the private endpoint for Network Interface Card.
 Additionally, the customer must create or use an existing Azure Databricks private DNS zone to support private endpoint resolution
 and integrate it with enterprise DNS and DNS forwarding mechanisms.
 
 This use case usually involves integrating with a private virtual network. Refer to: [Virtual Network for Use Case 2](#vnet-uc2).
 The network team needs to set up the virtual network to include a private links subnet and two additional subnets delegated for Azure Databricks.
-Then, create two private endpoints, network security groups, and an Azure Databricks Zone.
+Then, create (sometimes) two private endpoints, network security groups, and an Azure Databricks Zone.
 
 Refer to this guide for more information: <https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/vnet-inject>
 and this: <https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/private-link></br>
@@ -1484,7 +1482,7 @@ This use case aims to meet the specific needs of enterprise infrastructure, simi
 It integrates with a pre-provisioned virtual network for private traffic and pre-provisioned Azure Key Vault and central Azure Log Analytics workspace.</br>
 This allows the cloud and network teams to provide core components, and the solution linking them together.</br>
 
-Cloud and network teams remain responsible for configuring prerequisites and providing elements like private endpoints, private endpoint zones, DNS resolution, and access permissions.</br>
+Cloud and network teams remain responsible for configuring prerequisites and providing elements like private endpoints (sometimes), private endpoint zones, DNS resolution, and access permissions.</br>
 Find further information here: [Use Case 2: Brownfield, Implementation in an Existing, Enterprise-Specific Virtual Network for a New Deployment](#uc2)</br>
 
 This use case does not require any public IP addresses to be exposed,

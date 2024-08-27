@@ -81,7 +81,7 @@ Describe 'Validate Pattern deployment' {
             It 'Check Azure Key Vault' {
 
                 Test-VerifyKeyVault -KeyVaultResourceGroupName $keyVaultResourceGroupName -KeyVaultName $keyVaultName -Tags $expectedTags `
-                    -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku 'Premium' -RetentionInDays 90 -PEPName $null `
+                    -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku 'Premium' -RetentionInDays 90 -PEPName '-PEP' `
                     -NumberOfRecordSets 0 -SubnetName 'private-link-subnet' -PublicNetworkAccess 'Enabled' -IpAddressRanges @('104.43.16.94/32')
             }
         }
@@ -95,7 +95,7 @@ Describe 'Validate Pattern deployment' {
 
                 Test-VerifyDatabricks -DatabricksResourceGroupName $databricksResourceGroupName -DatabricksName $databricksName -Tags $expectedTags `
                     -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku 'premium' -VirtualNetworkResourceId $virtualNetworkResourceId `
-                    -PrivateSubnetName 'dbw-backend-subnet' -PublicSubnetName 'dbw-frontend-subnet' -PEPName1 $null -PEPName2 $null `
+                    -PrivateSubnetName 'dbw-backend-subnet' -PublicSubnetName 'dbw-frontend-subnet' -PEPName1 '-auth-PEP' -PEPName2 '-ui-PEP' `
                     -NumberOfRecordSets 0 -PLSubnetName 'private-link-subnet' -PublicNetworkAccess 'Enabled' -RequiredNsgRule 'AllRules'
             }
         }
