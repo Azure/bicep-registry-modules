@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "12568270897258705791"
+      "templateHash": "4106109878413250617"
     },
     "name": "DevTest Labs",
     "description": "This module deploys a DevTest Lab.",
@@ -1723,10 +1723,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "9010276477624635732"
+              "templateHash": "15799847804637325711"
             },
             "name": "DevTest Lab Schedules",
-            "description": "This module deploys a DevTest Lab Schedule.\r\n\r\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines.",
+            "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
