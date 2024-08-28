@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "9998441548542690329"
+      "templateHash": "2409780926109914899"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -653,7 +653,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "14142710988803601366"
+              "templateHash": "10394721304346895394"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1087,7 +1087,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "3942945463832850562"
+                      "templateHash": "6592820624705341105"
                     }
                   },
                   "parameters": {
@@ -1147,7 +1147,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.29.47.4906",
-                              "templateHash": "17729791753845366190"
+                              "templateHash": "3589833223987550845"
                             }
                           },
                           "parameters": {
@@ -1203,7 +1203,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.29.47.4906",
-                                      "templateHash": "10787841669647296324"
+                                      "templateHash": "15687156082548283745"
                                     }
                                   },
                                   "parameters": {
@@ -1222,7 +1222,7 @@
                                       "metadata": {
                                         "description": "Tags currently applied to the subscription level"
                                       },
-                                      "value": "[if(contains(reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]"
+                                      "value": "[coalesce(tryGet(reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), createObject())]"
                                     }
                                   }
                                 }
@@ -1281,7 +1281,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.29.47.4906",
-                              "templateHash": "17700862504066652524"
+                              "templateHash": "2885361202003966670"
                             }
                           },
                           "parameters": {
@@ -1336,7 +1336,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.29.47.4906",
-                                      "templateHash": "5227482844057113511"
+                                      "templateHash": "4327209924100539632"
                                     }
                                   },
                                   "parameters": {
@@ -1355,7 +1355,7 @@
                                       "metadata": {
                                         "description": "Tags currently applied to the subscription level"
                                       },
-                                      "value": "[if(contains(reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]"
+                                      "value": "[coalesce(tryGet(reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), createObject())]"
                                     }
                                   }
                                 }
@@ -1916,7 +1916,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "3942945463832850562"
+                      "templateHash": "6592820624705341105"
                     }
                   },
                   "parameters": {
@@ -1976,7 +1976,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.29.47.4906",
-                              "templateHash": "17729791753845366190"
+                              "templateHash": "3589833223987550845"
                             }
                           },
                           "parameters": {
@@ -2032,7 +2032,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.29.47.4906",
-                                      "templateHash": "10787841669647296324"
+                                      "templateHash": "15687156082548283745"
                                     }
                                   },
                                   "parameters": {
@@ -2051,7 +2051,7 @@
                                       "metadata": {
                                         "description": "Tags currently applied to the subscription level"
                                       },
-                                      "value": "[if(contains(reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]"
+                                      "value": "[coalesce(tryGet(reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), createObject())]"
                                     }
                                   }
                                 }
@@ -2110,7 +2110,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.29.47.4906",
-                              "templateHash": "17700862504066652524"
+                              "templateHash": "2885361202003966670"
                             }
                           },
                           "parameters": {
@@ -2165,7 +2165,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.29.47.4906",
-                                      "templateHash": "5227482844057113511"
+                                      "templateHash": "4327209924100539632"
                                     }
                                   },
                                   "parameters": {
@@ -2184,7 +2184,7 @@
                                       "metadata": {
                                         "description": "Tags currently applied to the subscription level"
                                       },
-                                      "value": "[if(contains(reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]"
+                                      "value": "[coalesce(tryGet(reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), createObject())]"
                                     }
                                   }
                                 }
