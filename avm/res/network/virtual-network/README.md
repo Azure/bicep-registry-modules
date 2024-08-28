@@ -626,10 +626,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     ]
     flowTimeoutInMinutes: 20
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     subnets: [
       {
         addressPrefix: '<addressPrefix>'
@@ -733,12 +729,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "subnets": {
       "value": [
