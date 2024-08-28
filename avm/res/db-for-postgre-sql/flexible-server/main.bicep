@@ -89,9 +89,10 @@ param storageSizeGB int = 32
   '13'
   '14'
   '15'
+  '16'
 ])
 @description('Optional. PostgreSQL Server version.')
-param version string = '15'
+param version string = '16'
 
 @allowed([
   'Disabled'
@@ -99,7 +100,7 @@ param version string = '15'
   'ZoneRedundant'
 ])
 @description('Optional. The mode for high availability.')
-param highAvailability string = 'Disabled'
+param highAvailability string = 'ZoneRedundant'
 
 @allowed([
   'Create'
