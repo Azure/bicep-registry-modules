@@ -52,11 +52,8 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. BGP Communities sent over ExpressRoute with each route corresponding to a prefix in this VNET.')
-param bgpCommunities {
-  @description('Required. The BGP community associated with the virtual network.')
-  virtualNetworkCommunity: string
-}?
+@description('Optional. The BGP community associated with the virtual network.')
+param virtualNetworkBgpCommunity string?
 
 @description('Optional. Indicates if VM protection is enabled for all the subnets in the virtual network.')
 param enableVmProtection bool?
@@ -139,7 +136,11 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-01-01' = {
         }
       : null
     flowTimeoutInMinutes: flowTimeoutInMinutes != 0 ? flowTimeoutInMinutes : null
-    bgpCommunities: bgpCommunities
+    bgpCommunities: !empty(virtualNetworkBgpCommunity)
+      ? {
+          virtualNetworkCommunity: virtualNetworkBgpCommunity!
+        }
+      : null
     enableVmProtection: enableVmProtection
   }
 }

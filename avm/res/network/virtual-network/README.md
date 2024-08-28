@@ -805,7 +805,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`bgpCommunities`](#parameter-bgpcommunities) | object | BGP Communities sent over ExpressRoute with each route corresponding to a prefix in this VNET. |
 | [`ddosProtectionPlanResourceId`](#parameter-ddosprotectionplanresourceid) | string | Resource ID of the DDoS protection plan to assign the VNET to. If it's left blank, DDoS protection will not be configured. If it's provided, the VNET created by this template will be attached to the referenced DDoS protection plan. The DDoS protection plan can exist in the same or in a different subscription. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`dnsServers`](#parameter-dnsservers) | array | DNS Servers associated to the Virtual Network. |
@@ -818,6 +817,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`subnets`](#parameter-subnets) | array | An Array of subnets to deploy to the Virtual Network. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`virtualNetworkBgpCommunity`](#parameter-virtualnetworkbgpcommunity) | string | The BGP community associated with the virtual network. |
 | [`vnetEncryption`](#parameter-vnetencryption) | bool | Indicates if encryption is enabled on virtual network and if VM without encryption is allowed in encrypted VNet. Requires the EnableVNetEncryption feature to be registered for the subscription and a supported region to use this property. |
 | [`vnetEncryptionEnforcement`](#parameter-vnetencryptionenforcement) | string | If the encrypted VNet allows VM that does not support encryption. Can only be used when vnetEncryption is enabled. |
 
@@ -831,26 +831,6 @@ An Array of 1 or more IP Address Prefixes for the Virtual Network.
 ### Parameter: `name`
 
 The name of the Virtual Network (vNet).
-
-- Required: Yes
-- Type: string
-
-### Parameter: `bgpCommunities`
-
-BGP Communities sent over ExpressRoute with each route corresponding to a prefix in this VNET.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`virtualNetworkCommunity`](#parameter-bgpcommunitiesvirtualnetworkcommunity) | string | The BGP community associated with the virtual network. |
-
-### Parameter: `bgpCommunities.virtualNetworkCommunity`
-
-The BGP community associated with the virtual network.
 
 - Required: Yes
 - Type: string
@@ -1569,6 +1549,13 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `virtualNetworkBgpCommunity`
+
+The BGP community associated with the virtual network.
+
+- Required: No
+- Type: string
 
 ### Parameter: `vnetEncryption`
 

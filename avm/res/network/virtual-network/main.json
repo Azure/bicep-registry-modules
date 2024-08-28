@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "1503931654458194149"
+      "templateHash": "8331098796857352662"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet).",
@@ -583,19 +583,11 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "bgpCommunities": {
-      "type": "object",
-      "properties": {
-        "virtualNetworkCommunity": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The BGP community associated with the virtual network."
-          }
-        }
-      },
+    "virtualNetworkBgpCommunity": {
+      "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. BGP Communities sent over ExpressRoute with each route corresponding to a prefix in this VNET."
+        "description": "Optional. The BGP community associated with the virtual network."
       }
     },
     "enableVmProtection": {
@@ -659,7 +651,7 @@
         "enableDdosProtection": "[not(empty(parameters('ddosProtectionPlanResourceId')))]",
         "encryption": "[if(equals(parameters('vnetEncryption'), true()), createObject('enabled', parameters('vnetEncryption'), 'enforcement', parameters('vnetEncryptionEnforcement')), null())]",
         "flowTimeoutInMinutes": "[if(not(equals(parameters('flowTimeoutInMinutes'), 0)), parameters('flowTimeoutInMinutes'), null())]",
-        "bgpCommunities": "[parameters('bgpCommunities')]",
+        "bgpCommunities": "[if(not(empty(parameters('virtualNetworkBgpCommunity'))), createObject('virtualNetworkCommunity', parameters('virtualNetworkBgpCommunity')), null())]",
         "enableVmProtection": "[parameters('enableVmProtection')]"
       }
     },
