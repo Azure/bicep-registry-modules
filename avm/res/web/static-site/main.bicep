@@ -93,7 +93,7 @@ var formattedUserAssignedIdentities = reduce(
 
 var identity = !empty(managedIdentities)
   ? {
-      type: (managedIdentities.?systemAssigned ?? false)
+      type: (managedIdentities.?systemAssigned ?? false) && sku != 'Free' // Managed identities are not supported for free tier.
         ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
         : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
