@@ -45,14 +45,14 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       addressPrefixes: [
         '10.0.0.0/21'
-        'fd00:592b:3014::/48'
+        'fd00:592b:3014::/64'
       ]
       subnets: [
         {
           name: 'ipv6-subnet'
           addressPrefixes: [
             '10.0.0.0/24'
-            'fd00:592b:3014::/48'
+            'fd00:592b:3014::/64'
           ]
         }
       ]

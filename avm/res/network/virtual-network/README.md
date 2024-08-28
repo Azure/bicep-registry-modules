@@ -109,7 +109,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     // Required parameters
     addressPrefixes: [
       '10.0.0.0/21'
-      'fd00:592b:3014::/48'
+      'fd00:592b:3014::/64'
     ]
     name: 'nvnipv6001'
     // Non-required parameters
@@ -118,7 +118,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       {
         addressPrefixes: [
           '10.0.0.0/24'
-          'fd00:592b:3014::/48'
+          'fd00:592b:3014::/64'
         ]
         name: 'ipv6-subnet'
       }
@@ -143,7 +143,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     "addressPrefixes": {
       "value": [
         "10.0.0.0/21",
-        "fd00:592b:3014::/48"
+        "fd00:592b:3014::/64"
       ]
     },
     "name": {
@@ -158,7 +158,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         {
           "addressPrefixes": [
             "10.0.0.0/24",
-            "fd00:592b:3014::/48"
+            "fd00:592b:3014::/64"
           ],
           "name": "ipv6-subnet"
         }
