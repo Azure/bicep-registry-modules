@@ -11,6 +11,9 @@ param location string = resourceGroup().location
 @description('Required. An Array of 1 or more IP Address Prefixes for the Virtual Network.')
 param addressPrefixes array
 
+@description('Optional. The BGP community associated with the virtual network.')
+param virtualNetworkBgpCommunity string?
+
 @description('Optional. An Array of subnets to deploy to the Virtual Network.')
 param subnets subnetType[]?
 
@@ -51,9 +54,6 @@ param tags object?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
-
-@description('Optional. The BGP community associated with the virtual network.')
-param virtualNetworkBgpCommunity string?
 
 @description('Optional. Indicates if VM protection is enabled for all the subnets in the virtual network.')
 param enableVmProtection bool?
@@ -118,6 +118,11 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-01-01' = {
     addressSpace: {
       addressPrefixes: addressPrefixes
     }
+    bgpCommunities: !empty(virtualNetworkBgpCommunity)
+      ? {
+          virtualNetworkCommunity: virtualNetworkBgpCommunity!
+        }
+      : null
     ddosProtectionPlan: !empty(ddosProtectionPlanResourceId)
       ? {
           id: ddosProtectionPlanResourceId
@@ -136,11 +141,6 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-01-01' = {
         }
       : null
     flowTimeoutInMinutes: flowTimeoutInMinutes != 0 ? flowTimeoutInMinutes : null
-    bgpCommunities: !empty(virtualNetworkBgpCommunity)
-      ? {
-          virtualNetworkCommunity: virtualNetworkBgpCommunity!
-        }
-      : null
     enableVmProtection: enableVmProtection
   }
 }
