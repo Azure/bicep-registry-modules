@@ -169,7 +169,7 @@ output resourceId string = subnet.id
 output addressPrefix string = subnet.properties.?addressPrefix ?? ''
 
 @description('List of address prefixes for the subnet.')
-output addressPrefixes array = !empty(addressPrefixes) ? subnet.properties.?addressPrefixes : []
+output addressPrefixes array = subnet.properties.?addressPrefixes ?? []
 
 // =============== //
 //   Definitions   //

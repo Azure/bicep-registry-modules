@@ -151,7 +151,7 @@ module virtualNetwork_subnets 'subnet/main.bicep' = [
     params: {
       virtualNetworkName: virtualNetwork.name
       name: subnet.name
-      addressPrefix: subnet.addressPrefix
+      addressPrefix: subnet.?addressPrefix
       addressPrefixes: subnet.?addressPrefixes
       applicationGatewayIPConfigurations: subnet.?applicationGatewayIPConfigurations
       delegation: subnet.?delegation
