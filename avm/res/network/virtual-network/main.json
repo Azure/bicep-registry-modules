@@ -6,11 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-<<<<<<< HEAD
-      "templateHash": "16452718499824597879"
-=======
-      "templateHash": "8331098796857352662"
->>>>>>> upstream/users/alsehr/vnetUpdate
+      "templateHash": "5706783765271345287"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet).",
@@ -594,13 +590,6 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "virtualNetworkBgpCommunity": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The BGP community associated with the virtual network."
-      }
-    },
     "enableVmProtection": {
       "type": "bool",
       "nullable": true,
@@ -654,32 +643,6 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-<<<<<<< HEAD
-        "copy": [
-          {
-            "name": "subnets",
-            "count": "[length(parameters('subnets'))]",
-            "input": {
-              "name": "[parameters('subnets')[copyIndex('subnets')].name]",
-              "properties": {
-                "addressPrefix": "[parameters('subnets')[copyIndex('subnets')].addressPrefix]",
-                "addressPrefixes": "[tryGet(parameters('subnets')[copyIndex('subnets')], 'addressPrefixes')]",
-                "applicationGatewayIPConfigurations": "[tryGet(parameters('subnets')[copyIndex('subnets')], 'applicationGatewayIPConfigurations')]",
-                "delegations": "[tryGet(parameters('subnets')[copyIndex('subnets')], 'delegations')]",
-                "ipAllocations": "[tryGet(parameters('subnets')[copyIndex('subnets')], 'ipAllocations')]",
-                "natGateway": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'natGatewayResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].natGatewayResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].natGatewayResourceId), null())]",
-                "networkSecurityGroup": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'networkSecurityGroupResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].networkSecurityGroupResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].networkSecurityGroupResourceId), null())]",
-                "privateEndpointNetworkPolicies": "[coalesce(tryGet(parameters('subnets')[copyIndex('subnets')], 'privateEndpointNetworkPolicies'), null())]",
-                "privateLinkServiceNetworkPolicies": "[coalesce(tryGet(parameters('subnets')[copyIndex('subnets')], 'privateLinkServiceNetworkPolicies'), null())]",
-                "routeTable": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'routeTableResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].routeTableResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].routeTableResourceId), null())]",
-                "serviceEndpoints": "[tryGet(parameters('subnets')[copyIndex('subnets')], 'serviceEndpoints')]",
-                "serviceEndpointPolicies": "[tryGet(parameters('subnets')[copyIndex('subnets')], 'serviceEndpointPolicies')]"
-              }
-            }
-          }
-        ],
-=======
->>>>>>> upstream/users/alsehr/vnetUpdate
         "addressSpace": {
           "addressPrefixes": "[parameters('addressPrefixes')]"
         },
@@ -689,7 +652,6 @@
         "enableDdosProtection": "[not(empty(parameters('ddosProtectionPlanResourceId')))]",
         "encryption": "[if(equals(parameters('vnetEncryption'), true()), createObject('enabled', parameters('vnetEncryption'), 'enforcement', parameters('vnetEncryptionEnforcement')), null())]",
         "flowTimeoutInMinutes": "[if(not(equals(parameters('flowTimeoutInMinutes'), 0)), parameters('flowTimeoutInMinutes'), null())]",
-        "bgpCommunities": "[if(not(empty(parameters('virtualNetworkBgpCommunity'))), createObject('virtualNetworkCommunity', parameters('virtualNetworkBgpCommunity')), null())]",
         "enableVmProtection": "[parameters('enableVmProtection')]"
       }
     },
@@ -796,42 +758,6 @@
             "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'addressPrefix')]"
           },
           "addressPrefixes": {
-<<<<<<< HEAD
-            "value": "[tryGet(parameters('subnets')[copyIndex()], 'addressPrefixes')]"
-          },
-          "applicationGatewayIPConfigurations": {
-            "value": "[tryGet(parameters('subnets')[copyIndex()], 'applicationGatewayIPConfiguration')]"
-          },
-          "delegations": {
-            "value": "[tryGet(parameters('subnets')[copyIndex()], 'delegations')]"
-          },
-          "ipAllocations": {
-            "value": "[tryGet(parameters('subnets')[copyIndex()], 'ipAllocations')]"
-          },
-          "natGatewayResourceId": {
-            "value": "[tryGet(parameters('subnets')[copyIndex()], 'natGatewayResourceId')]"
-          },
-          "networkSecurityGroupResourceId": {
-            "value": "[tryGet(parameters('subnets')[copyIndex()], 'networkSecurityGroupResourceId')]"
-          },
-          "privateEndpointNetworkPolicies": {
-            "value": "[tryGet(parameters('subnets')[copyIndex()], 'privateEndpointNetworkPolicies')]"
-          },
-          "privateLinkServiceNetworkPolicies": {
-            "value": "[tryGet(parameters('subnets')[copyIndex()], 'privateLinkServiceNetworkPolicies')]"
-          },
-          "roleAssignments": {
-            "value": "[tryGet(parameters('subnets')[copyIndex()], 'roleAssignments')]"
-          },
-          "routeTableResourceId": {
-            "value": "[tryGet(parameters('subnets')[copyIndex()], 'routeTableResourceId')]"
-          },
-          "serviceEndpointPolicies": {
-            "value": "[tryGet(parameters('subnets')[copyIndex()], 'serviceEndpointPolicies')]"
-          },
-          "serviceEndpoints": {
-            "value": "[tryGet(parameters('subnets')[copyIndex()], 'serviceEndpoints')]"
-=======
             "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'addressPrefixes')]"
           },
           "applicationGatewayIPConfigurations": {
@@ -869,7 +795,6 @@
           },
           "sharingScope": {
             "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'sharingScope')]"
->>>>>>> upstream/users/alsehr/vnetUpdate
           }
         },
         "template": {
@@ -1234,24 +1159,6 @@
             "value": "[coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId]"
           },
           "name": {
-<<<<<<< HEAD
-            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'name'), format('{0}-{1}', parameters('name'), last(split(parameters('peerings')[copyIndex()].remoteVirtualNetworkId, '/'))))]"
-          },
-          "allowForwardedTraffic": {
-            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'allowForwardedTraffic'), true())]"
-          },
-          "allowGatewayTransit": {
-            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'allowGatewayTransit'), false())]"
-          },
-          "allowVirtualNetworkAccess": {
-            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'allowVirtualNetworkAccess'), true())]"
-          },
-          "doNotVerifyRemoteGateways": {
-            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'doNotVerifyRemoteGateways'), true())]"
-          },
-          "useRemoteGateways": {
-            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'useRemoteGateways'), false())]"
-=======
             "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'name')]"
           },
           "allowForwardedTraffic": {
@@ -1268,7 +1175,6 @@
           },
           "useRemoteGateways": {
             "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'useRemoteGateways')]"
->>>>>>> upstream/users/alsehr/vnetUpdate
           }
         },
         "template": {
@@ -1410,24 +1316,6 @@
             "value": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]"
           },
           "name": {
-<<<<<<< HEAD
-            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'remotePeeringName'), format('{0}-{1}', last(split(parameters('peerings')[copyIndex()].remoteVirtualNetworkId, '/')), parameters('name')))]"
-          },
-          "allowForwardedTraffic": {
-            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'remotePeeringAllowForwardedTraffic'), true())]"
-          },
-          "allowGatewayTransit": {
-            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'remotePeeringAllowGatewayTransit'), false())]"
-          },
-          "allowVirtualNetworkAccess": {
-            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'remotePeeringAllowVirtualNetworkAccess'), true())]"
-          },
-          "doNotVerifyRemoteGateways": {
-            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'remotePeeringDoNotVerifyRemoteGateways'), true())]"
-          },
-          "useRemoteGateways": {
-            "value": "[coalesce(tryGet(parameters('peerings')[copyIndex()], 'remotePeeringUseRemoteGateways'), false())]"
-=======
             "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringName')]"
           },
           "allowForwardedTraffic": {
@@ -1444,7 +1332,6 @@
           },
           "useRemoteGateways": {
             "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringUseRemoteGateways')]"
->>>>>>> upstream/users/alsehr/vnetUpdate
           }
         },
         "template": {
