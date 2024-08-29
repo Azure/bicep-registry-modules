@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using firewall rules'
+metadata description = 'This instance deploys the module with the configuration of firewall rules.'
 
 // ========== //
 // Parameters //
@@ -9,13 +9,13 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-dbforpostgresql.flexibleservers-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-synapse.workspaces-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dfpsfsmin'
+param serviceShort string = 'swfwr'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -35,10 +35,11 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
   }
 }
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -51,17 +52,21 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      administrators: [
+      defaultDataLakeStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+      defaultDataLakeStorageFilesystem: nestedDependencies.outputs.storageContainerName
+      sqlAdministratorLogin: 'synwsadmin'
+      firewallRules: [
         {
-          objectId: nestedDependencies.outputs.managedIdentityClientId
-          principalName: nestedDependencies.outputs.managedIdentityName
-          principalType: 'ServicePrincipal'
+          name: 'fwrule01'
+          endIpAddress: '87.14.134.20'
+          startIpAddress: '87.14.134.20'
+        }
+        {
+          name: 'fwrule02'
+          endIpAddress: '87.14.134.22'
+          startIpAddress: '87.14.134.21'
         }
       ]
-      skuName: 'Standard_D2s_v3'
-      tier: 'GeneralPurpose'
-      geoRedundantBackup: 'Enabled'
-      highAvailability: 'ZoneRedundant'
     }
   }
 ]
