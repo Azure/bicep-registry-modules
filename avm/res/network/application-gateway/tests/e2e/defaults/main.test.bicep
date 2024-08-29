@@ -56,11 +56,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       // You parameters go here
       name: resourceName
-      zones: [
-        '1'
-        '2'
-        '3'
-      ]
       location: resourceLocation
       gatewayIPConfigurations: [
         {

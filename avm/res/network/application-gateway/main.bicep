@@ -178,7 +178,11 @@ param urlPathMaps array = []
 param webApplicationFirewallConfiguration object = {}
 
 @description('Optional. A list of availability zones denoting where the resource needs to come from.')
-param zones array = []
+param zones array = [
+  1
+  2
+  3
+]
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType

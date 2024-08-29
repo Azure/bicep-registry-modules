@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "362505319250929767"
+      "version": "0.29.47.4906",
+      "templateHash": "4542115854025442935"
     },
     "name": "Network Application Gateways",
     "description": "This module deploys a Network Application Gateway.",
@@ -759,7 +759,11 @@
     },
     "zones": {
       "type": "array",
-      "defaultValue": [],
+      "defaultValue": [
+        1,
+        2,
+        3
+      ],
       "metadata": {
         "description": "Optional. A list of availability zones denoting where the resource needs to come from."
       }

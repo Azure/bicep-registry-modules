@@ -130,11 +130,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     webApplicationFirewallConfiguration: {
       enabled: false
     }
-    zones: [
-      '1'
-      '2'
-      '3'
-    ]
   }
 }
 ```
@@ -253,13 +248,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       "value": {
         "enabled": false
       }
-    },
-    "zones": {
-      "value": [
-        "1",
-        "2",
-        "3"
-      ]
     }
   }
 }
@@ -1653,11 +1641,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       ruleSetType: 'OWASP'
       ruleSetVersion: '3.0'
     }
-    zones: [
-      '1'
-      '2'
-      '3'
-    ]
   }
 }
 ```
@@ -2121,13 +2104,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         "ruleSetType": "OWASP",
         "ruleSetVersion": "3.0"
       }
-    },
-    "zones": {
-      "value": [
-        "1",
-        "2",
-        "3"
-      ]
     }
   }
 }
@@ -3232,7 +3208,14 @@ A list of availability zones denoting where the resource needs to come from.
 
 - Required: No
 - Type: array
-- Default: `[]`
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 
 ## Outputs

@@ -79,11 +79,6 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       enableTelemetry: enableTelemetry
       name: appGWName
-      zones: [
-        '1'
-        '2'
-        '3'
-      ]
       backendAddressPools: [
         {
           name: 'appServiceBackendPool'
