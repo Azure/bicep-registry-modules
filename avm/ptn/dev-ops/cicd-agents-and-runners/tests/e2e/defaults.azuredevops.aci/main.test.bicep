@@ -30,8 +30,7 @@ param enableTelemetry bool = true
 param serviceShort string = 'devsr'
 
 @description('Optional. A token to inject into the name of each resource.')
-//param namePrefix string = '#_namePrefix_#'
-param namePrefix string = 'sb'
+param namePrefix string = '#_namePrefix_#'
 
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
