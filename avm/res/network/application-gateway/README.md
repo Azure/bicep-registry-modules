@@ -1297,7 +1297,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     ]
     enableHttp2: true
     enableTelemetry: '<enableTelemetry>'
-    firewallPolicyId: '<firewallPolicyId>'
+    firewallPolicyResourceId: '<firewallPolicyResourceId>'
     frontendIPConfigurations: [
       {
         name: 'private'
@@ -1719,8 +1719,8 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     "enableTelemetry": {
       "value": "<enableTelemetry>"
     },
-    "firewallPolicyId": {
-      "value": "<firewallPolicyId>"
+    "firewallPolicyResourceId": {
+      "value": "<firewallPolicyResourceId>"
     },
     "frontendIPConfigurations": {
       "value": [
@@ -2115,7 +2115,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 | [`enableRequestBuffering`](#parameter-enablerequestbuffering) | bool | Enable request buffering. |
 | [`enableResponseBuffering`](#parameter-enableresponsebuffering) | bool | Enable response buffering. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`firewallPolicyId`](#parameter-firewallpolicyid) | string | The resource ID of an associated firewall policy. Should be configured for security reasons. |
+| [`firewallPolicyResourceId`](#parameter-firewallpolicyresourceid) | string | The resource ID of an associated firewall policy. Should be configured for security reasons. |
 | [`frontendIPConfigurations`](#parameter-frontendipconfigurations) | array | Frontend IP addresses of the application gateway resource. |
 | [`frontendPorts`](#parameter-frontendports) | array | Frontend ports of the application gateway resource. |
 | [`gatewayIPConfigurations`](#parameter-gatewayipconfigurations) | array | Subnets of the application gateway resource. |
@@ -2404,7 +2404,7 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `firewallPolicyId`
+### Parameter: `firewallPolicyResourceId`
 
 The resource ID of an associated firewall policy. Should be configured for security reasons.
 
