@@ -292,7 +292,7 @@ module testDeployment '../../../main.bicep' = {
       dataCollectionRuleAssociations: [
         {
           name: 'SendMetricsToLAW'
-          dataCollectionRuleId: nestedDependencies.outputs.dataCollectionRuleResourceId
+          dataCollectionRuleResourceId: nestedDependencies.outputs.dataCollectionRuleResourceId
         }
       ]
       tags: {

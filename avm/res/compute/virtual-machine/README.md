@@ -578,7 +578,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     extensionMonitoringAgentConfig: {
       dataCollectionRuleAssociations: [
         {
-          dataCollectionRuleId: '<dataCollectionRuleId>'
+          dataCollectionRuleResourceId: '<dataCollectionRuleResourceId>'
           name: 'SendMetricsToLAW'
         }
       ]
@@ -910,7 +910,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "dataCollectionRuleAssociations": [
           {
-            "dataCollectionRuleId": "<dataCollectionRuleId>",
+            "dataCollectionRuleResourceId": "<dataCollectionRuleResourceId>",
             "name": "SendMetricsToLAW"
           }
         ],
@@ -1219,7 +1219,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     extensionMonitoringAgentConfig: {
       dataCollectionRuleAssociations: [
         {
-          dataCollectionRuleId: '<dataCollectionRuleId>'
+          dataCollectionRuleResourceId: '<dataCollectionRuleResourceId>'
           name: 'SendMetricsToLAW'
         }
       ]
@@ -1547,7 +1547,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "dataCollectionRuleAssociations": [
           {
-            "dataCollectionRuleId": "<dataCollectionRuleId>",
+            "dataCollectionRuleResourceId": "<dataCollectionRuleResourceId>",
             "name": "SendMetricsToLAW"
           }
         ],
@@ -2367,7 +2367,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     extensionMonitoringAgentConfig: {
       dataCollectionRuleAssociations: [
         {
-          dataCollectionRuleId: '<dataCollectionRuleId>'
+          dataCollectionRuleResourceId: '<dataCollectionRuleResourceId>'
           name: 'SendMetricsToLAW'
         }
       ]
@@ -2733,7 +2733,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "dataCollectionRuleAssociations": [
           {
-            "dataCollectionRuleId": "<dataCollectionRuleId>",
+            "dataCollectionRuleResourceId": "<dataCollectionRuleResourceId>",
             "name": "SendMetricsToLAW"
           }
         ],
