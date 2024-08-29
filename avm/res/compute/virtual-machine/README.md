@@ -3790,7 +3790,7 @@ Enables customers to patch their Azure VMs without requiring a reboot. For enabl
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
