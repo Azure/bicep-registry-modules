@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "10588705301143818699"
+      "templateHash": "12241893102141299283"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -472,6 +472,29 @@
         }
       },
       "nullable": true
+    },
+    "firewallRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the firewall rule."
+          }
+        },
+        "startIpAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The start IP address of the firewall rule. Must be IPv4 format."
+          }
+        },
+        "endIpAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress."
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -611,7 +634,10 @@
     },
     "firewallRules": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/firewallRuleType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of firewall rules to be created in the workspace."
       }
@@ -1255,7 +1281,7 @@
     "workspace_firewallRules": {
       "copy": {
         "name": "workspace_firewallRules",
-        "count": "[length(parameters('firewallRules'))]"
+        "count": "[length(coalesce(parameters('firewallRules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1267,13 +1293,13 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('firewallRules')[copyIndex()].name]"
+            "value": "[coalesce(parameters('firewallRules'), createArray())[copyIndex()].name]"
           },
           "endIpAddress": {
-            "value": "[parameters('firewallRules')[copyIndex()].endIpAddress]"
+            "value": "[coalesce(parameters('firewallRules'), createArray())[copyIndex()].endIpAddress]"
           },
           "startIpAddress": {
-            "value": "[parameters('firewallRules')[copyIndex()].startIpAddress]"
+            "value": "[coalesce(parameters('firewallRules'), createArray())[copyIndex()].startIpAddress]"
           },
           "workspaceName": {
             "value": "[parameters('name')]"

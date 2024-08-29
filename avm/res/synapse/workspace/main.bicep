@@ -67,7 +67,7 @@ param preventDataExfiltration bool = false
 param publicNetworkAccess string = 'Enabled'
 
 @description('Optional. List of firewall rules to be created in the workspace.')
-param firewallRules array = []
+param firewallRules firewallRuleType[]?
 
 @description('Optional. Purview Resource ID.')
 param purviewResourceID string = ''
@@ -334,7 +334,7 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
 
 // Firewall Rules
 module workspace_firewallRules 'firewall-rules/main.bicep' = [
-  for (rule, index) in firewallRules: {
+  for (rule, index) in (firewallRules ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-FirewallRule-${index}'
     params: {
       name: rule.name
@@ -622,3 +622,14 @@ type adminType = {
   @secure()
   tenantId: string?
 }?
+
+type firewallRuleType = {
+  @description('Required. The name of the firewall rule.')
+  name: string
+
+  @description('Required. The start IP address of the firewall rule. Must be IPv4 format.')
+  startIpAddress: string
+
+  @description('Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress.')
+  endIpAddress: string
+}
