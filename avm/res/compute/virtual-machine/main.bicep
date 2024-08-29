@@ -783,7 +783,7 @@ resource associations 'Microsoft.Insights/dataCollectionRuleAssociations@2023-03
     name: dataCollectionRuleAssociation.name
     scope: vm
     properties: {
-      dataCollectionRuleId: dataCollectionRuleAssociation.dataCollectionRuleId
+      dataCollectionRuleId: dataCollectionRuleAssociation.dataCollectionRuleResourceId
     }
   }
 ]
