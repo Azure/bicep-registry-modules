@@ -33,14 +33,20 @@ resource subscriptionAlias 'Microsoft.Subscription/aliases@2021-10-01' = {
     workload: subscriptionWorkload
     displayName: subscriptionDisplayName
     billingScope: subscriptionBillingScope
-    additionalProperties: (!empty(subscriptionTenantId) && !empty(subscriptionOwnerId)) ? {
-      subscriptionTenantId: subscriptionTenantId
-      subscriptionOwnerId: subscriptionOwnerId
-    } : {}
+    additionalProperties: (!empty(subscriptionTenantId) && !empty(subscriptionOwnerId))
+      ? {
+          subscriptionTenantId: subscriptionTenantId
+          subscriptionOwnerId: subscriptionOwnerId
+        }
+      : {}
   }
 }
 
 output subscriptionId string = subscriptionAlias.properties.subscriptionId
 output subscriptionResourceId string = '/subscriptions/${subscriptionAlias.properties.subscriptionId}'
-output subscriptionAcceptOwnershipState string = (!empty(subscriptionTenantId) && !empty(subscriptionOwnerId)) ? subscriptionAlias.properties.acceptOwnershipState : 'N/A'
-output subscriptionAcceptOwnershipUrl string = (!empty(subscriptionTenantId) && !empty(subscriptionOwnerId)) ? subscriptionAlias.properties.acceptOwnershipUrl : 'N/A'
+output subscriptionAcceptOwnershipState string = (!empty(subscriptionTenantId) && !empty(subscriptionOwnerId))
+  ? subscriptionAlias.properties.acceptOwnershipState
+  : 'N/A'
+output subscriptionAcceptOwnershipUrl string = (!empty(subscriptionTenantId) && !empty(subscriptionOwnerId))
+  ? subscriptionAlias.properties.acceptOwnershipUrl
+  : 'N/A'

@@ -26,6 +26,7 @@
     "editor.insertSpaces": true,
     "editor.tabSize": 4,
     "files.encoding": "utf8bom",
-    "files.insertFinalNewline": true
+    "files.insertFinalNewline": true,
+    "editor.detectIndentation": false // VS Code will not detect indentation/tab/space from the file and use settings editor.insertSpaces and editor.tabSize instead
   }
 }

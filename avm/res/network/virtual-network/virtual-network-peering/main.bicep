@@ -26,11 +26,11 @@ param doNotVerifyRemoteGateways bool = true
 @description('Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false.')
 param useRemoteGateways bool = false
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' existing = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' existing = {
   name: localVnetName
 }
 
-resource virtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2023-04-01' = {
+resource virtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2023-11-01' = {
   name: name
   parent: virtualNetwork
   properties: {

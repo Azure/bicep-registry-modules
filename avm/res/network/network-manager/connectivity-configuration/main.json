@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "2756544330949607993"
+      "version": "0.29.47.4906",
+      "templateHash": "12034113765565179248"
     },
     "name": "Network Manager Connectivity Configurations",
-    "description": "This module deploys a Network Manager Connectivity Configuration.\r\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
+    "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -111,7 +111,7 @@
         "Mesh"
       ],
       "metadata": {
-        "description": "Required. Connectivity topology type. \"Mesh\" IS CURRENTLY A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION."
+        "description": "Required. Connectivity topology type."
       }
     },
     "hubs": {
@@ -139,12 +139,12 @@
     "networkManager": {
       "existing": true,
       "type": "Microsoft.Network/networkManagers",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-11-01",
       "name": "[parameters('networkManagerName')]"
     },
     "connectivityConfiguration": {
       "type": "Microsoft.Network/networkManagers/connectivityConfigurations",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-11-01",
       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
       "properties": {
         "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('groupConnectivity', lambdaVariables('group').groupConnectivity, 'isGlobal', coalesce(string(lambdaVariables('group').isGlobal), 'false'), 'networkGroupId', lambdaVariables('group').networkGroupResourceId, 'useHubGateway', coalesce(string(lambdaVariables('group').useHubGateway), 'false'))))]",

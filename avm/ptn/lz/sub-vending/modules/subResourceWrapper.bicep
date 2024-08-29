@@ -331,7 +331,7 @@ module tagSubscription 'tags.bicep' = if (!empty(subscriptionTags)) {
     tags: subscriptionTags
   }
 }
-module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-group:0.2.0' = if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-group:0.2.4' = if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   scope: subscription(subscriptionId)
   name: deploymentNames.createResourceGroupForLzNetworking
   params: {
@@ -361,7 +361,7 @@ module tagResourceGroup 'tags.bicep' = if (virtualNetworkEnabled && !empty(virtu
   }
 }
 
-module createLzVnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+module createLzVnet 'br/public:avm/res/network/virtual-network:0.1.7' = if (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   dependsOn: [
     createResourceGroupForLzNetworking
   ]
@@ -470,7 +470,7 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-
   }
 ]
 
-module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resource-group:0.2.3' = if (!empty(resourceProviders)) {
+module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resource-group:0.2.4' = if (!empty(resourceProviders)) {
   scope: subscription(subscriptionId)
   name: deploymentNames.createResourceGroupForDeploymentScript
   params: {
@@ -480,7 +480,7 @@ module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resou
   }
 }
 
-module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-identity/user-assigned-identity:0.1.0' = if (!empty(resourceProviders)) {
+module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.createDeploymentScriptManagedIdentity
   dependsOn: [
@@ -514,7 +514,7 @@ module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/au
   }
 }
 
-module createDsNsg 'br/public:avm/res/network/network-security-group:0.1.0' = if (!empty(resourceProviders)) {
+module createDsNsg 'br/public:avm/res/network/network-security-group:0.3.0' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   dependsOn: [
     createResourceGroupForDeploymentScript
@@ -527,7 +527,7 @@ module createDsNsg 'br/public:avm/res/network/network-security-group:0.1.0' = if
   }
 }
 
-module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.5.0' = if (!empty(resourceProviders)) {
+module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (!empty(resourceProviders)) {
   dependsOn: [
     createRoleAssignmentsDeploymentScriptStorageAccount
   ]
@@ -537,7 +537,7 @@ module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.5.0' 
     location: deploymentScriptLocation
     name: deploymentScriptStorageAccountName
     kind: 'StorageV2'
-    skuName: 'Standard_ZRS'
+    skuName: 'Standard_LRS'
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
@@ -552,7 +552,7 @@ module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.5.0' 
   }
 }
 
-module createDsVnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (!empty(resourceProviders)) {
+module createDsVnet 'br/public:avm/res/network/virtual-network:0.1.7' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.createdsVnet
   params: {
@@ -585,7 +585,7 @@ module createDsVnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (!emp
   }
 }
 
-module registerResourceProviders 'br/public:avm/res/resources/deployment-script:0.1.0' = if (!empty(resourceProviders)) {
+module registerResourceProviders 'br/public:avm/res/resources/deployment-script:0.2.3' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.registerResourceProviders
   params: {

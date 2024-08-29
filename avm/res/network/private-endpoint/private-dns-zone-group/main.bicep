@@ -5,32 +5,32 @@ metadata owner = 'Azure/module-maintainers'
 @description('Conditional. The name of the parent private endpoint. Required if the template is used in a standalone deployment.')
 param privateEndpointName string
 
-@description('Required. Array of private DNS zone resource IDs. A DNS zone group can support up to 5 DNS zones.')
+@description('Required. Array of private DNS zone configurations of the private DNS zone group. A DNS zone group can support up to 5 DNS zones.')
 @minLength(1)
 @maxLength(5)
-param privateDNSResourceIds array
+param privateDnsZoneConfigs privateDnsZoneGroupConfigType[]
 
 @description('Optional. The name of the private DNS zone group.')
 param name string = 'default'
 
-var privateDnsZoneConfigs = [
-  for privateDNSResourceId in privateDNSResourceIds: {
-    name: last(split(privateDNSResourceId, '/'))!
+var privateDnsZoneConfigsVar = [
+  for privateDnsZoneConfig in privateDnsZoneConfigs: {
+    name: privateDnsZoneConfig.?name ?? last(split(privateDnsZoneConfig.privateDnsZoneResourceId, '/'))
     properties: {
-      privateDnsZoneId: privateDNSResourceId
+      privateDnsZoneId: privateDnsZoneConfig.privateDnsZoneResourceId
     }
   }
 ]
 
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' existing = {
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' existing = {
   name: privateEndpointName
 }
 
-resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-04-01' = {
+resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-11-01' = {
   name: name
   parent: privateEndpoint
   properties: {
-    privateDnsZoneConfigs: privateDnsZoneConfigs
+    privateDnsZoneConfigs: privateDnsZoneConfigsVar
   }
 }
 
@@ -42,3 +42,16 @@ output resourceId string = privateDnsZoneGroup.id
 
 @description('The resource group the private endpoint DNS zone group was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+// ================ //
+// Definitions      //
+// ================ //
+
+@export()
+type privateDnsZoneGroupConfigType = {
+  @description('Optional. The name of the private DNS zone group config.')
+  name: string?
+
+  @description('Required. The resource id of the private DNS zone.')
+  privateDnsZoneResourceId: string
+}

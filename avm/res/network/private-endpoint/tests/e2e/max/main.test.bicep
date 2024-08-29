@@ -63,16 +63,24 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
-      privateDnsZoneResourceIds: [
-        nestedDependencies.outputs.privateDNSZoneResourceId
-      ]
+      privateDnsZoneGroup: {
+        name: 'default'
+        privateDnsZoneGroupConfigs: [
+          {
+            name: 'config'
+            privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+          }
+        ]
+      }
       roleAssignments: [
         {
+          name: '6804f270-b4e9-455f-a11b-7f2a64e38f7c'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -113,9 +121,6 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
-      // Workaround for PSRule
-      privateDnsZoneGroupName: 'default'
-      manualPrivateLinkServiceConnections: []
       privateLinkServiceConnections: [
         {
           name: '${namePrefix}${serviceShort}001'

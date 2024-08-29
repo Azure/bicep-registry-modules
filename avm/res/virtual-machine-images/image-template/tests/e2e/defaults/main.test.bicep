@@ -57,9 +57,9 @@ module testDeployment '../../../main.bicep' = {
       }
     ]
     imageSource: {
-      offer: 'Windows-10'
+      offer: 'Windows-11'
       publisher: 'MicrosoftWindowsDesktop'
-      sku: 'win10-22h2-ent'
+      sku: 'win11-23h2-ent'
       type: 'PlatformImage'
       version: 'latest'
     }

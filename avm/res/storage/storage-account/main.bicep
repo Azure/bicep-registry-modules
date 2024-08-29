@@ -180,6 +180,9 @@ param sasExpirationPeriod string = ''
 ])
 param keyType string?
 
+@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
+param secretsExportConfiguration secretsExportConfigurationType?
+
 var supportsBlobService = kind == 'BlockBlobStorage' || kind == 'BlobStorage' || kind == 'StorageV2' || kind == 'Storage'
 var supportsFileService = kind == 'FileStorage' || kind == 'StorageV2' || kind == 'Storage'
 
@@ -238,6 +241,14 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     'db58b8e5-c6ad-4a2a-8342-4190687cbf4a'
   )
+  'Storage File Data Privileged Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '69566ab7-960f-475b-8e7c-b3118f30c6bd'
+  )
+  'Storage File Data Privileged Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'b8eda974-7b85-4f76-af95-65846b26df6d'
+  )
   'Storage File Data SMB Share Contributor': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb'
@@ -279,6 +290,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -455,14 +477,10 @@ resource storageAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
 }
 
 resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(storageAccount.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(storageAccount.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -474,7 +492,7 @@ resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments
   }
 ]
 
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-storageAccount-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -613,6 +631,52 @@ module storageAccount_tableServices 'table-service/main.bicep' = if (!empty(tabl
   }
 }
 
+module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
+  name: '${uniqueString(deployment().name, location)}-secrets-kv'
+  scope: resourceGroup(
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+  )
+  params: {
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    secretsToSet: union(
+      [],
+      contains(secretsExportConfiguration!, 'accessKey1')
+        ? [
+            {
+              name: secretsExportConfiguration!.accessKey1
+              value: storageAccount.listKeys().keys[0].value
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'connectionString1')
+        ? [
+            {
+              name: secretsExportConfiguration!.connectionString1
+              value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0]};EndpointSuffix=core.windows.net'
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'accessKey2')
+        ? [
+            {
+              name: secretsExportConfiguration!.accessKey2
+              value: storageAccount.listKeys().keys[1].value
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'connectionString2')
+        ? [
+            {
+              name: secretsExportConfiguration!.connectionString2
+              value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[1]};EndpointSuffix=core.windows.net'
+            }
+          ]
+        : []
+    )
+  }
+}
+
 @description('The resource ID of the deployed storage account.')
 output resourceId string = storageAccount.id
 
@@ -632,6 +696,14 @@ output systemAssignedMIPrincipalId string = storageAccount.?identity.?principalI
 
 @description('The location the resource was deployed into.')
 output location string = storageAccount.location
+
+@description('All service endpoints of the deployed storage account, Note Standard_LRS and Standard_ZRS accounts only have a blob service endpoint.')
+output serviceEndpoints object = storageAccount.properties.primaryEndpoints
+
+@description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
+output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
+  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  : {}
 
 // =============== //
 //   Definitions   //
@@ -654,6 +726,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -830,3 +905,26 @@ type customerManagedKeyType = {
   @description('Optional. User assigned identity to use when fetching the customer managed key. If used must also be specified in `managedIdentities.userAssignedResourceIds`. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
 }?
+
+type secretsExportConfigurationType = {
+  @description('Required. The key vault name where to store the keys and connection strings generated by the modules.')
+  keyVaultResourceId: string
+
+  @description('Optional. The accessKey1 secret name to create.')
+  accessKey1: string?
+
+  @description('Optional. The connectionString1 secret name to create.')
+  connectionString1: string?
+
+  @description('Optional. The accessKey2 secret name to create.')
+  accessKey2: string?
+
+  @description('Optional. The connectionString2 secret name to create.')
+  connectionString2: string?
+}
+
+import { secretSetType } from 'modules/keyVaultExport.bicep'
+type secretsOutputType = {
+  @description('An exported secret\'s references.')
+  *: secretSetType
+}

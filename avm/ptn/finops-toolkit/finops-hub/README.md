@@ -1,4 +1,4 @@
-# Finops-hub `[Microsoft.finopstoolkit/finopshub]`
+# Finops-hub `[FinopsToolkit/FinopsHub]`
 
 This module deploys a Finops hub from the Finops toolkit.
 

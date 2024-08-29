@@ -15,8 +15,8 @@ A network group is a collection of same-type network resources that you can asso
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/networkManagers/networkGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkManagers/networkGroups) |
-| `Microsoft.Network/networkManagers/networkGroups/staticMembers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkManagers/networkGroups/staticMembers) |
+| `Microsoft.Network/networkManagers/networkGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/networkGroups) |
+| `Microsoft.Network/networkManagers/networkGroups/staticMembers` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/networkGroups/staticMembers) |
 
 ## Parameters
 

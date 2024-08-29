@@ -207,11 +207,23 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 // ============ //
 // Dependencies //
 // ============ //
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-loadbalancer.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -229,7 +241,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource loadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
+resource loadBalancer 'Microsoft.Network/loadBalancers@2023-11-01' = {
   name: name
   location: location
   tags: tags
@@ -271,19 +283,15 @@ module loadBalancer_inboundNATRules 'inbound-nat-rule/main.bicep' = [
       loadBalancerName: loadBalancer.name
       name: inboundNATRule.name
       frontendIPConfigurationName: inboundNATRule.frontendIPConfigurationName
-      frontendPort: inboundNATRule.frontendPort
-      backendPort: contains(inboundNATRule, 'backendPort') ? inboundNATRule.backendPort : inboundNATRule.frontendPort
-      backendAddressPoolName: contains(inboundNATRule, 'backendAddressPoolName')
-        ? inboundNATRule.backendAddressPoolName
-        : ''
-      enableFloatingIP: contains(inboundNATRule, 'enableFloatingIP') ? inboundNATRule.enableFloatingIP : false
-      enableTcpReset: contains(inboundNATRule, 'enableTcpReset') ? inboundNATRule.enableTcpReset : false
-      frontendPortRangeEnd: contains(inboundNATRule, 'frontendPortRangeEnd') ? inboundNATRule.frontendPortRangeEnd : -1
-      frontendPortRangeStart: contains(inboundNATRule, 'frontendPortRangeStart')
-        ? inboundNATRule.frontendPortRangeStart
-        : -1
-      idleTimeoutInMinutes: contains(inboundNATRule, 'idleTimeoutInMinutes') ? inboundNATRule.idleTimeoutInMinutes : 4
-      protocol: contains(inboundNATRule, 'protocol') ? inboundNATRule.protocol : 'Tcp'
+      frontendPort: inboundNATRule.?frontendPort
+      backendPort: inboundNATRule.backendPort
+      backendAddressPoolName: inboundNATRule.?backendAddressPoolName
+      enableFloatingIP: inboundNATRule.?enableFloatingIP
+      enableTcpReset: inboundNATRule.?enableTcpReset
+      frontendPortRangeEnd: inboundNATRule.?frontendPortRangeEnd
+      frontendPortRangeStart: inboundNATRule.?frontendPortRangeStart
+      idleTimeoutInMinutes: inboundNATRule.?idleTimeoutInMinutes
+      protocol: inboundNATRule.?protocol
     }
     dependsOn: [
       loadBalancer_backendAddressPools
@@ -317,6 +325,13 @@ resource loadBalancer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
           timeGrain: null
         }
       ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
       marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
       logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
     }
@@ -325,14 +340,10 @@ resource loadBalancer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
 ]
 
 resource loadBalancer_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(loadBalancer.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(loadBalancer.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -371,6 +382,18 @@ type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
 
+  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
+  logCategoriesAndGroups: {
+    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
+    category: string?
+
+    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
+    categoryGroup: string?
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
+  }[]?
+
   @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
   metricCategories: {
     @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
@@ -408,6 +431,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 

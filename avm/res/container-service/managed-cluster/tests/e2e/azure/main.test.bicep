@@ -93,7 +93,6 @@ module testDeployment '../../../main.bicep' = [
           ]
           osDiskSizeGB: 0
           osType: 'Linux'
-          serviceCidr: ''
           type: 'VirtualMachineScaleSets'
           vmSize: 'Standard_DS2_v2'
           vnetSubnetID: nestedDependencies.outputs.subnetResourceIds[0]
@@ -197,11 +196,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
+          name: 'ac915208-669e-4665-9792-7e2dc861f569'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
