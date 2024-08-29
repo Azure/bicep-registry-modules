@@ -296,7 +296,6 @@ var virtualWanHubResourceGroupName = (!empty(virtualHubResourceIdChecked)
   ? split(virtualHubResourceIdChecked, '/')[4]
   : '')
 var virtualWanHubConnectionName = 'vhc-${virtualNetworkName}-${substring(guid(virtualHubResourceIdChecked, virtualNetworkName, virtualNetworkResourceGroupName, virtualNetworkLocation, subscriptionId), 0, 5)}'
-//var virtualWanHubConnectionName = 'vhc-${guid(virtualHubResourceIdChecked, virtualNetworkName, virtualNetworkResourceGroupName, virtualNetworkLocation, subscriptionId)}'
 var virtualWanHubConnectionAssociatedRouteTable = !empty(virtualNetworkVwanAssociatedRouteTableResourceId)
   ? virtualNetworkVwanAssociatedRouteTableResourceId
   : '${virtualHubResourceIdChecked}/hubRouteTables/defaultRouteTable'
