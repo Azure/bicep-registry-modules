@@ -841,9 +841,6 @@ type newNetworkType = {
   @description('Optional. The container instance subnet address prefix in the created virtual network. If not provided, a default subnet prefix will be used.')
   containerInstancesubnetPrefix: string?
 
-  @description('Optional. The container app subnet address prefix in the created virtual network. If not provided, a default subnet prefix will be used.')
-  containerAppSubnetPrefix: string?
-
   @description('Optional. The container registry subnet address prefix in the created virtual network. If not provided, a default subnet prefix will be used.')
   containerRegistrySubnetPrefix: string?
 
@@ -853,13 +850,13 @@ type newNetworkType = {
   @description('Optional. The subnet name for the container registry private endpoint. If not provided, a default name will be used.')
   containerRegistryPrivateEndpointSubnetName: string?
 
-  @description('Optional. The subnet name for the container app deployment script. If not provided, a default name will be used.')
+  @description('Optional. The subnet name for the container app deployment script. Only required if private networking is used. If not provided, a default name will be used.')
   containerAppDeploymentScriptSubnetName: string?
 
-  @description('Optional. The subnet address prefix for the container app deployment script which is used to start the placeholder Azure DevOps agent. If not provided, a default subnet prefix will be used.')
+  @description('Optional. The subnet address prefix for the container app deployment script which is used to start the placeholder Azure DevOps agent. Only required if private networking is used. If not provided, a default subnet prefix will be used.')
   containerAppDeploymentScriptSubnetPrefix: string?
 
-  @description('Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created.')
+  @description('Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. Only required if private networking is used.')
   deploymentScriptPrivateDnsZoneId: string?
 }
 
@@ -972,9 +969,6 @@ type devOpsAgentsType = {
 
   @description('Optional. The Azure DevOps agent name prefix.')
   agentNamePrefix: string?
-
-  @description('Optional. Create a placeholder agent.')
-  deployPlaceholder: true?
 
   @description('Optional. The Azure DevOps placeholder agent name.')
   placeHolderAgentName: string?

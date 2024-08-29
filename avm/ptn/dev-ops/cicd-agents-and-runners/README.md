@@ -86,6 +86,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults for Azure DevOps self-hosted agents using Azure Container Instances.](#example-1-using-only-defaults-for-azure-devops-self-hosted-agents-using-azure-container-instances)
 - [Using only defaults for GitHub self-hosted runners using Azure Container Apps.](#example-2-using-only-defaults-for-github-self-hosted-runners-using-azure-container-apps)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Using large parameter set](#example-4-using-large-parameter-set)
 
 ### Example 1: _Using only defaults for Azure DevOps self-hosted agents using Azure Container Instances._
 
@@ -249,6 +251,232 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     "computeTypes": {
       "value": [
         "azure-container-app"
+      ]
+    },
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "privateNetworking": {
+      "value": "<privateNetworking>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
+  name: 'cicdAgentsAndRunnersDeployment'
+  params: {
+    // Required parameters
+    namingPrefix: '<namingPrefix>'
+    networkingConfiguration: {
+      addressSpace: '<addressSpace>'
+      containerAppSubnetAddressPrefix: '<containerAppSubnetAddressPrefix>'
+      containerAppSubnetName: '<containerAppSubnetName>'
+      networkType: 'createNew'
+      virtualNetworkName: '<virtualNetworkName>'
+    }
+    selfHostedConfig: {
+      agentNamePrefix: '<agentNamePrefix>'
+      agentsPoolName: '<agentsPoolName>'
+      azureContainerAppTarget: {
+        resources: {
+          cpu: '1'
+          memory: '2Gi'
+        }
+      }
+      devOpsOrganization: '<devOpsOrganization>'
+      personalAccessToken: '<personalAccessToken>'
+      placeHolderAgentName: '<placeHolderAgentName>'
+      selfHostedType: 'azuredevops'
+      targetPipelinesQueueLength: '<targetPipelinesQueueLength>'
+    }
+    // Non-required parameters
+    computeTypes: [
+      'azure-container-instance'
+    ]
+    enableTelemetry: '<enableTelemetry>'
+    location: '<location>'
+    privateNetworking: '<privateNetworking>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "namingPrefix": {
+      "value": "<namingPrefix>"
+    },
+    "networkingConfiguration": {
+      "value": {
+        "addressSpace": "<addressSpace>",
+        "containerAppSubnetAddressPrefix": "<containerAppSubnetAddressPrefix>",
+        "containerAppSubnetName": "<containerAppSubnetName>",
+        "networkType": "createNew",
+        "virtualNetworkName": "<virtualNetworkName>"
+      }
+    },
+    "selfHostedConfig": {
+      "value": {
+        "agentNamePrefix": "<agentNamePrefix>",
+        "agentsPoolName": "<agentsPoolName>",
+        "azureContainerAppTarget": {
+          "resources": {
+            "cpu": "1",
+            "memory": "2Gi"
+          }
+        },
+        "devOpsOrganization": "<devOpsOrganization>",
+        "personalAccessToken": "<personalAccessToken>",
+        "placeHolderAgentName": "<placeHolderAgentName>",
+        "selfHostedType": "azuredevops",
+        "targetPipelinesQueueLength": "<targetPipelinesQueueLength>"
+      }
+    },
+    // Non-required parameters
+    "computeTypes": {
+      "value": [
+        "azure-container-instance"
+      ]
+    },
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "privateNetworking": {
+      "value": "<privateNetworking>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
+  name: 'cicdAgentsAndRunnersDeployment'
+  params: {
+    // Required parameters
+    namingPrefix: '<namingPrefix>'
+    networkingConfiguration: {
+      addressSpace: '<addressSpace>'
+      containerInstanceSubnetAddressPrefix: '<containerInstanceSubnetAddressPrefix>'
+      containerInstanceSubnetName: '<containerInstanceSubnetName>'
+      networkType: 'createNew'
+      virtualNetworkName: '<virtualNetworkName>'
+    }
+    selfHostedConfig: {
+      azureContainerInstanceTarget: {
+        cpu: '<cpu>'
+        memoryInGB: '<memoryInGB>'
+        numberOfInstances: '<numberOfInstances>'
+        sku: '<sku>'
+      }
+      ephemeral: true
+      githubOrganization: '<githubOrganization>'
+      githubRepository: '<githubRepository>'
+      personalAccessToken: '<personalAccessToken>'
+      runnerNamePrefix: '<runnerNamePrefix>'
+      runnerScope: '<runnerScope>'
+      selfHostedType: 'github'
+      targetWorkflowQueueLength: '<targetWorkflowQueueLength>'
+    }
+    // Non-required parameters
+    computeTypes: [
+      'azure-container-instance'
+    ]
+    enableTelemetry: '<enableTelemetry>'
+    location: '<location>'
+    privateNetworking: '<privateNetworking>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "namingPrefix": {
+      "value": "<namingPrefix>"
+    },
+    "networkingConfiguration": {
+      "value": {
+        "addressSpace": "<addressSpace>",
+        "containerInstanceSubnetAddressPrefix": "<containerInstanceSubnetAddressPrefix>",
+        "containerInstanceSubnetName": "<containerInstanceSubnetName>",
+        "networkType": "createNew",
+        "virtualNetworkName": "<virtualNetworkName>"
+      }
+    },
+    "selfHostedConfig": {
+      "value": {
+        "azureContainerInstanceTarget": {
+          "cpu": "<cpu>",
+          "memoryInGB": "<memoryInGB>",
+          "numberOfInstances": "<numberOfInstances>",
+          "sku": "<sku>"
+        },
+        "ephemeral": true,
+        "githubOrganization": "<githubOrganization>",
+        "githubRepository": "<githubRepository>",
+        "personalAccessToken": "<personalAccessToken>",
+        "runnerNamePrefix": "<runnerNamePrefix>",
+        "runnerScope": "<runnerScope>",
+        "selfHostedType": "github",
+        "targetWorkflowQueueLength": "<targetWorkflowQueueLength>"
+      }
+    },
+    // Non-required parameters
+    "computeTypes": {
+      "value": [
+        "azure-container-instance"
       ]
     },
     "enableTelemetry": {

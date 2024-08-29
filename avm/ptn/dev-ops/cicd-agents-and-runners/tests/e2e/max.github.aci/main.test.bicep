@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults for GitHub self-hosted runners using Azure Container Apps.'
-metadata description = 'This instance deploys the module with the minimum set of required parameters for GitHub self-hosted runners in Azure Container Apps.'
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 // ========== //
 // Parameters //
@@ -20,9 +20,15 @@ param githubOrganization string = 'azureDevOpsOrganization'
 @description('Required. The name of the GitHub repository.')
 param githubRepository string = 'dummyRepo'
 
-@description('Required. The personal access token for the GitHub organization.')
+@description('Required. The personal access token for the Azure DevOps organization.')
 @secure()
 param personalAccessToken string = newGuid()
+
+@description('Optional. The scope of the self-hosted runner.')
+param runnerScope string = 'repo'
+
+@description('Optional. The target workflows queue length.')
+param targetWorkflowQueueLength string = '1'
 
 @description('Optional. Whether to use private or public networking for the Azure Container Registry.')
 param privateNetworking bool = false
@@ -32,6 +38,23 @@ param virtualNetworkName string = 'vnet-aca'
 
 @description('Required. The address space for the virtual network.')
 param virtualNetworkAddressSpace string = '10.0.0.0/16'
+
+@description('Optional. The name of the subnet for the Azure Container App.')
+param containerInstanceSubnetName string = 'acaSubnet'
+
+param containerInstanceSubnetAddressPrefix string = '10.0.1.0/24'
+
+@description('Optional. The SKU of the Azure Container Instance.')
+param skuName string = 'Standard'
+
+@description('Optional. The memory in GB of the Azure Container Instance containers.')
+param memory int = 2
+
+@description('Optional. The number of CPUs of the Azure Container Instance containers.')
+param cpu int = 1
+
+@description('Optional. The number of instances of the Azure Container Instance.')
+param numberOfInstances int = 3
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -54,6 +77,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // ============== //
 // Test Execution //
 // ============== //
+
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   scope: resourceGroup
@@ -61,18 +85,30 @@ module testDeployment '../../../main.bicep' = {
     namingPrefix: namePrefix
     location: resourceLocation
     computeTypes: [
-      'azure-container-app'
+      'azure-container-instance'
     ]
     selfHostedConfig: {
       githubOrganization: githubOrganization
       githubRepository: githubRepository
       personalAccessToken: personalAccessToken
+      ephemeral: true
+      runnerNamePrefix: namePrefix
+      runnerScope: runnerScope
+      targetWorkflowQueueLength: targetWorkflowQueueLength
+      azureContainerInstanceTarget: {
+        sku: skuName
+        cpu: cpu
+        memoryInGB: memory
+        numberOfInstances: numberOfInstances
+      }
       selfHostedType: 'github'
     }
     networkingConfiguration: {
       addressSpace: virtualNetworkAddressSpace
       networkType: 'createNew'
       virtualNetworkName: virtualNetworkName
+      containerInstanceSubnetName: containerInstanceSubnetName
+      containerInstanceSubnetAddressPrefix: containerInstanceSubnetAddressPrefix
     }
     enableTelemetry: enableTelemetry
     privateNetworking: privateNetworking

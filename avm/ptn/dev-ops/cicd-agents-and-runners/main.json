@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "1092945157824785325"
+      "templateHash": "11846912157541070177"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.",
@@ -86,13 +86,6 @@
             "description": "Optional. The container instance subnet address prefix in the created virtual network. If not provided, a default subnet prefix will be used."
           }
         },
-        "containerAppSubnetPrefix": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The container app subnet address prefix in the created virtual network. If not provided, a default subnet prefix will be used."
-          }
-        },
         "containerRegistrySubnetPrefix": {
           "type": "string",
           "nullable": true,
@@ -118,21 +111,21 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The subnet name for the container app deployment script. If not provided, a default name will be used."
+            "description": "Optional. The subnet name for the container app deployment script. Only required if private networking is used. If not provided, a default name will be used."
           }
         },
         "containerAppDeploymentScriptSubnetPrefix": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The subnet address prefix for the container app deployment script which is used to start the placeholder Azure DevOps agent. If not provided, a default subnet prefix will be used."
+            "description": "Optional. The subnet address prefix for the container app deployment script which is used to start the placeholder Azure DevOps agent. Only required if private networking is used. If not provided, a default subnet prefix will be used."
           }
         },
         "deploymentScriptPrivateDnsZoneId": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created."
+            "description": "Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. Only required if private networking is used."
           }
         }
       }
@@ -404,16 +397,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The Azure DevOps agent name prefix."
-          }
-        },
-        "deployPlaceholder": {
-          "type": "bool",
-          "allowedValues": [
-            true
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Create a placeholder agent."
           }
         },
         "placeHolderAgentName": {
