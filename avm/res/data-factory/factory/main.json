@@ -4,9 +4,9 @@
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
-      "name": "bicep
+      "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "5481550023374339026"
+      "templateHash": "18216646751873195916"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -1205,10 +1205,14 @@
             "value": "[parameters('integrationRuntimes')[copyIndex()].type]"
           },
           "integrationRuntimeCustomDescription": {
-            "value": "[coalesce(tryGet(parameters('integrationRuntimes')[copyIndex()], 'integrationRuntimeCustomDescription'), 'Managed Integration Runtime created by avm-res-datafactory-factories')]"
+            "value": "[tryGet(parameters('integrationRuntimes')[copyIndex()], 'integrationRuntimeCustomDescription')]"
           },
-          "managedVirtualNetworkName": "[if(contains(parameters('integrationRuntimes')[copyIndex()], 'managedVirtualNetworkName'), createObject('value', parameters('integrationRuntimes')[copyIndex()].managedVirtualNetworkName), createObject('value', ''))]",
-          "typeProperties": "[if(contains(parameters('integrationRuntimes')[copyIndex()], 'typeProperties'), createObject('value', parameters('integrationRuntimes')[copyIndex()].typeProperties), createObject('value', createObject()))]"
+          "managedVirtualNetworkName": {
+            "value": "[tryGet(parameters('integrationRuntimes')[copyIndex()], 'managedVirtualNetworkName')]"
+          },
+          "typeProperties": {
+            "value": "[tryGet(parameters('integrationRuntimes')[copyIndex()], 'typeProperties')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

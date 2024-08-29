@@ -235,11 +235,9 @@ module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
       dataFactoryName: dataFactory.name
       name: integrationRuntime.name
       type: integrationRuntime.type
-      integrationRuntimeCustomDescription: integrationRuntime.?integrationRuntimeCustomDescription ?? 'Managed Integration Runtime created by avm-res-datafactory-factories'
-      managedVirtualNetworkName: contains(integrationRuntime, 'managedVirtualNetworkName')
-        ? integrationRuntime.managedVirtualNetworkName
-        : ''
-      typeProperties: contains(integrationRuntime, 'typeProperties') ? integrationRuntime.typeProperties : {}
+      integrationRuntimeCustomDescription: integrationRuntime.?integrationRuntimeCustomDescription
+      managedVirtualNetworkName: integrationRuntime.?managedVirtualNetworkName
+      typeProperties: integrationRuntime.?typeProperties
     }
     dependsOn: [
       dataFactory_managedVirtualNetwork
