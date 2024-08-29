@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "17468959759450172802"
+      "templateHash": "12741003264784159957"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -848,6 +848,13 @@
         "description": "Optional. VM guest patching assessment mode. Set it to 'AutomaticByPlatform' to enable automatically check for updates every 24 hours."
       }
     },
+    "enableHotpatching": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enables customers to patch their Azure VMs without requiring a reboot. For enableHotpatching, the 'provisionVMAgent' must be set to true and 'patchMode' must be set to 'AutomaticByPlatform'"
+      }
+    },
     "timeZone": {
       "type": "string",
       "defaultValue": "",
@@ -904,7 +911,7 @@
     "windowsConfiguration": {
       "provisionVMAgent": "[parameters('provisionVMAgent')]",
       "enableAutomaticUpdates": "[parameters('enableAutomaticUpdates')]",
-      "patchSettings": "[if(and(parameters('provisionVMAgent'), or(or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('AutomaticByOS'))), equals(toLower(parameters('patchMode')), toLower('Manual')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode'), 'automaticByPlatformSettings', if(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), createObject('bypassPlatformSafetyChecksOnUserSchedule', parameters('bypassPlatformSafetyChecksOnUserSchedule'), 'rebootSetting', parameters('rebootSetting')), null())), null())]",
+      "patchSettings": "[if(and(parameters('provisionVMAgent'), or(or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('AutomaticByOS'))), equals(toLower(parameters('patchMode')), toLower('Manual')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode'), 'enableHotpatching', if(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), parameters('enableHotpatching'), false()), 'automaticByPlatformSettings', if(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), createObject('bypassPlatformSafetyChecksOnUserSchedule', parameters('bypassPlatformSafetyChecksOnUserSchedule'), 'rebootSetting', parameters('rebootSetting')), null())), null())]",
       "timeZone": "[if(empty(parameters('timeZone')), null(), parameters('timeZone'))]",
       "additionalUnattendContent": "[if(empty(parameters('additionalUnattendContent')), null(), parameters('additionalUnattendContent'))]",
       "winRM": "[if(not(empty(parameters('winRM'))), createObject('listeners', parameters('winRM')), null())]"
