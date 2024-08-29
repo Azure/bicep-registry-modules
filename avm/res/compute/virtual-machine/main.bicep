@@ -785,6 +785,9 @@ resource vm_dataCollectionRuleAssociations 'Microsoft.Insights/dataCollectionRul
     properties: {
       dataCollectionRuleId: dataCollectionRuleAssociation.dataCollectionRuleResourceId
     }
+    dependsOn: [
+      vm_azureMonitorAgentExtension
+    ]
   }
 ]
 
