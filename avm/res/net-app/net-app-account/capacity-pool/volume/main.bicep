@@ -17,6 +17,12 @@ param coolnessPeriod int
 @description('Optional. determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read).')
 param coolAccessRetrievalPolicy string = 'Default'
 
+@description('Optional. The source of the encryption key.')
+param encryptionKeySource string
+
+@description('Optional. The resource ID of the key vault private endpoint.')
+param keyVaultPrivateEndpointResourceId string
+
 @description('Optional. Indicates whether the local volume is the source or destination for the Volume Replication (src/dst).')
 param endpointType string
 
@@ -65,8 +71,74 @@ param useExistingSnapshot bool
 @description('Optional. The name of the snapshot.')
 param snapshotName string
 
+@description('Optional. Snapshot Policy ResourceId.')
+param snapshotPolicyId string
+
+@description('Optional. The name of the snapshot policy.')
+param snapshotPolicyName string
+
+@description('Optional. The location of the snapshot policy.')
+param snapshotPolicyLocation string = resourceGroup().location
+
+@description('Optional. The daily snapshot hour.')
+param dailyHour int
+
+@description('Optional. The daily snapshot minute.')
+param dailyMinute int
+
+@description('Optional. Daily snapshot count to keep.')
+param dailySnapshotsToKeep int
+
+@description('Optional. Daily snapshot used bytes.')
+param dailyUsedBytes int
+
+@description('Optional. The hourly snapshot minute.')
+param hourlyMinute int
+
+@description('Optional. Hourly snapshot count to keep.')
+param hourlySnapshotsToKeep int
+
+@description('Optional. Hourly snapshot used bytes.')
+param hourlyUsedBytes int
+
+@description('Optional. The monthly snapshot day.')
+param daysOfMonth string
+
+@description('Optional. The monthly snapshot hour.')
+param monthlyHour int
+
+@description('Optional. The monthly snapshot minute.')
+param monthlyMinute int
+
+@description('Optional. Monthly snapshot count to keep.')
+param monthlySnapshotsToKeep int
+
+@description('Optional. Monthly snapshot used bytes.')
+param monthlyUsedBytes int
+
+@description('Optional. The weekly snapshot day.')
+param weeklyDay string
+
+@description('Optional. The weekly snapshot hour.')
+param weeklyHour int
+
+@description('Optional. The weekly snapshot minute.')
+param weeklyMinute int
+
+@description('Optional. Weekly snapshot count to keep.')
+param weeklySnapshotsToKeep int
+
+@description('Optional. Weekly snapshot used bytes.')
+param weeklyUsedBytes int
+
+@description('Optional. Indicates whether the snapshot policy is enabled.')
+param snapEnabled bool = false
+
 @description('Optional. The resource ID of the volume.')
 param volumeResourceId string
+
+@description('Optional. The type of the volume. DataProtection volumes are used for replication.')
+param volumeType string
 
 @description('Required. The name of the pool volume.')
 param name string
@@ -127,15 +199,26 @@ var builtInRoleNames = {
   )
 }
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2023-07-01' existing = {
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
   name: netAppAccountName
 
-  resource capacityPool 'capacityPools@2023-07-01' existing = {
+  resource capacityPool 'capacityPools@2024-03-01' existing = {
     name: capacityPoolName
   }
 }
 
-resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2023-07-01' = {
+resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-01' = {
   name: name
   parent: netAppAccount::capacityPool
   location: location
@@ -143,14 +226,24 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2023-07-0
     coolAccess: coolAccess
     coolAccessRetrievalPolicy: coolAccessRetrievalPolicy
     coolnessPeriod: coolnessPeriod
-    ...(endpointType != ''
+    encryptionKeySource: encryptionKeySource
+    ...(encryptionKeySource != 'Microsoft.NetApp'
       ? {
+          keyVaultPrivateEndpointResourceId: keyVaultPrivateEndpointResourceId
+        }
+      : {})
+    ...(volumeType != ''
+      ? {
+          volumeType: volumeType
           dataProtection: {
             replication: {
               endpointType: endpointType
               remoteVolumeRegion: remoteVolumeRegion
               remoteVolumeResourceId: remoteVolumeResourceId
               replicationSchedule: replicationSchedule
+            }
+            snapshot: {
+              snapshotPolicyId: snapshotPolicyId
             }
           }
         }
@@ -170,7 +263,41 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2023-07-0
   zones: zones
 }
 
-resource backupPolicies 'Microsoft.NetApp/netAppAccounts/backupPolicies@2023-11-01' = if (backupEnabled) {
+resource snapshotPolicies 'Microsoft.NetApp/netAppAccounts/snapshotPolicies@2024-03-01' = if (snapEnabled) {
+  name: snapshotPolicyName
+  parent: netAppAccount
+  location: snapshotPolicyLocation
+  properties: {
+    enabled: snapEnabled
+    dailySchedule: {
+      hour: dailyHour
+      minute: dailyMinute
+      snapshotsToKeep: dailySnapshotsToKeep
+      usedBytes: dailyUsedBytes
+    }
+    hourlySchedule: {
+      minute: hourlyMinute
+      snapshotsToKeep: hourlySnapshotsToKeep
+      usedBytes: hourlyUsedBytes
+    }
+    monthlySchedule: {
+      daysOfMonth: daysOfMonth
+      hour: monthlyHour
+      minute: monthlyMinute
+      snapshotsToKeep: monthlySnapshotsToKeep
+      usedBytes: monthlyUsedBytes
+    }
+    weeklySchedule: {
+      day: weeklyDay
+      hour: weeklyHour
+      minute: weeklyMinute
+      snapshotsToKeep: weeklySnapshotsToKeep
+      usedBytes: weeklyUsedBytes
+    }
+  }
+}
+
+resource backupPolicies 'Microsoft.NetApp/netAppAccounts/backupPolicies@2024-03-01' = if (backupEnabled) {
   name: backupPolicyName
   parent: netAppAccount
   location: backupPolicyLocation
@@ -182,14 +309,14 @@ resource backupPolicies 'Microsoft.NetApp/netAppAccounts/backupPolicies@2023-11-
   }
 }
 
-resource backupVaults 'Microsoft.NetApp/netAppAccounts/backupVaults@2023-05-01-preview' = if (backupEnabled) {
+resource backupVaults 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-03-01' = if (backupEnabled) {
   name: backupVaultName
   parent: netAppAccount
   location: backupVaultLocation
   properties: {}
 }
 
-resource backups 'Microsoft.NetApp/netAppAccounts/backupVaults/backups@2023-05-01-preview' = if (backupEnabled) {
+resource backups 'Microsoft.NetApp/netAppAccounts/backupVaults/backups@2024-03-01' = if (backupEnabled) {
   name: backupName
   parent: backupVaults
   properties: backupEnabled
@@ -203,14 +330,10 @@ resource backups 'Microsoft.NetApp/netAppAccounts/backupVaults/backups@2023-05-0
 }
 
 resource volume_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(volume.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(volume.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -239,6 +362,9 @@ output location string = volume.location
 // =============== //
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 

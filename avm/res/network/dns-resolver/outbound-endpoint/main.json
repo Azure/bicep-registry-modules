@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "6638776759595697100"
+      "version": "0.29.47.4906",
+      "templateHash": "5025100485259764817"
     },
     "name": "DNS Resolver Outbound Endpoint",
     "description": "This module deploys a DNS Resolver Outbound Endpoint.",
