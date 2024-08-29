@@ -17,6 +17,7 @@ param computeTypes computeTypesType = [
   'azure-container-instance'
 ]
 
+@description('Required. The self-hosted runner configuration. This can be either GitHub or Azure DevOps.')
 param selfHostedConfig selfHostedRunnerType
 
 @description('Required. The networking configuration.')

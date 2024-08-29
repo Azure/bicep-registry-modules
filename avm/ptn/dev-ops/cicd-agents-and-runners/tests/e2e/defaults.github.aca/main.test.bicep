@@ -4,8 +4,24 @@ metadata description = 'This instance deploys the module with the minimum set of
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = resourceGroup().location
 
+@description('Required. The name of the GitHub organization.')
+param githubOrganization string = 'azureDevOpsOrganization'
+
+@description('Required. The name of the GitHub repository.')
+param githubRepository string = 'dummyRepo'
+
+@description('Required. The personal access token for the GitHub organization.')
+@secure()
+param personalAccessToken string = newGuid()
+
 @description('Optional. Whether to use private or public networking for the Azure Container Registry.')
 param privateNetworking bool = false
+
+@description('Required. The name of the virtual network to create.')
+param virtualNetworkName string = 'vnet-aca'
+
+@description('Required. The address space for the virtual network.')
+param virtualNetworkAddressSpace string = '10.0.0.0/16'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -25,15 +41,15 @@ module testDeployment '../../../main.bicep' = {
       'azure-container-app'
     ]
     selfHostedConfig: {
-      githubOrganization: 'gitHubOrganization'
-      githubRepository: 'gitHubRepository'
-      personalAccessToken: 'dummyPAT'
+      githubOrganization: githubOrganization
+      githubRepository: githubRepository
+      personalAccessToken: personalAccessToken
       selfHostedType: 'github'
     }
     networkingConfiguration: {
-      addressSpace: '10.0.0.0/16'
+      addressSpace: virtualNetworkAddressSpace
       networkType: 'createNew'
-      virtualNetworkName: 'vnet-aca'
+      virtualNetworkName: virtualNetworkName
     }
     enableTelemetry: enableTelemetry
     privateNetworking: privateNetworking
