@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "14538413946369293458"
+      "templateHash": "17996854249282289438"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -1123,9 +1123,9 @@
         "vm"
       ]
     },
-    "associations": {
+    "vm_dataCollectionRuleAssociations": {
       "copy": {
-        "name": "associations",
+        "name": "vm_dataCollectionRuleAssociations",
         "count": "[length(parameters('extensionMonitoringAgentConfig').dataCollectionRuleAssociations)]"
       },
       "condition": "[parameters('extensionMonitoringAgentConfig').enabled]",
@@ -1134,10 +1134,11 @@
       "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
       "name": "[parameters('extensionMonitoringAgentConfig').dataCollectionRuleAssociations[copyIndex()].name]",
       "properties": {
-        "dataCollectionRuleId": "[parameters('extensionMonitoringAgentConfig').dataCollectionRuleAssociations[copyIndex()].dataCollectionRuleId]"
+        "dataCollectionRuleId": "[parameters('extensionMonitoringAgentConfig').dataCollectionRuleAssociations[copyIndex()].dataCollectionRuleResourceId]"
       },
       "dependsOn": [
-        "vm"
+        "vm",
+        "vm_azureMonitorAgentExtension"
       ]
     },
     "AzureWindowsBaseline": {
