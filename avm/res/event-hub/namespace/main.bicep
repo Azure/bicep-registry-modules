@@ -23,7 +23,7 @@ param skuName string = 'Standard'
 param skuCapacity int = 1
 
 @description('Optional. Switch to make the Event Hub Namespace zone redundant.')
-param zoneRedundant bool = false
+param zoneRedundant bool = true
 
 @description('Optional. Switch to enable the Auto Inflate feature of Event Hub. Auto Inflate is not supported in Premium SKU EventHub.')
 param isAutoInflateEnabled bool = false
