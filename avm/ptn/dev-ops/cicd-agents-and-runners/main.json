@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "12124716682279075698"
+      "templateHash": "17095567923639468770"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.",
@@ -610,7 +610,7 @@
         "imagePath": "github-runner-aci"
       }
     ],
-    "githubURL": "https://github.com/sebassem/bicep-registry-modules#avm-ptn-lz-private-runners:avm/ptn/lz/private-runners/container-images",
+    "githubURL": "https://github.com/sebassem/bicep-registry-modules#avm-ptn-lz-private-runners:avm/ptn/dev-ops/cicd-agents-and-runners/container-images",
     "acaGitHubRules": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), createArray(createObject('name', 'github-runner-scaling-rule', 'type', 'github-runner', 'metadata', createObject('owner', parameters('selfHostedConfig').githubOrganization, 'repos', parameters('selfHostedConfig').githubRepository, 'targetWorkflowQueueLength', coalesce(tryGet(parameters('selfHostedConfig'), 'targetWorkflowQueueLength'), '1'), 'runnerScope', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerScope'), 'repo')), 'auth', createArray(createObject('secretRef', 'personal-access-token', 'triggerParameter', 'personalAccessToken')))), createArray())]",
     "acaGitHubSecrets": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), createArray(createObject('name', 'personal-access-token', 'value', parameters('selfHostedConfig').personalAccessToken)), createArray())]",
     "acaGitHubEnvVariables": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), createArray(createObject('name', 'RUNNER_NAME_PREFIX', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerNamePrefix'), 'gh-runner')), createObject('name', 'REPO_URL', 'value', variables('gitHubRunnerURL')), createObject('name', 'RUNNER_SCOPE', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerScope'), 'repo')), createObject('name', 'EPHEMERAL', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'ephemeral'), 'true')), createObject('name', 'ORG_NAME', 'value', parameters('selfHostedConfig').gitHubOrganization), createObject('name', 'RUNNER_GROUP', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerGroup'), '')), createObject('name', 'ACCESS_TOKEN', 'secretRef', 'personal-access-token')), createArray())]",
@@ -6277,7 +6277,7 @@
             ]
           },
           "networkRuleBypassOptions": "[if(parameters('privateNetworking'), createObject('value', 'AzureServices'), createObject('value', 'None'))]",
-          "privateEndpoints": "[if(parameters('privateNetworking'), createObject('value', createArray(createObject('subnetResourceId', if(equals(parameters('networkingConfiguration').networkType, 'createNew'), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName'), 'acr-subnet'))))[0], format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, coalesce(parameters('networkingConfiguration').containerRegistryPrivateEndpointSubnetName, 'acr-subnet'))), 'privateDnsZoneResourceIds', if(not(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneId'), ''))), createArray(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneId'), '')), createArray(if(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneId'), '')), reference('acrPrivateDNSZone').outputs.resourceId.value, ''))), 'privateDnsZoneGroupName', 'acrPrivateDNSZoneGroup'))), createObject('value', null()))]"
+          "privateEndpoints": "[if(parameters('privateNetworking'), createObject('value', createArray(createObject('subnetResourceId', if(equals(parameters('networkingConfiguration').networkType, 'createNew'), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName'), 'acr-subnet'))))[0], if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, coalesce(parameters('networkingConfiguration').containerRegistryPrivateEndpointSubnetName, 'acr-subnet')), null())), 'privateDnsZoneResourceIds', if(not(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneId'), ''))), createArray(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneId'), '')), createArray(if(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneId'), '')), reference('acrPrivateDNSZone').outputs.resourceId.value, ''))), 'privateDnsZoneGroupName', 'acrPrivateDNSZoneGroup'))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -10005,7 +10005,7 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "infrastructureSubnetId": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppSubnetName'), 'app-subnet'))))[0]), createObject('value', format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').containerAppSubnetName)))]",
+          "infrastructureSubnetId": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppSubnetName'), 'app-subnet'))))[0]), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').containerAppSubnetName)), createObject('value', null())))]",
           "zoneRedundant": "[if(parameters('privateNetworking'), createObject('value', true()), createObject('value', false()))]",
           "internal": "[if(parameters('privateNetworking'), createObject('value', true()), createObject('value', false()))]",
           "workloadProfiles": {
@@ -13004,7 +13004,7 @@
               }
             ]
           },
-          "subnetId": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0]), createObject('value', format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').containerInstanceSubnetName)))]",
+          "subnetId": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0]), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').containerInstanceSubnetName)), createObject('value', null())))]",
           "ipAddressType": "[if(parameters('privateNetworking'), createObject('value', 'Private'), createObject('value', 'Public'))]",
           "sku": {
             "value": "Standard"
@@ -24233,7 +24233,7 @@
             }
           },
           "storageAccountResourceId": "[if(parameters('privateNetworking'), createObject('value', reference('deploymentScriptStg').outputs.resourceId.value), createObject('value', null()))]",
-          "subnetResourceIds": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', createArray(filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0])), createObject('value', createArray(format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').containerInstanceSubnetName))))]",
+          "subnetResourceIds": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', createArray(filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0])), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', createArray(format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').containerInstanceSubnetName))), createObject('value', null())))]",
           "arguments": {
             "value": "[format('-resourceGroup {0} -jobName {1} -subscriptionId {2}', resourceGroup().name, reference('acaPlaceholderJob').outputs.name.value, subscription().subscriptionId)]"
           },

@@ -53,7 +53,7 @@ var imagePaths = [
 ]
 
 // To be updated
-var githubURL = 'https://github.com/sebassem/bicep-registry-modules#avm-ptn-lz-private-runners:avm/ptn/lz/private-runners/container-images'
+var githubURL = 'https://github.com/sebassem/bicep-registry-modules#avm-ptn-lz-private-runners:avm/ptn/dev-ops/cicd-agents-and-runners/container-images'
 
 var acaGitHubRules = (selfHostedConfig.selfHostedType == 'github')
   ? [
@@ -266,7 +266,9 @@ module acr 'br/public:avm/res/container-registry/registry:0.4.0' = {
                       networkingConfiguration.?containerRegistryPrivateEndpointSubnetName ?? 'acr-subnet'
                     )
                 )[0]
-              : '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.containerRegistryPrivateEndpointSubnetName ?? 'acr-subnet'}'
+              : networkingConfiguration.networkType == 'useExisting'
+                  ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.containerRegistryPrivateEndpointSubnetName ?? 'acr-subnet'}'
+                  : null
             privateDnsZoneResourceIds: !empty(networkingConfiguration.?containerRegistryPrivateDnsZoneId ?? '')
               ? [
                   networkingConfiguration.?containerRegistryPrivateDnsZoneId ?? ''
@@ -367,7 +369,9 @@ module appEnvironment 'br/public:avm/res/app/managed-environment:0.6.2' = if (co
           newVnet.outputs.subnetResourceIds,
           subnetId => contains(subnetId, networkingConfiguration.?containerAppSubnetName ?? 'app-subnet')
         )[0]
-      : '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.containerAppSubnetName}'
+      : privateNetworking && networkingConfiguration.networkType == 'useExisting'
+          ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.containerAppSubnetName}'
+          : null
     zoneRedundant: privateNetworking ? true : false
     internal: privateNetworking ? true : false
     workloadProfiles: [
@@ -492,7 +496,9 @@ module aciJob 'br/public:avm/res/container-instance/container-group:0.2.0' = [
             newVnet.outputs.subnetResourceIds,
             subnetId => contains(subnetId, networkingConfiguration.?containerInstanceSubnetName ?? 'aci-subnet')
           )[0]
-        : '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.containerInstanceSubnetName}'
+        : privateNetworking && networkingConfiguration.networkType == 'useExisting'
+            ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.containerInstanceSubnetName}'
+            : null
       ipAddressType: privateNetworking ? 'Private' : 'Public'
       sku: 'Standard'
       containers: [
@@ -780,9 +786,11 @@ module runPlaceHolderAgent 'br/public:avm/res/resources/deployment-script:0.3.1'
             subnetId => contains(subnetId, networkingConfiguration.?containerInstanceSubnetName ?? 'aci-subnet')
           )[0]
         ]
-      : [
-          '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.containerInstanceSubnetName}'
-        ]
+      : privateNetworking && networkingConfiguration.networkType == 'useExisting'
+          ? [
+              '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.containerInstanceSubnetName}'
+            ]
+          : null
     arguments: '-resourceGroup ${resourceGroup().name} -jobName ${acaPlaceholderJob.outputs.name} -subscriptionId ${subscription().subscriptionId}'
     scriptContent: loadTextContent('./scripts/runPlaceHolderJob.ps1')
   }
