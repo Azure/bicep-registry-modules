@@ -241,7 +241,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.4.0' = {
   name: 'acr${namingPrefix}${uniqueString(resourceGroup().id)}'
   params: {
     name: 'acr${namingPrefix}${uniqueString(resourceGroup().id)}'
-    acrSku: privateNetworking ? 'Premium' : 'Basic'
+    acrSku: privateNetworking ? 'Premium' : 'Standard'
     acrAdminUserEnabled: false
     roleAssignments: [
       {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "17095567923639468770"
+      "templateHash": "18025854090395381738"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.",
@@ -6260,7 +6260,7 @@
           "name": {
             "value": "[format('acr{0}{1}', parameters('namingPrefix'), uniqueString(resourceGroup().id))]"
           },
-          "acrSku": "[if(parameters('privateNetworking'), createObject('value', 'Premium'), createObject('value', 'Basic'))]",
+          "acrSku": "[if(parameters('privateNetworking'), createObject('value', 'Premium'), createObject('value', 'Standard'))]",
           "acrAdminUserEnabled": {
             "value": false
           },
