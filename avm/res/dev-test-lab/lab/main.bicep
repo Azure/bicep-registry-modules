@@ -125,7 +125,9 @@ var identity = !empty(managedIdentities)
       type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned'
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
-  : any(null)
+  : {
+      type: 'SystemAssigned'
+    }
 
 var formattedManagementIdentities = !empty(managementIdentitiesResourceIds)
   ? reduce(map((managementIdentitiesResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next))

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "17290806626721732157"
+      "templateHash": "7318769296207121382"
     },
     "name": "DevTest Labs",
     "description": "This module deploys a DevTest Lab.",
@@ -1130,7 +1130,7 @@
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), createObject('type', 'SystemAssigned'))]",
     "formattedManagementIdentities": "[if(not(empty(parameters('managementIdentitiesResourceIds'))), reduce(map(coalesce(parameters('managementIdentitiesResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next')))), createObject())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
