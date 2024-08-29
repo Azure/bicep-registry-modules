@@ -18,7 +18,7 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' existing = {
   name: workspaceName
 }
 
-resource firewallRule 'Microsoft.Synapse/workspaces/firewallRules@2021-06-01' = {
+resource firewallrules 'Microsoft.Synapse/workspaces/firewallRules@2021-06-01' = {
   name: name
   parent: workspace
   properties: {
@@ -28,10 +28,10 @@ resource firewallRule 'Microsoft.Synapse/workspaces/firewallRules@2021-06-01' = 
 }
 
 @description('The name of the deployed firewall rule.')
-output name string = firewallRule.name
+output name string = firewallrules.name
 
 @description('The resource ID of the deployed firewall rule.')
-output resourceId string = firewallRule.id
+output resourceId string = firewallrules.id
 
 @description('The resource group of the deployed firewall rule.')
 output resourceGroupName string = resourceGroup().name
