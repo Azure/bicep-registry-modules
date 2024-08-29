@@ -43,6 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    fwPolicyName: 'dep-${namePrefix}-fwp-${serviceShort}'
     publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     certDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
@@ -462,15 +463,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      webApplicationFirewallConfiguration: {
-        enabled: true
-        fileUploadLimitInMb: 100
-        firewallMode: 'Prevention'
-        maxRequestBodySizeInKb: 128
-        requestBodyCheck: true
-        ruleSetType: 'OWASP'
-        ruleSetVersion: '3.0'
-      }
+      firewallPolicyId: nestedDependencies.outputs.fwPolicyId
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

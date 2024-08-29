@@ -1305,6 +1305,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     ]
     enableHttp2: true
     enableTelemetry: '<enableTelemetry>'
+    firewallPolicyId: '<firewallPolicyId>'
     frontendIPConfigurations: [
       {
         name: 'private'
@@ -1632,15 +1633,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    webApplicationFirewallConfiguration: {
-      enabled: true
-      fileUploadLimitInMb: 100
-      firewallMode: 'Prevention'
-      maxRequestBodySizeInKb: 128
-      requestBodyCheck: true
-      ruleSetType: 'OWASP'
-      ruleSetVersion: '3.0'
-    }
   }
 }
 ```
@@ -1734,6 +1726,9 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
+    },
+    "firewallPolicyId": {
+      "value": "<firewallPolicyId>"
     },
     "frontendIPConfigurations": {
       "value": [
@@ -2092,17 +2087,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
-      }
-    },
-    "webApplicationFirewallConfiguration": {
-      "value": {
-        "enabled": true,
-        "fileUploadLimitInMb": 100,
-        "firewallMode": "Prevention",
-        "maxRequestBodySizeInKb": 128,
-        "requestBodyCheck": true,
-        "ruleSetType": "OWASP",
-        "ruleSetVersion": "3.0"
       }
     }
   }
