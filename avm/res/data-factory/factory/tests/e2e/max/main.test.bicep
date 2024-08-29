@@ -136,7 +136,7 @@ module testDeployment '../../../main.bicep' = [
           }
           type: 'AzureBlobFS'
           typeProperties: {
-            url: '@{concat(\'https://\', linkedService().storageAccountName, \'.dfs.core.windows.net\')}'
+            url: '@{concat(\'https://\', linkedService().storageAccountName, \'.dfs.${environment().suffixes.storage}\')}'
           }
         }
       ]

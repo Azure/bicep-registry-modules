@@ -165,7 +165,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         }
         type: 'AzureBlobFS'
         typeProperties: {
-          url: '@{concat(\'https://\', linkedService().storageAccountName, \'.dfs.core.windows.net\')}'
+          url: '<url>'
         }
       }
     ]
@@ -327,7 +327,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           },
           "type": "AzureBlobFS",
           "typeProperties": {
-            "url": "@{concat(\"https://\", linkedService().storageAccountName, \".dfs.core.windows.net\")}"
+            "url": "<url>"
           }
         }
       ]

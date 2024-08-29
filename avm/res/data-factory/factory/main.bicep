@@ -257,6 +257,9 @@ module dataFactory_linkedServices 'linked-service/main.bicep' = [
       parameters: linkedService.?parameters
       description: linkedService.?description
     }
+    dependsOn: [
+      dataFactory_integrationRuntimes
+    ]
   }
 ]
 

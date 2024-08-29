@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "18216646751873195916"
+      "templateHash": "84240686874191193"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -1454,7 +1454,8 @@
         }
       },
       "dependsOn": [
-        "dataFactory"
+        "dataFactory",
+        "dataFactory_integrationRuntimes"
       ]
     },
     "dataFactory_privateEndpoints": {
