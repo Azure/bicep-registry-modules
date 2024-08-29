@@ -278,13 +278,11 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         endIpAddress: '87.14.134.20'
         name: 'fwrule01'
         startIpAddress: '87.14.134.20'
-        workspaceName: 'swfwr001'
       }
       {
         endIpAddress: '87.14.134.22'
         name: 'fwrule02'
         startIpAddress: '87.14.134.21'
-        workspaceName: 'swfwr001'
       }
     ]
     location: '<location>'
@@ -323,14 +321,12 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         {
           "endIpAddress": "87.14.134.20",
           "name": "fwrule01",
-          "startIpAddress": "87.14.134.20",
-          "workspaceName": "swfwr001"
+          "startIpAddress": "87.14.134.20"
         },
         {
           "endIpAddress": "87.14.134.22",
           "name": "fwrule02",
-          "startIpAddress": "87.14.134.21",
-          "workspaceName": "swfwr001"
+          "startIpAddress": "87.14.134.21"
         }
       ]
     },

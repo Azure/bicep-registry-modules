@@ -60,13 +60,11 @@ module testDeployment '../../../main.bicep' = [
           name: 'fwrule01'
           endIpAddress: '87.14.134.20'
           startIpAddress: '87.14.134.20'
-          workspaceName: '${namePrefix}${serviceShort}001'
         }
         {
           name: 'fwrule02'
           endIpAddress: '87.14.134.22'
           startIpAddress: '87.14.134.21'
-          workspaceName: '${namePrefix}${serviceShort}001'
         }
       ]
     }

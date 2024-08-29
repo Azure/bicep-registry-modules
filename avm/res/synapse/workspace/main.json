@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "16478885411774242991"
+      "templateHash": "10588705301143818699"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -1252,9 +1252,9 @@
         "workspace"
       ]
     },
-    "workspace_firewall_rules": {
+    "workspace_firewallRules": {
       "copy": {
-        "name": "workspace_firewall_rules",
+        "name": "workspace_firewallRules",
         "count": "[length(parameters('firewallRules'))]"
       },
       "type": "Microsoft.Resources/deployments",
@@ -1285,8 +1285,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "662931178579526673"
+              "version": "0.29.47.4906",
+              "templateHash": "6729418057172891787"
             },
             "name": "Synapse Workspaces Firewall Rules",
             "description": "This module deploys Synapse Workspaces Firewall Rules.",
