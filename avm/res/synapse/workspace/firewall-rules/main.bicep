@@ -28,7 +28,7 @@ resource firewallRule 'Microsoft.Synapse/workspaces/firewallRules@2021-06-01' = 
 }
 
 @description('The name of the deployed firewall rule.')
-output name string = firewallrules.name
+output name string = firewallRule.name
 
 @description('The resource ID of the deployed firewall rule.')
 output resourceId string = firewallrules.id
