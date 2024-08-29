@@ -307,7 +307,7 @@ module newVnet 'br/public:avm/res/network/virtual-network:0.2.0' = if (networkin
             {
               name: networkingConfiguration.?containerInstanceSubnetName ?? 'aci-subnet'
               addressPrefix: networkingConfiguration.?containerInstanceSubnetAddressPrefix ?? '10.0.2.0/24'
-              natGatewayResourceId: empty(networkingConfiguration.?natGatewayResourceId ?? '')
+              natGatewayResourceId: empty(networkingConfiguration.?natGatewayResourceId ?? '') && privateNetworking
                 ? natGateway.outputs.resourceId
                 : networkingConfiguration.?natGatewayResourceId ?? ''
               delegations: [
@@ -326,7 +326,7 @@ module newVnet 'br/public:avm/res/network/virtual-network:0.2.0' = if (networkin
             {
               name: networkingConfiguration.?containerAppSubnetName ?? 'app-subnet'
               addressPrefix: networkingConfiguration.?containerAppSubnetAddressPrefix ?? '10.0.1.0/24'
-              natGatewayResourceId: empty(networkingConfiguration.?natGatewayResourceId ?? '')
+              natGatewayResourceId: empty(networkingConfiguration.?natGatewayResourceId ?? '') && privateNetworking
                 ? natGateway.outputs.resourceId
                 : networkingConfiguration.?natGatewayResourceId ?? ''
               delegations: [
