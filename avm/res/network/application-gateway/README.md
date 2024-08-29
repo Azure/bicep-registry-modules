@@ -127,9 +127,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         }
       }
     ]
-    webApplicationFirewallConfiguration: {
-      enabled: false
-    }
   }
 }
 ```
@@ -243,11 +240,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
           }
         }
       ]
-    },
-    "webApplicationFirewallConfiguration": {
-      "value": {
-        "enabled": false
-      }
     }
   }
 }
