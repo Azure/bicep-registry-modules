@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "13111737576591137542"
+      "templateHash": "8241024784637443346"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.",
@@ -24756,6 +24756,22 @@
         "newVnet",
         "userAssignedIdentity"
       ]
+    }
+  },
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the module was deployed to."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the module was deployed to."
+      },
+      "value": "[parameters('location')]"
     }
   }
 }

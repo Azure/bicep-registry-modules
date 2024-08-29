@@ -355,8 +355,10 @@ Whether to use private or public networking for the Azure Container Registry.
 
 ## Outputs
 
-| Output | Type |
-| :-- | :-- |
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `location` | string | The location the module was deployed to. |
+| `resourceGroupName` | string | The name of the resource group the module was deployed to. |
 
 ## Cross-referenced modules
 
