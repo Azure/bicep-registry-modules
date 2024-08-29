@@ -372,7 +372,7 @@ module appEnvironment 'br/public:avm/res/app/managed-environment:0.6.2' = if (co
       : privateNetworking && networkingConfiguration.networkType == 'useExisting'
           ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.containerAppSubnetName}'
           : null
-    zoneRedundant: privateNetworking ? true : false
+    zoneRedundant: true
     internal: privateNetworking ? true : false
     workloadProfiles: [
       {
