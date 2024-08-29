@@ -171,4 +171,5 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 @description('The resource ID of the created Private DNS Zone.')
 output privateDNSZoneResourceId string = privateDNSZone.id
 
-output fwPolicyId string = applicationGatewayWAFPolicy.id
+@description('The resource ID of the created Application Gateway Web Application Firewall Policy.')
+output fwPolicyResourceId string = applicationGatewayWAFPolicy.id
