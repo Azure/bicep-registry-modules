@@ -18,7 +18,7 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' existing = {
   name: workspaceName
 }
 
-resource firewallrules 'Microsoft.Synapse/workspaces/firewallRules@2021-06-01' = {
+resource firewallRule 'Microsoft.Synapse/workspaces/firewallRules@2021-06-01' = {
   name: name
   parent: workspace
   properties: {
