@@ -133,9 +133,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      webApplicationFirewallConfiguration: {
-        enabled: false
-      }
     }
   }
 ]
