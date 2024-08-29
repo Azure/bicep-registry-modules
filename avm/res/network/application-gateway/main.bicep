@@ -37,7 +37,7 @@ param enableFips bool = false
 param enableHttp2 bool = false
 
 @description('Optional. The resource ID of an associated firewall policy. Should be configured for security reasons.')
-param firewallPolicyId string = ''
+param firewallPolicyResourceId string = ''
 
 @description('Optional. Frontend IP addresses of the application gateway resource.')
 param frontendIPConfigurations array = []
@@ -88,7 +88,7 @@ param rewriteRuleSets array = []
   'Standard_v2'
   'WAF_v2'
 ])
-param sku string = 'WAF_v2'
+param sku string = 'Standard_v2'
 
 @description('Optional. The number of Application instances to be configured.')
 @minValue(0)
@@ -178,7 +178,11 @@ param urlPathMaps array = []
 param webApplicationFirewallConfiguration object = {}
 
 @description('Optional. A list of availability zones denoting where the resource needs to come from.')
-param zones array = []
+param zones array = [
+  1
+  2
+  3
+]
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
@@ -269,12 +273,12 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2023-04-01' =
       backendSettingsCollection: backendSettingsCollection
       customErrorConfigurations: customErrorConfigurations
       enableHttp2: enableHttp2
-      firewallPolicy: !empty(firewallPolicyId)
+      firewallPolicy: !empty(firewallPolicyResourceId)
         ? {
-            id: firewallPolicyId
+            id: firewallPolicyResourceId
           }
         : null
-      forceFirewallPolicyAssociation: !empty(firewallPolicyId)
+      forceFirewallPolicyAssociation: !empty(firewallPolicyResourceId)
       frontendIPConfigurations: frontendIPConfigurations
       frontendPorts: frontendPorts
       gatewayIPConfigurations: gatewayIPConfigurations
