@@ -851,10 +851,10 @@ type existingNetworkType = {
   @description('Required. The existing virtual network resource Id.')
   virtualNetworkResourceId: string
 
-  @description('Required. The existing network container instance subnet name. This is required for Container Apps compute type as well for the deployment script to run the placeholder agent.')
+  @description('Required. The existing network container instance subnet name. This is required for Container Apps compute type as well for the deployment script to run the placeholder agent. This subnet needs to have service delegation for Azure Container Instances.')
   containerInstanceSubnetName: string
 
-  @description('Required. The existing network container app subnet name.')
+  @description('Required. The existing network container app subnet name. This is required for Container Apps compute type. This subnet needs to have service delegation for App environments.')
   containerAppSubnetName: string
 
   @description('Required. The subnet name for the container registry private endpoint.')
