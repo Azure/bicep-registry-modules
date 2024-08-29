@@ -789,6 +789,16 @@ module runPlaceHolderAgent 'br/public:avm/res/resources/deployment-script:0.3.1'
 }
 
 // ================ //
+// Outputs          //
+// ================ //
+
+@description('The name of the resource group the module was deployed to.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The location the module was deployed to.')
+output location string = location
+
+// ================ //
 // Definitions      //
 // ================ //
 
