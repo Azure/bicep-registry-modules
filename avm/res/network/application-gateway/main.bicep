@@ -88,7 +88,7 @@ param rewriteRuleSets array = []
   'Standard_v2'
   'WAF_v2'
 ])
-param sku string = 'WAF_v2'
+param sku string = 'Standard_v2'
 
 @description('Optional. The number of Application instances to be configured.')
 @minValue(0)

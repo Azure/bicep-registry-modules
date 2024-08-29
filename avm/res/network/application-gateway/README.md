@@ -3034,7 +3034,7 @@ The name of the SKU for the Application Gateway.
 
 - Required: No
 - Type: string
-- Default: `'WAF_v2'`
+- Default: `'Standard_v2'`
 - Allowed:
   ```Bicep
   [
