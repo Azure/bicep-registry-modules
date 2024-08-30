@@ -235,11 +235,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               name: 'pip-01'
             }
             subnetResourceId: '<subnetResourceId>'
-            tags: {
-              Environment: 'Non-Prod'
-              'hidden-title': 'This is visible in the resource name'
-              Role: 'DeploymentValidation'
-            }
           }
         ]
         nicSuffix: '-nic-01'
@@ -304,12 +299,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               "pipConfiguration": {
                 "name": "pip-01"
               },
-              "subnetResourceId": "<subnetResourceId>",
-              "tags": {
-                "Environment": "Non-Prod",
-                "hidden-title": "This is visible in the resource name",
-                "Role": "DeploymentValidation"
-              }
+              "subnetResourceId": "<subnetResourceId>"
             }
           ],
           "nicSuffix": "-nic-01"

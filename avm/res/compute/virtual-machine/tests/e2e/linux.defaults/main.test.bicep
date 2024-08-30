@@ -77,11 +77,6 @@ module testDeployment '../../../main.bicep' = [
               pipConfiguration: {
                 name: 'pip-01'
               }
-              tags: {
-                'hidden-title': 'This is visible in the resource name'
-                Environment: 'Non-Prod'
-                Role: 'DeploymentValidation'
-              }
             }
           ]
           nicSuffix: '-nic-01'
