@@ -209,7 +209,7 @@ resource logAnalyticsWorkspace_diagnosticSettings 'Microsoft.Insights/diagnostic
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
     properties: {
       storageAccountId: diagnosticSetting.?storageAccountResourceId
-      workspaceId: diagnosticSetting.?useThisWorkspace
+      workspaceId: (diagnosticSetting.?useThisWorkspace ?? false)
         ? logAnalyticsWorkspace.id
         : diagnosticSetting.?workspaceResourceId
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
