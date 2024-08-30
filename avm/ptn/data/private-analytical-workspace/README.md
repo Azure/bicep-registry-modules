@@ -154,13 +154,18 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
         dailyQuotaGb: 1
         dataRetention: 35
       }
+      networkAcls: {
+        ipRules: [
+          '104.43.16.94'
+        ]
+      }
     }
     enableDatabricks: true
     enableTelemetry: true
     location: '<location>'
     tags: {
-      CostCenter: '123-456-789'
-      Owner: 'Contoso'
+      CostCenter: '123459876'
+      Owner: 'Contoso MAX Team'
     }
   }
 }
@@ -195,6 +200,11 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
         "logAnalyticsWorkspace": {
           "dailyQuotaGb": 1,
           "dataRetention": 35
+        },
+        "networkAcls": {
+          "ipRules": [
+            "104.43.16.94"
+          ]
         }
       }
     },
@@ -209,8 +219,8 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     },
     "tags": {
       "value": {
-        "CostCenter": "123-456-789",
-        "Owner": "Contoso"
+        "CostCenter": "123459876",
+        "Owner": "Contoso MAX Team"
       }
     }
   }

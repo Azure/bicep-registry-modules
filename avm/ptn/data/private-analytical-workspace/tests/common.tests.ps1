@@ -195,7 +195,7 @@ function Test-VerifyLogAnalyticsWorkspace($LogAnalyticsWorkspaceResourceGroupNam
     return $log
 }
 
-function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $LogAnalyticsWorkspaceResourceId, $Sku, $RetentionInDays, $PEPName, $NumberOfRecordSets, $SubnetName, $PublicNetworkAccess, $IpAddressRanges) {
+function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $LogAnalyticsWorkspaceResourceId, $Sku, $EnableSoftDelete, $RetentionInDays, $PEPName, $NumberOfRecordSets, $SubnetName, $PublicNetworkAccess, $IpAddressRanges) {
     $kv = Get-AzKeyVault -ResourceGroupName $KeyVaultResourceGroupName -VaultName $KeyVaultName
     $kv | Should -Not -BeNullOrEmpty
     #$kv.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
@@ -204,7 +204,7 @@ function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $
     $kv.EnabledForTemplateDeployment | Should -Be $false
     $kv.EnabledForDiskEncryption | Should -Be $false
     $kv.EnableRbacAuthorization | Should -Be $true
-    $kv.EnableSoftDelete | Should -Be $true
+    $kv.EnableSoftDelete | Should -Be $EnableSoftDelete
     $kv.SoftDeleteRetentionInDays | Should -Be $RetentionInDays
     $kv.EnablePurgeProtection | Should -Be $true
     $kv.PublicNetworkAccess | Should -Be $PublicNetworkAccess

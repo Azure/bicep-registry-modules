@@ -81,7 +81,7 @@ Describe 'Validate Pattern deployment' {
             It 'Check Azure Key Vault' {
 
                 Test-VerifyKeyVault -KeyVaultResourceGroupName $keyVaultResourceGroupName -KeyVaultName $keyVaultName -Tags $expectedTags `
-                    -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku 'Premium' -RetentionInDays 90 -PEPName '-PEP' `
+                    -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku 'Premium' -EnableSoftDelete $true -RetentionInDays 90 -PEPName '-PEP' `
                     -NumberOfRecordSets 0 -SubnetName 'private-link-subnet' -PublicNetworkAccess 'Enabled' -IpAddressRanges @('104.43.16.94/32')
             }
         }
