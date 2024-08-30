@@ -549,7 +549,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.7.0' = if (createNewKV) {
   }
 }
 
-module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.4.0' = if (createNewVNET && createNewKV) {
+module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (createNewVNET && createNewKV) {
   name: privateDnsZoneNameKv
   params: {
     // Required parameters
@@ -634,7 +634,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.6.0' = if (enableDatabricks
   }
 }
 
-module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.4.0' = if (createNewVNET && enableDatabricks) {
+module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (createNewVNET && enableDatabricks) {
   name: privateDnsZoneNameDbw
   params: {
     // Required parameters

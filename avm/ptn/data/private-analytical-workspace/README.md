@@ -1308,7 +1308,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/databricks/workspace:0.6.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.7.0` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.4.0` | Remote reference |
-| `br/public:avm/res/network/private-dns-zone:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.5.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.2.0` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.5.0` | Remote reference |
 
