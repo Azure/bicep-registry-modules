@@ -51,8 +51,8 @@ module testDeployment '../../../main.bicep' = [
       //  }
       //]
       tags: {
-        Owner: 'Contoso'
-        CostCenter: '123-456-789'
+        Owner: 'Contoso MAX Team'
+        CostCenter: '123459876'
       }
       enableTelemetry: true
       enableDatabricks: true
@@ -60,7 +60,7 @@ module testDeployment '../../../main.bicep' = [
       //logAnalyticsWorkspaceResourceId: null
       //keyVaultResourceId: null
       advancedOptions: {
-        //networkAcls: { ipRules: [<AllowedPublicIPAddress>] }
+        networkAcls: { ipRules: ['104.43.16.94'] }
         logAnalyticsWorkspace: { dataRetention: 35, dailyQuotaGb: 1 }
         keyVault: {
           createMode: 'default'
