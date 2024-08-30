@@ -37,34 +37,37 @@ function Set-AvmGitHubPrLabels {
     . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Get-GithubTeamMembersLogin.ps1')
     . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
 
-    $pr = gh pr view $PrUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
-    $allTeamNames = [array](Get-GithubPrRequestedReviewerTeamNames -PrUrl $PrUrl.Replace('api.', '').Replace('repos/', ''))
+    $sanitizedPrUrl = $PrUrl.Replace('api.', '').Replace('repos/', '').Replace('pulls/', 'pull/')
+    $pr = gh pr view $sanitizedPrUrl --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
+    $allTeamNames = [array](Get-GithubPrRequestedReviewerTeamNames -PrUrl $pr.url)
     $teamNames = [array]($allTeamNames | Where-Object { $_ -ne 'bicep-admins' -and $_ -ne 'avm-core-team-technical-bicep' -and $_ -ne 'avm-module-reviewers-bicep' })
 
-    # core team is already assigned, no or more than one module reviewer team is assigned
-    if ($allTeamNames.Contains('avm-core-team-technical-bicep') -or $teamNames.Count -eq 0 -or $teamNames.Count -gt 1) {
-        gh pr edit $pr.url --add-label 'Needs: Core Team :genie:' --repo $Repo
-    } else {
-        $teamMembers = [array](Get-GithubTeamMembersLogin -OrgName $Repo.Split('/')[0] -TeamName $teamNames[0])
-
-        # no members in module team or only one and that user submitted the PR
-        if (($teamMembers.Count -eq 0) -or ($teamMembers.Count -eq 1 -and $teamMembers[0] -eq $pr.author.login)) {
+    if ($allTeamNames.Count -gt 0) {
+        # core team is already assigned, no or more than one module reviewer team is assigned
+        if ($allTeamNames.Contains('avm-core-team-technical-bicep') -or $teamNames.Count -eq 0 -or $teamNames.Count -gt 1) {
             gh pr edit $pr.url --add-label 'Needs: Core Team :genie:' --repo $Repo
         } else {
-            gh pr edit $pr.url --add-label 'Needs: Module Owner :mega:' --repo $Repo
-        }
+            $teamMembers = [array](Get-GithubTeamMembersLogin -OrgName $Repo.Split('/')[0] -TeamName $teamNames[0])
 
-        # check for orphanded module
-        $moduleName = $teamNames[0]
-        $moduleIndex = $moduleName.StartsWith('avm-res') ? 'Bicep-Resource' : ($moduleName.StartsWith('avm-ptn') ? 'Bicep-Pattern' : 'Bicep-Utility')
-        # get CSV data
-        $modules = Get-AvmCsvData -ModuleIndex $moduleIndex
+            # no members in module team or only one and that user submitted the PR
+            if (($teamMembers.Count -eq 0) -or ($teamMembers.Count -eq 1 -and $teamMembers[0] -eq $pr.author.login)) {
+                gh pr edit $pr.url --add-label 'Needs: Core Team :genie:' --repo $Repo
+            } else {
+                gh pr edit $pr.url --add-label 'Needs: Module Owner :mega:' --repo $Repo
+            }
 
-        foreach ($module in $modules) {
-            if ($module.ModuleName.Replace('-', '').Replace('/', '-') -eq $moduleName) {
-                if ($module.ModuleStatus -eq 'Orphaned :eyes:') {
-                    gh pr edit $pr.url --add-label 'Status: Module Orphaned :eyes:' --repo $Repo
-                    break;
+            # check for orphanded module
+            $moduleName = $teamNames[0]
+            $moduleIndex = $moduleName.StartsWith('avm-res') ? 'Bicep-Resource' : ($moduleName.StartsWith('avm-ptn') ? 'Bicep-Pattern' : 'Bicep-Utility')
+            # get CSV data
+            $modules = Get-AvmCsvData -ModuleIndex $moduleIndex
+
+            foreach ($module in $modules) {
+                if ($module.ModuleName.Replace('-', '').Replace('/', '-') -eq $moduleName) {
+                    if ($module.ModuleStatus -eq 'Orphaned :eyes:') {
+                        gh pr edit $pr.url --add-label 'Status: Module Orphaned :eyes:' --repo $Repo
+                        break;
+                    }
                 }
             }
         }

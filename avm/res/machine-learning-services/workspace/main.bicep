@@ -59,6 +59,9 @@ param privateEndpoints privateEndpointType
 @sys.description('Optional. Computes to create respectively attach to the workspace.')
 param computes array?
 
+@sys.description('Optional. Connections to create in the workspace.')
+param connections connectionType[] = []
+
 @sys.description('Optional. Resource tags.')
 param tags object?
 
@@ -303,6 +306,24 @@ module workspace_computes 'compute/main.bicep' = [
     dependsOn: [
       workspace_privateEndpoints
     ]
+  }
+]
+
+module workspace_connections 'connection/main.bicep' = [
+  for connection in connections: {
+    name: '${workspace.name}-${connection.name}-connection'
+    params: {
+      machineLearningWorkspaceName: workspace.name
+      name: connection.name
+      category: connection.category
+      expiryTime: connection.?expiryTime
+      isSharedToAll: connection.?isSharedToAll
+      metadata: connection.?metadata
+      sharedUserList: connection.?sharedUserList
+      target: connection.target
+      value: connection.?value
+      connectionProperties: connection.connectionProperties
+    }
   }
 ]
 
@@ -718,3 +739,37 @@ type customerManagedKeyType = {
   @sys.description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
 }?
+
+import { categoryType, connectionPropertyType } from 'connection/main.bicep'
+
+type connectionType = {
+  @sys.description('Required. Name of the connection to create.')
+  name: string
+
+  @sys.description('Required. Category of the connection.')
+  category: categoryType
+
+  @sys.description('Optional. The expiry time of the connection.')
+  expiryTime: string?
+
+  @sys.description('Optional. Indicates whether the connection is shared to all users in the workspace.')
+  isSharedToAll: bool?
+
+  @sys.description('Optional. User metadata for the connection.')
+  metadata: {
+    @sys.description('Required. The metadata key-value pairs.')
+    *: string
+  }?
+
+  @sys.description('Optional. The shared user list of the connection.')
+  sharedUserList: string[]?
+
+  @sys.description('Required. The target of the connection.')
+  target: string
+
+  @sys.description('Optional. Value details of the workspace connection.')
+  value: string?
+
+  @sys.description('Required. The properties of the connection, specific to the auth type.')
+  connectionProperties: connectionPropertyType
+}

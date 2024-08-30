@@ -127,14 +127,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         }
       }
     ]
-    webApplicationFirewallConfiguration: {
-      enabled: false
-    }
-    zones: [
-      '1'
-      '2'
-      '3'
-    ]
   }
 }
 ```
@@ -247,18 +239,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
             "ruleType": "Basic"
           }
         }
-      ]
-    },
-    "webApplicationFirewallConfiguration": {
-      "value": {
-        "enabled": false
-      }
-    },
-    "zones": {
-      "value": [
-        "1",
-        "2",
-        "3"
       ]
     }
   }
@@ -1317,6 +1297,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     ]
     enableHttp2: true
     enableTelemetry: '<enableTelemetry>'
+    firewallPolicyResourceId: '<firewallPolicyResourceId>'
     frontendIPConfigurations: [
       {
         name: 'private'
@@ -1644,20 +1625,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    webApplicationFirewallConfiguration: {
-      enabled: true
-      fileUploadLimitInMb: 100
-      firewallMode: 'Prevention'
-      maxRequestBodySizeInKb: 128
-      requestBodyCheck: true
-      ruleSetType: 'OWASP'
-      ruleSetVersion: '3.0'
-    }
-    zones: [
-      '1'
-      '2'
-      '3'
-    ]
   }
 }
 ```
@@ -1751,6 +1718,9 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
+    },
+    "firewallPolicyResourceId": {
+      "value": "<firewallPolicyResourceId>"
     },
     "frontendIPConfigurations": {
       "value": [
@@ -2110,24 +2080,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "webApplicationFirewallConfiguration": {
-      "value": {
-        "enabled": true,
-        "fileUploadLimitInMb": 100,
-        "firewallMode": "Prevention",
-        "maxRequestBodySizeInKb": 128,
-        "requestBodyCheck": true,
-        "ruleSetType": "OWASP",
-        "ruleSetVersion": "3.0"
-      }
-    },
-    "zones": {
-      "value": [
-        "1",
-        "2",
-        "3"
-      ]
     }
   }
 }
@@ -2163,7 +2115,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 | [`enableRequestBuffering`](#parameter-enablerequestbuffering) | bool | Enable request buffering. |
 | [`enableResponseBuffering`](#parameter-enableresponsebuffering) | bool | Enable response buffering. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`firewallPolicyId`](#parameter-firewallpolicyid) | string | The resource ID of an associated firewall policy. Should be configured for security reasons. |
+| [`firewallPolicyResourceId`](#parameter-firewallpolicyresourceid) | string | The resource ID of an associated firewall policy. Should be configured for security reasons. |
 | [`frontendIPConfigurations`](#parameter-frontendipconfigurations) | array | Frontend IP addresses of the application gateway resource. |
 | [`frontendPorts`](#parameter-frontendports) | array | Frontend ports of the application gateway resource. |
 | [`gatewayIPConfigurations`](#parameter-gatewayipconfigurations) | array | Subnets of the application gateway resource. |
@@ -2452,7 +2404,7 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `firewallPolicyId`
+### Parameter: `firewallPolicyResourceId`
 
 The resource ID of an associated firewall policy. Should be configured for security reasons.
 
@@ -3058,7 +3010,7 @@ The name of the SKU for the Application Gateway.
 
 - Required: No
 - Type: string
-- Default: `'WAF_v2'`
+- Default: `'Standard_v2'`
 - Allowed:
   ```Bicep
   [
@@ -3232,7 +3184,14 @@ A list of availability zones denoting where the resource needs to come from.
 
 - Required: No
 - Type: array
-- Default: `[]`
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 
 ## Outputs
