@@ -239,6 +239,12 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     environmentResourceId: '<environmentResourceId>'
     name: 'acamax001'
     // Non-required parameters
+    additionalPortMappings: [
+      {
+        external: true
+        targetPort: 8080
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -348,6 +354,14 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": "acamax001"
     },
     // Non-required parameters
+    "additionalPortMappings": {
+      "value": [
+        {
+          "external": true,
+          "targetPort": 8080
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -667,6 +681,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`activeRevisionsMode`](#parameter-activerevisionsmode) | string | Controls how active revisions are handled for the Container app. |
+| [`additionalPortMappings`](#parameter-additionalportmappings) | array | Settings to expose additional ports on container app. |
 | [`clientCertificateMode`](#parameter-clientcertificatemode) | string | Client certificate mode for mTLS. |
 | [`corsPolicy`](#parameter-corspolicy) | object | Object userd to configure CORS policy. |
 | [`customDomains`](#parameter-customdomains) | array | Custom domain bindings for Container App hostnames. |
@@ -1069,6 +1084,47 @@ Controls how active revisions are handled for the Container app.
     'Single'
   ]
   ```
+
+### Parameter: `additionalPortMappings`
+
+Settings to expose additional ports on container app.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`external`](#parameter-additionalportmappingsexternal) | bool | Specifies whether the app port is accessible outside of the environment. |
+| [`targetPort`](#parameter-additionalportmappingstargetport) | int | Specifies the port the container listens on. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`exposedPort`](#parameter-additionalportmappingsexposedport) | int | Specifies the exposed port for the target port. If not specified, it defaults to target port. |
+
+### Parameter: `additionalPortMappings.external`
+
+Specifies whether the app port is accessible outside of the environment.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `additionalPortMappings.targetPort`
+
+Specifies the port the container listens on.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `additionalPortMappings.exposedPort`
+
+Specifies the exposed port for the target port. If not specified, it defaults to target port.
+
+- Required: No
+- Type: int
 
 ### Parameter: `clientCertificateMode`
 
