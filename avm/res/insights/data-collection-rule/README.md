@@ -27,16 +27,91 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/insights/data-collection-rule:<version>`.
 
-- [Collecting custom text logs with ingestion-time transformation](#example-1-collecting-custom-text-logs-with-ingestion-time-transformation)
-- [Collecting custom text logs](#example-2-collecting-custom-text-logs)
-- [Collecting IIS logs](#example-3-collecting-iis-logs)
-- [Using only defaults](#example-4-using-only-defaults)
-- [Collecting Linux-specific information](#example-5-collecting-linux-specific-information)
-- [Using large parameter set](#example-6-using-large-parameter-set)
-- [WAF-aligned](#example-7-waf-aligned)
-- [Collecting Windows-specific information](#example-8-collecting-windows-specific-information)
+- [Agent Settings](#example-1-agent-settings)
+- [Collecting custom text logs with ingestion-time transformation](#example-2-collecting-custom-text-logs-with-ingestion-time-transformation)
+- [Collecting custom text logs](#example-3-collecting-custom-text-logs)
+- [Collecting IIS logs](#example-4-collecting-iis-logs)
+- [Using only defaults](#example-5-using-only-defaults)
+- [Collecting Linux-specific information](#example-6-collecting-linux-specific-information)
+- [Using large parameter set](#example-7-using-large-parameter-set)
+- [WAF-aligned](#example-8-waf-aligned)
+- [Collecting Windows-specific information](#example-9-collecting-windows-specific-information)
 
-### Example 1: _Collecting custom text logs with ingestion-time transformation_
+### Example 1: _Agent Settings_
+
+This instance deploys the module AMA (Azure Monitor Agent) Settings DCR.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
+  name: 'dataCollectionRuleDeployment'
+  params: {
+    // Required parameters
+    dataCollectionRuleProperties: {
+      agentSettings: {
+        logs: [
+          {
+            name: 'MaxDiskQuotaInMB'
+            value: '5000'
+          }
+        ]
+      }
+      description: 'Agent Settings'
+      kind: 'AgentSettings'
+    }
+    name: 'idcrags001'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "dataCollectionRuleProperties": {
+      "value": {
+        "agentSettings": {
+          "logs": [
+            {
+              "name": "MaxDiskQuotaInMB",
+              "value": "5000"
+            }
+          ]
+        },
+        "description": "Agent Settings",
+        "kind": "AgentSettings"
+      }
+    },
+    "name": {
+      "value": "idcrags001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Collecting custom text logs with ingestion-time transformation_
 
 This instance deploys the module to setup collection of custom logs and ingestion-time transformation.
 
@@ -248,7 +323,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 2: _Collecting custom text logs_
+### Example 3: _Collecting custom text logs_
 
 This instance deploys the module to setup collection of custom logs.
 
@@ -428,7 +503,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 3: _Collecting IIS logs_
+### Example 4: _Collecting IIS logs_
 
 This instance deploys the module to setup the collection of IIS logs.
 
@@ -566,7 +641,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 4: _Using only defaults_
+### Example 5: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -698,7 +773,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 5: _Collecting Linux-specific information_
+### Example 6: _Collecting Linux-specific information_
 
 This instance deploys the module to setup the collection of Linux-specific performance counters and Linux Syslog.
 
@@ -1062,7 +1137,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 6: _Using large parameter set_
+### Example 7: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1292,7 +1367,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 8: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1564,7 +1639,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 8: _Collecting Windows-specific information_
+### Example 9: _Collecting Windows-specific information_
 
 This instance deploys the module to setup the connection of Windows-specific performance counters and Windows Event Logs.
 
