@@ -1,4 +1,4 @@
-# Hub Networking `[Microsoft.Network/hubnetworking]`
+# Hub Networking `[Network/HubNetworking]`
 
 This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.
 

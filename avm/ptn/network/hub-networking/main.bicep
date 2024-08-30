@@ -67,11 +67,22 @@ module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.6' = [
 ]
 
 // Create hub virtual network peerings
-resource hubVirtualNetworkPeer_remote 'Microsoft.Network/virtualNetworks@2023-11-01' existing = [
+module hubVirtualNetworkPeer_remote 'modules/vnets.bicep' = [
   for (peer, index) in flatten(hubVirtualNetworkPeerings): {
-    name: peer.remoteVirtualNetworkName
+    name: '${uniqueString(deployment().name, location)}-${peer.remoteVirtualNetworkName}-nvnp'
+    params: {
+      name: peer.remoteVirtualNetworkName
+    }
+    dependsOn: hubVirtualNetwork
   }
 ]
+
+// Create hub virtual network peerings
+// resource hubVirtualNetworkPeer_remote 'Microsoft.Network/virtualNetworks@2023-11-01' existing = [
+//   for (peer, index) in flatten(hubVirtualNetworkPeerings): {
+//     name: peer.remoteVirtualNetworkName
+//   }
+// ]
 
 resource hubVirtualNetworkPeer_local 'Microsoft.Network/virtualNetworks@2023-11-01' existing = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enablePeering) {
@@ -81,14 +92,14 @@ resource hubVirtualNetworkPeer_local 'Microsoft.Network/virtualNetworks@2023-11-
 
 resource hubVirtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2023-11-01' = [
   for (peer, index) in (flatten(hubVirtualNetworkPeerings) ?? []): {
-    name: '${hubVirtualNetworkPeer_local[index].name}/${hubVirtualNetworkPeer_local[index].name}-to-${hubVirtualNetworkPeer_remote[index].name}'
+    name: '${hubVirtualNetworkPeer_local[index].name}/${hubVirtualNetworkPeer_local[index].name}-to-${peer.remoteVirtualNetworkName}-peering'
     properties: {
       allowForwardedTraffic: peer.allowForwardedTraffic ?? false
       allowGatewayTransit: peer.allowGatewayTransit ?? false
       allowVirtualNetworkAccess: peer.allowVirtualNetworkAccess ?? true
       useRemoteGateways: peer.useRemoteGateways ?? false
       remoteVirtualNetwork: {
-        id: hubVirtualNetworkPeer_remote[index].id
+        id: hubVirtualNetworkPeer_remote[index].outputs.resourceId
       }
     }
     dependsOn: hubVirtualNetwork
@@ -117,7 +128,7 @@ resource hubRoute 'Microsoft.Network/routeTables/routes@2023-11-01' = [
   for (peer, index) in (flatten(hubVirtualNetworkPeerings) ?? []): {
     name: '${hubVirtualNetworkPeer_local[index].name}/${hubVirtualNetworkPeer_local[index].name}-to-${hubVirtualNetworkPeer_remote[index].name}-route'
     properties: {
-      addressPrefix: hubVirtualNetworkPeer_remote[index].properties.addressSpace.addressPrefixes[0]
+      addressPrefix: hubVirtualNetworkPeer_remote[index].outputs.addressPrefix
       nextHopType: 'VirtualAppliance'
       nextHopIpAddress: hubAzureFirewall[index].outputs.privateIp
     }
