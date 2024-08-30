@@ -222,13 +222,13 @@ runs:
 
           # Fetch & add custom secrets, if any
           # -----------------------------------
-          $keyVaultName = "${{ env.KEY_VAULT_NAME }}"
+          $keyVaultName = "${{ env.CI_KEY_VAULT_NAME }}"
           if(-not [String]::IsNullOrEmpty($keyVaultName)) {
             # Note: This action requires at least 'Key Vault Secrets User' permissions
-            $customKeyVaultSecrets = Get-AzKeyVaultSecret -VaultName $keyVaultName | Where-Object { $_.Name -match '^CUSTOM-.+' }
+            $customKeyVaultSecrets = Get-AzKeyVaultSecret -VaultName $keyVaultName | Where-Object { $_.Name -match '^CI-.+' }
 
             foreach($customSecret in $customKeyVaultSecrets) {
-              $formattedName = $customSecret.Name -replace '^CUSTOM-' # e.g. 'CUSTOM-mySecret' -> 'mySecret'
+              $formattedName = $customSecret.Name -replace '^CI-' # e.g. 'CI-mySecret' -> 'mySecret'
               if($moduleTemplatePossibleParameters -contains $formattedName) {
                 Write-Verbose ('Setting value for parameter [{0}]' -f $formattedName) -Verbose
                 $functionInput.AdditionalParameters += @{
@@ -301,13 +301,13 @@ runs:
 
           # Fetch & add custom secrets, if any
           # -----------------------------------
-          $keyVaultName = "${{ env.KEY_VAULT_NAME }}"
+          $keyVaultName = "${{ env.CI_KEY_VAULT_NAME }}"
           if(-not [String]::IsNullOrEmpty($keyVaultName)) {
             # Note: This action requires at least 'Key Vault Secrets User' permissions
-            $customKeyVaultSecrets = Get-AzKeyVaultSecret -VaultName $keyVaultName | Where-Object { $_.Name -match '^CUSTOM-.+' }
+            $customKeyVaultSecrets = Get-AzKeyVaultSecret -VaultName $keyVaultName | Where-Object { $_.Name -match '^CI-.+' }
 
             foreach($customSecret in $customKeyVaultSecrets) {
-              $formattedName = $customSecret.Name -replace '^CUSTOM-' # e.g. 'CUSTOM-mySecret' -> 'mySecret'
+              $formattedName = $customSecret.Name -replace '^CI-' # e.g. 'CI-mySecret' -> 'mySecret'
               if($moduleTemplatePossibleParameters -contains $formattedName) {
                 Write-Verbose ('Setting value for parameter [{0}]' -f $formattedName) -Verbose
                 $functionInput.AdditionalParameters += @{
