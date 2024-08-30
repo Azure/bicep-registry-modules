@@ -54,7 +54,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       dataCollectionRuleProperties: {
         kind: 'Windows'
-        dataCollectionEndpointId: nestedDependencies.outputs.dataCollectionEndpointResourceId
+        dataCollectionEndpointResourceId: nestedDependencies.outputs.dataCollectionEndpointResourceId
         description: 'Collecting IIS logs.'
         dataFlows: [
           {

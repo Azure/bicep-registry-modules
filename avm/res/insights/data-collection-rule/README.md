@@ -126,7 +126,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
-      dataCollectionEndpointId: '<dataCollectionEndpointId>'
+      dataCollectionEndpointResourceId: '<dataCollectionEndpointResourceId>'
       dataFlows: [
         {
           destinations: [
@@ -227,7 +227,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     // Required parameters
     "dataCollectionRuleProperties": {
       "value": {
-        "dataCollectionEndpointId": "<dataCollectionEndpointId>",
+        "dataCollectionEndpointResourceId": "<dataCollectionEndpointResourceId>",
         "dataFlows": [
           {
             "destinations": [
@@ -338,7 +338,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
-      dataCollectionEndpointId: '<dataCollectionEndpointId>'
+      dataCollectionEndpointResourceId: '<dataCollectionEndpointResourceId>'
       dataFlows: [
         {
           destinations: [
@@ -423,7 +423,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     // Required parameters
     "dataCollectionRuleProperties": {
       "value": {
-        "dataCollectionEndpointId": "<dataCollectionEndpointId>",
+        "dataCollectionEndpointResourceId": "<dataCollectionEndpointResourceId>",
         "dataFlows": [
           {
             "destinations": [
@@ -518,7 +518,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
-      dataCollectionEndpointId: '<dataCollectionEndpointId>'
+      dataCollectionEndpointResourceId: '<dataCollectionEndpointResourceId>'
       dataFlows: [
         {
           destinations: [
@@ -582,7 +582,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     // Required parameters
     "dataCollectionRuleProperties": {
       "value": {
-        "dataCollectionEndpointId": "<dataCollectionEndpointId>",
+        "dataCollectionEndpointResourceId": "<dataCollectionEndpointResourceId>",
         "dataFlows": [
           {
             "destinations": [
@@ -1152,7 +1152,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
-      dataCollectionEndpointId: '<dataCollectionEndpointId>'
+      dataCollectionEndpointResourceId: '<dataCollectionEndpointResourceId>'
       dataFlows: [
         {
           destinations: [
@@ -1260,7 +1260,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     // Required parameters
     "dataCollectionRuleProperties": {
       "value": {
-        "dataCollectionEndpointId": "<dataCollectionEndpointId>",
+        "dataCollectionEndpointResourceId": "<dataCollectionEndpointResourceId>",
         "dataFlows": [
           {
             "destinations": [

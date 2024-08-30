@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "16127257398169774892"
+      "templateHash": "5321768196426375483"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule.",
@@ -158,7 +158,7 @@
             "description": "Required. Specification of destinations that can be used in data flows."
           }
         },
-        "dataCollectionEndpointId": {
+        "dataCollectionEndpointResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -211,7 +211,7 @@
             "description": "Required. Specification of destinations that can be used in data flows."
           }
         },
-        "dataCollectionEndpointId": {
+        "dataCollectionEndpointResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -388,7 +388,7 @@
       "kind": "[parameters('dataCollectionRuleProperties').kind]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
-      "properties": "[union(if(or(equals(parameters('dataCollectionRuleProperties').kind, 'Linux'), equals(parameters('dataCollectionRuleProperties').kind, 'Windows')), createObject('dataSources', parameters('dataCollectionRuleProperties').dataSources, 'dataFlows', parameters('dataCollectionRuleProperties').dataFlows, 'destinations', parameters('dataCollectionRuleProperties').destinations, 'dataCollectionEndpointId', tryGet(parameters('dataCollectionRuleProperties'), 'dataCollectionEndpointId'), 'streamDeclarations', tryGet(parameters('dataCollectionRuleProperties'), 'streamDeclarations')), createObject()), if(equals(parameters('dataCollectionRuleProperties').kind, 'AgentSettings'), createObject('agentSettings', parameters('dataCollectionRuleProperties').agentSettings), createObject()), createObject('description', tryGet(parameters('dataCollectionRuleProperties'), 'description')))]"
+      "properties": "[union(createObject('description', tryGet(parameters('dataCollectionRuleProperties'), 'description')), if(or(equals(parameters('dataCollectionRuleProperties').kind, 'Linux'), equals(parameters('dataCollectionRuleProperties').kind, 'Windows')), createObject('dataSources', parameters('dataCollectionRuleProperties').dataSources, 'dataFlows', parameters('dataCollectionRuleProperties').dataFlows, 'destinations', parameters('dataCollectionRuleProperties').destinations, 'dataCollectionEndpointId', tryGet(parameters('dataCollectionRuleProperties'), 'dataCollectionEndpointResourceId'), 'streamDeclarations', tryGet(parameters('dataCollectionRuleProperties'), 'streamDeclarations')), createObject()), if(equals(parameters('dataCollectionRuleProperties').kind, 'AgentSettings'), createObject('agentSettings', parameters('dataCollectionRuleProperties').agentSettings), createObject()))]"
     },
     "dataCollectionRule_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",

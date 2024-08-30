@@ -81,12 +81,15 @@ resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' 
   name: name
   tags: tags
   properties: union(
+    {
+      description: dataCollectionRuleProperties.?description
+    },
     dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows'
       ? {
           dataSources: dataCollectionRuleProperties.dataSources
           dataFlows: dataCollectionRuleProperties.dataFlows
           destinations: dataCollectionRuleProperties.destinations
-          dataCollectionEndpointId: dataCollectionRuleProperties.?dataCollectionEndpointId
+          dataCollectionEndpointId: dataCollectionRuleProperties.?dataCollectionEndpointResourceId
           streamDeclarations: dataCollectionRuleProperties.?streamDeclarations
         }
       : {},
@@ -94,10 +97,7 @@ resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' 
       ? {
           agentSettings: dataCollectionRuleProperties.agentSettings
         }
-      : {},
-    {
-      description: dataCollectionRuleProperties.?description
-    }
+      : {}
   )
 }
 
@@ -206,7 +206,7 @@ type linuxDcrPropertiesType = {
   destinations: object
 
   @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
-  dataCollectionEndpointId: string?
+  dataCollectionEndpointResourceId: string?
 
   @description('Optional. Declaration of custom streams used in this rule.')
   streamDeclarations: object?
@@ -229,7 +229,7 @@ type windowsDcrPropertiesType = {
   destinations: object
 
   @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
-  dataCollectionEndpointId: string?
+  dataCollectionEndpointResourceId: string?
 
   @description('Optional. Declaration of custom streams used in this rule.')
   streamDeclarations: object?

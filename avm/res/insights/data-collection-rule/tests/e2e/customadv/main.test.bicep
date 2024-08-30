@@ -54,7 +54,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       dataCollectionRuleProperties: {
         kind: 'Windows'
-        dataCollectionEndpointId: nestedDependencies.outputs.dataCollectionEndpointResourceId
+        dataCollectionEndpointResourceId: nestedDependencies.outputs.dataCollectionEndpointResourceId
         description: 'Collecting custom text logs with ingestion-time transformation to columns. Expected format of a log line (comma separated values): "<DateTime>,<EventLevel>,<EventCode>,<Message>", for example: "2023-01-25T20:15:05Z,ERROR,404,Page not found"'
         dataFlows: [
           {
