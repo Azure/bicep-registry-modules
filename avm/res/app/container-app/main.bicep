@@ -220,7 +220,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
       ingress: disableIngress
         ? null
         : {
-            additionalPortMappings: !empty(additionalPortMappings) ? additionalPortMappings : null
+            additionalPortMappings: additionalPortMappings
             allowInsecure: ingressTransport != 'tcp' ? ingressAllowInsecure : false
             customDomains: !empty(customDomains) ? customDomains : null
             corsPolicy: corsPolicy != null && ingressTransport != 'tcp'
