@@ -1,26 +1,99 @@
 @description('Required: The name of the user VPN configuration.')
-param userVpnConfigName string
+param name string
 
 @description('Optional. Location where all resources will be created.')
 param location string = resourceGroup().location
 
 @description('Optional. The audience for the AAD/Entrance authentication.')
-param aadAudience string
+param aadAudience string?
 
 @description('Optional. The issuer for the AAD/Entrance authentication.')
-param aadIssuer string
+param aadIssuer string?
 
 @description('Optional. The audience for the AAD/Entrance authentication.')
-param aadTenant string
-
-param uservpnconfig array = []
+param aadTenant string?
 
 @description('')
-param p2sConfigurationPolicyGroups array
+param p2sConfigurationPolicyGroups array = []
+
+@description('')
+param vpnServerConfigurationName string
+
+@description('')
+param radiusClientRootCertificates array = []
+
+@description('')
+param radiusServerAddress string?
+
+@description('')
+param radiusServerRootCertificates array = []
+
+@description('')
+param radiusServers array = []
+
+@description('')
+@secure()
+param radiusServerSecret string?
+
+@description('')
+@allowed([
+  'AAD'
+  'Certificate'
+  'Radius'
+])
+param vpnAuthenticationTypes array = []
+
+@description('')
+param vpnClientIpsecPolicies array = []
+
+@description('')
+param vpnClientRevokedCertificates array = []
+
+@description('')
+param vpnClientRootCertificates array = []
+
+@description('')
+@allowed([
+  'IkeV2'
+  'OpenVPN'
+])
+param vpnProtocols array = []
+
+@description('Optional. Tags of the resource.')
+param tags object?
+
+@description('Optional. The lock settings of the service.')
+param lock lockType
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: take(
+    '46d3xbcp.res.network-vpnserverconfiguration.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
+    64
+  )
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource vpnServerConfig 'Microsoft.Network/vpnServerConfigurations@2024-01-01' = {
-  name: userVpnConfigName
+  name: name
   location: location
+  tags: tags
   properties: {
     aadAuthenticationParameters: {
       aadAudience: aadAudience
@@ -37,10 +110,66 @@ resource vpnServerConfig 'Microsoft.Network/vpnServerConfigurations@2024-01-01' 
         }
       }
     ]
-    vpnProtocols: [
-      'OpenVPN'
+    name: vpnServerConfigurationName
+    radiusClientRootCertificates: [
+      for clientRootroot in radiusClientRootCertificates: {
+        name: clientRootroot.name
+        thumbprint: clientRootroot.thumbprint
+      }
     ]
+    radiusServerAddress: radiusServerAddress
+    radiusServerRootCertificates: [
+      for serverRoot in radiusServerRootCertificates: {
+        name: serverRoot.name
+        publicCertData: serverRoot.publicCertData
+      }
+    ]
+    radiusServers: [
+      for server in radiusServers: {
+        radiusServerAddress: server.radiusServerAddress
+        radiusServerScore: server.radiusServerScore
+        radiusServerSecret: server.radiusServerSecret
+      }
+    ]
+    radiusServerSecret: radiusServerSecret
+    vpnAuthenticationTypes: vpnAuthenticationTypes
+    vpnClientIpsecPolicies: [
+      for policy in vpnClientIpsecPolicies: {
+        dhGroup: policy.dhGroup
+        ikeEncryption: policy.ikeEncryption
+        ikeIntegrity: policy.ikeIntegrity
+        ipsecEncryption: policy.ipsecEncryption
+        ipsecIntegrity: policy.ipsecIntegrity
+        pfsGroup: policy.pfsGroup
+        saDataSizeKilobytes: policy.saDataSizeKilobytes
+        saLifeTimeSeconds: policy.saLifeTimeSeconds
+      }
+    ]
+    vpnClientRevokedCertificates: [
+      for cert in vpnClientRevokedCertificates: {
+        name: cert.name
+        thumbprint:cert.thumbprint
+      }
+    ]
+    vpnClientRootCertificates: [
+      for cert in vpnClientRootCertificates: {
+        name: cert.name
+        publicCertData: cert.thumbprint
+      }
+    ]
+    vpnProtocols: vpnProtocols
   }
+}
+
+resource vpnGateway_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
+  }
+  scope: vpnServerConfig
 }
 
 @description('The name of the user VPN configuration.')
@@ -54,3 +183,15 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = vpnServerConfig.location
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+type lockType = {
+  @description('Optional. Specify the name of lock.')
+  name: string?
+
+  @description('Optional. Specify the type of lock.')
+  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
+}?
