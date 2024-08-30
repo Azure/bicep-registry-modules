@@ -82,9 +82,6 @@ param useResourcePermissions bool = false
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
-@description('Optional. Instead of using an external reference, use the deployed instance as the target for its diagnostic settings.')
-param useDeployedWorkspaceForDiagnosticSettings bool = false
-
 @description('Optional. Indicates whether customer managed storage is mandatory for query management.')
 param forceCmkForQuery bool = true
 
@@ -212,7 +209,7 @@ resource logAnalyticsWorkspace_diagnosticSettings 'Microsoft.Insights/diagnostic
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
     properties: {
       storageAccountId: diagnosticSetting.?storageAccountResourceId
-      workspaceId: useDeployedWorkspaceForDiagnosticSettings
+      workspaceId: diagnosticSetting.?useThisWorkspace
         ? logAnalyticsWorkspace.id
         : diagnosticSetting.?workspaceResourceId
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
@@ -481,6 +478,9 @@ type diagnosticSettingType = {
 
   @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
   logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics' | null)?
+
+  @description('Optional. Instead of using an external reference, use the deployed instance as the target for its diagnostic settings. If set to `true`, the `workspaceResourceId` property is ignored.')
+  useThisWorkspace: bool?
 
   @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
   workspaceResourceId: string?
