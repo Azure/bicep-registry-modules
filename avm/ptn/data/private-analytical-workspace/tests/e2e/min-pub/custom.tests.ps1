@@ -116,7 +116,7 @@ Describe 'Validate Pattern deployment' {
 
             It 'Check Azure Databricks' {
 
-                # Not relevant for the minimal deployment
+                # Not relevant for this deployment
             }
         }
     }
