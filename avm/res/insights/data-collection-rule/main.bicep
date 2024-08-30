@@ -86,8 +86,8 @@ resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' 
           dataSources: dataCollectionRuleProperties.dataSources
           dataFlows: dataCollectionRuleProperties.dataFlows
           destinations: dataCollectionRuleProperties.destinations
-          dataCollectionEndpointId: dataCollectionRuleProperties.dataCollectionEndpointId
-          streamDeclarations: dataCollectionRuleProperties.streamDeclarations
+          dataCollectionEndpointId: dataCollectionRuleProperties.?dataCollectionEndpointId
+          streamDeclarations: dataCollectionRuleProperties.?streamDeclarations
         }
       : {},
     dataCollectionRuleProperties.kind == 'AgentSettings'
@@ -96,7 +96,7 @@ resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' 
         }
       : {},
     {
-      description: dataCollectionRuleProperties.description
+      description: dataCollectionRuleProperties.?description
     }
   )
 }

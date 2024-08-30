@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "18086407482545174237"
+      "templateHash": "16127257398169774892"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule.",
@@ -388,7 +388,7 @@
       "kind": "[parameters('dataCollectionRuleProperties').kind]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
-      "properties": "[union(if(or(equals(parameters('dataCollectionRuleProperties').kind, 'Linux'), equals(parameters('dataCollectionRuleProperties').kind, 'Windows')), createObject('dataSources', parameters('dataCollectionRuleProperties').dataSources, 'dataFlows', parameters('dataCollectionRuleProperties').dataFlows, 'destinations', parameters('dataCollectionRuleProperties').destinations, 'dataCollectionEndpointId', parameters('dataCollectionRuleProperties').dataCollectionEndpointId, 'streamDeclarations', parameters('dataCollectionRuleProperties').streamDeclarations), createObject()), if(equals(parameters('dataCollectionRuleProperties').kind, 'AgentSettings'), createObject('agentSettings', parameters('dataCollectionRuleProperties').agentSettings), createObject()), createObject('description', parameters('dataCollectionRuleProperties').description))]"
+      "properties": "[union(if(or(equals(parameters('dataCollectionRuleProperties').kind, 'Linux'), equals(parameters('dataCollectionRuleProperties').kind, 'Windows')), createObject('dataSources', parameters('dataCollectionRuleProperties').dataSources, 'dataFlows', parameters('dataCollectionRuleProperties').dataFlows, 'destinations', parameters('dataCollectionRuleProperties').destinations, 'dataCollectionEndpointId', tryGet(parameters('dataCollectionRuleProperties'), 'dataCollectionEndpointId'), 'streamDeclarations', tryGet(parameters('dataCollectionRuleProperties'), 'streamDeclarations')), createObject()), if(equals(parameters('dataCollectionRuleProperties').kind, 'AgentSettings'), createObject('agentSettings', parameters('dataCollectionRuleProperties').agentSettings), createObject()), createObject('description', tryGet(parameters('dataCollectionRuleProperties'), 'description')))]"
     },
     "dataCollectionRule_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
