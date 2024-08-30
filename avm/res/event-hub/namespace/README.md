@@ -733,7 +733,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zoneRedundant: true
   }
 }
 ```
@@ -908,9 +907,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "zoneRedundant": {
-      "value": true
     }
   }
 }
@@ -1840,7 +1836,7 @@ Switch to make the Event Hub Namespace zone redundant.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 
 ## Outputs
