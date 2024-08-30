@@ -57,6 +57,14 @@ module testDeployment '../../../main.bicep' = [
       ingressTransport: 'tcp'
       ingressAllowInsecure: false
       ingressTargetPort: 80
+      additionalPortMappings: [
+        {
+          external: false
+          targetPort: 8080
+          exposedPort: 8080
+        }
+      ]
+
       containers: [
         {
           name: 'simple-hello-world-container'

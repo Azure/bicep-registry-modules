@@ -62,12 +62,6 @@ module testDeployment '../../../main.bicep' = [
         'hidden-title': 'This is visible in the resource name'
         Env: 'test'
       }
-      additionalPortMappings: [
-        {
-          external: true
-          targetPort: 8080
-        }
-      ]
       roleAssignments: [
         {
           name: 'e9bac1ee-aebe-4513-9337-49e87a7be05e'

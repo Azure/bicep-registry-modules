@@ -239,12 +239,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     environmentResourceId: '<environmentResourceId>'
     name: 'acamax001'
     // Non-required parameters
-    additionalPortMappings: [
-      {
-        external: true
-        targetPort: 8080
-      }
-    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -354,14 +348,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": "acamax001"
     },
     // Non-required parameters
-    "additionalPortMappings": {
-      "value": [
-        {
-          "external": true,
-          "targetPort": 8080
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
     },
@@ -454,6 +440,13 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     environmentResourceId: '<environmentResourceId>'
     name: 'acavnet001'
     // Non-required parameters
+    additionalPortMappings: [
+      {
+        exposedPort: 8080
+        external: false
+        targetPort: 8080
+      }
+    ]
     ingressAllowInsecure: false
     ingressExternal: false
     ingressTargetPort: 80
@@ -495,6 +488,15 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": "acavnet001"
     },
     // Non-required parameters
+    "additionalPortMappings": {
+      "value": [
+        {
+          "exposedPort": 8080,
+          "external": false,
+          "targetPort": 8080
+        }
+      ]
+    },
     "ingressAllowInsecure": {
       "value": false
     },
