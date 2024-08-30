@@ -47,6 +47,9 @@ param service object = {}
 @description('Optional. Toggle to include the service configuration.')
 param includeAddOns bool = false
 
+@description('Optional. Settings to expose additional ports on container app.')
+param additionalPortMappings ingressPortMapping[]?
+
 @description('Optional. Bool indicating if HTTP connections to is allowed. If set to false HTTP connections are automatically redirected to HTTPS connections.')
 param ingressAllowInsecure bool = true
 
@@ -217,6 +220,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
       ingress: disableIngress
         ? null
         : {
+            additionalPortMappings: !empty(additionalPortMappings) ? additionalPortMappings : null
             allowInsecure: ingressTransport != 'tcp' ? ingressAllowInsecure : false
             customDomains: !empty(customDomains) ? customDomains : null
             corsPolicy: corsPolicy != null && ingressTransport != 'tcp'
@@ -385,6 +389,17 @@ type container = {
 
   @description('Optional. Container volume mounts.')
   volumeMounts: volumeMount[]?
+}
+
+type ingressPortMapping = {
+  @description('Optional. Specifies the exposed port for the target port. If not specified, it defaults to target port.')
+  exposedPort: int?
+
+  @description('Required. Specifies whether the app port is accessible outside of the environment.')
+  external: bool
+
+  @description('Required. Specifies the port the container listens on.')
+  targetPort: int
 }
 
 type serviceBind = {
