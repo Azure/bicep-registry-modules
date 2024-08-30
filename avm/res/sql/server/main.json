@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "18130756437591455522"
+      "templateHash": "8727418248832787909"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -740,7 +740,7 @@
           "tags": {
             "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "zoneRedundant": "[if(contains(parameters('databases')[copyIndex()], 'zoneRedundant'), createObject('value', parameters('databases')[copyIndex()].zoneRedundant), createObject('value', false()))]",
+          "zoneRedundant": "[if(contains(parameters('databases')[copyIndex()], 'zoneRedundant'), createObject('value', parameters('databases')[copyIndex()].zoneRedundant), createObject('value', true()))]",
           "elasticPoolId": "[if(contains(parameters('databases')[copyIndex()], 'elasticPoolId'), createObject('value', parameters('databases')[copyIndex()].elasticPoolId), createObject('value', ''))]",
           "backupShortTermRetentionPolicy": "[if(contains(parameters('databases')[copyIndex()], 'backupShortTermRetentionPolicy'), createObject('value', parameters('databases')[copyIndex()].backupShortTermRetentionPolicy), createObject('value', createObject()))]",
           "backupLongTermRetentionPolicy": "[if(contains(parameters('databases')[copyIndex()], 'backupLongTermRetentionPolicy'), createObject('value', parameters('databases')[copyIndex()].backupLongTermRetentionPolicy), createObject('value', createObject()))]",
@@ -758,7 +758,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "8343448660522432164"
+              "templateHash": "6019999815954957727"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database.",
@@ -969,7 +969,7 @@
             },
             "zoneRedundant": {
               "type": "bool",
-              "defaultValue": false,
+              "defaultValue": true,
               "metadata": {
                 "description": "Optional. Whether or not this database is zone redundant."
               }
@@ -1500,7 +1500,7 @@
           "skuCapacity": "[if(contains(parameters('elasticPools')[copyIndex()], 'skuCapacity'), createObject('value', parameters('elasticPools')[copyIndex()].skuCapacity), createObject('value', 2))]",
           "skuName": "[if(contains(parameters('elasticPools')[copyIndex()], 'skuName'), createObject('value', parameters('elasticPools')[copyIndex()].skuName), createObject('value', 'GP_Gen5'))]",
           "skuTier": "[if(contains(parameters('elasticPools')[copyIndex()], 'skuTier'), createObject('value', parameters('elasticPools')[copyIndex()].skuTier), createObject('value', 'GeneralPurpose'))]",
-          "zoneRedundant": "[if(contains(parameters('elasticPools')[copyIndex()], 'zoneRedundant'), createObject('value', parameters('elasticPools')[copyIndex()].zoneRedundant), createObject('value', false()))]",
+          "zoneRedundant": "[if(contains(parameters('elasticPools')[copyIndex()], 'zoneRedundant'), createObject('value', parameters('elasticPools')[copyIndex()].zoneRedundant), createObject('value', true()))]",
           "location": {
             "value": "[parameters('location')]"
           },
@@ -1516,7 +1516,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "17663884310941548142"
+              "templateHash": "18037703368269722870"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -1625,7 +1625,7 @@
             },
             "zoneRedundant": {
               "type": "bool",
-              "defaultValue": false,
+              "defaultValue": true,
               "metadata": {
                 "description": "Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones."
               }
