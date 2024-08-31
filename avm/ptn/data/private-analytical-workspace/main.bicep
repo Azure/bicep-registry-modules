@@ -597,6 +597,7 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:0.2.0' = i
     // Required parameters
     name: dbwAccessConnectorName
     // Non-required parameters
+    enableTelemetry: enableTelemetry
     location: location
     lock: lock
     managedIdentities: {

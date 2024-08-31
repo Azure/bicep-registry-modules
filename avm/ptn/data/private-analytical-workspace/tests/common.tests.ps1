@@ -239,11 +239,29 @@ function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $
     return $kv
 }
 
+function Test-VerifyDatabricksAccessConnector($DatabricksAcCResourceGroupName, $DatabricksAcCName, $Tags, $DatabricksResourceId) {
+    $acc = Get-AzDatabricksAccessConnector -ResourceGroupName $DatabricksAcCResourceGroupName -Name $DatabricksAcCName
+    $acc | Should -Not -BeNullOrEmpty
+    $acc.ProvisioningState | Should -Be 'Succeeded'
+    $acc.IdentityType | Should -Be 'SystemAssigned'
+    $acc.IdentityUserAssignedIdentity | Should -BeNullOrEmpty
+    $acc.ReferedBy | Should -Be $DatabricksResourceId
+
+    Test-VerifyTagsForResource -ResourceId $acc.Id -Tags $Tags
+
+    # No DIAG for Access Connector itself
+
+    Test-VerifyLock -ResourceId $acc.Id
+    Test-VerifyRoleAssignment -ResourceId $acc.Id
+
+    return $acc
+}
+
 function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $Tags, $LogAnalyticsWorkspaceResourceId, $Sku, $VirtualNetworkResourceId, $PrivateSubnetName, $PublicSubnetName, $PEPName1, $PEPName2, $NumberOfRecordSets, $PLSubnetName, $PublicNetworkAccess, $RequiredNsgRule) {
     $adb = Get-AzDatabricksWorkspace -ResourceGroupName $DatabricksResourceGroupName -Name $DatabricksName
     $adb | Should -Not -BeNullOrEmpty
     $adb.ProvisioningState | Should -Be 'Succeeded'
-    $adb.AccessConnectorId | Should -BeNullOrEmpty
+    $adb.AccessConnectorId | Should -Not -BeNullOrEmpty
     $adb.AccessConnectorIdentityType | Should -BeNullOrEmpty
     $adb.AccessConnectorUserAssignedIdentityId | Should -BeNullOrEmpty
     $adb.AmlWorkspaceIdType | Should -BeNullOrEmpty
@@ -272,7 +290,7 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     $adb.EncryptionType | Should -BeNullOrEmpty
     $adb.EnhancedSecurityMonitoringValue | Should -BeNullOrEmpty
     #Skip $adb.Id | Should -Be $databricksResourceId
-    $adb.IsUcEnabled | Should -Be $false
+    $adb.IsUcEnabled | Should -Be $true
     $adb.LoadBalancerBackendPoolNameType | Should -BeNullOrEmpty
     $adb.LoadBalancerBackendPoolNameValue | Should -BeNullOrEmpty
     $adb.LoadBalancerIdType | Should -BeNullOrEmpty
@@ -342,6 +360,9 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
         'Ingestion', 'MarketplaceConsumer', 'LineageTracking'
     )
     Test-VerifyDiagSettings -ResourceId $adb.Id -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId -Logs $logs
+
+    $acc = Test-VerifyDatabricksAccessConnector -DatabricksAcCResourceGroupName $DatabricksResourceGroupName -DatabricksAcCName "$($DatabricksName)-acc" -Tags $Tags -DatabricksResourceId $adb.Id
+    $acc.Id | Should -Be $adb.AccessConnectorId
 
     Test-VerifyPrivateEndpoint -Name "$($DatabricksName)$($PEPName1)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId 'browser_authentication'
     Test-VerifyPrivateEndpoint -Name "$($DatabricksName)$($PEPName2)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId 'databricks_ui_api'
