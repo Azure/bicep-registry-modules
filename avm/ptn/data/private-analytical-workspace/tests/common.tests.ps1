@@ -156,7 +156,14 @@ function Test-VerifyPrivateEndpoint($Name, $ResourceGroupName, $Tags, $SubnetNam
     $pep.Subnet.Id | Should -Be "$($virtualNetworkResourceId)/subnets/$($SubnetName)"
     $pep.NetworkInterfaces.Count | Should -Be 1
     $pep.PrivateLinkServiceConnections.ProvisioningState | Should -Be 'Succeeded'
-    $pep.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $ServiceId
+
+    if ( $ServiceId -eq $null ) {
+        # For some services I have no Id - but must be no empty
+        $pep.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Not -BeNullOrEmpty
+    } else {
+        $pep.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $ServiceId
+    }
+
     $pep.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
     $pep.PrivateLinkServiceConnections.GroupIds | Should -Be $GroupId
     $pep.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be 'Approved'
@@ -367,7 +374,7 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     # Workaround
     $baseName = $DatabricksName -replace '-dbw' -replace ''
 
-    Test-VerifyPrivateEndpoint -Name "$($baseName)$($PEPName0)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId 'blob'
+    Test-VerifyPrivateEndpoint -Name "$($baseName)$($PEPName0)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $null -GroupId 'blob'
     Test-VerifyPrivateEndpoint -Name "$($baseName)$($PEPName1)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId 'browser_authentication'
     Test-VerifyPrivateEndpoint -Name "$($baseName)$($PEPName2)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId 'databricks_ui_api'
 
