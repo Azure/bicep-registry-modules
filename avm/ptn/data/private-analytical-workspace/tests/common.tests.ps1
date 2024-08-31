@@ -244,7 +244,7 @@ function Test-VerifyDatabricksAccessConnector($DatabricksAcCResourceGroupName, $
     $acc | Should -Not -BeNullOrEmpty
     $acc.ProvisioningState | Should -Be 'Succeeded'
     $acc.IdentityType | Should -Be 'SystemAssigned'
-    $acc.IdentityUserAssignedIdentity | Should -Be '{}'
+    $acc.IdentityUserAssignedIdentity | ConvertFrom-Json | Should -BeNullOrEmpty
     $acc.ReferedBy | Should -Be $DatabricksResourceId
 
     Test-VerifyTagsForResource -ResourceId $acc.Id -Tags $Tags
