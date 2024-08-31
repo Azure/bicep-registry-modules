@@ -257,12 +257,12 @@ function Test-VerifyDatabricksAccessConnector($DatabricksAcCResourceGroupName, $
     return $acc
 }
 
-function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $Tags, $LogAnalyticsWorkspaceResourceId, $Sku, $VirtualNetworkResourceId, $PrivateSubnetName, $PublicSubnetName, $PEPName1, $PEPName2, $NumberOfRecordSets, $PLSubnetName, $PublicNetworkAccess, $RequiredNsgRule) {
+function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $Tags, $LogAnalyticsWorkspaceResourceId, $Sku, $VirtualNetworkResourceId, $PrivateSubnetName, $PublicSubnetName, $PEPName0, $PEPName1, $PEPName2, $BlobNumberOfRecordSets, $DatabricksNumberOfRecordSets, $PLSubnetName, $PublicNetworkAccess, $RequiredNsgRule) {
     $adb = Get-AzDatabricksWorkspace -ResourceGroupName $DatabricksResourceGroupName -Name $DatabricksName
     $adb | Should -Not -BeNullOrEmpty
     $adb.ProvisioningState | Should -Be 'Succeeded'
     $adb.AccessConnectorId | Should -Not -BeNullOrEmpty
-    $adb.AccessConnectorIdentityType | Should -BeNullOrEmpty
+    $adb.AccessConnectorIdentityType | Should -Be 'SystemAssigned'
     $adb.AccessConnectorUserAssignedIdentityId | Should -BeNullOrEmpty
     $adb.AmlWorkspaceIdType | Should -BeNullOrEmpty
     $adb.AmlWorkspaceIdValue | Should -BeNullOrEmpty
@@ -279,7 +279,7 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     $adb.CustomVirtualNetworkIdValue | Should -Be $VirtualNetworkResourceId
     $adb.DefaultCatalogInitialName | Should -BeNullOrEmpty
     $adb.DefaultCatalogInitialType | Should -BeNullOrEmpty
-    $adb.DefaultStorageFirewall | Should -BeNullOrEmpty
+    $adb.DefaultStorageFirewall | Should -Be 'Enabled'
     $adb.DiskEncryptionSetId | Should -BeNullOrEmpty
     $adb.EnableNoPublicIP | Should -Be $true
     $adb.EnableNoPublicIPType | Should -Be 'Bool'
@@ -364,11 +364,19 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     $acc = Test-VerifyDatabricksAccessConnector -DatabricksAcCResourceGroupName $DatabricksResourceGroupName -DatabricksAcCName "$($DatabricksName)-acc" -Tags $Tags -DatabricksResourceId $adb.Id
     $acc.Id | Should -Be $adb.AccessConnectorId
 
-    Test-VerifyPrivateEndpoint -Name "$($DatabricksName)$($PEPName1)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId 'browser_authentication'
-    Test-VerifyPrivateEndpoint -Name "$($DatabricksName)$($PEPName2)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId 'databricks_ui_api'
+    # Workaround
+    $baseName = $DatabricksName -replace '-dbw' -replace ''
 
-    if ( $NumberOfRecordSets -ne 0 ) {
-        Test-VerifyDnsZone -Name 'privatelink.azuredatabricks.net' -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -NumberOfRecordSets $NumberOfRecordSets
+    Test-VerifyPrivateEndpoint -Name "$($baseName)$($PEPName0)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId 'blob'
+    Test-VerifyPrivateEndpoint -Name "$($baseName)$($PEPName1)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId 'browser_authentication'
+    Test-VerifyPrivateEndpoint -Name "$($baseName)$($PEPName2)" -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -SubnetName $PLSubnetName -ServiceId $adb.Id -GroupId 'databricks_ui_api'
+
+    if ( $BlobNumberOfRecordSets -ne 0 ) {
+        Test-VerifyDnsZone -Name 'privatelink.blob.core.windows.net' -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -NumberOfRecordSets $BlobNumberOfRecordSets
+    }
+
+    if ( $DatabricksNumberOfRecordSets -ne 0 ) {
+        Test-VerifyDnsZone -Name 'privatelink.azuredatabricks.net' -ResourceGroupName $DatabricksResourceGroupName -Tags $Tags -NumberOfRecordSets $DatabricksNumberOfRecordSets
     }
 
     Test-VerifyLock -ResourceId $adb.Id
