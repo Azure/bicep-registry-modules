@@ -41,6 +41,7 @@ param advancedOptions advancedOptionsType?
 
 var diagnosticSettingsName = 'avm-diagnostic-settings'
 var vnetName = '${name}-vnet'
+var privateDnsZoneNameSaBlob = 'privatelink.blob.${environment().suffixes.storage}'
 var privateDnsZoneNameKv = 'privatelink.vaultcore.azure.net'
 var privateDnsZoneNameDbw = 'privatelink.azuredatabricks.net'
 var subnetNamePrivateLink = 'private-link-subnet'
@@ -470,6 +471,26 @@ module nsgDbwBackend 'br/public:avm/res/network/network-security-group:0.4.0' = 
   }
 }
 
+module dnsZoneSaBlob 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (createNewVNET && enableDatabricks) {
+  name: privateDnsZoneNameSaBlob
+  params: {
+    // Required parameters
+    name: privateDnsZoneNameSaBlob
+    // Non-required parameters
+    enableTelemetry: enableTelemetry
+    location: 'global'
+    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+    lock: lock
+    tags: tags
+    virtualNetworkLinks: [
+      {
+        registrationEnabled: false
+        virtualNetworkResourceId: vnet.outputs.resourceId
+      }
+    ]
+  }
+}
+
 module log 'br/public:avm/res/operational-insights/workspace:0.5.0' = if (createNewLog) {
   name: logName
   params: {
@@ -620,6 +641,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.6.0' = if (enableDatabricks
         roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
       }
     ]
+    privateStorageAccount: 'Enabled'
     // Allow Public Network Access
     // Enabled means You can connect to your Databricks workspace either publicly, via public IP addresses, or privately, using a private endpoint.
     publicNetworkAccess: empty(dbwIpRules) ? 'Disabled' : 'Enabled'
@@ -630,6 +652,19 @@ module dbw 'br/public:avm/res/databricks/workspace:0.6.0' = if (enableDatabricks
     roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
     skuName: 'premium' // We need premium to use VNET injection, Private Connectivity (Requires Premium Plan)
     storageAccountName: null // TODO add existing one (maybe with PEP) - https://learn.microsoft.com/en-us/azure/databricks/security/network/storage/firewall-support
+    storageAccountPrivateEndpoints: [
+      {
+        name: '${name}-sa-blob-pep'
+        location: location
+        service: 'blob'
+        subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
+        privateDnsZoneResourceIds: createNewVNET ? [dnsZoneSaBlob.outputs.resourceId] : []
+        tags: tags
+        enableTelemetry: enableTelemetry
+        lock: lock
+        roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+      }
+    ]
     tags: tags
   }
 }
