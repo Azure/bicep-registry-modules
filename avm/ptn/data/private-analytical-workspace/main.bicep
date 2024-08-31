@@ -182,6 +182,7 @@ var kvDefaultEnablePurgeProtection = true
 var kvDefaultSku = 'premium'
 
 var dbwName = '${name}-dbw'
+var dbwAccessConnectorName = '${name}-dbw-acc'
 
 var createNewVNET = empty(virtualNetworkResourceId)
 var createNewLog = empty(logAnalyticsWorkspaceResourceId)
@@ -590,11 +591,29 @@ module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (create
   }
 }
 
+module accessConnector 'br/public:avm/res/databricks/access-connector:0.2.0' = if (enableDatabricks) {
+  name: dbwAccessConnectorName
+  params: {
+    // Required parameters
+    name: dbwAccessConnectorName
+    // Non-required parameters
+    location: location
+    lock: lock
+    managedIdentities: {
+      systemAssigned: true
+    }
+    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+    tags: tags
+  }
+}
+
 module dbw 'br/public:avm/res/databricks/workspace:0.6.0' = if (enableDatabricks) {
   name: dbwName
   params: {
     // Required parameters
     name: dbwName
+    // Conditional parameters
+    accessConnectorResourceId: accessConnector.outputs.resourceId
     // Non-required parameters
     customPublicSubnetName: createNewVNET ? subnetNameDbwFrontend : advancedOptions.?databricks.?subnetNameFrontend
     customPrivateSubnetName: createNewVNET ? subnetNameDbwBackend : advancedOptions.?databricks.?subnetNameBackend
