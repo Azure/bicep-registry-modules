@@ -290,7 +290,7 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     $adb.EncryptionType | Should -BeNullOrEmpty
     $adb.EnhancedSecurityMonitoringValue | Should -BeNullOrEmpty
     #Skip $adb.Id | Should -Be $databricksResourceId
-    $adb.IsUcEnabled | Should -Be $true
+    $adb.IsUcEnabled | Should -Be $false
     $adb.LoadBalancerBackendPoolNameType | Should -BeNullOrEmpty
     $adb.LoadBalancerBackendPoolNameValue | Should -BeNullOrEmpty
     $adb.LoadBalancerIdType | Should -BeNullOrEmpty
