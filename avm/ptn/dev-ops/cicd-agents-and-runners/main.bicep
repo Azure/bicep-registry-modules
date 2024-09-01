@@ -354,7 +354,6 @@ module newVnet 'br/public:avm/res/network/virtual-network:0.2.0' = if (networkin
     )
   }
 }
-
 module appEnvironment 'br/public:avm/res/app/managed-environment:0.6.2' = if (contains(
   computeTypes,
   'azure-container-app'
@@ -372,7 +371,7 @@ module appEnvironment 'br/public:avm/res/app/managed-environment:0.6.2' = if (co
       : privateNetworking && networkingConfiguration.networkType == 'useExisting'
           ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.containerAppSubnetName}'
           : null
-    zoneRedundant: true
+    zoneRedundant: privateNetworking ? true : false
     internal: privateNetworking ? true : false
     workloadProfiles: [
       {

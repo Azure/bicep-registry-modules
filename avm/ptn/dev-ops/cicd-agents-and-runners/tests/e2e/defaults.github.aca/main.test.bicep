@@ -9,13 +9,13 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-devopsrunners-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-githubRunner-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Required. The name of the GitHub organization.')
-param githubOrganization string = 'azureDevOpsOrganization'
+param githubOrganization string = 'githHubOrganization'
 
 @description('Required. The name of the GitHub repository.')
 param githubRepository string = 'dummyRepo'

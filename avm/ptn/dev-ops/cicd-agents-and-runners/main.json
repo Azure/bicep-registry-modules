@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "11846912157541070177"
+      "templateHash": "16205778772099718148"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.",
@@ -9989,9 +9989,7 @@
             "value": "[parameters('location')]"
           },
           "infrastructureSubnetId": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppSubnetName'), 'app-subnet'))))[0]), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').containerAppSubnetName)), createObject('value', null())))]",
-          "zoneRedundant": {
-            "value": true
-          },
+          "zoneRedundant": "[if(parameters('privateNetworking'), createObject('value', true()), createObject('value', false()))]",
           "internal": "[if(parameters('privateNetworking'), createObject('value', true()), createObject('value', false()))]",
           "workloadProfiles": {
             "value": [
