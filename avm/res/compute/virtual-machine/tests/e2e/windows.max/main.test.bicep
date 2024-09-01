@@ -24,6 +24,10 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Required. The object id of the Backup Management Service Enterprise Application. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-BackupManagementServiceEnterpriseApplicationObjectId\'.')
+@secure()
+param backupManagementServiceEnterpriseApplicationObjectId string
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -49,7 +53,7 @@ module nestedDependencies 'dependencies.bicep' = {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
     storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
     proximityPlacementGroupName: 'dep-${namePrefix}-ppg-${serviceShort}'
-    backupManagementServiceApplicationObjectId: 'be766fc3-eac4-4627-b8f5-298e35c8aea4' // Tenant-specific Backup Management Service Enterprise Application Object Id
+    backupManagementServiceApplicationObjectId: backupManagementServiceEnterpriseApplicationObjectId
     dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
     logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
   }
