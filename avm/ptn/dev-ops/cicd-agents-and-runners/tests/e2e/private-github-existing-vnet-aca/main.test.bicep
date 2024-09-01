@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'test-${namePrefix}-githubrunners-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-githubrunners-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -26,12 +26,6 @@ param personalAccessToken string = newGuid()
 
 @description('Optional. Whether to use private or public networking for the Azure Container Registry.')
 param privateNetworking bool = true
-
-@description('Required. The name of the virtual network to create.')
-param virtualNetworkName string = 'vnet-aci'
-
-@description('Required. The address space for the virtual network.')
-param virtualNetworkAddressSpace string = '10.0.0.0/16'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -68,7 +62,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 module testDeployment '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-dep-${serviceShort}'
   scope: resourceGroup
   params: {
     namingPrefix: namePrefix
