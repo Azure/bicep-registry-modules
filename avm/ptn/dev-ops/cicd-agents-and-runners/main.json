@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "4963555166934106734"
+      "templateHash": "15525679194565745702"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.",
@@ -10552,7 +10552,7 @@
       ]
     },
     "natGatewayPublicIp": {
-      "condition": "[and(and(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayResourceId'), '')), empty(coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayPublicIpAddressResourceId'), ''))), equals(parameters('networkingConfiguration').networkType, 'createNew'))]",
+      "condition": "[and(and(and(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayResourceId'), '')), empty(coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayPublicIpAddressResourceId'), ''))), equals(parameters('networkingConfiguration').networkType, 'createNew')), parameters('privateNetworking'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('natGatewayPublicIp-{0}', uniqueString(resourceGroup().id))]",

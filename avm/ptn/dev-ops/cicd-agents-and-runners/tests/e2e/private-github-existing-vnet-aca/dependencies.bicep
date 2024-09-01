@@ -6,9 +6,9 @@ param namePrefix string = 'dev'
 
 var addressPrefix = '10.0.0.0/16'
 
-var virtualNetworkName = 'dep-vnet-${namePrefix}'
+var virtualNetworkName = 'test-vnet-${namePrefix}'
 
-var publicIPName = 'dep-pip-${namePrefix}'
+var publicIPName = 'test-pip-${namePrefix}'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: virtualNetworkName
