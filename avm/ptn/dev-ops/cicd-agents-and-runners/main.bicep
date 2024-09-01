@@ -363,15 +363,15 @@ module appEnvironment 'br/public:avm/res/app/managed-environment:0.6.2' = if (co
     name: 'appEnv${namingPrefix}${uniqueString(resourceGroup().id)}'
     logAnalyticsWorkspaceResourceId: logAnalyticsWokrspace.outputs.resourceId
     location: location
-    infrastructureSubnetId: privateNetworking && networkingConfiguration.networkType == 'createNew'
+    infrastructureSubnetId: networkingConfiguration.networkType == 'createNew'
       ? filter(
           newVnet.outputs.subnetResourceIds,
           subnetId => contains(subnetId, networkingConfiguration.?containerAppSubnetName ?? 'app-subnet')
         )[0]
-      : privateNetworking && networkingConfiguration.networkType == 'useExisting'
+      : networkingConfiguration.networkType == 'useExisting'
           ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.containerAppSubnetName}'
           : null
-    zoneRedundant: privateNetworking ? true : false
+    zoneRedundant: true
     internal: privateNetworking ? true : false
     workloadProfiles: [
       {
