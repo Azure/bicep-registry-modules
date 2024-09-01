@@ -84,12 +84,107 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>`.
 
-- [Using only defaults for Azure DevOps self-hosted agents using Azure Container Instances.](#example-1-using-only-defaults-for-azure-devops-self-hosted-agents-using-azure-container-instances)
-- [Using only defaults for GitHub self-hosted runners using Azure Container Apps.](#example-2-using-only-defaults-for-github-self-hosted-runners-using-azure-container-apps)
-- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Using only defaults for Azure DevOps self-hosted agents using both Azure Container Instances and Azure Container Apps.](#example-1-using-only-defaults-for-azure-devops-self-hosted-agents-using-both-azure-container-instances-and-azure-container-apps)
+- [Using only defaults for Azure DevOps self-hosted agents using Azure Container Instances.](#example-2-using-only-defaults-for-azure-devops-self-hosted-agents-using-azure-container-instances)
+- [Using only defaults for GitHub self-hosted runners using Azure Container Apps.](#example-3-using-only-defaults-for-github-self-hosted-runners-using-azure-container-apps)
 - [Using large parameter set](#example-4-using-large-parameter-set)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet.](#example-6-using-only-defaults-for-github-self-hosted-runners-using-private-networking-in-an-existing-vnet)
+- [Using only defaults for GitHub self-hosted runners using Private networking.](#example-7-using-only-defaults-for-github-self-hosted-runners-using-private-networking)
 
-### Example 1: _Using only defaults for Azure DevOps self-hosted agents using Azure Container Instances._
+### Example 1: _Using only defaults for Azure DevOps self-hosted agents using both Azure Container Instances and Azure Container Apps._
+
+This instance deploys the module with the minimum set of required parameters for Azure DevOps self-hosted agents in Azure Container Instances and Azure Container Apps.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
+  name: 'cicdAgentsAndRunnersDeployment'
+  params: {
+    // Required parameters
+    namingPrefix: '<namingPrefix>'
+    networkingConfiguration: {
+      addressSpace: '<addressSpace>'
+      networkType: 'createNew'
+      virtualNetworkName: '<virtualNetworkName>'
+    }
+    selfHostedConfig: {
+      agentsPoolName: '<agentsPoolName>'
+      devOpsOrganization: '<devOpsOrganization>'
+      personalAccessToken: '<personalAccessToken>'
+      selfHostedType: 'azuredevops'
+    }
+    // Non-required parameters
+    computeTypes: [
+      'azure-container-app'
+      'azure-container-instance'
+    ]
+    enableTelemetry: '<enableTelemetry>'
+    location: '<location>'
+    privateNetworking: '<privateNetworking>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "namingPrefix": {
+      "value": "<namingPrefix>"
+    },
+    "networkingConfiguration": {
+      "value": {
+        "addressSpace": "<addressSpace>",
+        "networkType": "createNew",
+        "virtualNetworkName": "<virtualNetworkName>"
+      }
+    },
+    "selfHostedConfig": {
+      "value": {
+        "agentsPoolName": "<agentsPoolName>",
+        "devOpsOrganization": "<devOpsOrganization>",
+        "personalAccessToken": "<personalAccessToken>",
+        "selfHostedType": "azuredevops"
+      }
+    },
+    // Non-required parameters
+    "computeTypes": {
+      "value": [
+        "azure-container-app",
+        "azure-container-instance"
+      ]
+    },
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "privateNetworking": {
+      "value": "<privateNetworking>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults for Azure DevOps self-hosted agents using Azure Container Instances._
 
 This instance deploys the module with the minimum set of required parameters for Azure DevOps self-hosted agents in Azure Container Instances.
 
@@ -179,7 +274,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
 </details>
 <p>
 
-### Example 2: _Using only defaults for GitHub self-hosted runners using Azure Container Apps._
+### Example 3: _Using only defaults for GitHub self-hosted runners using Azure Container Apps._
 
 This instance deploys the module with the minimum set of required parameters for GitHub self-hosted runners in Azure Container Apps.
 
@@ -269,7 +364,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -381,7 +476,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -471,6 +566,192 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
         "runnerScope": "<runnerScope>",
         "selfHostedType": "github",
         "targetWorkflowQueueLength": "<targetWorkflowQueueLength>"
+      }
+    },
+    // Non-required parameters
+    "computeTypes": {
+      "value": [
+        "azure-container-instance"
+      ]
+    },
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "privateNetworking": {
+      "value": "<privateNetworking>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 6: _Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet._
+
+This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Apps in an existing vnet.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
+  name: 'cicdAgentsAndRunnersDeployment'
+  params: {
+    // Required parameters
+    namingPrefix: '<namingPrefix>'
+    networkingConfiguration: {
+      containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
+      containerAppSubnetName: 'aca-subnet'
+      containerInstanceSubnetName: 'aci-subnet'
+      containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
+      networkType: 'UseExisting'
+      virtualNetworkResourceId: '<virtualNetworkResourceId>'
+    }
+    selfHostedConfig: {
+      githubOrganization: '<githubOrganization>'
+      githubRepository: '<githubRepository>'
+      personalAccessToken: '<personalAccessToken>'
+      selfHostedType: 'github'
+    }
+    // Non-required parameters
+    computeTypes: [
+      'azure-container-instance'
+    ]
+    enableTelemetry: '<enableTelemetry>'
+    location: '<location>'
+    privateNetworking: '<privateNetworking>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "namingPrefix": {
+      "value": "<namingPrefix>"
+    },
+    "networkingConfiguration": {
+      "value": {
+        "containerAppDeploymentScriptSubnetName": "aca-ds-subnet",
+        "containerAppSubnetName": "aca-subnet",
+        "containerInstanceSubnetName": "aci-subnet",
+        "containerRegistryPrivateEndpointSubnetName": "acr-subnet",
+        "networkType": "UseExisting",
+        "virtualNetworkResourceId": "<virtualNetworkResourceId>"
+      }
+    },
+    "selfHostedConfig": {
+      "value": {
+        "githubOrganization": "<githubOrganization>",
+        "githubRepository": "<githubRepository>",
+        "personalAccessToken": "<personalAccessToken>",
+        "selfHostedType": "github"
+      }
+    },
+    // Non-required parameters
+    "computeTypes": {
+      "value": [
+        "azure-container-instance"
+      ]
+    },
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "privateNetworking": {
+      "value": "<privateNetworking>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Using only defaults for GitHub self-hosted runners using Private networking._
+
+This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Instances.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
+  name: 'cicdAgentsAndRunnersDeployment'
+  params: {
+    // Required parameters
+    namingPrefix: '<namingPrefix>'
+    networkingConfiguration: {
+      addressSpace: '<addressSpace>'
+      networkType: 'createNew'
+      virtualNetworkName: '<virtualNetworkName>'
+    }
+    selfHostedConfig: {
+      githubOrganization: '<githubOrganization>'
+      githubRepository: '<githubRepository>'
+      personalAccessToken: '<personalAccessToken>'
+      selfHostedType: 'github'
+    }
+    // Non-required parameters
+    computeTypes: [
+      'azure-container-instance'
+    ]
+    enableTelemetry: '<enableTelemetry>'
+    location: '<location>'
+    privateNetworking: '<privateNetworking>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "namingPrefix": {
+      "value": "<namingPrefix>"
+    },
+    "networkingConfiguration": {
+      "value": {
+        "addressSpace": "<addressSpace>",
+        "networkType": "createNew",
+        "virtualNetworkName": "<virtualNetworkName>"
+      }
+    },
+    "selfHostedConfig": {
+      "value": {
+        "githubOrganization": "<githubOrganization>",
+        "githubRepository": "<githubRepository>",
+        "personalAccessToken": "<personalAccessToken>",
+        "selfHostedType": "github"
       }
     },
     // Non-required parameters
