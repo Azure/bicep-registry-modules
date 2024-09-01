@@ -914,7 +914,7 @@ type gitHubRunnersType = {
   @description('Required. The self-hosted runner type.')
   selfHostedType: 'github'
 
-  @description('Required. The GitHub personal access token with permissions to create and manage self-hosted runners.')
+  @description('Required. The GitHub personal access token with permissions to create and manage self-hosted runners.  See https://learn.microsoft.com/azure/container-apps/tutorial-ci-cd-runners-jobs?tabs=bash&pivots=container-apps-jobs-self-hosted-ci-cd-github-actions#get-a-github-personal-access-token for PAT permissions.')
   @secure()
   personalAccessToken: string
 
@@ -953,7 +953,7 @@ type devOpsAgentsType = {
   @description('Required. The self-hosted runner type.')
   selfHostedType: 'azuredevops'
 
-  @description('Required. The Azure DevOps persoanl access token with permissions to create and manage self-hosted agents.')
+  @description('Required. The Azure DevOps persoanl access token with permissions to create and manage self-hosted agents. See https://learn.microsoft.com/azure/container-apps/tutorial-ci-cd-runners-jobs?tabs=bash&pivots=container-apps-jobs-self-hosted-ci-cd-azure-pipelines#get-an-azure-devops-personal-access-token for PAT permissions.')
   @secure()
   personalAccessToken: string
 

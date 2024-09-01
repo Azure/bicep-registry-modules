@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "8210942036628973875"
+      "templateHash": "14678276488843994725"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.",
@@ -274,7 +274,7 @@
         "personalAccessToken": {
           "type": "securestring",
           "metadata": {
-            "description": "Required. The GitHub personal access token with permissions to create and manage self-hosted runners."
+            "description": "Required. The GitHub personal access token with permissions to create and manage self-hosted runners.  See https://learn.microsoft.com/azure/container-apps/tutorial-ci-cd-runners-jobs?tabs=bash&pivots=container-apps-jobs-self-hosted-ci-cd-github-actions#get-a-github-personal-access-token for PAT permissions."
           }
         },
         "githubOrganization": {
@@ -370,7 +370,7 @@
         "personalAccessToken": {
           "type": "securestring",
           "metadata": {
-            "description": "Required. The Azure DevOps persoanl access token with permissions to create and manage self-hosted agents."
+            "description": "Required. The Azure DevOps persoanl access token with permissions to create and manage self-hosted agents. See https://learn.microsoft.com/azure/container-apps/tutorial-ci-cd-runners-jobs?tabs=bash&pivots=container-apps-jobs-self-hosted-ci-cd-azure-pipelines#get-an-azure-devops-personal-access-token for PAT permissions."
           }
         },
         "devOpsOrganization": {

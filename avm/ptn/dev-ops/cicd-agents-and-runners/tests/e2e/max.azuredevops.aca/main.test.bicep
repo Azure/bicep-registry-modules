@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module with most of its featur
 param resourceGroupName string = 'dep-${namePrefix}-devopsrunners-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param resourceLocation string = 'westus2'
+param resourceLocation string = deployment().location
 
 @description('Required. The name of the Azure DevOps agents pool.')
 param agentsPoolName string = 'aca'
