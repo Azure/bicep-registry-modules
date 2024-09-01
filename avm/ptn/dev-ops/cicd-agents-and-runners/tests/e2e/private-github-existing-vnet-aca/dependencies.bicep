@@ -70,6 +70,9 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 resource natGateway 'Microsoft.Network/natGateways@2024-01-01' = {
   name: 'natgw-${namePrefix}'
   location: location
+  sku: {
+    name: 'Standard'
+  }
   properties: {
     publicIpAddresses: [
       {
