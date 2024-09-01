@@ -46,7 +46,9 @@ module nestedDependencies 'dependencies.bicep' = {
     storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
     sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
-    backupManagementServiceApplicationObjectId: '268f6a53-9f68-4a38-ae47-166f730d86af' // Tenant-specific Backup Management Service Enterprise Application Object Id
+    dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
+    backupManagementServiceApplicationObjectId: 'be766fc3-eac4-4627-b8f5-298e35c8aea4' // Tenant-specific Backup Management Service Enterprise Application Object Id
+    logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
   }
 }
 
@@ -287,12 +289,17 @@ module testDeployment '../../../main.bicep' = {
     }
     extensionMonitoringAgentConfig: {
       enabled: true
+      dataCollectionRuleAssociations: [
+        {
+          name: 'SendMetricsToLAW'
+          dataCollectionRuleResourceId: nestedDependencies.outputs.dataCollectionRuleResourceId
+        }
+      ]
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
-      monitoringWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
     }
     extensionNetworkWatcherAgentConfig: {
       enabled: true
