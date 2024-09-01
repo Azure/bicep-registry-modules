@@ -382,7 +382,7 @@ module appEnvironment 'br/public:avm/res/app/managed-environment:0.6.2' = if (co
   }
 }
 
-module natGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0.5.1' = if (empty(networkingConfiguration.?natGatewayResourceId ?? '') && empty(networkingConfiguration.?natGatewayPublicIpAddressResourceId ?? '') && networkingConfiguration.networkType == 'createNew') {
+module natGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0.5.1' = if (empty(networkingConfiguration.?natGatewayResourceId ?? '') && empty(networkingConfiguration.?natGatewayPublicIpAddressResourceId ?? '') && networkingConfiguration.networkType == 'createNew' && privateNetworking) {
   name: 'natGatewayPublicIp-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'natGatewayPublicIp-${uniqueString(resourceGroup().id)}'
