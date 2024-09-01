@@ -89,6 +89,7 @@ resource acrPrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 
 resource vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   name: 'vnetlink'
+  location: 'Global'
   parent: acrPrivateDNSZone
   properties: {
     virtualNetwork: {
