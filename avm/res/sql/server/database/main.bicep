@@ -41,7 +41,7 @@ param maxSizeBytes int = 34359738368
 param sampleName string = ''
 
 @description('Optional. Whether or not this database is zone redundant.')
-param zoneRedundant bool = false
+param zoneRedundant bool = true
 
 @description('Optional. The license type to apply for this database.')
 param licenseType string = ''
