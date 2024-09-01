@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module with most of its featur
 param resourceGroupName string = 'dep-${namePrefix}-devopsrunners-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+param resourceLocation string = 'westus2'
 
 @description('Required. The name of the Azure DevOps agents pool.')
 param agentsPoolName string = 'aca'
@@ -73,7 +73,7 @@ module testDeployment '../../../main.bicep' = {
     namingPrefix: namePrefix
     location: resourceLocation
     computeTypes: [
-      'azure-container-instance'
+      'azure-container-app'
     ]
     selfHostedConfig: {
       agentsPoolName: agentsPoolName

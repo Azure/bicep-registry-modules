@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module with the minimum set of
 param resourceGroupName string = 'dep-${namePrefix}-githubRunner-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+param resourceLocation string = 'eastus'
 
 @description('Required. The name of the GitHub organization.')
 param githubOrganization string = 'githHubOrganization'

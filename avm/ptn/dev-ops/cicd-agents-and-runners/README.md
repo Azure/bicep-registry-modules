@@ -308,7 +308,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     }
     // Non-required parameters
     computeTypes: [
-      'azure-container-instance'
+      'azure-container-app'
     ]
     enableTelemetry: '<enableTelemetry>'
     location: '<location>'
@@ -362,7 +362,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     // Non-required parameters
     "computeTypes": {
       "value": [
-        "azure-container-instance"
+        "azure-container-app"
       ]
     },
     "enableTelemetry": {
