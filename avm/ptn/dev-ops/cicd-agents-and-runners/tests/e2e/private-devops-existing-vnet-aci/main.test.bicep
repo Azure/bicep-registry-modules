@@ -81,15 +81,15 @@ module testDeployment '../../../main.bicep' = {
       }
     }
     networkingConfiguration: {
-      networkType: 'UseExisting'
+      networkType: 'useExisting'
       virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
       containerRegistryPrivateDnsZoneId: nestedDependencies.outputs.acrPrivateDNSZoneResourceId
       natGatewayPublicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceId
       natGatewayResourceId: nestedDependencies.outputs.natGatewayResourceId
       computeNetworking: {
+        computeNetworkType: 'azureContainerInstance'
         containerInstanceSubnetName: 'aci-subnet'
-        networkType: 'azureContainerInstance'
       }
     }
     enableTelemetry: enableTelemetry

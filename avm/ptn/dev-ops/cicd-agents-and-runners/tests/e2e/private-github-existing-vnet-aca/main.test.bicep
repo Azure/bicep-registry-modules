@@ -77,7 +77,7 @@ module testDeployment '../../../main.bicep' = {
       selfHostedType: 'github'
     }
     networkingConfiguration: {
-      networkType: 'UseExisting'
+      networkType: 'useExisting'
       virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
       containerRegistryPrivateDnsZoneId: nestedDependencies.outputs.acrPrivateDNSZoneId
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
@@ -87,7 +87,7 @@ module testDeployment '../../../main.bicep' = {
         containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
         containerAppSubnetName: 'aca-subnet'
         deploymentScriptPrivateDnsZoneId: nestedDependencies.outputs.deploymentScriptPrivateDNSZoneId
-        networkType: 'azureContainerApp'
+        computeNetworkType: 'azureContainerApp'
       }
     }
     enableTelemetry: enableTelemetry

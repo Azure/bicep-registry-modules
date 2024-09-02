@@ -611,14 +611,14 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
       computeNetworking: {
+        computeNetworkType: 'azureContainerInstance'
         containerInstanceSubnetName: 'aci-subnet'
-        natGatewayPublicIpAddressResourceId: '<natGatewayPublicIpAddressResourceId>'
-        natGatewayResourceId: '<natGatewayResourceId>'
-        networkType: 'azureContainerInstance'
       }
       containerRegistryPrivateDnsZoneId: '<containerRegistryPrivateDnsZoneId>'
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
-      networkType: 'UseExisting'
+      natGatewayPublicIpAddressResourceId: '<natGatewayPublicIpAddressResourceId>'
+      natGatewayResourceId: '<natGatewayResourceId>'
+      networkType: 'useExisting'
       virtualNetworkResourceId: '<virtualNetworkResourceId>'
     }
     selfHostedConfig: {
@@ -663,14 +663,14 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     "networkingConfiguration": {
       "value": {
         "computeNetworking": {
-          "containerInstanceSubnetName": "aci-subnet",
-          "natGatewayPublicIpAddressResourceId": "<natGatewayPublicIpAddressResourceId>",
-          "natGatewayResourceId": "<natGatewayResourceId>",
-          "networkType": "azureContainerInstance"
+          "computeNetworkType": "azureContainerInstance",
+          "containerInstanceSubnetName": "aci-subnet"
         },
         "containerRegistryPrivateDnsZoneId": "<containerRegistryPrivateDnsZoneId>",
         "containerRegistryPrivateEndpointSubnetName": "acr-subnet",
-        "networkType": "UseExisting",
+        "natGatewayPublicIpAddressResourceId": "<natGatewayPublicIpAddressResourceId>",
+        "natGatewayResourceId": "<natGatewayResourceId>",
+        "networkType": "useExisting",
         "virtualNetworkResourceId": "<virtualNetworkResourceId>"
       }
     },
@@ -723,14 +723,16 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
       computeNetworking: {
+        computeNetworkType: 'azureContainerApp'
         containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
         containerAppSubnetName: 'aca-subnet'
         deploymentScriptPrivateDnsZoneId: '<deploymentScriptPrivateDnsZoneId>'
-        networkType: 'azureContainerApp'
       }
       containerRegistryPrivateDnsZoneId: '<containerRegistryPrivateDnsZoneId>'
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
-      networkType: 'UseExisting'
+      natGatewayPublicIpAddressResourceId: '<natGatewayPublicIpAddressResourceId>'
+      natGatewayResourceId: '<natGatewayResourceId>'
+      networkType: 'useExisting'
       virtualNetworkResourceId: '<virtualNetworkResourceId>'
     }
     selfHostedConfig: {
@@ -771,14 +773,16 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     "networkingConfiguration": {
       "value": {
         "computeNetworking": {
+          "computeNetworkType": "azureContainerApp",
           "containerAppDeploymentScriptSubnetName": "aca-ds-subnet",
           "containerAppSubnetName": "aca-subnet",
-          "deploymentScriptPrivateDnsZoneId": "<deploymentScriptPrivateDnsZoneId>",
-          "networkType": "azureContainerApp"
+          "deploymentScriptPrivateDnsZoneId": "<deploymentScriptPrivateDnsZoneId>"
         },
         "containerRegistryPrivateDnsZoneId": "<containerRegistryPrivateDnsZoneId>",
         "containerRegistryPrivateEndpointSubnetName": "acr-subnet",
-        "networkType": "UseExisting",
+        "natGatewayPublicIpAddressResourceId": "<natGatewayPublicIpAddressResourceId>",
+        "natGatewayResourceId": "<natGatewayResourceId>",
+        "networkType": "useExisting",
         "virtualNetworkResourceId": "<virtualNetworkResourceId>"
       }
     },
