@@ -62,7 +62,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 module testDeployment '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-dep-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   scope: resourceGroup
   params: {
     namingPrefix: namePrefix
