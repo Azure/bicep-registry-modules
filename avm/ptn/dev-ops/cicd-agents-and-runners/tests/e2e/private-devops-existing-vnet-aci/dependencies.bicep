@@ -61,12 +61,12 @@ resource natGateway 'Microsoft.Network/natGateways@2024-01-01' = {
 
 resource acrPrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: 'privatelink.azurecr.io'
-  location: 'Global'
+  location: 'global'
 }
 
 resource vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  name: 'vnetlink'
-  location: 'Global'
+  name: 'vnetlink-${namePrefix}'
+  location: location
   parent: acrPrivateDNSZone
   properties: {
     virtualNetwork: {

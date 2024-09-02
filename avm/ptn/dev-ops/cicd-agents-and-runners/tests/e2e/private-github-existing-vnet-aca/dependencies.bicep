@@ -84,17 +84,17 @@ resource natGateway 'Microsoft.Network/natGateways@2024-01-01' = {
 
 resource acrPrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: 'privatelink.azurecr.io'
-  location: 'Global'
+  location: 'global'
 }
 
 resource deploymentScriptPrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: 'privatelink.file.${environment().suffixes.storage}'
-  location: 'Global'
+  location: 'global'
 }
 
 resource acrVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   name: 'acrVnetlink-${namePrefix}'
-  location: 'Global'
+  location: location
   parent: acrPrivateDNSZone
   properties: {
     virtualNetwork: {
@@ -105,7 +105,7 @@ resource acrVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020
 
 resource dsVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   name: 'vnetlink-${namePrefix}'
-  location: 'Global'
+  location: location
   parent: deploymentScriptPrivateDNSZone
   properties: {
     virtualNetwork: {
