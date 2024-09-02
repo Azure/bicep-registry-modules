@@ -81,6 +81,20 @@ module testDeployment '../../../main.bicep' = {
         ]
       }
     ]
+    validationProcess: {
+      continueDistributeOnFailure: true
+      sourceValidationOnly: false
+      inVMValidations: [
+        {
+          type: 'Shell'
+          name: 'Validate-Software'
+          inline: [
+            'echo "Software validation successful."'
+          ]
+        }
+      ]
+    }
+    optimizeVmBoot: 'Enabled'
     imageSource: {
       type: 'PlatformImage'
       publisher: 'canonical'

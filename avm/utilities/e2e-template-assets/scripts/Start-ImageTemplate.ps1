@@ -44,16 +44,22 @@ begin {
     $currentVerbosePreference = $VerbosePreference
     $VerbosePreference = 'SilentlyContinue'
     $requiredModules = @(
-        'Az.ImageBuilder'
+        @{ Name = 'Az.ImageBuilder'; Version = '0.4.0' }
     )
-    foreach ($moduleName in $requiredModules) {
-        if (-not ($installedModule = Get-Module $moduleName -ListAvailable)) {
-            Install-Module $moduleName -Repository 'PSGallery' -Force -Scope 'CurrentUser'
-            if ($installed = Get-Module -Name $moduleName -ListAvailable) {
-                Write-Verbose ('Installed module [{0}] with version [{1}]' -f $installed.Name, $installed.Version) -Verbose
-            }
-        } else {
-            Write-Verbose ('Module [{0}] already installed in version [{1}]' -f $installedModule[0].Name, $installedModule[0].Version) -Verbose
+    foreach ($module in $requiredModules) {
+        $installationInput = @{
+            Name       = $module.Name
+            Repository = 'PSGallery'
+            Scope      = 'CurrentUser'
+            Force      = $true
+        }
+        if ($Module.Version) {
+            $installationInput['RequiredVersion'] = $module.Version
+        }
+        Install-Module @installationInput
+
+        if ($installed = Get-Module -Name $module.Name -ListAvailable) {
+            Write-Verbose ('Installed module [{0}] with version [{1}]' -f $installed.Name, $installed.Version) -Verbose
         }
     }
     $VerbosePreference = $currentVerbosePreference

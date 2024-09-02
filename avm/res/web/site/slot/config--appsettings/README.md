@@ -23,7 +23,7 @@ This module deploys a Site Slot App Setting.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-kind) | string | Type of slot to deploy. |
+| [`kind`](#parameter-kind) | string | Type of site to deploy. |
 | [`slotName`](#parameter-slotname) | string | Slot name to be configured. |
 
 **Conditional parameters**
@@ -43,19 +43,24 @@ This module deploys a Site Slot App Setting.
 
 ### Parameter: `kind`
 
-Type of slot to deploy.
+Type of site to deploy.
 
 - Required: Yes
 - Type: string
 - Allowed:
   ```Bicep
   [
+    'api'
     'app'
+    'app,container,windows'
     'app,linux'
+    'app,linux,container'
     'functionapp'
     'functionapp,linux'
+    'functionapp,linux,container'
     'functionapp,workflowapp'
     'functionapp,workflowapp,linux'
+    'linux,api'
   ]
   ```
 

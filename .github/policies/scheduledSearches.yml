@@ -38,9 +38,6 @@ configuration:
                 > [!TIP]
                 > - To prevent further actions to take effect, the "Status: Response Overdue 🚩" label must be removed, once this issue has been responded to.
                 > - To avoid this rule being (re)triggered, the ""Needs: Triage :mag:" label must be removed as part of the triage process (when the issue is first responded to)!
-
-                > [!NOTE]
-                > This message was posted as per [ITA01BCP](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita01bcp1-2).
           - addLabel:
               label: "Status: Response Overdue :triangular_flag_on_post:"
 
@@ -72,9 +69,6 @@ configuration:
                 > [!TIP]
                 > - To prevent further actions to take effect, the "Status: Response Overdue 🚩" label must be removed, once this issue has been responded to.
                 > - To avoid this rule being (re)triggered, the ""Needs: Triage :mag:" label must be removed as part of the triage process (when the issue is first responded to)!
-
-                > [!NOTE]
-                > This message was posted as per [ITA01BCP](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita01bcp1-2).
           - addLabel:
               label: "Status: Response Overdue :triangular_flag_on_post:"
 
@@ -109,9 +103,6 @@ configuration:
                 > [!TIP]
                 > - To avoid this rule being (re)triggered, the "Needs: Triage :mag:" and "Status: Response Overdue :triangular_flag_on_post:" labels must be removed when the issue is first responded to!
                 > - Remove the "Needs: Immediate Attention :bangbang:" label once the issue has been responded to.
-
-                > [!NOTE]
-                > This message was posted as per [ITA02BCP](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita02bcp1-2).
           - addLabel:
               label: "Needs: Immediate Attention :bangbang:"
 
@@ -143,9 +134,6 @@ configuration:
                 > [!TIP]
                 > - To avoid this rule being (re)triggered, the "Needs: Triage :mag:" and "Status: Response Overdue :triangular_flag_on_post:" labels must be removed when the issue is first responded to!
                 > - Remove the "Needs: Immediate Attention :bangbang:" label once the issue has been responded to.
-
-                > [!NOTE]
-                > This message was posted as per [ITA02BCP](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita02bcp1-2).
           - addLabel:
               label: "Needs: Immediate Attention :bangbang:"
 
@@ -190,9 +178,6 @@ configuration:
                 > [!TIP]
                 > - To avoid this rule being (re)triggered, the "Needs: Triage :mag:" and "Status: Response Overdue :triangular_flag_on_post:" labels must be removed when the issue is first responded to!
                 > - Remove the "Needs: Immediate Attention :bangbang:" label once the issue has been responded to.
-
-                > [!NOTE]
-                > This message was posted as per [ITA03BCP](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita03bcp).
           - addLabel:
               label: "Needs: Immediate Attention :bangbang:"
 
@@ -223,9 +208,6 @@ configuration:
                 >   - The "Status: No Recent Activity :zzz:" label must be removed.
                 >   - If applicable, the "Status: Long Term :hourglass_flowing_sand:" or the "Needs: Module Owner :mega:" label must be added.
 
-                > [!NOTE]
-                > This message was posted as per [ITA04](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita04).
-
       - description: 'ITA05A - Close issues that have been marked as requiring author feedback but have not had any activity for 3 days, unless it''s been marked with the "Status long term" label.'
         frequencies:
           - hourly:
@@ -249,9 +231,6 @@ configuration:
 
                 > [!TIP]
                 > In case this issue needs to be reopened (e.g., the author responds after the issue was closed), the "Status: No Recent Activity :zzz:" label must be removed.
-
-                > [!NOTE]
-                > This message was posted as per [ITA05](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita05).
           - closeIssue
 
       - description: 'ITA05B - Close issues that have been marked as requiring author feedback but have not had any activity for 3 days, unless it''s been marked with the "Status long term" label.'
@@ -277,7 +256,4 @@ configuration:
 
                 > [!TIP]
                 > In case this issue needs to be reopened (e.g., the author responds after the issue was closed), the "Status: No Recent Activity :zzz:" label must be removed.
-
-                > [!NOTE]
-                > This message was posted as per [ITA05](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita05).
           - closeIssue

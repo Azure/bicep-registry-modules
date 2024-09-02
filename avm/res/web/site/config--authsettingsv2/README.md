@@ -47,12 +47,17 @@ Type of site to deploy.
 - Allowed:
   ```Bicep
   [
+    'api'
     'app'
+    'app,container,windows'
     'app,linux'
+    'app,linux,container'
     'functionapp'
     'functionapp,linux'
+    'functionapp,linux,container'
     'functionapp,workflowapp'
     'functionapp,workflowapp,linux'
+    'linux,api'
   ]
   ```
 

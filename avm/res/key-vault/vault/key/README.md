@@ -42,6 +42,7 @@ This module deploys a Key Vault Key.
 | [`keyOps`](#parameter-keyops) | array | Array of JsonWebKeyOperation. |
 | [`keySize`](#parameter-keysize) | int | The key size in bits. For example: 2048, 3072, or 4096 for RSA. |
 | [`kty`](#parameter-kty) | string | The type of the key. |
+| [`releasePolicy`](#parameter-releasepolicy) | object | Key release policy. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`rotationPolicy`](#parameter-rotationpolicy) | object | Key rotation policy properties object. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
@@ -141,6 +142,13 @@ The type of the key.
     'RSA-HSM'
   ]
   ```
+
+### Parameter: `releasePolicy`
+
+Key release policy.
+
+- Required: No
+- Type: object
 
 ### Parameter: `roleAssignments`
 

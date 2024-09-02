@@ -11,9 +11,6 @@ metadata description = 'This instance deploys the module in multiple regions wit
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-documentdb.databaseaccounts-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'dddaumr'
 
@@ -21,6 +18,7 @@ param serviceShort string = 'dddaumr'
 param namePrefix string = '#_namePrefix_#'
 
 // Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
+#disable-next-line no-hardcoded-location
 var enforcedLocation = 'eastasia'
 
 // ============ //

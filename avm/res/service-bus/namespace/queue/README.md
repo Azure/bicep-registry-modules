@@ -77,21 +77,7 @@ Authorization Rules for the Service Bus Queue.
 
 - Required: No
 - Type: array
-- Default:
-  ```Bicep
-  [
-    {
-      name: 'RootManageSharedAccessKey'
-      properties: {
-        rights: [
-          'Listen'
-          'Manage'
-          'Send'
-        ]
-      }
-    }
-  ]
-  ```
+- Default: `[]`
 
 ### Parameter: `autoDeleteOnIdle`
 

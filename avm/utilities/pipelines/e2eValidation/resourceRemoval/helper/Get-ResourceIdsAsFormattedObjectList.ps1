@@ -36,11 +36,17 @@ function Get-ResourceIdsAsFormattedObjectList {
 
         switch ($idElements.Count) {
             { $PSItem -eq 5 } {
-                if ($idElements[3] -eq 'managementGroups') {
+                if ($idElements[2] -eq 'Microsoft.Management' -and $idElements[3] -eq 'managementGroups') {
                     # management-group level management group (e.g. '/providers/Microsoft.Management/managementGroups/testMG')
                     $formattedResources += @{
                         resourceId = $resourceId
                         type       = $idElements[2, 3] -join '/'
+                    }
+                } elseif ($idElements[2] -eq 'Microsoft.Subscription' -and $idElements[3] -eq 'aliases') {
+                    # management-group level subscription alias (e.g., '/providers/Microsoft.Subscription/aliases/testSub')
+                    $formattedResources += @{
+                        resourceId = $resourceId
+                        type       = 'Microsoft.Subscription/aliases'
                     }
                 } else {
                     # subscription level resource group (e.g. '/subscriptions/<subId>/resourceGroups/myRG')
@@ -72,7 +78,7 @@ function Get-ResourceIdsAsFormattedObjectList {
                         $allResourceGroupResources = Get-AzResource -ResourceGroupName $resourceGroupName -Name '*'
                     }
                     $expandedResources = $allResourceGroupResources | Where-Object { $_.ResourceId.startswith($resourceId) }
-                    $expandedResources = $expandedResources | Sort-Object -Descending -Property { $_.ResourceId.Split('/').Count }
+                    $expandedResources = $expandedResources | Sort-Object -Culture 'en-US' -Descending -Property { $_.ResourceId.Split('/').Count }
                     foreach ($resource in $expandedResources) {
                         $formattedResources += @{
                             resourceId = $resource.ResourceId

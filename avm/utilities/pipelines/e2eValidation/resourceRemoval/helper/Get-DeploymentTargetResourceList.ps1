@@ -58,6 +58,7 @@ function Get-DeploymentTargetResourceListInner {
     )
 
     $resultSet = [System.Collections.ArrayList]@()
+    $currentContext = Get-AzContext
 
     ##############################################
     # Get all deployment children based on scope #
@@ -65,24 +66,24 @@ function Get-DeploymentTargetResourceListInner {
     switch ($Scope) {
         'resourcegroup' {
             if (Get-AzResourceGroup -Name $resourceGroupName -ErrorAction 'SilentlyContinue') {
-                [array]$deploymentTargets = (Get-AzResourceGroupDeploymentOperation -DeploymentName $name -ResourceGroupName $resourceGroupName).TargetResource | Where-Object { $_ -ne $null }
+                [array]$deploymentTargets = (Get-AzResourceGroupDeploymentOperation -DeploymentName $name -ResourceGroupName $resourceGroupName).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
             } else {
                 # In case the resource group itself was already deleted, there is no need to try and fetch deployments from it
                 # In case we already have any such resources in the list, we should remove them
-                [array]$resultSet = $resultSet | Where-Object { $_ -notmatch "/resourceGroups/$resourceGroupName/" }
+                return $resultSet | Where-Object { $_ -notmatch "\/resourceGroups\/$resourceGroupName\/" } | Select-Object -Unique
             }
             break
         }
         'subscription' {
-            [array]$deploymentTargets = (Get-AzDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null }
+            [array]$deploymentTargets = (Get-AzDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
             break
         }
         'managementgroup' {
-            [array]$deploymentTargets = (Get-AzManagementGroupDeploymentOperation -DeploymentName $name -ManagementGroupId $ManagementGroupId).TargetResource | Where-Object { $_ -ne $null }
+            [array]$deploymentTargets = (Get-AzManagementGroupDeploymentOperation -DeploymentName $name -ManagementGroupId $ManagementGroupId).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
             break
         }
         'tenant' {
-            [array]$deploymentTargets = (Get-AzTenantDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null }
+            [array]$deploymentTargets = (Get-AzTenantDeploymentOperation -DeploymentName $name).TargetResource | Where-Object { $_ -ne $null } | Select-Object -Unique
             break
         }
     }
@@ -90,7 +91,7 @@ function Get-DeploymentTargetResourceListInner {
     ###########################
     # Manage nested resources #
     ###########################
-    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -notmatch '/deployments/' } )) {
+    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -notmatch '\/deployments\/' } )) {
         Write-Verbose ('Found deployed resource [{0}]' -f $deployment)
         [array]$resultSet += $deployment
     }
@@ -98,17 +99,29 @@ function Get-DeploymentTargetResourceListInner {
     #############################
     # Manage nested deployments #
     #############################
-    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -match '/deployments/' } )) {
+    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -match '\/deployments\/' } )) {
         $name = Split-Path $deployment -Leaf
         if ($deployment -match '/resourceGroups/') {
             # Resource Group Level Child Deployments #
             ##########################################
+            if ($deployment -match '^\/subscriptions\/([0-9a-zA-Z-]+?)\/') {
+                $subscriptionId = $Matches[1]
+                if ($currentContext.Subscription.Id -ne $subscriptionId) {
+                    $null = Set-AzContext -Subscription $subscriptionId
+                }
+            }
             Write-Verbose ('Found [resource group] deployment [{0}]' -f $deployment)
             $resourceGroupName = $deployment.split('/resourceGroups/')[1].Split('/')[0]
             [array]$resultSet += Get-DeploymentTargetResourceListInner -Name $name -Scope 'resourcegroup' -ResourceGroupName $ResourceGroupName
         } elseif ($deployment -match '/subscriptions/') {
             # Subscription Level Child Deployments #
             ########################################
+            if ($deployment -match '^\/subscriptions\/([0-9a-zA-Z-]+?)\/') {
+                $subscriptionId = $Matches[1]
+                if ($currentContext.Subscription.Id -ne $subscriptionId) {
+                    $null = Set-AzContext -Subscription $subscriptionId
+                }
+            }
             Write-Verbose ('Found [subscription] deployment [{0}]' -f $deployment)
             [array]$resultSet += Get-DeploymentTargetResourceListInner -Name $name -Scope 'subscription'
         } elseif ($deployment -match '/managementgroups/') {
@@ -124,7 +137,7 @@ function Get-DeploymentTargetResourceListInner {
         }
     }
 
-    return $resultSet
+    return $resultSet | Select-Object -Unique
 }
 #endregion
 
@@ -175,7 +188,8 @@ function Get-DeploymentTargetResourceList {
         [string] $ManagementGroupId,
 
         [Parameter(Mandatory = $true)]
-        [string] $Name,
+        [Alias('Name', 'Names', 'DeploymentName')]
+        [string[]] $DeploymentNames,
 
         [Parameter(Mandatory = $true)]
         [ValidateSet(
@@ -194,31 +208,57 @@ function Get-DeploymentTargetResourceList {
     )
 
     $searchRetryCount = 1
+    $resourcesToRemove = @()
+    $deploymentNameObjects = $DeploymentNames | ForEach-Object {
+        @{
+            Name     = $_
+            Resolved = $false
+        }
+    }
+
     do {
-        $innerInputObject = @{
-            Name        = $name
-            Scope       = $scope
-            ErrorAction = 'SilentlyContinue'
+        foreach ($deploymentNameObject in $deploymentNameObjects) {
+
+            if ($deploymentNameObject.Resolved) {
+                # Skip further invocations for this deployment name if deployment was already found
+                continue
+            }
+
+            $innerInputObject = @{
+                Name        = $deploymentNameObject.Name
+                Scope       = $scope
+                ErrorAction = 'SilentlyContinue'
+            }
+            if (-not [String]::IsNullOrEmpty($resourceGroupName)) {
+                $innerInputObject['resourceGroupName'] = $resourceGroupName
+            }
+            if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
+                $innerInputObject['ManagementGroupId'] = $ManagementGroupId
+            }
+
+            [array]$targetResources = Get-DeploymentTargetResourceListInner @innerInputObject
+            if ($targetResources.Count -gt 0) {
+                Write-Verbose ('Found & resolved deployment [{0}]' -f $deploymentNameObject.Name) -Verbose
+                $deploymentNameObject.Resolved = $true
+                $resourcesToRemove += $targetResources
+            }
         }
-        if (-not [String]::IsNullOrEmpty($resourceGroupName)) {
-            $innerInputObject['resourceGroupName'] = $resourceGroupName
-        }
-        if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
-            $innerInputObject['ManagementGroupId'] = $ManagementGroupId
-        }
-        [array]$targetResources = Get-DeploymentTargetResourceListInner @innerInputObject
-        if ($targetResources) {
+
+        # Break check
+        if ($deploymentNameObjects.Resolved -notcontains $false) {
             break
         }
-        Write-Verbose ('No deployment found by name [{0}] in scope [{1}]. Retrying in [{2}] seconds [{3}/{4}]' -f $name, $scope, $searchRetryInterval, $searchRetryCount, $searchRetryLimit) -Verbose
+
+        $remainingDeploymentNames = ($deploymentNameObjects | Where-Object { -not $_.Resolved }).Name
+        Write-Verbose ('No deployment found by name(s) [{0}] in scope [{1}]. Retrying in [{2}] seconds [{3}/{4}]' -f ($remainingDeploymentNames -join ', '), $scope, $searchRetryInterval, $searchRetryCount, $searchRetryLimit) -Verbose
         Start-Sleep $searchRetryInterval
         $searchRetryCount++
     } while ($searchRetryCount -le $searchRetryLimit)
 
-    if (-not $targetResources) {
-        Write-Warning "No deployment target resources found for [$name]"
+    if (-not $resourcesToRemove) {
+        Write-Warning ('No deployment target resources found for [{0}]' -f ($DeploymentNames -join ', '))
         return @()
     }
 
-    return $targetResources
+    return $resourcesToRemove
 }

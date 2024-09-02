@@ -157,24 +157,24 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.devtestlab-lab.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.devtestlab-lab.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource lab 'Microsoft.DevTestLab/labs@2018-10-15-preview' = {
   name: name
@@ -203,17 +203,16 @@ resource lab 'Microsoft.DevTestLab/labs@2018-10-15-preview' = {
   }
 }
 
-resource lab_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: lab
+resource lab_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: lab
+}
 
 module lab_virtualNetworks 'virtualnetwork/main.bicep' = [
   for (virtualNetwork, index) in virtualnetworks: {
@@ -309,50 +308,49 @@ module lab_artifactSources 'artifactsource/main.bicep' = [
   }
 ]
 
-module lab_costs 'cost/main.bicep' =
-  if (!empty(costs)) {
-    name: '${uniqueString(deployment().name, location)}-Lab-Costs'
-    params: {
-      labName: lab.name
-      tags: costs.?tags ?? tags
-      currencyCode: contains(costs, 'currencyCode') ? costs.currencyCode : 'USD'
-      cycleType: costs.cycleType
-      cycleStartDateTime: contains(costs, 'cycleStartDateTime') ? costs.cycleStartDateTime : ''
-      cycleEndDateTime: contains(costs, 'cycleEndDateTime') ? costs.cycleEndDateTime : ''
-      status: contains(costs, 'status') ? costs.status : 'Enabled'
-      target: contains(costs, 'target') ? costs.target : 0
-      thresholdValue25DisplayOnChart: contains(costs, 'thresholdValue25DisplayOnChart')
-        ? costs.thresholdValue25DisplayOnChart
-        : 'Disabled'
-      thresholdValue25SendNotificationWhenExceeded: contains(costs, 'thresholdValue25SendNotificationWhenExceeded')
-        ? costs.thresholdValue25SendNotificationWhenExceeded
-        : 'Disabled'
-      thresholdValue50DisplayOnChart: contains(costs, 'thresholdValue50DisplayOnChart')
-        ? costs.thresholdValue50DisplayOnChart
-        : 'Disabled'
-      thresholdValue50SendNotificationWhenExceeded: contains(costs, 'thresholdValue50SendNotificationWhenExceeded')
-        ? costs.thresholdValue50SendNotificationWhenExceeded
-        : 'Disabled'
-      thresholdValue75DisplayOnChart: contains(costs, 'thresholdValue75DisplayOnChart')
-        ? costs.thresholdValue75DisplayOnChart
-        : 'Disabled'
-      thresholdValue75SendNotificationWhenExceeded: contains(costs, 'thresholdValue75SendNotificationWhenExceeded')
-        ? costs.thresholdValue75SendNotificationWhenExceeded
-        : 'Disabled'
-      thresholdValue100DisplayOnChart: contains(costs, 'thresholdValue100DisplayOnChart')
-        ? costs.thresholdValue100DisplayOnChart
-        : 'Disabled'
-      thresholdValue100SendNotificationWhenExceeded: contains(costs, 'thresholdValue100SendNotificationWhenExceeded')
-        ? costs.thresholdValue100SendNotificationWhenExceeded
-        : 'Disabled'
-      thresholdValue125DisplayOnChart: contains(costs, 'thresholdValue125DisplayOnChart')
-        ? costs.thresholdValue125DisplayOnChart
-        : 'Disabled'
-      thresholdValue125SendNotificationWhenExceeded: contains(costs, 'thresholdValue125SendNotificationWhenExceeded')
-        ? costs.thresholdValue125SendNotificationWhenExceeded
-        : 'Disabled'
-    }
+module lab_costs 'cost/main.bicep' = if (!empty(costs)) {
+  name: '${uniqueString(deployment().name, location)}-Lab-Costs'
+  params: {
+    labName: lab.name
+    tags: costs.?tags ?? tags
+    currencyCode: contains(costs, 'currencyCode') ? costs.currencyCode : 'USD'
+    cycleType: costs.cycleType
+    cycleStartDateTime: contains(costs, 'cycleStartDateTime') ? costs.cycleStartDateTime : ''
+    cycleEndDateTime: contains(costs, 'cycleEndDateTime') ? costs.cycleEndDateTime : ''
+    status: contains(costs, 'status') ? costs.status : 'Enabled'
+    target: contains(costs, 'target') ? costs.target : 0
+    thresholdValue25DisplayOnChart: contains(costs, 'thresholdValue25DisplayOnChart')
+      ? costs.thresholdValue25DisplayOnChart
+      : 'Disabled'
+    thresholdValue25SendNotificationWhenExceeded: contains(costs, 'thresholdValue25SendNotificationWhenExceeded')
+      ? costs.thresholdValue25SendNotificationWhenExceeded
+      : 'Disabled'
+    thresholdValue50DisplayOnChart: contains(costs, 'thresholdValue50DisplayOnChart')
+      ? costs.thresholdValue50DisplayOnChart
+      : 'Disabled'
+    thresholdValue50SendNotificationWhenExceeded: contains(costs, 'thresholdValue50SendNotificationWhenExceeded')
+      ? costs.thresholdValue50SendNotificationWhenExceeded
+      : 'Disabled'
+    thresholdValue75DisplayOnChart: contains(costs, 'thresholdValue75DisplayOnChart')
+      ? costs.thresholdValue75DisplayOnChart
+      : 'Disabled'
+    thresholdValue75SendNotificationWhenExceeded: contains(costs, 'thresholdValue75SendNotificationWhenExceeded')
+      ? costs.thresholdValue75SendNotificationWhenExceeded
+      : 'Disabled'
+    thresholdValue100DisplayOnChart: contains(costs, 'thresholdValue100DisplayOnChart')
+      ? costs.thresholdValue100DisplayOnChart
+      : 'Disabled'
+    thresholdValue100SendNotificationWhenExceeded: contains(costs, 'thresholdValue100SendNotificationWhenExceeded')
+      ? costs.thresholdValue100SendNotificationWhenExceeded
+      : 'Disabled'
+    thresholdValue125DisplayOnChart: contains(costs, 'thresholdValue125DisplayOnChart')
+      ? costs.thresholdValue125DisplayOnChart
+      : 'Disabled'
+    thresholdValue125SendNotificationWhenExceeded: contains(costs, 'thresholdValue125SendNotificationWhenExceeded')
+      ? costs.thresholdValue125SendNotificationWhenExceeded
+      : 'Disabled'
   }
+}
 
 resource lab_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {

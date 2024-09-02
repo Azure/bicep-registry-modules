@@ -28,7 +28,7 @@ param subscriptionId string = '#_subscriptionId_#'
 
 // General resources
 // =================
-module resourceGroupDeploy 'br/public:avm/res/resources/resource-group:0.2.3' ={
+module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
   scope: subscription('${subscriptionId}')
   name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
   params: {
@@ -51,7 +51,7 @@ module testDeployment '../../../main.bicep' = {
       assignedBy: 'Bicep'
     }
     location: resourceLocation
-    resourceGroupName: resourceGroupDeploy.outputs.name
+    resourceGroupName: resourceGroup.outputs.name
     subscriptionId: subscriptionId
   }
 }

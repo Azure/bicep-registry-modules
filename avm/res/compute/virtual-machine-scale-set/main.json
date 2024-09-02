@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "15325819648954627762"
+      "version": "0.28.1.47646",
+      "templateHash": "11113445400377232616"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -332,7 +332,6 @@
     },
     "nicConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
         "description": "Required. Configures NICs and PIPs."
       }
@@ -357,8 +356,8 @@
       }
     },
     "maxPriceForLowPriorityVm": {
-      "type": "string",
-      "defaultValue": "",
+      "type": "int",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars."
       }
@@ -383,7 +382,7 @@
       }
     },
     "extensionDomainJoinConfig": {
-      "type": "object",
+      "type": "secureObject",
       "defaultValue": {
         "enabled": false
       },
@@ -409,7 +408,7 @@
         "description": "Optional. The configuration for the [Monitoring Agent] extension. Must at least contain the [\"enabled\": true] property to be executed."
       }
     },
-    "monitoringWorkspaceId": {
+    "monitoringWorkspaceResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -441,6 +440,20 @@
       },
       "metadata": {
         "description": "Optional. The configuration for the [Azure Disk Encryption] extension. Must at least contain the [\"enabled\": true] property to be executed. Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys."
+      }
+    },
+    "extensionHealthConfig": {
+      "type": "object",
+      "defaultValue": {
+        "enabled": true,
+        "settings": {
+          "protocol": "http",
+          "port": 80,
+          "requestPath": "/"
+        }
+      },
+      "metadata": {
+        "description": "Optional. Turned on by default. The configuration for the [Application Health Monitoring] extension. Must at least contain the [\"enabled\": true] property to be executed."
       }
     },
     "extensionDSCConfig": {
@@ -500,6 +513,34 @@
         "description": "Optional. Specifies the mode of an upgrade to virtual machines in the scale set.' Manual - You control the application of updates to virtual machines in the scale set. You do this by using the manualUpgrade action. ; Automatic - All virtual machines in the scale set are automatically updated at the same time. - Automatic, Manual, Rolling."
       }
     },
+    "enableCrossZoneUpgrade": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Allow VMSS to ignore AZ boundaries when constructing upgrade batches. Take into consideration the Update Domain and maxBatchInstancePercent to determine the batch size."
+      }
+    },
+    "maxSurge": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Create new virtual machines to upgrade the scale set, rather than updating the existing virtual machines. Existing virtual machines will be deleted once the new virtual machines are created for each batch."
+      }
+    },
+    "prioritizeUnhealthyInstances": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Upgrade all unhealthy instances in a scale set before any healthy instances."
+      }
+    },
+    "rollbackFailedInstancesOnPolicyBreach": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Rollback failed instances to previous model if the Rolling Upgrade policy is violated."
+      }
+    },
     "maxBatchInstancePercent": {
       "type": "int",
       "defaultValue": 20,
@@ -544,7 +585,7 @@
     },
     "automaticRepairsPolicyEnabled": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Specifies whether automatic repairs should be enabled on the virtual machine scale set."
       }
@@ -565,6 +606,17 @@
         "description": "Optional. Specifies the computer name prefix for all of the virtual machines in the scale set."
       }
     },
+    "orchestrationMode": {
+      "type": "string",
+      "defaultValue": "Flexible",
+      "allowedValues": [
+        "Flexible",
+        "Uniform"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the orchestration mode for the virtual machine scale set."
+      }
+    },
     "provisionVMAgent": {
       "type": "bool",
       "defaultValue": true,
@@ -577,6 +629,51 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning."
+      }
+    },
+    "patchMode": {
+      "type": "string",
+      "defaultValue": "AutomaticByPlatform",
+      "allowedValues": [
+        "AutomaticByPlatform",
+        "AutomaticByOS",
+        "Manual",
+        "ImageDefault",
+        ""
+      ],
+      "metadata": {
+        "description": "Optional. VM guest patching orchestration mode. 'AutomaticByOS' & 'Manual' are for Windows only, 'ImageDefault' for Linux only. Refer to 'https://learn.microsoft.com/en-us/azure/virtual-machines/automatic-vm-guest-patching'."
+      }
+    },
+    "bypassPlatformSafetyChecksOnUserSchedule": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enables customer to schedule patching without accidental upgrades."
+      }
+    },
+    "rebootSetting": {
+      "type": "string",
+      "defaultValue": "IfRequired",
+      "allowedValues": [
+        "Always",
+        "IfRequired",
+        "Never",
+        "Unknown"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the reboot setting for all AutomaticByPlatform patch installation operations."
+      }
+    },
+    "patchAssessmentMode": {
+      "type": "string",
+      "defaultValue": "ImageDefault",
+      "allowedValues": [
+        "AutomaticByPlatform",
+        "ImageDefault"
+      ],
+      "metadata": {
+        "description": "Optional. VM guest patching assessment mode. Set it to 'AutomaticByPlatform' to enable automatically check for updates every 24 hours."
       }
     },
     "timeZone": {
@@ -752,11 +849,13 @@
       "ssh": {
         "publicKeys": "[variables('publicKeysFormatted')]"
       },
-      "provisionVMAgent": "[parameters('provisionVMAgent')]"
+      "provisionVMAgent": "[parameters('provisionVMAgent')]",
+      "patchSettings": "[if(and(parameters('provisionVMAgent'), or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('ImageDefault')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode'), 'automaticByPlatformSettings', if(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), createObject('bypassPlatformSafetyChecksOnUserSchedule', parameters('bypassPlatformSafetyChecksOnUserSchedule'), 'rebootSetting', parameters('rebootSetting')), null())), null())]"
     },
     "windowsConfiguration": {
       "provisionVMAgent": "[parameters('provisionVMAgent')]",
       "enableAutomaticUpdates": "[parameters('enableAutomaticUpdates')]",
+      "patchSettings": "[if(and(parameters('provisionVMAgent'), or(or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('AutomaticByOS'))), equals(toLower(parameters('patchMode')), toLower('Manual')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode'), 'automaticByPlatformSettings', if(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), createObject('bypassPlatformSafetyChecksOnUserSchedule', parameters('bypassPlatformSafetyChecksOnUserSchedule'), 'rebootSetting', parameters('rebootSetting')), null())), null())]",
       "timeZone": "[if(empty(parameters('timeZone')), null(), parameters('timeZone'))]",
       "additionalUnattendContent": "[if(empty(parameters('additionalUnattendContent')), null(), parameters('additionalUnattendContent'))]",
       "winRM": "[if(not(empty(parameters('winRM'))), createObject('listeners', parameters('winRM')), null())]"
@@ -769,8 +868,7 @@
       "signedProtocol": "https"
     },
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-    "enableReferencedModulesTelemetry": false,
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Data Operator for Managed Disks": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '959f8984-c045-4866-89c7-12bf9737be2e')]",
@@ -796,7 +894,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.compute-virtualmachinescaleset.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -815,22 +913,18 @@
     },
     "vmss": {
       "type": "Microsoft.Compute/virtualMachineScaleSets",
-      "apiVersion": "2022-11-01",
+      "apiVersion": "2023-09-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "zones": "[parameters('availabilityZones')]",
       "properties": {
+        "orchestrationMode": "[parameters('orchestrationMode')]",
         "proximityPlacementGroup": "[if(not(empty(parameters('proximityPlacementGroupResourceId'))), createObject('id', parameters('proximityPlacementGroupResourceId')), null())]",
         "upgradePolicy": {
           "mode": "[parameters('upgradePolicyMode')]",
-          "rollingUpgradePolicy": {
-            "maxBatchInstancePercent": "[parameters('maxBatchInstancePercent')]",
-            "maxUnhealthyInstancePercent": "[parameters('maxUnhealthyInstancePercent')]",
-            "maxUnhealthyUpgradedInstancePercent": "[parameters('maxUnhealthyUpgradedInstancePercent')]",
-            "pauseTimeBetweenBatches": "[parameters('pauseTimeBetweenBatches')]"
-          },
+          "rollingUpgradePolicy": "[if(equals(parameters('upgradePolicyMode'), 'Rolling'), createObject('enableCrossZoneUpgrade', parameters('enableCrossZoneUpgrade'), 'maxBatchInstancePercent', parameters('maxBatchInstancePercent'), 'maxSurge', parameters('maxSurge'), 'maxUnhealthyInstancePercent', parameters('maxUnhealthyInstancePercent'), 'maxUnhealthyUpgradedInstancePercent', parameters('maxUnhealthyUpgradedInstancePercent'), 'pauseTimeBetweenBatches', parameters('pauseTimeBetweenBatches'), 'prioritizeUnhealthyInstances', parameters('prioritizeUnhealthyInstances'), 'rollbackFailedInstancesOnPolicyBreach', parameters('rollbackFailedInstancesOnPolicyBreach')), null())]",
           "automaticOSUpgradePolicy": {
             "enableAutomaticOSUpgrade": "[parameters('enableAutomaticOSUpgrade')]",
             "disableAutomaticRollback": "[parameters('disableAutomaticRollback')]"
@@ -906,7 +1000,8 @@
                   }
                 }
               }
-            ]
+            ],
+            "networkApiVersion": "[if(equals(parameters('orchestrationMode'), 'Flexible'), '2020-11-01', null())]"
           },
           "diagnosticsProfile": {
             "bootDiagnostics": {
@@ -914,14 +1009,15 @@
               "storageUri": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), format('https://{0}{1}', parameters('bootDiagnosticStorageAccountName'), parameters('bootDiagnosticStorageAccountUri')), null())]"
             }
           },
+          "extensionProfile": "[if(parameters('extensionHealthConfig').enabled, createObject('extensions', createArray(createObject('name', 'HealthExtension', 'properties', createObject('publisher', 'Microsoft.ManagedServices', 'type', if(equals(parameters('osType'), 'Windows'), 'ApplicationHealthWindows', 'ApplicationHealthLinux'), 'typeHandlerVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'typeHandlerVersion'), '1.0'), 'autoUpgradeMinorVersion', coalesce(tryGet(parameters('extensionHealthConfig'), 'autoUpgradeMinorVersion'), false()), 'settings', createObject('protocol', coalesce(tryGet(parameters('extensionHealthConfig'), 'protocol'), 'http'), 'port', coalesce(tryGet(parameters('extensionHealthConfig'), 'port'), 80), 'requestPath', coalesce(tryGet(parameters('extensionHealthConfig'), 'requestPath'), '/')))))), null())]",
           "licenseType": "[if(empty(parameters('licenseType')), null(), parameters('licenseType'))]",
           "priority": "[parameters('vmPriority')]",
           "evictionPolicy": "[if(parameters('enableEvictionPolicy'), 'Deallocate', null())]",
-          "billingProfile": "[if(and(not(empty(parameters('vmPriority'))), not(empty(parameters('maxPriceForLowPriorityVm')))), createObject('maxPrice', parameters('maxPriceForLowPriorityVm')), null())]",
+          "billingProfile": "[if(and(not(empty(parameters('vmPriority'))), not(equals(null(), parameters('maxPriceForLowPriorityVm')))), createObject('maxPrice', parameters('maxPriceForLowPriorityVm')), null())]",
           "scheduledEventsProfile": "[parameters('scheduledEventsProfile')]"
         },
-        "overprovision": "[parameters('overprovision')]",
-        "doNotRunExtensionsOnOverprovisionedVMs": "[parameters('doNotRunExtensionsOnOverprovisionedVMs')]",
+        "overprovision": "[if(equals(parameters('orchestrationMode'), 'Uniform'), parameters('overprovision'), null())]",
+        "doNotRunExtensionsOnOverprovisionedVMs": "[if(equals(parameters('orchestrationMode'), 'Uniform'), parameters('doNotRunExtensionsOnOverprovisionedVMs'), null())]",
         "zoneBalance": "[if(equals(parameters('zoneBalance'), 'true'), parameters('zoneBalance'), null())]",
         "platformFaultDomainCount": "[parameters('scaleSetFaultDomain')]",
         "singlePlacementGroup": "[parameters('singlePlacementGroup')]",
@@ -937,13 +1033,13 @@
       "plan": "[if(not(empty(parameters('plan'))), parameters('plan'), null())]"
     },
     "vmss_logAnalyticsWorkspace": {
-      "condition": "[not(empty(parameters('monitoringWorkspaceId')))]",
+      "condition": "[not(empty(parameters('monitoringWorkspaceResourceId')))]",
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
       "apiVersion": "2021-06-01",
-      "subscriptionId": "[split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '////'), '/')[4]]",
-      "name": "[last(split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), 'law'), '/'))]"
+      "subscriptionId": "[split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), '////'), '/')[4]]",
+      "name": "[last(split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), 'law'), '/'))]"
     },
     "vmss_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1054,8 +1150,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8948100547542268397"
+              "version": "0.28.1.47646",
+              "templateHash": "5793562007935023852"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1136,7 +1232,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
               "properties": {
                 "publisher": "[parameters('publisher')]",
@@ -1216,8 +1312,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8948100547542268397"
+              "version": "0.28.1.47646",
+              "templateHash": "5793562007935023852"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1298,7 +1394,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
               "properties": {
                 "publisher": "[parameters('publisher')]",
@@ -1369,13 +1465,13 @@
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionMonitoringAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionMonitoringAgentConfig').enableAutomaticUpgrade), createObject('value', false()))]",
           "settings": {
             "value": {
-              "workspaceId": "[if(not(empty(parameters('monitoringWorkspaceId'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '//'), '/')[2], split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '////'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), 'law'), '/'))), '2021-06-01').customerId, '')]",
+              "workspaceId": "[if(not(empty(parameters('monitoringWorkspaceResourceId'))), reference('vmss_logAnalyticsWorkspace').customerId, '')]",
               "GCS_AUTO_CONFIG": "[if(equals(parameters('osType'), 'Linux'), true(), null())]"
             }
           },
           "protectedSettings": {
             "value": {
-              "workspaceKey": "[if(not(empty(parameters('monitoringWorkspaceId'))), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '//'), '/')[2], split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '////'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), 'law'), '/'))), '2021-06-01').primarySharedKey, '')]"
+              "workspaceKey": "[if(not(empty(parameters('monitoringWorkspaceResourceId'))), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), '//'), '/')[2], split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), '////'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), 'law'), '/'))), '2021-06-01').primarySharedKey, '')]"
             }
           }
         },
@@ -1385,8 +1481,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8948100547542268397"
+              "version": "0.28.1.47646",
+              "templateHash": "5793562007935023852"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1467,7 +1563,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
               "properties": {
                 "publisher": "[parameters('publisher')]",
@@ -1544,8 +1640,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8948100547542268397"
+              "version": "0.28.1.47646",
+              "templateHash": "5793562007935023852"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1626,7 +1722,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
               "properties": {
                 "publisher": "[parameters('publisher')]",
@@ -1702,8 +1798,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8948100547542268397"
+              "version": "0.28.1.47646",
+              "templateHash": "5793562007935023852"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1784,7 +1880,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
               "properties": {
                 "publisher": "[parameters('publisher')]",
@@ -1864,8 +1960,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8948100547542268397"
+              "version": "0.28.1.47646",
+              "templateHash": "5793562007935023852"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1946,7 +2042,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
               "properties": {
                 "publisher": "[parameters('publisher')]",
@@ -2032,8 +2128,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8948100547542268397"
+              "version": "0.28.1.47646",
+              "templateHash": "5793562007935023852"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -2114,7 +2210,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
               "properties": {
                 "publisher": "[parameters('publisher')]",
@@ -2194,8 +2290,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8948100547542268397"
+              "version": "0.28.1.47646",
+              "templateHash": "5793562007935023852"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -2276,7 +2372,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('virtualMachineScaleSetName'), parameters('name'))]",
               "properties": {
                 "publisher": "[parameters('publisher')]",
@@ -2349,14 +2445,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('vmss', '2022-11-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('vmss', '2023-09-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('vmss', '2022-11-01', 'full').location]"
+      "value": "[reference('vmss', '2023-09-01', 'full').location]"
     }
   }
 }

@@ -38,6 +38,8 @@ resource secret 'Microsoft.Cdn/profiles/secrets@2023-05-01' = {
   name: name
   parent: profile
   properties: {
+    // False positive
+    #disable-next-line BCP225
     parameters: (type == 'CustomerCertificate')
       ? {
           type: type

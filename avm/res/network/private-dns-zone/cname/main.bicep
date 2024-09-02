@@ -9,7 +9,7 @@ param privateDnsZoneName string
 param name string
 
 @description('Optional. A CNAME record.')
-param cnameRecord object = {}
+param cnameRecord object?
 
 @description('Optional. The metadata attached to the record set.')
 param metadata object?

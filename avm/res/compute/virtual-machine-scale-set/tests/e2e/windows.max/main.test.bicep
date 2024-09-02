@@ -161,6 +161,14 @@ module testDeployment '../../../main.bicep' = [
       extensionNetworkWatcherAgentConfig: {
         enabled: true
       }
+      extensionHealthConfig: {
+        enabled: true
+        settings: {
+          protocol: 'http'
+          port: 80
+          requestPath: '/'
+        }
+      }
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -173,6 +181,9 @@ module testDeployment '../../../main.bicep' = [
               properties: {
                 subnet: {
                   id: nestedDependencies.outputs.subnetResourceId
+                }
+                publicIPAddressConfiguration: {
+                  name: '${namePrefix}-pip-${serviceShort}'
                 }
               }
             }
@@ -189,7 +200,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       skuCapacity: 1
       managedIdentities: {
-        systemAssigned: true
+        systemAssigned: false
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]

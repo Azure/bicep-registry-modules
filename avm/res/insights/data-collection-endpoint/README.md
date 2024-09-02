@@ -17,7 +17,7 @@ This module deploys a Data Collection Endpoint.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/dataCollectionEndpoints` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-04-01/dataCollectionEndpoints) |
+| `Microsoft.Insights/dataCollectionEndpoints` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/dataCollectionEndpoints) |
 
 ## Usage examples
 
@@ -95,6 +95,7 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
     // Required parameters
     name: 'idcemax001'
     // Non-required parameters
+    description: 'This is a test data collection endpoint.'
     kind: 'Windows'
     location: '<location>'
     lock: {
@@ -145,6 +146,9 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
       "value": "idcemax001"
     },
     // Non-required parameters
+    "description": {
+      "value": "This is a test data collection endpoint."
+    },
     "kind": {
       "value": "Windows"
     },
@@ -274,6 +278,7 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`description`](#parameter-description) | string | Description of the data collection endpoint. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`kind`](#parameter-kind) | string | The kind of the resource. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -287,6 +292,13 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
 The name of the data collection endpoint. The name is case insensitive.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `description`
+
+Description of the data collection endpoint.
+
+- Required: No
 - Type: string
 
 ### Parameter: `enableTelemetry`

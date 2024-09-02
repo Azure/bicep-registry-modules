@@ -60,7 +60,6 @@ A CNAME record.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `metadata`
 

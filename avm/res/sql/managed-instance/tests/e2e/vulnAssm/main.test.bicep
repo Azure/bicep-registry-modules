@@ -52,39 +52,41 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}-${serviceShort}'
-    administratorLogin: 'adminUserName'
-    administratorLoginPassword: password
-    subnetResourceId: nestedDependencies.outputs.subnetResourceId
-    managedIdentities: {
-      systemAssigned: true
-    }
-    securityAlertPoliciesObj: {
-      emailAccountAdmins: true
-      name: 'default'
-      state: 'Enabled'
-    }
-    vulnerabilityAssessmentsObj: {
-      emailSubscriptionAdmins: true
-      name: 'default'
-      recurringScansEmails: [
-        'test1@contoso.com'
-        'test2@contoso.com'
-      ]
-      recurringScansIsEnabled: true
-      storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-      useStorageAccountAccessKey: false
-      createStorageRoleAssignment: true
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}-${serviceShort}'
+      administratorLogin: 'adminUserName'
+      administratorLoginPassword: password
+      subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      managedIdentities: {
+        systemAssigned: true
+      }
+      securityAlertPoliciesObj: {
+        emailAccountAdmins: true
+        name: 'default'
+        state: 'Enabled'
+      }
+      vulnerabilityAssessmentsObj: {
+        emailSubscriptionAdmins: true
+        name: 'default'
+        recurringScansEmails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        recurringScansIsEnabled: true
+        storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+        useStorageAccountAccessKey: false
+        createStorageRoleAssignment: true
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
       }
     }
   }
-}]
+]

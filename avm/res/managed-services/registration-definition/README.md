@@ -412,6 +412,53 @@ Specify an array of objects, containing object of Azure Active Directory princip
 - Required: Yes
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-authorizationsprincipalid) | string | The identifier of the Azure Active Directory principal. |
+| [`roleDefinitionId`](#parameter-authorizationsroledefinitionid) | string | The identifier of the Azure built-in role that defines the permissions that the Azure Active Directory principal will have on the projected scope. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`delegatedRoleDefinitionIds`](#parameter-authorizationsdelegatedroledefinitionids) | array | The list of role definition ids which define all the permissions that the user in the authorization can assign to other principals. Required if the `roleDefinitionId` refers to the User Access Administrator Role. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalIdDisplayName`](#parameter-authorizationsprincipaliddisplayname) | string | The display name of the Azure Active Directory principal. |
+
+### Parameter: `authorizations.principalId`
+
+The identifier of the Azure Active Directory principal.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `authorizations.roleDefinitionId`
+
+The identifier of the Azure built-in role that defines the permissions that the Azure Active Directory principal will have on the projected scope.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `authorizations.delegatedRoleDefinitionIds`
+
+The list of role definition ids which define all the permissions that the user in the authorization can assign to other principals. Required if the `roleDefinitionId` refers to the User Access Administrator Role.
+
+- Required: No
+- Type: array
+
+### Parameter: `authorizations.principalIdDisplayName`
+
+The display name of the Azure Active Directory principal.
+
+- Required: No
+- Type: string
+
 ### Parameter: `managedByTenantId`
 
 Specify the tenant ID of the tenant which homes the principals you are delegating permissions to.

@@ -1,0 +1,286 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.28.1.47646",
+      "templateHash": "6438933554145929110"
+    },
+    "name": "DocumentDB Database Account SQL Role.",
+    "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "databaseAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the SQL Role."
+      }
+    },
+    "dataActions": {
+      "type": "array",
+      "defaultValue": [
+        "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+        "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*",
+        "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*"
+      ],
+      "metadata": {
+        "description": "Optional. An array of data actions that are allowed."
+      }
+    },
+    "principalIds": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Ids needs to be granted."
+      }
+    },
+    "roleName": {
+      "type": "string",
+      "defaultValue": "Reader Writer",
+      "metadata": {
+        "description": "Optional. A user-friendly name for the Role Definition. Must be unique for the database account."
+      }
+    },
+    "roleType": {
+      "type": "string",
+      "defaultValue": "CustomRole",
+      "allowedValues": [
+        "CustomRole",
+        "BuiltInRole"
+      ],
+      "metadata": {
+        "description": "Optional. Indicates whether the Role Definition was built-in or user created."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('sql-role-definition-{0}', uniqueString(parameters('name')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "databaseAccountName": {
+            "value": "[parameters('databaseAccountName')]"
+          },
+          "dataActions": {
+            "value": "[parameters('dataActions')]"
+          },
+          "roleName": {
+            "value": "[parameters('roleName')]"
+          },
+          "roleType": {
+            "value": "[parameters('roleType')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.28.1.47646",
+              "templateHash": "5774063578247320117"
+            },
+            "name": "DocumentDB Database Account SQL Role Definitions.",
+            "description": "This module deploys a SQL Role Definision in a CosmosDB Account.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "databaseAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "dataActions": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. An array of data actions that are allowed."
+              }
+            },
+            "roleName": {
+              "type": "string",
+              "defaultValue": "Reader Writer",
+              "metadata": {
+                "description": "Optional. A user-friendly name for the Role Definition. Must be unique for the database account."
+              }
+            },
+            "roleType": {
+              "type": "string",
+              "defaultValue": "CustomRole",
+              "allowedValues": [
+                "CustomRole",
+                "BuiltInRole"
+              ],
+              "metadata": {
+                "description": "Optional. Indicates whether the Role Definition was built-in or user created."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role'))]",
+              "properties": {
+                "assignableScopes": [
+                  "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))]"
+                ],
+                "permissions": [
+                  {
+                    "dataActions": "[parameters('dataActions')]"
+                  }
+                ],
+                "roleName": "[parameters('roleName')]",
+                "type": "[parameters('roleType')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the SQL database."
+              },
+              "value": "[guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the SQL database."
+              },
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the SQL database was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "copy": {
+        "name": "sqlRoleAssignment",
+        "count": "[length(parameters('principalIds'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "condition": "[not(empty(parameters('principalIds')[copyIndex()]))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('sql-role-assign-{0}', uniqueString(parameters('principalIds')[copyIndex()]))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[guid(reference(resourceId('Microsoft.Resources/deployments', format('sql-role-definition-{0}', uniqueString(parameters('name')))), '2022-09-01').outputs.resourceId.value, parameters('principalIds')[copyIndex()], resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]"
+          },
+          "databaseAccountName": {
+            "value": "[parameters('databaseAccountName')]"
+          },
+          "roleDefinitionId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('sql-role-definition-{0}', uniqueString(parameters('name')))), '2022-09-01').outputs.resourceId.value]"
+          },
+          "principalId": {
+            "value": "[parameters('principalIds')[copyIndex()]]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.28.1.47646",
+              "templateHash": "4968352550056104037"
+            },
+            "name": "DocumentDB Database Account SQL Role Assignments.",
+            "description": "This module deploys a SQL Role Assignment in a CosmosDB Account.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "databaseAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the SQL Role Assignment."
+              }
+            },
+            "principalId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Required. Id needs to be granted."
+              }
+            },
+            "roleDefinitionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Id of the SQL Role Definition."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
+              "properties": {
+                "principalId": "[parameters('principalId')]",
+                "roleDefinitionId": "[parameters('roleDefinitionId')]",
+                "scope": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the SQL Role Assignment was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', format('sql-role-definition-{0}', uniqueString(parameters('name'))))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the SQL Role Definition and Assignment were created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

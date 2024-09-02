@@ -18,7 +18,7 @@ This module deploys a Virtual Machine Image Template that can be consumed by Azu
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.VirtualMachineImages/imageTemplates` | [2022-02-14](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/2022-02-14/imageTemplates) |
+| `Microsoft.VirtualMachineImages/imageTemplates` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/imageTemplates) |
 
 ## Usage examples
 
@@ -208,6 +208,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    optimizeVmBoot: 'Enabled'
     osDiskSizeGB: 127
     roleAssignments: [
       {
@@ -232,6 +233,19 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
+    }
+    validationProcess: {
+      continueDistributeOnFailure: true
+      inVMValidations: [
+        {
+          inline: [
+            'echo \'Software validation successful.\''
+          ]
+          name: 'Validate-Software'
+          type: 'Shell'
+        }
+      ]
+      sourceValidationOnly: false
     }
     vmSize: 'Standard_D2s_v3'
     vmUserAssignedIdentities: [
@@ -328,6 +342,9 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         "name": "myCustomLockName"
       }
     },
+    "optimizeVmBoot": {
+      "value": "Enabled"
+    },
     "osDiskSizeGB": {
       "value": 127
     },
@@ -361,6 +378,21 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
+      }
+    },
+    "validationProcess": {
+      "value": {
+        "continueDistributeOnFailure": true,
+        "inVMValidations": [
+          {
+            "inline": [
+              "echo \"Software validation successful.\""
+            ],
+            "name": "Validate-Software",
+            "type": "Shell"
+          }
+        ],
+        "sourceValidationOnly": false
       }
     },
     "vmSize": {
@@ -519,13 +551,15 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`optimizeVmBoot`](#parameter-optimizevmboot) | string | The optimize property can be enabled while creating a VM image and allows VM optimization to improve image creation time. |
 | [`osDiskSizeGB`](#parameter-osdisksizegb) | int | Specifies the size of OS disk. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`stagingResourceGroup`](#parameter-stagingresourcegroup) | string | Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.</p>If this field is empty, a resource group with a random name will be created.</p>If the resource group specified in this field doesn't exist, it will be created with the same name.</p>If the resource group specified exists, it must be empty and in the same region as the image template.</p>The resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn't exist,</p>but if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>.</p>If no value is provided, a new temporary VNET and subnet will be created in the staging resource group and will be deleted along with the remaining temporary resources. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`validationProcess`](#parameter-validationprocess) | object | Configuration options and list of validations to be performed on the resulting image. |
 | [`vmSize`](#parameter-vmsize) | string | Specifies the size for the VM. |
-| [`vmUserAssignedIdentities`](#parameter-vmuserassignedidentities) | array | List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.<p>Be aware, the user assigned identities specified in the \'managedIdentities\' parameter must have the \'Managed Identity Operator\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.<p> |
+| [`vmUserAssignedIdentities`](#parameter-vmuserassignedidentities) | array | List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts. Be aware, the user assigned identities specified in the 'managedIdentities' parameter must have the 'Managed Identity Operator' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM. |
 
 **Generated parameters**
 
@@ -640,6 +674,20 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `optimizeVmBoot`
+
+The optimize property can be enabled while creating a VM image and allows VM optimization to improve image creation time.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `osDiskSizeGB`
 
@@ -759,6 +807,140 @@ Tags of the resource.
 - Required: No
 - Type: object
 
+### Parameter: `validationProcess`
+
+Configuration options and list of validations to be performed on the resulting image.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`continueDistributeOnFailure`](#parameter-validationprocesscontinuedistributeonfailure) | bool | If validation fails and this field is set to false, output image(s) will not be distributed. This is the default behavior. If validation fails and this field is set to true, output image(s) will still be distributed. Please use this option with caution as it may result in bad images being distributed for use. In either case (true or false), the end to end image run will be reported as having failed in case of a validation failure. [Note: This field has no effect if validation succeeds.]. |
+| [`inVMValidations`](#parameter-validationprocessinvmvalidations) | array | A list of validators that will be performed on the image. Azure Image Builder supports File, PowerShell and Shell validators. |
+| [`sourceValidationOnly`](#parameter-validationprocesssourcevalidationonly) | bool | If this field is set to true, the image specified in the 'source' section will directly be validated. No separate build will be run to generate and then validate a customized image. Not supported when performing customizations, validations or distributions on the image. |
+
+### Parameter: `validationProcess.continueDistributeOnFailure`
+
+If validation fails and this field is set to false, output image(s) will not be distributed. This is the default behavior. If validation fails and this field is set to true, output image(s) will still be distributed. Please use this option with caution as it may result in bad images being distributed for use. In either case (true or false), the end to end image run will be reported as having failed in case of a validation failure. [Note: This field has no effect if validation succeeds.].
+
+- Required: No
+- Type: bool
+
+### Parameter: `validationProcess.inVMValidations`
+
+A list of validators that will be performed on the image. Azure Image Builder supports File, PowerShell and Shell validators.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-validationprocessinvmvalidationstype) | string | The type of validation. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-validationprocessinvmvalidationsdestination) | string | Destination of the file. |
+| [`inline`](#parameter-validationprocessinvmvalidationsinline) | array | Array of commands to be run, separated by commas. |
+| [`name`](#parameter-validationprocessinvmvalidationsname) | string | Friendly Name to provide context on what this validation step does. |
+| [`runAsSystem`](#parameter-validationprocessinvmvalidationsrunassystem) | bool | If specified, the PowerShell script will be run with elevated privileges using the Local System user. Can only be true when the runElevated field above is set to true. |
+| [`runElevated`](#parameter-validationprocessinvmvalidationsrunelevated) | bool | If specified, the PowerShell script will be run with elevated privileges. |
+| [`scriptUri`](#parameter-validationprocessinvmvalidationsscripturi) | string | URI of the PowerShell script to be run for validation. It can be a github link, Azure Storage URI, etc. |
+| [`sha256Checksum`](#parameter-validationprocessinvmvalidationssha256checksum) | string | Value of sha256 checksum of the file, you generate this locally, and then Image Builder will checksum and validate. |
+| [`sourceUri`](#parameter-validationprocessinvmvalidationssourceuri) | string | The source URI of the file. |
+| [`validExitCodes`](#parameter-validationprocessinvmvalidationsvalidexitcodes) | array | Valid codes that can be returned from the script/inline command, this avoids reported failure of the script/inline command. |
+
+### Parameter: `validationProcess.inVMValidations.type`
+
+The type of validation.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'File'
+    'PowerShell'
+    'Shell'
+  ]
+  ```
+
+### Parameter: `validationProcess.inVMValidations.destination`
+
+Destination of the file.
+
+- Required: No
+- Type: string
+
+### Parameter: `validationProcess.inVMValidations.inline`
+
+Array of commands to be run, separated by commas.
+
+- Required: No
+- Type: array
+
+### Parameter: `validationProcess.inVMValidations.name`
+
+Friendly Name to provide context on what this validation step does.
+
+- Required: No
+- Type: string
+
+### Parameter: `validationProcess.inVMValidations.runAsSystem`
+
+If specified, the PowerShell script will be run with elevated privileges using the Local System user. Can only be true when the runElevated field above is set to true.
+
+- Required: No
+- Type: bool
+
+### Parameter: `validationProcess.inVMValidations.runElevated`
+
+If specified, the PowerShell script will be run with elevated privileges.
+
+- Required: No
+- Type: bool
+
+### Parameter: `validationProcess.inVMValidations.scriptUri`
+
+URI of the PowerShell script to be run for validation. It can be a github link, Azure Storage URI, etc.
+
+- Required: No
+- Type: string
+
+### Parameter: `validationProcess.inVMValidations.sha256Checksum`
+
+Value of sha256 checksum of the file, you generate this locally, and then Image Builder will checksum and validate.
+
+- Required: No
+- Type: string
+
+### Parameter: `validationProcess.inVMValidations.sourceUri`
+
+The source URI of the file.
+
+- Required: No
+- Type: string
+
+### Parameter: `validationProcess.inVMValidations.validExitCodes`
+
+Valid codes that can be returned from the script/inline command, this avoids reported failure of the script/inline command.
+
+- Required: No
+- Type: array
+
+### Parameter: `validationProcess.sourceValidationOnly`
+
+If this field is set to true, the image specified in the 'source' section will directly be validated. No separate build will be run to generate and then validate a customized image. Not supported when performing customizations, validations or distributions on the image.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `vmSize`
 
 Specifies the size for the VM.
@@ -769,7 +951,7 @@ Specifies the size for the VM.
 
 ### Parameter: `vmUserAssignedIdentities`
 
-List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.<p>Be aware, the user assigned identities specified in the \'managedIdentities\' parameter must have the \'Managed Identity Operator\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.<p>
+List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts. Be aware, the user assigned identities specified in the 'managedIdentities' parameter must have the 'Managed Identity Operator' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.
 
 - Required: No
 - Type: array

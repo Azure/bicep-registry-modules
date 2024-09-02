@@ -52,7 +52,6 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
       }
     ]
   }
-
 }
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
@@ -68,3 +67,6 @@ output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
+
+@description('The resource ID of the created Managed Identity.')
+output managedIdentityResourceId string = managedIdentity.id

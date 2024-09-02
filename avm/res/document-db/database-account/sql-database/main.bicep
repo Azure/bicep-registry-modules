@@ -58,6 +58,7 @@ module container 'container/main.bicep' = [
       defaultTtl: container.?defaultTtl
       indexingPolicy: container.?indexingPolicy
       kind: container.?kind
+      version: container.?version
       paths: container.?paths
       throughput: (throughput != null || autoscaleSettingsMaxThroughput != null) && container.?throughput == null
         ? -1

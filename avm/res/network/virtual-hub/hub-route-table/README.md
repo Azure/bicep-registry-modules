@@ -34,7 +34,6 @@ This module deploys a Virtual Hub Route Table.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`labels`](#parameter-labels) | array | List of labels associated with this route table. |
 | [`routes`](#parameter-routes) | array | List of all routes. |
 
@@ -51,14 +50,6 @@ The name of the parent virtual hub. Required if the template is used in a standa
 
 - Required: Yes
 - Type: string
-
-### Parameter: `enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `labels`
 

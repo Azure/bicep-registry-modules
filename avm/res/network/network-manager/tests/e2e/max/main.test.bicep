@@ -39,6 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkHubName: 'dep-${namePrefix}-vnetHub-${serviceShort}'
     virtualNetworkSpoke1Name: 'dep-${namePrefix}-vnetSpoke1-${serviceShort}'
     virtualNetworkSpoke2Name: 'dep-${namePrefix}-vnetSpoke2-${serviceShort}'
+    virtualNetworkSpoke3Name: 'dep-${namePrefix}-vnetSpoke3-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -94,7 +95,7 @@ module testDeployment '../../../main.bicep' = [
       }
       networkGroups: [
         {
-          name: 'network-group-spokes'
+          name: 'network-group-spokes-1'
           description: 'network-group-spokes description'
           staticMembers: [
             {
@@ -106,6 +107,18 @@ module testDeployment '../../../main.bicep' = [
               resourceId: nestedDependencies.outputs.virtualNetworkSpoke2Id
             }
           ]
+        }
+        {
+          name: 'network-group-spokes-2'
+          staticMembers: [
+            {
+              name: 'virtualNetworkSpoke3'
+              resourceId: nestedDependencies.outputs.virtualNetworkSpoke3Id
+            }
+          ]
+        }
+        {
+          name: 'network-group-spokes-3'
         }
       ]
       connectivityConfigurations: [
@@ -119,31 +132,44 @@ module testDeployment '../../../main.bicep' = [
               resourceType: 'Microsoft.Network/virtualNetworks'
             }
           ]
-          deleteExistingPeering: 'True'
-          isGlobal: 'True'
+          deleteExistingPeering: true
+          isGlobal: false
           appliesToGroups: [
             {
-              networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
-              useHubGateway: 'False'
+              networkGroupResourceId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-1'
+              useHubGateway: false
               groupConnectivity: 'None'
-              isGlobal: 'False'
+              isGlobal: false
             }
           ]
         }
         {
-          name: 'MeshConnectivity'
+          name: 'MeshConnectivity-1'
           description: 'MeshConnectivity description'
           connectivityTopology: 'Mesh'
-          deleteExistingPeering: 'True'
-          isGlobal: 'True'
+          deleteExistingPeering: true
+          isGlobal: true
           appliesToGroups: [
             {
-              networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
-              useHubGateway: 'False'
-              groupConnectivity: 'None'
-              isGlobal: 'False'
+              networkGroupResourceId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-3'
+              useHubGateway: false
+              groupConnectivity: 'DirectlyConnected'
+              isGlobal: true
             }
           ]
+        }
+        {
+          name: 'MeshConnectivity-2'
+          connectivityTopology: 'Mesh'
+          appliesToGroups: [
+            {
+              networkGroupResourceId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-2'
+              useHubGateway: false
+              groupConnectivity: 'DirectlyConnected'
+              isGlobal: false
+            }
+          ]
+          isGlobal: false
         }
       ]
       scopeConnections: [
@@ -151,12 +177,12 @@ module testDeployment '../../../main.bicep' = [
           name: 'scope-connection-test'
           description: 'description of the scope connection'
           resourceId: subscription().id
-          tenantid: tenant().tenantId
+          tenantId: tenant().tenantId
         }
       ]
       securityAdminConfigurations: [
         {
-          name: 'test-security-admin-config'
+          name: 'test-security-admin-config-1'
           description: 'description of the security admin config'
           applyOnNetworkIntentPolicyBasedServices: [
             'AllowRulesOnly'
@@ -167,7 +193,7 @@ module testDeployment '../../../main.bicep' = [
               description: 'test-rule-collection-description'
               appliesToGroups: [
                 {
-                  networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
+                  networkGroupResourceId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-1'
                 }
               ]
               rules: [
@@ -201,16 +227,17 @@ module testDeployment '../../../main.bicep' = [
             }
             {
               name: 'test-rule-collection-2'
-              description: 'test-rule-collection-description'
               appliesToGroups: [
                 {
-                  networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
+                  networkGroupResourceId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-2'
+                }
+                {
+                  networkGroupResourceId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-3'
                 }
               ]
               rules: [
                 {
                   name: 'test-inbound-allow-rule-3'
-                  description: 'test-inbound-allow-rule-3-description'
                   access: 'Allow'
                   direction: 'Inbound'
                   destinationPortRanges: [

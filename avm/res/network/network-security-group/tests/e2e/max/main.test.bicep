@@ -146,21 +146,46 @@ module testDeployment '../../../main.bicep' = [
           properties: {
             access: 'Allow'
             description: 'Allow inbound access on TCP 8082'
-            destinationApplicationSecurityGroups: [
-              {
-                id: nestedDependencies.outputs.applicationSecurityGroupResourceId
-              }
+            destinationApplicationSecurityGroupResourceIds: [
+              nestedDependencies.outputs.applicationSecurityGroupResourceId
             ]
             destinationPortRange: '8082'
             direction: 'Inbound'
             priority: 102
             protocol: '*'
-            sourceApplicationSecurityGroups: [
-              {
-                id: nestedDependencies.outputs.applicationSecurityGroupResourceId
-              }
+            sourceApplicationSecurityGroupResourceIds: [
+              nestedDependencies.outputs.applicationSecurityGroupResourceId
             ]
             sourcePortRange: '*'
+          }
+        }
+        {
+          name: 'Deny-All-Inbound'
+          properties: {
+            access: 'Deny'
+            direction: 'Inbound'
+            priority: 4095
+            protocol: '*'
+            sourcePortRange: '*'
+            destinationPortRange: '*'
+            sourceAddressPrefix: '*'
+            destinationAddressPrefix: '*'
+          }
+        }
+        {
+          name: 'Allow-AzureCloud-Tcp'
+          properties: {
+            access: 'Allow'
+            direction: 'Outbound'
+            priority: 250
+            protocol: 'Tcp'
+            destinationAddressPrefix: 'AzureCloud'
+            sourceAddressPrefixes: [
+              '10.10.10.0/24'
+              '192.168.1.0/24'
+            ]
+            sourcePortRange: '*'
+            destinationPortRange: '443'
           }
         }
       ]

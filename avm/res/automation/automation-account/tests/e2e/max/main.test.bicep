@@ -20,6 +20,10 @@ param serviceShort string = 'aamax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. The password to leverage for the login.')
+@secure()
+param password string = newGuid()
+
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -81,6 +85,19 @@ module testDeployment '../../../main.bicep' = [
         {
           runbookName: 'TestRunbook'
           scheduleName: 'TestSchedule'
+        }
+      ]
+      credentials: [
+        {
+          name: 'Credential01'
+          description: 'Description of Credential01'
+          userName: 'userName01'
+          password: password
+        }
+        {
+          name: 'Credential02'
+          userName: 'username02'
+          password: password
         }
       ]
       disableLocalAuth: true

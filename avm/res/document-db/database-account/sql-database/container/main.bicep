@@ -47,9 +47,11 @@ param uniqueKeyPolicyKeys array = []
 @allowed([
   'Hash'
   'MultiHash'
-  'Range'
 ])
 param kind string = 'Hash'
+@description('Optional. Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition.')
+@allowed([1, 2])
+param version int = 1
 
 var partitionKeyPaths = [for path in paths: startsWith(path, '/') ? path : '/${path}']
 
@@ -62,7 +64,7 @@ var containerResourceParams = union(
     partitionKey: {
       paths: partitionKeyPaths
       kind: kind
-      version: kind == 'MultiHash' ? 2 : 1
+      version: kind == 'MultiHash' ? 2 : version
     }
     uniqueKeyPolicy: !empty(uniqueKeyPolicyKeys)
       ? {

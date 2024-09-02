@@ -51,11 +51,11 @@ param databaseMinCapacity int = 0
 @description('Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones.')
 param zoneRedundant bool = false
 
-resource server 'Microsoft.Sql/servers@2022-05-01-preview' existing = {
+resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
   name: serverName
 }
 
-resource elasticPool 'Microsoft.Sql/servers/elasticPools@2022-05-01-preview' = {
+resource elasticPool 'Microsoft.Sql/servers/elasticPools@2023-08-01-preview' = {
   name: name
   location: location
   parent: server

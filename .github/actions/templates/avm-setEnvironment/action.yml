@@ -59,7 +59,8 @@ runs:
             @{ Name = 'Az.MachineLearningServices' },
             @{ Name = 'Az.Monitor' },
             @{ Name = 'Az.OperationalInsights' },
-            @{ Name = 'Az.RecoveryServices' }
+            @{ Name = 'Az.RecoveryServices' },
+            @{ Name = 'Az.Subscription' }
           )
         }
 

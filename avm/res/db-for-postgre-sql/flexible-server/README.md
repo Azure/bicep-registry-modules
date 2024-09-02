@@ -58,6 +58,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
+    geoRedundantBackup: 'Enabled'
     location: '<location>'
   }
 }
@@ -91,6 +92,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     },
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
+    },
+    "geoRedundantBackup": {
+      "value": "Enabled"
     },
     "location": {
       "value": "<location>"
@@ -1485,6 +1489,7 @@ PostgreSQL Server version.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `fqdn` | string | The FQDN of the PostgreSQL Flexible server. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed PostgreSQL Flexible server. |
 | `resourceGroupName` | string | The resource group of the deployed PostgreSQL Flexible server. |

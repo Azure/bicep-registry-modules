@@ -36,11 +36,11 @@ param supressFailures bool = false
 @description('Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available.')
 param enableAutomaticUpgrade bool
 
-resource virtualMachineScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-11-01' existing = {
+resource virtualMachineScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' existing = {
   name: virtualMachineScaleSetName
 }
 
-resource extension 'Microsoft.Compute/virtualMachineScaleSets/extensions@2022-11-01' = {
+resource extension 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-09-01' = {
   name: name
   parent: virtualMachineScaleSet
   properties: {

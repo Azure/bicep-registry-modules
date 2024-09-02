@@ -52,10 +52,13 @@ module testDeployment '../../../main.bicep' = [
       images: [
         {
           name: '${namePrefix}-az-imgd-ws-001'
-          offer: 'WindowsServer'
+          identifier: {
+            publisher: 'MicrosoftWindowsServer'
+            offer: 'WindowsServer'
+            sku: '2022-datacenter-azure-edition'
+          }
           osType: 'Windows'
-          publisher: 'MicrosoftWindowsServer'
-          sku: '2022-datacenter-azure-edition'
+          osState: 'Generalized'
         }
       ]
       tags: {

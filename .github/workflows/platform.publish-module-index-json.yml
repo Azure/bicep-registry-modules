@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: 45 11 * * * # Run daily at 3:45 AM PST
   workflow_dispatch:
+    inputs:
+      regenIndexFromBRM:
+        type: boolean
+        description: "regenIndexFromBRM | Regenerate the moduleIndex.json file from scratch based on what is in BRM at the time of the run, instead of integrating it with its previous version."
+        required: false
+        default: false
 
 permissions:
   id-token: write
@@ -49,10 +55,14 @@ jobs:
             ErrorAction                                  = 'Continue'
           }
 
-          Write-Verbose "Invoke task with" -Verbose
+          if ('${{ (fromJson(inputs.regenIndexFromBRM)) }}' -eq $true ) {
+            $functionInput['doNotMergeWithLastModuleIndexJsonFileVersion'] = $true
+          }
+
+          Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          if(-not (Invoke-AvmJsonModuleIndexGeneration @functionInput)) {
+          if (-not (Invoke-AvmJsonModuleIndexGeneration @functionInput)) {
             Write-Output ('{0}={1}' -f 'anyErrorsOccurred', $true) >> $env:GITHUB_ENV
           }
 

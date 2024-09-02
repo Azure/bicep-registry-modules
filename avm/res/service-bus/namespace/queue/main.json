@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "6465956085720113527"
+      "version": "0.28.1.47646",
+      "templateHash": "16865717026433728292"
     },
     "name": "Service Bus Namespace Queue",
     "description": "This module deploys a Service Bus Namespace Queue.",
@@ -247,18 +247,7 @@
     },
     "authorizationRules": {
       "type": "array",
-      "defaultValue": [
-        {
-          "name": "RootManageSharedAccessKey",
-          "properties": {
-            "rights": [
-              "Listen",
-              "Manage",
-              "Send"
-            ]
-          }
-        }
-      ],
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. Authorization Rules for the Service Bus Queue."
       }
@@ -390,8 +379,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "11000394867797752922"
+              "version": "0.28.1.47646",
+              "templateHash": "15391519662555721522"
             },
             "name": "Service Bus Namespace Queue Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Queue Authorization Rule.",

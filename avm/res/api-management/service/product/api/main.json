@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "2440306385645798125"
+      "version": "0.28.1.47646",
+      "templateHash": "4018261656720912671"
     },
     "name": "API Management Service Products APIs",
     "description": "This module deploys an API Management Service Product API.",
@@ -34,7 +34,7 @@
   "resources": [
     {
       "type": "Microsoft.ApiManagement/service/products/apis",
-      "apiVersion": "2021-08-01",
+      "apiVersion": "2022-08-01",
       "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
     }
   ],

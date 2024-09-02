@@ -293,8 +293,8 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`displayName`](#parameter-displayname) | string | Display name connection. Example: 'blobconnection' when using blobs. It can change depending on the resource. |
-| [`name`](#parameter-name) | string | Connection name for connection. Example: 'azureblob' when using blobs. It can change depending on the resource. |
+| [`displayName`](#parameter-displayname) | string | Display name connection. Example: `blobconnection` when using blobs. It can change depending on the resource. |
+| [`name`](#parameter-name) | string | Connection name for connection. It can change depending on the resource. |
 
 **Optional parameters**
 
@@ -306,22 +306,23 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 | [`location`](#parameter-location) | string | Location of the deployment. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`nonSecretParameterValues`](#parameter-nonsecretparametervalues) | object | Dictionary of nonsecret parameter values. |
-| [`parameterValues`](#parameter-parametervalues) | secureObject | Connection strings or access keys for connection. Example: 'accountName' and 'accessKey' when using blobs.  It can change depending on the resource. |
+| [`parameterValues`](#parameter-parametervalues) | secureObject | Connection strings or access keys for connection. Example: `accountName` and `accessKey` when using blobs. It can change depending on the resource. |
+| [`parameterValueSet`](#parameter-parametervalueset) | object | Additional parameter value set used for authentication settings. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`statuses`](#parameter-statuses) | array | Status of the connection. |
+| [`statuses`](#parameter-statuses) | array | The status of the connection. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`testLinks`](#parameter-testlinks) | array | Links to test the API connection. |
 
 ### Parameter: `displayName`
 
-Display name connection. Example: 'blobconnection' when using blobs. It can change depending on the resource.
+Display name connection. Example: `blobconnection` when using blobs. It can change depending on the resource.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `name`
 
-Connection name for connection. Example: 'azureblob' when using blobs. It can change depending on the resource.
+Connection name for connection. It can change depending on the resource.
 
 - Required: Yes
 - Type: string
@@ -332,6 +333,14 @@ Specific values for some API connections.
 
 - Required: No
 - Type: object
+- Example:
+  ```Bicep
+  // for a Service Bus connection
+  {
+    type: 'Microsoft.Web/locations/managedApis'
+    id: subscriptionResourceId('Microsoft.Web/locations/managedApis', '${resourceLocation}', 'servicebus')
+  }
+  ```
 
 ### Parameter: `customParameterValues`
 
@@ -401,10 +410,47 @@ Dictionary of nonsecret parameter values.
 
 ### Parameter: `parameterValues`
 
-Connection strings or access keys for connection. Example: 'accountName' and 'accessKey' when using blobs.  It can change depending on the resource.
+Connection strings or access keys for connection. Example: `accountName` and `accessKey` when using blobs. It can change depending on the resource.
 
 - Required: No
 - Type: secureObject
+- Example:
+  ```Bicep
+  {
+    connectionString: 'listKeys('/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/Microsoft.ServiceBus/namespaces/AuthorizationRules/<serviceBusName>/RootManagedSharedAccessKey', '2023-01-01').primaryConnectionString'
+  }
+  {
+    rootfolder: fileshareConnection.rootfolder
+    authType: fileshareConnection.authType
+    // to add an object, use the any() function
+    gateway: any({
+      name: fileshareConnection.odgw.name
+      id: resourceId(fileshareConnection.odgw.resourceGroup, 'Microsoft.Web/connectionGateways', fileshareConnection.odgw.name)
+      type: 'Microsoft.Web/connectionGateways'
+    })
+    username: username
+    password: password
+  }
+  ```
+
+### Parameter: `parameterValueSet`
+
+Additional parameter value set used for authentication settings.
+
+- Required: No
+- Type: object
+- Example:
+  ```Bicep
+  // for a Service Bus connection
+  {
+    name: 'managedIdentityAuth'
+    values: {
+      namespaceEndpoint: {
+        value: 'sb://${dependency.outputs.serviceBusEndpoint}'
+      }
+    }
+  }
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -497,7 +543,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `statuses`
 
-Status of the connection.
+The status of the connection.
 
 - Required: No
 - Type: array
@@ -508,6 +554,13 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Example:
+  ```Bicep
+  {
+      key1: 'value1'
+      key2: 'value2'
+  }
+  ```
 
 ### Parameter: `testLinks`
 

@@ -17,6 +17,9 @@ param resourceLocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'mlswmax'
 
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
+
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -37,7 +40,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
     location: resourceLocation
@@ -70,6 +73,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      kind: 'Default'
       associatedApplicationInsightsResourceId: nestedDependencies.outputs.applicationInsightsResourceId
       associatedKeyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       associatedStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
@@ -171,6 +175,14 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      serverlessComputeSettings: {
+        serverlessComputeCustomSubnet: nestedDependencies.outputs.subnetResourceId
+        serverlessComputeNoPublicIP: true
+      }
+      managedNetworkSettings: {
+        isolationMode: 'Disabled'
+      }
+      systemDatastoresAuthMode: 'accessKey'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

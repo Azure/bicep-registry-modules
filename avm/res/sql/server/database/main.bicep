@@ -142,11 +142,11 @@ var skuVar = union(
             : {}
 )
 
-resource server 'Microsoft.Sql/servers@2022-05-01-preview' existing = {
+resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
   name: serverName
 }
 
-resource database 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
+resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
   name: name
   parent: server
   location: location

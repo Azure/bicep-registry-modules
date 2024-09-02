@@ -17,8 +17,8 @@ This module deploys a Virtual Machine Scale Set.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/virtualMachineScaleSets` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachineScaleSets) |
-| `Microsoft.Compute/virtualMachineScaleSets/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachineScaleSets/extensions) |
+| `Microsoft.Compute/virtualMachineScaleSets` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachineScaleSets) |
+| `Microsoft.Compute/virtualMachineScaleSets/extensions` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachineScaleSets/extensions) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
 ## Usage examples
@@ -58,6 +58,24 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       version: 'latest'
     }
     name: 'cvmsslinmin001'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig1'
+            properties: {
+              publicIPAddressConfiguration: {
+                name: 'pip-cvmsslinmin'
+              }
+              subnet: {
+                id: '<id>'
+              }
+            }
+          }
+        ]
+        nicSuffix: '-nic01'
+      }
+    ]
     osDisk: {
       createOption: 'fromImage'
       diskSizeGB: '128'
@@ -70,21 +88,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     // Non-required parameters
     disablePasswordAuthentication: true
     location: '<location>'
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig1'
-            properties: {
-              subnet: {
-                id: '<id>'
-              }
-            }
-          }
-        ]
-        nicSuffix: '-nic01'
-      }
-    ]
     publicKeys: [
       {
         keyData: '<keyData>'
@@ -122,6 +125,26 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "name": {
       "value": "cvmsslinmin001"
     },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "publicIPAddressConfiguration": {
+                  "name": "pip-cvmsslinmin"
+                },
+                "subnet": {
+                  "id": "<id>"
+                }
+              }
+            }
+          ],
+          "nicSuffix": "-nic01"
+        }
+      ]
+    },
     "osDisk": {
       "value": {
         "createOption": "fromImage",
@@ -143,23 +166,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "location": {
       "value": "<location>"
-    },
-    "nicConfigurations": {
-      "value": [
-        {
-          "ipConfigurations": [
-            {
-              "name": "ipconfig1",
-              "properties": {
-                "subnet": {
-                  "id": "<id>"
-                }
-              }
-            }
-          ],
-          "nicSuffix": "-nic01"
-        }
-      ]
     },
     "publicKeys": {
       "value": [
@@ -198,6 +204,24 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       version: 'latest'
     }
     name: 'cvmsslinmax001'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig1'
+            properties: {
+              publicIPAddressConfiguration: {
+                name: 'pip-cvmsslinmax'
+              }
+              subnet: {
+                id: '<id>'
+              }
+            }
+          }
+        ]
+        nicSuffix: '-nic01'
+      }
+    ]
     osDisk: {
       createOption: 'fromImage'
       diskSizeGB: '128'
@@ -286,26 +310,11 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       name: 'myCustomLockName'
     }
     managedIdentities: {
-      systemAssigned: true
+      systemAssigned: false
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig1'
-            properties: {
-              subnet: {
-                id: '<id>'
-              }
-            }
-          }
-        ]
-        nicSuffix: '-nic01'
-      }
-    ]
     publicKeys: [
       {
         keyData: '<keyData>'
@@ -359,6 +368,26 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "name": {
       "value": "cvmsslinmax001"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "publicIPAddressConfiguration": {
+                  "name": "pip-cvmsslinmax"
+                },
+                "subnet": {
+                  "id": "<id>"
+                }
+              }
+            }
+          ],
+          "nicSuffix": "-nic01"
+        }
+      ]
     },
     "osDisk": {
       "value": {
@@ -481,28 +510,11 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
+        "systemAssigned": false,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
-    },
-    "nicConfigurations": {
-      "value": [
-        {
-          "ipConfigurations": [
-            {
-              "name": "ipconfig1",
-              "properties": {
-                "subnet": {
-                  "id": "<id>"
-                }
-              }
-            }
-          ],
-          "nicSuffix": "-nic01"
-        }
-      ]
     },
     "publicKeys": {
       "value": [
@@ -572,6 +584,24 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       version: 'latest'
     }
     name: 'cvmsslcmk001'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig1'
+            properties: {
+              publicIPAddressConfiguration: {
+                name: 'pip-cvmsslcmk'
+              }
+              subnet: {
+                id: '<id>'
+              }
+            }
+          }
+        ]
+        nicSuffix: '-nic01'
+      }
+    ]
     osDisk: {
       createOption: 'fromImage'
       diskSizeGB: '128'
@@ -603,21 +633,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       enabled: true
     }
     location: '<location>'
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig1'
-            properties: {
-              subnet: {
-                id: '<id>'
-              }
-            }
-          }
-        ]
-        nicSuffix: '-nic01'
-      }
-    ]
     publicKeys: [
       {
         keyData: '<keyData>'
@@ -654,6 +669,26 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "name": {
       "value": "cvmsslcmk001"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "publicIPAddressConfiguration": {
+                  "name": "pip-cvmsslcmk"
+                },
+                "subnet": {
+                  "id": "<id>"
+                }
+              }
+            }
+          ],
+          "nicSuffix": "-nic01"
+        }
+      ]
     },
     "osDisk": {
       "value": {
@@ -700,23 +735,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "location": {
       "value": "<location>"
     },
-    "nicConfigurations": {
-      "value": [
-        {
-          "ipConfigurations": [
-            {
-              "name": "ipconfig1",
-              "properties": {
-                "subnet": {
-                  "id": "<id>"
-                }
-              }
-            }
-          ],
-          "nicSuffix": "-nic01"
-        }
-      ]
-    },
     "publicKeys": {
       "value": [
         {
@@ -754,6 +772,24 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       version: 'latest'
     }
     name: 'cvmsswinmin001'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig1'
+            properties: {
+              publicIPAddressConfiguration: {
+                name: 'pip-cvmsswinmin'
+              }
+              subnet: {
+                id: '<id>'
+              }
+            }
+          }
+        ]
+        nicSuffix: '-nic01'
+      }
+    ]
     osDisk: {
       createOption: 'fromImage'
       diskSizeGB: '128'
@@ -766,21 +802,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     // Non-required parameters
     adminPassword: '<adminPassword>'
     location: '<location>'
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig1'
-            properties: {
-              subnet: {
-                id: '<id>'
-              }
-            }
-          }
-        ]
-        nicSuffix: '-nic01'
-      }
-    ]
   }
 }
 ```
@@ -812,6 +833,26 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "name": {
       "value": "cvmsswinmin001"
     },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "publicIPAddressConfiguration": {
+                  "name": "pip-cvmsswinmin"
+                },
+                "subnet": {
+                  "id": "<id>"
+                }
+              }
+            }
+          ],
+          "nicSuffix": "-nic01"
+        }
+      ]
+    },
     "osDisk": {
       "value": {
         "createOption": "fromImage",
@@ -833,23 +874,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "location": {
       "value": "<location>"
-    },
-    "nicConfigurations": {
-      "value": [
-        {
-          "ipConfigurations": [
-            {
-              "name": "ipconfig1",
-              "properties": {
-                "subnet": {
-                  "id": "<id>"
-                }
-              }
-            }
-          ],
-          "nicSuffix": "-nic01"
-        }
-      ]
     }
   }
 }
@@ -880,6 +904,24 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       version: 'latest'
     }
     name: 'cvmsswinmax001'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig1'
+            properties: {
+              publicIPAddressConfiguration: {
+                name: 'pip-cvmsswinmax'
+              }
+              subnet: {
+                id: '<id>'
+              }
+            }
+          }
+        ]
+        nicSuffix: '-nic01'
+      }
+    ]
     osDisk: {
       createOption: 'fromImage'
       diskSizeGB: '128'
@@ -955,6 +997,14 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     extensionDSCConfig: {
       enabled: true
     }
+    extensionHealthConfig: {
+      enabled: true
+      settings: {
+        port: 80
+        protocol: 'http'
+        requestPath: '/'
+      }
+    }
     extensionMonitoringAgentConfig: {
       enabled: true
     }
@@ -967,26 +1017,11 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       name: 'myCustomLockName'
     }
     managedIdentities: {
-      systemAssigned: true
+      systemAssigned: false
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig1'
-            properties: {
-              subnet: {
-                id: '<id>'
-              }
-            }
-          }
-        ]
-        nicSuffix: '-nic01'
-      }
-    ]
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -1033,6 +1068,26 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "name": {
       "value": "cvmsswinmax001"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "publicIPAddressConfiguration": {
+                  "name": "pip-cvmsswinmax"
+                },
+                "subnet": {
+                  "id": "<id>"
+                }
+              }
+            }
+          ],
+          "nicSuffix": "-nic01"
+        }
+      ]
     },
     "osDisk": {
       "value": {
@@ -1131,6 +1186,16 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         "enabled": true
       }
     },
+    "extensionHealthConfig": {
+      "value": {
+        "enabled": true,
+        "settings": {
+          "port": 80,
+          "protocol": "http",
+          "requestPath": "/"
+        }
+      }
+    },
     "extensionMonitoringAgentConfig": {
       "value": {
         "enabled": true
@@ -1152,28 +1217,11 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
+        "systemAssigned": false,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
-    },
-    "nicConfigurations": {
-      "value": [
-        {
-          "ipConfigurations": [
-            {
-              "name": "ipconfig1",
-              "properties": {
-                "subnet": {
-                  "id": "<id>"
-                }
-              }
-            }
-          ],
-          "nicSuffix": "-nic01"
-        }
-      ]
     },
     "roleAssignments": {
       "value": [
@@ -1232,6 +1280,24 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       version: 'latest'
     }
     name: 'cvmsswinwaf001'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig1'
+            properties: {
+              publicIPAddressConfiguration: {
+                name: 'pip-cvmsswinwaf'
+              }
+              subnet: {
+                id: '<id>'
+              }
+            }
+          }
+        ]
+        nicSuffix: '-nic01'
+      }
+    ]
     osDisk: {
       createOption: 'fromImage'
       diskSizeGB: '128'
@@ -1315,26 +1381,11 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     }
     location: '<location>'
     managedIdentities: {
-      systemAssigned: true
+      systemAssigned: false
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig1'
-            properties: {
-              subnet: {
-                id: '<id>'
-              }
-            }
-          }
-        ]
-        nicSuffix: '-nic01'
-      }
-    ]
     skuCapacity: 1
     tags: {
       Environment: 'Non-Prod'
@@ -1374,6 +1425,26 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "name": {
       "value": "cvmsswinwaf001"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "publicIPAddressConfiguration": {
+                  "name": "pip-cvmsswinwaf"
+                },
+                "subnet": {
+                  "id": "<id>"
+                }
+              }
+            }
+          ],
+          "nicSuffix": "-nic01"
+        }
+      ]
     },
     "osDisk": {
       "value": {
@@ -1487,28 +1558,11 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
+        "systemAssigned": false,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
-    },
-    "nicConfigurations": {
-      "value": [
-        {
-          "ipConfigurations": [
-            {
-              "name": "ipconfig1",
-              "properties": {
-                "subnet": {
-                  "id": "<id>"
-                }
-              }
-            }
-          ],
-          "nicSuffix": "-nic01"
-        }
-      ]
     },
     "skuCapacity": {
       "value": 1
@@ -1561,6 +1615,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 | [`availabilityZones`](#parameter-availabilityzones) | array | The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set. |
 | [`bootDiagnosticStorageAccountName`](#parameter-bootdiagnosticstorageaccountname) | string | Storage account used to store boot diagnostic information. Boot diagnostics will be disabled if no value is provided. |
 | [`bootDiagnosticStorageAccountUri`](#parameter-bootdiagnosticstorageaccounturi) | string | Storage account boot diagnostic base URI. |
+| [`bypassPlatformSafetyChecksOnUserSchedule`](#parameter-bypassplatformsafetychecksonuserschedule) | bool | Enables customer to schedule patching without accidental upgrades. |
 | [`customData`](#parameter-customdata) | string | Custom data associated to the VM, this value will be automatically converted into base64 to account for the expected VM format. |
 | [`dataDisks`](#parameter-datadisks) | array | Specifies the data disks. For security reasons, it is recommended to specify DiskEncryptionSet into the dataDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -1569,6 +1624,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 | [`doNotRunExtensionsOnOverprovisionedVMs`](#parameter-donotrunextensionsonoverprovisionedvms) | bool | When Overprovision is enabled, extensions are launched only on the requested number of VMs which are finally kept. This property will hence ensure that the extensions do not run on the extra overprovisioned VMs. |
 | [`enableAutomaticOSUpgrade`](#parameter-enableautomaticosupgrade) | bool | Indicates whether OS upgrades should automatically be applied to scale set instances in a rolling fashion when a newer version of the OS image becomes available. Default value is false. If this is set to true for Windows based scale sets, enableAutomaticUpdates is automatically set to false and cannot be set to true. |
 | [`enableAutomaticUpdates`](#parameter-enableautomaticupdates) | bool | Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning. |
+| [`enableCrossZoneUpgrade`](#parameter-enablecrosszoneupgrade) | bool | Allow VMSS to ignore AZ boundaries when constructing upgrade batches. Take into consideration the Update Domain and maxBatchInstancePercent to determine the batch size. |
 | [`enableEvictionPolicy`](#parameter-enableevictionpolicy) | bool | Specifies the eviction policy for the low priority virtual machine. Will result in 'Deallocate' eviction policy. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionAtHost`](#parameter-encryptionathost) | bool | This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your virtual machine scale sets. |
@@ -1576,9 +1632,10 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 | [`extensionAzureDiskEncryptionConfig`](#parameter-extensionazurediskencryptionconfig) | object | The configuration for the [Azure Disk Encryption] extension. Must at least contain the ["enabled": true] property to be executed. Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys. |
 | [`extensionCustomScriptConfig`](#parameter-extensioncustomscriptconfig) | object | The configuration for the [Custom Script] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionDependencyAgentConfig`](#parameter-extensiondependencyagentconfig) | object | The configuration for the [Dependency Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
-| [`extensionDomainJoinConfig`](#parameter-extensiondomainjoinconfig) | object | The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed. |
+| [`extensionDomainJoinConfig`](#parameter-extensiondomainjoinconfig) | secureObject | The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionDomainJoinPassword`](#parameter-extensiondomainjoinpassword) | securestring | Required if name is specified. Password of the user specified in user parameter. |
 | [`extensionDSCConfig`](#parameter-extensiondscconfig) | object | The configuration for the [Desired State Configuration] extension. Must at least contain the ["enabled": true] property to be executed. |
+| [`extensionHealthConfig`](#parameter-extensionhealthconfig) | object | Turned on by default. The configuration for the [Application Health Monitoring] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionMonitoringAgentConfig`](#parameter-extensionmonitoringagentconfig) | object | The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionNetworkWatcherAgentConfig`](#parameter-extensionnetworkwatcheragentconfig) | object | The configuration for the [Network Watcher Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`gracePeriod`](#parameter-graceperiod) | string | The amount of time for which automatic repairs are suspended due to a state change on VM. The grace time starts after the state change has completed. This helps avoid premature or accidental repairs. The time duration should be specified in ISO 8601 format. The minimum allowed grace period is 30 minutes (PT30M). The maximum allowed grace period is 90 minutes (PT90M). |
@@ -1587,17 +1644,24 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`maxBatchInstancePercent`](#parameter-maxbatchinstancepercent) | int | The maximum percent of total virtual machine instances that will be upgraded simultaneously by the rolling upgrade in one batch. As this is a maximum, unhealthy instances in previous or future batches can cause the percentage of instances in a batch to decrease to ensure higher reliability. |
-| [`maxPriceForLowPriorityVm`](#parameter-maxpriceforlowpriorityvm) | string | Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars. |
+| [`maxPriceForLowPriorityVm`](#parameter-maxpriceforlowpriorityvm) | int | Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars. |
+| [`maxSurge`](#parameter-maxsurge) | bool | Create new virtual machines to upgrade the scale set, rather than updating the existing virtual machines. Existing virtual machines will be deleted once the new virtual machines are created for each batch. |
 | [`maxUnhealthyInstancePercent`](#parameter-maxunhealthyinstancepercent) | int | The maximum percentage of the total virtual machine instances in the scale set that can be simultaneously unhealthy, either as a result of being upgraded, or by being found in an unhealthy state by the virtual machine health checks before the rolling upgrade aborts. This constraint will be checked prior to starting any batch. |
 | [`maxUnhealthyUpgradedInstancePercent`](#parameter-maxunhealthyupgradedinstancepercent) | int | The maximum percentage of the total virtual machine instances in the scale set that can be simultaneously unhealthy, either as a result of being upgraded, or by being found in an unhealthy state by the virtual machine health checks before the rolling upgrade aborts. This constraint will be checked prior to starting any batch. |
-| [`monitoringWorkspaceId`](#parameter-monitoringworkspaceid) | string | Resource ID of the monitoring log analytics workspace. |
+| [`monitoringWorkspaceResourceId`](#parameter-monitoringworkspaceresourceid) | string | Resource ID of the monitoring log analytics workspace. |
+| [`orchestrationMode`](#parameter-orchestrationmode) | string | Specifies the orchestration mode for the virtual machine scale set. |
 | [`overprovision`](#parameter-overprovision) | bool | Specifies whether the Virtual Machine Scale Set should be overprovisioned. |
+| [`patchAssessmentMode`](#parameter-patchassessmentmode) | string | VM guest patching assessment mode. Set it to 'AutomaticByPlatform' to enable automatically check for updates every 24 hours. |
+| [`patchMode`](#parameter-patchmode) | string | VM guest patching orchestration mode. 'AutomaticByOS' & 'Manual' are for Windows only, 'ImageDefault' for Linux only. Refer to 'https://learn.microsoft.com/en-us/azure/virtual-machines/automatic-vm-guest-patching'. |
 | [`pauseTimeBetweenBatches`](#parameter-pausetimebetweenbatches) | string | The wait time between completing the update for all virtual machines in one batch and starting the next batch. The time duration should be specified in ISO 8601 format. |
 | [`plan`](#parameter-plan) | object | Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use. |
+| [`prioritizeUnhealthyInstances`](#parameter-prioritizeunhealthyinstances) | bool | Upgrade all unhealthy instances in a scale set before any healthy instances. |
 | [`provisionVMAgent`](#parameter-provisionvmagent) | bool | Indicates whether virtual machine agent should be provisioned on the virtual machine. When this property is not specified in the request body, default behavior is to set it to true. This will ensure that VM Agent is installed on the VM so that extensions can be added to the VM later. |
 | [`proximityPlacementGroupResourceId`](#parameter-proximityplacementgroupresourceid) | string | Resource ID of a proximity placement group. |
 | [`publicKeys`](#parameter-publickeys) | array | The list of SSH public keys used to authenticate with linux based VMs. |
+| [`rebootSetting`](#parameter-rebootsetting) | string | Specifies the reboot setting for all AutomaticByPlatform patch installation operations. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`rollbackFailedInstancesOnPolicyBreach`](#parameter-rollbackfailedinstancesonpolicybreach) | bool | Rollback failed instances to previous model if the Rolling Upgrade policy is violated. |
 | [`sasTokenValidityLength`](#parameter-sastokenvaliditylength) | string | SAS token validity length to use to download files from storage accounts. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours. |
 | [`scaleInPolicy`](#parameter-scaleinpolicy) | object | Specifies the scale-in policy that decides which virtual machines are chosen for removal when a Virtual Machine Scale Set is scaled-in. |
 | [`scaleSetFaultDomain`](#parameter-scalesetfaultdomain) | int | Fault Domain count for each placement group. |
@@ -1648,9 +1712,8 @@ Name of the VMSS.
 
 Configures NICs and PIPs.
 
-- Required: No
+- Required: Yes
 - Type: array
-- Default: `[]`
 
 ### Parameter: `osDisk`
 
@@ -1702,7 +1765,7 @@ Specifies whether automatic repairs should be enabled on the virtual machine sca
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `availabilityZones`
 
@@ -1734,6 +1797,14 @@ Storage account boot diagnostic base URI.
 - Required: No
 - Type: string
 - Default: `[format('.blob.{0}/', environment().suffixes.storage)]`
+
+### Parameter: `bypassPlatformSafetyChecksOnUserSchedule`
+
+Enables customer to schedule patching without accidental upgrades.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `customData`
 
@@ -1900,6 +1971,14 @@ Indicates whether Automatic Updates is enabled for the Windows virtual machine. 
 - Type: bool
 - Default: `True`
 
+### Parameter: `enableCrossZoneUpgrade`
+
+Allow VMSS to ignore AZ boundaries when constructing upgrade batches. Take into consideration the Update Domain and maxBatchInstancePercent to determine the batch size.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `enableEvictionPolicy`
 
 Specifies the eviction policy for the low priority virtual machine. Will result in 'Deallocate' eviction policy.
@@ -1982,7 +2061,7 @@ The configuration for the [Dependency Agent] extension. Must at least contain th
 The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed.
 
 - Required: No
-- Type: object
+- Type: secureObject
 - Default:
   ```Bicep
   {
@@ -2008,6 +2087,24 @@ The configuration for the [Desired State Configuration] extension. Must at least
   ```Bicep
   {
       enabled: false
+  }
+  ```
+
+### Parameter: `extensionHealthConfig`
+
+Turned on by default. The configuration for the [Application Health Monitoring] extension. Must at least contain the ["enabled": true] property to be executed.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      enabled: true
+      settings: {
+        port: 80
+        protocol: 'http'
+        requestPath: '/'
+      }
   }
   ```
 
@@ -2146,8 +2243,15 @@ The maximum percent of total virtual machine instances that will be upgraded sim
 Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars.
 
 - Required: No
-- Type: string
-- Default: `''`
+- Type: int
+
+### Parameter: `maxSurge`
+
+Create new virtual machines to upgrade the scale set, rather than updating the existing virtual machines. Existing virtual machines will be deleted once the new virtual machines are created for each batch.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `maxUnhealthyInstancePercent`
 
@@ -2165,13 +2269,28 @@ The maximum percentage of the total virtual machine instances in the scale set t
 - Type: int
 - Default: `20`
 
-### Parameter: `monitoringWorkspaceId`
+### Parameter: `monitoringWorkspaceResourceId`
 
 Resource ID of the monitoring log analytics workspace.
 
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `orchestrationMode`
+
+Specifies the orchestration mode for the virtual machine scale set.
+
+- Required: No
+- Type: string
+- Default: `'Flexible'`
+- Allowed:
+  ```Bicep
+  [
+    'Flexible'
+    'Uniform'
+  ]
+  ```
 
 ### Parameter: `overprovision`
 
@@ -2180,6 +2299,39 @@ Specifies whether the Virtual Machine Scale Set should be overprovisioned.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `patchAssessmentMode`
+
+VM guest patching assessment mode. Set it to 'AutomaticByPlatform' to enable automatically check for updates every 24 hours.
+
+- Required: No
+- Type: string
+- Default: `'ImageDefault'`
+- Allowed:
+  ```Bicep
+  [
+    'AutomaticByPlatform'
+    'ImageDefault'
+  ]
+  ```
+
+### Parameter: `patchMode`
+
+VM guest patching orchestration mode. 'AutomaticByOS' & 'Manual' are for Windows only, 'ImageDefault' for Linux only. Refer to 'https://learn.microsoft.com/en-us/azure/virtual-machines/automatic-vm-guest-patching'.
+
+- Required: No
+- Type: string
+- Default: `'AutomaticByPlatform'`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'AutomaticByOS'
+    'AutomaticByPlatform'
+    'ImageDefault'
+    'Manual'
+  ]
+  ```
 
 ### Parameter: `pauseTimeBetweenBatches`
 
@@ -2196,6 +2348,14 @@ Specifies information about the marketplace image used to create the virtual mac
 - Required: No
 - Type: object
 - Default: `{}`
+
+### Parameter: `prioritizeUnhealthyInstances`
+
+Upgrade all unhealthy instances in a scale set before any healthy instances.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `provisionVMAgent`
 
@@ -2220,6 +2380,23 @@ The list of SSH public keys used to authenticate with linux based VMs.
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `rebootSetting`
+
+Specifies the reboot setting for all AutomaticByPlatform patch installation operations.
+
+- Required: No
+- Type: string
+- Default: `'IfRequired'`
+- Allowed:
+  ```Bicep
+  [
+    'Always'
+    'IfRequired'
+    'Never'
+    'Unknown'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -2309,6 +2486,14 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `rollbackFailedInstancesOnPolicyBreach`
+
+Rollback failed instances to previous model if the Rolling Upgrade policy is violated.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `sasTokenValidityLength`
 

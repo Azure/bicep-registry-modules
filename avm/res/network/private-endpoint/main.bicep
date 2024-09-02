@@ -81,26 +81,26 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.network-privateendpoint.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.network-privateendpoint.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = {
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {
   name: name
   location: location
   tags: tags
@@ -121,27 +121,25 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = {
   }
 }
 
-module privateEndpoint_privateDnsZoneGroup 'private-dns-zone-group/main.bicep' =
-  if (!empty(privateDnsZoneResourceIds)) {
-    name: '${uniqueString(deployment().name)}-PrivateEndpoint-PrivateDnsZoneGroup'
-    params: {
-      name: privateDnsZoneGroupName ?? 'default'
-      privateDNSResourceIds: privateDnsZoneResourceIds ?? []
-      privateEndpointName: privateEndpoint.name
-    }
+module privateEndpoint_privateDnsZoneGroup 'private-dns-zone-group/main.bicep' = if (!empty(privateDnsZoneResourceIds)) {
+  name: '${uniqueString(deployment().name)}-PrivateEndpoint-PrivateDnsZoneGroup'
+  params: {
+    name: privateDnsZoneGroupName ?? 'default'
+    privateDNSResourceIds: privateDnsZoneResourceIds ?? []
+    privateEndpointName: privateEndpoint.name
   }
+}
 
-resource privateEndpoint_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: privateEndpoint
+resource privateEndpoint_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: privateEndpoint
+}
 
 resource privateEndpoint_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {
@@ -175,10 +173,15 @@ output name string = privateEndpoint.name
 @description('The location the resource was deployed into.')
 output location string = privateEndpoint.location
 
+@description('The custom DNS configurations of the private endpoint.')
+output customDnsConfig customDnsConfigType = privateEndpoint.properties.customDnsConfigs
+
 @description('The group Id for the private endpoint Group.')
-output groupId string = !empty(privateEndpoint.properties.manualPrivateLinkServiceConnections)
-  ? privateEndpoint.properties.manualPrivateLinkServiceConnections[0].properties.groupIds[0]
-  : privateEndpoint.properties.privateLinkServiceConnections[0].properties.groupIds[0]
+output groupId string = !empty(privateEndpoint.properties.manualPrivateLinkServiceConnections) && length(privateEndpoint.properties.manualPrivateLinkServiceConnections[0].properties.?groupIds) > 0
+  ? privateEndpoint.properties.manualPrivateLinkServiceConnections[0].properties.?groupIds[0] ?? ''
+  : !empty(privateEndpoint.properties.privateLinkServiceConnections) && length(privateEndpoint.properties.privateLinkServiceConnections[0].properties.?groupIds) > 0
+      ? privateEndpoint.properties.privateLinkServiceConnections[0].properties.?groupIds[0] ?? ''
+      : ''
 
 // ================ //
 // Definitions      //
@@ -221,10 +224,10 @@ type ipConfigurationsType = {
 
   @description('Required. Properties of private endpoint IP configurations.')
   properties: {
-    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string.')
     groupId: string
 
-    @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
+    @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string.')
     memberName: string
 
     @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
@@ -238,8 +241,8 @@ type manualPrivateLinkServiceConnectionsType = {
 
   @description('Required. Properties of private link service connection.')
   properties: {
-    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
-    groupIds: array
+    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.')
+    groupIds: string[]
 
     @description('Required. The resource id of private link service.')
     privateLinkServiceId: string
@@ -255,8 +258,8 @@ type privateLinkServiceConnectionsType = {
 
   @description('Required. Properties of private link service connection.')
   properties: {
-    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
-    groupIds: array
+    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.')
+    groupIds: string[]
 
     @description('Required. The resource id of private link service.')
     privateLinkServiceId: string

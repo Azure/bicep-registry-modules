@@ -15,48 +15,56 @@ param diagnosticSettings diagnosticSettingType
 // The name of the blob services
 var name = 'default'
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = {
   name: storageAccountName
 }
 
-resource queueServices 'Microsoft.Storage/storageAccounts/queueServices@2021-09-01' = {
+resource queueServices 'Microsoft.Storage/storageAccounts/queueServices@2023-04-01' = {
   name: name
   parent: storageAccount
   properties: {}
 }
 
-resource queueServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
-      category: group.category
-      enabled: group.?enabled ?? true
-      timeGrain: null
-    }]
-    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
-      categoryGroup: group.?categoryGroup
-      category: group.?category
-      enabled: group.?enabled ?? true
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+resource queueServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: queueServices
   }
-  scope: queueServices
-}]
+]
 
-module queueServices_queues 'queue/main.bicep' = [for (queue, index) in (queues ?? []): {
-  name: '${deployment().name}-Queue-${index}'
-  params: {
-    storageAccountName: storageAccount.name
-    name: queue.name
-    metadata: queue.?metadata
-    roleAssignments: queue.?roleAssignments
+module queueServices_queues 'queue/main.bicep' = [
+  for (queue, index) in (queues ?? []): {
+    name: '${deployment().name}-Queue-${index}'
+    params: {
+      storageAccountName: storageAccount.name
+      name: queue.name
+      metadata: queue.?metadata
+      roleAssignments: queue.?roleAssignments
+    }
   }
-}]
+]
 
 @description('The name of the deployed file share service.')
 output name string = queueServices.name

@@ -151,11 +151,18 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           addressPrefix: cidrSubnet(addressPrefix, 24, 4)
+          name: '${namePrefix}-az-subnet-x-004'
+          networkSecurityGroupResourceId: ''
+          natGatewayResourceId: ''
+          routeTableResourceId: ''
+        }
+        {
+          addressPrefix: cidrSubnet(addressPrefix, 24, 5)
           name: 'AzureBastionSubnet'
           networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupBastionResourceId
         }
         {
-          addressPrefix: cidrSubnet(addressPrefix, 24, 5)
+          addressPrefix: cidrSubnet(addressPrefix, 24, 6)
           name: 'AzureFirewallSubnet'
         }
       ]
