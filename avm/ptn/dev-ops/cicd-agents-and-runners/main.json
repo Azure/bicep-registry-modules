@@ -93,7 +93,7 @@
             "description": "Optional. The container registry subnet address prefix in the created virtual network. If not provided, a default subnet prefix will be used."
           }
         },
-        "containerRegistryPrivateDnsZoneId": {
+        "containerRegistryPrivateDnsZoneResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -154,7 +154,7 @@
             "description": "Required. The subnet name for the container registry private endpoint."
           }
         },
-        "containerRegistryPrivateDnsZoneId": {
+        "containerRegistryPrivateDnsZoneResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -3247,7 +3247,7 @@
       }
     },
     "acrPrivateDNSZone": {
-      "condition": "[and(parameters('privateNetworking'), empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneId'), '')))]",
+      "condition": "[and(parameters('privateNetworking'), empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneResourceId'), '')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('acrdnszone{0}{1}', parameters('namingPrefix'), uniqueString(resourceGroup().id))]",
@@ -6324,7 +6324,7 @@
             ]
           },
           "networkRuleBypassOptions": "[if(parameters('privateNetworking'), createObject('value', 'AzureServices'), createObject('value', 'None'))]",
-          "privateEndpoints": "[if(parameters('privateNetworking'), createObject('value', createArray(createObject('subnetResourceId', if(equals(parameters('networkingConfiguration').networkType, 'createNew'), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName'), 'acr-subnet'))))[0], if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').containerRegistryPrivateEndpointSubnetName), null())), 'privateDnsZoneResourceIds', if(not(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneId'), ''))), createArray(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneId'), '')), createArray(if(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneId'), '')), reference('acrPrivateDNSZone').outputs.resourceId.value, ''))), 'privateDnsZoneGroupName', 'acrPrivateDNSZoneGroup'))), createObject('value', null()))]"
+          "privateEndpoints": "[if(parameters('privateNetworking'), createObject('value', createArray(createObject('subnetResourceId', if(equals(parameters('networkingConfiguration').networkType, 'createNew'), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName'), 'acr-subnet'))))[0], if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').containerRegistryPrivateEndpointSubnetName), null())), 'privateDnsZoneResourceIds', if(not(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneResourceId'), ''))), createArray(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneResourceId'), '')), createArray(if(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneResourceId'), '')), reference('acrPrivateDNSZone').outputs.resourceId.value, ''))), 'privateDnsZoneGroupName', 'acrPrivateDNSZoneGroup'))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
