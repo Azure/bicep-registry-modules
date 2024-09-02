@@ -1,12 +1,12 @@
-metadata name = 'Azure Monitoring'
-metadata description = 'Creates an Application Insights instance and a Log Analytics workspace.'
+metadata name = 'Application Insights Components'
+metadata description = 'Creates an Application Insights instance based on an existing Log Analytics workspace.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. The resource portal dashboards name.')
-param applicationInsightsDashboardName string = ''
-
 @description('Required. The resource insights components name.')
-param applicationInsightsName string
+param name string
+
+@description('Required. The resource portal dashboards name.')
+param dashboardName string = ''
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -14,8 +14,8 @@ param enableTelemetry bool = true
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-@description('Required. The resource operational insights workspaces name.')
-param logAnalyticsName string
+@description('Required. The resource ID of the loganalytics workspace.')
+param logAnalyticsWorkspaceId string
 
 @description('Optional. Tags of the resource.')
 @metadata({
@@ -51,23 +51,28 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module logAnalytics 'modules/loganalytics.bicep' = {
-  name: 'loganalytics'
+// ============== //
+// Resources      //
+// ============== //
+
+module applicationInsights 'br/public:avm/res/insights/component:0.4.1' = {
+  name: '${uniqueString(deployment().name, location)}-appinsights'
   params: {
-    name: logAnalyticsName
+    name: name
     location: location
     tags: tags
+    kind: 'web'
+    applicationType: 'web'
+    workspaceResourceId: logAnalyticsWorkspaceId
   }
 }
 
-module applicationInsights 'modules/applicationinsights.bicep' = {
-  name: 'applicationinsights'
+module applicationInsightsDashboard 'modules/applicationinsights-dashboard.bicep' = if (!empty(dashboardName)) {
+  name: 'application-insights-dashboard'
   params: {
-    name: applicationInsightsName
+    name: dashboardName
     location: location
-    tags: tags
-    dashboardName: applicationInsightsDashboardName
-    logAnalyticsWorkspaceId: logAnalytics.outputs.id
+    applicationInsightsName: applicationInsights.name
   }
 }
 
@@ -75,23 +80,17 @@ module applicationInsights 'modules/applicationinsights.bicep' = {
 // Outputs      //
 // ============ //
 
-@description('The resource group the operational-insights monitoring was deployed into.')
+@description('The resource group the application insights components were deployed into.')
 output resourceGroupName string = resourceGroup().name
 
 @description('The connection string of the application insights.')
-output applicationInsightsConnectionString string = applicationInsights.outputs.connectionString
+output connectionString string = applicationInsights.outputs.connectionString
 
 @description('The resource ID of the application insights.')
-output applicationInsightsId string = applicationInsights.outputs.id
+output id string = applicationInsights.outputs.resourceId
 
 @description('The instrumentation key of the application insights.')
-output applicationInsightsInstrumentationKey string = applicationInsights.outputs.instrumentationKey
+output instrumentationKey string = applicationInsights.outputs.instrumentationKey
 
 @description('The name of the application insights.')
-output applicationInsightsName string = applicationInsights.outputs.name
-
-@description('The resource ID of the loganalytics workspace.')
-output logAnalyticsWorkspaceId string = logAnalytics.outputs.id
-
-@description('The name of the loganalytics workspace.')
-output logAnalyticsWorkspaceName string = logAnalytics.outputs.name
+output name string = applicationInsights.outputs.name

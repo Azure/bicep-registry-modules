@@ -23,19 +23,15 @@ param tags object?
 // Resources      //
 // ============== //
 
-resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
-  name: name
-  location: location
-  tags: tags
-  properties: any({
-    retentionInDays: 30
-    features: {
-      searchVersion: 1
-    }
-    sku: {
-      name: 'PerGB2018'
-    }
-  })
+module logAnalytics 'br/public:avm/res/operational-insights/workspace:0.5.0' = {
+  name: '${uniqueString(deployment().name, location)}-loganalytics'
+  params: {
+    name: name
+    location: location
+    tags: tags
+    dataRetention: 30
+    skuName: 'PerGB2018'
+  }
 }
 
 // ============ //
@@ -46,7 +42,7 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-12-01-previ
 output resourceGroupName string = resourceGroup().name
 
 @description('The resource ID of the loganalytics workspace.')
-output id string = logAnalytics.id
+output id string = logAnalytics.outputs.resourceId
 
 @description('The name of the loganalytics workspace.')
-output name string = logAnalytics.name
+output name string = logAnalytics.outputs.name

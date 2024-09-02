@@ -1,6 +1,6 @@
-# Azure Monitoring `[OperationalInsights/Monitoring]`
+# Application Insights Components `[Azd/InsightsDashboard]`
 
-Creates an Application Insights instance and a Log Analytics workspace.
+Creates an Application Insights instance based on an existing Log Analytics workspace.
 
 ## Navigation
 
@@ -15,8 +15,10 @@ Creates an Application Insights instance and a Log Analytics workspace.
 
 | Resource Type | API Version |
 | :-- | :-- |
+| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/components` | [2020-02-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-02-02/components) |
-| `Microsoft.OperationalInsights/workspaces` | [2021-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2021-12-01-preview/workspaces) |
+| `microsoft.insights/components/linkedStorageAccounts` | [2020-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts) |
+| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Portal/dashboards` | [2020-09-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Portal/2020-09-01-preview/dashboards) |
 
 ## Usage examples
@@ -25,28 +27,25 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/operational-insights/monitoring:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/insights-dashboard:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
+- [Defaults](#example-1-defaults)
 
-### Example 1: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
+### Example 1: _Defaults_
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module monitoring 'br/public:avm/ptn/operational-insights/monitoring:<version>' = {
-  name: 'monitoringDeployment'
+module insightsDashboard 'br/public:avm/ptn/azd/insights-dashboard:<version>' = {
+  name: 'insightsDashboardDeployment'
   params: {
     // Required parameters
-    applicationInsightsName: '<applicationInsightsName>'
-    logAnalyticsName: '<logAnalyticsName>'
+    logAnalyticsWorkspaceId: '<logAnalyticsWorkspaceId>'
+    name: 'aidmin001'
     // Non-required parameters
-    applicationInsightsDashboardName: '<applicationInsightsDashboardName>'
+    dashboardName: '<dashboardName>'
     location: '<location>'
   }
 }
@@ -65,15 +64,15 @@ module monitoring 'br/public:avm/ptn/operational-insights/monitoring:<version>' 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "applicationInsightsName": {
-      "value": "<applicationInsightsName>"
+    "logAnalyticsWorkspaceId": {
+      "value": "<logAnalyticsWorkspaceId>"
     },
-    "logAnalyticsName": {
-      "value": "<logAnalyticsName>"
+    "name": {
+      "value": "aidmin001"
     },
     // Non-required parameters
-    "applicationInsightsDashboardName": {
-      "value": "<applicationInsightsDashboardName>"
+    "dashboardName": {
+      "value": "<dashboardName>"
     },
     "location": {
       "value": "<location>"
@@ -92,9 +91,9 @@ module monitoring 'br/public:avm/ptn/operational-insights/monitoring:<version>' 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`applicationInsightsDashboardName`](#parameter-applicationinsightsdashboardname) | string | The resource portal dashboards name. |
-| [`applicationInsightsName`](#parameter-applicationinsightsname) | string | The resource insights components name. |
-| [`logAnalyticsName`](#parameter-loganalyticsname) | string | The resource operational insights workspaces name. |
+| [`dashboardName`](#parameter-dashboardname) | string | The resource portal dashboards name. |
+| [`logAnalyticsWorkspaceId`](#parameter-loganalyticsworkspaceid) | string | The resource ID of the loganalytics workspace. |
+| [`name`](#parameter-name) | string | The resource insights components name. |
 
 **Optional parameters**
 
@@ -104,7 +103,7 @@ module monitoring 'br/public:avm/ptn/operational-insights/monitoring:<version>' 
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
-### Parameter: `applicationInsightsDashboardName`
+### Parameter: `dashboardName`
 
 The resource portal dashboards name.
 
@@ -112,16 +111,16 @@ The resource portal dashboards name.
 - Type: string
 - Default: `''`
 
-### Parameter: `applicationInsightsName`
+### Parameter: `logAnalyticsWorkspaceId`
 
-The resource insights components name.
+The resource ID of the loganalytics workspace.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `logAnalyticsName`
+### Parameter: `name`
 
-The resource operational insights workspaces name.
+The resource insights components name.
 
 - Required: Yes
 - Type: string
@@ -161,17 +160,19 @@ Tags of the resource.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `applicationInsightsConnectionString` | string | The connection string of the application insights. |
-| `applicationInsightsId` | string | The resource ID of the application insights. |
-| `applicationInsightsInstrumentationKey` | string | The instrumentation key of the application insights. |
-| `applicationInsightsName` | string | The name of the application insights. |
-| `logAnalyticsWorkspaceId` | string | The resource ID of the loganalytics workspace. |
-| `logAnalyticsWorkspaceName` | string | The name of the loganalytics workspace. |
-| `resourceGroupName` | string | The resource group the operational-insights monitoring was deployed into. |
+| `connectionString` | string | The connection string of the application insights. |
+| `id` | string | The resource ID of the application insights. |
+| `instrumentationKey` | string | The instrumentation key of the application insights. |
+| `name` | string | The name of the application insights. |
+| `resourceGroupName` | string | The resource group the application insights components were deployed into. |
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/res/insights/component:0.4.1` | Remote reference |
 
 ## Data Collection
 
