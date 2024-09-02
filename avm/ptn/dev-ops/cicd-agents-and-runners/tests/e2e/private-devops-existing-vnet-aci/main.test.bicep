@@ -85,10 +85,10 @@ module testDeployment '../../../main.bicep' = {
       virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
       containerRegistryPrivateDnsZoneId: nestedDependencies.outputs.acrPrivateDNSZoneResourceId
+      natGatewayPublicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceId
+      natGatewayResourceId: nestedDependencies.outputs.natGatewayResourceId
       computeNetworking: {
         containerInstanceSubnetName: 'aci-subnet'
-        natGatewayPublicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceId
-        natGatewayResourceId: nestedDependencies.outputs.natGatewayResourceId
         networkType: 'azureContainerInstance'
       }
     }

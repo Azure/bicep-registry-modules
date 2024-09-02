@@ -13,9 +13,7 @@ param location string = resourceGroup().location
 param namingPrefix string
 
 @description('Required. The compute target for the private runners.')
-param computeTypes computeTypesType = [
-  'azure-container-instance'
-]
+param computeTypes computeTypesType
 
 @description('Required. The self-hosted runner configuration. This can be either GitHub or Azure DevOps.')
 param selfHostedConfig selfHostedRunnerType
@@ -872,6 +870,12 @@ type existingNetworkType = {
   @description('Optional. The container registry private DNS zone Id. If not provided, a new private DNS zone will be created.')
   containerRegistryPrivateDnsZoneId: string?
 
+  @description('Optional. The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created.')
+  natGatewayResourceId: string
+
+  @description('Optional. The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.')
+  natGatewayPublicIpAddressResourceId: string
+
   @discriminator('networkType')
   computeNetworking: containerAppNetworkConfigType | containerInstanceNetworkConfigType
 }
@@ -893,12 +897,6 @@ type containerAppNetworkConfigType = {
 type containerInstanceNetworkConfigType = {
   @description('Required. The network type. This can be either azureContainerApp or azureContainerInstance.')
   networkType: 'azureContainerInstance'
-
-  @description('Optional. The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created.')
-  natGatewayResourceId: string
-
-  @description('Optional. The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.')
-  natGatewayPublicIpAddressResourceId: string
 
   @description('Optional. The container instance subnet name in the created virtual network. If not provided, a default name will be used.')
   containerInstanceSubnetName: string

@@ -107,6 +107,10 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
   name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
+    computeTypes: [
+      'azure-container-app'
+      'azure-container-instance'
+    ]
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
       addressSpace: '<addressSpace>'
@@ -120,10 +124,6 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       selfHostedType: 'azuredevops'
     }
     // Non-required parameters
-    computeTypes: [
-      'azure-container-app'
-      'azure-container-instance'
-    ]
     enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     privateNetworking: '<privateNetworking>'
@@ -144,6 +144,12 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "computeTypes": {
+      "value": [
+        "azure-container-app",
+        "azure-container-instance"
+      ]
+    },
     "namingPrefix": {
       "value": "<namingPrefix>"
     },
@@ -163,12 +169,6 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       }
     },
     // Non-required parameters
-    "computeTypes": {
-      "value": [
-        "azure-container-app",
-        "azure-container-instance"
-      ]
-    },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
     },
@@ -199,6 +199,9 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
   name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
+    computeTypes: [
+      'azure-container-instance'
+    ]
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
       addressSpace: '<addressSpace>'
@@ -212,9 +215,6 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       selfHostedType: 'azuredevops'
     }
     // Non-required parameters
-    computeTypes: [
-      'azure-container-instance'
-    ]
     enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     privateNetworking: '<privateNetworking>'
@@ -235,6 +235,11 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "computeTypes": {
+      "value": [
+        "azure-container-instance"
+      ]
+    },
     "namingPrefix": {
       "value": "<namingPrefix>"
     },
@@ -254,11 +259,6 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       }
     },
     // Non-required parameters
-    "computeTypes": {
-      "value": [
-        "azure-container-instance"
-      ]
-    },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
     },
@@ -289,6 +289,9 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
   name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
+    computeTypes: [
+      'azure-container-app'
+    ]
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
       addressSpace: '<addressSpace>'
@@ -302,9 +305,6 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       selfHostedType: 'github'
     }
     // Non-required parameters
-    computeTypes: [
-      'azure-container-app'
-    ]
     enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     privateNetworking: '<privateNetworking>'
@@ -325,6 +325,11 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "computeTypes": {
+      "value": [
+        "azure-container-app"
+      ]
+    },
     "namingPrefix": {
       "value": "<namingPrefix>"
     },
@@ -344,11 +349,6 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       }
     },
     // Non-required parameters
-    "computeTypes": {
-      "value": [
-        "azure-container-app"
-      ]
-    },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
     },
@@ -379,6 +379,9 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
   name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
+    computeTypes: [
+      'azure-container-app'
+    ]
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
       addressSpace: '<addressSpace>'
@@ -403,9 +406,6 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       targetPipelinesQueueLength: '<targetPipelinesQueueLength>'
     }
     // Non-required parameters
-    computeTypes: [
-      'azure-container-app'
-    ]
     enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     privateNetworking: '<privateNetworking>'
@@ -426,6 +426,11 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "computeTypes": {
+      "value": [
+        "azure-container-app"
+      ]
+    },
     "namingPrefix": {
       "value": "<namingPrefix>"
     },
@@ -456,11 +461,6 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       }
     },
     // Non-required parameters
-    "computeTypes": {
-      "value": [
-        "azure-container-app"
-      ]
-    },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
     },
@@ -491,6 +491,9 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
   name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
+    computeTypes: [
+      'azure-container-instance'
+    ]
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
       addressSpace: '<addressSpace>'
@@ -516,9 +519,6 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       targetWorkflowQueueLength: '<targetWorkflowQueueLength>'
     }
     // Non-required parameters
-    computeTypes: [
-      'azure-container-instance'
-    ]
     enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     privateNetworking: '<privateNetworking>'
@@ -539,6 +539,11 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "computeTypes": {
+      "value": [
+        "azure-container-instance"
+      ]
+    },
     "namingPrefix": {
       "value": "<namingPrefix>"
     },
@@ -570,11 +575,6 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       }
     },
     // Non-required parameters
-    "computeTypes": {
-      "value": [
-        "azure-container-instance"
-      ]
-    },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
     },
@@ -605,6 +605,9 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
   name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
+    computeTypes: [
+      'azure-container-instance'
+    ]
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
       computeNetworking: {
@@ -613,6 +616,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
         natGatewayResourceId: '<natGatewayResourceId>'
         networkType: 'azureContainerInstance'
       }
+      containerRegistryPrivateDnsZoneId: '<containerRegistryPrivateDnsZoneId>'
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
       networkType: 'UseExisting'
       virtualNetworkResourceId: '<virtualNetworkResourceId>'
@@ -628,9 +632,6 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       selfHostedType: 'azuredevops'
     }
     // Non-required parameters
-    computeTypes: [
-      'azure-container-instance'
-    ]
     enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     privateNetworking: '<privateNetworking>'
@@ -651,6 +652,11 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "computeTypes": {
+      "value": [
+        "azure-container-instance"
+      ]
+    },
     "namingPrefix": {
       "value": "<namingPrefix>"
     },
@@ -662,6 +668,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
           "natGatewayResourceId": "<natGatewayResourceId>",
           "networkType": "azureContainerInstance"
         },
+        "containerRegistryPrivateDnsZoneId": "<containerRegistryPrivateDnsZoneId>",
         "containerRegistryPrivateEndpointSubnetName": "acr-subnet",
         "networkType": "UseExisting",
         "virtualNetworkResourceId": "<virtualNetworkResourceId>"
@@ -680,11 +687,6 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       }
     },
     // Non-required parameters
-    "computeTypes": {
-      "value": [
-        "azure-container-instance"
-      ]
-    },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
     },
@@ -715,6 +717,9 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
   name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
+    computeTypes: [
+      'azure-container-instance'
+    ]
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
       computeNetworking: {
@@ -723,6 +728,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
         deploymentScriptPrivateDnsZoneId: '<deploymentScriptPrivateDnsZoneId>'
         networkType: 'azureContainerApp'
       }
+      containerRegistryPrivateDnsZoneId: '<containerRegistryPrivateDnsZoneId>'
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
       networkType: 'UseExisting'
       virtualNetworkResourceId: '<virtualNetworkResourceId>'
@@ -734,9 +740,6 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       selfHostedType: 'github'
     }
     // Non-required parameters
-    computeTypes: [
-      'azure-container-instance'
-    ]
     enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     privateNetworking: '<privateNetworking>'
@@ -757,6 +760,11 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "computeTypes": {
+      "value": [
+        "azure-container-instance"
+      ]
+    },
     "namingPrefix": {
       "value": "<namingPrefix>"
     },
@@ -768,6 +776,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
           "deploymentScriptPrivateDnsZoneId": "<deploymentScriptPrivateDnsZoneId>",
           "networkType": "azureContainerApp"
         },
+        "containerRegistryPrivateDnsZoneId": "<containerRegistryPrivateDnsZoneId>",
         "containerRegistryPrivateEndpointSubnetName": "acr-subnet",
         "networkType": "UseExisting",
         "virtualNetworkResourceId": "<virtualNetworkResourceId>"
@@ -782,11 +791,6 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       }
     },
     // Non-required parameters
-    "computeTypes": {
-      "value": [
-        "azure-container-instance"
-      ]
-    },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
     },
@@ -817,6 +821,9 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
   name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
+    computeTypes: [
+      'azure-container-instance'
+    ]
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
       addressSpace: '<addressSpace>'
@@ -830,9 +837,6 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       selfHostedType: 'github'
     }
     // Non-required parameters
-    computeTypes: [
-      'azure-container-instance'
-    ]
     enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     privateNetworking: '<privateNetworking>'
@@ -853,6 +857,11 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "computeTypes": {
+      "value": [
+        "azure-container-instance"
+      ]
+    },
     "namingPrefix": {
       "value": "<namingPrefix>"
     },
@@ -872,11 +881,6 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       }
     },
     // Non-required parameters
-    "computeTypes": {
-      "value": [
-        "azure-container-instance"
-      ]
-    },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
     },
@@ -917,14 +921,8 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
 
 The compute target for the private runners.
 
-- Required: No
+- Required: Yes
 - Type: array
-- Default:
-  ```Bicep
-  [
-    'azure-container-instance'
-  ]
-  ```
 - Allowed:
   ```Bicep
   [
