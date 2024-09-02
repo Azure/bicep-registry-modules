@@ -93,24 +93,26 @@ resource deploymentScriptPrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-
 }
 
 resource acrVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  name: 'acrVnetlink-${namePrefix}'
-  location: location
+  name: '${acrPrivateDNSZone.name}-link-${namePrefix}'
+  location: 'global'
   parent: acrPrivateDNSZone
   properties: {
     virtualNetwork: {
       id: virtualNetwork.id
     }
+    registrationEnabled: false
   }
 }
 
 resource dsVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  name: 'vnetlink-${namePrefix}'
-  location: location
+  name: '${deploymentScriptPrivateDNSZone.name}-link-${namePrefix}'
+  location: 'global'
   parent: deploymentScriptPrivateDNSZone
   properties: {
     virtualNetwork: {
       id: virtualNetwork.id
     }
+    registrationEnabled: false
   }
 }
 
