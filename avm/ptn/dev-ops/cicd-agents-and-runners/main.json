@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "84039159808632697"
+      "templateHash": "13927545481849742036"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.",
@@ -657,7 +657,7 @@
         "imagePath": "github-runner-aci"
       }
     ],
-    "githubURL": "https://github.com/sebassem/bicep-registry-modules#avm-ptn-lz-private-runners:avm/ptn/dev-ops/cicd-agents-and-runners/container-images",
+    "githubURL": "https://github.com/azure/bicep-registry-modules#main:avm/ptn/dev-ops/cicd-agents-and-runners/container-images",
     "acaGitHubRules": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), createArray(createObject('name', 'github-runner-scaling-rule', 'type', 'github-runner', 'metadata', createObject('owner', parameters('selfHostedConfig').githubOrganization, 'repos', parameters('selfHostedConfig').githubRepository, 'targetWorkflowQueueLength', coalesce(tryGet(parameters('selfHostedConfig'), 'targetWorkflowQueueLength'), '1'), 'runnerScope', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerScope'), 'repo')), 'auth', createArray(createObject('secretRef', 'personal-access-token', 'triggerParameter', 'personalAccessToken')))), createArray())]",
     "acaGitHubSecrets": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), createArray(createObject('name', 'personal-access-token', 'value', parameters('selfHostedConfig').personalAccessToken)), createArray())]",
     "acaGitHubEnvVariables": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), createArray(createObject('name', 'RUNNER_NAME_PREFIX', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerNamePrefix'), 'gh-runner')), createObject('name', 'REPO_URL', 'value', variables('gitHubRunnerURL')), createObject('name', 'RUNNER_SCOPE', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerScope'), 'repo')), createObject('name', 'EPHEMERAL', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'ephemeral'), 'true')), createObject('name', 'ORG_NAME', 'value', parameters('selfHostedConfig').gitHubOrganization), createObject('name', 'RUNNER_GROUP', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerGroup'), '')), createObject('name', 'ACCESS_TOKEN', 'secretRef', 'personal-access-token')), createArray())]",
