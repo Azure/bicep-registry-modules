@@ -21,29 +21,6 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
     }
     subnets: [
       {
-        name: 'aca-subnet'
-        properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 24, 0)
-          natGateway: {
-            id: natGateway.id
-          }
-          delegations: [
-            {
-              name: 'Microsoft.App.environments'
-              properties: {
-                serviceName: 'Microsoft.App/environments'
-              }
-            }
-          ]
-        }
-      }
-      {
-        name: 'aca-ds-subnet'
-        properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 24, 1)
-        }
-      }
-      {
         name: 'acr-subnet'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 24, 2)
@@ -87,26 +64,10 @@ resource acrPrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   location: 'Global'
 }
 
-resource deploymentScriptPrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.file.${environment().suffixes.storage}'
-  location: 'Global'
-}
-
-resource acrVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  name: 'acrVnetlink-${namePrefix}'
+resource vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+  name: 'vnetlink'
   location: 'Global'
   parent: acrPrivateDNSZone
-  properties: {
-    virtualNetwork: {
-      id: virtualNetwork.id
-    }
-  }
-}
-
-resource dsVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  name: 'vnetlink-${namePrefix}'
-  location: 'Global'
-  parent: deploymentScriptPrivateDNSZone
   properties: {
     virtualNetwork: {
       id: virtualNetwork.id
@@ -133,9 +94,3 @@ output publicIPResourceId string = publicIP.id
 
 @description('The resource ID of the created NAT gateway.')
 output natGatewayResourceId string = natGateway.id
-
-@description('The resource ID of the created ACR private DNS zone.')
-output acrPrivateDNSZoneId string = acrPrivateDNSZone.id
-
-@description('The resource ID of the created deployment script private DNS zone.')
-output deploymentScriptPrivateDNSZoneId string = deploymentScriptPrivateDNSZone.id

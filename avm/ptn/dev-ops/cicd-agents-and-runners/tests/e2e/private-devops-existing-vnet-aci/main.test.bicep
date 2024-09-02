@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet.'
-metadata description = 'This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Apps in an existing vnet.'
+metadata name = 'Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet.'
+metadata description = 'This instance deploys the module with the minimum set of required parameters Azure DevOps self-hosted agents using Private networking in Azure Container Instances in an existing vnet.'
 
 // ========== //
 // Parameters //
@@ -9,16 +9,16 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-githubrunners-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-azuredevops-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
-@description('Required. The name of the GitHub organization.')
-param githubOrganization string = 'githHubOrganization'
+@description('Required. The name of the Azure DevOps agents pool.')
+param agentsPoolName string = 'aci-pool'
 
-@description('Required. The name of the GitHub repository.')
-param githubRepository string = 'dummyRepo'
+@description('Required. The name of the Azure DevOps organization.')
+param devOpsOrganization string = 'azureDevOpsOrganization'
 
 @description('Required. The personal access token for the Azure DevOps organization.')
 @secure()
@@ -31,7 +31,7 @@ param privateNetworking bool = true
 param enableTelemetry bool = true
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'pnexg'
+param serviceShort string = 'pnexa'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -71,20 +71,24 @@ module testDeployment '../../../main.bicep' = {
       'azure-container-instance'
     ]
     selfHostedConfig: {
-      githubOrganization: githubOrganization
-      githubRepository: githubRepository
+      selfHostedType: 'azuredevops'
+      agentsPoolName: agentsPoolName
+      devOpsOrganization: devOpsOrganization
       personalAccessToken: personalAccessToken
-      selfHostedType: 'github'
+      agentNamePrefix: namePrefix
+      azureContainerInstanceTarget: {
+        numberOfInstances: 2
+      }
     }
     networkingConfiguration: {
       networkType: 'UseExisting'
       virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
       computeNetworking: {
-        containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
-        containerAppSubnetName: 'aca-subnet'
-        deploymentScriptPrivateDnsZoneId: nestedDependencies.outputs.deploymentScriptPrivateDNSZoneId
-        networkType: 'azureContainerApp'
+        containerInstanceSubnetName: 'aci-subnet'
+        natGatewayPublicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceId
+        natGatewayResourceId: nestedDependencies.outputs.natGatewayResourceId
+        networkType: 'azureContainerInstance'
       }
     }
     enableTelemetry: enableTelemetry

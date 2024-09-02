@@ -89,8 +89,9 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults for GitHub self-hosted runners using Azure Container Apps.](#example-3-using-only-defaults-for-github-self-hosted-runners-using-azure-container-apps)
 - [Using large parameter set](#example-4-using-large-parameter-set)
 - [Using large parameter set](#example-5-using-large-parameter-set)
-- [Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet.](#example-6-using-only-defaults-for-github-self-hosted-runners-using-private-networking-in-an-existing-vnet)
-- [Using only defaults for GitHub self-hosted runners using Private networking.](#example-7-using-only-defaults-for-github-self-hosted-runners-using-private-networking)
+- [Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet.](#example-6-using-only-defaults-for-azure-devops-self-hosted-agents-using-private-networking-in-an-existing-vnet)
+- [Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet.](#example-7-using-only-defaults-for-github-self-hosted-runners-using-private-networking-in-an-existing-vnet)
+- [Using only defaults for GitHub self-hosted runners using Private networking.](#example-8-using-only-defaults-for-github-self-hosted-runners-using-private-networking)
 
 ### Example 1: _Using only defaults for Azure DevOps self-hosted agents using both Azure Container Instances and Azure Container Apps._
 
@@ -590,7 +591,117 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
 </details>
 <p>
 
-### Example 6: _Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet._
+### Example 6: _Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet._
+
+This instance deploys the module with the minimum set of required parameters Azure DevOps self-hosted agents using Private networking in Azure Container Instances in an existing vnet.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
+  name: 'cicdAgentsAndRunnersDeployment'
+  params: {
+    // Required parameters
+    namingPrefix: '<namingPrefix>'
+    networkingConfiguration: {
+      computeNetworking: {
+        containerInstanceSubnetName: 'aci-subnet'
+        natGatewayPublicIpAddressResourceId: '<natGatewayPublicIpAddressResourceId>'
+        natGatewayResourceId: '<natGatewayResourceId>'
+        networkType: 'azureContainerInstance'
+      }
+      containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
+      networkType: 'UseExisting'
+      virtualNetworkResourceId: '<virtualNetworkResourceId>'
+    }
+    selfHostedConfig: {
+      agentNamePrefix: '<agentNamePrefix>'
+      agentsPoolName: '<agentsPoolName>'
+      azureContainerInstanceTarget: {
+        numberOfInstances: 2
+      }
+      devOpsOrganization: '<devOpsOrganization>'
+      personalAccessToken: '<personalAccessToken>'
+      selfHostedType: 'azuredevops'
+    }
+    // Non-required parameters
+    computeTypes: [
+      'azure-container-instance'
+    ]
+    enableTelemetry: '<enableTelemetry>'
+    location: '<location>'
+    privateNetworking: '<privateNetworking>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "namingPrefix": {
+      "value": "<namingPrefix>"
+    },
+    "networkingConfiguration": {
+      "value": {
+        "computeNetworking": {
+          "containerInstanceSubnetName": "aci-subnet",
+          "natGatewayPublicIpAddressResourceId": "<natGatewayPublicIpAddressResourceId>",
+          "natGatewayResourceId": "<natGatewayResourceId>",
+          "networkType": "azureContainerInstance"
+        },
+        "containerRegistryPrivateEndpointSubnetName": "acr-subnet",
+        "networkType": "UseExisting",
+        "virtualNetworkResourceId": "<virtualNetworkResourceId>"
+      }
+    },
+    "selfHostedConfig": {
+      "value": {
+        "agentNamePrefix": "<agentNamePrefix>",
+        "agentsPoolName": "<agentsPoolName>",
+        "azureContainerInstanceTarget": {
+          "numberOfInstances": 2
+        },
+        "devOpsOrganization": "<devOpsOrganization>",
+        "personalAccessToken": "<personalAccessToken>",
+        "selfHostedType": "azuredevops"
+      }
+    },
+    // Non-required parameters
+    "computeTypes": {
+      "value": [
+        "azure-container-instance"
+      ]
+    },
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "privateNetworking": {
+      "value": "<privateNetworking>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet._
 
 This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Apps in an existing vnet.
 
@@ -606,9 +717,12 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     // Required parameters
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
-      containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
-      containerAppSubnetName: 'aca-subnet'
-      containerInstanceSubnetName: 'aci-subnet'
+      computeNetworking: {
+        containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
+        containerAppSubnetName: 'aca-subnet'
+        deploymentScriptPrivateDnsZoneId: '<deploymentScriptPrivateDnsZoneId>'
+        networkType: 'azureContainerApp'
+      }
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
       networkType: 'UseExisting'
       virtualNetworkResourceId: '<virtualNetworkResourceId>'
@@ -648,9 +762,12 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     },
     "networkingConfiguration": {
       "value": {
-        "containerAppDeploymentScriptSubnetName": "aca-ds-subnet",
-        "containerAppSubnetName": "aca-subnet",
-        "containerInstanceSubnetName": "aci-subnet",
+        "computeNetworking": {
+          "containerAppDeploymentScriptSubnetName": "aca-ds-subnet",
+          "containerAppSubnetName": "aca-subnet",
+          "deploymentScriptPrivateDnsZoneId": "<deploymentScriptPrivateDnsZoneId>",
+          "networkType": "azureContainerApp"
+        },
         "containerRegistryPrivateEndpointSubnetName": "acr-subnet",
         "networkType": "UseExisting",
         "virtualNetworkResourceId": "<virtualNetworkResourceId>"
@@ -686,7 +803,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
 </details>
 <p>
 
-### Example 7: _Using only defaults for GitHub self-hosted runners using Private networking._
+### Example 8: _Using only defaults for GitHub self-hosted runners using Private networking._
 
 This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Instances.
 

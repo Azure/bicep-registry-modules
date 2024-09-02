@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "15525679194565745702"
+      "templateHash": "9100003426244751781"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.",
@@ -148,28 +148,10 @@
             "description": "Required. The existing virtual network resource Id."
           }
         },
-        "containerInstanceSubnetName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The existing network container instance subnet name. This is required for Container Apps compute type as well for the deployment script to run the placeholder agent. This subnet needs to have service delegation for Azure Container Instances."
-          }
-        },
-        "containerAppSubnetName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The existing network container app subnet name. This is required for Container Apps compute type. This subnet needs to have service delegation for App environments."
-          }
-        },
         "containerRegistryPrivateEndpointSubnetName": {
           "type": "string",
           "metadata": {
             "description": "Required. The subnet name for the container registry private endpoint."
-          }
-        },
-        "containerAppDeploymentScriptSubnetName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The subnet name for the container app deployment script."
           }
         },
         "containerRegistryPrivateDnsZoneId": {
@@ -179,11 +161,83 @@
             "description": "Optional. The container registry private DNS zone Id. If not provided, a new private DNS zone will be created."
           }
         },
+        "computeNetworking": {
+          "type": "object",
+          "discriminator": {
+            "propertyName": "networkType",
+            "mapping": {
+              "azureContainerApp": {
+                "$ref": "#/definitions/containerAppNetworkConfigType"
+              },
+              "azureContainerInstance": {
+                "$ref": "#/definitions/containerInstanceNetworkConfigType"
+              }
+            }
+          }
+        }
+      }
+    },
+    "containerAppNetworkConfigType": {
+      "type": "object",
+      "properties": {
+        "networkType": {
+          "type": "string",
+          "allowedValues": [
+            "azureContainerApp"
+          ],
+          "metadata": {
+            "description": "Required. The network type. This can be either azureContainerApp or azureContainerInstance."
+          }
+        },
+        "containerAppSubnetName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The existing network container app subnet name. This is required for Container Apps compute type. This subnet needs to have service delegation for App environments."
+          }
+        },
+        "containerAppDeploymentScriptSubnetName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The subnet name for the container app deployment script."
+          }
+        },
         "deploymentScriptPrivateDnsZoneId": {
           "type": "string",
           "nullable": true,
           "metadata": {
             "description": "Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created."
+          }
+        }
+      }
+    },
+    "containerInstanceNetworkConfigType": {
+      "type": "object",
+      "properties": {
+        "networkType": {
+          "type": "string",
+          "allowedValues": [
+            "azureContainerInstance"
+          ],
+          "metadata": {
+            "description": "Required. The network type. This can be either azureContainerApp or azureContainerInstance."
+          }
+        },
+        "natGatewayResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Optional. The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created."
+          }
+        },
+        "natGatewayPublicIpAddressResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Optional. The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created."
+          }
+        },
+        "containerInstanceSubnetName": {
+          "type": "string",
+          "metadata": {
+            "description": "Optional. The container instance subnet name in the created virtual network. If not provided, a default name will be used."
           }
         }
       }
@@ -9988,7 +10042,7 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "infrastructureSubnetId": "[if(equals(parameters('networkingConfiguration').networkType, 'createNew'), createObject('value', filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppSubnetName'), 'app-subnet'))))[0]), if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), createObject('value', format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').containerAppSubnetName)), createObject('value', null())))]",
+          "infrastructureSubnetId": "[if(equals(parameters('networkingConfiguration').networkType, 'createNew'), createObject('value', filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppSubnetName'), 'app-subnet'))))[0]), if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), createObject('value', format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerAppSubnetName)), createObject('value', null())))]",
           "zoneRedundant": {
             "value": true
           },
@@ -12989,7 +13043,7 @@
               }
             ]
           },
-          "subnetId": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0]), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').containerInstanceSubnetName)), createObject('value', null())))]",
+          "subnetId": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0]), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerInstanceSubnetName)), createObject('value', null())))]",
           "ipAddressType": "[if(parameters('privateNetworking'), createObject('value', 'Private'), createObject('value', 'Public'))]",
           "sku": {
             "value": "Standard"
@@ -19193,7 +19247,7 @@
             "value": [
               {
                 "service": "file",
-                "subnetResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').containerAppDeploymentScriptSubnetName), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppDeploymentScriptSubnetName'), 'app-deployment-script-subnet'))))[0])]",
+                "subnetResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerAppDeploymentScriptSubnetName), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppDeploymentScriptSubnetName'), 'app-deployment-script-subnet'))))[0])]",
                 "privateDnsZoneGroupName": "stgPrivateDNSZoneGroup",
                 "privateDnsZoneResourceIds": "[if(not(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneId'), ''))), createArray(coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneId'), '')), createArray(reference('deploymentScriptPrivateDNSZone').outputs.resourceId.value))]"
               }
@@ -24218,7 +24272,7 @@
             }
           },
           "storageAccountResourceId": "[if(parameters('privateNetworking'), createObject('value', reference('deploymentScriptStg').outputs.resourceId.value), createObject('value', null()))]",
-          "subnetResourceIds": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', createArray(filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0])), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', createArray(format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').containerInstanceSubnetName))), createObject('value', null())))]",
+          "subnetResourceIds": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', createArray(filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0])), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', createArray(format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerInstanceSubnetName))), createObject('value', null())))]",
           "arguments": {
             "value": "[format('-resourceGroup {0} -jobName {1} -subscriptionId {2}', resourceGroup().name, reference('acaPlaceholderJob').outputs.name.value, subscription().subscriptionId)]"
           },

@@ -369,7 +369,7 @@ module appEnvironment 'br/public:avm/res/app/managed-environment:0.6.2' = if (co
           subnetId => contains(subnetId, networkingConfiguration.?containerAppSubnetName ?? 'app-subnet')
         )[0]
       : networkingConfiguration.networkType == 'useExisting'
-          ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.containerAppSubnetName}'
+          ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.containerAppSubnetName}'
           : null
     zoneRedundant: true
     internal: privateNetworking ? true : false
@@ -496,7 +496,7 @@ module aciJob 'br/public:avm/res/container-instance/container-group:0.2.0' = [
             subnetId => contains(subnetId, networkingConfiguration.?containerInstanceSubnetName ?? 'aci-subnet')
           )[0]
         : privateNetworking && networkingConfiguration.networkType == 'useExisting'
-            ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.containerInstanceSubnetName}'
+            ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.containerInstanceSubnetName}'
             : null
       ipAddressType: privateNetworking ? 'Private' : 'Public'
       sku: 'Standard'
@@ -738,7 +738,7 @@ module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.13.0' = 
       {
         service: 'file'
         subnetResourceId: networkingConfiguration.networkType == 'useExisting'
-          ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.containerAppDeploymentScriptSubnetName}'
+          ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.containerAppDeploymentScriptSubnetName}'
           : filter(
               newVnet.outputs.subnetResourceIds,
               subnetId =>
@@ -787,7 +787,7 @@ module runPlaceHolderAgent 'br/public:avm/res/resources/deployment-script:0.3.1'
         ]
       : privateNetworking && networkingConfiguration.networkType == 'useExisting'
           ? [
-              '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.containerInstanceSubnetName}'
+              '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.containerInstanceSubnetName}'
             ]
           : null
     arguments: '-resourceGroup ${resourceGroup().name} -jobName ${acaPlaceholderJob.outputs.name} -subscriptionId ${subscription().subscriptionId}'
@@ -866,23 +866,42 @@ type existingNetworkType = {
   @description('Required. The existing virtual network resource Id.')
   virtualNetworkResourceId: string
 
-  @description('Required. The existing network container instance subnet name. This is required for Container Apps compute type as well for the deployment script to run the placeholder agent. This subnet needs to have service delegation for Azure Container Instances.')
-  containerInstanceSubnetName: string
-
-  @description('Required. The existing network container app subnet name. This is required for Container Apps compute type. This subnet needs to have service delegation for App environments.')
-  containerAppSubnetName: string
-
   @description('Required. The subnet name for the container registry private endpoint.')
   containerRegistryPrivateEndpointSubnetName: string
-
-  @description('Required. The subnet name for the container app deployment script.')
-  containerAppDeploymentScriptSubnetName: string
 
   @description('Optional. The container registry private DNS zone Id. If not provided, a new private DNS zone will be created.')
   containerRegistryPrivateDnsZoneId: string?
 
+  @discriminator('networkType')
+  computeNetworking: containerAppNetworkConfigType | containerInstanceNetworkConfigType
+}
+
+type containerAppNetworkConfigType = {
+  @description('Required. The network type. This can be either azureContainerApp or azureContainerInstance.')
+  networkType: 'azureContainerApp'
+
+  @description('Required. The existing network container app subnet name. This is required for Container Apps compute type. This subnet needs to have service delegation for App environments.')
+  containerAppSubnetName: string
+
+  @description('Required. The subnet name for the container app deployment script.')
+  containerAppDeploymentScriptSubnetName: string
+
   @description('Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created.')
   deploymentScriptPrivateDnsZoneId: string?
+}
+
+type containerInstanceNetworkConfigType = {
+  @description('Required. The network type. This can be either azureContainerApp or azureContainerInstance.')
+  networkType: 'azureContainerInstance'
+
+  @description('Optional. The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created.')
+  natGatewayResourceId: string
+
+  @description('Optional. The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.')
+  natGatewayPublicIpAddressResourceId: string
+
+  @description('Optional. The container instance subnet name in the created virtual network. If not provided, a default name will be used.')
+  containerInstanceSubnetName: string
 }
 
 @discriminator('networkType')
