@@ -234,6 +234,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.4.0' = {
     name: 'acr${namingPrefix}${uniqueString(resourceGroup().id)}'
     acrSku: privateNetworking ? 'Premium' : 'Standard'
     acrAdminUserEnabled: false
+    // Assigning AcrPull and AcrPush roles to the user assigned identity
     roleAssignments: [
       {
         principalId: userAssignedIdentity.outputs.principalId
@@ -718,6 +719,7 @@ module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.13.0' = 
     allowBlobPublicAccess: false
     allowSharedKeyAccess: true
     publicNetworkAccess: 'Disabled'
+    //Assigning Storage Blob Data Contributor role to the user assigned identity
     roleAssignments: [
       {
         principalId: userAssignedIdentity.outputs.principalId
