@@ -595,7 +595,7 @@ function Set-DataCollectionSection {
     )
 
     # Load content, if required
-    if ($PreLoadedContent.Keys -notcontains 'TelemetryFileContent') {
+    if ($PreLoadedContent.Keys -notcontains 'TelemetryFileContent' -or -not $PreLoadedContent['TelemetryFileContent']) {
 
         $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
         try {

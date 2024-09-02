@@ -100,6 +100,9 @@ function Invoke-AvmJsonModuleIndexGeneration {
                     }
                     $tags = $tagListResponse.tags | Sort-Object -Culture 'en-US'
 
+                    # Sort tags by order of semantic versioning with the latest version last
+                    $tags = $tags | Sort-Object -Property { [semver] $_ }
+
                     $properties = [ordered]@{}
                     foreach ($tag in $tags) {
                         $gitTag = "$modulePath/$tag"

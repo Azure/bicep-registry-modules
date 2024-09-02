@@ -56,7 +56,7 @@ param scaleSetFaultDomain int = 1
 param proximityPlacementGroupResourceId string = ''
 
 @description('Required. Configures NICs and PIPs.')
-param nicConfigurations array = []
+param nicConfigurations array
 
 @description('Optional. Specifies the priority for the virtual machine.')
 @allowed([
@@ -85,6 +85,8 @@ param licenseType string = ''
 param extensionDomainJoinPassword string = ''
 
 @description('Optional. The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed.')
+@secure()
+#disable-next-line secure-parameter-default
 param extensionDomainJoinConfig object = {
   enabled: false
 }
@@ -115,6 +117,16 @@ param extensionNetworkWatcherAgentConfig object = {
 @description('Optional. The configuration for the [Azure Disk Encryption] extension. Must at least contain the ["enabled": true] property to be executed. Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys.')
 param extensionAzureDiskEncryptionConfig object = {
   enabled: false
+}
+
+@description('Optional. Turned on by default. The configuration for the [Application Health Monitoring] extension. Must at least contain the ["enabled": true] property to be executed.')
+param extensionHealthConfig object = {
+  enabled: true
+  settings: {
+    protocol: 'http'
+    port: 80
+    requestPath: '/'
+  }
 }
 
 @description('Optional. The configuration for the [Desired State Configuration] extension. Must at least contain the ["enabled": true] property to be executed.')
@@ -179,7 +191,7 @@ param enableAutomaticOSUpgrade bool = false
 param disableAutomaticRollback bool = false
 
 @description('Optional. Specifies whether automatic repairs should be enabled on the virtual machine scale set.')
-param automaticRepairsPolicyEnabled bool = false
+param automaticRepairsPolicyEnabled bool = true
 
 @description('Optional. The amount of time for which automatic repairs are suspended due to a state change on VM. The grace time starts after the state change has completed. This helps avoid premature or accidental repairs. The time duration should be specified in ISO 8601 format. The minimum allowed grace period is 30 minutes (PT30M). The maximum allowed grace period is 90 minutes (PT90M).')
 param gracePeriod string = 'PT30M'
@@ -201,6 +213,35 @@ param provisionVMAgent bool = true
 
 @description('Optional. Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning.')
 param enableAutomaticUpdates bool = true
+
+@description('Optional. VM guest patching orchestration mode. \'AutomaticByOS\' & \'Manual\' are for Windows only, \'ImageDefault\' for Linux only. Refer to \'https://learn.microsoft.com/en-us/azure/virtual-machines/automatic-vm-guest-patching\'.')
+@allowed([
+  'AutomaticByPlatform'
+  'AutomaticByOS'
+  'Manual'
+  'ImageDefault'
+  ''
+])
+param patchMode string = 'AutomaticByPlatform'
+
+@description('Optional. Enables customer to schedule patching without accidental upgrades.')
+param bypassPlatformSafetyChecksOnUserSchedule bool = true
+
+@description('Optional. Specifies the reboot setting for all AutomaticByPlatform patch installation operations.')
+@allowed([
+  'Always'
+  'IfRequired'
+  'Never'
+  'Unknown'
+])
+param rebootSetting string = 'IfRequired'
+
+@description('Optional. VM guest patching assessment mode. Set it to \'AutomaticByPlatform\' to enable automatically check for updates every 24 hours.')
+@allowed([
+  'AutomaticByPlatform'
+  'ImageDefault'
+])
+param patchAssessmentMode string = 'ImageDefault'
 
 @description('Optional. Specifies the time zone of the virtual machine. e.g. \'Pacific Standard Time\'. Possible values can be `TimeZoneInfo.id` value from time zones returned by `TimeZoneInfo.GetSystemTimeZones`.')
 param timeZone string = ''
@@ -288,11 +329,35 @@ var linuxConfiguration = {
     publicKeys: publicKeysFormatted
   }
   provisionVMAgent: provisionVMAgent
+  patchSettings: (provisionVMAgent && (patchMode =~ 'AutomaticByPlatform' || patchMode =~ 'ImageDefault'))
+    ? {
+        patchMode: patchMode
+        assessmentMode: patchAssessmentMode
+        automaticByPlatformSettings: (patchMode =~ 'AutomaticByPlatform')
+          ? {
+              bypassPlatformSafetyChecksOnUserSchedule: bypassPlatformSafetyChecksOnUserSchedule
+              rebootSetting: rebootSetting
+            }
+          : null
+      }
+    : null
 }
 
 var windowsConfiguration = {
   provisionVMAgent: provisionVMAgent
   enableAutomaticUpdates: enableAutomaticUpdates
+  patchSettings: (provisionVMAgent && (patchMode =~ 'AutomaticByPlatform' || patchMode =~ 'AutomaticByOS' || patchMode =~ 'Manual'))
+    ? {
+        patchMode: patchMode
+        assessmentMode: patchAssessmentMode
+        automaticByPlatformSettings: (patchMode =~ 'AutomaticByPlatform')
+          ? {
+              bypassPlatformSafetyChecksOnUserSchedule: bypassPlatformSafetyChecksOnUserSchedule
+              rebootSetting: rebootSetting
+            }
+          : null
+      }
+    : null
   timeZone: empty(timeZone) ? null : timeZone
   additionalUnattendContent: empty(additionalUnattendContent) ? null : additionalUnattendContent
   winRM: !empty(winRM)
@@ -390,6 +455,17 @@ var builtInRoleNames = {
     'd24ecba3-c1f4-40fa-a7bb-4588a071e8fd'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -534,6 +610,26 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
             : null
         }
       }
+      extensionProfile: extensionHealthConfig.enabled
+        ? {
+            extensions: [
+              {
+                name: 'HealthExtension'
+                properties: {
+                  publisher: 'Microsoft.ManagedServices'
+                  type: (osType == 'Windows' ? 'ApplicationHealthWindows' : 'ApplicationHealthLinux')
+                  typeHandlerVersion: extensionHealthConfig.?typeHandlerVersion ?? '1.0'
+                  autoUpgradeMinorVersion: extensionHealthConfig.?autoUpgradeMinorVersion ?? false
+                  settings: {
+                    protocol: extensionHealthConfig.?protocol ?? 'http'
+                    port: extensionHealthConfig.?port ?? 80
+                    requestPath: extensionHealthConfig.?requestPath ?? '/'
+                  }
+                }
+              }
+            ]
+          }
+        : null
       licenseType: empty(licenseType) ? null : licenseType
       priority: vmPriority
       evictionPolicy: enableEvictionPolicy ? 'Deallocate' : null
@@ -806,14 +902,10 @@ resource vmss_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-
 ]
 
 resource vmss_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(vmss.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(vmss.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -861,6 +953,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 

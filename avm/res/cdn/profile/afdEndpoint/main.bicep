@@ -81,3 +81,6 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = afdEndpoint.location
+
+@description('The list of routes assigned to the AFD endpoint.')
+output routes array = routes ?? []

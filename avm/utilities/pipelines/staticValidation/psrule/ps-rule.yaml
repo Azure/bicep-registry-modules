@@ -74,11 +74,10 @@ configuration:
 
 rule:
   # Enable custom rules that don't exist in the baseline
-  includeLocal: true
+  includeLocal: false
   exclude:
     # Ignore the following rules for all resources
     - Azure.KeyVault.PurgeProtect
     - Azure.VM.UseHybridUseBenefit
-    - Azure.Storage.UseReplication
     - Azure.AppConfig.PurgeProtect
-    - Azure.APIM.MultiRegion # Team agreed this is too expensive for most use cases and is safe to ignore.
+    - Azure.MySQL.MaintenanceWindow # Must be excluded until https://msdata.visualstudio.com/Database%20Systems/_workitems/edit/2788114 is fixed
