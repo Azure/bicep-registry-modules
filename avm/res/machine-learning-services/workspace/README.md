@@ -21,6 +21,7 @@ This module deploys a Machine Learning Services Workspace.
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.MachineLearningServices/workspaces` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-04-01-preview/workspaces) |
 | `Microsoft.MachineLearningServices/workspaces/computes` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2022-10-01/workspaces/computes) |
+| `Microsoft.MachineLearningServices/workspaces/connections` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-04-01/workspaces/connections) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -59,6 +60,26 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
     associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
     associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
+    connections: [
+      {
+        category: 'AIServices'
+        connectionProperties: {
+          authType: 'ApiKey'
+          credentials: {
+            key: 'key'
+          }
+        }
+        metadata: {
+          ApiType: 'Azure'
+          ApiVersion: '2023-07-01-preview'
+          DeploymentApiVersion: '2023-10-01-preview'
+          Location: '<Location>'
+          ResourceId: '<ResourceId>'
+        }
+        name: 'ai'
+        target: '<target>'
+      }
+    ]
     kind: 'Hub'
     location: '<location>'
     workspaceHubConfig: {
@@ -97,6 +118,28 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     },
     "associatedStorageAccountResourceId": {
       "value": "<associatedStorageAccountResourceId>"
+    },
+    "connections": {
+      "value": [
+        {
+          "category": "AIServices",
+          "connectionProperties": {
+            "authType": "ApiKey",
+            "credentials": {
+              "key": "key"
+            }
+          },
+          "metadata": {
+            "ApiType": "Azure",
+            "ApiVersion": "2023-07-01-preview",
+            "DeploymentApiVersion": "2023-10-01-preview",
+            "Location": "<Location>",
+            "ResourceId": "<ResourceId>"
+          },
+          "name": "ai",
+          "target": "<target>"
+        }
+      ]
     },
     "kind": {
       "value": "Hub"
@@ -433,6 +476,19 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         sku: 'Basic'
       }
     ]
+    connections: [
+      {
+        category: 'ApiKey'
+        connectionProperties: {
+          authType: 'ApiKey'
+          credentials: {
+            key: 'key'
+          }
+        }
+        name: 'connection'
+        target: 'https://example.com'
+      }
+    ]
     description: 'The cake is a lie.'
     diagnosticSettings: [
       {
@@ -588,6 +644,21 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
             "vmSize": "STANDARD_DS11_V2"
           },
           "sku": "Basic"
+        }
+      ]
+    },
+    "connections": {
+      "value": [
+        {
+          "category": "ApiKey",
+          "connectionProperties": {
+            "authType": "ApiKey",
+            "credentials": {
+              "key": "key"
+            }
+          },
+          "name": "connection",
+          "target": "https://example.com"
         }
       ]
     },
@@ -940,6 +1011,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 | :-- | :-- | :-- |
 | [`associatedContainerRegistryResourceId`](#parameter-associatedcontainerregistryresourceid) | string | The resource ID of the associated Container Registry. |
 | [`computes`](#parameter-computes) | array | Computes to create respectively attach to the workspace. |
+| [`connections`](#parameter-connections) | array | Connections to create in the workspace. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`description`](#parameter-description) | string | The description of this workspace. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -1082,6 +1154,216 @@ Computes to create respectively attach to the workspace.
 
 - Required: No
 - Type: array
+
+### Parameter: `connections`
+
+Connections to create in the workspace.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-connectionscategory) | string | Category of the connection. |
+| [`connectionProperties`](#parameter-connectionsconnectionproperties) | secureObject | The properties of the connection, specific to the auth type. |
+| [`name`](#parameter-connectionsname) | string | Name of the connection to create. |
+| [`target`](#parameter-connectionstarget) | string | The target of the connection. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`expiryTime`](#parameter-connectionsexpirytime) | string | The expiry time of the connection. |
+| [`isSharedToAll`](#parameter-connectionsissharedtoall) | bool | Indicates whether the connection is shared to all users in the workspace. |
+| [`metadata`](#parameter-connectionsmetadata) | object | User metadata for the connection. |
+| [`sharedUserList`](#parameter-connectionsshareduserlist) | array | The shared user list of the connection. |
+| [`value`](#parameter-connectionsvalue) | string | Value details of the workspace connection. |
+
+### Parameter: `connections.category`
+
+Category of the connection.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ADLSGen2'
+    'AIServices'
+    'AmazonMws'
+    'AmazonRdsForOracle'
+    'AmazonRdsForSqlServer'
+    'AmazonRedshift'
+    'AmazonS3Compatible'
+    'ApiKey'
+    'AzureBlob'
+    'AzureDatabricksDeltaLake'
+    'AzureDataExplorer'
+    'AzureMariaDb'
+    'AzureMySqlDb'
+    'AzureOneLake'
+    'AzureOpenAI'
+    'AzurePostgresDb'
+    'AzureSqlDb'
+    'AzureSqlMi'
+    'AzureSynapseAnalytics'
+    'AzureTableStorage'
+    'BingLLMSearch'
+    'Cassandra'
+    'CognitiveSearch'
+    'CognitiveService'
+    'Concur'
+    'ContainerRegistry'
+    'CosmosDb'
+    'CosmosDbMongoDbApi'
+    'Couchbase'
+    'CustomKeys'
+    'Db2'
+    'Drill'
+    'Dynamics'
+    'DynamicsAx'
+    'DynamicsCrm'
+    'Eloqua'
+    'FileServer'
+    'FtpServer'
+    'GenericContainerRegistry'
+    'GenericHttp'
+    'GenericRest'
+    'Git'
+    'GoogleAdWords'
+    'GoogleBigQuery'
+    'GoogleCloudStorage'
+    'Greenplum'
+    'Hbase'
+    'Hdfs'
+    'Hive'
+    'Hubspot'
+    'Impala'
+    'Informix'
+    'Jira'
+    'Magento'
+    'MariaDb'
+    'Marketo'
+    'MicrosoftAccess'
+    'MongoDbAtlas'
+    'MongoDbV2'
+    'MySql'
+    'Netezza'
+    'ODataRest'
+    'Odbc'
+    'Office365'
+    'OpenAI'
+    'Oracle'
+    'OracleCloudStorage'
+    'OracleServiceCloud'
+    'PayPal'
+    'Phoenix'
+    'PostgreSql'
+    'Presto'
+    'PythonFeed'
+    'QuickBooks'
+    'Redis'
+    'Responsys'
+    'S3'
+    'Salesforce'
+    'SalesforceMarketingCloud'
+    'SalesforceServiceCloud'
+    'SapBw'
+    'SapCloudForCustomer'
+    'SapEcc'
+    'SapHana'
+    'SapOpenHub'
+    'SapTable'
+    'Serp'
+    'Serverless'
+    'ServiceNow'
+    'Sftp'
+    'SharePointOnlineList'
+    'Shopify'
+    'Snowflake'
+    'Spark'
+    'SqlServer'
+    'Square'
+    'Sybase'
+    'Teradata'
+    'Vertica'
+    'WebTable'
+    'Xero'
+    'Zoho'
+  ]
+  ```
+
+### Parameter: `connections.connectionProperties`
+
+The properties of the connection, specific to the auth type.
+
+- Required: Yes
+- Type: secureObject
+
+### Parameter: `connections.name`
+
+Name of the connection to create.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connections.target`
+
+The target of the connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connections.expiryTime`
+
+The expiry time of the connection.
+
+- Required: No
+- Type: string
+
+### Parameter: `connections.isSharedToAll`
+
+Indicates whether the connection is shared to all users in the workspace.
+
+- Required: No
+- Type: bool
+
+### Parameter: `connections.metadata`
+
+User metadata for the connection.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-connectionsmetadata>any_other_property<) | string | The metadata key-value pairs. |
+
+### Parameter: `connections.metadata.>Any_other_property<`
+
+The metadata key-value pairs.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connections.sharedUserList`
+
+The shared user list of the connection.
+
+- Required: No
+- Type: array
+
+### Parameter: `connections.value`
+
+Value details of the workspace connection.
+
+- Required: No
+- Type: string
 
 ### Parameter: `customerManagedKey`
 
