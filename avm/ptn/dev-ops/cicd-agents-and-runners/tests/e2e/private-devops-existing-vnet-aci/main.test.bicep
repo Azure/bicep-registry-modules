@@ -84,6 +84,7 @@ module testDeployment '../../../main.bicep' = {
       networkType: 'UseExisting'
       virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
+      containerRegistryPrivateDnsZoneId: nestedDependencies.outputs.acrPrivateDNSZoneResourceId
       computeNetworking: {
         containerInstanceSubnetName: 'aci-subnet'
         natGatewayPublicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceId

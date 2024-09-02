@@ -95,3 +95,6 @@ output publicIPResourceId string = publicIP.id
 
 @description('The resource ID of the created NAT gateway.')
 output natGatewayResourceId string = natGateway.id
+
+@description('The resource ID of the created private DNS zone.')
+output acrPrivateDNSZoneResourceId string = acrPrivateDNSZone.id

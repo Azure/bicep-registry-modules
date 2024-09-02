@@ -79,6 +79,7 @@ module testDeployment '../../../main.bicep' = {
     networkingConfiguration: {
       networkType: 'UseExisting'
       virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
+      containerRegistryPrivateDnsZoneId: nestedDependencies.outputs.acrPrivateDNSZoneId
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
       computeNetworking: {
         containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
