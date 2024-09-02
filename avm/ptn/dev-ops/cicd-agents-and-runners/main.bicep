@@ -50,7 +50,7 @@ var imagePaths = [
   }
 ]
 
-var githubURL = 'https://github.com/azure/bicep-registry-modules#main:avm/ptn/dev-ops/cicd-agents-and-runners/container-images'
+var githubURL = 'https://github.com/sebassem/bicep-registry-modules#avm-ptn-lz-private-runners:avm/ptn/dev-ops/cicd-agents-and-runners/scripts'
 
 var acaGitHubRules = (selfHostedConfig.selfHostedType == 'github')
   ? [
