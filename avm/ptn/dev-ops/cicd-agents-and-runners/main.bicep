@@ -892,6 +892,9 @@ type containerAppNetworkConfigType = {
 
   @description('Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created.')
   deploymentScriptPrivateDnsZoneId: string?
+
+  @description('Required. The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately.')
+  containerInstanceSubnetName: string?
 }
 
 type containerInstanceNetworkConfigType = {

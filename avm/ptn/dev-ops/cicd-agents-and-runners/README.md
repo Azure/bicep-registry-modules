@@ -726,6 +726,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
         computeNetworkType: 'azureContainerApp'
         containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
         containerAppSubnetName: 'aca-subnet'
+        containerInstanceSubnetName: 'aci-subnet'
         deploymentScriptPrivateDnsZoneId: '<deploymentScriptPrivateDnsZoneId>'
       }
       containerRegistryPrivateDnsZoneId: '<containerRegistryPrivateDnsZoneId>'
@@ -776,6 +777,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
           "computeNetworkType": "azureContainerApp",
           "containerAppDeploymentScriptSubnetName": "aca-ds-subnet",
           "containerAppSubnetName": "aca-subnet",
+          "containerInstanceSubnetName": "aci-subnet",
           "deploymentScriptPrivateDnsZoneId": "<deploymentScriptPrivateDnsZoneId>"
         },
         "containerRegistryPrivateDnsZoneId": "<containerRegistryPrivateDnsZoneId>",

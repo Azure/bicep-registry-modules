@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "12714637428260634019"
+      "templateHash": "84039159808632697"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.",
@@ -210,6 +210,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created."
+          }
+        },
+        "containerInstanceSubnetName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Required. The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately."
           }
         }
       }

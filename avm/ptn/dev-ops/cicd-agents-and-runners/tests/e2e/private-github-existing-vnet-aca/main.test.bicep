@@ -87,6 +87,7 @@ module testDeployment '../../../main.bicep' = {
         containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
         containerAppSubnetName: 'aca-subnet'
         deploymentScriptPrivateDnsZoneId: nestedDependencies.outputs.deploymentScriptPrivateDNSZoneId
+        containerInstanceSubnetName: 'aci-subnet'
         computeNetworkType: 'azureContainerApp'
       }
     }
