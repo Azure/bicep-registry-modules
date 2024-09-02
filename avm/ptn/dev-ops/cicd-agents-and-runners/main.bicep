@@ -214,7 +214,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
   }
 }
 
-module acrPrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (privateNetworking && empty(networkingConfiguration.?containerRegistryPrivateDnsZoneId ?? '')) {
+module acrPrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (privateNetworking && empty(networkingConfiguration.?containerRegistryPrivateDnsZoneResourceId ?? '')) {
   name: 'acrdnszone${namingPrefix}${uniqueString(resourceGroup().id)}'
   params: {
     name: 'privatelink.azurecr.io'
@@ -261,12 +261,12 @@ module acr 'br/public:avm/res/container-registry/registry:0.4.0' = {
               : networkingConfiguration.networkType == 'useExisting'
                   ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.containerRegistryPrivateEndpointSubnetName}'
                   : null
-            privateDnsZoneResourceIds: !empty(networkingConfiguration.?containerRegistryPrivateDnsZoneId ?? '')
+            privateDnsZoneResourceIds: !empty(networkingConfiguration.?containerRegistryPrivateDnsZoneResourceId ?? '')
               ? [
-                  networkingConfiguration.?containerRegistryPrivateDnsZoneId ?? ''
+                  networkingConfiguration.?containerRegistryPrivateDnsZoneResourceId ?? ''
                 ]
               : [
-                  empty(networkingConfiguration.?containerRegistryPrivateDnsZoneId ?? '')
+                  empty(networkingConfiguration.?containerRegistryPrivateDnsZoneResourceId ?? '')
                     ? acrPrivateDNSZone.outputs.resourceId
                     : ''
                 ]
@@ -390,9 +390,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:1.1.0' = if (privateNet
     name: 'natGateway-${namingPrefix}-${uniqueString(resourceGroup().id)}'
     zone: 0
     location: location
-    publicIpResourceIds: empty(networkingConfiguration.?natGatewayPublicIpAddressResourceId ?? '')
-      ? [natGatewayPublicIp.outputs.resourceId]
-      : [networkingConfiguration.?natGatewayPublicIpAddressResourceId ?? '']
+    publicIpResourceIds: [
+      networkingConfiguration.?natGatewayPublicIpAddressResourceId ?? natGatewayPublicIp.outputs.resourceId
+    ]
   }
 }
 
@@ -694,7 +694,7 @@ module acaPlaceholderJob 'br/public:avm/res/app/job:0.4.0' = if (contains(comput
 module deploymentScriptPrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (contains(
   computeTypes,
   'azure-container-app'
-) && selfHostedConfig.selfHostedType == 'azuredevops' && privateNetworking && empty(networkingConfiguration.computeNetworking.?deploymentScriptPrivateDnsZoneId ?? '')) {
+) && selfHostedConfig.selfHostedType == 'azuredevops' && privateNetworking && empty(networkingConfiguration.computeNetworking.?deploymentScriptPrivateDnsZoneResourceId ?? '')) {
   name: 'stgdsdnszone${namingPrefix}${uniqueString(resourceGroup().id)}'
   params: {
     name: 'privatelink.file.${environment().suffixes.storage}'
@@ -741,9 +741,9 @@ module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.13.0' = 
                 )
             )[0]
         privateDnsZoneGroupName: 'stgPrivateDNSZoneGroup'
-        privateDnsZoneResourceIds: !empty(networkingConfiguration.computeNetworking.?deploymentScriptPrivateDnsZoneId ?? '')
+        privateDnsZoneResourceIds: !empty(networkingConfiguration.computeNetworking.?deploymentScriptPrivateDnsZoneResourceId ?? '')
           ? [
-              networkingConfiguration.computeNetworking.?deploymentScriptPrivateDnsZoneId ?? ''
+              networkingConfiguration.computeNetworking.?deploymentScriptPrivateDnsZoneResourceId ?? ''
             ]
           : [
               deploymentScriptPrivateDNSZone.outputs.resourceId
@@ -837,7 +837,7 @@ type newNetworkType = {
   containerRegistrySubnetPrefix: string?
 
   @description('Optional. The container registry private DNS zone Id. If not provided, a new private DNS zone will be created.')
-  containerRegistryPrivateDnsZoneId: string?
+  containerRegistryPrivateDnsZoneResourceId: string?
 
   @description('Optional. The subnet name for the container registry private endpoint. If not provided, a default name will be used.')
   containerRegistryPrivateEndpointSubnetName: string?
@@ -849,7 +849,7 @@ type newNetworkType = {
   containerAppDeploymentScriptSubnetPrefix: string?
 
   @description('Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. Only required if private networking is used.')
-  deploymentScriptPrivateDnsZoneId: string?
+  deploymentScriptPrivateDnsZoneResourceId: string?
 }
 
 type existingNetworkType = {
@@ -863,7 +863,7 @@ type existingNetworkType = {
   containerRegistryPrivateEndpointSubnetName: string
 
   @description('Optional. The container registry private DNS zone Id. If not provided, a new private DNS zone will be created.')
-  containerRegistryPrivateDnsZoneId: string?
+  containerRegistryPrivateDnsZoneResourceId: string?
 
   @description('Optional. The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created.')
   natGatewayResourceId: string
@@ -886,7 +886,7 @@ type containerAppNetworkConfigType = {
   containerAppDeploymentScriptSubnetName: string
 
   @description('Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created.')
-  deploymentScriptPrivateDnsZoneId: string?
+  deploymentScriptPrivateDnsZoneResourceId: string?
 
   @description('Required. The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately.')
   containerInstanceSubnetName: string?

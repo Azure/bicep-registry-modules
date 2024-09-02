@@ -614,7 +614,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
         computeNetworkType: 'azureContainerInstance'
         containerInstanceSubnetName: 'aci-subnet'
       }
-      containerRegistryPrivateDnsZoneId: '<containerRegistryPrivateDnsZoneId>'
+      containerRegistryPrivateDnsZoneResourceId: '<containerRegistryPrivateDnsZoneResourceId>'
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
       natGatewayPublicIpAddressResourceId: '<natGatewayPublicIpAddressResourceId>'
       natGatewayResourceId: '<natGatewayResourceId>'
@@ -666,7 +666,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
           "computeNetworkType": "azureContainerInstance",
           "containerInstanceSubnetName": "aci-subnet"
         },
-        "containerRegistryPrivateDnsZoneId": "<containerRegistryPrivateDnsZoneId>",
+        "containerRegistryPrivateDnsZoneResourceId": "<containerRegistryPrivateDnsZoneResourceId>",
         "containerRegistryPrivateEndpointSubnetName": "acr-subnet",
         "natGatewayPublicIpAddressResourceId": "<natGatewayPublicIpAddressResourceId>",
         "natGatewayResourceId": "<natGatewayResourceId>",
@@ -727,9 +727,9 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
         containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
         containerAppSubnetName: 'aca-subnet'
         containerInstanceSubnetName: 'aci-subnet'
-        deploymentScriptPrivateDnsZoneId: '<deploymentScriptPrivateDnsZoneId>'
+        deploymentScriptPrivateDnsZoneResourceId: '<deploymentScriptPrivateDnsZoneResourceId>'
       }
-      containerRegistryPrivateDnsZoneId: '<containerRegistryPrivateDnsZoneId>'
+      containerRegistryPrivateDnsZoneResourceId: '<containerRegistryPrivateDnsZoneResourceId>'
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
       natGatewayPublicIpAddressResourceId: '<natGatewayPublicIpAddressResourceId>'
       natGatewayResourceId: '<natGatewayResourceId>'
@@ -778,9 +778,9 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
           "containerAppDeploymentScriptSubnetName": "aca-ds-subnet",
           "containerAppSubnetName": "aca-subnet",
           "containerInstanceSubnetName": "aci-subnet",
-          "deploymentScriptPrivateDnsZoneId": "<deploymentScriptPrivateDnsZoneId>"
+          "deploymentScriptPrivateDnsZoneResourceId": "<deploymentScriptPrivateDnsZoneResourceId>"
         },
-        "containerRegistryPrivateDnsZoneId": "<containerRegistryPrivateDnsZoneId>",
+        "containerRegistryPrivateDnsZoneResourceId": "<containerRegistryPrivateDnsZoneResourceId>",
         "containerRegistryPrivateEndpointSubnetName": "acr-subnet",
         "natGatewayPublicIpAddressResourceId": "<natGatewayPublicIpAddressResourceId>",
         "natGatewayResourceId": "<natGatewayResourceId>",

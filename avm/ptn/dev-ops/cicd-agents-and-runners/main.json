@@ -121,7 +121,7 @@
             "description": "Optional. The subnet address prefix for the container app deployment script which is used to start the placeholder Azure DevOps agent. Only required if private networking is used. If not provided, a default subnet prefix will be used."
           }
         },
-        "deploymentScriptPrivateDnsZoneId": {
+        "deploymentScriptPrivateDnsZoneResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -205,7 +205,7 @@
             "description": "Required. The existing subnet name for the container app deployment script."
           }
         },
-        "deploymentScriptPrivateDnsZoneId": {
+        "deploymentScriptPrivateDnsZoneResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -16171,7 +16171,7 @@
       ]
     },
     "deploymentScriptPrivateDNSZone": {
-      "condition": "[and(and(and(contains(parameters('computeTypes'), 'azure-container-app'), equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops')), parameters('privateNetworking')), empty(coalesce(tryGet(parameters('networkingConfiguration').computeNetworking, 'deploymentScriptPrivateDnsZoneId'), '')))]",
+      "condition": "[and(and(and(contains(parameters('computeTypes'), 'azure-container-app'), equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops')), parameters('privateNetworking')), empty(coalesce(tryGet(parameters('networkingConfiguration').computeNetworking, 'deploymentScriptPrivateDnsZoneResourceId'), '')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('stgdsdnszone{0}{1}', parameters('namingPrefix'), uniqueString(resourceGroup().id))]",
@@ -19259,7 +19259,7 @@
                 "service": "file",
                 "subnetResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerAppDeploymentScriptSubnetName), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppDeploymentScriptSubnetName'), 'app-deployment-script-subnet'))))[0])]",
                 "privateDnsZoneGroupName": "stgPrivateDNSZoneGroup",
-                "privateDnsZoneResourceIds": "[if(not(empty(coalesce(tryGet(parameters('networkingConfiguration').computeNetworking, 'deploymentScriptPrivateDnsZoneId'), ''))), createArray(coalesce(tryGet(parameters('networkingConfiguration').computeNetworking, 'deploymentScriptPrivateDnsZoneId'), '')), createArray(reference('deploymentScriptPrivateDNSZone').outputs.resourceId.value))]"
+                "privateDnsZoneResourceIds": "[if(not(empty(coalesce(tryGet(parameters('networkingConfiguration').computeNetworking, 'deploymentScriptPrivateDnsZoneResourceId'), ''))), createArray(coalesce(tryGet(parameters('networkingConfiguration').computeNetworking, 'deploymentScriptPrivateDnsZoneResourceId'), '')), createArray(reference('deploymentScriptPrivateDNSZone').outputs.resourceId.value))]"
               }
             ]
           }

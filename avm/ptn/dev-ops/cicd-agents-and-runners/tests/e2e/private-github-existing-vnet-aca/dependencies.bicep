@@ -140,4 +140,4 @@ output natGatewayResourceId string = natGateway.id
 output acrPrivateDNSZoneId string = acrPrivateDNSZone.id
 
 @description('The resource ID of the created deployment script private DNS zone.')
-output deploymentScriptPrivateDNSZoneId string = deploymentScriptPrivateDNSZone.id
+output deploymentScriptPrivateDnsZoneResourceId string = deploymentScriptPrivateDNSZone.id

@@ -79,14 +79,14 @@ module testDeployment '../../../main.bicep' = {
     networkingConfiguration: {
       networkType: 'useExisting'
       virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
-      containerRegistryPrivateDnsZoneId: nestedDependencies.outputs.acrPrivateDNSZoneId
+      containerRegistryPrivateDnsZoneResourceId: nestedDependencies.outputs.acrPrivateDNSZoneId
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
       natGatewayPublicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceId
       natGatewayResourceId: nestedDependencies.outputs.natGatewayResourceId
       computeNetworking: {
         containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
         containerAppSubnetName: 'aca-subnet'
-        deploymentScriptPrivateDnsZoneId: nestedDependencies.outputs.deploymentScriptPrivateDNSZoneId
+        deploymentScriptPrivateDnsZoneResourceId: nestedDependencies.outputs.deploymentScriptPrivateDnsZoneResourceId
         containerInstanceSubnetName: 'aci-subnet'
         computeNetworkType: 'azureContainerApp'
       }
