@@ -75,9 +75,9 @@ configuration:
   # Required parameters for test files validated by PSRule
   # Ref: https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#required-parameter-defaults
   AZURE_PARAMETER_DEFAULTS:
-    backupManagementServiceEnterpriseApplicationObjectId: $GUID_PLACEHOLDER$
-    azureDatabricksEnterpriseApplicationObjectId: $GUID_PLACEHOLDER$
-    lighthouseManagedByTenantId: $GUID_PLACEHOLDER$
+    backupManagementServiceEnterpriseApplicationObjectId: "$GUID_PLACEHOLDER$"
+    azureDatabricksEnterpriseApplicationObjectId: "$GUID_PLACEHOLDER$"
+    lighthouseManagedByTenantId: "$GUID_PLACEHOLDER$"
 
 rule:
   # Enable custom rules that don't exist in the baseline
