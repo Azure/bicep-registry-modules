@@ -102,7 +102,7 @@ var acaGitHubEnvVariables = (selfHostedConfig.selfHostedType == 'github')
       }
       {
         name: 'ORG_NAME'
-        value: selfHostedConfig.gitHubOrganization
+        value: selfHostedConfig.?gitHubOrganization
       }
       {
         name: 'RUNNER_GROUP'
@@ -172,15 +172,9 @@ var acaAzureDevOpsRules = (selfHostedConfig.selfHostedType == 'azuredevops')
     ]
   : []
 
-var gitHubOrganization = selfHostedConfig.selfHostedType == 'github' ? selfHostedConfig.githubOrganization : null
+var gitHubRunnerURL = 'https://github.com/${selfHostedConfig.?gitHubOrganization}/${selfHostedConfig.?gitHubRepository}'
 
-var gitHubRepository = selfHostedConfig.selfHostedType == 'github' ? selfHostedConfig.githubRepository : null
-
-var gitHubRunnerURL = 'https://github.com/${gitHubOrganization}/${gitHubRepository}'
-
-var devOpsOrgURL = selfHostedConfig.selfHostedType == 'azuredevops'
-  ? 'https://dev.azure.com/${selfHostedConfig.devOpsOrganization}'
-  : null
+var devOpsOrgURL = 'https://dev.azure.com/${selfHostedConfig.?devOpsOrganization}'
 
 // ================ //
 // Resources        //
@@ -788,7 +782,7 @@ module runPlaceHolderAgent 'br/public:avm/res/resources/deployment-script:0.3.1'
             ]
           : null
     arguments: '-resourceGroup ${resourceGroup().name} -jobName ${acaPlaceholderJob.outputs.name} -subscriptionId ${subscription().subscriptionId}'
-    scriptContent: loadTextContent('./scripts/runPlaceHolderJob.ps1')
+    scriptContent: loadTextContent('./scripts/runAzureDevOpsPlaceHolderAgent.ps1')
   }
 }
 
