@@ -11,8 +11,8 @@ metadata description = 'This instance deploys the module with the minimum set of
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-githubRunner-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
+var enforcedLocation = 'eastus2'
 
 @description('Required. The name of the GitHub organization.')
 param githubOrganization string = 'githHubOrganization'
@@ -48,18 +48,18 @@ param namePrefix string = '#_namePrefix_#'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 // ============== //
 // Test Execution //
 // ============== //
 module testDeployment '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   scope: resourceGroup
   params: {
     namingPrefix: namePrefix
-    location: resourceLocation
+    location: enforcedLocation
     computeTypes: [
       'azure-container-app'
     ]
