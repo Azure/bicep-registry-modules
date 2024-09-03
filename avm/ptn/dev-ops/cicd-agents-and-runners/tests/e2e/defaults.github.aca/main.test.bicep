@@ -30,9 +30,6 @@ param privateNetworking bool = false
 @description('Required. The name of the virtual network to create.')
 param virtualNetworkName string = 'vnet-aca'
 
-@description('Required. The address space for the virtual network.')
-param virtualNetworkAddressSpace string = '10.0.0.0/16'
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ghaca'
 
@@ -67,7 +64,7 @@ module testDeployment '../../../main.bicep' = {
       selfHostedType: 'github'
     }
     networkingConfiguration: {
-      addressSpace: virtualNetworkAddressSpace
+      addressSpace: '10.0.0.0/16'
       networkType: 'createNew'
       virtualNetworkName: virtualNetworkName
     }

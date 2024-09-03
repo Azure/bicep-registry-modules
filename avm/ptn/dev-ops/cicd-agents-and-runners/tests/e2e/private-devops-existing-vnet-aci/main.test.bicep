@@ -14,9 +14,6 @@ param resourceGroupName string = 'dep-${namePrefix}-azuredevops-${serviceShort}-
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
-@description('Required. The name of the Azure DevOps agents pool.')
-param agentsPoolName string = 'aci-pool'
-
 @description('Required. The name of the Azure DevOps organization.')
 param devOpsOrganization string = 'azureDevOpsOrganization'
 
@@ -69,7 +66,7 @@ module testDeployment '../../../main.bicep' = {
     ]
     selfHostedConfig: {
       selfHostedType: 'azuredevops'
-      agentsPoolName: agentsPoolName
+      agentsPoolName: 'aci-pool'
       devOpsOrganization: devOpsOrganization
       personalAccessToken: personalAccessToken
       agentNamePrefix: namePrefix

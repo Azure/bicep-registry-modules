@@ -36,9 +36,6 @@ param privateNetworking bool = false
 @description('Required. The name of the virtual network to create.')
 param virtualNetworkName string = 'vnet-aci'
 
-@description('Required. The address space for the virtual network.')
-param virtualNetworkAddressSpace string = '10.0.0.0/16'
-
 @description('Optional. The name of the subnet for the Azure Container App.')
 param containerInstanceSubnetName string = 'aciSubnet'
 
@@ -101,7 +98,7 @@ module testDeployment '../../../main.bicep' = {
       selfHostedType: 'github'
     }
     networkingConfiguration: {
-      addressSpace: virtualNetworkAddressSpace
+      addressSpace: '10.0.0.0/16'
       networkType: 'createNew'
       virtualNetworkName: virtualNetworkName
       containerInstanceSubnetName: containerInstanceSubnetName

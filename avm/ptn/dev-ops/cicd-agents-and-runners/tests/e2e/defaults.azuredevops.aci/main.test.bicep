@@ -13,8 +13,6 @@ param resourceGroupName string = 'dep-${namePrefix}-devopsrunners-${serviceShort
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
-@description('Required. The name of the Azure DevOps agents pool.')
-param agentsPoolName string = 'aci-pool'
 
 @description('Required. The name of the Azure DevOps organization.')
 param devOpsOrganization string = 'azureDevOpsOrganization'
@@ -28,9 +26,6 @@ param privateNetworking bool = false
 
 @description('Required. The name of the virtual network to create.')
 param virtualNetworkName string = 'vnet-aci'
-
-@description('Required. The address space for the virtual network.')
-param virtualNetworkAddressSpace string = '10.0.0.0/16'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'devaci'
@@ -61,13 +56,13 @@ module testDeployment '../../../main.bicep' = {
       'azure-container-instance'
     ]
     selfHostedConfig: {
-      agentsPoolName: agentsPoolName
+      agentsPoolName: 'aci-pool'
       devOpsOrganization: devOpsOrganization
       personalAccessToken: personalAccessToken
       selfHostedType: 'azuredevops'
     }
     networkingConfiguration: {
-      addressSpace: virtualNetworkAddressSpace
+      addressSpace: '10.0.0.0/16'
       networkType: 'createNew'
       virtualNetworkName: virtualNetworkName
     }

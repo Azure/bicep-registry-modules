@@ -14,9 +14,6 @@ param resourceGroupName string = 'dep-${namePrefix}-devopsrunners-${serviceShort
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'eastus2'
 
-@description('Required. The name of the Azure DevOps agents pool.')
-param agentsPoolName string = 'aca'
-
 @description('Required. The name of the Azure DevOps organization.')
 param devOpsOrganization string = 'azureDevOpsOrganization'
 
@@ -41,8 +38,6 @@ param targetPipelinesQueueLength string = '1'
 
 @description('Optional. The name of the subnet for the Azure Container App.')
 param containerAppSubnetName string = 'acaSubnet'
-
-param containerAppSubnetAddressPrefix string = '10.0.1.0/24'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'mxdev'
@@ -73,7 +68,7 @@ module testDeployment '../../../main.bicep' = {
       'azure-container-app'
     ]
     selfHostedConfig: {
-      agentsPoolName: agentsPoolName
+      agentsPoolName: 'aca-pool'
       devOpsOrganization: devOpsOrganization
       personalAccessToken: personalAccessToken
       agentNamePrefix: namePrefix
@@ -92,7 +87,7 @@ module testDeployment '../../../main.bicep' = {
       networkType: 'createNew'
       virtualNetworkName: virtualNetworkName
       containerAppSubnetName: containerAppSubnetName
-      containerAppSubnetAddressPrefix: containerAppSubnetAddressPrefix
+      containerAppSubnetAddressPrefix: '10.0.1.0/24'
     }
     privateNetworking: privateNetworking
   }
