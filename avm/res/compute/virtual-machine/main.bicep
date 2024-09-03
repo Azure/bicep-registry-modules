@@ -14,7 +14,12 @@ param vmSize string
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool = true
 
-@description('Optional. Specifies the SecurityType of the virtual machine. It is set as TrustedLaunch to enable UefiSettings.')
+@description('Optional. Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set.')
+@allowed([
+  ''
+  'ConfidentialVM'
+  'TrustedLaunch'
+])
 param securityType string = ''
 
 @description('Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings.')
@@ -159,6 +164,7 @@ param extensionAntiMalwareConfig object = {
 @description('Optional. The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionMonitoringAgentConfig object = {
   enabled: false
+  dataCollectionRuleAssociations: []
 }
 
 @description('Optional. The configuration for the [Dependency Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
@@ -281,6 +287,9 @@ param rebootSetting string = 'IfRequired'
 ])
 param patchAssessmentMode string = 'ImageDefault'
 
+@description('Optional. Enables customers to patch their Azure VMs without requiring a reboot. For enableHotpatching, the \'provisionVMAgent\' must be set to true and \'patchMode\' must be set to \'AutomaticByPlatform\'.')
+param enableHotpatching bool = false
+
 @description('Optional. Specifies the time zone of the virtual machine. e.g. \'Pacific Standard Time\'. Possible values can be `TimeZoneInfo.id` value from time zones returned by `TimeZoneInfo.GetSystemTimeZones`.')
 param timeZone string = ''
 
@@ -327,6 +336,7 @@ var windowsConfiguration = {
     ? {
         patchMode: patchMode
         assessmentMode: patchAssessmentMode
+        enableHotpatching: (patchMode =~ 'AutomaticByPlatform') ? enableHotpatching : false
         automaticByPlatformSettings: (patchMode =~ 'AutomaticByPlatform')
           ? {
               bypassPlatformSafetyChecksOnUserSchedule: bypassPlatformSafetyChecksOnUserSchedule
@@ -434,6 +444,17 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.compute-virtualmachine.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -482,7 +503,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
   }
 ]
 
-resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
+resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
   name: name
   location: location
   identity: identity
@@ -738,29 +759,6 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
   ]
 }
 
-resource vm_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId)) {
-  name: last(split(
-    (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-      ? extensionMonitoringAgentConfig.monitoringWorkspaceId
-      : 'law'),
-    '/'
-  ))!
-  scope: az.resourceGroup(
-    split(
-      (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-        ? extensionMonitoringAgentConfig.monitoringWorkspaceId
-        : '//'),
-      '/'
-    )[2],
-    split(
-      (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-        ? extensionMonitoringAgentConfig.monitoringWorkspaceId
-        : '////'),
-      '/'
-    )[4]
-  )
-}
-
 module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonitoringAgentConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-AzureMonitorAgent'
   params: {
@@ -772,24 +770,26 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonit
     typeHandlerVersion: extensionMonitoringAgentConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.22' : '1.29')
     autoUpgradeMinorVersion: extensionMonitoringAgentConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionMonitoringAgentConfig.?enableAutomaticUpgrade ?? false
-    settings: {
-      workspaceId: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-        ? vm_logAnalyticsWorkspace.properties.customerId
-        : ''
-      GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
-    }
     supressFailures: extensionMonitoringAgentConfig.?supressFailures ?? false
     tags: extensionMonitoringAgentConfig.?tags ?? tags
-    protectedSettings: {
-      workspaceKey: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-        ? vm_logAnalyticsWorkspace.listKeys().primarySharedKey
-        : ''
-    }
   }
   dependsOn: [
     vm_microsoftAntiMalwareExtension
   ]
 }
+
+resource vm_dataCollectionRuleAssociations 'Microsoft.Insights/dataCollectionRuleAssociations@2023-03-11' = [
+  for (dataCollectionRuleAssociation, index) in extensionMonitoringAgentConfig.dataCollectionRuleAssociations: if (extensionMonitoringAgentConfig.enabled) {
+    name: dataCollectionRuleAssociation.name
+    scope: vm
+    properties: {
+      dataCollectionRuleId: dataCollectionRuleAssociation.dataCollectionRuleResourceId
+    }
+    dependsOn: [
+      vm_azureMonitorAgentExtension
+    ]
+  }
+]
 
 module vm_dependencyAgentExtension 'extension/main.bicep' = if (extensionDependencyAgentConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-DependencyAgent'
@@ -1065,14 +1065,10 @@ resource vm_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ??
 }
 
 resource vm_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(vm.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(vm.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -1120,6 +1116,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 

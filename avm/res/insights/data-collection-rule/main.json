@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "5216290252655345568"
+      "version": "0.29.47.4906",
+      "templateHash": "5321768196426375483"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule.",
@@ -43,6 +43,13 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            }
+          },
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
@@ -103,6 +110,191 @@
         }
       },
       "nullable": true
+    },
+    "dataCollectionRulePropertiesType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "kind",
+        "mapping": {
+          "Linux": {
+            "$ref": "#/definitions/linuxDcrPropertiesType"
+          },
+          "Windows": {
+            "$ref": "#/definitions/windowsDcrPropertiesType"
+          },
+          "AgentSettings": {
+            "$ref": "#/definitions/agentSettingsDcrPropertiesType"
+          }
+        }
+      }
+    },
+    "linuxDcrPropertiesType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "Linux"
+          ],
+          "metadata": {
+            "description": "Required. The platform type specifies the type of resources this rule can apply to."
+          }
+        },
+        "dataSources": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. Specification of data sources that will be collected."
+          }
+        },
+        "dataFlows": {
+          "type": "array",
+          "metadata": {
+            "description": "Required. The specification of data flows."
+          }
+        },
+        "destinations": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. Specification of destinations that can be used in data flows."
+          }
+        },
+        "dataCollectionEndpointResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the data collection endpoint that this rule can be used with."
+          }
+        },
+        "streamDeclarations": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Declaration of custom streams used in this rule."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Description of the data collection rule."
+          }
+        }
+      }
+    },
+    "windowsDcrPropertiesType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "Windows"
+          ],
+          "metadata": {
+            "description": "Required. The platform type specifies the type of resources this rule can apply to."
+          }
+        },
+        "dataSources": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. Specification of data sources that will be collected."
+          }
+        },
+        "dataFlows": {
+          "type": "array",
+          "metadata": {
+            "description": "Required. The specification of data flows."
+          }
+        },
+        "destinations": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. Specification of destinations that can be used in data flows."
+          }
+        },
+        "dataCollectionEndpointResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the data collection endpoint that this rule can be used with."
+          }
+        },
+        "streamDeclarations": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Declaration of custom streams used in this rule."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Description of the data collection rule."
+          }
+        }
+      }
+    },
+    "agentSettingsDcrPropertiesType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "AgentSettings"
+          ],
+          "metadata": {
+            "description": "Required. The platform type specifies the type of resources this rule can apply to."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Description of the data collection rule."
+          }
+        },
+        "agentSettings": {
+          "$ref": "#/definitions/agentSettingsType",
+          "metadata": {
+            "description": "Required. Agent settings used to modify agent behavior on a given host."
+          }
+        }
+      }
+    },
+    "agentSettingsType": {
+      "type": "object",
+      "properties": {
+        "logs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/agentSettingType"
+          },
+          "metadata": {
+            "description": "Required. All the settings that are applicable to the logs agent (AMA)."
+          }
+        }
+      }
+    },
+    "agentSettingType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "MaxDiskQuotaInMB",
+            "UseTimeReceivedForForwardedEvents"
+          ],
+          "metadata": {
+            "description": "Required. The name of the agent setting."
+          }
+        },
+        "value": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The value of the agent setting."
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -112,36 +304,10 @@
         "description": "Required. The name of the data collection rule. The name is case insensitive."
       }
     },
-    "dataCollectionEndpointId": {
-      "type": "string",
-      "nullable": true,
+    "dataCollectionRuleProperties": {
+      "$ref": "#/definitions/dataCollectionRulePropertiesType",
       "metadata": {
-        "description": "Optional. The resource ID of the data collection endpoint that this rule can be used with."
-      }
-    },
-    "dataFlows": {
-      "type": "array",
-      "metadata": {
-        "description": "Required. The specification of data flows."
-      }
-    },
-    "dataSources": {
-      "type": "object",
-      "metadata": {
-        "description": "Required. Specification of data sources that will be collected."
-      }
-    },
-    "description": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Description of the data collection rule."
-      }
-    },
-    "destinations": {
-      "type": "object",
-      "metadata": {
-        "description": "Required. Specification of destinations that can be used in data flows."
+        "description": "Required. The kind of data collection rule."
       }
     },
     "enableTelemetry": {
@@ -149,17 +315,6 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
-      }
-    },
-    "kind": {
-      "type": "string",
-      "defaultValue": "Linux",
-      "allowedValues": [
-        "Linux",
-        "Windows"
-      ],
-      "metadata": {
-        "description": "Optional. The kind of the resource."
       }
     },
     "location": {
@@ -181,13 +336,6 @@
         "description": "Optional. Array of role assignments to create."
       }
     },
-    "streamDeclarations": {
-      "type": "object",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Declaration of custom streams used in this rule."
-      }
-    },
     "tags": {
       "type": "object",
       "nullable": true,
@@ -197,6 +345,13 @@
     }
   },
   "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -228,19 +383,12 @@
     },
     "dataCollectionRule": {
       "type": "Microsoft.Insights/dataCollectionRules",
-      "apiVersion": "2021-09-01-preview",
+      "apiVersion": "2023-03-11",
       "name": "[parameters('name')]",
-      "kind": "[parameters('kind')]",
+      "kind": "[parameters('dataCollectionRuleProperties').kind]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
-      "properties": {
-        "dataSources": "[parameters('dataSources')]",
-        "destinations": "[parameters('destinations')]",
-        "dataFlows": "[parameters('dataFlows')]",
-        "dataCollectionEndpointId": "[parameters('dataCollectionEndpointId')]",
-        "streamDeclarations": "[parameters('streamDeclarations')]",
-        "description": "[parameters('description')]"
-      }
+      "properties": "[union(createObject('description', tryGet(parameters('dataCollectionRuleProperties'), 'description')), if(or(equals(parameters('dataCollectionRuleProperties').kind, 'Linux'), equals(parameters('dataCollectionRuleProperties').kind, 'Windows')), createObject('dataSources', parameters('dataCollectionRuleProperties').dataSources, 'dataFlows', parameters('dataCollectionRuleProperties').dataFlows, 'destinations', parameters('dataCollectionRuleProperties').destinations, 'dataCollectionEndpointId', tryGet(parameters('dataCollectionRuleProperties'), 'dataCollectionEndpointResourceId'), 'streamDeclarations', tryGet(parameters('dataCollectionRuleProperties'), 'streamDeclarations')), createObject()), if(equals(parameters('dataCollectionRuleProperties').kind, 'AgentSettings'), createObject('agentSettings', parameters('dataCollectionRuleProperties').agentSettings), createObject()))]"
     },
     "dataCollectionRule_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -259,20 +407,20 @@
     "dataCollectionRule_roleAssignments": {
       "copy": {
         "name": "dataCollectionRule_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.Insights/dataCollectionRules/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.Insights/dataCollectionRules', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Insights/dataCollectionRules', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "dataCollectionRule"
@@ -306,7 +454,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('dataCollectionRule', '2021-09-01-preview', 'full').location]"
+      "value": "[reference('dataCollectionRule', '2023-03-11', 'full').location]"
     }
   }
 }

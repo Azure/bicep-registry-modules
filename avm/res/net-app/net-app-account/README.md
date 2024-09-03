@@ -17,12 +17,13 @@ This module deploys an Azure NetApp File.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-07-01/netAppAccounts) |
-| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-11-01/netAppAccounts/backupPolicies) |
-| `Microsoft.NetApp/netAppAccounts/backupVaults` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-05-01-preview/netAppAccounts/backupVaults) |
-| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-05-01-preview/netAppAccounts/backupVaults/backups) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-07-01/netAppAccounts/capacityPools) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-07-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts) |
+| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/backupPolicies) |
+| `Microsoft.NetApp/netAppAccounts/backupVaults` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/backupVaults) |
+| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/backupVaults/backups) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/capacityPools) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/snapshotPolicies) |
 
 ## Usage examples
 
@@ -115,6 +116,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         size: 4398046511104
         volumes: [
           {
+            encryptionKeySource: '<encryptionKeySource>'
             exportPolicyRules: [
               {
                 allowedClients: '0.0.0.0/0'
@@ -144,6 +146,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
           }
           {
+            encryptionKeySource: '<encryptionKeySource>'
             exportPolicyRules: [
               {
                 allowedClients: '0.0.0.0/0'
@@ -189,11 +192,13 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
     }
     roleAssignments: [
       {
+        name: '18051111-2a33-4f8e-8b24-441aac1e6562'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -249,6 +254,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "size": 4398046511104,
           "volumes": [
             {
+              "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicyRules": [
                 {
                   "allowedClients": "0.0.0.0/0",
@@ -278,6 +284,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               ]
             },
             {
+              "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicyRules": [
                 {
                   "allowedClients": "0.0.0.0/0",
@@ -329,11 +336,13 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "18051111-2a33-4f8e-8b24-441aac1e6562",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -393,6 +402,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         size: 4398046511104
         volumes: [
           {
+            encryptionKeySource: '<encryptionKeySource>'
             exportPolicyRules: [
               {
                 allowedClients: '0.0.0.0/0'
@@ -422,6 +432,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
           }
           {
+            encryptionKeySource: '<encryptionKeySource>'
             name: 'nanaanfs3-vol-002'
             networkFeatures: 'Standard'
             protocolTypes: [
@@ -516,6 +527,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "size": 4398046511104,
           "volumes": [
             {
+              "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicyRules": [
                 {
                   "allowedClients": "0.0.0.0/0",
@@ -545,6 +557,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               ]
             },
             {
+              "encryptionKeySource": "<encryptionKeySource>",
               "name": "nanaanfs3-vol-002",
               "networkFeatures": "Standard",
               "protocolTypes": [
@@ -956,6 +969,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1002,6 +1016,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string

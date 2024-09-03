@@ -65,7 +65,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      zoneRedundant: true
       skuName: 'Standard'
       skuCapacity: 2
       authorizationRules: [

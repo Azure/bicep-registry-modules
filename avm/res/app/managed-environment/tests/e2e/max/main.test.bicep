@@ -38,6 +38,8 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    appInsightsComponentName: 'dep-${namePrefix}-appinsights-${serviceShort}'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
   }
 }
 
@@ -54,6 +56,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       location: resourceLocation
+      appInsightsConnectionString: nestedDependencies.outputs.appInsightsConnectionString
       workloadProfiles: [
         {
           workloadProfileType: 'D4'
@@ -64,6 +67,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       internal: true
       dockerBridgeCidr: '172.16.0.1/28'
+      peerTrafficEncryption: true
       platformReservedCidr: '172.17.17.0/24'
       platformReservedDnsIP: '172.17.17.17'
       infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId
@@ -74,13 +78,23 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      openTelemetryConfiguration: {
+        tracesConfiguration: {
+          destinations: ['appInsights']
+        }
+        logsConfiguration: {
+          destinations: ['appInsights']
+        }
+      }
       roleAssignments: [
         {
+          name: '43fc5250-f111-472b-8722-f1cb4a0e754b'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -92,6 +106,21 @@ module testDeployment '../../../main.bicep' = [
           )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
+        }
+      ]
+
+      storages: [
+        {
+          kind: 'SMB'
+          shareName: 'smbfileshare'
+          accessMode: 'ReadWrite'
+          storageAccountName: nestedDependencies.outputs.storageAccountName
+        }
+        {
+          kind: 'NFS'
+          shareName: 'nfsfileshare'
+          accessMode: 'ReadWrite'
+          storageAccountName: nestedDependencies.outputs.storageAccountName
         }
       ]
 

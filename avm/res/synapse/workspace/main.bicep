@@ -66,6 +66,9 @@ param preventDataExfiltration bool = false
 @description('Optional. Enable or Disable public network access to workspace.')
 param publicNetworkAccess string = 'Enabled'
 
+@description('Optional. List of firewall rules to be created in the workspace.')
+param firewallRules firewallRuleType[]?
+
 @description('Optional. Purview Resource ID.')
 param purviewResourceID string = ''
 
@@ -135,6 +138,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -303,14 +317,10 @@ resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(
 
 // RBAC
 resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -322,8 +332,21 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
   }
 ]
 
+// Firewall Rules
+module workspace_firewallRules 'firewall-rules/main.bicep' = [
+  for (rule, index) in (firewallRules ?? []): {
+    name: '${uniqueString(deployment().name, location)}-workspace-FirewallRule-${index}'
+    params: {
+      name: rule.name
+      endIpAddress: rule.endIpAddress
+      startIpAddress: rule.startIpAddress
+      workspaceName: workspace.name
+    }
+  }
+]
+
 // Endpoints
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -434,6 +457,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -596,3 +622,14 @@ type adminType = {
   @secure()
   tenantId: string?
 }?
+
+type firewallRuleType = {
+  @description('Required. The name of the firewall rule.')
+  name: string
+
+  @description('Required. The start IP address of the firewall rule. Must be IPv4 format.')
+  startIpAddress: string
+
+  @description('Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress.')
+  endIpAddress: string
+}

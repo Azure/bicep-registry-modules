@@ -15,7 +15,7 @@ This module deploys a Container App.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/containerApps` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-05-01/containerApps) |
+| `Microsoft.App/containerApps` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-03-01/containerApps) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -30,7 +30,8 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Without ingress enabled](#example-2-without-ingress-enabled)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [VNet integrated container app deployment](#example-4-vnet-integrated-container-app-deployment)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -56,7 +57,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         }
       }
     ]
-    environmentId: '<environmentId>'
+    environmentResourceId: '<environmentResourceId>'
     name: 'acamin001'
     // Non-required parameters
     location: '<location>'
@@ -89,8 +90,8 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         }
       ]
     },
-    "environmentId": {
-      "value": "<environmentId>"
+    "environmentResourceId": {
+      "value": "<environmentResourceId>"
     },
     "name": {
       "value": "acamin001"
@@ -130,7 +131,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         }
       }
     ]
-    environmentId: '<environmentId>'
+    environmentResourceId: '<environmentResourceId>'
     name: 'acapriv001'
     // Non-required parameters
     disableIngress: true
@@ -164,8 +165,8 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         }
       ]
     },
-    "environmentId": {
-      "value": "<environmentId>"
+    "environmentResourceId": {
+      "value": "<environmentResourceId>"
     },
     "name": {
       "value": "acapriv001"
@@ -200,6 +201,16 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     // Required parameters
     containers: [
       {
+        env: [
+          {
+            name: 'ContainerAppStoredSecretName'
+            secretRef: 'containerappstoredsecret'
+          }
+          {
+            name: 'ContainerAppKeyVaultStoredSecretName'
+            secretRef: 'keyvaultstoredsecret'
+          }
+        ]
         image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
         name: 'simple-hello-world-container'
         probes: [
@@ -225,7 +236,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         }
       }
     ]
-    environmentId: '<environmentId>'
+    environmentResourceId: '<environmentResourceId>'
     name: 'acamax001'
     // Non-required parameters
     location: '<location>'
@@ -240,11 +251,13 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     }
     roleAssignments: [
       {
+        name: 'e9bac1ee-aebe-4513-9337-49e87a7be05e'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -258,8 +271,13 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     secrets: {
       secureList: [
         {
-          name: 'customtest'
+          name: 'containerappstoredsecret'
           value: '<value>'
+        }
+        {
+          identity: '<identity>'
+          keyVaultUrl: '<keyVaultUrl>'
+          name: 'keyvaultstoredsecret'
         }
       ]
     }
@@ -287,6 +305,16 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     "containers": {
       "value": [
         {
+          "env": [
+            {
+              "name": "ContainerAppStoredSecretName",
+              "secretRef": "containerappstoredsecret"
+            },
+            {
+              "name": "ContainerAppKeyVaultStoredSecretName",
+              "secretRef": "keyvaultstoredsecret"
+            }
+          ],
           "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
           "name": "simple-hello-world-container",
           "probes": [
@@ -313,8 +341,8 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         }
       ]
     },
-    "environmentId": {
-      "value": "<environmentId>"
+    "environmentResourceId": {
+      "value": "<environmentResourceId>"
     },
     "name": {
       "value": "acamax001"
@@ -339,11 +367,13 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "e9bac1ee-aebe-4513-9337-49e87a7be05e",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -359,8 +389,13 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": {
         "secureList": [
           {
-            "name": "customtest",
+            "name": "containerappstoredsecret",
             "value": "<value>"
+          },
+          {
+            "identity": "<identity>",
+            "keyVaultUrl": "<keyVaultUrl>",
+            "name": "keyvaultstoredsecret"
           }
         ]
       }
@@ -378,7 +413,113 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 4: _VNet integrated container app deployment_
+
+This instance deploys the container app in a managed environment with a virtual network using TCP ingress.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module containerApp 'br/public:avm/res/app/container-app:<version>' = {
+  name: 'containerAppDeployment'
+  params: {
+    // Required parameters
+    containers: [
+      {
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        name: 'simple-hello-world-container'
+        resources: {
+          cpu: '<cpu>'
+          memory: '0.5Gi'
+        }
+      }
+    ]
+    environmentResourceId: '<environmentResourceId>'
+    name: 'acavnet001'
+    // Non-required parameters
+    additionalPortMappings: [
+      {
+        exposedPort: 8080
+        external: false
+        targetPort: 8080
+      }
+    ]
+    ingressAllowInsecure: false
+    ingressExternal: false
+    ingressTargetPort: 80
+    ingressTransport: 'tcp'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "containers": {
+      "value": [
+        {
+          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+          "name": "simple-hello-world-container",
+          "resources": {
+            "cpu": "<cpu>",
+            "memory": "0.5Gi"
+          }
+        }
+      ]
+    },
+    "environmentResourceId": {
+      "value": "<environmentResourceId>"
+    },
+    "name": {
+      "value": "acavnet001"
+    },
+    // Non-required parameters
+    "additionalPortMappings": {
+      "value": [
+        {
+          "exposedPort": 8080,
+          "external": false,
+          "targetPort": 8080
+        }
+      ]
+    },
+    "ingressAllowInsecure": {
+      "value": false
+    },
+    "ingressExternal": {
+      "value": false
+    },
+    "ingressTargetPort": {
+      "value": 80
+    },
+    "ingressTransport": {
+      "value": "tcp"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -419,7 +560,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         }
       }
     ]
-    environmentId: '<environmentId>'
+    environmentResourceId: '<environmentResourceId>'
     name: 'acawaf001'
     // Non-required parameters
     ingressAllowInsecure: false
@@ -484,8 +625,8 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         }
       ]
     },
-    "environmentId": {
-      "value": "<environmentId>"
+    "environmentResourceId": {
+      "value": "<environmentResourceId>"
     },
     "name": {
       "value": "acawaf001"
@@ -534,7 +675,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`containers`](#parameter-containers) | array | List of container definitions for the Container App. |
-| [`environmentId`](#parameter-environmentid) | string | Resource ID of environment. |
+| [`environmentResourceId`](#parameter-environmentresourceid) | string | Resource ID of environment. |
 | [`name`](#parameter-name) | string | Name of the Container App. |
 
 **Optional parameters**
@@ -542,6 +683,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`activeRevisionsMode`](#parameter-activerevisionsmode) | string | Controls how active revisions are handled for the Container app. |
+| [`additionalPortMappings`](#parameter-additionalportmappings) | array | Settings to expose additional ports on container app. |
 | [`clientCertificateMode`](#parameter-clientcertificatemode) | string | Client certificate mode for mTLS. |
 | [`corsPolicy`](#parameter-corspolicy) | object | Object userd to configure CORS policy. |
 | [`customDomains`](#parameter-customdomains) | array | Custom domain bindings for Container App hostnames. |
@@ -549,6 +691,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | [`disableIngress`](#parameter-disableingress) | bool | Bool to disable all ingress traffic for the container app. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`exposedPort`](#parameter-exposedport) | int | Exposed Port in containers for TCP traffic from ingress. |
+| [`includeAddOns`](#parameter-includeaddons) | bool | Toggle to include the service configuration. |
 | [`ingressAllowInsecure`](#parameter-ingressallowinsecure) | bool | Bool indicating if HTTP connections to is allowed. If set to false HTTP connections are automatically redirected to HTTPS connections. |
 | [`ingressExternal`](#parameter-ingressexternal) | bool | Bool indicating if the App exposes an external HTTP endpoint. |
 | [`ingressTargetPort`](#parameter-ingresstargetport) | int | Target Port in containers for traffic from ingress. |
@@ -566,6 +709,8 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | [`scaleMinReplicas`](#parameter-scaleminreplicas) | int | Minimum number of container replicas. Defaults to 3 if not set. |
 | [`scaleRules`](#parameter-scalerules) | array | Scaling rules. |
 | [`secrets`](#parameter-secrets) | secureObject | The secrets of the Container App. |
+| [`service`](#parameter-service) | object | Dev ContainerApp service type. |
+| [`serviceBinds`](#parameter-servicebinds) | array | List of container app services bound to the app. |
 | [`stickySessionsAffinity`](#parameter-stickysessionsaffinity) | string | Bool indicating if the Container App should enable session affinity. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`trafficLabel`](#parameter-trafficlabel) | string | Associates a traffic label with a revision. Label name should be consist of lower case alphanumeric characters or dashes. |
@@ -913,7 +1058,7 @@ Path within the volume from which the container's volume should be mounted. Defa
 - Required: No
 - Type: string
 
-### Parameter: `environmentId`
+### Parameter: `environmentResourceId`
 
 Resource ID of environment.
 
@@ -941,6 +1086,47 @@ Controls how active revisions are handled for the Container app.
     'Single'
   ]
   ```
+
+### Parameter: `additionalPortMappings`
+
+Settings to expose additional ports on container app.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`external`](#parameter-additionalportmappingsexternal) | bool | Specifies whether the app port is accessible outside of the environment. |
+| [`targetPort`](#parameter-additionalportmappingstargetport) | int | Specifies the port the container listens on. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`exposedPort`](#parameter-additionalportmappingsexposedport) | int | Specifies the exposed port for the target port. If not specified, it defaults to target port. |
+
+### Parameter: `additionalPortMappings.external`
+
+Specifies whether the app port is accessible outside of the environment.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `additionalPortMappings.targetPort`
+
+Specifies the port the container listens on.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `additionalPortMappings.exposedPort`
+
+Specifies the exposed port for the target port. If not specified, it defaults to target port.
+
+- Required: No
+- Type: int
 
 ### Parameter: `clientCertificateMode`
 
@@ -1057,6 +1243,14 @@ Exposed Port in containers for TCP traffic from ingress.
 - Required: No
 - Type: int
 - Default: `0`
+
+### Parameter: `includeAddOns`
+
+Toggle to include the service configuration.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `ingressAllowInsecure`
 
@@ -1233,6 +1427,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1279,6 +1474,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1331,6 +1533,42 @@ The secrets of the Container App.
 - Required: No
 - Type: secureObject
 - Default: `{}`
+
+### Parameter: `service`
+
+Dev ContainerApp service type.
+
+- Required: No
+- Type: object
+- Default: `{}`
+
+### Parameter: `serviceBinds`
+
+List of container app services bound to the app.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-servicebindsname) | string | The name of the service. |
+| [`serviceId`](#parameter-servicebindsserviceid) | string | The service ID. |
+
+### Parameter: `serviceBinds.name`
+
+The name of the service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `serviceBinds.serviceId`
+
+The service ID.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `stickySessionsAffinity`
 

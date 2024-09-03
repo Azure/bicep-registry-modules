@@ -98,8 +98,8 @@ module testDeployment '../../../main.bicep' = {
     imageSource: {
       type: 'PlatformImage'
       publisher: 'canonical'
-      offer: '0001-com-ubuntu-server-lunar'
-      sku: '23_04-gen2'
+      offer: 'ubuntu-24_04-lts'
+      sku: 'server'
       version: 'latest'
     }
     buildTimeoutInMinutes: 60
@@ -138,11 +138,13 @@ module testDeployment '../../../main.bicep' = {
     }
     roleAssignments: [
       {
+        name: 'bb257a92-dc06-4831-9b74-ee5442d8ce0f'
         roleDefinitionIdOrName: 'Owner'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
       {
+        name: guid('Custom seed ${namePrefix}${serviceShort}')
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
