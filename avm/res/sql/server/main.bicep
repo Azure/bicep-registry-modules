@@ -263,7 +263,7 @@ module server_databases 'database/main.bicep' = [
         : ''
       sampleName: contains(database, 'sampleName') ? database.sampleName : ''
       tags: database.?tags ?? tags
-      zoneRedundant: contains(database, 'zoneRedundant') ? database.zoneRedundant : false
+      zoneRedundant: contains(database, 'zoneRedundant') ? database.zoneRedundant : true
       elasticPoolId: contains(database, 'elasticPoolId') ? database.elasticPoolId : ''
       backupShortTermRetentionPolicy: contains(database, 'backupShortTermRetentionPolicy')
         ? database.backupShortTermRetentionPolicy
@@ -305,7 +305,7 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
       skuCapacity: contains(elasticPool, 'skuCapacity') ? elasticPool.skuCapacity : 2
       skuName: contains(elasticPool, 'skuName') ? elasticPool.skuName : 'GP_Gen5'
       skuTier: contains(elasticPool, 'skuTier') ? elasticPool.skuTier : 'GeneralPurpose'
-      zoneRedundant: contains(elasticPool, 'zoneRedundant') ? elasticPool.zoneRedundant : false
+      zoneRedundant: contains(elasticPool, 'zoneRedundant') ? elasticPool.zoneRedundant : true
       location: location
       tags: elasticPool.?tags ?? tags
     }
