@@ -319,6 +319,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     name: 'akcpe0001'
     sku: 'Standard_E2ads_v5'
     // Non-required parameters
+    enablePublicNetworkAccess: false
     location: '<location>'
     privateEndpoints: [
       {
@@ -344,6 +345,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
+    publicIPType: 'IPv4'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -373,6 +375,9 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": "Standard_E2ads_v5"
     },
     // Non-required parameters
+    "enablePublicNetworkAccess": {
+      "value": false
+    },
     "location": {
       "value": "<location>"
     },
@@ -401,6 +406,9 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
+    },
+    "publicIPType": {
+      "value": "IPv4"
     },
     "tags": {
       "value": {

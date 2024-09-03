@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "3343661088905977025"
+      "templateHash": "4366309935211132094"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster.",
@@ -1166,7 +1166,9 @@
     "kustoCluster_privateEndpoints": {
       "copy": {
         "name": "kustoCluster_privateEndpoints",
-        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",

@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the module with private endpoints.
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-search.searchservices-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-kusto.clusters-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -53,6 +53,8 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}0001'
       location: resourceLocation
       sku: 'Standard_E2ads_v5'
+      enablePublicNetworkAccess: false
+      publicIPType: 'IPv4'
       privateEndpoints: [
         {
           privateDnsZoneGroup: {
