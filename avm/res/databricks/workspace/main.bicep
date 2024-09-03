@@ -113,6 +113,9 @@ param storageAccountPrivateEndpoints privateEndpointType
 @description('Conditional. The resource ID of the associated access connector for private access to the managed workspace storage account. Required if privateStorageAccount is enabled.')
 param accessConnectorResourceId string = ''
 
+@description('Optional. The default catalog configuration for the Databricks workspace.')
+param defaultCatalog defaultCatalogType?
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -211,6 +214,18 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
           }
         },
         // Parameters only added if not empty
+        !empty(defaultCatalog)
+          ? {
+              defaultCatalog: {
+                initialName: {
+                  value: defaultCatalog!.initialName
+                }
+                initialType: {
+                  value: defaultCatalog!.initialType
+                }
+              }
+            }
+          : {},
         !empty(customVirtualNetworkResourceId)
           ? {
               customVirtualNetworkId: {
@@ -330,6 +345,11 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
         }
       : {}
   )
+}
+
+type defaultCatalogType = {
+  initialName: string
+  initialType: 'HiveMetastore' | 'UnityCatalog'
 }
 
 resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {

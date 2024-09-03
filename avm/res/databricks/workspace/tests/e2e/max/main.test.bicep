@@ -21,7 +21,7 @@ param serviceShort string = 'dwmax'
 param baseTime string = utcNow('u')
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'cat3' //'#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -176,6 +176,10 @@ module testDeployment '../../../main.bicep' = [
       managedResourceGroupResourceId: '${subscription().id}/resourceGroups/rg-${resourceGroupName}-managed'
       requireInfrastructureEncryption: true
       vnetAddressPrefix: '10.100'
+      defaultCatalog: {
+        initialName: 'defaultCatalog'
+        initialType: 'UnityCatalog'
+      }
     }
     dependsOn: [
       nestedDependencies
