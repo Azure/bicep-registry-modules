@@ -113,20 +113,19 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     ]
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
-      addressSpace: '<addressSpace>'
+      addressSpace: '10.0.0.0/16'
       networkType: 'createNew'
-      virtualNetworkName: '<virtualNetworkName>'
+      virtualNetworkName: 'vnet-aca'
     }
     selfHostedConfig: {
-      agentsPoolName: '<agentsPoolName>'
-      devOpsOrganization: '<devOpsOrganization>'
+      agentsPoolName: 'agents-pool'
+      devOpsOrganization: 'azureDevOpsOrganization'
       personalAccessToken: '<personalAccessToken>'
       selfHostedType: 'azuredevops'
     }
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
-    privateNetworking: '<privateNetworking>'
+    privateNetworking: false
   }
 }
 ```
@@ -155,28 +154,25 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     },
     "networkingConfiguration": {
       "value": {
-        "addressSpace": "<addressSpace>",
+        "addressSpace": "10.0.0.0/16",
         "networkType": "createNew",
-        "virtualNetworkName": "<virtualNetworkName>"
+        "virtualNetworkName": "vnet-aca"
       }
     },
     "selfHostedConfig": {
       "value": {
-        "agentsPoolName": "<agentsPoolName>",
-        "devOpsOrganization": "<devOpsOrganization>",
+        "agentsPoolName": "agents-pool",
+        "devOpsOrganization": "azureDevOpsOrganization",
         "personalAccessToken": "<personalAccessToken>",
         "selfHostedType": "azuredevops"
       }
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
     "privateNetworking": {
-      "value": "<privateNetworking>"
+      "value": false
     }
   }
 }
@@ -204,20 +200,19 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     ]
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
-      addressSpace: '<addressSpace>'
+      addressSpace: '10.0.0.0/16'
       networkType: 'createNew'
-      virtualNetworkName: '<virtualNetworkName>'
+      virtualNetworkName: 'vnet-aci'
     }
     selfHostedConfig: {
-      agentsPoolName: '<agentsPoolName>'
-      devOpsOrganization: '<devOpsOrganization>'
+      agentsPoolName: 'aci-pool'
+      devOpsOrganization: 'azureDevOpsOrganization'
       personalAccessToken: '<personalAccessToken>'
       selfHostedType: 'azuredevops'
     }
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
-    privateNetworking: '<privateNetworking>'
+    privateNetworking: false
   }
 }
 ```
@@ -245,28 +240,25 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     },
     "networkingConfiguration": {
       "value": {
-        "addressSpace": "<addressSpace>",
+        "addressSpace": "10.0.0.0/16",
         "networkType": "createNew",
-        "virtualNetworkName": "<virtualNetworkName>"
+        "virtualNetworkName": "vnet-aci"
       }
     },
     "selfHostedConfig": {
       "value": {
-        "agentsPoolName": "<agentsPoolName>",
-        "devOpsOrganization": "<devOpsOrganization>",
+        "agentsPoolName": "aci-pool",
+        "devOpsOrganization": "azureDevOpsOrganization",
         "personalAccessToken": "<personalAccessToken>",
         "selfHostedType": "azuredevops"
       }
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
     "privateNetworking": {
-      "value": "<privateNetworking>"
+      "value": false
     }
   }
 }
@@ -294,20 +286,19 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     ]
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
-      addressSpace: '<addressSpace>'
+      addressSpace: '10.0.0.0/16'
       networkType: 'createNew'
-      virtualNetworkName: '<virtualNetworkName>'
+      virtualNetworkName: 'vnet-aca'
     }
     selfHostedConfig: {
-      githubOrganization: '<githubOrganization>'
-      githubRepository: '<githubRepository>'
+      githubOrganization: 'githHubOrganization'
+      githubRepository: 'dummyRepo'
       personalAccessToken: '<personalAccessToken>'
       selfHostedType: 'github'
     }
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
-    privateNetworking: '<privateNetworking>'
+    privateNetworking: false
   }
 }
 ```
@@ -335,28 +326,25 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     },
     "networkingConfiguration": {
       "value": {
-        "addressSpace": "<addressSpace>",
+        "addressSpace": "10.0.0.0/16",
         "networkType": "createNew",
-        "virtualNetworkName": "<virtualNetworkName>"
+        "virtualNetworkName": "vnet-aca"
       }
     },
     "selfHostedConfig": {
       "value": {
-        "githubOrganization": "<githubOrganization>",
-        "githubRepository": "<githubRepository>",
+        "githubOrganization": "githHubOrganization",
+        "githubRepository": "dummyRepo",
         "personalAccessToken": "<personalAccessToken>",
         "selfHostedType": "github"
       }
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
     "privateNetworking": {
-      "value": "<privateNetworking>"
+      "value": false
     }
   }
 }
@@ -384,31 +372,30 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     ]
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
-      addressSpace: '<addressSpace>'
-      containerAppSubnetAddressPrefix: '<containerAppSubnetAddressPrefix>'
-      containerAppSubnetName: '<containerAppSubnetName>'
+      addressSpace: '10.0.0.0/16'
+      containerAppSubnetAddressPrefix: '10.0.1.0/24'
+      containerAppSubnetName: 'acaSubnet'
       networkType: 'createNew'
-      virtualNetworkName: '<virtualNetworkName>'
+      virtualNetworkName: 'vnet-aca'
     }
     selfHostedConfig: {
       agentNamePrefix: '<agentNamePrefix>'
-      agentsPoolName: '<agentsPoolName>'
+      agentsPoolName: 'aca-pool'
       azureContainerAppTarget: {
         resources: {
           cpu: '1'
           memory: '2Gi'
         }
       }
-      devOpsOrganization: '<devOpsOrganization>'
+      devOpsOrganization: 'azureDevOpsOrganization'
       personalAccessToken: '<personalAccessToken>'
-      placeHolderAgentName: '<placeHolderAgentName>'
+      placeHolderAgentName: 'acaPlaceHolderAgent'
       selfHostedType: 'azuredevops'
-      targetPipelinesQueueLength: '<targetPipelinesQueueLength>'
+      targetPipelinesQueueLength: '1'
     }
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
-    privateNetworking: '<privateNetworking>'
+    privateNetworking: false
   }
 }
 ```
@@ -436,39 +423,36 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     },
     "networkingConfiguration": {
       "value": {
-        "addressSpace": "<addressSpace>",
-        "containerAppSubnetAddressPrefix": "<containerAppSubnetAddressPrefix>",
-        "containerAppSubnetName": "<containerAppSubnetName>",
+        "addressSpace": "10.0.0.0/16",
+        "containerAppSubnetAddressPrefix": "10.0.1.0/24",
+        "containerAppSubnetName": "acaSubnet",
         "networkType": "createNew",
-        "virtualNetworkName": "<virtualNetworkName>"
+        "virtualNetworkName": "vnet-aca"
       }
     },
     "selfHostedConfig": {
       "value": {
         "agentNamePrefix": "<agentNamePrefix>",
-        "agentsPoolName": "<agentsPoolName>",
+        "agentsPoolName": "aca-pool",
         "azureContainerAppTarget": {
           "resources": {
             "cpu": "1",
             "memory": "2Gi"
           }
         },
-        "devOpsOrganization": "<devOpsOrganization>",
+        "devOpsOrganization": "azureDevOpsOrganization",
         "personalAccessToken": "<personalAccessToken>",
-        "placeHolderAgentName": "<placeHolderAgentName>",
+        "placeHolderAgentName": "acaPlaceHolderAgent",
         "selfHostedType": "azuredevops",
-        "targetPipelinesQueueLength": "<targetPipelinesQueueLength>"
+        "targetPipelinesQueueLength": "1"
       }
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
     "privateNetworking": {
-      "value": "<privateNetworking>"
+      "value": false
     }
   }
 }
@@ -496,32 +480,31 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     ]
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
-      addressSpace: '<addressSpace>'
-      containerInstanceSubnetAddressPrefix: '<containerInstanceSubnetAddressPrefix>'
-      containerInstanceSubnetName: '<containerInstanceSubnetName>'
+      addressSpace: '10.0.0.0/16'
+      containerInstanceSubnetAddressPrefix: '10.0.1.0/24'
+      containerInstanceSubnetName: 'aci-subnet'
       networkType: 'createNew'
-      virtualNetworkName: '<virtualNetworkName>'
+      virtualNetworkName: 'vnet-aci'
     }
     selfHostedConfig: {
       azureContainerInstanceTarget: {
-        cpu: '<cpu>'
-        memoryInGB: '<memoryInGB>'
-        numberOfInstances: '<numberOfInstances>'
-        sku: '<sku>'
+        cpu: 1
+        memoryInGB: 2
+        numberOfInstances: 3
+        sku: 'Standard'
       }
       ephemeral: true
-      githubOrganization: '<githubOrganization>'
-      githubRepository: '<githubRepository>'
+      githubOrganization: 'githHubOrganization'
+      githubRepository: 'dummyRepo'
       personalAccessToken: '<personalAccessToken>'
       runnerNamePrefix: '<runnerNamePrefix>'
-      runnerScope: '<runnerScope>'
+      runnerScope: 'repo'
       selfHostedType: 'github'
-      targetWorkflowQueueLength: '<targetWorkflowQueueLength>'
+      targetWorkflowQueueLength: '1'
     }
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
-    privateNetworking: '<privateNetworking>'
+    privateNetworking: false
   }
 }
 ```
@@ -549,40 +532,37 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     },
     "networkingConfiguration": {
       "value": {
-        "addressSpace": "<addressSpace>",
-        "containerInstanceSubnetAddressPrefix": "<containerInstanceSubnetAddressPrefix>",
-        "containerInstanceSubnetName": "<containerInstanceSubnetName>",
+        "addressSpace": "10.0.0.0/16",
+        "containerInstanceSubnetAddressPrefix": "10.0.1.0/24",
+        "containerInstanceSubnetName": "aci-subnet",
         "networkType": "createNew",
-        "virtualNetworkName": "<virtualNetworkName>"
+        "virtualNetworkName": "vnet-aci"
       }
     },
     "selfHostedConfig": {
       "value": {
         "azureContainerInstanceTarget": {
-          "cpu": "<cpu>",
-          "memoryInGB": "<memoryInGB>",
-          "numberOfInstances": "<numberOfInstances>",
-          "sku": "<sku>"
+          "cpu": 1,
+          "memoryInGB": 2,
+          "numberOfInstances": 3,
+          "sku": "Standard"
         },
         "ephemeral": true,
-        "githubOrganization": "<githubOrganization>",
-        "githubRepository": "<githubRepository>",
+        "githubOrganization": "githHubOrganization",
+        "githubRepository": "dummyRepo",
         "personalAccessToken": "<personalAccessToken>",
         "runnerNamePrefix": "<runnerNamePrefix>",
-        "runnerScope": "<runnerScope>",
+        "runnerScope": "repo",
         "selfHostedType": "github",
-        "targetWorkflowQueueLength": "<targetWorkflowQueueLength>"
+        "targetWorkflowQueueLength": "1"
       }
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
     "privateNetworking": {
-      "value": "<privateNetworking>"
+      "value": false
     }
   }
 }
@@ -623,18 +603,17 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     }
     selfHostedConfig: {
       agentNamePrefix: '<agentNamePrefix>'
-      agentsPoolName: '<agentsPoolName>'
+      agentsPoolName: 'aci-pool'
       azureContainerInstanceTarget: {
         numberOfInstances: 2
       }
-      devOpsOrganization: '<devOpsOrganization>'
+      devOpsOrganization: 'azureDevOpsOrganization'
       personalAccessToken: '<personalAccessToken>'
       selfHostedType: 'azuredevops'
     }
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
-    privateNetworking: '<privateNetworking>'
+    privateNetworking: true
   }
 }
 ```
@@ -677,24 +656,21 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     "selfHostedConfig": {
       "value": {
         "agentNamePrefix": "<agentNamePrefix>",
-        "agentsPoolName": "<agentsPoolName>",
+        "agentsPoolName": "aci-pool",
         "azureContainerInstanceTarget": {
           "numberOfInstances": 2
         },
-        "devOpsOrganization": "<devOpsOrganization>",
+        "devOpsOrganization": "azureDevOpsOrganization",
         "personalAccessToken": "<personalAccessToken>",
         "selfHostedType": "azuredevops"
       }
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
     "privateNetworking": {
-      "value": "<privateNetworking>"
+      "value": true
     }
   }
 }
@@ -737,15 +713,14 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       virtualNetworkResourceId: '<virtualNetworkResourceId>'
     }
     selfHostedConfig: {
-      githubOrganization: '<githubOrganization>'
-      githubRepository: '<githubRepository>'
+      githubOrganization: 'githHubOrganization'
+      githubRepository: 'dummyRepo'
       personalAccessToken: '<personalAccessToken>'
       selfHostedType: 'github'
     }
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
-    privateNetworking: '<privateNetworking>'
+    privateNetworking: true
   }
 }
 ```
@@ -790,21 +765,18 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     },
     "selfHostedConfig": {
       "value": {
-        "githubOrganization": "<githubOrganization>",
-        "githubRepository": "<githubRepository>",
+        "githubOrganization": "githHubOrganization",
+        "githubRepository": "dummyRepo",
         "personalAccessToken": "<personalAccessToken>",
         "selfHostedType": "github"
       }
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
     "privateNetworking": {
-      "value": "<privateNetworking>"
+      "value": true
     }
   }
 }
@@ -832,20 +804,19 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     ]
     namingPrefix: '<namingPrefix>'
     networkingConfiguration: {
-      addressSpace: '<addressSpace>'
+      addressSpace: '10.0.0.0/16'
       networkType: 'createNew'
-      virtualNetworkName: '<virtualNetworkName>'
+      virtualNetworkName: 'vnet-aci'
     }
     selfHostedConfig: {
-      githubOrganization: '<githubOrganization>'
-      githubRepository: '<githubRepository>'
+      githubOrganization: 'githHubOrganization'
+      githubRepository: 'dummyRepo'
       personalAccessToken: '<personalAccessToken>'
       selfHostedType: 'github'
     }
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
-    privateNetworking: '<privateNetworking>'
+    privateNetworking: true
   }
 }
 ```
@@ -873,28 +844,25 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     },
     "networkingConfiguration": {
       "value": {
-        "addressSpace": "<addressSpace>",
+        "addressSpace": "10.0.0.0/16",
         "networkType": "createNew",
-        "virtualNetworkName": "<virtualNetworkName>"
+        "virtualNetworkName": "vnet-aci"
       }
     },
     "selfHostedConfig": {
       "value": {
-        "githubOrganization": "<githubOrganization>",
-        "githubRepository": "<githubRepository>",
+        "githubOrganization": "githHubOrganization",
+        "githubRepository": "dummyRepo",
         "personalAccessToken": "<personalAccessToken>",
         "selfHostedType": "github"
       }
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
     "privateNetworking": {
-      "value": "<privateNetworking>"
+      "value": true
     }
   }
 }

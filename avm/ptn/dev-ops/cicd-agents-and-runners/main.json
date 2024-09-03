@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "13927545481849742036"
+      "templateHash": "17412855215846424947"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.",
@@ -638,7 +638,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "Param(\n    [string]$jobName,\n    [string]$resourceGroup,\n    [string]$subscriptionId\n)\n$ErrorActionPreference = 'SilentlyContinue'\n$DeploymentScriptOutputs = @{}\n$maxRetries = 10\n$retryCount = 0\n\nif (Get-AzContainerAppJob -Name $jobName -ResourceGroupName $resourceGroup -SubscriptionId $subscriptionId -ErrorVariable jobStartError) {\n    do {\n        $jobStatus = (Get-AzContainerAppJob -Name $jobName -ResourceGroupName $resourceGroup -SubscriptionId $subscriptionId).ProvisioningState\n        Write-Host 'Waiting for the container app job to start...Waiting 10 seconds!'\n        Start-Sleep -Seconds 10\n        $retryCount++\n    } until ($jobStatus -eq 'Succeeded' -or $maxRetries -eq $retryCount)\n\n    $jobStart = Start-AzContainerAppJob -Name $jobName -ResourceGroupName $resourceGroup -SubscriptionId $subscriptionId -ErrorVariable jobStartError\n    if ($jobStart) {\n        Write-Host 'Job started successfully.'\n        $DeploymentScriptOutputs['JobStatus'] = 'Success'\n    } else {\n        Write-Host \"Failed to start Job. An error occurred: $($jobStartError[0].Exception.Message)\"\n        $DeploymentScriptOutputs['JobStatus'] = 'Failed'\n    }\n} else {\n    Write-Host \"Job not found. $($jobStartError[0].Exception.Message)\"\n    $DeploymentScriptOutputs['JobStatus'] = 'Failed'\n}\n\n",
+    "$fxv#0": "<#\nThis scripts starts an Azure DevOps container job with a manual trigger. It is used to manually start the placeholder agent.\nMore Information can be found here https://learn.microsoft.com/azure/container-apps/tutorial-ci-cd-runners-jobs?tabs=bash&pivots=container-apps-jobs-self-hosted-ci-cd-azure-pipelines#create-a-placeholder-self-hosted-agent\n#>\n\nParam(\n    [string]$jobName,\n    [string]$resourceGroup,\n    [string]$subscriptionId\n)\n$ErrorActionPreference = 'SilentlyContinue'\n$DeploymentScriptOutputs = @{}\n$maxRetries = 10\n$retryCount = 0\n\nif (Get-AzContainerAppJob -Name $jobName -ResourceGroupName $resourceGroup -SubscriptionId $subscriptionId -ErrorVariable jobStartError) {\n    do {\n        $jobStatus = (Get-AzContainerAppJob -Name $jobName -ResourceGroupName $resourceGroup -SubscriptionId $subscriptionId).ProvisioningState\n        Write-Host 'Waiting for the container app job to start...Waiting 10 seconds!'\n        Start-Sleep -Seconds 10\n        $retryCount++\n    } until ($jobStatus -eq 'Succeeded' -or $maxRetries -eq $retryCount)\n\n    $jobStart = Start-AzContainerAppJob -Name $jobName -ResourceGroupName $resourceGroup -SubscriptionId $subscriptionId -ErrorVariable jobStartError\n    if ($jobStart) {\n        Write-Host 'Job started successfully.'\n        $DeploymentScriptOutputs['JobStatus'] = 'Success'\n    } else {\n        Write-Host \"Failed to start Job. An error occurred: $($jobStartError[0].Exception.Message)\"\n        $DeploymentScriptOutputs['JobStatus'] = 'Failed'\n    }\n} else {\n    Write-Host \"Job not found. $($jobStartError[0].Exception.Message)\"\n    $DeploymentScriptOutputs['JobStatus'] = 'Failed'\n}\n\n",
     "imagePaths": [
       {
         "platform": "azuredevops-container-app",
@@ -657,17 +657,15 @@
         "imagePath": "github-runner-aci"
       }
     ],
-    "githubURL": "https://github.com/azure/bicep-registry-modules#main:avm/ptn/dev-ops/cicd-agents-and-runners/container-images",
+    "githubURL": "https://github.com/azure/bicep-registry-modules#main:avm/ptn/dev-ops/cicd-agents-and-runners/scripts",
     "acaGitHubRules": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), createArray(createObject('name', 'github-runner-scaling-rule', 'type', 'github-runner', 'metadata', createObject('owner', parameters('selfHostedConfig').githubOrganization, 'repos', parameters('selfHostedConfig').githubRepository, 'targetWorkflowQueueLength', coalesce(tryGet(parameters('selfHostedConfig'), 'targetWorkflowQueueLength'), '1'), 'runnerScope', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerScope'), 'repo')), 'auth', createArray(createObject('secretRef', 'personal-access-token', 'triggerParameter', 'personalAccessToken')))), createArray())]",
     "acaGitHubSecrets": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), createArray(createObject('name', 'personal-access-token', 'value', parameters('selfHostedConfig').personalAccessToken)), createArray())]",
-    "acaGitHubEnvVariables": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), createArray(createObject('name', 'RUNNER_NAME_PREFIX', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerNamePrefix'), 'gh-runner')), createObject('name', 'REPO_URL', 'value', variables('gitHubRunnerURL')), createObject('name', 'RUNNER_SCOPE', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerScope'), 'repo')), createObject('name', 'EPHEMERAL', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'ephemeral'), 'true')), createObject('name', 'ORG_NAME', 'value', parameters('selfHostedConfig').gitHubOrganization), createObject('name', 'RUNNER_GROUP', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerGroup'), '')), createObject('name', 'ACCESS_TOKEN', 'secretRef', 'personal-access-token')), createArray())]",
+    "acaGitHubEnvVariables": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), createArray(createObject('name', 'RUNNER_NAME_PREFIX', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerNamePrefix'), 'gh-runner')), createObject('name', 'REPO_URL', 'value', variables('gitHubRunnerURL')), createObject('name', 'RUNNER_SCOPE', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerScope'), 'repo')), createObject('name', 'EPHEMERAL', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'ephemeral'), 'true')), createObject('name', 'ORG_NAME', 'value', tryGet(parameters('selfHostedConfig'), 'gitHubOrganization')), createObject('name', 'RUNNER_GROUP', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerGroup'), '')), createObject('name', 'ACCESS_TOKEN', 'secretRef', 'personal-access-token')), createArray())]",
     "acaAzureDevOpsEnvVariables": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops'), createArray(createObject('name', 'AZP_POOL', 'value', parameters('selfHostedConfig').agentsPoolName), createObject('name', 'AZP_AGENT_NAME_PREFIX', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'agentNamePrefix'), 'aca')), createObject('name', 'AZP_URL', 'secretRef', 'organization-url'), createObject('name', 'AZP_TOKEN', 'secretRef', 'personal-access-token')), createArray())]",
     "acaAzureDevOpsSecrets": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops'), createArray(createObject('name', 'personal-access-token', 'value', parameters('selfHostedConfig').personalAccessToken), createObject('name', 'organization-url', 'value', variables('devOpsOrgURL'))), createArray())]",
     "acaAzureDevOpsRules": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops'), createArray(createObject('name', 'azure-pipelines-scaling-rule', 'type', 'azure-pipelines', 'metadata', createObject('poolName', parameters('selfHostedConfig').agentsPoolName, 'targetPipelinesQueueLength', coalesce(tryGet(parameters('selfHostedConfig'), 'targetPipelinesQueueLength'), '1')), 'auth', createArray(createObject('secretRef', 'personal-access-token', 'triggerParameter', 'personalAccessToken'), createObject('secretRef', 'organization-url', 'triggerParameter', 'organizationURL')))), createArray())]",
-    "gitHubOrganization": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), parameters('selfHostedConfig').githubOrganization, null())]",
-    "gitHubRepository": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), parameters('selfHostedConfig').githubRepository, null())]",
-    "gitHubRunnerURL": "[format('https://github.com/{0}/{1}', variables('gitHubOrganization'), variables('gitHubRepository'))]",
-    "devOpsOrgURL": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops'), format('https://dev.azure.com/{0}', parameters('selfHostedConfig').devOpsOrganization), null())]"
+    "gitHubRunnerURL": "[format('https://github.com/{0}/{1}', tryGet(parameters('selfHostedConfig'), 'gitHubOrganization'), tryGet(parameters('selfHostedConfig'), 'gitHubRepository'))]",
+    "devOpsOrgURL": "[format('https://dev.azure.com/{0}', tryGet(parameters('selfHostedConfig'), 'devOpsOrganization'))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -11279,7 +11277,11 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "publicIpResourceIds": "[if(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayPublicIpAddressResourceId'), '')), createObject('value', createArray(reference('natGatewayPublicIp').outputs.resourceId.value)), createObject('value', createArray(coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayPublicIpAddressResourceId'), ''))))]"
+          "publicIpResourceIds": {
+            "value": [
+              "[coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayPublicIpAddressResourceId'), reference('natGatewayPublicIp').outputs.resourceId.value)]"
+            ]
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -19259,7 +19261,9 @@
                 "service": "file",
                 "subnetResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerAppDeploymentScriptSubnetName), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppDeploymentScriptSubnetName'), 'app-deployment-script-subnet'))))[0])]",
                 "privateDnsZoneGroupName": "stgPrivateDNSZoneGroup",
-                "privateDnsZoneResourceIds": "[if(not(empty(coalesce(tryGet(parameters('networkingConfiguration').computeNetworking, 'deploymentScriptPrivateDnsZoneResourceId'), ''))), createArray(coalesce(tryGet(parameters('networkingConfiguration').computeNetworking, 'deploymentScriptPrivateDnsZoneResourceId'), '')), createArray(reference('deploymentScriptPrivateDNSZone').outputs.resourceId.value))]"
+                "privateDnsZoneResourceIds": [
+                  "[coalesce(tryGet(parameters('networkingConfiguration').computeNetworking, 'deploymentScriptPrivateDnsZoneResourceId'), reference('deploymentScriptPrivateDNSZone').outputs.resourceId.value)]"
+                ]
               }
             ]
           }
