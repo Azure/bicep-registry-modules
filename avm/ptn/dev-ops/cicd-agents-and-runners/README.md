@@ -21,7 +21,7 @@ This module deploys self-hosted agents and runners for Azure DevOps and GitHub o
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.ContainerInstance/containerGroups` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerInstance/2023-05-01/containerGroups) |
-| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries) |
+| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates) |
 | `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
 | `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/credentialSets) |
 | `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
@@ -87,8 +87,8 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults for Azure DevOps self-hosted agents using both Azure Container Instances and Azure Container Apps.](#example-1-using-only-defaults-for-azure-devops-self-hosted-agents-using-both-azure-container-instances-and-azure-container-apps)
 - [Using only defaults for Azure DevOps self-hosted agents using Azure Container Instances.](#example-2-using-only-defaults-for-azure-devops-self-hosted-agents-using-azure-container-instances)
 - [Using only defaults for GitHub self-hosted runners using Azure Container Apps.](#example-3-using-only-defaults-for-github-self-hosted-runners-using-azure-container-apps)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [Using large parameter set](#example-5-using-large-parameter-set)
+- [Using large parameter set for Azure DevOps self-hosted agents using Azure Container Apps.](#example-4-using-large-parameter-set-for-azure-devops-self-hosted-agents-using-azure-container-apps)
+- [Using large parameter set for GitHub self-hosted runners using Azure Container Instances.](#example-5-using-large-parameter-set-for-github-self-hosted-runners-using-azure-container-instances)
 - [Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet.](#example-6-using-only-defaults-for-azure-devops-self-hosted-agents-using-private-networking-in-an-existing-vnet)
 - [Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet.](#example-7-using-only-defaults-for-github-self-hosted-runners-using-private-networking-in-an-existing-vnet)
 - [Using only defaults for GitHub self-hosted runners using Private networking.](#example-8-using-only-defaults-for-github-self-hosted-runners-using-private-networking)
@@ -353,9 +353,9 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 4: _Using large parameter set for Azure DevOps self-hosted agents using Azure Container Apps._
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module with most of its features enabled for Azure DevOps self-hosted agents using Azure Container Apps.
 
 
 <details>
@@ -461,9 +461,9 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
 </details>
 <p>
 
-### Example 5: _Using large parameter set_
+### Example 5: _Using large parameter set for GitHub self-hosted runners using Azure Container Instances._
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module with most of its features enabled for GitHub self-hosted runners using Azure Container Instances.
 
 
 <details>
