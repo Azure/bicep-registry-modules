@@ -184,7 +184,7 @@ function Get-DeploymentTargetResourceListInner {
                 if ($op = Get-DeploymentOperationAtScope @baseInputObject -ResourceGroupName $resourceGroupName -SubscriptionId $currentContext.Subscription.Id) {
                     [array]$deploymentTargets = $op.TargetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
                 } else {
-                    $message = "Deployment [$Name] in scope [$Scope] of Resource Group [$ResourceGroupName] not found."
+                    $message = "Not found deployment [$Name] in scope [$Scope] of Resource Group [$ResourceGroupName]."
                     if ($DoThrow) {
                         throw $message
                     } else {
@@ -203,7 +203,7 @@ function Get-DeploymentTargetResourceListInner {
             if ($op = Get-DeploymentOperationAtScope @baseInputObject -SubscriptionId $currentContext.Subscription.Id) {
                 [array]$deploymentTargets = $op.TargetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
             } else {
-                $message = "Deployment [$Name] in scope [$Scope] not found."
+                $message = "Not found deployment [$Name] in scope [$Scope]."
                 if ($DoThrow) {
                     throw $message
                 } else {
@@ -217,7 +217,7 @@ function Get-DeploymentTargetResourceListInner {
             if ($op = Get-DeploymentOperationAtScope @baseInputObject -ManagementGroupId $ManagementGroupId) {
                 [array]$deploymentTargets = $op.TargetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
             } else {
-                $message = "Deployment [$Name] in scope [$Scope] not found."
+                $message = "Not found deployment [$Name] in scope [$Scope]."
                 if ($DoThrow) {
                     throw $message
                 } else {
@@ -231,7 +231,7 @@ function Get-DeploymentTargetResourceListInner {
             if ($op = Get-DeploymentOperationAtScope @baseInputObject) {
                 [array]$deploymentTargets = $op.TargetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
             } else {
-                $message = "Deployment [$Name] in scope [$Scope] not found."
+                $message = "Not found deployment [$Name] in scope [$Scope]."
                 if ($DoThrow) {
                     throw $message
                 } else {
