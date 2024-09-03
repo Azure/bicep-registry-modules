@@ -1,4 +1,8 @@
-@description('Required: The name of the user VPN configuration.')
+metadata name = 'VPN Server Configuration'
+metadata description = 'This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway.'
+metadata owner = 'Azure/module-maintainers'
+
+@description('Required. The name of the user VPN configuration.')
 param name string
 
 @description('Optional. Location where all resources will be created.')
@@ -13,29 +17,29 @@ param aadIssuer string?
 @description('Optional. The audience for the AAD/Entrance authentication.')
 param aadTenant string?
 
-@description('')
+@description('Optional.')
 param p2sConfigurationPolicyGroups array = []
 
-@description('')
+@description('Optional.')
 param vpnServerConfigurationName string
 
-@description('')
+@description('Optional.')
 param radiusClientRootCertificates array = []
 
-@description('')
+@description('Optional. The address of the Radius server.')
 param radiusServerAddress string?
 
-@description('')
+@description('Optional. The root certificates of the Radius server.')
 param radiusServerRootCertificates array = []
 
-@description('')
+@description('Optional. The list of Radius servers.')
 param radiusServers array = []
 
-@description('')
+@description('Optional. The Radius server secret.')
 @secure()
 param radiusServerSecret string?
 
-@description('')
+@description('Optional. The authentication types for the VPN configuration.')
 @allowed([
   'AAD'
   'Certificate'
@@ -43,16 +47,16 @@ param radiusServerSecret string?
 ])
 param vpnAuthenticationTypes array = []
 
-@description('')
+@description('Optional.')
 param vpnClientIpsecPolicies array = []
 
-@description('')
+@description('Optional.')
 param vpnClientRevokedCertificates array = []
 
-@description('')
+@description('Optional.')
 param vpnClientRootCertificates array = []
 
-@description('')
+@description('Optional. The allowed VPN protocols for the configuration.')
 @allowed([
   'IkeV2'
   'OpenVPN'

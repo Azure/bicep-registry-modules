@@ -1,0 +1,341 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.29.47.4906",
+      "templateHash": "16470849018089013777"
+    }
+  },
+  "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the user VPN configuration."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location where all resources will be created."
+      }
+    },
+    "aadAudience": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The audience for the AAD/Entrance authentication."
+      }
+    },
+    "aadIssuer": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The issuer for the AAD/Entrance authentication."
+      }
+    },
+    "aadTenant": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The audience for the AAD/Entrance authentication."
+      }
+    },
+    "p2sConfigurationPolicyGroups": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional."
+      }
+    },
+    "vpnServerConfigurationName": {
+      "type": "string",
+      "metadata": {
+        "description": "Optional."
+      }
+    },
+    "radiusClientRootCertificates": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional."
+      }
+    },
+    "radiusServerAddress": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The address of the Radius server."
+      }
+    },
+    "radiusServerRootCertificates": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The root certificates of the Radius server."
+      }
+    },
+    "radiusServers": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The list of Radius servers."
+      }
+    },
+    "radiusServerSecret": {
+      "type": "securestring",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The Radius server secret."
+      }
+    },
+    "vpnAuthenticationTypes": {
+      "type": "array",
+      "defaultValue": [],
+      "allowedValues": [
+        "AAD",
+        "Certificate",
+        "Radius"
+      ],
+      "metadata": {
+        "description": "Optional. The authentication types for the VPN configuration."
+      }
+    },
+    "vpnClientIpsecPolicies": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional."
+      }
+    },
+    "vpnClientRevokedCertificates": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional."
+      }
+    },
+    "vpnClientRootCertificates": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional."
+      }
+    },
+    "vpnProtocols": {
+      "type": "array",
+      "defaultValue": [],
+      "allowedValues": [
+        "IkeV2",
+        "OpenVPN"
+      ],
+      "metadata": {
+        "description": "Optional. The allowed VPN protocols for the configuration."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[take(format('46d3xbcp.res.network-vpnserverconfiguration.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "vpnServerConfig": {
+      "type": "Microsoft.Network/vpnServerConfigurations",
+      "apiVersion": "2024-01-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "copy": [
+          {
+            "name": "configurationPolicyGroups",
+            "count": "[length(parameters('p2sConfigurationPolicyGroups'))]",
+            "input": {
+              "name": "[parameters('p2sConfigurationPolicyGroups')[copyIndex('configurationPolicyGroups')].userVPNPolicyGroupName]",
+              "properties": {
+                "isDefault": "[parameters('p2sConfigurationPolicyGroups')[copyIndex('configurationPolicyGroups')].isDefault]",
+                "policyMembers": "[parameters('p2sConfigurationPolicyGroups')[copyIndex('configurationPolicyGroups')].policyMembers]",
+                "priority": "[parameters('p2sConfigurationPolicyGroups')[copyIndex('configurationPolicyGroups')].priority]"
+              }
+            }
+          },
+          {
+            "name": "radiusClientRootCertificates",
+            "count": "[length(parameters('radiusClientRootCertificates'))]",
+            "input": {
+              "name": "[parameters('radiusClientRootCertificates')[copyIndex('radiusClientRootCertificates')].name]",
+              "thumbprint": "[parameters('radiusClientRootCertificates')[copyIndex('radiusClientRootCertificates')].thumbprint]"
+            }
+          },
+          {
+            "name": "radiusServerRootCertificates",
+            "count": "[length(parameters('radiusServerRootCertificates'))]",
+            "input": {
+              "name": "[parameters('radiusServerRootCertificates')[copyIndex('radiusServerRootCertificates')].name]",
+              "publicCertData": "[parameters('radiusServerRootCertificates')[copyIndex('radiusServerRootCertificates')].publicCertData]"
+            }
+          },
+          {
+            "name": "radiusServers",
+            "count": "[length(parameters('radiusServers'))]",
+            "input": {
+              "radiusServerAddress": "[parameters('radiusServers')[copyIndex('radiusServers')].radiusServerAddress]",
+              "radiusServerScore": "[parameters('radiusServers')[copyIndex('radiusServers')].radiusServerScore]",
+              "radiusServerSecret": "[parameters('radiusServers')[copyIndex('radiusServers')].radiusServerSecret]"
+            }
+          },
+          {
+            "name": "vpnClientIpsecPolicies",
+            "count": "[length(parameters('vpnClientIpsecPolicies'))]",
+            "input": {
+              "dhGroup": "[parameters('vpnClientIpsecPolicies')[copyIndex('vpnClientIpsecPolicies')].dhGroup]",
+              "ikeEncryption": "[parameters('vpnClientIpsecPolicies')[copyIndex('vpnClientIpsecPolicies')].ikeEncryption]",
+              "ikeIntegrity": "[parameters('vpnClientIpsecPolicies')[copyIndex('vpnClientIpsecPolicies')].ikeIntegrity]",
+              "ipsecEncryption": "[parameters('vpnClientIpsecPolicies')[copyIndex('vpnClientIpsecPolicies')].ipsecEncryption]",
+              "ipsecIntegrity": "[parameters('vpnClientIpsecPolicies')[copyIndex('vpnClientIpsecPolicies')].ipsecIntegrity]",
+              "pfsGroup": "[parameters('vpnClientIpsecPolicies')[copyIndex('vpnClientIpsecPolicies')].pfsGroup]",
+              "saDataSizeKilobytes": "[parameters('vpnClientIpsecPolicies')[copyIndex('vpnClientIpsecPolicies')].saDataSizeKilobytes]",
+              "saLifeTimeSeconds": "[parameters('vpnClientIpsecPolicies')[copyIndex('vpnClientIpsecPolicies')].saLifeTimeSeconds]"
+            }
+          },
+          {
+            "name": "vpnClientRevokedCertificates",
+            "count": "[length(parameters('vpnClientRevokedCertificates'))]",
+            "input": {
+              "name": "[parameters('vpnClientRevokedCertificates')[copyIndex('vpnClientRevokedCertificates')].name]",
+              "thumbprint": "[parameters('vpnClientRevokedCertificates')[copyIndex('vpnClientRevokedCertificates')].thumbprint]"
+            }
+          },
+          {
+            "name": "vpnClientRootCertificates",
+            "count": "[length(parameters('vpnClientRootCertificates'))]",
+            "input": {
+              "name": "[parameters('vpnClientRootCertificates')[copyIndex('vpnClientRootCertificates')].name]",
+              "publicCertData": "[parameters('vpnClientRootCertificates')[copyIndex('vpnClientRootCertificates')].thumbprint]"
+            }
+          }
+        ],
+        "aadAuthenticationParameters": {
+          "aadAudience": "[parameters('aadAudience')]",
+          "aadIssuer": "[parameters('aadIssuer')]",
+          "aadTenant": "[parameters('aadTenant')]"
+        },
+        "name": "[parameters('vpnServerConfigurationName')]",
+        "radiusServerAddress": "[parameters('radiusServerAddress')]",
+        "radiusServerSecret": "[parameters('radiusServerSecret')]",
+        "vpnAuthenticationTypes": "[parameters('vpnAuthenticationTypes')]",
+        "vpnProtocols": "[parameters('vpnProtocols')]"
+      }
+    },
+    "vpnGateway_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Network/vpnServerConfigurations/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "vpnServerConfig"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the user VPN configuration."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the user VPN configuration."
+      },
+      "value": "[resourceId('Microsoft.Network/vpnServerConfigurations', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the user VPN configuration was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('vpnServerConfig', '2024-01-01', 'full').location]"
+    }
+  }
+}
