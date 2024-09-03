@@ -6,8 +6,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "16470849018089013777"
-    }
+      "templateHash": "13322266266607175921"
+    },
+    "name": "VPN Server Configuration",
+    "description": "This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway.",
+    "owner": "Azure/module-maintainers"
   },
   "definitions": {
     "lockType": {

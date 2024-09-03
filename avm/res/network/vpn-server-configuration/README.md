@@ -1,5 +1,6 @@
-#  `[Microsoft.Network/vpnServerConfigurations]`
+# VPN Server Configuration `[Microsoft.Network/vpnServerConfigurations]`
 
+This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway.
 
 ## Navigation
 
