@@ -33,7 +33,7 @@ function Invoke-ResourcePostRemoval {
         [int] $PostRemovalRetryLimit = 3
     )
 
-    $postRemovalRetryCount = 1
+    $removalRetryCount = 1
     do {
         try {
             switch ($Type) {
@@ -191,5 +191,5 @@ function Invoke-ResourcePostRemoval {
             Write-Warning ('[!] Post-removal operation failed. Reason: [{0}]. Retry [{1}/{2}]' -f $_.Exception.Message, $removalRetryCount, $PostRemovalRetryLimit)
             $removalRetryCount++
         }
-    } while ($postRemovalRetryCount -le $PostRemovalRetryLimit)
+    } while ($removalRetryCount -le $PostRemovalRetryLimit)
 }
