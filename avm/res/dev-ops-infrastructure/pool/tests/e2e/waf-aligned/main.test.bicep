@@ -32,12 +32,6 @@ param azureDevOpsProjectWAFName string
 @secure()
 param devOpsInfrastructureObjectID string
 
-// ========= //
-// Variables //
-// ========= //
-var azureDevOpsOrganizationName = 'john-lokerse'
-var azureDevOpsProjectName = 'ContosoProjectWAF'
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -119,7 +113,7 @@ module testDeployment '../../../main.bicep' = [
           {
             url: 'https://dev.azure.com/${azureDevOpsOrganizationName}'
             projects: [
-              azureDevOpsProjectName
+              azureDevOpsProjectWAFName
             ]
             parallelism: 1
           }

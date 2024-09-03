@@ -23,11 +23,6 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param azureDevOpsOrganizationName string
 
-// ========= //
-// Variables //
-// ========= //
-var azureDevOpsOrganizationName = 'john-lokerse'
-
 // ============ //
 // Dependencies //
 // ============ //
