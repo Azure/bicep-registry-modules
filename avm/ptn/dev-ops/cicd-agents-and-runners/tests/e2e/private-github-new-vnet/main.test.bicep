@@ -33,9 +33,6 @@ param virtualNetworkName string = 'vnet-aci'
 @description('Required. The address space for the virtual network.')
 param virtualNetworkAddressSpace string = '10.0.0.0/16'
 
-@description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'pngh'
 
@@ -75,7 +72,6 @@ module testDeployment '../../../main.bicep' = {
       networkType: 'createNew'
       virtualNetworkName: virtualNetworkName
     }
-    enableTelemetry: enableTelemetry
     privateNetworking: privateNetworking
   }
 }

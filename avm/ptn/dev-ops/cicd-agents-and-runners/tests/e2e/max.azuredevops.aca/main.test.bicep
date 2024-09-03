@@ -44,9 +44,6 @@ param containerAppSubnetName string = 'acaSubnet'
 
 param containerAppSubnetAddressPrefix string = '10.0.1.0/24'
 
-@description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'mxdev'
 
@@ -97,7 +94,6 @@ module testDeployment '../../../main.bicep' = {
       containerAppSubnetName: containerAppSubnetName
       containerAppSubnetAddressPrefix: containerAppSubnetAddressPrefix
     }
-    enableTelemetry: enableTelemetry
     privateNetworking: privateNetworking
   }
 }

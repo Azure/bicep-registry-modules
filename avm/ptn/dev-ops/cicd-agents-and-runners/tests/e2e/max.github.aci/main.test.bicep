@@ -56,9 +56,6 @@ param cpu int = 1
 @description('Optional. The number of instances of the Azure Container Instance.')
 param numberOfInstances int = 3
 
-@description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'mxgh'
 
@@ -110,7 +107,6 @@ module testDeployment '../../../main.bicep' = {
       containerInstanceSubnetName: containerInstanceSubnetName
       containerInstanceSubnetAddressPrefix: containerInstanceSubnetAddressPrefix
     }
-    enableTelemetry: enableTelemetry
     privateNetworking: privateNetworking
   }
 }

@@ -27,9 +27,6 @@ param personalAccessToken string = newGuid()
 @description('Optional. Whether to use private or public networking for the Azure Container Registry.')
 param privateNetworking bool = true
 
-@description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'pnexg'
 
@@ -91,7 +88,6 @@ module testDeployment '../../../main.bicep' = {
         computeNetworkType: 'azureContainerApp'
       }
     }
-    enableTelemetry: enableTelemetry
     privateNetworking: privateNetworking
   }
 }
