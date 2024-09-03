@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "3306342972212004540"
+      "templateHash": "8427702382536251551"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache.",
@@ -491,6 +491,13 @@
         "description": "Optional. The managed identity definition for this resource."
       }
     },
+    "disableAccessKeyAuthentication": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Disable authentication via access keys."
+      }
+    },
     "enableNonSslPort": {
       "type": "bool",
       "defaultValue": false,
@@ -710,6 +717,7 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
+        "disableAccessKeyAuthentication": "[parameters('disableAccessKeyAuthentication')]",
         "enableNonSslPort": "[parameters('enableNonSslPort')]",
         "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', null()))]",
