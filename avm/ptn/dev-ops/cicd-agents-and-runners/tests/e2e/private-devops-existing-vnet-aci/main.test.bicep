@@ -40,8 +40,10 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    namePrefix: namePrefix
     location: resourceLocation
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
+    natGatewayName: 'dep-${namePrefix}-natGw-${serviceShort}'
   }
 }
 

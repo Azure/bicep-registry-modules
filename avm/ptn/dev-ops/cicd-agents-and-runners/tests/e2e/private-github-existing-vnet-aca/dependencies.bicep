@@ -1,14 +1,16 @@
 @description('Optional. The location to deploy to.')
 param location string = resourceGroup().location
 
-@description('Optional. The naming prefix.')
-param namePrefix string = 'dev'
+@description('Required. The name of the Virtual Network to create.')
+param virtualNetworkName string
+
+@description('Required. The name of the public Ip address to create.')
+param publicIPName string
+
+@description('Required. The name of the NAT gateway to create.')
+param natGatewayName string
 
 var addressPrefix = '10.0.0.0/16'
-
-var virtualNetworkName = 'dep-vnet-${namePrefix}'
-
-var publicIPName = 'dep-pip-${namePrefix}'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: virtualNetworkName
@@ -68,7 +70,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 }
 
 resource natGateway 'Microsoft.Network/natGateways@2024-01-01' = {
-  name: 'natgw-${namePrefix}'
+  name: natGatewayName
   location: location
   sku: {
     name: 'Standard'
@@ -93,7 +95,7 @@ resource deploymentScriptPrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-
 }
 
 resource acrVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  name: '${acrPrivateDNSZone.name}-link-${namePrefix}'
+  name: '${acrPrivateDNSZone.name}-link'
   location: 'global'
   parent: acrPrivateDNSZone
   properties: {
@@ -105,7 +107,7 @@ resource acrVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020
 }
 
 resource dsVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  name: '${deploymentScriptPrivateDNSZone.name}-link-${namePrefix}'
+  name: '${deploymentScriptPrivateDNSZone.name}-link'
   location: 'global'
   parent: deploymentScriptPrivateDNSZone
   properties: {
