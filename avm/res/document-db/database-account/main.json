@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "8262521971858161152"
+      "templateHash": "17113672202913052529"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -2658,7 +2658,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "3308873178893851812"
+              "templateHash": "1277254088602407590"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -3080,7 +3080,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.7.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.7.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3341,6 +3341,13 @@
               },
               "value": "[reference('privateEndpoint').customDnsConfigs]"
             },
+            "networkInterfaceIds": {
+              "type": "array",
+              "metadata": {
+                "description": "The IDs of the network interfaces associated with the private endpoint."
+              },
+              "value": "[reference('privateEndpoint').networkInterfaces]"
+            },
             "groupId": {
               "type": "string",
               "metadata": {
@@ -3539,6 +3546,22 @@
         "description": "The endpoint of the database account."
       },
       "value": "[reference('databaseAccount').documentEndpoint]"
+    },
+    "privateEndpoints": {
+      "type": "array",
+      "metadata": {
+        "description": "The private endpoints of the database account."
+      },
+      "copy": {
+        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "input": {
+          "name": "[reference(format('databaseAccount_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('databaseAccount_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
+          "groupId": "[reference(format('databaseAccount_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
+          "customDnsConfig": "[reference(format('databaseAccount_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
+          "networkInterfaceIds": "[reference(format('databaseAccount_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
+        }
+      }
     }
   }
 }
