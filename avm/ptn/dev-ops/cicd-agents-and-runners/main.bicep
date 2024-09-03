@@ -741,13 +741,9 @@ module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.13.0' = 
                 )
             )[0]
         privateDnsZoneGroupName: 'stgPrivateDNSZoneGroup'
-        privateDnsZoneResourceIds: !empty(networkingConfiguration.computeNetworking.?deploymentScriptPrivateDnsZoneResourceId ?? '')
-          ? [
-              networkingConfiguration.computeNetworking.?deploymentScriptPrivateDnsZoneResourceId ?? ''
-            ]
-          : [
-              deploymentScriptPrivateDNSZone.outputs.resourceId
-            ]
+        privateDnsZoneResourceIds: [
+          networkingConfiguration.computeNetworking.?deploymentScriptPrivateDnsZoneResourceId ?? deploymentScriptPrivateDNSZone.outputs.resourceId
+        ]
       }
     ]
   }
