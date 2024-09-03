@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "10222697609904854703"
+      "version": "0.27.1.19265",
+      "templateHash": "4414730174492735258"
     },
     "name": "Azure Monitoring",
     "description": "Creates an Application Insights instance and a Log Analytics workspace.",
@@ -60,7 +60,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.operationalinsights-monitoring.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.ptn.azd-monitoring.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -103,8 +103,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "7272026488916891109"
+              "version": "0.27.1.19265",
+              "templateHash": "7494646502954558274"
             },
             "name": "Operational Insights Workspaces",
             "description": "Creates a Log Analytics workspace.",
@@ -2249,8 +2249,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "6668763232545872629"
+              "version": "0.27.1.19265",
+              "templateHash": "8732789492270704908"
             },
             "name": "Application Insights Components",
             "description": "Creates an Application Insights instance based on an existing Log Analytics workspace.",
@@ -2304,7 +2304,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.ptn.operationalinsights-monitoring.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.ptn.azd-insightsdashboard.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2990,8 +2990,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "16683144914780555839"
+                      "version": "0.27.1.19265",
+                      "templateHash": "17852393180047945621"
                     },
                     "name": "Azure Portal Dashboard",
                     "description": "Creates a dashboard for an Application Insights instance.",
