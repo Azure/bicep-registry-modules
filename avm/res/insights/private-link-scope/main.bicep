@@ -154,7 +154,7 @@ resource privateLinkScope_lock 'Microsoft.Authorization/locks@2020-05-01' = if (
   scope: privateLinkScope
 }
 
-module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-privateLinkScope-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -195,8 +195,7 @@ module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endp
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -234,6 +233,17 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = privateLinkScope.location
+
+@description('The private endpoints of the private link scope.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: privateLinkScope_privateEndpoints[i].outputs.name
+    resourceId: privateLinkScope_privateEndpoints[i].outputs.resourceId
+    groupId: privateLinkScope_privateEndpoints[i].outputs.groupId
+    customDnsConfig: privateLinkScope_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: privateLinkScope_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
 
 // =============== //
 //   Definitions   //
@@ -289,11 +299,20 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
