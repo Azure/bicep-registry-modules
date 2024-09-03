@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1820091330489251375"
+      "templateHash": "14644114576403115531"
     },
     "name": "avm/ptn/azd/container-apps",
     "description": "Creates an Azure Container Registry and an Azure Container Apps environment.",
@@ -72,9 +72,104 @@
       "metadata": {
         "description": "Optional. Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry."
       }
+    },
+    "acrSku": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Basic",
+        "Premium",
+        "Standard"
+      ],
+      "metadata": {
+        "description": "Optional. SKU settings. Default is \"Standard\"."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "zoneRedundant": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Zone redundancy setting."
+      }
+    },
+    "dockerBridgeCidr": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
+      }
+    },
+    "infrastructureSubnetId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if \"internal\" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant."
+      }
+    },
+    "internal": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then \"infrastructureSubnetId\" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant."
+      }
+    },
+    "platformReservedCidr": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant."
+      }
+    },
+    "platformReservedDnsIP": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. An IP address from the IP range defined by \"platformReservedCidr\" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
+      }
+    },
+    "workloadProfiles": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Conditional. Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant."
+      }
+    },
+    "infrastructureResourceGroupName": {
+      "type": "string",
+      "defaultValue": "[take(format('ME_{0}', parameters('containerAppsEnvironmentName')), 63)]",
+      "metadata": {
+        "description": "Conditional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant."
+      }
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.ptn.azd-containerapps.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "containerAppsEnvironment": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -102,7 +197,21 @@
           },
           "appInsightsConnectionString": {
             "value": "[parameters('appInsightsConnectionString')]"
-          }
+          },
+          "zoneRedundant": {
+            "value": "[parameters('zoneRedundant')]"
+          },
+          "workloadProfiles": "[if(not(empty(parameters('workloadProfiles'))), createObject('value', parameters('workloadProfiles')), createObject('value', null()))]",
+          "infrastructureResourceGroupName": {
+            "value": "[parameters('infrastructureResourceGroupName')]"
+          },
+          "internal": {
+            "value": "[parameters('internal')]"
+          },
+          "infrastructureSubnetId": "[if(not(empty(parameters('infrastructureSubnetId'))), createObject('value', parameters('infrastructureSubnetId')), createObject('value', null()))]",
+          "dockerBridgeCidr": "[if(not(empty(parameters('infrastructureSubnetId'))), createObject('value', parameters('dockerBridgeCidr')), createObject('value', null()))]",
+          "platformReservedCidr": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetId')))), createObject('value', parameters('platformReservedCidr')), createObject('value', null()))]",
+          "platformReservedDnsIP": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetId')))), createObject('value', parameters('platformReservedDnsIP')), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -682,6 +791,9 @@
           },
           "tags": {
             "value": "[parameters('tags')]"
+          },
+          "acrSku": {
+            "value": "[parameters('acrSku')]"
           }
         },
         "template": {
@@ -3169,6 +3281,13 @@
     }
   },
   "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the all resources was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
     "defaultDomain": {
       "type": "string",
       "metadata": {

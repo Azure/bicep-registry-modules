@@ -1,12 +1,11 @@
 targetScope = 'subscription'
 
-metadata name = 'Using default parameter set'
-metadata description = 'This instance deploys the module with default parameters.'
+metadata name = 'Using only defaults'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
 // ========== //
-
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-container-apps-${serviceShort}-rg'
@@ -24,20 +23,21 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  params: {
-    location: resourceLocation
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-  }
-}
-
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: resourceLocation
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    location: resourceLocation
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+  }
 }
 
 // ============== //
@@ -50,10 +50,28 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      containerAppsEnvironmentName: 'container-apps-environment-${namePrefix}-${serviceShort}'
-      containerRegistryName: 'container-registry-${namePrefix}-${serviceShort}'
+      containerAppsEnvironmentName: '${namePrefix}${serviceShort}cae001'
+      containerRegistryName: '${namePrefix}${serviceShort}cr001'
       logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       location: resourceLocation
+      acrSku: 'Standard'
+      workloadProfiles: [
+        {
+          workloadProfileType: 'D4'
+          name: 'CAW01'
+          minimumCount: 0
+          maximumCount: 3
+        }
+      ]
+      internal: true
+      dockerBridgeCidr: '172.16.0.1/28'
+      platformReservedCidr: '172.17.17.0/24'
+      platformReservedDnsIP: '172.17.17.17'
+      infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId
+      infrastructureResourceGroupName: 'me-${resourceGroupName}'
     }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
 ]

@@ -37,11 +37,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/container-apps:<version>`.
 
-- [Using default parameter set](#example-1-using-default-parameter-set)
+- [Using only defaults](#example-1-using-only-defaults)
 
-### Example 1: _Using default parameter set_
+### Example 1: _Using only defaults_
 
-This instance deploys the module with default parameters.
+This instance deploys the module with the minimum set of required parameters.
 
 
 <details>
@@ -53,9 +53,26 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
   name: 'containerAppsDeployment'
   params: {
     // Required parameters
-    containerAppsEnvironmentName: 'container-apps-environment-casmin'
-    containerRegistryName: 'container-registry-casmin'
+    containerAppsEnvironmentName: 'casmincae001'
+    containerRegistryName: 'casmincr001'
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    // Non-required parameters
+    acrSku: 'Standard'
+    dockerBridgeCidr: '172.16.0.1/28'
+    infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
+    infrastructureSubnetId: '<infrastructureSubnetId>'
+    internal: true
+    location: '<location>'
+    platformReservedCidr: '172.17.17.0/24'
+    platformReservedDnsIP: '172.17.17.17'
+    workloadProfiles: [
+      {
+        maximumCount: 3
+        minimumCount: 0
+        name: 'CAW01'
+        workloadProfileType: 'D4'
+      }
+    ]
   }
 }
 ```
@@ -74,13 +91,48 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
   "parameters": {
     // Required parameters
     "containerAppsEnvironmentName": {
-      "value": "container-apps-environment-casmin"
+      "value": "casmincae001"
     },
     "containerRegistryName": {
-      "value": "container-registry-casmin"
+      "value": "casmincr001"
     },
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    // Non-required parameters
+    "acrSku": {
+      "value": "Standard"
+    },
+    "dockerBridgeCidr": {
+      "value": "172.16.0.1/28"
+    },
+    "infrastructureResourceGroupName": {
+      "value": "<infrastructureResourceGroupName>"
+    },
+    "infrastructureSubnetId": {
+      "value": "<infrastructureSubnetId>"
+    },
+    "internal": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "platformReservedCidr": {
+      "value": "172.17.17.0/24"
+    },
+    "platformReservedDnsIP": {
+      "value": "172.17.17.17"
+    },
+    "workloadProfiles": {
+      "value": [
+        {
+          "maximumCount": 3,
+          "minimumCount": 0,
+          "name": "CAW01",
+          "workloadProfileType": "D4"
+        }
+      ]
     }
   }
 }
@@ -101,15 +153,30 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
 | [`containerRegistryResourceGroupName`](#parameter-containerregistryresourcegroupname) | string | Name of the Azure Container Registry Resource Group. |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990). |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dockerBridgeCidr`](#parameter-dockerbridgecidr) | string | CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`infrastructureSubnetId`](#parameter-infrastructuresubnetid) | string | Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`internal`](#parameter-internal) | bool | Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`platformReservedCidr`](#parameter-platformreservedcidr) | string | IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant. |
+| [`platformReservedDnsIP`](#parameter-platformreserveddnsip) | string | An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`workloadProfiles`](#parameter-workloadprofiles) | array | Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`acrAdminUserEnabled`](#parameter-acradminuserenabled) | bool | Enable admin user that have push / pull permission to the registry. |
+| [`acrSku`](#parameter-acrsku) | string | SKU settings. Default is "Standard". |
 | [`appInsightsConnectionString`](#parameter-appinsightsconnectionstring) | securestring | Application Insights connection string. |
 | [`daprAIInstrumentationKey`](#parameter-dapraiinstrumentationkey) | securestring | Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`zoneRedundant`](#parameter-zoneredundant) | bool | Zone redundancy setting. |
 
 ### Parameter: `containerAppsEnvironmentName`
 
@@ -140,6 +207,62 @@ Existing Log Analytics Workspace resource ID. Note: This value is not required a
 - Required: Yes
 - Type: string
 
+### Parameter: `dockerBridgeCidr`
+
+CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `infrastructureResourceGroupName`
+
+Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.
+
+- Required: No
+- Type: string
+- Default: `[take(format('ME_{0}', parameters('containerAppsEnvironmentName')), 63)]`
+
+### Parameter: `infrastructureSubnetId`
+
+Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `internal`
+
+Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `platformReservedCidr`
+
+IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `platformReservedDnsIP`
+
+An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `workloadProfiles`
+
+Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
 ### Parameter: `acrAdminUserEnabled`
 
 Enable admin user that have push / pull permission to the registry.
@@ -147,6 +270,22 @@ Enable admin user that have push / pull permission to the registry.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `acrSku`
+
+SKU settings. Default is "Standard".
+
+- Required: No
+- Type: string
+- Default: `'Standard'`
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Premium'
+    'Standard'
+  ]
+  ```
 
 ### Parameter: `appInsightsConnectionString`
 
@@ -164,6 +303,14 @@ Azure Monitor instrumentation key used by Dapr to export Service to Service comm
 - Type: securestring
 - Default: `''`
 
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `location`
 
 Location for all Resources.
@@ -179,6 +326,14 @@ Tags of the resource.
 - Required: No
 - Type: object
 
+### Parameter: `zoneRedundant`
+
+Zone redundancy setting.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 
 ## Outputs
 
@@ -189,6 +344,7 @@ Tags of the resource.
 | `environmentName` | string | The name of the Managed Environment. |
 | `registryLoginServer` | string | The reference to the Azure container registry. |
 | `registryName` | string | The Name of the Azure container registry. |
+| `resourceGroupName` | string | The name of the resource group the all resources was deployed into. |
 
 ## Cross-referenced modules
 
