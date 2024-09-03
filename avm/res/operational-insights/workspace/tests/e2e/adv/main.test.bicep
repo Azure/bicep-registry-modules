@@ -174,8 +174,16 @@ module testDeployment '../../../main.bicep' = [
           storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
+        {
+          name: 'sendingDiagnosticSettingsToSelf'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          useThisWorkspace: true
+        }
       ]
-      useDeployedWorkspaceForDiagnosticSettings: true
       gallerySolutions: [
         {
           name: 'AzureAutomation'
