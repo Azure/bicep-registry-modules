@@ -26,11 +26,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/vpn-server-configuration:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Max](#example-2-max)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Defaults_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -41,8 +44,8 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
   name: 'vpnServerConfigurationDeployment'
   params: {
     // Required parameters
-    name: 'vscdef001'
-    vpnServerConfigurationName: 'vscdef-vpnServerConfig'
+    name: 'vscmin001'
+    vpnServerConfigurationName: 'vscmin-vpnServerConfig'
     // Non-required parameters
     location: '<location>'
   }
@@ -63,10 +66,10 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
   "parameters": {
     // Required parameters
     "name": {
-      "value": "vscdef001"
+      "value": "vscmin001"
     },
     "vpnServerConfigurationName": {
-      "value": "vscdef-vpnServerConfig"
+      "value": "vscmin-vpnServerConfig"
     },
     // Non-required parameters
     "location": {
@@ -79,7 +82,10 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -128,7 +134,10 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
