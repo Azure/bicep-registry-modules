@@ -784,7 +784,7 @@ module runPlaceHolderAgent 'br/public:avm/res/resources/deployment-script:0.3.1'
             ]
           : null
     arguments: '-resourceGroup ${resourceGroup().name} -jobName ${acaPlaceholderJob.outputs.name} -subscriptionId ${subscription().subscriptionId}'
-    scriptContent: loadTextContent('./scripts/runAzureDevOpsPlaceHolderAgent.ps1')
+    scriptContent: loadTextContent('./scripts/startAzureDevOpsContainerJob.ps1')
   }
 }
 

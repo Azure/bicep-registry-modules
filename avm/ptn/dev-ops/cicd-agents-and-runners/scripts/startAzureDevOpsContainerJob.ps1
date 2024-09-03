@@ -1,4 +1,9 @@
-﻿Param(
+﻿<#
+This scripts starts an Azure DevOps container job with a manual trigger. It is used to manually start the placeholder agent.
+More Information can be found here https://learn.microsoft.com/azure/container-apps/tutorial-ci-cd-runners-jobs?tabs=bash&pivots=container-apps-jobs-self-hosted-ci-cd-azure-pipelines#create-a-placeholder-self-hosted-agent
+#>
+
+Param(
     [string]$jobName,
     [string]$resourceGroup,
     [string]$subscriptionId
