@@ -152,6 +152,11 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
     vpnServerConfigurationName: 'vscwaf-vpnServerConfig'
     // Non-required parameters
     location: '<location>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -178,6 +183,13 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
