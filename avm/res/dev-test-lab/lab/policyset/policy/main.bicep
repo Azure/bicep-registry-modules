@@ -60,9 +60,9 @@ resource policy 'Microsoft.DevTestLab/labs/policysets/policies@2018-09-15' = {
   name: name
   parent: lab::policySets
   properties: {
-    description: description
+    description: description ?? ''
     evaluatorType: evaluatorType
-    factData: factData
+    factData: factData ?? ''
     factName: factName
     status: status
     threshold: threshold

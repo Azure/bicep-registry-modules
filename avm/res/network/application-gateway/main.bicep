@@ -37,7 +37,7 @@ param enableFips bool = false
 param enableHttp2 bool = false
 
 @description('Optional. The resource ID of an associated firewall policy. Should be configured for security reasons.')
-param firewallPolicyId string = ''
+param firewallPolicyResourceId string = ''
 
 @description('Optional. Frontend IP addresses of the application gateway resource.')
 param frontendIPConfigurations array = []
@@ -88,7 +88,7 @@ param rewriteRuleSets array = []
   'Standard_v2'
   'WAF_v2'
 ])
-param sku string = 'WAF_v2'
+param sku string = 'Standard_v2'
 
 @description('Optional. The number of Application instances to be configured.')
 @minValue(0)
@@ -178,7 +178,11 @@ param urlPathMaps array = []
 param webApplicationFirewallConfiguration object = {}
 
 @description('Optional. A list of availability zones denoting where the resource needs to come from.')
-param zones array = []
+param zones array = [
+  1
+  2
+  3
+]
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
@@ -231,6 +235,17 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-appgw.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -269,12 +284,12 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2023-04-01' =
       backendSettingsCollection: backendSettingsCollection
       customErrorConfigurations: customErrorConfigurations
       enableHttp2: enableHttp2
-      firewallPolicy: !empty(firewallPolicyId)
+      firewallPolicy: !empty(firewallPolicyResourceId)
         ? {
-            id: firewallPolicyId
+            id: firewallPolicyResourceId
           }
         : null
-      forceFirewallPolicyAssociation: !empty(firewallPolicyId)
+      forceFirewallPolicyAssociation: !empty(firewallPolicyResourceId)
       frontendIPConfigurations: frontendIPConfigurations
       frontendPorts: frontendPorts
       gatewayIPConfigurations: gatewayIPConfigurations
@@ -421,14 +436,14 @@ module applicationGateway_privateEndpoints 'br/public:avm/res/network/private-en
 ]
 
 resource applicationGateway_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(applicationGateway.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(
+      applicationGateway.id,
+      roleAssignment.principalId,
+      roleAssignment.roleDefinitionId
+    )
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -470,6 +485,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 

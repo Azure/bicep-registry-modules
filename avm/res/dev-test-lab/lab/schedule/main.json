@@ -6,11 +6,115 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "12081847452316418446"
+      "templateHash": "9010276477624635732"
     },
     "name": "DevTest Lab Schedules",
-    "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines.",
+    "description": "This module deploys a DevTest Lab Schedule.\r\n\r\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines.",
     "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "dailyRecurrenceType": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The time of day the schedule will occur."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "hourlyRecurrenceType": {
+      "type": "object",
+      "properties": {
+        "minute": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Minutes of the hour the schedule will run."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "weeklyRecurrenceType": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The time of day the schedule will occur."
+          }
+        },
+        "weekdays": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. The days of the week for which the schedule is set (e.g. Sunday, Monday, Tuesday, etc.)."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "notificationSettingsType": {
+      "type": "object",
+      "properties": {
+        "emailRecipient": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if \"webHookUrl\" is empty."
+          }
+        },
+        "notificationLocale": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The locale to use when sending a notification (fallback for unsupported languages is EN)."
+          }
+        },
+        "status": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If notifications are enabled for this schedule (i.e. Enabled, Disabled). Default is Disabled."
+          }
+        },
+        "timeInMinutes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Time in minutes before event at which notification will be sent. Default is 30 minutes if status is Enabled and not specified."
+          }
+        },
+        "webHookUrl": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The webhook URL to which the notification will be sent. Required if \"emailRecipient\" is empty."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
+    }
   },
   "parameters": {
     "labName": {
@@ -47,22 +151,19 @@
       }
     },
     "dailyRecurrence": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/dailyRecurrenceType",
       "metadata": {
         "description": "Optional. If the schedule will occur once each day of the week, specify the daily recurrence."
       }
     },
     "hourlyRecurrence": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/hourlyRecurrenceType",
       "metadata": {
         "description": "Optional. If the schedule will occur multiple times a day, specify the hourly recurrence."
       }
     },
     "weeklyRecurrence": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/weeklyRecurrenceType",
       "metadata": {
         "description": "Optional. If the schedule will occur only some days of the week, specify the weekly recurrence."
       }
@@ -80,7 +181,7 @@
     },
     "targetResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID to which the schedule belongs."
       }
@@ -92,22 +193,10 @@
         "description": "Optional. The time zone ID (e.g. Pacific Standard time)."
       }
     },
-    "notificationSettingsStatus": {
-      "type": "string",
-      "defaultValue": "Disabled",
-      "allowedValues": [
-        "Enabled",
-        "Disabled"
-      ],
+    "notificationSettings": {
+      "$ref": "#/definitions/notificationSettingsType",
       "metadata": {
-        "description": "Optional. If notifications are enabled for this schedule (i.e. Enabled, Disabled)."
-      }
-    },
-    "notificationSettingsTimeInMinutes": {
-      "type": "int",
-      "defaultValue": 30,
-      "metadata": {
-        "description": "Optional. Time in minutes before event at which notification will be sent. Optional if \"notificationSettingsStatus\" is set to \"Enabled\". Default is 30 minutes."
+        "description": "Optional. The notification settings for the schedule."
       }
     }
   },
@@ -125,13 +214,13 @@
       "tags": "[parameters('tags')]",
       "properties": {
         "taskType": "[parameters('taskType')]",
-        "dailyRecurrence": "[if(not(empty(parameters('dailyRecurrence'))), parameters('dailyRecurrence'), null())]",
-        "hourlyRecurrence": "[if(not(empty(parameters('hourlyRecurrence'))), parameters('hourlyRecurrence'), null())]",
-        "weeklyRecurrence": "[if(not(empty(parameters('weeklyRecurrence'))), parameters('weeklyRecurrence'), null())]",
+        "dailyRecurrence": "[parameters('dailyRecurrence')]",
+        "hourlyRecurrence": "[parameters('hourlyRecurrence')]",
+        "weeklyRecurrence": "[parameters('weeklyRecurrence')]",
         "status": "[parameters('status')]",
-        "targetResourceId": "[if(not(empty(parameters('targetResourceId'))), parameters('targetResourceId'), null())]",
+        "targetResourceId": "[parameters('targetResourceId')]",
         "timeZoneId": "[parameters('timeZoneId')]",
-        "notificationSettings": "[if(equals(parameters('notificationSettingsStatus'), 'Enabled'), createObject('status', parameters('notificationSettingsStatus'), 'timeInMinutes', parameters('notificationSettingsTimeInMinutes')), createObject())]"
+        "notificationSettings": "[parameters('notificationSettings')]"
       },
       "dependsOn": [
         "lab"

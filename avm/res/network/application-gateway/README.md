@@ -127,14 +127,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         }
       }
     ]
-    webApplicationFirewallConfiguration: {
-      enabled: false
-    }
-    zones: [
-      '1'
-      '2'
-      '3'
-    ]
   }
 }
 ```
@@ -247,18 +239,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
             "ruleType": "Basic"
           }
         }
-      ]
-    },
-    "webApplicationFirewallConfiguration": {
-      "value": {
-        "enabled": false
-      }
-    },
-    "zones": {
-      "value": [
-        "1",
-        "2",
-        "3"
       ]
     }
   }
@@ -662,11 +642,13 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     ]
     roleAssignments: [
       {
+        name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -1159,11 +1141,13 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     "roleAssignments": {
       "value": [
         {
+          "name": "97fc1da9-bfe4-409d-b17a-da9a82fad0d0",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -1317,6 +1301,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     ]
     enableHttp2: true
     enableTelemetry: '<enableTelemetry>'
+    firewallPolicyResourceId: '<firewallPolicyResourceId>'
     frontendIPConfigurations: [
       {
         name: 'private'
@@ -1644,20 +1629,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    webApplicationFirewallConfiguration: {
-      enabled: true
-      fileUploadLimitInMb: 100
-      firewallMode: 'Prevention'
-      maxRequestBodySizeInKb: 128
-      requestBodyCheck: true
-      ruleSetType: 'OWASP'
-      ruleSetVersion: '3.0'
-    }
-    zones: [
-      '1'
-      '2'
-      '3'
-    ]
   }
 }
 ```
@@ -1751,6 +1722,9 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
+    },
+    "firewallPolicyResourceId": {
+      "value": "<firewallPolicyResourceId>"
     },
     "frontendIPConfigurations": {
       "value": [
@@ -2110,24 +2084,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "webApplicationFirewallConfiguration": {
-      "value": {
-        "enabled": true,
-        "fileUploadLimitInMb": 100,
-        "firewallMode": "Prevention",
-        "maxRequestBodySizeInKb": 128,
-        "requestBodyCheck": true,
-        "ruleSetType": "OWASP",
-        "ruleSetVersion": "3.0"
-      }
-    },
-    "zones": {
-      "value": [
-        "1",
-        "2",
-        "3"
-      ]
     }
   }
 }
@@ -2162,7 +2118,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 | [`enableRequestBuffering`](#parameter-enablerequestbuffering) | bool | Enable request buffering. |
 | [`enableResponseBuffering`](#parameter-enableresponsebuffering) | bool | Enable response buffering. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`firewallPolicyId`](#parameter-firewallpolicyid) | string | The resource ID of an associated firewall policy. Should be configured for security reasons. |
+| [`firewallPolicyResourceId`](#parameter-firewallpolicyresourceid) | string | The resource ID of an associated firewall policy. Should be configured for security reasons. |
 | [`frontendIPConfigurations`](#parameter-frontendipconfigurations) | array | Frontend IP addresses of the application gateway resource. |
 | [`frontendPorts`](#parameter-frontendports) | array | Frontend ports of the application gateway resource. |
 | [`gatewayIPConfigurations`](#parameter-gatewayipconfigurations) | array | Subnets of the application gateway resource. |
@@ -2451,7 +2407,7 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `firewallPolicyId`
+### Parameter: `firewallPolicyResourceId`
 
 The resource ID of an associated firewall policy. Should be configured for security reasons.
 
@@ -2840,6 +2796,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-privateendpointsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-privateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `privateEndpoints.roleAssignments.principalId`
@@ -2886,6 +2843,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -2976,6 +2940,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -3026,6 +2991,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -3057,7 +3029,7 @@ The name of the SKU for the Application Gateway.
 
 - Required: No
 - Type: string
-- Default: `'WAF_v2'`
+- Default: `'Standard_v2'`
 - Allowed:
   ```Bicep
   [
@@ -3231,7 +3203,14 @@ A list of availability zones denoting where the resource needs to come from.
 
 - Required: No
 - Type: array
-- Default: `[]`
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ## Outputs
 
