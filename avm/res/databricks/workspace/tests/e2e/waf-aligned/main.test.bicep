@@ -156,9 +156,13 @@ module testDeployment '../../../main.bicep' = [
       accessConnectorResourceId: nestedDependencies.outputs.accessConnectorResourceId
       storageAccountPrivateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.blobStoragePrivateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.blobStoragePrivateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'blob'
           subnetResourceId: nestedDependencies.outputs.defaultSubnetResourceId
           tags: {
