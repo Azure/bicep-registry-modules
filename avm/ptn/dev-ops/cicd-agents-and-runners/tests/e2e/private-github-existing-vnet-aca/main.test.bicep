@@ -14,18 +14,9 @@ param resourceGroupName string = 'dep-${namePrefix}-githubrunners-${serviceShort
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'eastus2'
 
-@description('Required. The name of the GitHub organization.')
-param githubOrganization string = 'githHubOrganization'
-
-@description('Required. The name of the GitHub repository.')
-param githubRepository string = 'dummyRepo'
-
 @description('Required. The personal access token for the Azure DevOps organization.')
 @secure()
 param personalAccessToken string = newGuid()
-
-@description('Optional. Whether to use private or public networking for the Azure Container Registry.')
-param privateNetworking bool = true
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'pnexg'
@@ -68,8 +59,8 @@ module testDeployment '../../../main.bicep' = {
       'azure-container-instance'
     ]
     selfHostedConfig: {
-      githubOrganization: githubOrganization
-      githubRepository: githubRepository
+      githubOrganization: 'githHubOrganization'
+      githubRepository: 'dummyRepo'
       personalAccessToken: personalAccessToken
       selfHostedType: 'github'
     }
@@ -88,6 +79,6 @@ module testDeployment '../../../main.bicep' = {
         computeNetworkType: 'azureContainerApp'
       }
     }
-    privateNetworking: privateNetworking
+    privateNetworking: true
   }
 }

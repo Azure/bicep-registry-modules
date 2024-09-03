@@ -14,30 +14,9 @@ param resourceGroupName string = 'dep-${namePrefix}-devopsrunners-${serviceShort
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'eastus2'
 
-@description('Required. The name of the Azure DevOps organization.')
-param devOpsOrganization string = 'azureDevOpsOrganization'
-
 @description('Required. The personal access token for the Azure DevOps organization.')
 @secure()
 param personalAccessToken string = newGuid()
-
-@description('Optional. Whether to use private or public networking for the Azure Container Registry.')
-param privateNetworking bool = false
-
-@description('Required. The name of the virtual network to create.')
-param virtualNetworkName string = 'vnet-aca'
-
-@description('Required. The address space for the virtual network.')
-param virtualNetworkAddressSpace string = '10.0.0.0/16'
-
-@description('Optional. The name of the Azure DevOps placeholder agent.')
-param placeHolderAgentName string = 'acaPlaceHolderAgent'
-
-@description('Optional. The target pipelines queue length.')
-param targetPipelinesQueueLength string = '1'
-
-@description('Optional. The name of the subnet for the Azure Container App.')
-param containerAppSubnetName string = 'acaSubnet'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'mxdev'
@@ -69,7 +48,7 @@ module testDeployment '../../../main.bicep' = {
     ]
     selfHostedConfig: {
       agentsPoolName: 'aca-pool'
-      devOpsOrganization: devOpsOrganization
+      devOpsOrganization: 'azureDevOpsOrganization'
       personalAccessToken: personalAccessToken
       agentNamePrefix: namePrefix
       azureContainerAppTarget: {
@@ -78,17 +57,17 @@ module testDeployment '../../../main.bicep' = {
           memory: '2Gi'
         }
       }
-      placeHolderAgentName: placeHolderAgentName
-      targetPipelinesQueueLength: targetPipelinesQueueLength
+      placeHolderAgentName: 'acaPlaceHolderAgent'
+      targetPipelinesQueueLength: '1'
       selfHostedType: 'azuredevops'
     }
     networkingConfiguration: {
-      addressSpace: virtualNetworkAddressSpace
+      virtualNetworkName: 'vnet-aca'
+      addressSpace: '10.0.0.0/16'
       networkType: 'createNew'
-      virtualNetworkName: virtualNetworkName
-      containerAppSubnetName: containerAppSubnetName
+      containerAppSubnetName: 'acaSubnet'
       containerAppSubnetAddressPrefix: '10.0.1.0/24'
     }
-    privateNetworking: privateNetworking
+    privateNetworking: false
   }
 }

@@ -14,44 +14,9 @@ param resourceGroupName string = 'dep-${namePrefix}-githubRunner-${serviceShort}
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
-@description('Required. The name of the GitHub organization.')
-param githubOrganization string = 'githHubOrganization'
-
-@description('Required. The name of the GitHub repository.')
-param githubRepository string = 'dummyRepo'
-
 @description('Required. The personal access token for the GitHub organization.')
 @secure()
 param personalAccessToken string = newGuid()
-
-@description('Optional. The scope of the self-hosted runner.')
-param runnerScope string = 'repo'
-
-@description('Optional. The target workflows queue length.')
-param targetWorkflowQueueLength string = '1'
-
-@description('Optional. Whether to use private or public networking for the Azure Container Registry.')
-param privateNetworking bool = false
-
-@description('Required. The name of the virtual network to create.')
-param virtualNetworkName string = 'vnet-aci'
-
-@description('Optional. The name of the subnet for the Azure Container App.')
-param containerInstanceSubnetName string = 'aciSubnet'
-
-param containerInstanceSubnetAddressPrefix string = '10.0.1.0/24'
-
-@description('Optional. The SKU of the Azure Container Instance.')
-param skuName string = 'Standard'
-
-@description('Optional. The memory in GB of the Azure Container Instance containers.')
-param memory int = 2
-
-@description('Optional. The number of CPUs of the Azure Container Instance containers.')
-param cpu int = 1
-
-@description('Optional. The number of instances of the Azure Container Instance.')
-param numberOfInstances int = 3
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'mxgh'
@@ -82,28 +47,28 @@ module testDeployment '../../../main.bicep' = {
       'azure-container-instance'
     ]
     selfHostedConfig: {
-      githubOrganization: githubOrganization
-      githubRepository: githubRepository
+      githubOrganization: 'githHubOrganization'
+      githubRepository: 'dummyRepo'
       personalAccessToken: personalAccessToken
       ephemeral: true
       runnerNamePrefix: namePrefix
-      runnerScope: runnerScope
-      targetWorkflowQueueLength: targetWorkflowQueueLength
+      runnerScope: 'repo'
+      targetWorkflowQueueLength: '1'
       azureContainerInstanceTarget: {
-        sku: skuName
-        cpu: cpu
-        memoryInGB: memory
-        numberOfInstances: numberOfInstances
+        sku: 'Standard'
+        cpu: 1
+        memoryInGB: 2
+        numberOfInstances: 3
       }
       selfHostedType: 'github'
     }
     networkingConfiguration: {
       addressSpace: '10.0.0.0/16'
       networkType: 'createNew'
-      virtualNetworkName: virtualNetworkName
-      containerInstanceSubnetName: containerInstanceSubnetName
-      containerInstanceSubnetAddressPrefix: containerInstanceSubnetAddressPrefix
+      virtualNetworkName: 'vnet-aci'
+      containerInstanceSubnetName: 'aci-subnet'
+      containerInstanceSubnetAddressPrefix: '10.0.1.0/24'
     }
-    privateNetworking: privateNetworking
+    privateNetworking: false
   }
 }

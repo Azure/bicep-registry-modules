@@ -38,6 +38,9 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
               }
             }
           ]
+          natGateway: {
+            id: natGateway.id
+          }
         }
       }
     ]

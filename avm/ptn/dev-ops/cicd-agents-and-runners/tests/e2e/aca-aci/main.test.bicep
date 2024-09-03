@@ -14,18 +14,9 @@ param resourceGroupName string = 'dep-${namePrefix}-devopsrunners-${serviceShort
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'eastus2'
 
-@description('Required. The name of the Azure DevOps organization.')
-param devOpsOrganization string = 'azureDevOpsOrganization'
-
 @description('Required. The personal access token for the Azure DevOps organization.')
 @secure()
 param personalAccessToken string = newGuid()
-
-@description('Optional. Whether to use private or public networking for the Azure Container Registry.')
-param privateNetworking bool = false
-
-@description('Required. The name of the virtual network to create.')
-param virtualNetworkName string = 'vnet-aca'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'acaaci'
@@ -58,15 +49,15 @@ module testDeployment '../../../main.bicep' = {
     ]
     selfHostedConfig: {
       agentsPoolName: 'agents-pool'
-      devOpsOrganization: devOpsOrganization
+      devOpsOrganization: 'azureDevOpsOrganization'
       personalAccessToken: personalAccessToken
       selfHostedType: 'azuredevops'
     }
     networkingConfiguration: {
       addressSpace: '10.0.0.0/16'
       networkType: 'createNew'
-      virtualNetworkName: virtualNetworkName
+      virtualNetworkName: 'vnet-aca'
     }
-    privateNetworking: privateNetworking
+    privateNetworking: false
   }
 }

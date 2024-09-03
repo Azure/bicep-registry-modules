@@ -14,15 +14,9 @@ param resourceGroupName string = 'dep-${namePrefix}-azuredevops-${serviceShort}-
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
-@description('Required. The name of the Azure DevOps organization.')
-param devOpsOrganization string = 'azureDevOpsOrganization'
-
 @description('Required. The personal access token for the Azure DevOps organization.')
 @secure()
 param personalAccessToken string = newGuid()
-
-@description('Optional. Whether to use private or public networking for the Azure Container Registry.')
-param privateNetworking bool = true
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'pnexa'
@@ -67,7 +61,7 @@ module testDeployment '../../../main.bicep' = {
     selfHostedConfig: {
       selfHostedType: 'azuredevops'
       agentsPoolName: 'aci-pool'
-      devOpsOrganization: devOpsOrganization
+      devOpsOrganization: 'azureDevOpsOrganization'
       personalAccessToken: personalAccessToken
       agentNamePrefix: namePrefix
       azureContainerInstanceTarget: {
@@ -86,6 +80,6 @@ module testDeployment '../../../main.bicep' = {
         containerInstanceSubnetName: 'aci-subnet'
       }
     }
-    privateNetworking: privateNetworking
+    privateNetworking: true
   }
 }
