@@ -10,6 +10,9 @@ param managedIdentityName string
 @description('Required. The name of the virtual network to create.')
 param virtualNetworkName string
 
+@description('Required. The object ID of the Entra ID-provided DevOpsInfrastructure principal.')
+param devOpsInfrastructureObjectID string
+
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
