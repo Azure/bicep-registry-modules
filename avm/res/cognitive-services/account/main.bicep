@@ -399,7 +399,7 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
   }
 ]
 
-module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -440,7 +440,8 @@ module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endp
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -487,17 +488,6 @@ output systemAssignedMIPrincipalId string = cognitiveService.?identity.?principa
 
 @description('The location the resource was deployed into.')
 output location string = cognitiveService.location
-
-@description('The private endpoints of the cognitive services account.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: cognitiveService_privateEndpoints[i].outputs.name
-    resourceId: cognitiveService_privateEndpoints[i].outputs.resourceId
-    groupId: cognitiveService_privateEndpoints[i].outputs.groupId
-    customDnsConfig: cognitiveService_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: cognitiveService_privateEndpoints[i].outputs.networkInterfaceIds
-  }
-]
 
 // ================ //
 // Definitions      //
@@ -589,20 +579,11 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The private DNS zone group to configure for the private endpoint.')
-  privateDnsZoneGroup: {
-    @description('Optional. The name of the Private DNS Zone Group.')
-    name: string?
+  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
+  privateDnsZoneGroupName: string?
 
-    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
-    privateDnsZoneGroupConfigs: {
-      @description('Optional. The name of the private DNS zone group config.')
-      name: string?
-
-      @description('Required. The resource id of the private DNS zone.')
-      privateDnsZoneResourceId: string
-    }[]
-  }?
+  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
+  privateDnsZoneResourceIds: string[]?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?

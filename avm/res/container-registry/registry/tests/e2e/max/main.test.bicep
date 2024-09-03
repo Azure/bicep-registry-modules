@@ -96,13 +96,9 @@ module testDeployment '../../../main.bicep' = [
       privateEndpoints: [
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneGroup: {
-            privateDnsZoneGroupConfigs: [
-              {
-                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-              }
-            ]
-          }
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
           tags: {
             'hidden-title': 'This is visible in the resource name'
             Environment: 'Non-Prod'
@@ -111,13 +107,9 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneGroup: {
-            privateDnsZoneGroupConfigs: [
-              {
-                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-              }
-            ]
-          }
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
         }
       ]
       networkRuleSetIpRules: [
