@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "8732789492270704908"
+      "templateHash": "11084475985992512636"
     },
     "name": "Application Insights Components",
     "description": "Creates an Application Insights instance based on an existing Log Analytics workspace.",
@@ -736,7 +736,7 @@
             "value": "[parameters('location')]"
           },
           "applicationInsightsName": {
-            "value": "[format('{0}-appinsights', uniqueString(deployment().name, parameters('location')))]"
+            "value": "[reference('applicationInsights').outputs.name.value]"
           }
         },
         "template": {

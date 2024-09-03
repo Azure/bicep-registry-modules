@@ -72,7 +72,7 @@ module applicationInsightsDashboard 'modules/applicationinsights-dashboard.bicep
   params: {
     name: dashboardName
     location: location
-    applicationInsightsName: applicationInsights.name
+    applicationInsightsName: applicationInsights.outputs.name
   }
 }
 
