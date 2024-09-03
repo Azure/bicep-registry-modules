@@ -14,7 +14,7 @@ param containerAppsEnvironmentName string
 @description('Required. Name of the Azure Container Registry.')
 param containerRegistryName string
 
-@description('Required. Name of the Azure Container Registry Resource Group.')
+@description('Optional. Name of the Azure Container Registry Resource Group.')
 param containerRegistryResourceGroupName string = ''
 
 @description('Optional. Enable admin user that have push / pull permission to the registry.')

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "14644114576403115531"
+      "templateHash": "16920040425193336243"
     },
     "name": "avm/ptn/azd/container-apps",
     "description": "Creates an Azure Container Registry and an Azure Container Apps environment.",
@@ -43,7 +43,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Required. Name of the Azure Container Registry Resource Group."
+        "description": "Optional. Name of the Azure Container Registry Resource Group."
       }
     },
     "acrAdminUserEnabled": {

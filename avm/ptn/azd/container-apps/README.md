@@ -150,7 +150,6 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
 | :-- | :-- | :-- |
 | [`containerAppsEnvironmentName`](#parameter-containerappsenvironmentname) | string | Name of the Container Apps Managed Environment. |
 | [`containerRegistryName`](#parameter-containerregistryname) | string | Name of the Azure Container Registry. |
-| [`containerRegistryResourceGroupName`](#parameter-containerregistryresourcegroupname) | string | Name of the Azure Container Registry Resource Group. |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990). |
 
 **Conditional parameters**
@@ -172,6 +171,7 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
 | [`acrAdminUserEnabled`](#parameter-acradminuserenabled) | bool | Enable admin user that have push / pull permission to the registry. |
 | [`acrSku`](#parameter-acrsku) | string | SKU settings. Default is "Standard". |
 | [`appInsightsConnectionString`](#parameter-appinsightsconnectionstring) | securestring | Application Insights connection string. |
+| [`containerRegistryResourceGroupName`](#parameter-containerregistryresourcegroupname) | string | Name of the Azure Container Registry Resource Group. |
 | [`daprAIInstrumentationKey`](#parameter-dapraiinstrumentationkey) | securestring | Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -191,14 +191,6 @@ Name of the Azure Container Registry.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `containerRegistryResourceGroupName`
-
-Name of the Azure Container Registry Resource Group.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `logAnalyticsWorkspaceResourceId`
 
@@ -293,6 +285,14 @@ Application Insights connection string.
 
 - Required: No
 - Type: securestring
+- Default: `''`
+
+### Parameter: `containerRegistryResourceGroupName`
+
+Name of the Azure Container Registry Resource Group.
+
+- Required: No
+- Type: string
 - Default: `''`
 
 ### Parameter: `daprAIInstrumentationKey`
