@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "17736752067873572874"
+      "templateHash": "13124242633763720321"
     },
     "name": "Application Gateway for Containers",
     "description": "This module deploys an Application Gateway for Containers",
@@ -701,20 +701,6 @@
         "description": "The configuration endpoints of the Application Gateway for Containers."
       },
       "value": "[reference('trafficController').configurationEndpoints]"
-    },
-    "associationResourceIds": {
-      "type": "array",
-      "metadata": {
-        "description": "The resource Ids of the Application Gateway for Containers associations."
-      },
-      "value": "[reference('trafficController').associations]"
-    },
-    "frontendResourceIds": {
-      "type": "array",
-      "metadata": {
-        "description": "The resource Ids of the Application Gateway for Containers frontends."
-      },
-      "value": "[reference('trafficController').frontends]"
     },
     "frontends": {
       "type": "array",

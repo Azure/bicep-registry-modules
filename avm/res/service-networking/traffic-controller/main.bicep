@@ -183,12 +183,6 @@ output location string = trafficController.location
 @description('The configuration endpoints of the Application Gateway for Containers.')
 output configurationEndpoints string[] = trafficController.properties.configurationEndpoints
 
-@description('The resource Ids of the Application Gateway for Containers associations.')
-output associationResourceIds array = trafficController.properties.associations
-
-@description('The resource Ids of the Application Gateway for Containers frontends.')
-output frontendResourceIds array = trafficController.properties.frontends
-
 @description('The frontends of the Application Gateway for Containers.')
 output frontends array = [
   for (frontend, i) in (!empty(frontends) ? array(frontends) : []): {
