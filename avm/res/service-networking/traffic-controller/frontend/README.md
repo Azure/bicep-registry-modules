@@ -14,7 +14,7 @@ This module deploys an Application Gateway for Containers Frontend
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ServiceNetworking/trafficControllers/frontends` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2023-11-01/trafficControllers/frontends) |
+| `Microsoft.ServiceNetworking/trafficControllers/frontends` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/trafficControllers/frontends) |
 
 ## Parameters
 

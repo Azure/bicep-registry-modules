@@ -9,6 +9,7 @@ This module deploys an Application Gateway for Containers
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -18,9 +19,9 @@ This module deploys an Application Gateway for Containers
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.ServiceNetworking/trafficControllers` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2023-11-01/trafficControllers) |
-| `Microsoft.ServiceNetworking/trafficControllers/associations` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2023-11-01/trafficControllers/associations) |
-| `Microsoft.ServiceNetworking/trafficControllers/frontends` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2023-11-01/trafficControllers/frontends) |
+| `Microsoft.ServiceNetworking/trafficControllers` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/trafficControllers) |
+| `Microsoft.ServiceNetworking/trafficControllers/associations` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/trafficControllers/associations) |
+| `Microsoft.ServiceNetworking/trafficControllers/frontends` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/trafficControllers/frontends) |
 
 ## Usage examples
 
@@ -32,7 +33,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using multiple associations](#example-3-using-multiple-associations)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -133,7 +135,7 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
     }
     roleAssignments: [
       {
-        name: 'b60b8539-9af5-4208-b75d-f44d1f39b9f8'
+        name: '8346d536-fca9-4629-abd4-28b05be89682'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -222,7 +224,7 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
     "roleAssignments": {
       "value": [
         {
-          "name": "b60b8539-9af5-4208-b75d-f44d1f39b9f8",
+          "name": "8346d536-fca9-4629-abd4-28b05be89682",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -254,7 +256,103 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Using multiple associations_
+
+This instance deploys the module with multiple associations.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module trafficController 'br/public:avm/res/service-networking/traffic-controller:<version>' = {
+  name: 'trafficControllerDeployment'
+  params: {
+    // Required parameters
+    name: 'sntcma001'
+    // Non-required parameters
+    associations: [
+      {
+        name: 'association1'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        name: 'association2'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        name: 'association3'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    frontends: [
+      {
+        name: 'frontend1'
+      }
+      {
+        name: 'frontend2'
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sntcma001"
+    },
+    // Non-required parameters
+    "associations": {
+      "value": [
+        {
+          "name": "association1",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "name": "association2",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "name": "association3",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "frontends": {
+      "value": [
+        {
+          "name": "frontend1"
+        },
+        {
+          "name": "frontend2"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -758,6 +856,10 @@ Resource tags.
 ## Cross-referenced modules
 
 _None_
+
+## Notes
+
+> **Limitation**: This resource is not idempotent when deployed with more than one association. The deployment will fail if the resource already exists.
 
 ## Data Collection
 

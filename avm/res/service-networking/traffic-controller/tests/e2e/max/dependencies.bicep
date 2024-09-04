@@ -38,20 +38,6 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-01-01' = {
           ]
         }
       }
-      {
-        name: 'customSubnet-1'
-        properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 24, 1)
-          delegations: [
-            {
-              name: 'Microsoft.ServiceNetworking.trafficControllers'
-              properties: {
-                serviceName: 'Microsoft.ServiceNetworking/trafficControllers'
-              }
-            }
-          ]
-        }
-      }
     ]
   }
 }
@@ -61,6 +47,3 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 
 @description('The resource ID of the created default Virtual Network Subnet.')
 output defaultSubnetResourceId string = virtualNetwork.properties.subnets[0].id
-
-@description('The resource ID of the created custom Virtual Network Subnet.')
-output customSubnetResourceId string = virtualNetwork.properties.subnets[1].id
