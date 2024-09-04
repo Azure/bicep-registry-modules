@@ -492,7 +492,14 @@ The session host configuration for updating agent, monitoring agent, and stack c
 - Default:
   ```Bicep
   {
-      useSessionHostLocalTime: true
+      maintenanceWindows: [
+        {
+          dayOfWeek: 'Sunday'
+          hour: 12
+        }
+      ]
+      type: 'Scheduled'
+      useSessionHostLocalTime: false
   }
   ```
 

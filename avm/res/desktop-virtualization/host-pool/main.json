@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "6172972509189976582"
+      "version": "0.29.47.4906",
+      "templateHash": "11714526099669985272"
     },
     "name": "Azure Virtual Desktop Host Pool",
     "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -536,7 +536,14 @@
     "agentUpdate": {
       "type": "object",
       "defaultValue": {
-        "useSessionHostLocalTime": true
+        "type": "Scheduled",
+        "useSessionHostLocalTime": false,
+        "maintenanceWindows": [
+          {
+            "dayOfWeek": "Sunday",
+            "hour": 12
+          }
+        ]
       },
       "metadata": {
         "description": "Optional. The session host configuration for updating agent, monitoring agent, and stack component."

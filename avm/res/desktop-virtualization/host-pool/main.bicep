@@ -80,7 +80,14 @@ param startVMOnConnect bool = false
 
 @sys.description('Optional. The session host configuration for updating agent, monitoring agent, and stack component.')
 param agentUpdate object = {
-  useSessionHostLocalTime: true
+  type: 'Scheduled'
+  useSessionHostLocalTime: false
+  maintenanceWindows: [
+    {
+      dayOfWeek: 'Sunday'
+      hour: 12
+    }
+  ]
 }
 
 @sys.description('Optional. The ring number of HostPool.')
