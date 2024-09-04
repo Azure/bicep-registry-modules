@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'With zoneRedundant enabled'
+metadata description = 'This instance deploys the module with zoneRedundant enabled.'
 
 // ========== //
 // Parameters //
@@ -55,6 +55,7 @@ module testDeployment '../../../main.bicep' = [
       logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       location: resourceLocation
       acrSku: 'Standard'
+      zoneRedundant: true
       workloadProfiles: [
         {
           workloadProfileType: 'D4'
@@ -67,11 +68,8 @@ module testDeployment '../../../main.bicep' = [
       dockerBridgeCidr: '172.16.0.1/28'
       platformReservedCidr: '172.17.17.0/24'
       platformReservedDnsIP: '172.17.17.17'
-      infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId
+      infrastructureSubnetResourceId: nestedDependencies.outputs.subnetResourceId
       infrastructureResourceGroupName: 'me-${resourceGroupName}'
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

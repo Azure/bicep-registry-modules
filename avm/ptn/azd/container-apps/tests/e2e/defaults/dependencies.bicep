@@ -12,7 +12,7 @@ var addressPrefix = '10.0.0.0/16'
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: logAnalyticsWorkspaceName
   location: location
-  properties: any({
+  properties: {
     retentionInDays: 30
     features: {
       searchVersion: 1
@@ -20,7 +20,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
     sku: {
       name: 'PerGB2018'
     }
-  })
+  }
 }
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {

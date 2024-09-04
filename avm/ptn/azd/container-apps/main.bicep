@@ -49,7 +49,7 @@ param zoneRedundant bool = true
 param dockerBridgeCidr string = ''
 
 @description('Conditional. Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant.')
-param infrastructureSubnetId string = ''
+param infrastructureSubnetResourceId string = ''
 
 @description('Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param internal bool = false
@@ -63,7 +63,7 @@ param platformReservedDnsIP string = ''
 @description('Conditional. Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param workloadProfiles array = []
 
-@description('Conditional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.')
+@description('Optional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param infrastructureResourceGroupName string = take('ME_${containerAppsEnvironmentName}', 63)
 
 #disable-next-line no-deployments-resources
@@ -95,13 +95,13 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.7.0
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
     appInsightsConnectionString: appInsightsConnectionString
     zoneRedundant: zoneRedundant
-    workloadProfiles: !empty(workloadProfiles) ? workloadProfiles : null
+    workloadProfiles: workloadProfiles
     infrastructureResourceGroupName: infrastructureResourceGroupName
     internal: internal
-    infrastructureSubnetId: !empty(infrastructureSubnetId) ? infrastructureSubnetId : null
-    dockerBridgeCidr: !empty(infrastructureSubnetId) ? dockerBridgeCidr : null
-    platformReservedCidr: empty(workloadProfiles) && !empty(infrastructureSubnetId) ? platformReservedCidr : null
-    platformReservedDnsIP: empty(workloadProfiles) && !empty(infrastructureSubnetId) ? platformReservedDnsIP : null
+    infrastructureSubnetId: infrastructureSubnetResourceId
+    dockerBridgeCidr: dockerBridgeCidr
+    platformReservedCidr: platformReservedCidr
+    platformReservedDnsIP: platformReservedDnsIP
   }
 }
 
@@ -129,7 +129,7 @@ output defaultDomain string = containerAppsEnvironment.outputs.defaultDomain
 output environmentName string = containerAppsEnvironment.outputs.name
 
 @description('The resource ID of the Managed Environment.')
-output environmentId string = containerAppsEnvironment.outputs.resourceId
+output environmentResourceId string = containerAppsEnvironment.outputs.resourceId
 
 @description('The reference to the Azure container registry.')
 output registryLoginServer string = containerRegistry.outputs.loginServer

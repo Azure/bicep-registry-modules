@@ -37,11 +37,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/container-apps:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
+- [With zoneRedundant enabled](#example-1-with-zoneredundant-enabled)
 
-### Example 1: _Using only defaults_
+### Example 1: _With zoneRedundant enabled_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with zoneRedundant enabled.
 
 
 <details>
@@ -60,7 +60,7 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
     acrSku: 'Standard'
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
-    infrastructureSubnetId: '<infrastructureSubnetId>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     internal: true
     location: '<location>'
     platformReservedCidr: '172.17.17.0/24'
@@ -73,6 +73,7 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
         workloadProfileType: 'D4'
       }
     ]
+    zoneRedundant: true
   }
 }
 ```
@@ -109,8 +110,8 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
     },
-    "infrastructureSubnetId": {
-      "value": "<infrastructureSubnetId>"
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
     },
     "internal": {
       "value": true
@@ -133,6 +134,9 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
           "workloadProfileType": "D4"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": true
     }
   }
 }
@@ -157,8 +161,7 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`dockerBridgeCidr`](#parameter-dockerbridgecidr) | string | CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
-| [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant. |
-| [`infrastructureSubnetId`](#parameter-infrastructuresubnetid) | string | Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`infrastructureSubnetResourceId`](#parameter-infrastructuresubnetresourceid) | string | Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`internal`](#parameter-internal) | bool | Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`platformReservedCidr`](#parameter-platformreservedcidr) | string | IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant. |
 | [`platformReservedDnsIP`](#parameter-platformreserveddnsip) | string | An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
@@ -174,6 +177,7 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
 | [`containerRegistryResourceGroupName`](#parameter-containerregistryresourcegroupname) | string | Name of the Azure Container Registry Resource Group. |
 | [`daprAIInstrumentationKey`](#parameter-dapraiinstrumentationkey) | securestring | Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Zone redundancy setting. |
@@ -207,15 +211,7 @@ CIDR notation IP range assigned to the Docker bridge, network. It must not overl
 - Type: string
 - Default: `''`
 
-### Parameter: `infrastructureResourceGroupName`
-
-Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.
-
-- Required: No
-- Type: string
-- Default: `[take(format('ME_{0}', parameters('containerAppsEnvironmentName')), 63)]`
-
-### Parameter: `infrastructureSubnetId`
+### Parameter: `infrastructureSubnetResourceId`
 
 Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant.
 
@@ -311,6 +307,14 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `infrastructureResourceGroupName`
+
+Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.
+
+- Required: No
+- Type: string
+- Default: `[take(format('ME_{0}', parameters('containerAppsEnvironmentName')), 63)]`
+
 ### Parameter: `location`
 
 Location for all Resources.
@@ -340,8 +344,8 @@ Zone redundancy setting.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `defaultDomain` | string | The Default domain of the Managed Environment. |
-| `environmentId` | string | The resource ID of the Managed Environment. |
 | `environmentName` | string | The name of the Managed Environment. |
+| `environmentResourceId` | string | The resource ID of the Managed Environment. |
 | `registryLoginServer` | string | The reference to the Azure container registry. |
 | `registryName` | string | The Name of the Azure container registry. |
 | `resourceGroupName` | string | The name of the resource group the all resources was deployed into. |

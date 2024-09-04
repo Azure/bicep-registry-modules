@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "16920040425193336243"
+      "templateHash": "3154922260961626340"
     },
     "name": "avm/ptn/azd/container-apps",
     "description": "Creates an Azure Container Registry and an Azure Container Apps environment.",
@@ -106,7 +106,7 @@
         "description": "Conditional. CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
     },
-    "infrastructureSubnetId": {
+    "infrastructureSubnetResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -145,7 +145,7 @@
       "type": "string",
       "defaultValue": "[take(format('ME_{0}', parameters('containerAppsEnvironmentName')), 63)]",
       "metadata": {
-        "description": "Conditional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant."
+        "description": "Optional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
     }
   },
@@ -201,17 +201,27 @@
           "zoneRedundant": {
             "value": "[parameters('zoneRedundant')]"
           },
-          "workloadProfiles": "[if(not(empty(parameters('workloadProfiles'))), createObject('value', parameters('workloadProfiles')), createObject('value', null()))]",
+          "workloadProfiles": {
+            "value": "[parameters('workloadProfiles')]"
+          },
           "infrastructureResourceGroupName": {
             "value": "[parameters('infrastructureResourceGroupName')]"
           },
           "internal": {
             "value": "[parameters('internal')]"
           },
-          "infrastructureSubnetId": "[if(not(empty(parameters('infrastructureSubnetId'))), createObject('value', parameters('infrastructureSubnetId')), createObject('value', null()))]",
-          "dockerBridgeCidr": "[if(not(empty(parameters('infrastructureSubnetId'))), createObject('value', parameters('dockerBridgeCidr')), createObject('value', null()))]",
-          "platformReservedCidr": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetId')))), createObject('value', parameters('platformReservedCidr')), createObject('value', null()))]",
-          "platformReservedDnsIP": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetId')))), createObject('value', parameters('platformReservedDnsIP')), createObject('value', null()))]"
+          "infrastructureSubnetId": {
+            "value": "[parameters('infrastructureSubnetResourceId')]"
+          },
+          "dockerBridgeCidr": {
+            "value": "[parameters('dockerBridgeCidr')]"
+          },
+          "platformReservedCidr": {
+            "value": "[parameters('platformReservedCidr')]"
+          },
+          "platformReservedDnsIP": {
+            "value": "[parameters('platformReservedDnsIP')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -3302,7 +3312,7 @@
       },
       "value": "[reference('containerAppsEnvironment').outputs.name.value]"
     },
-    "environmentId": {
+    "environmentResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the Managed Environment."
