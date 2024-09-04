@@ -155,7 +155,6 @@ module trafficController_frontends 'frontend/main.bicep' = [
   }
 ]
 
-@batchSize(1)
 module trafficController_associations 'association/main.bicep' = [
   for (association, index) in (associations ?? []): {
     name: '${uniqueString(deployment().name, location)}-TrafficController-Association-${index}'

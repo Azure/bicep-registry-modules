@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "17520170210972736649"
+      "templateHash": "17736752067873572874"
     },
     "name": "Application Gateway for Containers",
     "description": "This module deploys an Application Gateway for Containers",
@@ -555,9 +555,7 @@
     "trafficController_associations": {
       "copy": {
         "name": "trafficController_associations",
-        "count": "[length(coalesce(parameters('associations'), createArray()))]",
-        "mode": "serial",
-        "batchSize": 1
+        "count": "[length(coalesce(parameters('associations'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",

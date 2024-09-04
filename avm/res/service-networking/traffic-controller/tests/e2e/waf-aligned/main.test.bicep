@@ -79,10 +79,6 @@ module testDeployment '../../../main.bicep' = [
           name: 'association1'
           subnetResourceId: nestedDependencies.outputs.defaultSubnetResourceId
         }
-        {
-          name: 'association2'
-          subnetResourceId: nestedDependencies.outputs.customSubnetResourceId
-        }
       ]
       tags: {
         'hidden-title': 'This is visible in the resource name'

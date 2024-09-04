@@ -103,10 +103,6 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
         name: 'association1'
         subnetResourceId: '<subnetResourceId>'
       }
-      {
-        name: 'association2'
-        subnetResourceId: '<subnetResourceId>'
-      }
     ]
     diagnosticSettings: [
       {
@@ -184,10 +180,6 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
       "value": [
         {
           "name": "association1",
-          "subnetResourceId": "<subnetResourceId>"
-        },
-        {
-          "name": "association2",
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -278,7 +270,34 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
     // Required parameters
     name: 'sntcwaf001'
     // Non-required parameters
+    associations: [
+      {
+        name: 'association1'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    frontends: [
+      {
+        name: 'frontend1'
+      }
+      {
+        name: 'frontend2'
+      }
+    ]
     location: '<location>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -300,8 +319,43 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
       "value": "sntcwaf001"
     },
     // Non-required parameters
+    "associations": {
+      "value": [
+        {
+          "name": "association1",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "frontends": {
+      "value": [
+        {
+          "name": "frontend1"
+        },
+        {
+          "name": "frontend2"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
