@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'Private endpoint-enabled deployment'
+metadata description = 'This instance deploys the module with private endpoints.'
 
 // ========== //
 // Parameters //
@@ -9,20 +9,20 @@ metadata description = 'This instance deploys the module in alignment with the b
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-signalrservice.signalr-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-kusto.clusters-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'srssrwaf'
+param serviceShort string = 'akcpe'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-// =========== //
-// Deployments //
-// =========== //
+// ============ //
+// Dependencies //
+// ============ //
 
 // General resources
 // =================
@@ -33,10 +33,10 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: resourceLocation
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
 
@@ -50,33 +50,11 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}-${serviceShort}-001'
+      name: '${namePrefix}${serviceShort}0001'
       location: resourceLocation
-      capacity: 2
-      clientCertEnabled: false
-      disableAadAuth: false
-      disableLocalAuth: true
-      kind: 'SignalR'
-      networkAcls: {
-        defaultAction: 'Allow'
-        privateEndpoints: [
-          {
-            allow: []
-            deny: [
-              'ServerConnection'
-              'Trace'
-            ]
-            name: 'pe-${namePrefix}-${serviceShort}-001'
-          }
-        ]
-        publicNetwork: {
-          allow: []
-          deny: [
-            'RESTAPI'
-            'Trace'
-          ]
-        }
-      }
+      sku: 'Standard_E2ads_v5'
+      enablePublicNetworkAccess: false
+      publicIPType: 'IPv4'
       privateEndpoints: [
         {
           privateDnsZoneGroup: {
@@ -86,18 +64,21 @@ module testDeployment '../../../main.bicep' = [
               }
             ]
           }
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          tags: {
-            'hidden-title': 'This is visible in the resource name'
-            Environment: 'Non-Prod'
-            Role: 'DeploymentValidation'
+          subnetResourceId: nestedDependencies.outputs.defaultSubnetResourceId
+          service: 'cluster'
+        }
+        {
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
           }
+          subnetResourceId: nestedDependencies.outputs.pepTestSubnetResourceId
+          service: 'cluster'
         }
       ]
-      resourceLogConfigurationsToEnable: [
-        'ConnectivityLogs'
-      ]
-      sku: 'Standard_S1'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
