@@ -77,7 +77,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource trafficController 'Microsoft.ServiceNetworking/trafficControllers@2024-05-01-preview' = {
+resource trafficController 'Microsoft.ServiceNetworking/trafficControllers@2023-11-01' = {
   name: name
   location: location
   tags: tags

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "10289782131577390458"
+      "templateHash": "13124242633763720321"
     },
     "name": "Application Gateway for Containers",
     "description": "This module deploys an Application Gateway for Containers",
@@ -366,7 +366,7 @@
     },
     "trafficController": {
       "type": "Microsoft.ServiceNetworking/trafficControllers",
-      "apiVersion": "2024-05-01-preview",
+      "apiVersion": "2023-11-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -480,7 +480,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "9632611076475736751"
+              "templateHash": "15229634960628564975"
             },
             "name": "Application Gateway for Containers Frontend",
             "description": "This module deploys an Application Gateway for Containers Frontend",
@@ -510,7 +510,7 @@
           "resources": [
             {
               "type": "Microsoft.ServiceNetworking/trafficControllers/frontends",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('trafficControllerName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {}
@@ -543,7 +543,7 @@
               "metadata": {
                 "description": "The FQDN of the frontend."
               },
-              "value": "[reference(resourceId('Microsoft.ServiceNetworking/trafficControllers/frontends', parameters('trafficControllerName'), parameters('name')), '2024-05-01-preview').fqdn]"
+              "value": "[reference(resourceId('Microsoft.ServiceNetworking/trafficControllers/frontends', parameters('trafficControllerName'), parameters('name')), '2023-11-01').fqdn]"
             }
           }
         }
@@ -586,7 +586,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "7986846506079673422"
+              "templateHash": "13830191223102804829"
             },
             "name": "Application Gateway for Containers Association",
             "description": "This module deploys an Application Gateway for Containers Association",
@@ -622,7 +622,7 @@
           "resources": [
             {
               "type": "Microsoft.ServiceNetworking/trafficControllers/associations",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('trafficControllerName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {
@@ -660,7 +660,7 @@
               "metadata": {
                 "description": "The resource ID of the associated subnet."
               },
-              "value": "[reference(resourceId('Microsoft.ServiceNetworking/trafficControllers/associations', parameters('trafficControllerName'), parameters('name')), '2024-05-01-preview').subnet.id]"
+              "value": "[reference(resourceId('Microsoft.ServiceNetworking/trafficControllers/associations', parameters('trafficControllerName'), parameters('name')), '2023-11-01').subnet.id]"
             }
           }
         }
@@ -690,7 +690,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('trafficController', '2024-05-01-preview', 'full').location]"
+      "value": "[reference('trafficController', '2023-11-01', 'full').location]"
     },
     "configurationEndpoints": {
       "type": "array",

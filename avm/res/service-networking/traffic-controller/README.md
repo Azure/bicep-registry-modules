@@ -19,9 +19,9 @@ This module deploys an Application Gateway for Containers
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.ServiceNetworking/trafficControllers` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/trafficControllers) |
-| `Microsoft.ServiceNetworking/trafficControllers/associations` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/trafficControllers/associations) |
-| `Microsoft.ServiceNetworking/trafficControllers/frontends` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/trafficControllers/frontends) |
+| `Microsoft.ServiceNetworking/trafficControllers` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2023-11-01/trafficControllers) |
+| `Microsoft.ServiceNetworking/trafficControllers/associations` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2023-11-01/trafficControllers/associations) |
+| `Microsoft.ServiceNetworking/trafficControllers/frontends` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2023-11-01/trafficControllers/frontends) |
 
 ## Usage examples
 
