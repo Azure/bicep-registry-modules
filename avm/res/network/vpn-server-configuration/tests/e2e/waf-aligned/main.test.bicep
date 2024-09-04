@@ -10,7 +10,7 @@ metadata description = 'This instance deploys the module in alignment with the b
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 // e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
-param resourceGroupName string = 'dep-${namePrefix}-<provider>-<resourceType>-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-network.vpnserverconfiguration-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -31,6 +31,15 @@ param namePrefix string = '#_namePrefix_#'
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: resourceLocation
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    virtualWANName: 'dep-${namePrefix}-vw-${serviceShort}'
+    location: resourceLocation
+  }
 }
 
 // ============== //
