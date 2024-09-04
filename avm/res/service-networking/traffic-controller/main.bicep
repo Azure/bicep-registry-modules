@@ -177,6 +177,9 @@ output resourceId string = trafficController.id
 @description('The name of the Application Gateway for Containers.')
 output name string = trafficController.name
 
+@description('The name of the resource group the resource was created in.')
+output resourceGroupName string = resourceGroup().name
+
 @description('The location the resource was deployed into.')
 output location string = trafficController.location
 

@@ -754,6 +754,7 @@ Resource tags.
 | `frontends` | array | The frontends of the Application Gateway for Containers. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the Application Gateway for Containers. |
+| `resourceGroupName` | string | The name of the resource group the resource was created in. |
 | `resourceId` | string | The resource ID of the Application Gateway for Containers. |
 
 ## Cross-referenced modules
