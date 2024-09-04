@@ -271,7 +271,7 @@ param patchMode string = ''
 @description('Optional. Enables customer to schedule patching without accidental upgrades.')
 param bypassPlatformSafetyChecksOnUserSchedule bool = true
 
-@description('Optional. Specifies the reboot setting for all AutomaticByPlatform patch installation operations.')
+@description('Optional.  Specifies the reboot setting for all AutomaticByPlatform patch installation operations.')
 @allowed([
   'Always'
   'IfRequired'
