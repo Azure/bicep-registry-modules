@@ -33,8 +33,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using multiple associations](#example-3-using-multiple-associations)
-- [WAF-aligned](#example-4-waf-aligned)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -135,7 +134,7 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
     }
     roleAssignments: [
       {
-        name: '8346d536-fca9-4629-abd4-28b05be89682'
+        name: 'a6931c52-0b79-4fe9-ad3d-72188dfff379'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -224,7 +223,7 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
     "roleAssignments": {
       "value": [
         {
-          "name": "8346d536-fca9-4629-abd4-28b05be89682",
+          "name": "a6931c52-0b79-4fe9-ad3d-72188dfff379",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -256,103 +255,7 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
 </details>
 <p>
 
-### Example 3: _Using multiple associations_
-
-This instance deploys the module with multiple associations.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module trafficController 'br/public:avm/res/service-networking/traffic-controller:<version>' = {
-  name: 'trafficControllerDeployment'
-  params: {
-    // Required parameters
-    name: 'sntcma001'
-    // Non-required parameters
-    associations: [
-      {
-        name: 'association1'
-        subnetResourceId: '<subnetResourceId>'
-      }
-      {
-        name: 'association2'
-        subnetResourceId: '<subnetResourceId>'
-      }
-      {
-        name: 'association3'
-        subnetResourceId: '<subnetResourceId>'
-      }
-    ]
-    frontends: [
-      {
-        name: 'frontend1'
-      }
-      {
-        name: 'frontend2'
-      }
-    ]
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "sntcma001"
-    },
-    // Non-required parameters
-    "associations": {
-      "value": [
-        {
-          "name": "association1",
-          "subnetResourceId": "<subnetResourceId>"
-        },
-        {
-          "name": "association2",
-          "subnetResourceId": "<subnetResourceId>"
-        },
-        {
-          "name": "association3",
-          "subnetResourceId": "<subnetResourceId>"
-        }
-      ]
-    },
-    "frontends": {
-      "value": [
-        {
-          "name": "frontend1"
-        },
-        {
-          "name": "frontend2"
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -475,7 +378,7 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`associations`](#parameter-associations) | array | List of Application Gateway for Containers associations. |
+| [`associations`](#parameter-associations) | array | List of Application Gateway for Containers associations. At this time, the number of associations is limited to 1 |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`frontends`](#parameter-frontends) | array | List of Application Gateway for Containers frontends. |
@@ -493,7 +396,7 @@ Name of the Application Gateway for Containers to create.
 
 ### Parameter: `associations`
 
-List of Application Gateway for Containers associations.
+List of Application Gateway for Containers associations. At this time, the number of associations is limited to 1
 
 - Required: No
 - Type: array
@@ -859,7 +762,7 @@ _None_
 
 ## Notes
 
-> **Limitation**: This resource is not idempotent when deployed with more than one association. The deployment will fail if the resource already exists.
+> **Limitation**: At this time, the number of associations is limited to 1 (Source: [Application Gateway for Containers associations](https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/application-gateway-for-containers-components#application-gateway-for-containers-associations))
 
 ## Data Collection
 

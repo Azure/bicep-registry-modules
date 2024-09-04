@@ -26,7 +26,7 @@ param roleAssignments roleAssignmentType
 @description('Optional. List of Application Gateway for Containers frontends.')
 param frontends frontendType
 
-@description('Optional. List of Application Gateway for Containers associations.')
+@description('Optional. List of Application Gateway for Containers associations. At this time, the number of associations is limited to 1')
 param associations associationType
 
 var builtInRoleNames = {

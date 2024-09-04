@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "13124242633763720321"
+      "templateHash": "15660297707775550584"
     },
     "name": "Application Gateway for Containers",
     "description": "This module deploys an Application Gateway for Containers",
@@ -323,7 +323,7 @@
     "associations": {
       "$ref": "#/definitions/associationType",
       "metadata": {
-        "description": "Optional. List of Application Gateway for Containers associations."
+        "description": "Optional. List of Application Gateway for Containers associations. At this time, the number of associations is limited to 1"
       }
     }
   },
