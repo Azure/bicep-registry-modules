@@ -15,7 +15,10 @@ param enableTelemetry bool = true
 param tags object?
 
 @description('Optional. List of Application Gateway for Containers frontends.')
-param frontends array = []
+param frontends frontendType
+
+@description('Optional. List of Application Gateway for Containers associations.')
+param associations associationType
 
 // ============== //
 // Resources      //
@@ -48,12 +51,24 @@ resource trafficController 'Microsoft.ServiceNetworking/trafficControllers@2023-
 }
 
 module trafficController_frontends 'frontend/main.bicep' = [
-  for (frontend, index) in frontends: {
+  for (frontend, index) in (frontends ?? []): {
     name: '${uniqueString(deployment().name, location)}-TrafficController-Frontend-${index}'
     params: {
       trafficControllerName: trafficController.name
       name: frontend.name
       location: location
+    }
+  }
+]
+
+module trafficController_associations 'association/main.bicep' = [
+  for (association, index) in (associations ?? []): {
+    name: '${uniqueString(deployment().name, location)}-TrafficController-Association-${index}'
+    params: {
+      trafficControllerName: trafficController.name
+      name: association.name
+      location: location
+      subnetResourceId: association.subnetResourceId
     }
   }
 ]
@@ -74,6 +89,16 @@ output location string = trafficController.location
 // ================ //
 // Definitions      //
 // ================ //
-//
-// Add your User-defined-types here, if any
-//
+
+type frontendType = {
+  @description('Required. The name of the Application Gateway for Containers frontend.')
+  name: string
+}[]?
+
+type associationType = {
+  @description('Required. The name of the Application Gateway for Containers association.')
+  name: string
+
+  @description('Required. The resource ID of the subnet to associate with the Application Gateway for Containers.')
+  subnetResourceId: string
+}[]?

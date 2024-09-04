@@ -6,11 +6,49 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "13148817521333721065"
+      "templateHash": "7748518319617700673"
     },
     "name": "Application Gateway for Containers",
     "description": "This module deploys an Application Gateway for Containers",
     "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "frontendType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the Application Gateway for Containers frontend."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "associationType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the Application Gateway for Containers association."
+            }
+          },
+          "subnetResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The resource ID of the subnet to associate with the Application Gateway for Containers."
+            }
+          }
+        }
+      },
+      "nullable": true
+    }
   },
   "parameters": {
     "name": {
@@ -41,10 +79,15 @@
       }
     },
     "frontends": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/frontendType",
       "metadata": {
         "description": "Optional. List of Application Gateway for Containers frontends."
+      }
+    },
+    "associations": {
+      "$ref": "#/definitions/associationType",
+      "metadata": {
+        "description": "Optional. List of Application Gateway for Containers associations."
       }
     }
   },
@@ -80,7 +123,7 @@
     "trafficController_frontends": {
       "copy": {
         "name": "trafficController_frontends",
-        "count": "[length(parameters('frontends'))]"
+        "count": "[length(coalesce(parameters('frontends'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -95,7 +138,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('frontends')[copyIndex()].name]"
+            "value": "[coalesce(parameters('frontends'), createArray())[copyIndex()].name]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -156,6 +199,116 @@
               "type": "string",
               "metadata": {
                 "description": "The name of the frontend."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the resource was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "trafficController"
+      ]
+    },
+    "trafficController_associations": {
+      "copy": {
+        "name": "trafficController_associations",
+        "count": "[length(coalesce(parameters('associations'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-TrafficController-Association-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "trafficControllerName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('associations'), createArray())[copyIndex()].name]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "subnetResourceId": {
+            "value": "[coalesce(parameters('associations'), createArray())[copyIndex()].subnetResourceId]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "18286127970808905958"
+            },
+            "name": "Application Gateway for Containers Association",
+            "description": "This module deploys an Application Gateway for Containers Association",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the association to create."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all Resources."
+              }
+            },
+            "trafficControllerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Application Gateway for Containers instance. Required if the template is used in a standalone deployment."
+              }
+            },
+            "subnetResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Reuired. The resource ID of the subnet to associate with the traffic controller."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ServiceNetworking/trafficControllers/associations",
+              "apiVersion": "2023-11-01",
+              "name": "[format('{0}/{1}', parameters('trafficControllerName'), parameters('name'))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "associationType": "subnets",
+                "subnet": {
+                  "id": "[parameters('subnetResourceId')]"
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the association."
+              },
+              "value": "[resourceId('Microsoft.ServiceNetworking/trafficControllers/associations', parameters('trafficControllerName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the association."
               },
               "value": "[parameters('name')]"
             },

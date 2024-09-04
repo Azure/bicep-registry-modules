@@ -16,6 +16,7 @@ This module deploys an Application Gateway for Containers
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.ServiceNetworking/trafficControllers` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2023-11-01/trafficControllers) |
+| `Microsoft.ServiceNetworking/trafficControllers/associations` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2023-11-01/trafficControllers/associations) |
 | `Microsoft.ServiceNetworking/trafficControllers/frontends` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2023-11-01/trafficControllers/frontends) |
 
 ## Usage examples
@@ -94,6 +95,16 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
     // Required parameters
     name: 'sntcmax001'
     // Non-required parameters
+    associations: [
+      {
+        name: 'association1'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        name: 'association2'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
     frontends: [
       {
         name: 'frontend1'
@@ -126,6 +137,18 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
       "value": "sntcmax001"
     },
     // Non-required parameters
+    "associations": {
+      "value": [
+        {
+          "name": "association1",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "name": "association2",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
     "frontends": {
       "value": [
         {
@@ -211,6 +234,7 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`associations`](#parameter-associations) | array | List of Application Gateway for Containers associations. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`frontends`](#parameter-frontends) | array | List of Application Gateway for Containers frontends. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -219,6 +243,34 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
 ### Parameter: `name`
 
 Name of the Application Gateway for Containers to create.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `associations`
+
+List of Application Gateway for Containers associations.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-associationsname) | string | The name of the Application Gateway for Containers association. |
+| [`subnetResourceId`](#parameter-associationssubnetresourceid) | string | The resource ID of the subnet to associate with the Application Gateway for Containers. |
+
+### Parameter: `associations.name`
+
+The name of the Application Gateway for Containers association.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `associations.subnetResourceId`
+
+The resource ID of the subnet to associate with the Application Gateway for Containers.
 
 - Required: Yes
 - Type: string
@@ -237,7 +289,19 @@ List of Application Gateway for Containers frontends.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-frontendsname) | string | The name of the Application Gateway for Containers frontend. |
+
+### Parameter: `frontends.name`
+
+The name of the Application Gateway for Containers frontend.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `location`
 
