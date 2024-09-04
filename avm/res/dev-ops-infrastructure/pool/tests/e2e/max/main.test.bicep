@@ -24,7 +24,7 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param azureDevOpsOrganizationName string = ''
 
-@description('Required. Name of the Azure DevOps Max Project. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureDevOpsProjectMaxName\'.')
+@description('Required. Name of the Azure DevOps Max Project. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureDevOpsProjectName\'.')
 @secure()
 param azureDevOpsProjectName string = ''
 
