@@ -207,6 +207,14 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the user VPN configuration. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`radiusServerAddress`](#parameter-radiusserveraddress) | string | The address of the Radius server. Required if configuring Radius. |
+| [`radiusServerSecret`](#parameter-radiusserversecret) | securestring | The Radius server secret. Required if configuring Radius. |
+| [`vpnClientRootCertificates`](#parameter-vpnclientrootcertificates) | array | The VPN Client root certificates for the configuration. Required if using certificate authentication. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -217,13 +225,16 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location where all resources will be created. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`radiusServerAddress`](#parameter-radiusserveraddress) | string | The address of the Radius server. |
+| [`p2sConfigurationPolicyGroups`](#parameter-p2sconfigurationpolicygroups) | array | The P2S configuration policy groups for the configuration. |
+| [`radiusClientRootCertificates`](#parameter-radiusclientrootcertificates) | array | The root certificates of the Radius client. |
 | [`radiusServerRootCertificates`](#parameter-radiusserverrootcertificates) | array | The root certificates of the Radius server. |
 | [`radiusServers`](#parameter-radiusservers) | array | The list of Radius servers. |
-| [`radiusServerSecret`](#parameter-radiusserversecret) | securestring | The Radius server secret. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`vpnAuthenticationTypes`](#parameter-vpnauthenticationtypes) | array | The authentication types for the VPN configuration. |
+| [`vpnClientIpsecPolicies`](#parameter-vpnclientipsecpolicies) | array | The IPsec policies for the configuration. |
+| [`vpnClientRevokedCertificates`](#parameter-vpnclientrevokedcertificates) | array | The revoked VPN Client certificates for the configuration. |
 | [`vpnProtocols`](#parameter-vpnprotocols) | array | The allowed VPN protocols for the configuration. |
+| [`vpnServerConfigurationName`](#parameter-vpnserverconfigurationname) | string | The name of the VpnServerConfiguration that is unique within a resource group |
 
 ### Parameter: `name`
 
@@ -231,6 +242,28 @@ The name of the user VPN configuration.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `radiusServerAddress`
+
+The address of the Radius server. Required if configuring Radius.
+
+- Required: No
+- Type: string
+
+### Parameter: `radiusServerSecret`
+
+The Radius server secret. Required if configuring Radius.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `vpnClientRootCertificates`
+
+The VPN Client root certificates for the configuration. Required if using certificate authentication.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `aadAudience`
 
@@ -305,12 +338,21 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `radiusServerAddress`
+### Parameter: `p2sConfigurationPolicyGroups`
 
-The address of the Radius server.
+The P2S configuration policy groups for the configuration.
 
 - Required: No
-- Type: string
+- Type: array
+- Default: `[]`
+
+### Parameter: `radiusClientRootCertificates`
+
+The root certificates of the Radius client.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `radiusServerRootCertificates`
 
@@ -327,13 +369,6 @@ The list of Radius servers.
 - Required: No
 - Type: array
 - Default: `[]`
-
-### Parameter: `radiusServerSecret`
-
-The Radius server secret.
-
-- Required: No
-- Type: securestring
 
 ### Parameter: `tags`
 
@@ -358,6 +393,22 @@ The authentication types for the VPN configuration.
   ]
   ```
 
+### Parameter: `vpnClientIpsecPolicies`
+
+The IPsec policies for the configuration.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `vpnClientRevokedCertificates`
+
+The revoked VPN Client certificates for the configuration.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
 ### Parameter: `vpnProtocols`
 
 The allowed VPN protocols for the configuration.
@@ -372,6 +423,13 @@ The allowed VPN protocols for the configuration.
     'OpenVPN'
   ]
   ```
+
+### Parameter: `vpnServerConfigurationName`
+
+The name of the VpnServerConfiguration that is unique within a resource group
+
+- Required: Yes
+- Type: string
 
 
 ## Outputs

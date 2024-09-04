@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "13322266266607175921"
+      "templateHash": "13271428234911653442"
     },
     "name": "VPN Server Configuration",
     "description": "This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway.",
@@ -78,27 +78,27 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional."
+        "description": "Optional. The P2S configuration policy groups for the configuration."
       }
     },
     "vpnServerConfigurationName": {
       "type": "string",
       "metadata": {
-        "description": "Optional."
+        "description": "Optional. The name of the VpnServerConfiguration that is unique within a resource group"
       }
     },
     "radiusClientRootCertificates": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional."
+        "description": "Optional. The root certificates of the Radius client."
       }
     },
     "radiusServerAddress": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The address of the Radius server."
+        "description": "Conditional. The address of the Radius server. Required if configuring Radius."
       }
     },
     "radiusServerRootCertificates": {
@@ -119,7 +119,7 @@
       "type": "securestring",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The Radius server secret."
+        "description": "Conditional. The Radius server secret. Required if configuring Radius."
       }
     },
     "vpnAuthenticationTypes": {
@@ -138,21 +138,21 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional."
+        "description": "Optional. The IPsec policies for the configuration."
       }
     },
     "vpnClientRevokedCertificates": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional."
+        "description": "Optional. The revoked VPN Client certificates for the configuration."
       }
     },
     "vpnClientRootCertificates": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional."
+        "description": "Conditional. The VPN Client root certificates for the configuration. Required if using certificate authentication."
       }
     },
     "vpnProtocols": {

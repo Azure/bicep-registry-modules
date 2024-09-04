@@ -26,7 +26,7 @@ param vpnServerConfigurationName string
 @description('Optional. The root certificates of the Radius client.')
 param radiusClientRootCertificates array = []
 
-@description('Conditional. The address of the Radius server; required if configuring Radius.')
+@description('Conditional. The address of the Radius server. Required if configuring Radius.')
 param radiusServerAddress string?
 
 @description('Optional. The root certificates of the Radius server.')
@@ -35,7 +35,7 @@ param radiusServerRootCertificates array = []
 @description('Optional. The list of Radius servers.')
 param radiusServers array = []
 
-@description('Conditional. The Radius server secret; required if configuring Radius.')
+@description('Conditional. The Radius server secret. Required if configuring Radius.')
 @secure()
 param radiusServerSecret string?
 
@@ -53,7 +53,7 @@ param vpnClientIpsecPolicies array = []
 @description('Optional. The revoked VPN Client certificates for the configuration.')
 param vpnClientRevokedCertificates array = []
 
-@description('Conditional. The VPN Client root certificates for the configuration; required if using certificate authentication.')
+@description('Conditional. The VPN Client root certificates for the configuration. Required if using certificate authentication.')
 param vpnClientRootCertificates array = []
 
 @description('Optional. The allowed VPN protocols for the configuration.')
