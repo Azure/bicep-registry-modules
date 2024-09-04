@@ -53,8 +53,8 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
   name: 'containerAppsDeployment'
   params: {
     // Required parameters
-    containerAppsEnvironmentName: 'casmincae001'
-    containerRegistryName: 'casmincr001'
+    containerAppsEnvironmentName: 'acazrcae001'
+    containerRegistryName: 'acazrcr001'
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     // Non-required parameters
     acrSku: 'Standard'
@@ -92,10 +92,10 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
   "parameters": {
     // Required parameters
     "containerAppsEnvironmentName": {
-      "value": "casmincae001"
+      "value": "acazrcae001"
     },
     "containerRegistryName": {
-      "value": "casmincr001"
+      "value": "acazrcr001"
     },
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
