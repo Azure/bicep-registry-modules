@@ -22,15 +22,15 @@ param namePrefix string = '#_namePrefix_#'
 
 @description('Required. Name of the Azure DevOps Organization. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureDevOpsOrganizationName\'.')
 @secure()
-param azureDevOpsOrganizationName string
+param azureDevOpsOrganizationName string = ''
 
 @description('Required. Name of the Azure DevOps WAF Project. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureDevOpsProjectWAFName\'.')
 @secure()
-param azureDevOpsProjectWAFName string
+param azureDevOpsProjectName string = ''
 
 @description('Required. The object ID of the Entra ID-provided DevOpsInfrastructure principal. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-DevOpsInfrastructureObjectID\'.')
 @secure()
-param devOpsInfrastructureObjectID string
+param devOpsInfrastructureObjectID string = ''
 
 // ============ //
 // Dependencies //
@@ -113,7 +113,7 @@ module testDeployment '../../../main.bicep' = [
           {
             url: 'https://dev.azure.com/${azureDevOpsOrganizationName}'
             projects: [
-              azureDevOpsProjectWAFName
+              azureDevOpsProjectName
             ]
             parallelism: 1
           }
