@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "134004223883340990"
+      "templateHash": "17520170210972736649"
     },
     "name": "Application Gateway for Containers",
     "description": "This module deploys an Application Gateway for Containers",
@@ -480,7 +480,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "11544265930509739079"
+              "templateHash": "15229634960628564975"
             },
             "name": "Application Gateway for Containers Frontend",
             "description": "This module deploys an Application Gateway for Containers Frontend",
@@ -537,6 +537,13 @@
                 "description": "The name of the resource group the resource was created in."
               },
               "value": "[resourceGroup().name]"
+            },
+            "fqdn": {
+              "type": "string",
+              "metadata": {
+                "description": "The FQDN of the frontend."
+              },
+              "value": "[reference(resourceId('Microsoft.ServiceNetworking/trafficControllers/frontends', parameters('trafficControllerName'), parameters('name')), '2023-11-01').fqdn]"
             }
           }
         }
@@ -548,7 +555,9 @@
     "trafficController_associations": {
       "copy": {
         "name": "trafficController_associations",
-        "count": "[length(coalesce(parameters('associations'), createArray()))]"
+        "count": "[length(coalesce(parameters('associations'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -579,7 +588,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "18286127970808905958"
+              "templateHash": "13830191223102804829"
             },
             "name": "Application Gateway for Containers Association",
             "description": "This module deploys an Application Gateway for Containers Association",
@@ -647,6 +656,13 @@
                 "description": "The name of the resource group the resource was created in."
               },
               "value": "[resourceGroup().name]"
+            },
+            "subnetResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the associated subnet."
+              },
+              "value": "[reference(resourceId('Microsoft.ServiceNetworking/trafficControllers/associations', parameters('trafficControllerName'), parameters('name')), '2023-11-01').subnet.id]"
             }
           }
         }
@@ -701,6 +717,34 @@
         "description": "The resource Ids of the Application Gateway for Containers frontends."
       },
       "value": "[reference('trafficController').frontends]"
+    },
+    "frontends": {
+      "type": "array",
+      "metadata": {
+        "description": "The frontends of the Application Gateway for Containers."
+      },
+      "copy": {
+        "count": "[length(if(not(empty(parameters('frontends'))), array(parameters('frontends')), createArray()))]",
+        "input": {
+          "name": "[reference(format('trafficController_frontends[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('trafficController_frontends[{0}]', copyIndex())).outputs.resourceId.value]",
+          "fqdn": "[reference(format('trafficController_frontends[{0}]', copyIndex())).outputs.fqdn.value]"
+        }
+      }
+    },
+    "associations": {
+      "type": "array",
+      "metadata": {
+        "description": "The associations of the Application Gateway for Containers."
+      },
+      "copy": {
+        "count": "[length(if(not(empty(parameters('associations'))), array(parameters('associations')), createArray()))]",
+        "input": {
+          "name": "[reference(format('trafficController_associations[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('trafficController_associations[{0}]', copyIndex())).outputs.resourceId.value]",
+          "subnetResourceId": "[reference(format('trafficController_associations[{0}]', copyIndex())).outputs.subnetResourceId.value]"
+        }
+      }
     }
   }
 }

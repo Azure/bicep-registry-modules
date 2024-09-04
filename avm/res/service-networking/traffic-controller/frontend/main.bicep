@@ -39,6 +39,9 @@ output name string = frontend.name
 @description('The name of the resource group the resource was created in.')
 output resourceGroupName string = resourceGroup().name
 
+@description('The FQDN of the frontend.')
+output fqdn string = frontend.properties.fqdn
+
 // ================ //
 // Definitions      //
 // ================ //

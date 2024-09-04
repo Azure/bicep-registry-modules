@@ -47,6 +47,9 @@ output name string = association.name
 @description('The name of the resource group the resource was created in.')
 output resourceGroupName string = resourceGroup().name
 
+@description('The resource ID of the associated subnet.')
+output subnetResourceId string = association.properties.subnet.id
+
 // ================ //
 // Definitions      //
 // ================ //

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "18286127970808905958"
+      "templateHash": "13830191223102804829"
     },
     "name": "Application Gateway for Containers Association",
     "description": "This module deploys an Application Gateway for Containers Association",
@@ -73,6 +73,13 @@
         "description": "The name of the resource group the resource was created in."
       },
       "value": "[resourceGroup().name]"
+    },
+    "subnetResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the associated subnet."
+      },
+      "value": "[reference(resourceId('Microsoft.ServiceNetworking/trafficControllers/associations', parameters('trafficControllerName'), parameters('name')), '2023-11-01').subnet.id]"
     }
   }
 }

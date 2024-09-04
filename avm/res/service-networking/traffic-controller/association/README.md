@@ -79,6 +79,7 @@ The resource ID of the subnet to associate with the traffic controller.
 | `name` | string | The name of the association. |
 | `resourceGroupName` | string | The name of the resource group the resource was created in. |
 | `resourceId` | string | The resource ID of the association. |
+| `subnetResourceId` | string | The resource ID of the associated subnet. |
 
 ## Cross-referenced modules
 

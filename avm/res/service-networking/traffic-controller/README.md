@@ -695,8 +695,10 @@ Resource tags.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `associationResourceIds` | array | The resource Ids of the Application Gateway for Containers associations. |
+| `associations` | array | The associations of the Application Gateway for Containers. |
 | `configurationEndpoints` | array | The configuration endpoints of the Application Gateway for Containers. |
 | `frontendResourceIds` | array | The resource Ids of the Application Gateway for Containers frontends. |
+| `frontends` | array | The frontends of the Application Gateway for Containers. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the Application Gateway for Containers. |
 | `resourceId` | string | The resource ID of the Application Gateway for Containers. |

@@ -63,6 +63,7 @@ Location for all Resources.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `fqdn` | string | The FQDN of the frontend. |
 | `name` | string | The name of the frontend. |
 | `resourceGroupName` | string | The name of the resource group the resource was created in. |
 | `resourceId` | string | The resource ID of the frontend. |

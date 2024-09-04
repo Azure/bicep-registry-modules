@@ -155,6 +155,7 @@ module trafficController_frontends 'frontend/main.bicep' = [
   }
 ]
 
+@batchSize(1)
 module trafficController_associations 'association/main.bicep' = [
   for (association, index) in (associations ?? []): {
     name: '${uniqueString(deployment().name, location)}-TrafficController-Association-${index}'
@@ -188,6 +189,24 @@ output associationResourceIds array = trafficController.properties.associations
 
 @description('The resource Ids of the Application Gateway for Containers frontends.')
 output frontendResourceIds array = trafficController.properties.frontends
+
+@description('The frontends of the Application Gateway for Containers.')
+output frontends array = [
+  for (frontend, i) in (!empty(frontends) ? array(frontends) : []): {
+    name: trafficController_frontends[i].outputs.name
+    resourceId: trafficController_frontends[i].outputs.resourceId
+    fqdn: trafficController_frontends[i].outputs.fqdn
+  }
+]
+
+@description('The associations of the Application Gateway for Containers.')
+output associations array = [
+  for (association, i) in (!empty(associations) ? array(associations) : []): {
+    name: trafficController_associations[i].outputs.name
+    resourceId: trafficController_associations[i].outputs.resourceId
+    subnetResourceId: trafficController_associations[i].outputs.subnetResourceId
+  }
+]
 
 // ================ //
 // Definitions      //
