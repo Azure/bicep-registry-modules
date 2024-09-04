@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "13271428234911653442"
+      "templateHash": "8266021575689311349"
     },
     "name": "VPN Server Configuration",
     "description": "This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway.",
@@ -84,7 +84,7 @@
     "vpnServerConfigurationName": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The name of the VpnServerConfiguration that is unique within a resource group"
+        "description": "Optional. The name of the VpnServerConfiguration that is unique within a resource group."
       }
     },
     "radiusClientRootCertificates": {

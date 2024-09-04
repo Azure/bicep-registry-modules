@@ -20,7 +20,7 @@ param aadTenant string?
 @description('Optional. The P2S configuration policy groups for the configuration.')
 param p2sConfigurationPolicyGroups array = []
 
-@description('Optional. The name of the VpnServerConfiguration that is unique within a resource group')
+@description('Optional. The name of the VpnServerConfiguration that is unique within a resource group.')
 param vpnServerConfigurationName string
 
 @description('Optional. The root certificates of the Radius client.')

@@ -234,7 +234,7 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
 | [`vpnClientIpsecPolicies`](#parameter-vpnclientipsecpolicies) | array | The IPsec policies for the configuration. |
 | [`vpnClientRevokedCertificates`](#parameter-vpnclientrevokedcertificates) | array | The revoked VPN Client certificates for the configuration. |
 | [`vpnProtocols`](#parameter-vpnprotocols) | array | The allowed VPN protocols for the configuration. |
-| [`vpnServerConfigurationName`](#parameter-vpnserverconfigurationname) | string | The name of the VpnServerConfiguration that is unique within a resource group |
+| [`vpnServerConfigurationName`](#parameter-vpnserverconfigurationname) | string | The name of the VpnServerConfiguration that is unique within a resource group. |
 
 ### Parameter: `name`
 
@@ -426,7 +426,7 @@ The allowed VPN protocols for the configuration.
 
 ### Parameter: `vpnServerConfigurationName`
 
-The name of the VpnServerConfiguration that is unique within a resource group
+The name of the VpnServerConfiguration that is unique within a resource group.
 
 - Required: Yes
 - Type: string
