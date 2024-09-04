@@ -378,7 +378,7 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`associations`](#parameter-associations) | array | List of Application Gateway for Containers associations. At this time, the number of associations is limited to 1 |
+| [`associations`](#parameter-associations) | array | List of Application Gateway for Containers associations. At this time, the number of associations is limited to 1. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`frontends`](#parameter-frontends) | array | List of Application Gateway for Containers frontends. |
@@ -396,7 +396,7 @@ Name of the Application Gateway for Containers to create.
 
 ### Parameter: `associations`
 
-List of Application Gateway for Containers associations. At this time, the number of associations is limited to 1
+List of Application Gateway for Containers associations. At this time, the number of associations is limited to 1.
 
 - Required: No
 - Type: array
