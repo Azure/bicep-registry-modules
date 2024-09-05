@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "17224008838155646541"
+      "templateHash": "16196020980730321082"
     },
     "name": "Azure Virtual Desktop Host Pool",
     "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -717,7 +717,7 @@
     },
     "hostPool": {
       "type": "Microsoft.DesktopVirtualization/hostPools",
-      "apiVersion": "2023-09-05",
+      "apiVersion": "2024-04-03",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1609,7 +1609,7 @@
       "metadata": {
         "description": "The location of the host pool."
       },
-      "value": "[reference('hostPool', '2023-09-05', 'full').location]"
+      "value": "[reference('hostPool', '2024-04-03', 'full').location]"
     },
     "privateEndpoints": {
       "type": "array",

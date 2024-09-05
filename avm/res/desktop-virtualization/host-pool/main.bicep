@@ -187,7 +187,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' = {
   name: name
   location: location
   tags: tags
