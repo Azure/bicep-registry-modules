@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "17726785943440832068"
+      "templateHash": "1980781985001931237"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace.",
@@ -480,14 +480,20 @@
           "type": "string",
           "allowedValues": [
             ""
-          ]
+          ],
+          "metadata": {
+            "description": "Optional. Set the name of the Catalog."
+          }
         },
         "initialType": {
           "type": "string",
           "allowedValues": [
             "HiveMetastore",
             "UnityCatalog"
-          ]
+          ],
+          "metadata": {
+            "description": "Required. Choose between HiveMetastore or UnityCatalog."
+          }
         }
       }
     }

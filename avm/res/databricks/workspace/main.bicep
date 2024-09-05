@@ -723,6 +723,9 @@ type diagnosticSettingType = {
 }[]?
 
 type defaultCatalogType = {
+  @description('Optional. Set the name of the Catalog.')
   initialName: '' // This value cannot be set to a custom value. Reason --> 'InvalidInitialCatalogName' message: 'Currently custom initial catalog name is not supported. This capability will be added in future.'
+
+  @description('Required. Choose between HiveMetastore or UnityCatalog.')
   initialType: 'HiveMetastore' | 'UnityCatalog'
 }
