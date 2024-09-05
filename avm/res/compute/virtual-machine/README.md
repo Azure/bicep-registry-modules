@@ -3212,7 +3212,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -4388,7 +4387,6 @@ Do not provide a value! This date value is used to generate a registration token
 - Required: No
 - Type: string
 - Default: `[utcNow('u')]`
-
 
 ## Outputs
 
