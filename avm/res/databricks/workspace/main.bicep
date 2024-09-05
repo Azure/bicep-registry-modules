@@ -197,6 +197,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
       managedResourceGroupId: !empty(managedResourceGroupResourceId)
         ? managedResourceGroupResourceId
         : '${subscription().id}/resourceGroups/rg-${name}-managed'
+      defaultCatalog: defaultCatalog
       parameters: union(
         // Always added parameters
         {
@@ -214,18 +215,6 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
           }
         },
         // Parameters only added if not empty
-        !empty(defaultCatalog)
-          ? {
-              defaultCatalog: {
-                initialName: {
-                  value: defaultCatalog!.initialName
-                }
-                initialType: {
-                  value: defaultCatalog!.initialType
-                }
-              }
-            }
-          : {},
         !empty(customVirtualNetworkResourceId)
           ? {
               customVirtualNetworkId: {
@@ -345,11 +334,6 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
         }
       : {}
   )
-}
-
-type defaultCatalogType = {
-  initialName: string
-  initialType: 'HiveMetastore' | 'UnityCatalog'
 }
 
 resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
@@ -737,3 +721,8 @@ type diagnosticSettingType = {
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?
+
+type defaultCatalogType = {
+  initialName: '' // This value cannot be set to a custom value. Reason --> 'InvalidInitialCatalogName' message: 'Currently custom initial catalog name is not supported. This capability will be added in future.'
+  initialType: 'HiveMetastore' | 'UnityCatalog'
+}
