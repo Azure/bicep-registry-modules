@@ -673,7 +673,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1647,7 +1646,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 

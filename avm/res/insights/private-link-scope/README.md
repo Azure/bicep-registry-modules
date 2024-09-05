@@ -758,7 +758,6 @@ module privateLinkScope 'br/public:avm/res/insights/private-link-scope:<version>
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1458,7 +1457,6 @@ Resource tags.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 
