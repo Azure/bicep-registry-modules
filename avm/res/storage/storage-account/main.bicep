@@ -699,9 +699,15 @@ output location string = storageAccount.location
 @description('All service endpoints of the deployed storage account, Note Standard_LRS and Standard_ZRS accounts only have a blob service endpoint.')
 output serviceEndpoints object = storageAccount.properties.primaryEndpoints
 
-@description('The array of networ interfaces IDs associated with private endpoints.')
-output privateEndpointsNetworkInterfaceIds array = [
-  for (privateEndpoint, index) in (privateEndpoints ?? []): storageAccount_privateEndpoints[index].outputs.networkInterfaceIds
+@description('The private endpoints of the Storage Account.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: storageAccount_privateEndpoints[i].outputs.name
+    resourceId: storageAccount_privateEndpoints[i].outputs.resourceId
+    groupId: storageAccount_privateEndpoints[i].outputs.groupId
+    customDnsConfig: storageAccount_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: storageAccount_privateEndpoints[i].outputs.networkInterfaceIds
+  }
 ]
 
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
