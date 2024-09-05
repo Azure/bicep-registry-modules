@@ -252,6 +252,7 @@ runs:
             AdditionalParameters       = @{}
           }
 
+          # Add custom parameters as needed
           if($moduleTemplatePossibleParameters -contains 'resourceLocation') {
             $functionInput.AdditionalParameters += @{
               resourceLocation = '${{ steps.get-resource-location.outputs.resourceLocation }}'
@@ -269,6 +270,7 @@ runs:
           if(-not [String]::IsNullOrEmpty($keyVaultName)) {
             # Note: This action requires at least 'Key Vault Secrets User' permissions
             $customKeyVaultSecrets = Get-AzKeyVaultSecret -VaultName $keyVaultName | Where-Object { $_.Name -match '^CI-.+' }
+
             foreach($customSecret in $customKeyVaultSecrets) {
               $formattedName = $customSecret.Name -replace '^CI-' # e.g. 'CI-mySecret' -> 'mySecret'
               if($moduleTemplatePossibleParameters -contains $formattedName) {
@@ -347,6 +349,7 @@ runs:
           if(-not [String]::IsNullOrEmpty($keyVaultName)) {
             # Note: This action requires at least 'Key Vault Secrets User' permissions
             $customKeyVaultSecrets = Get-AzKeyVaultSecret -VaultName $keyVaultName | Where-Object { $_.Name -match '^CI-.+' }
+
             foreach($customSecret in $customKeyVaultSecrets) {
               $formattedName = $customSecret.Name -replace '^CI-' # e.g. 'CI-mySecret' -> 'mySecret'
               if($moduleTemplatePossibleParameters -contains $formattedName) {
