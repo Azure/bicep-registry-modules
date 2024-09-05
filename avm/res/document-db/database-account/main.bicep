@@ -463,7 +463,7 @@ module databaseAccount_gremlinDatabases 'gremlin-database/main.bicep' = [
   }
 ]
 
-module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.0' = [
+module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-databaseAccount-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -615,6 +615,17 @@ output location string = databaseAccount.location
 
 @description('The endpoint of the database account.')
 output endpoint string = databaseAccount.properties.documentEndpoint
+
+@description('The private endpoints of the database account.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: databaseAccount_privateEndpoints[i].outputs.name
+    resourceId: databaseAccount_privateEndpoints[i].outputs.resourceId
+    groupId: databaseAccount_privateEndpoints[i].outputs.groupId
+    customDnsConfig: databaseAccount_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: databaseAccount_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
 
 // =============== //
 //   Definitions   //
