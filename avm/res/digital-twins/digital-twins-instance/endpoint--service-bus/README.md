@@ -150,4 +150,3 @@ SecondaryConnectionString of the endpoint for key-based authentication. Will be 
 | `resourceGroupName` | string | The name of the resource group the resource was created in. |
 | `resourceId` | string | The resource ID of the Endpoint. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API. |
-

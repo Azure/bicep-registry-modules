@@ -1118,6 +1118,13 @@ The outbound rule. The name of the rule is the object key.
 - Required: Yes
 - Type: object
 
+### Parameter: `workspaceConfiguration.projectName`
+
+The name of the AI Studio workspace project.
+
+- Required: No
+- Type: string
+
 ## Outputs
 
 | Output | Type | Description |
