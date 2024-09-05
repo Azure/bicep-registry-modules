@@ -115,6 +115,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     cleanupPreference: 'OnExpiration'
     location: '<location>'
     managedIdentities: '<managedIdentities>'
+    newImageName: 'your-image-name:tag'
     overwriteExistingImage: true
     storageAccountResourceId: '<storageAccountResourceId>'
     subnetResourceIds: '<subnetResourceIds>'
@@ -160,6 +161,9 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     },
     "managedIdentities": {
       "value": "<managedIdentities>"
+    },
+    "newImageName": {
+      "value": "your-image-name:tag"
     },
     "overwriteExistingImage": {
       "value": true
@@ -274,6 +278,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`initialScriptDelay`](#parameter-initialscriptdelay) | int | A delay in seconds before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate. Default is 30s. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
+| [`newImageName`](#parameter-newimagename) | string | The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline. |
 | [`overwriteExistingImage`](#parameter-overwriteexistingimage) | bool | The image will be overwritten if it already exists in the ACR with the same tag. Default is false. |
 | [`retryMax`](#parameter-retrymax) | int | The maximum number of retries for the script import operation. Default is 3. |
 | [`runOnce`](#parameter-runonce) | bool | How the deployment script should be forced to execute. Default is to force the script to deploy the image to run every time. |
@@ -378,6 +383,15 @@ Location for all Resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
+### Parameter: `newImageName`
+
+The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline.
+
+- Required: No
+- Type: string
+- Default: `[last(split(parameters('image'), '/'))]`
+- Example: `your-image-name:tag`
+
 ### Parameter: `overwriteExistingImage`
 
 The image will be overwritten if it already exists in the ACR with the same tag. Default is false.
@@ -450,9 +464,11 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Notes
 
-The deployment script service will need and provision a Storage Account as well as a Container Instance to execute the provided script. *The deployment script resource is available only in the regions where Azure Container Instances is available.*
+The deployment script service will need and provision a Storage Account as well as a Container Instance to execute the provided script. _The deployment script resource is available only in the regions where Azure Container Instances is available._
 
 > The service cleans up these resources after the deployment script finishes. You incur charges for these resources until they're removed.
+
+### Private network access
 
 Using a Container Registry that is not available via public network access is possible as well. In this case a subnet needs to be passed to the module. A working configuration is in the max examples for this module.
 
@@ -460,6 +476,12 @@ Links:
 
 - [Access a private virtual network from a Bicep deployment script](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet)
 - [Run Bicep deployment script privately over a private endpoint](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet-private-endpoint)
+
+### Renaming the image
+
+In the case an image is updated later from a pipeline, it can makes sense to initially upload a dummy image from e.g. a public registry. However, you might want to change the name and tag from that image for processes to pick up the image before **your image** has actually be published to the registry.
+
+The pattern module [avm/ptn/app/container-job](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/authorization/policy-assignment) uses this module to create the job initially with an image that is available, which most likely will be updated later and the job will pick up the new image then.
 
 ## Data Collection
 

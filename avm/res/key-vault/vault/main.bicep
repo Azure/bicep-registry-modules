@@ -139,6 +139,17 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 var formattedAccessPolicies = [
   for accessPolicy in (accessPolicies ?? []): {
     applicationId: accessPolicy.?applicationId ?? ''
@@ -259,9 +270,9 @@ module keyVault_secrets 'secret/main.bicep' = [
       name: secret.name
       value: secret.value
       keyVaultName: keyVault.name
-      attributesEnabled: secret.?attributesEnabled
-      attributesExp: secret.?attributesExp
-      attributesNbf: secret.?attributesNbf
+      attributesEnabled: secret.?attributes.?enabled
+      attributesExp: secret.?attributes.?exp
+      attributesNbf: secret.?attributes.?nbf
       contentType: secret.?contentType
       tags: secret.?tags ?? tags
       roleAssignments: secret.?roleAssignments
@@ -275,9 +286,9 @@ module keyVault_keys 'key/main.bicep' = [
     params: {
       name: key.name
       keyVaultName: keyVault.name
-      attributesEnabled: key.?attributesEnabled
-      attributesExp: key.?attributesExp
-      attributesNbf: key.?attributesNbf
+      attributesEnabled: key.?attributes.?enabled
+      attributesExp: key.?attributes.?exp
+      attributesNbf: key.?attributes.?nbf
       curveName: (key.?kty != 'RSA' && key.?kty != 'RSA-HSM') ? (key.?curveName ?? 'P-256') : null
       keyOps: key.?keyOps
       keySize: (key.?kty == 'RSA' || key.?kty == 'RSA-HSM') ? (key.?keySize ?? 4096) : null
@@ -290,7 +301,7 @@ module keyVault_keys 'key/main.bicep' = [
   }
 ]
 
-module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-keyVault-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -331,8 +342,7 @@ module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -344,14 +354,10 @@ module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
 ]
 
 resource keyVault_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(keyVault.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(keyVault.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -380,6 +386,17 @@ output uri string = keyVault.properties.vaultUri
 
 @description('The location the resource was deployed into.')
 output location string = keyVault.location
+
+@description('The private endpoints of the key vault.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: keyVault_privateEndpoints[i].outputs.name
+    resourceId: keyVault_privateEndpoints[i].outputs.resourceId
+    groupId: keyVault_privateEndpoints[i].outputs.groupId
+    customDnsConfig: keyVault_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: keyVault_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
 
 // ================ //
 // Definitions      //
@@ -430,6 +447,9 @@ type diagnosticSettingType = {
 }[]?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -468,11 +488,20 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?

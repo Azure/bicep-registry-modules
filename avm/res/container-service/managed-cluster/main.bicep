@@ -156,6 +156,9 @@ param primaryAgentPoolProfile array
 @description('Optional. Define one or more secondary/additional agent pools.')
 param agentPools agentPoolType
 
+@description('Optional. Whether or not to use AKS Automatic mode.')
+param maintenanceConfiguration maintenanceConfigurationType
+
 @description('Optional. Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed.')
 param costAnalysisEnabled bool = false
 
@@ -196,13 +199,9 @@ param kubeDashboardEnabled bool = false
 #disable-next-line secure-secrets-in-params // Not a secret
 param enableKeyvaultSecretsProvider bool = false
 
-@allowed([
-  'false'
-  'true'
-])
 @description('Optional. Specifies whether the KeyvaultSecretsProvider add-on uses secret rotation.')
 #disable-next-line secure-secrets-in-params // Not a secret
-param enableSecretRotation string = 'false'
+param enableSecretRotation bool = false
 
 @description('Optional. Specifies the scan interval of the auto-scaler of the AKS cluster.')
 param autoScalerProfileScanInterval string = '10s'
@@ -228,12 +227,8 @@ param autoScalerProfileUtilizationThreshold string = '0.5'
 @description('Optional. Specifies the max graceful termination time interval in seconds for the auto-scaler of the AKS cluster.')
 param autoScalerProfileMaxGracefulTerminationSec string = '600'
 
-@allowed([
-  'false'
-  'true'
-])
 @description('Optional. Specifies the balance of similar node groups for the auto-scaler of the AKS cluster.')
-param autoScalerProfileBalanceSimilarNodeGroups string = 'false'
+param autoScalerProfileBalanceSimilarNodeGroups bool = false
 
 @allowed([
   'least-waste'
@@ -259,19 +254,11 @@ param autoScalerProfileNewPodScaleUpDelay string = '0s'
 @description('Optional. Specifies the OK total unready count for the auto-scaler of the AKS cluster.')
 param autoScalerProfileOkTotalUnreadyCount string = '3'
 
-@allowed([
-  'false'
-  'true'
-])
 @description('Optional. Specifies if nodes with local storage should be skipped for the auto-scaler of the AKS cluster.')
-param autoScalerProfileSkipNodesWithLocalStorage string = 'true'
+param autoScalerProfileSkipNodesWithLocalStorage bool = true
 
-@allowed([
-  'false'
-  'true'
-])
 @description('Optional. Specifies if nodes with system pods should be skipped for the auto-scaler of the AKS cluster.')
-param autoScalerProfileSkipNodesWithSystemPods string = 'true'
+param autoScalerProfileSkipNodesWithSystemPods bool = true
 
 @allowed([
   'node-image'
@@ -482,6 +469,17 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -610,7 +608,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
         enabled: enableKeyvaultSecretsProvider
         config: enableKeyvaultSecretsProvider
           ? {
-              enableSecretRotation: enableSecretRotation
+              enableSecretRotation: toLower(string(enableSecretRotation))
             }
           : null
       }
@@ -660,7 +658,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       tenantID: aadProfileTenantId
     }
     autoScalerProfile: {
-      'balance-similar-node-groups': autoScalerProfileBalanceSimilarNodeGroups
+      'balance-similar-node-groups': toLower(string(autoScalerProfileBalanceSimilarNodeGroups))
       expander: autoScalerProfileExpander
       'max-empty-bulk-delete': autoScalerProfileMaxEmptyBulkDelete
       'max-graceful-termination-sec': autoScalerProfileMaxGracefulTerminationSec
@@ -675,8 +673,8 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       'scale-down-unready-time': autoScalerProfileScaleDownUnreadyTime
       'scale-down-utilization-threshold': autoScalerProfileUtilizationThreshold
       'scan-interval': autoScalerProfileScanInterval
-      'skip-nodes-with-local-storage': autoScalerProfileSkipNodesWithLocalStorage
-      'skip-nodes-with-system-pods': autoScalerProfileSkipNodesWithSystemPods
+      'skip-nodes-with-local-storage': toLower(string(autoScalerProfileSkipNodesWithLocalStorage))
+      'skip-nodes-with-system-pods': toLower(string(autoScalerProfileSkipNodesWithSystemPods))
     }
     autoUpgradeProfile: {
       upgradeChannel: autoUpgradeProfileUpgradeChannel
@@ -750,6 +748,14 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       }
     }
     supportPlan: supportPlan
+  }
+}
+
+module managedCluster_maintenanceConfigurations 'maintenance-configurations/main.bicep' = if (!empty(maintenanceConfiguration)) {
+  name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfigurations'
+  params: {
+    maintenanceWindow: maintenanceConfiguration!.maintenanceWindow
+    managedClusterName: managedCluster.name
   }
 }
 
@@ -855,14 +861,10 @@ resource managedCluster_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
 ]
 
 resource managedCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(managedCluster.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(managedCluster.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -1079,6 +1081,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -1188,4 +1193,9 @@ type customerManagedKeyType = {
 
   @description('Required. Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public.')
   keyVaultNetworkAccess: ('Private' | 'Public')
+}?
+
+type maintenanceConfigurationType = {
+  @description('Required. Maintenance window for the maintenance configuration.')
+  maintenanceWindow: object
 }?

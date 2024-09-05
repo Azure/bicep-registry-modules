@@ -1,0 +1,68 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.29.47.4906",
+      "templateHash": "12168542117744033419"
+    },
+    "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
+    "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "maintenanceWindow": {
+      "type": "object",
+      "metadata": {
+        "description": "Required. Maintenance window for the maintenance configuration."
+      }
+    },
+    "managedClusterName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent managed cluster. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "aksManagedAutoUpgradeSchedule",
+      "metadata": {
+        "description": "Optional. Name of the maintenance configuration."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ContainerService/managedClusters/maintenanceConfigurations",
+      "apiVersion": "2023-10-01",
+      "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
+      "properties": {
+        "maintenanceWindow": "[parameters('maintenanceWindow')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the maintenance configuration."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the maintenance configuration."
+      },
+      "value": "[resourceId('Microsoft.ContainerService/managedClusters/maintenanceConfigurations', parameters('managedClusterName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the agent pool was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

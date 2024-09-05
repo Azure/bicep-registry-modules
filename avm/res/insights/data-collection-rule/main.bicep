@@ -6,47 +6,25 @@ metadata owner = 'Azure/module-maintainers'
 //   Parameters   //
 // ============== //
 
-@sys.description('Required. The name of the data collection rule. The name is case insensitive.')
+@description('Required. The name of the data collection rule. The name is case insensitive.')
 param name string
 
-@sys.description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
-param dataCollectionEndpointId string?
+@description('Required. The kind of data collection rule.')
+param dataCollectionRuleProperties dataCollectionRulePropertiesType
 
-@sys.description('Required. The specification of data flows.')
-param dataFlows array
-
-@sys.description('Required. Specification of data sources that will be collected.')
-param dataSources object
-
-@sys.description('Optional. Description of the data collection rule.')
-param description string?
-
-@sys.description('Required. Specification of destinations that can be used in data flows.')
-param destinations object
-
-@sys.description('Optional. Enable/Disable usage telemetry for module.')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@sys.description('Optional. The kind of the resource.')
-@allowed([
-  'Linux'
-  'Windows'
-])
-param kind string = 'Linux'
-
-@sys.description('Optional. Location for all Resources.')
+@description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-@sys.description('Optional. The lock settings of the service.')
+@description('Optional. The lock settings of the service.')
 param lock lockType
 
-@sys.description('Optional. Array of role assignments to create.')
+@description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@sys.description('Optional. Declaration of custom streams used in this rule.')
-param streamDeclarations object?
-
-@sys.description('Optional. Resource tags.')
+@description('Optional. Resource tags.')
 param tags object?
 
 // =============== //
@@ -67,6 +45,17 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.insights-datacollectionrule.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -86,19 +75,30 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-preview' = {
-  kind: kind
+resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
+  kind: dataCollectionRuleProperties.kind
   location: location
   name: name
   tags: tags
-  properties: {
-    dataSources: dataSources
-    destinations: destinations
-    dataFlows: dataFlows
-    dataCollectionEndpointId: dataCollectionEndpointId
-    streamDeclarations: streamDeclarations
-    description: description
-  }
+  properties: union(
+    {
+      description: dataCollectionRuleProperties.?description
+    },
+    dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows'
+      ? {
+          dataSources: dataCollectionRuleProperties.dataSources
+          dataFlows: dataCollectionRuleProperties.dataFlows
+          destinations: dataCollectionRuleProperties.destinations
+          dataCollectionEndpointId: dataCollectionRuleProperties.?dataCollectionEndpointResourceId
+          streamDeclarations: dataCollectionRuleProperties.?streamDeclarations
+        }
+      : {},
+    dataCollectionRuleProperties.kind == 'AgentSettings'
+      ? {
+          agentSettings: dataCollectionRuleProperties.agentSettings
+        }
+      : {}
+  )
 }
 
 resource dataCollectionRule_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
@@ -113,14 +113,14 @@ resource dataCollectionRule_lock 'Microsoft.Authorization/locks@2020-05-01' = if
 }
 
 resource dataCollectionRule_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(dataCollectionRule.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(
+      dataCollectionRule.id,
+      roleAssignment.principalId,
+      roleAssignment.roleDefinitionId
+    )
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -136,16 +136,16 @@ resource dataCollectionRule_roleAssignments 'Microsoft.Authorization/roleAssignm
 //   Outputs   //
 // =========== //
 
-@sys.description('The name of the dataCollectionRule.')
+@description('The name of the dataCollectionRule.')
 output name string = dataCollectionRule.name
 
-@sys.description('The resource ID of the dataCollectionRule.')
+@description('The resource ID of the dataCollectionRule.')
 output resourceId string = dataCollectionRule.id
 
-@sys.description('The name of the resource group the dataCollectionRule was created in.')
+@description('The name of the resource group the dataCollectionRule was created in.')
 output resourceGroupName string = resourceGroup().name
 
-@sys.description('The location the resource was deployed into.')
+@description('The location the resource was deployed into.')
 output location string = dataCollectionRule.location
 
 // =============== //
@@ -153,32 +153,111 @@ output location string = dataCollectionRule.location
 // =============== //
 
 type lockType = {
-  @sys.description('Optional. Specify the name of lock.')
+  @description('Optional. Specify the name of lock.')
   name: string?
 
-  @sys.description('Optional. Specify the type of lock.')
+  @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
 
 type roleAssignmentType = {
-  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
+  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
-  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
+  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
   principalId: string
 
-  @sys.description('Optional. The principal type of the assigned principal ID.')
+  @description('Optional. The principal type of the assigned principal ID.')
   principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
 
-  @sys.description('Optional. The description of the role assignment.')
+  @description('Optional. The description of the role assignment.')
   description: string?
 
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
-  @sys.description('Optional. Version of the condition.')
+  @description('Optional. Version of the condition.')
   conditionVersion: '2.0'?
 
-  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
+  @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+@discriminator('kind')
+type dataCollectionRulePropertiesType =
+  | linuxDcrPropertiesType
+  | windowsDcrPropertiesType
+  | agentSettingsDcrPropertiesType
+
+type linuxDcrPropertiesType = {
+  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  kind: 'Linux'
+
+  @description('Required. Specification of data sources that will be collected.')
+  dataSources: object
+
+  @description('Required. The specification of data flows.')
+  dataFlows: array
+
+  @description('Required. Specification of destinations that can be used in data flows.')
+  destinations: object
+
+  @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
+  dataCollectionEndpointResourceId: string?
+
+  @description('Optional. Declaration of custom streams used in this rule.')
+  streamDeclarations: object?
+
+  @description('Optional. Description of the data collection rule.')
+  description: string?
+}
+
+type windowsDcrPropertiesType = {
+  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  kind: 'Windows'
+
+  @description('Required. Specification of data sources that will be collected.')
+  dataSources: object
+
+  @description('Required. The specification of data flows.')
+  dataFlows: array
+
+  @description('Required. Specification of destinations that can be used in data flows.')
+  destinations: object
+
+  @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
+  dataCollectionEndpointResourceId: string?
+
+  @description('Optional. Declaration of custom streams used in this rule.')
+  streamDeclarations: object?
+
+  @description('Optional. Description of the data collection rule.')
+  description: string?
+}
+
+type agentSettingsDcrPropertiesType = {
+  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  kind: 'AgentSettings'
+
+  @description('Optional. Description of the data collection rule.')
+  description: string?
+
+  @description('Required. Agent settings used to modify agent behavior on a given host.')
+  agentSettings: agentSettingsType
+}
+
+type agentSettingsType = {
+  @description('Required. All the settings that are applicable to the logs agent (AMA).')
+  logs: agentSettingType[]
+}
+
+type agentSettingType = {
+  @description('Required. The name of the agent setting.')
+  name: ('MaxDiskQuotaInMB' | 'UseTimeReceivedForForwardedEvents')
+
+  @description('Required. The value of the agent setting.')
+  value: string
+}

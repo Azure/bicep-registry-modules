@@ -114,24 +114,29 @@ function Set-AVMModule {
         # Get latest release from Azure/Bicep repository
         # ----------------------------------------------
         $latestReleaseUrl = 'https://api.github.com/repos/azure/bicep/releases/latest'
-
-        $latestReleaseObject = Invoke-RestMethod -Uri $latestReleaseUrl -Method 'GET'
-        $releaseTag = $latestReleaseObject.tag_name
-        $latestReleaseVersion = [version]($releaseTag -replace 'v', '')
-        $latestReleaseUrl = $latestReleaseObject.html_url
-
-        # Get latest installed Bicep CLI version
-        # --------------------------------------
-        $latestInstalledVersionOutput = bicep --version
-
-        if ($latestInstalledVersionOutput -match ' ([0-9]+\.[0-9]+\.[0-9]+) ') {
-            $latestInstalledVersion = [version]$matches[1]
+        try {
+            $latestReleaseObject = Invoke-RestMethod -Uri $latestReleaseUrl -Method 'GET'
+        } catch {
+            Write-Warning "Skipping Bicep version check as url [$latestReleaseUrl] did not return a response."
         }
+        if ($latestReleaseObject) {
+            # Only run if connected to the internet / url returns a response
+            $releaseTag = $latestReleaseObject.tag_name
+            $latestReleaseVersion = [version]($releaseTag -replace 'v', '')
+            $latestReleaseUrl = $latestReleaseObject.html_url
 
-        # Compare the versions
-        # --------------------
-        if ($latestInstalledVersion -ne $latestReleaseVersion) {
-            Write-Warning """
+            # Get latest installed Bicep CLI version
+            # --------------------------------------
+            $latestInstalledVersionOutput = bicep --version
+
+            if ($latestInstalledVersionOutput -match ' ([0-9]+\.[0-9]+\.[0-9]+) ') {
+                $latestInstalledVersion = [version]$matches[1]
+            }
+
+            # Compare the versions
+            # --------------------
+            if ($latestInstalledVersion -ne $latestReleaseVersion) {
+                Write-Warning """
 You're not using the latest available Bicep CLI version [$latestReleaseVersion] but [$latestInstalledVersion].
 You can find the latest release at: $latestReleaseUrl.
 
@@ -140,10 +145,10 @@ For other OSs, please refer to the Bicep documentation (https://learn.microsoft.
 
 Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CLI Bicep extension' version (az bicep version).
 """
-        } else {
-            Write-Verbose "You're using the latest available Bicep CLI version [$latestInstalledVersion]."
+            } else {
+                Write-Verbose "You're using the latest available Bicep CLI version [$latestInstalledVersion]."
+            }
         }
-
     }
 
     # Load recurring information we'll need for the modules
@@ -160,10 +165,12 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
             if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
                 $TelemetryFileContent = $rawResponse.Content -split '\n'
             } else {
-                throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
+                Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]. NOTE: You should re-run the script again at a later stage to ensure all data is collected and the readme correctly populated." # Incorrect Url (e.g., points to HTML)
+                $TelemetryFileContent = $null
             }
         } catch {
-            throw "Failed to telemetry information from [$telemetryUrl]." # Invalid url
+            Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]. NOTE: You should re-run the script again at a later stage to ensure all data is collected and the readme correctly populated." # Invalid url
+            $TelemetryFileContent = $null
         }
 
         # create reference as it must be loaded in the thread to work

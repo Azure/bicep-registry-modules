@@ -11,6 +11,9 @@ param location string = resourceGroup().location
 @description('Optional. The description of the scheduled query rule.')
 param alertDescription string = ''
 
+@description('Optional. The display name of the scheduled query rule.')
+param alertDisplayName string?
+
 @description('Optional. The flag which indicates whether this scheduled query rule is enabled.')
 param enabled bool = true
 
@@ -35,6 +38,9 @@ param targetResourceTypes array = []
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
+
+@description('Optional. Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert.')
+param ruleResolveConfiguration object?
 
 @description('Required. The list of resource IDs that this scheduled query rule is scoped to.')
 param scopes array
@@ -84,6 +90,17 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.insights-scheduledqueryrule.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -103,7 +120,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource queryRule 'Microsoft.Insights/scheduledQueryRules@2021-02-01-preview' = {
+resource queryRule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' = {
   name: name
   location: location
   tags: tags
@@ -116,11 +133,12 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2021-02-01-preview' =
     autoMitigate: (kind == 'LogAlert') ? autoMitigate : null
     criteria: criterias
     description: alertDescription
-    displayName: name
+    displayName: alertDisplayName ?? name
     enabled: enabled
     evaluationFrequency: (kind == 'LogAlert' && !empty(evaluationFrequency)) ? evaluationFrequency : null
     muteActionsDuration: (kind == 'LogAlert' && !empty(suppressForMinutes)) ? suppressForMinutes : null
     overrideQueryTimeRange: (kind == 'LogAlert' && !empty(queryTimeRange)) ? queryTimeRange : null
+    ruleResolveConfiguration: (kind == 'LogAlert' && !empty(ruleResolveConfiguration)) ? ruleResolveConfiguration : null
     scopes: scopes
     severity: (kind == 'LogAlert') ? severity : null
     skipQueryValidation: (kind == 'LogAlert') ? skipQueryValidation : null
@@ -130,14 +148,10 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2021-02-01-preview' =
 }
 
 resource queryRule_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(queryRule.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(queryRule.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -166,6 +180,9 @@ output location string = queryRule.location
 // =============== //
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
