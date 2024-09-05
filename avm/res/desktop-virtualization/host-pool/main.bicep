@@ -218,7 +218,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
   }
 }
 
-module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-hostPool-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -259,8 +259,7 @@ module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -331,6 +330,17 @@ output name string = hostPool.name
 
 @sys.description('The location of the host pool.')
 output location string = hostPool.location
+
+@sys.description('The private endpoints of the host pool.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: hostPool_privateEndpoints[i].outputs.name
+    resourceId: hostPool_privateEndpoints[i].outputs.resourceId
+    groupId: hostPool_privateEndpoints[i].outputs.groupId
+    customDnsConfig: hostPool_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: hostPool_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
 
 // ================ //
 // Definitions      //
@@ -404,17 +414,29 @@ type privateEndpointType = {
   @sys.description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
+  @sys.description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
+
   @sys.description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
 
   @sys.description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @sys.description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
+  @sys.description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @sys.description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @sys.description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @sys.description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @sys.description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @sys.description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @sys.description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
