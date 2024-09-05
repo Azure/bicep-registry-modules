@@ -3480,7 +3480,7 @@ Tags of the resource.
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed storage account. |
 | `primaryBlobEndpoint` | string | The primary blob endpoint reference if blob services are deployed. |
-| `privateEndpointsNetworkInterfaceIds` | array | The array of networ interfaces IDs associated with private endpoints. |
+| `privateEndpoints` | array | The private endpoints of the Storage Account. |
 | `resourceGroupName` | string | The resource group of the deployed storage account. |
 | `resourceId` | string | The resource ID of the deployed storage account. |
 | `serviceEndpoints` | object | All service endpoints of the deployed storage account, Note Standard_LRS and Standard_ZRS accounts only have a blob service endpoint. |

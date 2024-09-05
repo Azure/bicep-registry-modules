@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "5277548868064990013"
+      "templateHash": "13539810648097972278"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -5063,14 +5063,20 @@
       },
       "value": "[reference('storageAccount').primaryEndpoints]"
     },
-    "privateEndpointsNetworkInterfaceIds": {
+    "privateEndpoints": {
       "type": "array",
       "metadata": {
-        "description": "The array of networ interfaces IDs associated with private endpoints."
+        "description": "The private endpoints of the Storage Account."
       },
       "copy": {
-        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
-        "input": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
+        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "input": {
+          "name": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
+          "groupId": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
+          "customDnsConfig": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
+          "networkInterfaceIds": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
+        }
       }
     },
     "exportedSecrets": {
