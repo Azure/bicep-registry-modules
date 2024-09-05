@@ -24,7 +24,7 @@ param description string = ''
 param events array = []
 
 @sys.description('Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webHookUrl" is empty.')
-param emailRecipient string = ''
+param emailRecipient string?
 
 @sys.description('Conditional. The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty.')
 param webHookUrl string = ''
@@ -42,7 +42,11 @@ resource notificationChannel 'Microsoft.DevTestLab/labs/notificationchannels@201
   tags: tags
   properties: {
     description: description
-    events: events
+    events: [
+      for event in events: {
+        eventName: event
+      }
+    ]
     emailRecipient: emailRecipient
     webHookUrl: webHookUrl
     notificationLocale: notificationLocale

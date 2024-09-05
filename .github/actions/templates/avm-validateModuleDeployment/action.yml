@@ -208,6 +208,7 @@ runs:
             AdditionalParameters       = @{}
           }
 
+          # Add custom parameters as needed
           if($moduleTemplatePossibleParameters -contains 'resourceLocation') {
             $functionInput.AdditionalParameters += @{
               resourceLocation = '${{ steps.get-resource-location.outputs.resourceLocation }}'
@@ -216,6 +217,24 @@ runs:
           if($moduleTemplatePossibleParameters -contains 'baseTime') {
             $functionInput.AdditionalParameters += @{
               baseTime = (Get-Date).ToString('u') # Setting base time explicitly so that any potential retry will reuse the same timestamp
+            }
+          }
+
+          # Fetch & add custom secrets, if any
+          # -----------------------------------
+          $keyVaultName = "${{ env.CI_KEY_VAULT_NAME }}"
+          if(-not [String]::IsNullOrEmpty($keyVaultName)) {
+            # Note: This action requires at least 'Key Vault Secrets User' permissions
+            $customKeyVaultSecrets = Get-AzKeyVaultSecret -VaultName $keyVaultName | Where-Object { $_.Name -match '^CI-.+' }
+
+            foreach($customSecret in $customKeyVaultSecrets) {
+              $formattedName = $customSecret.Name -replace '^CI-' # e.g. 'CI-mySecret' -> 'mySecret'
+              if($moduleTemplatePossibleParameters -contains $formattedName) {
+                Write-Verbose ('Setting value for parameter [{0}]' -f $formattedName) -Verbose
+                $functionInput.AdditionalParameters += @{
+                  $formattedName = (Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $customSecret.Name).SecretValue
+                }
+              }
             }
           }
 
@@ -277,6 +296,24 @@ runs:
           if($moduleTemplatePossibleParameters -contains 'baseTime') {
             $functionInput.AdditionalParameters += @{
               baseTime = (Get-Date).ToString('u') # Setting base time explicitly so that any potential retry will reuse the same timestamp
+            }
+          }
+
+          # Fetch & add custom secrets, if any
+          # -----------------------------------
+          $keyVaultName = "${{ env.CI_KEY_VAULT_NAME }}"
+          if(-not [String]::IsNullOrEmpty($keyVaultName)) {
+            # Note: This action requires at least 'Key Vault Secrets User' permissions
+            $customKeyVaultSecrets = Get-AzKeyVaultSecret -VaultName $keyVaultName | Where-Object { $_.Name -match '^CI-.+' }
+
+            foreach($customSecret in $customKeyVaultSecrets) {
+              $formattedName = $customSecret.Name -replace '^CI-' # e.g. 'CI-mySecret' -> 'mySecret'
+              if($moduleTemplatePossibleParameters -contains $formattedName) {
+                Write-Verbose ('Setting value for parameter [{0}]' -f $formattedName) -Verbose
+                $functionInput.AdditionalParameters += @{
+                  $formattedName = (Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $customSecret.Name).SecretValue
+                }
+              }
             }
           }
 
