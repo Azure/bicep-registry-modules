@@ -8,7 +8,6 @@ This component deploys an Application Insights instance.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -327,7 +326,6 @@ module component 'br/public:avm/res/insights/component:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -753,7 +751,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -765,10 +762,6 @@ Tags of the resource.
 | `name` | string | The name of the application insights component. |
 | `resourceGroupName` | string | The resource group the application insights component was deployed into. |
 | `resourceId` | string | The resource ID of the application insights component. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

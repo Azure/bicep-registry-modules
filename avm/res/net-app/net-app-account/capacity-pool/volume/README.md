@@ -7,18 +7,17 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-11-01/netAppAccounts/backupPolicies) |
-| `Microsoft.NetApp/netAppAccounts/backupVaults` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-05-01-preview/netAppAccounts/backupVaults) |
-| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-05-01-preview/netAppAccounts/backupVaults/backups) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-07-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/backupPolicies) |
+| `Microsoft.NetApp/netAppAccounts/backupVaults` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/backupVaults) |
+| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/backupVaults/backups) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/snapshotPolicies) |
 
 ## Parameters
 
@@ -53,10 +52,24 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`coolnessPeriod`](#parameter-coolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
 | [`creationToken`](#parameter-creationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
 | [`dailyBackupsToKeep`](#parameter-dailybackupstokeep) | int | The daily backups to keep. |
+| [`dailyHour`](#parameter-dailyhour) | int | The daily snapshot hour. |
+| [`dailyMinute`](#parameter-dailyminute) | int | The daily snapshot minute. |
+| [`dailySnapshotsToKeep`](#parameter-dailysnapshotstokeep) | int | Daily snapshot count to keep. |
+| [`dailyUsedBytes`](#parameter-dailyusedbytes) | int | Daily snapshot used bytes. |
+| [`daysOfMonth`](#parameter-daysofmonth) | string | The monthly snapshot day. |
+| [`encryptionKeySource`](#parameter-encryptionkeysource) | string | The source of the encryption key. |
 | [`endpointType`](#parameter-endpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication (src/dst). |
 | [`exportPolicyRules`](#parameter-exportpolicyrules) | array | Export policy rules. |
+| [`hourlyMinute`](#parameter-hourlyminute) | int | The hourly snapshot minute. |
+| [`hourlySnapshotsToKeep`](#parameter-hourlysnapshotstokeep) | int | Hourly snapshot count to keep. |
+| [`hourlyUsedBytes`](#parameter-hourlyusedbytes) | int | Hourly snapshot used bytes. |
+| [`keyVaultPrivateEndpointResourceId`](#parameter-keyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
 | [`location`](#parameter-location) | string | Location of the pool volume. |
 | [`monthlyBackupsToKeep`](#parameter-monthlybackupstokeep) | int | The monthly backups to keep. |
+| [`monthlyHour`](#parameter-monthlyhour) | int | The monthly snapshot hour. |
+| [`monthlyMinute`](#parameter-monthlyminute) | int | The monthly snapshot minute. |
+| [`monthlySnapshotsToKeep`](#parameter-monthlysnapshotstokeep) | int | Monthly snapshot count to keep. |
+| [`monthlyUsedBytes`](#parameter-monthlyusedbytes) | int | Monthly snapshot used bytes. |
 | [`networkFeatures`](#parameter-networkfeatures) | string | Network feature for the volume. |
 | [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. |
 | [`remoteVolumeRegion`](#parameter-remotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
@@ -64,10 +77,20 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`replicationSchedule`](#parameter-replicationschedule) | string | The replication schedule for the volume. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
+| [`snapEnabled`](#parameter-snapenabled) | bool | Indicates whether the snapshot policy is enabled. |
 | [`snapshotName`](#parameter-snapshotname) | string | The name of the snapshot. |
+| [`snapshotPolicyId`](#parameter-snapshotpolicyid) | string | Snapshot Policy ResourceId. |
+| [`snapshotPolicyLocation`](#parameter-snapshotpolicylocation) | string | The location of the snapshot policy. |
+| [`snapshotPolicyName`](#parameter-snapshotpolicyname) | string | The name of the snapshot policy. |
 | [`useExistingSnapshot`](#parameter-useexistingsnapshot) | bool | Indicates whether to use an existing snapshot. |
 | [`volumeResourceId`](#parameter-volumeresourceid) | string | The resource ID of the volume. |
+| [`volumeType`](#parameter-volumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
 | [`weeklyBackupsToKeep`](#parameter-weeklybackupstokeep) | int | The weekly backups to keep. |
+| [`weeklyDay`](#parameter-weeklyday) | string | The weekly snapshot day. |
+| [`weeklyHour`](#parameter-weeklyhour) | int | The weekly snapshot hour. |
+| [`weeklyMinute`](#parameter-weeklyminute) | int | The weekly snapshot minute. |
+| [`weeklySnapshotsToKeep`](#parameter-weeklysnapshotstokeep) | int | Weekly snapshot count to keep. |
+| [`weeklyUsedBytes`](#parameter-weeklyusedbytes) | int | Weekly snapshot used bytes. |
 | [`zones`](#parameter-zones) | array | Zone where the volume will be placed. |
 
 ### Parameter: `name`
@@ -196,6 +219,48 @@ The daily backups to keep.
 - Required: Yes
 - Type: int
 
+### Parameter: `dailyHour`
+
+The daily snapshot hour.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `dailyMinute`
+
+The daily snapshot minute.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `dailySnapshotsToKeep`
+
+Daily snapshot count to keep.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `dailyUsedBytes`
+
+Daily snapshot used bytes.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `daysOfMonth`
+
+The monthly snapshot day.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `encryptionKeySource`
+
+The source of the encryption key.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `endpointType`
 
 Indicates whether the local volume is the source or destination for the Volume Replication (src/dst).
@@ -211,6 +276,34 @@ Export policy rules.
 - Type: array
 - Default: `[]`
 
+### Parameter: `hourlyMinute`
+
+The hourly snapshot minute.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `hourlySnapshotsToKeep`
+
+Hourly snapshot count to keep.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `hourlyUsedBytes`
+
+Hourly snapshot used bytes.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `keyVaultPrivateEndpointResourceId`
+
+The resource ID of the key vault private endpoint.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `location`
 
 Location of the pool volume.
@@ -222,6 +315,34 @@ Location of the pool volume.
 ### Parameter: `monthlyBackupsToKeep`
 
 The monthly backups to keep.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `monthlyHour`
+
+The monthly snapshot hour.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `monthlyMinute`
+
+The monthly snapshot minute.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `monthlySnapshotsToKeep`
+
+Monthly snapshot count to keep.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `monthlyUsedBytes`
+
+Monthly snapshot used bytes.
 
 - Required: Yes
 - Type: int
@@ -386,9 +507,39 @@ The pool service level. Must match the one of the parent capacity pool.
   ]
   ```
 
+### Parameter: `snapEnabled`
+
+Indicates whether the snapshot policy is enabled.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `snapshotName`
 
 The name of the snapshot.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `snapshotPolicyId`
+
+Snapshot Policy ResourceId.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `snapshotPolicyLocation`
+
+The location of the snapshot policy.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
+### Parameter: `snapshotPolicyName`
+
+The name of the snapshot policy.
 
 - Required: Yes
 - Type: string
@@ -407,9 +558,51 @@ The resource ID of the volume.
 - Required: Yes
 - Type: string
 
+### Parameter: `volumeType`
+
+The type of the volume. DataProtection volumes are used for replication.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `weeklyBackupsToKeep`
 
 The weekly backups to keep.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `weeklyDay`
+
+The weekly snapshot day.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `weeklyHour`
+
+The weekly snapshot hour.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `weeklyMinute`
+
+The weekly snapshot minute.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `weeklySnapshotsToKeep`
+
+Weekly snapshot count to keep.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `weeklyUsedBytes`
+
+Weekly snapshot used bytes.
 
 - Required: Yes
 - Type: int
@@ -427,7 +620,6 @@ Zone where the volume will be placed.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -436,11 +628,3 @@ Zone where the volume will be placed.
 | `name` | string | The name of the Volume. |
 | `resourceGroupName` | string | The name of the Resource Group the Volume was created in. |
 | `resourceId` | string | The Resource ID of the Volume. |
-
-## Cross-referenced modules
-
-_None_
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
