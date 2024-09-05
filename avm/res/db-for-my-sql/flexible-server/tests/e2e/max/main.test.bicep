@@ -157,7 +157,7 @@ module testDeployment '../../../main.bicep' = [
           startIpAddress: '100.100.100.1'
         }
       ]
-      highAvailability: 'SameZone'
+      highAvailability: 'ZoneRedundant'
       storageAutoGrow: 'Enabled'
       version: '8.0.21'
       customerManagedKey: {

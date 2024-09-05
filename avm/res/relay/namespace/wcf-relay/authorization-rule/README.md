@@ -7,7 +7,6 @@ This module deploys a WCF Relay Authorization Rule.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -80,10 +79,3 @@ The rights associated with the rule.
 | `name` | string | The name of the authorization rule. |
 | `resourceGroupName` | string | The name of the Resource Group the authorization rule was created in. |
 | `resourceId` | string | The Resource ID of the authorization rule. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |

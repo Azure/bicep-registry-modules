@@ -205,7 +205,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         protocol: 'Tcp'
       }
     ]
-    name: 'cicgenc001'
+    name: 'cicgencr001'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -301,7 +301,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       ]
     },
     "name": {
-      "value": "cicgenc001"
+      "value": "cicgencr001"
     },
     // Non-required parameters
     "customerManagedKey": {

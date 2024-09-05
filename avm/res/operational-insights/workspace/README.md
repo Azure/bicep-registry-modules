@@ -187,6 +187,15 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
+      {
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'sendingDiagnosticSettingsToSelf'
+        useThisWorkspace: true
+      }
     ]
     gallerySolutions: [
       {
@@ -325,7 +334,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    useDeployedWorkspaceForDiagnosticSettings: true
     useResourcePermissions: true
   }
 }
@@ -484,6 +492,15 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           "name": "customSetting",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
+        },
+        {
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "sendingDiagnosticSettingsToSelf",
+          "useThisWorkspace": true
         }
       ]
     },
@@ -645,9 +662,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "useDeployedWorkspaceForDiagnosticSettings": {
-      "value": true
     },
     "useResourcePermissions": {
       "value": true
@@ -1724,7 +1738,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 | [`storageInsightsConfigs`](#parameter-storageinsightsconfigs) | array | List of storage accounts to be read by the workspace. |
 | [`tables`](#parameter-tables) | array | LAW custom tables to be deployed. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`useDeployedWorkspaceForDiagnosticSettings`](#parameter-usedeployedworkspacefordiagnosticsettings) | bool | Instead of using an external reference, use the deployed instance as the target for its diagnostic settings. |
 | [`useResourcePermissions`](#parameter-useresourcepermissions) | bool | Set to 'true' to use resource or workspace permissions and 'false' (or leave empty) to require workspace permissions. |
 
 ### Parameter: `name`
@@ -1793,6 +1806,7 @@ The diagnostic settings of the service.
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
 | [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`useThisWorkspace`](#parameter-diagnosticsettingsusethisworkspace) | bool | Instead of using an external reference, use the deployed instance as the target for its diagnostic settings. If set to `true`, the `workspaceResourceId` property is ignored. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
 ### Parameter: `diagnosticSettings.eventHubAuthorizationRuleResourceId`
@@ -1912,6 +1926,13 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+
+### Parameter: `diagnosticSettings.useThisWorkspace`
+
+Instead of using an external reference, use the deployed instance as the target for its diagnostic settings. If set to `true`, the `workspaceResourceId` property is ignored.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -2210,14 +2231,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `useDeployedWorkspaceForDiagnosticSettings`
-
-Instead of using an external reference, use the deployed instance as the target for its diagnostic settings.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `useResourcePermissions`
 

@@ -52,7 +52,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     name: 'dsiitamin001'
     // Non-required parameters
     location: '<location>'
-    overwriteExistingImage: '<overwriteExistingImage>'
+    overwriteExistingImage: true
   }
 }
 ```
@@ -84,7 +84,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
       "value": "<location>"
     },
     "overwriteExistingImage": {
-      "value": "<overwriteExistingImage>"
+      "value": true
     }
   }
 }

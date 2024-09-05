@@ -61,7 +61,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
-    managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
+    managedByTenantId: '<managedByTenantId>'
     name: 'Component Validation - msrdmin Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
@@ -96,7 +96,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       ]
     },
     "managedByTenantId": {
-      "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
+      "value": "<managedByTenantId>"
     },
     "name": {
       "value": "Component Validation - msrdmin Subscription assignment"
@@ -148,7 +148,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
         roleDefinitionId: '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
       }
     ]
-    managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
+    managedByTenantId: '<managedByTenantId>'
     name: 'Component Validation - msrdmax Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
@@ -193,7 +193,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       ]
     },
     "managedByTenantId": {
-      "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
+      "value": "<managedByTenantId>"
     },
     "name": {
       "value": "Component Validation - msrdmax Subscription assignment"
@@ -239,7 +239,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
-    managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
+    managedByTenantId: '<managedByTenantId>'
     name: 'Component Validation - msrdrg Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
@@ -276,7 +276,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       ]
     },
     "managedByTenantId": {
-      "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
+      "value": "<managedByTenantId>"
     },
     "name": {
       "value": "Component Validation - msrdrg Subscription assignment"
@@ -325,7 +325,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
-    managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
+    managedByTenantId: '<managedByTenantId>'
     name: 'Component Validation - msrdwaf Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
@@ -361,7 +361,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       ]
     },
     "managedByTenantId": {
-      "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
+      "value": "<managedByTenantId>"
     },
     "name": {
       "value": "Component Validation - msrdwaf Subscription assignment"

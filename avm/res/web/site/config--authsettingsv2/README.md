@@ -7,7 +7,6 @@ This module deploys a Site Auth Settings V2 Configuration.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -54,6 +53,7 @@ Type of site to deploy.
     'functionapp'
     'functionapp,linux'
     'functionapp,linux,container'
+    'functionapp,linux,container,azurecontainerapps'
     'functionapp,workflowapp'
     'functionapp,workflowapp,linux'
     'linux,api'
@@ -74,10 +74,3 @@ The name of the parent site resource. Required if the template is used in a stan
 | `name` | string | The name of the site config. |
 | `resourceGroupName` | string | The resource group the site config was deployed into. |
 | `resourceId` | string | The resource ID of the site config. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |

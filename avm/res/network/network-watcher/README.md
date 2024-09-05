@@ -128,7 +128,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
             disable: false
             name: 'test-http-Bing'
             sources: [
-              'subnet-001(${resourceGroup.name})'
+              'subnet-001(<value>)'
             ]
             testConfigurations: [
               'HTTP Bing Test'
@@ -240,7 +240,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
               "disable": false,
               "name": "test-http-Bing",
               "sources": [
-                "subnet-001(${resourceGroup.name})"
+                "subnet-001(<value>)"
               ],
               "testConfigurations": [
                 "HTTP Bing Test"
@@ -366,7 +366,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
             disable: false
             name: 'test-http-Bing'
             sources: [
-              'subnet-001(${resourceGroup.name})'
+              'subnet-001(<value>)'
             ]
             testConfigurations: [
               'HTTP Bing Test'
@@ -459,7 +459,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
               "disable": false,
               "name": "test-http-Bing",
               "sources": [
-                "subnet-001(${resourceGroup.name})"
+                "subnet-001(<value>)"
               ],
               "testConfigurations": [
                 "HTTP Bing Test"

@@ -7,7 +7,6 @@ This module deploys a Virtual Network Subnet.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 
 ## Resource Types
@@ -280,13 +279,6 @@ The service endpoints to enable on the subnet.
 | `resourceId` | string | The resource ID of the virtual network peering. |
 | `subnetAddressPrefix` | string | The address prefix for the subnet. |
 | `subnetAddressPrefixes` | array | List of address prefixes for the subnet. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
 
 ## Notes
 
