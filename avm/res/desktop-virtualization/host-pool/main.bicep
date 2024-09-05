@@ -81,7 +81,7 @@ param startVMOnConnect bool = false
 @sys.description('Optional. The session host configuration for updating agent, monitoring agent, and stack component.')
 param agentUpdate object = {
   type: 'Scheduled'
-  useSessionHostLocalTime: false
+  useSessionHostLocalTime: true
   maintenanceWindows: [
     {
       dayOfWeek: 'Sunday'
