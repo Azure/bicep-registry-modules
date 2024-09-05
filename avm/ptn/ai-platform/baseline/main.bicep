@@ -59,7 +59,7 @@ var createVirtualMachine = createVirtualNetwork && virtualMachineConfiguration.?
 
 var createDefaultNsg = virtualNetworkConfiguration.?subnet.networkSecurityGroupResourceId == null
 
-var subnetResourceId = createVirtualNetwork ? virtualNetwork.outputs.subnetResourceIds[0] : null
+var subnetResourceId = createVirtualNetwork ? virtualNetwork::defaultSubnet.id : null
 
 var mlTargetSubResource = 'amlworkspace'
 
@@ -103,7 +103,7 @@ module storageAccount_privateDnsZones 'br/public:avm/res/network/private-dns-zon
       name: zone
       virtualNetworkLinks: [
         {
-          virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+          virtualNetworkResourceId: virtualNetwork.id
         }
       ]
     }
@@ -117,7 +117,7 @@ module workspaceHub_privateDnsZones 'br/public:avm/res/network/private-dns-zone:
       name: zone
       virtualNetworkLinks: [
         {
-          virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+          virtualNetworkResourceId: virtualNetwork.id
         }
       ]
       roleAssignments: [
@@ -158,36 +158,47 @@ module defaultNetworkSecurityGroup 'br/public:avm/res/network/network-security-g
   }
 }
 
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = if (createVirtualNetwork) {
-  name: '${uniqueString(deployment().name, location)}-virtual-network'
-  params: {
-    name: virtualNetworkConfiguration.?name ?? 'vnet-${name}'
-    location: location
-    enableTelemetry: enableTelemetry
-    addressPrefixes: [
-      virtualNetworkConfiguration.?addressPrefix ?? '10.0.0.0/16'
+// Not using the br/public:avm/res/network/virtual-network module here to
+// allow consumers of the module to add subnets from outside of the module
+// https://github.com/Azure/bicep-registry-modules/issues/2689
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-01-01' = if (createVirtualNetwork) {
+  name: virtualNetworkConfiguration.?name ?? 'vnet-${name}'
+  location: location
+  tags: tags
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        virtualNetworkConfiguration.?addressPrefix ?? '10.0.0.0/16'
+      ]
+    }
+  }
+
+  resource defaultSubnet 'subnets@2024-01-01' = {
+    name: virtualNetworkConfiguration.?subnet.name ?? 'default'
+    properties: {
+      addressPrefix: virtualNetworkConfiguration.?subnet.addressPrefix ?? '10.0.0.0/24'
+      networkSecurityGroup: {
+        id: createDefaultNsg
+          ? defaultNetworkSecurityGroup.outputs.resourceId
+          : virtualNetworkConfiguration.?subnet.networkSecurityGroupResourceId
+      }
+    }
+  }
+
+  resource bastionSubnet 'subnets@2024-01-01' = if (createBastion) {
+    name: 'AzureBastionSubnet'
+    properties: {
+      addressPrefix: bastionConfiguration.?subnetAddressPrefix ?? '10.0.1.0/26'
+      networkSecurityGroup: bastionConfiguration.?networkSecurityGroupResourceId != null
+        ? {
+            id: bastionConfiguration.?networkSecurityGroupResourceId
+          }
+        : null
+    }
+
+    dependsOn: [
+      defaultSubnet
     ]
-    subnets: union(
-      [
-        {
-          addressPrefix: virtualNetworkConfiguration.?subnet.addressPrefix ?? '10.0.0.0/24'
-          name: virtualNetworkConfiguration.?subnet.name ?? 'default'
-          networkSecurityGroupResourceId: createDefaultNsg
-            ? defaultNetworkSecurityGroup.outputs.resourceId
-            : virtualNetworkConfiguration.?subnet.networkSecurityGroupResourceId
-        }
-      ],
-      createBastion
-        ? [
-            {
-              addressPrefix: bastionConfiguration.?subnetAddressPrefix ?? '10.0.1.0/26'
-              name: 'AzureBastionSubnet'
-              networkSecurityGroupResourceId: bastionConfiguration.?networkSecurityGroupResourceId
-            }
-          ]
-        : []
-    )
-    tags: tags
   }
 }
 
@@ -198,7 +209,7 @@ module bastion 'br/public:avm/res/network/bastion-host:0.2.2' = if (createBastio
     location: location
     skuName: bastionConfiguration.?sku ?? 'Standard'
     enableTelemetry: enableTelemetry
-    virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+    virtualNetworkResourceId: virtualNetwork.id
     disableCopyPaste: bastionConfiguration.?disableCopyPaste
     enableFileCopy: bastionConfiguration.?enableFileCopy
     enableIpConnect: bastionConfiguration.?enableIpConnect
@@ -227,7 +238,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.5.3' = if (cr
           {
             name: virtualMachineConfiguration.?nicConfigurationConfiguration.ipConfigName ?? 'nic-vm-${name}-ipconfig'
             privateIPAllocationMethod: virtualMachineConfiguration.?nicConfigurationConfiguration.privateIPAllocationMethod ?? 'Dynamic'
-            subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
+            subnetResourceId: virtualNetwork::defaultSubnet.id
           }
         ]
       }
@@ -370,7 +381,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
           name: 'pep-${zone.value}-${name}'
           customNetworkInterfaceName: 'nic-${zone.value}-${name}'
           service: zone.value
-          subnetResourceId: subnetResourceId
+          subnetResourceId: subnetResourceId ?? ''
           privateDnsZoneResourceIds: [resourceId('Microsoft.Network/privateDnsZones', zone.key)]
         })
       : null
@@ -515,7 +526,7 @@ module workspaceHub 'br/public:avm/res/machine-learning-services/workspace:0.5.0
             name: 'pep-${mlTargetSubResource}-${name}'
             customNetworkInterfaceName: 'nic-${mlTargetSubResource}-${name}'
             service: mlTargetSubResource
-            subnetResourceId: subnetResourceId
+            subnetResourceId: subnetResourceId ?? ''
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: map(objectKeys(mlPrivateDnsZones), zone => {
                 name: replace(zone, '.', '-')
@@ -659,16 +670,16 @@ output workspaceProjectResourceId string = workspaceProject.outputs.resourceId
 output workspaceProjectName string = workspaceProject.outputs.name
 
 @description('The resource ID of the virtual network.')
-output virtualNetworkResourceId string = createVirtualNetwork ? virtualNetwork.outputs.resourceId : ''
+output virtualNetworkResourceId string = createVirtualNetwork ? virtualNetwork.id : ''
 
 @description('The name of the virtual network.')
-output virtualNetworkName string = createVirtualNetwork ? virtualNetwork.outputs.name : ''
+output virtualNetworkName string = createVirtualNetwork ? virtualNetwork.name : ''
 
 @description('The resource ID of the subnet in the virtual network.')
-output virtualNetworkSubnetResourceId string = createVirtualNetwork ? virtualNetwork.outputs.subnetResourceIds[0] : ''
+output virtualNetworkSubnetResourceId string = createVirtualNetwork ? virtualNetwork::defaultSubnet.id : ''
 
 @description('The name of the subnet in the virtual network.')
-output virtualNetworkSubnetName string = createVirtualNetwork ? virtualNetwork.outputs.subnetNames[0] : ''
+output virtualNetworkSubnetName string = createVirtualNetwork ? virtualNetwork::defaultSubnet.name : ''
 
 @description('The resource ID of the Azure Bastion host.')
 output bastionResourceId string = createBastion ? bastion.outputs.resourceId : ''
