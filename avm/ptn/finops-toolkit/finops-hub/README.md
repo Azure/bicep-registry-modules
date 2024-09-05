@@ -102,7 +102,6 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Optional parameters**
@@ -213,7 +212,6 @@ Tags to apply to resources based on their resource type. Resource type specific 
 - Required: No
 - Type: object
 - Default: `{}`
-
 
 ## Outputs
 

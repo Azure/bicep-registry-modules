@@ -116,9 +116,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       privateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'Webhook'
           subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
           tags: {
@@ -128,9 +132,13 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'Webhook'
           subnetResourceId: nestedDependencies.outputs.customSubnet2ResourceId
           tags: {
@@ -140,9 +148,13 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'DSCAndHybridWorker'
           subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
           tags: {

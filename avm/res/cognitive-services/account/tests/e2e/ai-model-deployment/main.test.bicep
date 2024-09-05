@@ -1,14 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using `AIServices` with `deployments` in parameter set'
-metadata description = '''
-This instance deploys the module with the AI model deployment feature.'
-
-Note, this test is temporarily disabled as it needs to be enabled on the subscription.
-As we don't want other contributions from being blocked by this, we disabled the test for now / rely on a manual execution outside the CI environemnt
-You can find more information here: https://learn.microsoft.com/en-us/legal/cognitive-services/openai/limited-access
-And register here: https://aka.ms/oai/access
-'''
+metadata description = 'This instance deploys the module with the AI model deployment feature.'
 
 // ========== //
 // Parameters //

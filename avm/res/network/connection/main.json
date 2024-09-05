@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "16458068655280591810"
+      "version": "0.29.47.4906",
+      "templateHash": "13075925260036107325"
     },
     "name": "Virtual Network Gateway Connections",
     "description": "This module deploys a Virtual Network Gateway Connection.",
@@ -117,6 +117,13 @@
       "defaultValue": false,
       "metadata": {
         "description": "Optional. Enable policy-based traffic selectors."
+      }
+    },
+    "trafficSelectorPolicies": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The traffic selector policies to be considered by this connection."
       }
     },
     "enablePrivateLinkFastPath": {
@@ -258,6 +265,7 @@
         "peer": "[if(equals(parameters('connectionType'), 'ExpressRoute'), parameters('peer'), null())]",
         "authorizationKey": "[if(and(equals(parameters('connectionType'), 'ExpressRoute'), not(empty(parameters('authorizationKey')))), parameters('authorizationKey'), null())]",
         "sharedKey": "[if(not(equals(parameters('connectionType'), 'ExpressRoute')), parameters('vpnSharedKey'), null())]",
+        "trafficSelectorPolicies": "[parameters('trafficSelectorPolicies')]",
         "usePolicyBasedTrafficSelectors": "[parameters('usePolicyBasedTrafficSelectors')]",
         "ipsecPolicies": "[if(not(empty(parameters('customIPSecPolicy').ipsecEncryption)), createArray(createObject('saLifeTimeSeconds', parameters('customIPSecPolicy').saLifeTimeSeconds, 'saDataSizeKilobytes', parameters('customIPSecPolicy').saDataSizeKilobytes, 'ipsecEncryption', parameters('customIPSecPolicy').ipsecEncryption, 'ipsecIntegrity', parameters('customIPSecPolicy').ipsecIntegrity, 'ikeEncryption', parameters('customIPSecPolicy').ikeEncryption, 'ikeIntegrity', parameters('customIPSecPolicy').ikeIntegrity, 'dhGroup', parameters('customIPSecPolicy').dhGroup, 'pfsGroup', parameters('customIPSecPolicy').pfsGroup)), parameters('customIPSecPolicy').ipsecEncryption)]",
         "routingWeight": "[parameters('routingWeight')]",

@@ -21,6 +21,9 @@ param serviceShort string = 'nanaanfs3'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. The source of the encryption key.')
+param encryptionKeySource string = 'Microsoft.NetApp'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -79,6 +82,7 @@ module testDeployment '../../../main.bicep' = {
             name: '${namePrefix}-${serviceShort}-vol-001'
             zones: ['1']
             networkFeatures: 'Standard'
+            encryptionKeySource: encryptionKeySource
             protocolTypes: [
               'NFSv3'
             ]
@@ -96,6 +100,7 @@ module testDeployment '../../../main.bicep' = {
             name: '${namePrefix}-${serviceShort}-vol-002'
             zones: ['1']
             networkFeatures: 'Standard'
+            encryptionKeySource: encryptionKeySource
             protocolTypes: [
               'NFSv3'
             ]
