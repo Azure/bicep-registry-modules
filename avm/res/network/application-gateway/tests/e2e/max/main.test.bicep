@@ -169,9 +169,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       privateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'public'
           subnetResourceId: nestedDependencies.outputs.privateLinkSubnetResourceId
           tags: {
