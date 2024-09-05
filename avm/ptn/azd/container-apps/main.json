@@ -1,0 +1,3337 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.28.1.47646",
+      "templateHash": "3154922260961626340"
+    },
+    "name": "avm/ptn/azd/container-apps",
+    "description": "Creates an Azure Container Registry and an Azure Container Apps environment.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all Resources."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "containerAppsEnvironmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Container Apps Managed Environment."
+      }
+    },
+    "containerRegistryName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Azure Container Registry."
+      }
+    },
+    "containerRegistryResourceGroupName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Name of the Azure Container Registry Resource Group."
+      }
+    },
+    "acrAdminUserEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable admin user that have push / pull permission to the registry."
+      }
+    },
+    "logAnalyticsWorkspaceResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990)."
+      }
+    },
+    "appInsightsConnectionString": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Application Insights connection string."
+      }
+    },
+    "daprAIInstrumentationKey": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry."
+      }
+    },
+    "acrSku": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Basic",
+        "Premium",
+        "Standard"
+      ],
+      "metadata": {
+        "description": "Optional. SKU settings. Default is \"Standard\"."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "zoneRedundant": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Zone redundancy setting."
+      }
+    },
+    "dockerBridgeCidr": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
+      }
+    },
+    "infrastructureSubnetResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if \"internal\" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant."
+      }
+    },
+    "internal": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then \"infrastructureSubnetId\" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant."
+      }
+    },
+    "platformReservedCidr": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant."
+      }
+    },
+    "platformReservedDnsIP": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. An IP address from the IP range defined by \"platformReservedCidr\" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
+      }
+    },
+    "workloadProfiles": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Conditional. Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant."
+      }
+    },
+    "infrastructureResourceGroupName": {
+      "type": "string",
+      "defaultValue": "[take(format('ME_{0}', parameters('containerAppsEnvironmentName')), 63)]",
+      "metadata": {
+        "description": "Optional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant."
+      }
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.ptn.azd-containerapps.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "containerAppsEnvironment": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('containerAppsEnvironment-{0}-deployment', deployment().name), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('containerAppsEnvironmentName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "daprAIInstrumentationKey": {
+            "value": "[parameters('daprAIInstrumentationKey')]"
+          },
+          "logAnalyticsWorkspaceResourceId": {
+            "value": "[parameters('logAnalyticsWorkspaceResourceId')]"
+          },
+          "appInsightsConnectionString": {
+            "value": "[parameters('appInsightsConnectionString')]"
+          },
+          "zoneRedundant": {
+            "value": "[parameters('zoneRedundant')]"
+          },
+          "workloadProfiles": {
+            "value": "[parameters('workloadProfiles')]"
+          },
+          "infrastructureResourceGroupName": {
+            "value": "[parameters('infrastructureResourceGroupName')]"
+          },
+          "internal": {
+            "value": "[parameters('internal')]"
+          },
+          "infrastructureSubnetId": {
+            "value": "[parameters('infrastructureSubnetResourceId')]"
+          },
+          "dockerBridgeCidr": {
+            "value": "[parameters('dockerBridgeCidr')]"
+          },
+          "platformReservedCidr": {
+            "value": "[parameters('platformReservedCidr')]"
+          },
+          "platformReservedDnsIP": {
+            "value": "[parameters('platformReservedDnsIP')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "8714567000770152884"
+            },
+            "name": "App ManagedEnvironments",
+            "description": "This module deploys an App Managed Environment (also known as a Container App Environment).",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "managedIdentitiesType": {
+              "type": "object",
+              "properties": {
+                "systemAssigned": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enables system assigned managed identity on the resource."
+                  }
+                },
+                "userAssignedResourceIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID(s) to assign to the resource."
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "roleAssignmentType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                    }
+                  },
+                  "roleDefinitionIdOrName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                    }
+                  },
+                  "principalId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                    }
+                  },
+                  "principalType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Device",
+                      "ForeignGroup",
+                      "Group",
+                      "ServicePrincipal",
+                      "User"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The principal type of the assigned principal ID."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The description of the role assignment."
+                    }
+                  },
+                  "condition": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                    }
+                  },
+                  "conditionVersion": {
+                    "type": "string",
+                    "allowedValues": [
+                      "2.0"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Version of the condition."
+                    }
+                  },
+                  "delegatedManagedIdentityResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The Resource Id of the delegated managed identity resource."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "storageType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "accessMode": {
+                    "type": "string",
+                    "allowedValues": [
+                      "ReadOnly",
+                      "ReadWrite"
+                    ],
+                    "metadata": {
+                      "description": "Required. Access mode for storage: \"ReadOnly\" or \"ReadWrite\"."
+                    }
+                  },
+                  "kind": {
+                    "type": "string",
+                    "allowedValues": [
+                      "NFS",
+                      "SMB"
+                    ],
+                    "metadata": {
+                      "description": "Required. Type of storage: \"SMB\" or \"NFS\"."
+                    }
+                  },
+                  "storageAccountName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Storage account name."
+                    }
+                  },
+                  "shareName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. File share name."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Container Apps Managed Environment."
+              }
+            },
+            "logAnalyticsWorkspaceResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990)."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all Resources."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "managedIdentities": {
+              "$ref": "#/definitions/managedIdentitiesType",
+              "metadata": {
+                "description": "Optional. The managed identity definition for this resource."
+              }
+            },
+            "roleAssignments": {
+              "$ref": "#/definitions/roleAssignmentType",
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "logsDestination": {
+              "type": "string",
+              "defaultValue": "log-analytics",
+              "metadata": {
+                "description": "Optional. Logs destination."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
+            "appInsightsConnectionString": {
+              "type": "securestring",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Application Insights connection string."
+              }
+            },
+            "daprAIConnectionString": {
+              "type": "securestring",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Application Insights connection string used by Dapr to export Service to Service communication telemetry."
+              }
+            },
+            "daprAIInstrumentationKey": {
+              "type": "securestring",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry."
+              }
+            },
+            "dockerBridgeCidr": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Conditional. CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
+              }
+            },
+            "infrastructureSubnetId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Conditional. Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if \"internal\" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant."
+              }
+            },
+            "internal": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then \"infrastructureSubnetId\" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant."
+              }
+            },
+            "platformReservedCidr": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Conditional. IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant."
+              }
+            },
+            "platformReservedDnsIP": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Conditional. An IP address from the IP range defined by \"platformReservedCidr\" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
+              }
+            },
+            "peerTrafficEncryption": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Whether or not to encrypt peer traffic."
+              }
+            },
+            "zoneRedundant": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Whether or not this Managed Environment is zone-redundant."
+              }
+            },
+            "certificatePassword": {
+              "type": "securestring",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Password of the certificate used by the custom domain."
+              }
+            },
+            "certificateValue": {
+              "type": "securestring",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Certificate to use for the custom domain. PFX or PEM."
+              }
+            },
+            "dnsSuffix": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. DNS suffix for the environment domain."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "openTelemetryConfiguration": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Open Telemetry configuration."
+              }
+            },
+            "workloadProfiles": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Conditional. Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant."
+              }
+            },
+            "infrastructureResourceGroupName": {
+              "type": "string",
+              "defaultValue": "[take(format('ME_{0}', parameters('name')), 63)]",
+              "metadata": {
+                "description": "Conditional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant."
+              }
+            },
+            "storages": {
+              "$ref": "#/definitions/storageType",
+              "metadata": {
+                "description": "Optional. The list of storages to mount on the environment."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "managedEnvironment::storage": {
+              "copy": {
+                "name": "storage",
+                "count": "[length(coalesce(parameters('storages'), createArray()))]"
+              },
+              "type": "Microsoft.App/managedEnvironments/storages",
+              "apiVersion": "2024-02-02-preview",
+              "name": "[format('{0}/{1}', parameters('name'), coalesce(parameters('storages'), createArray())[copyIndex()].shareName)]",
+              "properties": {
+                "nfsAzureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'NFS'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'server', format('{0}.file.{1}', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, environment().suffixes.storage), 'shareName', format('/{0}/{1}', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, coalesce(parameters('storages'), createArray())[copyIndex()].shareName)), null())]",
+                "azureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'SMB'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'accountName', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, 'accountKey', listkeys(resourceId('Microsoft.Storage/storageAccounts', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName), '2023-01-01').keys[0].value, 'shareName', coalesce(parameters('storages'), createArray())[copyIndex()].shareName), null())]"
+              },
+              "dependsOn": [
+                "managedEnvironment"
+              ]
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.app-managedenvironment.{0}.{1}', replace('0.7.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "logAnalyticsWorkspace": {
+              "condition": "[not(empty(parameters('logAnalyticsWorkspaceResourceId')))]",
+              "existing": true,
+              "type": "Microsoft.OperationalInsights/workspaces",
+              "apiVersion": "2023-09-01",
+              "subscriptionId": "[split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2]]",
+              "resourceGroup": "[split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]]",
+              "name": "[last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))]"
+            },
+            "managedEnvironment": {
+              "type": "Microsoft.App/managedEnvironments",
+              "apiVersion": "2024-02-02-preview",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": "[variables('identity')]",
+              "properties": {
+                "appInsightsConfiguration": {
+                  "connectionString": "[parameters('appInsightsConnectionString')]"
+                },
+                "appLogsConfiguration": {
+                  "destination": "[parameters('logsDestination')]",
+                  "logAnalyticsConfiguration": {
+                    "customerId": "[reference('logAnalyticsWorkspace').customerId]",
+                    "sharedKey": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '2023-09-01').primarySharedKey]"
+                  }
+                },
+                "daprAIConnectionString": "[parameters('daprAIConnectionString')]",
+                "daprAIInstrumentationKey": "[parameters('daprAIInstrumentationKey')]",
+                "customDomainConfiguration": {
+                  "certificatePassword": "[parameters('certificatePassword')]",
+                  "certificateValue": "[if(not(empty(parameters('certificateValue'))), parameters('certificateValue'), null())]",
+                  "dnsSuffix": "[parameters('dnsSuffix')]"
+                },
+                "openTelemetryConfiguration": "[if(not(empty(parameters('openTelemetryConfiguration'))), parameters('openTelemetryConfiguration'), null())]",
+                "peerTrafficConfiguration": {
+                  "encryption": {
+                    "enabled": "[parameters('peerTrafficEncryption')]"
+                  }
+                },
+                "vnetConfiguration": {
+                  "internal": "[parameters('internal')]",
+                  "infrastructureSubnetId": "[if(not(empty(parameters('infrastructureSubnetId'))), parameters('infrastructureSubnetId'), null())]",
+                  "dockerBridgeCidr": "[if(not(empty(parameters('infrastructureSubnetId'))), parameters('dockerBridgeCidr'), null())]",
+                  "platformReservedCidr": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetId')))), parameters('platformReservedCidr'), null())]",
+                  "platformReservedDnsIP": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetId')))), parameters('platformReservedDnsIP'), null())]"
+                },
+                "workloadProfiles": "[if(not(empty(parameters('workloadProfiles'))), parameters('workloadProfiles'), null())]",
+                "zoneRedundant": "[parameters('zoneRedundant')]",
+                "infrastructureResourceGroup": "[parameters('infrastructureResourceGroupName')]"
+              },
+              "dependsOn": [
+                "logAnalyticsWorkspace"
+              ]
+            },
+            "managedEnvironment_roleAssignments": {
+              "copy": {
+                "name": "managedEnvironment_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.App/managedEnvironments/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.App/managedEnvironments', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "managedEnvironment"
+              ]
+            },
+            "managedEnvironment_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.App/managedEnvironments/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "managedEnvironment"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the Managed Environment was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('managedEnvironment', '2024-02-02-preview', 'full').location]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Managed Environment."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Managed Environment."
+              },
+              "value": "[resourceId('Microsoft.App/managedEnvironments', parameters('name'))]"
+            },
+            "systemAssignedMIPrincipalId": {
+              "type": "string",
+              "metadata": {
+                "description": "The principal ID of the system assigned identity."
+              },
+              "value": "[coalesce(tryGet(tryGet(reference('managedEnvironment', '2024-02-02-preview', 'full'), 'identity'), 'principalId'), '')]"
+            },
+            "defaultDomain": {
+              "type": "string",
+              "metadata": {
+                "description": "The Default domain of the Managed Environment."
+              },
+              "value": "[reference('managedEnvironment').defaultDomain]"
+            },
+            "staticIp": {
+              "type": "string",
+              "metadata": {
+                "description": "The IP address of the Managed Environment."
+              },
+              "value": "[reference('managedEnvironment').staticIp]"
+            }
+          }
+        }
+      }
+    },
+    "containerRegistry": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('containerRegistry-{0}-deployment', deployment().name), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('containerRegistryName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "acrAdminUserEnabled": {
+            "value": "[parameters('acrAdminUserEnabled')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "acrSku": {
+            "value": "[parameters('acrSku')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "8799580877381308457"
+            },
+            "name": "Azure Container Registries (ACR)",
+            "description": "This module deploys an Azure Container Registry (ACR).",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "managedIdentitiesType": {
+              "type": "object",
+              "properties": {
+                "systemAssigned": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enables system assigned managed identity on the resource."
+                  }
+                },
+                "userAssignedResourceIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID(s) to assign to the resource."
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "roleAssignmentType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                    }
+                  },
+                  "roleDefinitionIdOrName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                    }
+                  },
+                  "principalId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                    }
+                  },
+                  "principalType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Device",
+                      "ForeignGroup",
+                      "Group",
+                      "ServicePrincipal",
+                      "User"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The principal type of the assigned principal ID."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The description of the role assignment."
+                    }
+                  },
+                  "condition": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                    }
+                  },
+                  "conditionVersion": {
+                    "type": "string",
+                    "allowedValues": [
+                      "2.0"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Version of the condition."
+                    }
+                  },
+                  "delegatedManagedIdentityResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The Resource Id of the delegated managed identity resource."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "privateEndpointType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name of the private endpoint."
+                    }
+                  },
+                  "location": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The location to deploy the private endpoint to."
+                    }
+                  },
+                  "privateLinkServiceConnectionName": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name of the private link connection to create."
+                    }
+                  },
+                  "service": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The subresource to deploy the private endpoint for. For example \"vault\", \"mysqlServer\" or \"dataFactory\"."
+                    }
+                  },
+                  "subnetResourceId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+                    }
+                  },
+                  "privateDnsZoneGroupName": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
+                    }
+                  },
+                  "privateDnsZoneResourceIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones."
+                    }
+                  },
+                  "isManualConnection": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. If Manual Private Link Connection is required."
+                    }
+                  },
+                  "manualConnectionRequestMessage": {
+                    "type": "string",
+                    "nullable": true,
+                    "maxLength": 140,
+                    "metadata": {
+                      "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
+                    }
+                  },
+                  "customDnsConfigs": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "fqdn": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Required. Fqdn that resolves to private endpoint IP address."
+                          }
+                        },
+                        "ipAddresses": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "metadata": {
+                            "description": "Required. A list of private IP addresses of the private endpoint."
+                          }
+                        }
+                      }
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Custom DNS configurations."
+                    }
+                  },
+                  "ipConfigurations": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The name of the resource that is unique within a resource group."
+                          }
+                        },
+                        "properties": {
+                          "type": "object",
+                          "properties": {
+                            "groupId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                              }
+                            },
+                            "memberName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+                              }
+                            },
+                            "privateIPAddress": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. A private IP address obtained from the private endpoint's subnet."
+                              }
+                            }
+                          },
+                          "metadata": {
+                            "description": "Required. Properties of private endpoint IP configurations."
+                          }
+                        }
+                      }
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
+                    }
+                  },
+                  "applicationSecurityGroupResourceIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
+                    }
+                  },
+                  "customNetworkInterfaceName": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The custom name of the network interface attached to the private endpoint."
+                    }
+                  },
+                  "lock": {
+                    "$ref": "#/definitions/lockType",
+                    "metadata": {
+                      "description": "Optional. Specify the type of lock."
+                    }
+                  },
+                  "roleAssignments": {
+                    "$ref": "#/definitions/roleAssignmentType",
+                    "metadata": {
+                      "description": "Optional. Array of role assignments to create."
+                    }
+                  },
+                  "tags": {
+                    "type": "object",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
+                    }
+                  },
+                  "enableTelemetry": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Enable/Disable usage telemetry for module."
+                    }
+                  },
+                  "resourceGroupName": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "diagnosticSettingType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name of diagnostic setting."
+                    }
+                  },
+                  "logCategoriesAndGroups": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "category": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                          }
+                        },
+                        "categoryGroup": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                          }
+                        }
+                      }
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                    }
+                  },
+                  "metricCategories": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "category": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                          }
+                        }
+                      }
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+                    }
+                  },
+                  "logAnalyticsDestinationType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "AzureDiagnostics",
+                      "Dedicated"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                    }
+                  },
+                  "workspaceResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                    }
+                  },
+                  "storageAccountResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                    }
+                  },
+                  "eventHubAuthorizationRuleResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                    }
+                  },
+                  "eventHubName": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                    }
+                  },
+                  "marketplacePartnerResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "customerManagedKeyType": {
+              "type": "object",
+              "properties": {
+                "keyVaultResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+                  }
+                },
+                "keyName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the customer managed key to use for encryption."
+                  }
+                },
+                "keyVersion": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using 'latest'."
+                  }
+                },
+                "userAssignedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "scopeMapsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name of the scope map."
+                    }
+                  },
+                  "actions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "metadata": {
+                      "description": "Required. The list of scoped permissions for registry artifacts."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The user friendly description of the scope map."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "minLength": 5,
+              "maxLength": 50,
+              "metadata": {
+                "description": "Required. Name of your Azure Container Registry."
+              }
+            },
+            "acrAdminUserEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enable admin user that have push / pull permission to the registry."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "roleAssignments": {
+              "$ref": "#/definitions/roleAssignmentType",
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "acrSku": {
+              "type": "string",
+              "defaultValue": "Basic",
+              "allowedValues": [
+                "Basic",
+                "Premium",
+                "Standard"
+              ],
+              "metadata": {
+                "description": "Optional. Tier of your Azure container registry."
+              }
+            },
+            "exportPolicyStatus": {
+              "type": "string",
+              "defaultValue": "disabled",
+              "allowedValues": [
+                "disabled",
+                "enabled"
+              ],
+              "metadata": {
+                "description": "Optional. The value that indicates whether the export policy is enabled or not."
+              }
+            },
+            "quarantinePolicyStatus": {
+              "type": "string",
+              "defaultValue": "disabled",
+              "allowedValues": [
+                "disabled",
+                "enabled"
+              ],
+              "metadata": {
+                "description": "Optional. The value that indicates whether the quarantine policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'."
+              }
+            },
+            "trustPolicyStatus": {
+              "type": "string",
+              "defaultValue": "disabled",
+              "allowedValues": [
+                "disabled",
+                "enabled"
+              ],
+              "metadata": {
+                "description": "Optional. The value that indicates whether the trust policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'."
+              }
+            },
+            "retentionPolicyStatus": {
+              "type": "string",
+              "defaultValue": "enabled",
+              "allowedValues": [
+                "disabled",
+                "enabled"
+              ],
+              "metadata": {
+                "description": "Optional. The value that indicates whether the retention policy is enabled or not."
+              }
+            },
+            "retentionPolicyDays": {
+              "type": "int",
+              "defaultValue": 15,
+              "metadata": {
+                "description": "Optional. The number of days to retain an untagged manifest after which it gets purged."
+              }
+            },
+            "azureADAuthenticationAsArmPolicyStatus": {
+              "type": "string",
+              "defaultValue": "enabled",
+              "allowedValues": [
+                "disabled",
+                "enabled"
+              ],
+              "metadata": {
+                "description": "Optional. The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled."
+              }
+            },
+            "softDeletePolicyStatus": {
+              "type": "string",
+              "defaultValue": "disabled",
+              "allowedValues": [
+                "disabled",
+                "enabled"
+              ],
+              "metadata": {
+                "description": "Optional. Soft Delete policy status. Default is disabled."
+              }
+            },
+            "softDeletePolicyDays": {
+              "type": "int",
+              "defaultValue": 7,
+              "metadata": {
+                "description": "Optional. The number of days after which a soft-deleted item is permanently deleted."
+              }
+            },
+            "dataEndpointEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enable a single data endpoint per region for serving data. Not relevant in case of disabled public access. Note, requires the 'acrSku' to be 'Premium'."
+              }
+            },
+            "publicNetworkAccess": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set.  Note, requires the 'acrSku' to be 'Premium'."
+              }
+            },
+            "networkRuleBypassOptions": {
+              "type": "string",
+              "defaultValue": "AzureServices",
+              "allowedValues": [
+                "AzureServices",
+                "None"
+              ],
+              "metadata": {
+                "description": "Optional. Whether to allow trusted Azure services to access a network restricted registry."
+              }
+            },
+            "networkRuleSetDefaultAction": {
+              "type": "string",
+              "defaultValue": "Deny",
+              "allowedValues": [
+                "Allow",
+                "Deny"
+              ],
+              "metadata": {
+                "description": "Optional. The default action of allow or deny when no other rules match."
+              }
+            },
+            "networkRuleSetIpRules": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'."
+              }
+            },
+            "privateEndpoints": {
+              "$ref": "#/definitions/privateEndpointType",
+              "metadata": {
+                "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'acrSku' to be 'Premium'."
+              }
+            },
+            "zoneRedundancy": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "metadata": {
+                "description": "Optional. Whether or not zone redundancy is enabled for this container registry."
+              }
+            },
+            "replications": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. All replications to create."
+              }
+            },
+            "webhooks": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. All webhooks to create."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "managedIdentities": {
+              "$ref": "#/definitions/managedIdentitiesType",
+              "metadata": {
+                "description": "Optional. The managed identity definition for this resource."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
+            "diagnosticSettings": {
+              "$ref": "#/definitions/diagnosticSettingType",
+              "metadata": {
+                "description": "Optional. The diagnostic settings of the service."
+              }
+            },
+            "anonymousPullEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enables registry-wide pull from unauthenticated clients. It's in preview and available in the Standard and Premium service tiers."
+              }
+            },
+            "customerManagedKey": {
+              "$ref": "#/definitions/customerManagedKeyType",
+              "metadata": {
+                "description": "Optional. The customer managed key definition."
+              }
+            },
+            "cacheRules": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of Cache Rules."
+              }
+            },
+            "credentialSets": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Array of Credential Sets."
+              }
+            },
+            "scopeMaps": {
+              "$ref": "#/definitions/scopeMapsType",
+              "metadata": {
+                "description": "Optional. Scope maps setting."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+            "builtInRoleNames": {
+              "AcrDelete": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c2f4ef07-c644-48eb-af81-4b1b4947fb11')]",
+              "AcrImageSigner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6cef56e8-d556-48e5-a04f-b8e64114680f')]",
+              "AcrPull": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]",
+              "AcrPush": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8311e382-0749-4cb8-b61a-304f252e45ec')]",
+              "AcrQuarantineReader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'cdda3590-29a3-44f6-95f2-9f980659eb04')]",
+              "AcrQuarantineWriter": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c8d4ff99-41c3-41a8-9f60-21dfdad59608')]",
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "cMKKeyVault::cMKKey": {
+              "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
+              "existing": true,
+              "type": "Microsoft.KeyVault/vaults/keys",
+              "apiVersion": "2023-02-01",
+              "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
+              "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
+              "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
+              "dependsOn": [
+                "cMKKeyVault"
+              ]
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.containerregistry-registry.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "cMKKeyVault": {
+              "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
+              "existing": true,
+              "type": "Microsoft.KeyVault/vaults",
+              "apiVersion": "2023-02-01",
+              "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
+              "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
+              "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))]"
+            },
+            "cMKUserAssignedIdentity": {
+              "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
+              "existing": true,
+              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+              "apiVersion": "2023-01-31",
+              "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2]]",
+              "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]]",
+              "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))]"
+            },
+            "registry": {
+              "type": "Microsoft.ContainerRegistry/registries",
+              "apiVersion": "2023-06-01-preview",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "identity": "[variables('identity')]",
+              "tags": "[parameters('tags')]",
+              "sku": {
+                "name": "[parameters('acrSku')]"
+              },
+              "properties": {
+                "anonymousPullEnabled": "[parameters('anonymousPullEnabled')]",
+                "adminUserEnabled": "[parameters('acrAdminUserEnabled')]",
+                "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('status', 'enabled', 'keyVaultProperties', createObject('identity', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), ''))), reference('cMKUserAssignedIdentity').clientId, null()), 'keyIdentifier', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), reference('cMKKeyVault::cMKKey').keyUriWithVersion))), null())]",
+                "policies": {
+                  "azureADAuthenticationAsArmPolicy": {
+                    "status": "[parameters('azureADAuthenticationAsArmPolicyStatus')]"
+                  },
+                  "exportPolicy": "[if(equals(parameters('acrSku'), 'Premium'), createObject('status', parameters('exportPolicyStatus')), null())]",
+                  "quarantinePolicy": "[if(equals(parameters('acrSku'), 'Premium'), createObject('status', parameters('quarantinePolicyStatus')), null())]",
+                  "trustPolicy": "[if(equals(parameters('acrSku'), 'Premium'), createObject('type', 'Notary', 'status', parameters('trustPolicyStatus')), null())]",
+                  "retentionPolicy": "[if(equals(parameters('acrSku'), 'Premium'), createObject('days', parameters('retentionPolicyDays'), 'status', parameters('retentionPolicyStatus')), null())]",
+                  "softDeletePolicy": {
+                    "retentionDays": "[parameters('softDeletePolicyDays')]",
+                    "status": "[parameters('softDeletePolicyStatus')]"
+                  }
+                },
+                "dataEndpointEnabled": "[parameters('dataEndpointEnabled')]",
+                "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkRuleSetIpRules'))), 'Disabled', null()))]",
+                "networkRuleBypassOptions": "[parameters('networkRuleBypassOptions')]",
+                "networkRuleSet": "[if(not(empty(parameters('networkRuleSetIpRules'))), createObject('defaultAction', parameters('networkRuleSetDefaultAction'), 'ipRules', parameters('networkRuleSetIpRules')), null())]",
+                "zoneRedundancy": "[if(equals(parameters('acrSku'), 'Premium'), parameters('zoneRedundancy'), null())]"
+              },
+              "dependsOn": [
+                "cMKKeyVault",
+                "cMKUserAssignedIdentity"
+              ]
+            },
+            "registry_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "registry"
+              ]
+            },
+            "registry_diagnosticSettings": {
+              "copy": {
+                "name": "registry_diagnosticSettings",
+                "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+              },
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "metrics",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                    "input": {
+                      "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                      "timeGrain": null
+                    }
+                  },
+                  {
+                    "name": "logs",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                    "input": {
+                      "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                      "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                    }
+                  }
+                ],
+                "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+                "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+                "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+                "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+                "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+                "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+              },
+              "dependsOn": [
+                "registry"
+              ]
+            },
+            "registry_roleAssignments": {
+              "copy": {
+                "name": "registry_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "registry"
+              ]
+            },
+            "registry_scopeMaps": {
+              "copy": {
+                "name": "registry_scopeMaps",
+                "count": "[length(coalesce(parameters('scopeMaps'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-Registry-Scope-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[tryGet(coalesce(parameters('scopeMaps'), createArray())[copyIndex()], 'name')]"
+                  },
+                  "actions": {
+                    "value": "[coalesce(parameters('scopeMaps'), createArray())[copyIndex()].actions]"
+                  },
+                  "description": {
+                    "value": "[tryGet(coalesce(parameters('scopeMaps'), createArray())[copyIndex()], 'description')]"
+                  },
+                  "registryName": {
+                    "value": "[parameters('name')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.29.47.4906",
+                      "templateHash": "9144531012597082524"
+                    },
+                    "name": "Container Registries scopeMaps",
+                    "description": "This module deploys an Azure Container Registry (ACR) scopeMap.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "registryName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent registry. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "[format('{0}-scopemaps', parameters('registryName'))]",
+                      "metadata": {
+                        "description": "Optional. The name of the scope map."
+                      }
+                    },
+                    "actions": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "metadata": {
+                        "description": "Required. The list of scoped permissions for registry artifacts."
+                      }
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The user friendly description of the scope map."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "registry": {
+                      "existing": true,
+                      "type": "Microsoft.ContainerRegistry/registries",
+                      "apiVersion": "2023-06-01-preview",
+                      "name": "[parameters('registryName')]"
+                    },
+                    "scopeMap": {
+                      "type": "Microsoft.ContainerRegistry/registries/scopeMaps",
+                      "apiVersion": "2023-06-01-preview",
+                      "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
+                      "properties": {
+                        "actions": "[parameters('actions')]",
+                        "description": "[parameters('description')]"
+                      },
+                      "dependsOn": [
+                        "registry"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the scope map."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the scope map was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the scope map."
+                      },
+                      "value": "[resourceId('Microsoft.ContainerRegistry/registries/scopeMaps', parameters('registryName'), parameters('name'))]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "registry"
+              ]
+            },
+            "registry_replications": {
+              "copy": {
+                "name": "registry_replications",
+                "count": "[length(coalesce(parameters('replications'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-Registry-Replication-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('replications'), createArray())[copyIndex()].name]"
+                  },
+                  "registryName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "location": {
+                    "value": "[coalesce(parameters('replications'), createArray())[copyIndex()].location]"
+                  },
+                  "regionEndpointEnabled": {
+                    "value": "[tryGet(coalesce(parameters('replications'), createArray())[copyIndex()], 'regionEndpointEnabled')]"
+                  },
+                  "zoneRedundancy": {
+                    "value": "[tryGet(coalesce(parameters('replications'), createArray())[copyIndex()], 'zoneRedundancy')]"
+                  },
+                  "tags": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('replications'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.29.47.4906",
+                      "templateHash": "8531695368487734118"
+                    },
+                    "name": "Azure Container Registry (ACR) Replications",
+                    "description": "This module deploys an Azure Container Registry (ACR) Replication.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "registryName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent registry. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the replication."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]",
+                      "metadata": {
+                        "description": "Optional. Location for all resources."
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Tags of the resource."
+                      }
+                    },
+                    "regionEndpointEnabled": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications."
+                      }
+                    },
+                    "zoneRedundancy": {
+                      "type": "string",
+                      "defaultValue": "Disabled",
+                      "allowedValues": [
+                        "Disabled",
+                        "Enabled"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Whether or not zone redundancy is enabled for this container registry."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "registry": {
+                      "existing": true,
+                      "type": "Microsoft.ContainerRegistry/registries",
+                      "apiVersion": "2023-06-01-preview",
+                      "name": "[parameters('registryName')]"
+                    },
+                    "replication": {
+                      "type": "Microsoft.ContainerRegistry/registries/replications",
+                      "apiVersion": "2023-06-01-preview",
+                      "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
+                      "location": "[parameters('location')]",
+                      "tags": "[parameters('tags')]",
+                      "properties": {
+                        "regionEndpointEnabled": "[parameters('regionEndpointEnabled')]",
+                        "zoneRedundancy": "[parameters('zoneRedundancy')]"
+                      },
+                      "dependsOn": [
+                        "registry"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the replication."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the replication."
+                      },
+                      "value": "[resourceId('Microsoft.ContainerRegistry/registries/replications', parameters('registryName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the replication was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The location the resource was deployed into."
+                      },
+                      "value": "[reference('replication', '2023-06-01-preview', 'full').location]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "registry"
+              ]
+            },
+            "registry_credentialSets": {
+              "copy": {
+                "name": "registry_credentialSets",
+                "count": "[length(coalesce(parameters('credentialSets'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-Registry-CredentialSet-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('credentialSets'), createArray())[copyIndex()].name]"
+                  },
+                  "registryName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "managedIdentities": {
+                    "value": "[coalesce(parameters('credentialSets'), createArray())[copyIndex()].managedIdentities]"
+                  },
+                  "authCredentials": {
+                    "value": "[coalesce(parameters('credentialSets'), createArray())[copyIndex()].authCredentials]"
+                  },
+                  "loginServer": {
+                    "value": "[coalesce(parameters('credentialSets'), createArray())[copyIndex()].loginServer]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.29.47.4906",
+                      "templateHash": "12196074162662855376"
+                    },
+                    "name": "Container Registries Credential Sets",
+                    "description": "This module deploys an ACR Credential Set.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "definitions": {
+                    "managedIdentitiesType": {
+                      "type": "object",
+                      "properties": {
+                        "systemAssigned": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enables system assigned managed identity on the resource."
+                          }
+                        }
+                      }
+                    },
+                    "authCredentialsType": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The name of the credential."
+                            }
+                          },
+                          "usernameSecretIdentifier": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. KeyVault Secret URI for accessing the username."
+                            }
+                          },
+                          "passwordSecretIdentifier": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. KeyVault Secret URI for accessing the password."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "registryName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the parent registry. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the credential set."
+                      }
+                    },
+                    "managedIdentities": {
+                      "$ref": "#/definitions/managedIdentitiesType",
+                      "metadata": {
+                        "description": "Required. The managed identity definition for this resource."
+                      }
+                    },
+                    "authCredentials": {
+                      "$ref": "#/definitions/authCredentialsType",
+                      "metadata": {
+                        "description": "Required. List of authentication credentials stored for an upstream. Usually consists of a primary and an optional secondary credential."
+                      }
+                    },
+                    "loginServer": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The credentials are stored for this upstream or login server."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', null())), null())]"
+                  },
+                  "resources": {
+                    "registry": {
+                      "existing": true,
+                      "type": "Microsoft.ContainerRegistry/registries",
+                      "apiVersion": "2023-06-01-preview",
+                      "name": "[parameters('registryName')]"
+                    },
+                    "credentialSet": {
+                      "type": "Microsoft.ContainerRegistry/registries/credentialSets",
+                      "apiVersion": "2023-11-01-preview",
+                      "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
+                      "identity": "[variables('identity')]",
+                      "properties": {
+                        "authCredentials": "[parameters('authCredentials')]",
+                        "loginServer": "[parameters('loginServer')]"
+                      },
+                      "dependsOn": [
+                        "registry"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The Name of the Credential Set."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the Credential Set."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the Credential Set."
+                      },
+                      "value": "[resourceId('Microsoft.ContainerRegistry/registries/credentialSets', parameters('registryName'), parameters('name'))]"
+                    },
+                    "systemAssignedMIPrincipalId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The principal ID of the system assigned identity."
+                      },
+                      "value": "[coalesce(tryGet(tryGet(reference('credentialSet', '2023-11-01-preview', 'full'), 'identity'), 'principalId'), '')]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "registry"
+              ]
+            },
+            "registry_cacheRules": {
+              "copy": {
+                "name": "registry_cacheRules",
+                "count": "[length(coalesce(parameters('cacheRules'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-Registry-Cache-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "registryName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "sourceRepository": {
+                    "value": "[coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository]"
+                  },
+                  "name": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'name'), replace(replace(coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository, '/', '-'), '.', '-'))]"
+                  },
+                  "targetRepository": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'targetRepository'), coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository)]"
+                  },
+                  "credentialSetResourceId": {
+                    "value": "[tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'credentialSetResourceId')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.29.47.4906",
+                      "templateHash": "4294329625336671928"
+                    },
+                    "name": "Container Registries Cache",
+                    "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "registryName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the parent registry. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "[replace(replace(parameters('sourceRepository'), '/', '-'), '.', '-')]",
+                      "metadata": {
+                        "description": "Optional. The name of the cache rule. Will be dereived from the source repository name if not defined."
+                      }
+                    },
+                    "sourceRepository": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Source repository pulled from upstream."
+                      }
+                    },
+                    "targetRepository": {
+                      "type": "string",
+                      "defaultValue": "[parameters('sourceRepository')]",
+                      "metadata": {
+                        "description": "Optional. Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}."
+                      }
+                    },
+                    "credentialSetResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource ID of the credential store which is associated with the cache rule."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.ContainerRegistry/registries/cacheRules",
+                      "apiVersion": "2023-06-01-preview",
+                      "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
+                      "properties": {
+                        "sourceRepository": "[parameters('sourceRepository')]",
+                        "targetRepository": "[parameters('targetRepository')]",
+                        "credentialSetResourceId": "[parameters('credentialSetResourceId')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The Name of the Cache Rule."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the Cache Rule."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the Cache Rule."
+                      },
+                      "value": "[resourceId('Microsoft.ContainerRegistry/registries/cacheRules', parameters('registryName'), parameters('name'))]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "registry",
+                "registry_credentialSets"
+              ]
+            },
+            "registry_webhooks": {
+              "copy": {
+                "name": "registry_webhooks",
+                "count": "[length(coalesce(parameters('webhooks'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-Registry-Webhook-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('webhooks'), createArray())[copyIndex()].name]"
+                  },
+                  "registryName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "location": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'location'), parameters('location'))]"
+                  },
+                  "action": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'action'), createArray('chart_delete', 'chart_push', 'delete', 'push', 'quarantine'))]"
+                  },
+                  "customHeaders": {
+                    "value": "[tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'customHeaders')]"
+                  },
+                  "scope": {
+                    "value": "[tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'scope')]"
+                  },
+                  "status": {
+                    "value": "[tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'status')]"
+                  },
+                  "serviceUri": {
+                    "value": "[coalesce(parameters('webhooks'), createArray())[copyIndex()].serviceUri]"
+                  },
+                  "tags": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.29.47.4906",
+                      "templateHash": "14912363209364245195"
+                    },
+                    "name": "Azure Container Registry (ACR) Webhooks",
+                    "description": "This module deploys an Azure Container Registry (ACR) Webhook.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "registryName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent registry. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "[format('{0}webhook', parameters('registryName'))]",
+                      "minLength": 5,
+                      "maxLength": 50,
+                      "metadata": {
+                        "description": "Optional. The name of the registry webhook."
+                      }
+                    },
+                    "serviceUri": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The service URI for the webhook to post notifications."
+                      }
+                    },
+                    "status": {
+                      "type": "string",
+                      "defaultValue": "enabled",
+                      "allowedValues": [
+                        "disabled",
+                        "enabled"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The status of the webhook at the time the operation was called."
+                      }
+                    },
+                    "action": {
+                      "type": "array",
+                      "defaultValue": [
+                        "chart_delete",
+                        "chart_push",
+                        "delete",
+                        "push",
+                        "quarantine"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The list of actions that trigger the webhook to post notifications."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]",
+                      "metadata": {
+                        "description": "Optional. Location for all resources."
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Tags of the resource."
+                      }
+                    },
+                    "customHeaders": {
+                      "type": "object",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Custom headers that will be added to the webhook notifications."
+                      }
+                    },
+                    "scope": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The scope of repositories where the event can be triggered. For example, 'foo:*' means events for all tags under repository 'foo'. 'foo:bar' means events for 'foo:bar' only. 'foo' is equivalent to 'foo:latest'. Empty means all events."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "registry": {
+                      "existing": true,
+                      "type": "Microsoft.ContainerRegistry/registries",
+                      "apiVersion": "2023-06-01-preview",
+                      "name": "[parameters('registryName')]"
+                    },
+                    "webhook": {
+                      "type": "Microsoft.ContainerRegistry/registries/webhooks",
+                      "apiVersion": "2023-06-01-preview",
+                      "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
+                      "location": "[parameters('location')]",
+                      "tags": "[parameters('tags')]",
+                      "properties": {
+                        "actions": "[parameters('action')]",
+                        "customHeaders": "[parameters('customHeaders')]",
+                        "scope": "[parameters('scope')]",
+                        "serviceUri": "[parameters('serviceUri')]",
+                        "status": "[parameters('status')]"
+                      },
+                      "dependsOn": [
+                        "registry"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the webhook."
+                      },
+                      "value": "[resourceId('Microsoft.ContainerRegistry/registries/webhooks', parameters('registryName'), parameters('name'))]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the webhook."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the Azure container registry."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "actions": {
+                      "type": "array",
+                      "metadata": {
+                        "description": "The actions of the webhook."
+                      },
+                      "value": "[reference('webhook').actions]"
+                    },
+                    "status": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The status of the webhook."
+                      },
+                      "value": "[reference('webhook').status]"
+                    },
+                    "provistioningState": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The provisioning state of the webhook."
+                      },
+                      "value": "[reference('webhook').provisioningState]"
+                    },
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The location the resource was deployed into."
+                      },
+                      "value": "[reference('webhook', '2023-06-01-preview', 'full').location]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "registry"
+              ]
+            },
+            "registry_privateEndpoints": {
+              "copy": {
+                "name": "registry_privateEndpoints",
+                "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-registry-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'registry'), copyIndex()))]"
+                  },
+                  "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'registry'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'registry')))))), createObject('value', null()))]",
+                  "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'registry'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'registry')), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
+                  "subnetResourceId": {
+                    "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+                  },
+                  "location": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
+                  },
+                  "lock": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
+                  },
+                  "privateDnsZoneGroupName": {
+                    "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName')]"
+                  },
+                  "privateDnsZoneResourceIds": {
+                    "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneResourceIds')]"
+                  },
+                  "roleAssignments": {
+                    "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "tags": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+                  },
+                  "customDnsConfigs": {
+                    "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
+                  },
+                  "ipConfigurations": {
+                    "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'ipConfigurations')]"
+                  },
+                  "applicationSecurityGroupResourceIds": {
+                    "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'applicationSecurityGroupResourceIds')]"
+                  },
+                  "customNetworkInterfaceName": {
+                    "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customNetworkInterfaceName')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.25.53.49325",
+                      "templateHash": "4120048060064073955"
+                    },
+                    "name": "Private Endpoints",
+                    "description": "This module deploys a Private Endpoint.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "definitions": {
+                    "roleAssignmentType": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "roleDefinitionIdOrName": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                            }
+                          },
+                          "principalId": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                            }
+                          },
+                          "principalType": {
+                            "type": "string",
+                            "allowedValues": [
+                              "Device",
+                              "ForeignGroup",
+                              "Group",
+                              "ServicePrincipal",
+                              "User"
+                            ],
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The principal type of the assigned principal ID."
+                            }
+                          },
+                          "description": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The description of the role assignment."
+                            }
+                          },
+                          "condition": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                            }
+                          },
+                          "conditionVersion": {
+                            "type": "string",
+                            "allowedValues": [
+                              "2.0"
+                            ],
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Version of the condition."
+                            }
+                          },
+                          "delegatedManagedIdentityResourceId": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The Resource Id of the delegated managed identity resource."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true
+                    },
+                    "lockType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the name of lock."
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "allowedValues": [
+                            "CanNotDelete",
+                            "None",
+                            "ReadOnly"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the type of lock."
+                          }
+                        }
+                      },
+                      "nullable": true
+                    },
+                    "ipConfigurationsType": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The name of the resource that is unique within a resource group."
+                            }
+                          },
+                          "properties": {
+                            "type": "object",
+                            "properties": {
+                              "groupId": {
+                                "type": "string",
+                                "metadata": {
+                                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                                }
+                              },
+                              "memberName": {
+                                "type": "string",
+                                "metadata": {
+                                  "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+                                }
+                              },
+                              "privateIPAddress": {
+                                "type": "string",
+                                "metadata": {
+                                  "description": "Required. A private IP address obtained from the private endpoint's subnet."
+                                }
+                              }
+                            },
+                            "metadata": {
+                              "description": "Required. Properties of private endpoint IP configurations."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true
+                    },
+                    "manualPrivateLinkServiceConnectionsType": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The name of the private link service connection."
+                            }
+                          },
+                          "properties": {
+                            "type": "object",
+                            "properties": {
+                              "groupIds": {
+                                "type": "array",
+                                "metadata": {
+                                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                                }
+                              },
+                              "privateLinkServiceId": {
+                                "type": "string",
+                                "metadata": {
+                                  "description": "Required. The resource id of private link service."
+                                }
+                              },
+                              "requestMessage": {
+                                "type": "string",
+                                "metadata": {
+                                  "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                                }
+                              }
+                            },
+                            "metadata": {
+                              "description": "Required. Properties of private link service connection."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true
+                    },
+                    "privateLinkServiceConnectionsType": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The name of the private link service connection."
+                            }
+                          },
+                          "properties": {
+                            "type": "object",
+                            "properties": {
+                              "groupIds": {
+                                "type": "array",
+                                "metadata": {
+                                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                                }
+                              },
+                              "privateLinkServiceId": {
+                                "type": "string",
+                                "metadata": {
+                                  "description": "Required. The resource id of private link service."
+                                }
+                              },
+                              "requestMessage": {
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                                }
+                              }
+                            },
+                            "metadata": {
+                              "description": "Required. Properties of private link service connection."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true
+                    },
+                    "customDnsConfigType": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "fqdn": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. Fqdn that resolves to private endpoint IP address."
+                            }
+                          },
+                          "ipAddresses": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "metadata": {
+                              "description": "Required. A list of private IP addresses of the private endpoint."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the private endpoint resource to create."
+                      }
+                    },
+                    "subnetResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+                      }
+                    },
+                    "applicationSecurityGroupResourceIds": {
+                      "type": "array",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
+                      }
+                    },
+                    "customNetworkInterfaceName": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The custom name of the network interface attached to the private endpoint."
+                      }
+                    },
+                    "ipConfigurations": {
+                      "$ref": "#/definitions/ipConfigurationsType",
+                      "metadata": {
+                        "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
+                      }
+                    },
+                    "privateDnsZoneGroupName": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
+                      }
+                    },
+                    "privateDnsZoneResourceIds": {
+                      "type": "array",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]",
+                      "metadata": {
+                        "description": "Optional. Location for all Resources."
+                      }
+                    },
+                    "lock": {
+                      "$ref": "#/definitions/lockType",
+                      "metadata": {
+                        "description": "Optional. The lock settings of the service."
+                      }
+                    },
+                    "roleAssignments": {
+                      "$ref": "#/definitions/roleAssignmentType",
+                      "metadata": {
+                        "description": "Optional. Array of role assignments to create."
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
+                      }
+                    },
+                    "customDnsConfigs": {
+                      "$ref": "#/definitions/customDnsConfigType",
+                      "metadata": {
+                        "description": "Optional. Custom DNS configurations."
+                      }
+                    },
+                    "manualPrivateLinkServiceConnections": {
+                      "$ref": "#/definitions/manualPrivateLinkServiceConnectionsType",
+                      "metadata": {
+                        "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
+                      }
+                    },
+                    "privateLinkServiceConnections": {
+                      "$ref": "#/definitions/privateLinkServiceConnectionsType",
+                      "metadata": {
+                        "description": "Optional. A grouping of information about the connection to the remote resource."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "builtInRoleNames": {
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
+                      "DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314')]",
+                      "Domain Services Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'eeaeda52-9324-47f6-8069-5d5bade478b2')]",
+                      "Domain Services Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '361898ef-9ed1-48c2-849c-a832951106bb')]",
+                      "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+                    }
+                  },
+                  "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2023-07-01",
+                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "privateEndpoint": {
+                      "type": "Microsoft.Network/privateEndpoints",
+                      "apiVersion": "2023-04-01",
+                      "name": "[parameters('name')]",
+                      "location": "[parameters('location')]",
+                      "tags": "[parameters('tags')]",
+                      "properties": {
+                        "copy": [
+                          {
+                            "name": "applicationSecurityGroups",
+                            "count": "[length(coalesce(parameters('applicationSecurityGroupResourceIds'), createArray()))]",
+                            "input": {
+                              "id": "[coalesce(parameters('applicationSecurityGroupResourceIds'), createArray())[copyIndex('applicationSecurityGroups')]]"
+                            }
+                          }
+                        ],
+                        "customDnsConfigs": "[coalesce(parameters('customDnsConfigs'), createArray())]",
+                        "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
+                        "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
+                        "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
+                        "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
+                        "subnet": {
+                          "id": "[parameters('subnetResourceId')]"
+                        }
+                      }
+                    },
+                    "privateEndpoint_lock": {
+                      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+                      "type": "Microsoft.Authorization/locks",
+                      "apiVersion": "2020-05-01",
+                      "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+                      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+                      "properties": {
+                        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                      },
+                      "dependsOn": [
+                        "privateEndpoint"
+                      ]
+                    },
+                    "privateEndpoint_roleAssignments": {
+                      "copy": {
+                        "name": "privateEndpoint_roleAssignments",
+                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+                      "name": "[guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                      "properties": {
+                        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+                        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+                        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+                        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+                        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                      },
+                      "dependsOn": [
+                        "privateEndpoint"
+                      ]
+                    },
+                    "privateEndpoint_privateDnsZoneGroup": {
+                      "condition": "[not(empty(parameters('privateDnsZoneResourceIds')))]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('{0}-PrivateEndpoint-PrivateDnsZoneGroup', uniqueString(deployment().name))]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "name": {
+                            "value": "[coalesce(parameters('privateDnsZoneGroupName'), 'default')]"
+                          },
+                          "privateDNSResourceIds": {
+                            "value": "[coalesce(parameters('privateDnsZoneResourceIds'), createArray())]"
+                          },
+                          "privateEndpointName": {
+                            "value": "[parameters('name')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.25.53.49325",
+                              "templateHash": "11244630631275470040"
+                            },
+                            "name": "Private Endpoint Private DNS Zone Groups",
+                            "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
+                            "owner": "Azure/module-maintainers"
+                          },
+                          "parameters": {
+                            "privateEndpointName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent private endpoint. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "privateDNSResourceIds": {
+                              "type": "array",
+                              "minLength": 1,
+                              "maxLength": 5,
+                              "metadata": {
+                                "description": "Required. Array of private DNS zone resource IDs. A DNS zone group can support up to 5 DNS zones."
+                              }
+                            },
+                            "name": {
+                              "type": "string",
+                              "defaultValue": "default",
+                              "metadata": {
+                                "description": "Optional. The name of the private DNS zone group."
+                              }
+                            }
+                          },
+                          "variables": {
+                            "copy": [
+                              {
+                                "name": "privateDnsZoneConfigs",
+                                "count": "[length(parameters('privateDNSResourceIds'))]",
+                                "input": {
+                                  "name": "[last(split(parameters('privateDNSResourceIds')[copyIndex('privateDnsZoneConfigs')], '/'))]",
+                                  "properties": {
+                                    "privateDnsZoneId": "[parameters('privateDNSResourceIds')[copyIndex('privateDnsZoneConfigs')]]"
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+                              "apiVersion": "2023-04-01",
+                              "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
+                              "properties": {
+                                "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigs')]"
+                              }
+                            }
+                          ],
+                          "outputs": {
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the private endpoint DNS zone group."
+                              },
+                              "value": "[parameters('name')]"
+                            },
+                            "resourceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource ID of the private endpoint DNS zone group."
+                              },
+                              "value": "[resourceId('Microsoft.Network/privateEndpoints/privateDnsZoneGroups', parameters('privateEndpointName'), parameters('name'))]"
+                            },
+                            "resourceGroupName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource group the private endpoint DNS zone group was deployed into."
+                              },
+                              "value": "[resourceGroup().name]"
+                            }
+                          }
+                        }
+                      },
+                      "dependsOn": [
+                        "privateEndpoint"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the private endpoint was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the private endpoint."
+                      },
+                      "value": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the private endpoint."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The location the resource was deployed into."
+                      },
+                      "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
+                    },
+                    "groupId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The group Id for the private endpoint Group."
+                      },
+                      "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "registry"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The Name of the Azure container registry."
+              },
+              "value": "[parameters('name')]"
+            },
+            "loginServer": {
+              "type": "string",
+              "metadata": {
+                "description": "The reference to the Azure container registry."
+              },
+              "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), '2019-05-01').loginServer]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Azure container registry."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Azure container registry."
+              },
+              "value": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))]"
+            },
+            "systemAssignedMIPrincipalId": {
+              "type": "string",
+              "metadata": {
+                "description": "The principal ID of the system assigned identity."
+              },
+              "value": "[coalesce(tryGet(tryGet(reference('registry', '2023-06-01-preview', 'full'), 'identity'), 'principalId'), '')]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('registry', '2023-06-01-preview', 'full').location]"
+            },
+            "credentialSetsSystemAssignedMIPrincipalIds": {
+              "type": "array",
+              "metadata": {
+                "description": "The Principal IDs of the ACR Credential Sets system-assigned identities."
+              },
+              "copy": {
+                "count": "[length(range(0, length(parameters('credentialSets'))))]",
+                "input": "[reference(format('registry_credentialSets[{0}]', range(0, length(parameters('credentialSets')))[copyIndex()])).outputs.systemAssignedMIPrincipalId.value]"
+              }
+            },
+            "credentialSetsResourceIds": {
+              "type": "array",
+              "metadata": {
+                "description": "The Resource IDs of the ACR Credential Sets."
+              },
+              "copy": {
+                "count": "[length(range(0, length(parameters('credentialSets'))))]",
+                "input": "[reference(format('registry_credentialSets[{0}]', range(0, length(parameters('credentialSets')))[copyIndex()])).outputs.resourceId.value]"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the all resources was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "defaultDomain": {
+      "type": "string",
+      "metadata": {
+        "description": "The Default domain of the Managed Environment."
+      },
+      "value": "[reference('containerAppsEnvironment').outputs.defaultDomain.value]"
+    },
+    "environmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Managed Environment."
+      },
+      "value": "[reference('containerAppsEnvironment').outputs.name.value]"
+    },
+    "environmentResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Managed Environment."
+      },
+      "value": "[reference('containerAppsEnvironment').outputs.resourceId.value]"
+    },
+    "registryLoginServer": {
+      "type": "string",
+      "metadata": {
+        "description": "The reference to the Azure container registry."
+      },
+      "value": "[reference('containerRegistry').outputs.loginServer.value]"
+    },
+    "registryName": {
+      "type": "string",
+      "metadata": {
+        "description": "The Name of the Azure container registry."
+      },
+      "value": "[reference('containerRegistry').outputs.name.value]"
+    }
+  }
+}
