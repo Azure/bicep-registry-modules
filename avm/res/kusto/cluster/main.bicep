@@ -374,6 +374,7 @@ output location string = kustoCluster.location
 
 @description('The identity of the cluster.')
 output identity object = kustoCluster.identity
+
 @description('The private endpoints of the kusto cluster.')
 output privateEndpoints array = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
