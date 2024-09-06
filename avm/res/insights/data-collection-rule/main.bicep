@@ -31,31 +31,6 @@ param tags object?
 //   Deployments   //
 // =============== //
 
-var builtInRoleNames = {
-  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
-  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-  )
-  'User Access Administrator': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
-  )
-}
-
-var formattedRoleAssignments = [
-  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
-    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
-        roleAssignment.roleDefinitionIdOrName,
-        '/providers/Microsoft.Authorization/roleDefinitions/'
-      )
-      ? roleAssignment.roleDefinitionIdOrName
-      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
-  })
-]
-
 var dataCollectionRulePropertiesUnion = union(
   {
     description: dataCollectionRuleProperties.?description
@@ -103,7 +78,7 @@ resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' 
   properties: dataCollectionRulePropertiesUnion
 }
 
-// Using a separate resource for All kind as it requires that the "kind' is not set on the resource and 'kind: null' is not allowed for this resource type
+// Using a separate resource for parameter kind: 'All' as it requires that the "kind' is not set on the resource and 'kind: null' is not allowed for this resource type
 resource dataCollectionRuleAll 'Microsoft.Insights/dataCollectionRules@2023-03-11' = if (dataCollectionRuleProperties.kind == 'All') {
   location: location
   name: name
@@ -111,36 +86,27 @@ resource dataCollectionRuleAll 'Microsoft.Insights/dataCollectionRules@2023-03-1
   properties: dataCollectionRulePropertiesUnion
 }
 
-resource dataCollectionRule_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
-      ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+// Using a module as a workaround for issues with conditional scope: https://github.com/Azure/bicep/issues/7367
+module dataCollectionRule_lock 'modules/nested_lock.bicep' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: '${uniqueString(deployment().name, location)}-DCR-Lock'
+  params: {
+    lock: lock
+    dataCollectionRuleName: dataCollectionRuleProperties.kind == 'All'
+      ? dataCollectionRuleAll.name
+      : dataCollectionRule.name
   }
-  scope: dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll : dataCollectionRule
 }
 
-resource dataCollectionRule_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
-    name: roleAssignment.?name ?? guid(
-      dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll.id : dataCollectionRule.id,
-      roleAssignment.principalId,
-      roleAssignment.roleDefinitionId
-    )
-    properties: {
-      roleDefinitionId: roleAssignment.roleDefinitionId
-      principalId: roleAssignment.principalId
-      description: roleAssignment.?description
-      principalType: roleAssignment.?principalType
-      condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
-    }
-    scope: dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll : dataCollectionRule
+// Using a module as a workaround for issues with conditional scope: https://github.com/Azure/bicep/issues/7367
+module dataCollectionRule_roleAssignments 'modules/nested_roleAssignments.bicep' = if (!empty(roleAssignments ?? [])) {
+  name: '${uniqueString(deployment().name, location)}-DCR-RoleAssignments'
+  params: {
+    roleAssignments: roleAssignments
+    dataCollectionRuleName: dataCollectionRuleProperties.kind == 'All'
+      ? dataCollectionRuleAll.name
+      : dataCollectionRule.name
   }
-]
+}
 
 // =========== //
 //   Outputs   //
