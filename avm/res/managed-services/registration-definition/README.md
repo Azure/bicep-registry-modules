@@ -15,7 +15,6 @@ The templates are run towards the tenant where the Azure resources you want to d
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -62,7 +61,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
-    managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
+    managedByTenantId: '<managedByTenantId>'
     name: 'Component Validation - msrdmin Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
@@ -97,7 +96,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       ]
     },
     "managedByTenantId": {
-      "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
+      "value": "<managedByTenantId>"
     },
     "name": {
       "value": "Component Validation - msrdmin Subscription assignment"
@@ -149,7 +148,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
         roleDefinitionId: '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
       }
     ]
-    managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
+    managedByTenantId: '<managedByTenantId>'
     name: 'Component Validation - msrdmax Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
@@ -194,7 +193,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       ]
     },
     "managedByTenantId": {
-      "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
+      "value": "<managedByTenantId>"
     },
     "name": {
       "value": "Component Validation - msrdmax Subscription assignment"
@@ -240,7 +239,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
-    managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
+    managedByTenantId: '<managedByTenantId>'
     name: 'Component Validation - msrdrg Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
@@ -277,7 +276,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       ]
     },
     "managedByTenantId": {
-      "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
+      "value": "<managedByTenantId>"
     },
     "name": {
       "value": "Component Validation - msrdrg Subscription assignment"
@@ -326,7 +325,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
-    managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
+    managedByTenantId: '<managedByTenantId>'
     name: 'Component Validation - msrdwaf Subscription assignment'
     registrationDescription: 'Managed by Lighthouse'
     // Non-required parameters
@@ -362,7 +361,7 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       ]
     },
     "managedByTenantId": {
-      "value": "449fbe1d-9c99-4509-9014-4fd5cf25b014"
+      "value": "<managedByTenantId>"
     },
     "name": {
       "value": "Component Validation - msrdwaf Subscription assignment"
@@ -383,7 +382,6 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -512,7 +510,6 @@ Specify the name of the Resource Group to delegate access to. If not provided, d
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -521,10 +518,6 @@ Specify the name of the Resource Group to delegate access to. If not provided, d
 | `name` | string | The name of the registration definition. |
 | `resourceId` | string | The resource ID of the registration definition. |
 | `subscriptionName` | string | The subscription the registration definition was deployed into. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

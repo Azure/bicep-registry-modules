@@ -136,6 +136,17 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.servicebus-namespace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -354,7 +365,7 @@ resource serviceBusNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSe
   }
 ]
 
-module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-serviceBusNamespace-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -395,8 +406,7 @@ module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-e
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -408,14 +418,14 @@ module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-e
 ]
 
 resource serviceBusNamespace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(serviceBusNamespace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(
+      serviceBusNamespace.id,
+      roleAssignment.principalId,
+      roleAssignment.roleDefinitionId
+    )
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -442,6 +452,17 @@ output systemAssignedMIPrincipalId string = serviceBusNamespace.?identity.?princ
 @description('The location the resource was deployed into.')
 output location string = serviceBusNamespace.location
 
+@description('The private endpoints of the service bus namespace.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: serviceBusNamespace_privateEndpoints[i].outputs.name
+    resourceId: serviceBusNamespace_privateEndpoints[i].outputs.resourceId
+    groupId: serviceBusNamespace_privateEndpoints[i].outputs.groupId
+    customDnsConfig: serviceBusNamespace_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: serviceBusNamespace_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -463,6 +484,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -501,11 +525,20 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?

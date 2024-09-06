@@ -8,7 +8,6 @@ This module deploys a Public DNS zone.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -296,11 +295,13 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
     ]
     roleAssignments: [
       {
+        name: 'a8697438-70e8-4f40-baa4-6e90a57fe1dc'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -640,11 +641,13 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "a8697438-70e8-4f40-baa4-6e90a57fe1dc",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -839,7 +842,6 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -954,6 +956,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-aroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-aroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-aroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-aroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-aroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `a.roleAssignments.principalId`
@@ -1000,6 +1003,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `a.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `a.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1114,6 +1124,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-aaaaroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-aaaaroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-aaaaroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-aaaaroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-aaaaroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `aaaa.roleAssignments.principalId`
@@ -1160,6 +1171,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `aaaa.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `aaaa.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1289,6 +1307,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-caaroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-caaroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-caaroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-caaroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-caaroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `caa.roleAssignments.principalId`
@@ -1335,6 +1354,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `caa.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `caa.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1442,6 +1468,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-cnameroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-cnameroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-cnameroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-cnameroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-cnameroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `cname.roleAssignments.principalId`
@@ -1488,6 +1515,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `cname.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `cname.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1661,6 +1695,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-mxroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-mxroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-mxroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-mxroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-mxroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `mx.roleAssignments.principalId`
@@ -1707,6 +1742,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `mx.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `mx.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1813,6 +1855,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-nsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-nsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-nsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-nsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-nsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `ns.roleAssignments.principalId`
@@ -1859,6 +1902,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `ns.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `ns.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1965,6 +2015,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-ptrroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-ptrroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-ptrroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-ptrroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-ptrroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `ptr.roleAssignments.principalId`
@@ -2015,6 +2066,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `ptr.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `ptr.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -2061,6 +2119,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -2107,6 +2166,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -2186,6 +2252,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-soaroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-soaroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-soaroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-soaroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-soaroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `soa.roleAssignments.principalId`
@@ -2232,6 +2299,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `soa.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `soa.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -2386,6 +2460,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-srvroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-srvroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-srvroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-srvroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-srvroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `srv.roleAssignments.principalId`
@@ -2432,6 +2507,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `srv.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `srv.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -2569,6 +2651,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-txtroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-txtroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-txtroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-txtroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-txtroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `txt.roleAssignments.principalId`
@@ -2619,6 +2702,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `txt.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `txt.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -2663,19 +2753,15 @@ The text value of this TXT record.
 - Required: Yes
 - Type: array
 
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the DNS zone. |
+| `nameServers` | array | The name servers of the DNS zone. |
 | `resourceGroupName` | string | The resource group the DNS zone was deployed into. |
 | `resourceId` | string | The resource ID of the DNS zone. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

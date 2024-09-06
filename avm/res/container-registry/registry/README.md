@@ -19,7 +19,9 @@ This module deploys an Azure Container Registry (ACR).
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries) |
 | `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
+| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/credentialSets) |
 | `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
+| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/scopeMaps) |
 | `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
@@ -33,12 +35,122 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/container-registry/registry:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using cache rules](#example-1-using-cache-rules)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using encryption with Customer-Managed-Key](#example-3-using-encryption-with-customer-managed-key)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Using `scopeMaps` in parameter set](#example-5-using-scopemaps-in-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using cache rules_
+
+This instance deploys the module with a credential set and a cache rule.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
+  name: 'registryDeployment'
+  params: {
+    // Required parameters
+    name: '<name>'
+    // Non-required parameters
+    acrAdminUserEnabled: false
+    acrSku: 'Standard'
+    cacheRules: [
+      {
+        credentialSetResourceId: '<credentialSetResourceId>'
+        name: 'customRule'
+        sourceRepository: 'docker.io/library/hello-world'
+        targetRepository: 'cached-docker-hub/hello-world'
+      }
+    ]
+    credentialSets: [
+      {
+        authCredentials: [
+          {
+            name: 'Credential1'
+            passwordSecretIdentifier: '<passwordSecretIdentifier>'
+            usernameSecretIdentifier: '<usernameSecretIdentifier>'
+          }
+        ]
+        loginServer: 'docker.io'
+        managedIdentities: {
+          systemAssigned: true
+        }
+        name: 'default'
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "<name>"
+    },
+    // Non-required parameters
+    "acrAdminUserEnabled": {
+      "value": false
+    },
+    "acrSku": {
+      "value": "Standard"
+    },
+    "cacheRules": {
+      "value": [
+        {
+          "credentialSetResourceId": "<credentialSetResourceId>",
+          "name": "customRule",
+          "sourceRepository": "docker.io/library/hello-world",
+          "targetRepository": "cached-docker-hub/hello-world"
+        }
+      ]
+    },
+    "credentialSets": {
+      "value": [
+        {
+          "authCredentials": [
+            {
+              "name": "Credential1",
+              "passwordSecretIdentifier": "<passwordSecretIdentifier>",
+              "usernameSecretIdentifier": "<usernameSecretIdentifier>"
+            }
+          ],
+          "loginServer": "docker.io",
+          "managedIdentities": {
+            "systemAssigned": true
+          },
+          "name": "default"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -90,7 +202,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using encryption with Customer-Managed-Key_
+### Example 3: _Using encryption with Customer-Managed-Key_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -170,7 +282,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -189,16 +301,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     acrAdminUserEnabled: false
     acrSku: 'Premium'
     azureADAuthenticationAsArmPolicyStatus: 'enabled'
-    cacheRules: [
-      {
-        name: 'customRule'
-        sourceRepository: 'docker.io/library/hello-world'
-        targetRepository: 'cached-docker-hub/hello-world'
-      }
-      {
-        sourceRepository: 'docker.io/library/hello-world'
-      }
-    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -259,11 +361,13 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     ]
     roleAssignments: [
       {
+        name: '60395919-cfd3-47bf-8349-775ddebb255e'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -317,18 +421,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     },
     "azureADAuthenticationAsArmPolicyStatus": {
       "value": "enabled"
-    },
-    "cacheRules": {
-      "value": [
-        {
-          "name": "customRule",
-          "sourceRepository": "docker.io/library/hello-world",
-          "targetRepository": "cached-docker-hub/hello-world"
-        },
-        {
-          "sourceRepository": "docker.io/library/hello-world"
-        }
-      ]
     },
     "diagnosticSettings": {
       "value": [
@@ -409,11 +501,13 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "60395919-cfd3-47bf-8349-775ddebb255e",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -456,7 +550,79 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _Using `scopeMaps` in parameter set_
+
+This instance deploys the module with the scopeMaps feature.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
+  name: 'registryDeployment'
+  params: {
+    // Required parameters
+    name: 'crrs001'
+    // Non-required parameters
+    acrSku: 'Standard'
+    location: '<location>'
+    scopeMaps: [
+      {
+        actions: [
+          'repositories/*/content/read'
+        ]
+        description: 'This is a test for scopeMaps feature.'
+        name: 'testscopemap'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crrs001"
+    },
+    // Non-required parameters
+    "acrSku": {
+      "value": "Standard"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "scopeMaps": {
+      "value": [
+        {
+          "actions": [
+            "repositories/*/content/read"
+          ],
+          "description": "This is a test for scopeMaps feature.",
+          "name": "testscopemap"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -598,7 +764,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -615,7 +780,8 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 | [`acrSku`](#parameter-acrsku) | string | Tier of your Azure container registry. |
 | [`anonymousPullEnabled`](#parameter-anonymouspullenabled) | bool | Enables registry-wide pull from unauthenticated clients. It's in preview and available in the Standard and Premium service tiers. |
 | [`azureADAuthenticationAsArmPolicyStatus`](#parameter-azureadauthenticationasarmpolicystatus) | string | The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled. |
-| [`cacheRules`](#parameter-cacherules) | array | Array of Cache Rules. Note: This is a preview feature ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache#cache-for-acr-preview)). |
+| [`cacheRules`](#parameter-cacherules) | array | Array of Cache Rules. |
+| [`credentialSets`](#parameter-credentialsets) | array | Array of Credential Sets. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`dataEndpointEnabled`](#parameter-dataendpointenabled) | bool | Enable a single data endpoint per region for serving data. Not relevant in case of disabled public access. Note, requires the 'acrSku' to be 'Premium'. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -634,6 +800,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 | [`retentionPolicyDays`](#parameter-retentionpolicydays) | int | The number of days to retain an untagged manifest after which it gets purged. |
 | [`retentionPolicyStatus`](#parameter-retentionpolicystatus) | string | The value that indicates whether the retention policy is enabled or not. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`scopeMaps`](#parameter-scopemaps) | array | Scope maps setting. |
 | [`softDeletePolicyDays`](#parameter-softdeletepolicydays) | int | The number of days after which a soft-deleted item is permanently deleted. |
 | [`softDeletePolicyStatus`](#parameter-softdeletepolicystatus) | string | Soft Delete policy status. Default is disabled. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -697,10 +864,18 @@ The value that indicates whether the policy for using ARM audience token for a c
 
 ### Parameter: `cacheRules`
 
-Array of Cache Rules. Note: This is a preview feature ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache#cache-for-acr-preview)).
+Array of Cache Rules.
 
 - Required: No
 - Type: array
+
+### Parameter: `credentialSets`
+
+Array of Credential Sets.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `customerManagedKey`
 
@@ -1299,6 +1474,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-privateendpointsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-privateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `privateEndpoints.roleAssignments.principalId`
@@ -1345,6 +1521,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1461,6 +1644,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1511,6 +1695,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -1527,6 +1718,47 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `scopeMaps`
+
+Scope maps setting.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`actions`](#parameter-scopemapsactions) | array | The list of scoped permissions for registry artifacts. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-scopemapsdescription) | string | The user friendly description of the scope map. |
+| [`name`](#parameter-scopemapsname) | string | The name of the scope map. |
+
+### Parameter: `scopeMaps.actions`
+
+The list of scoped permissions for registry artifacts.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `scopeMaps.description`
+
+The user friendly description of the scope map.
+
+- Required: No
+- Type: string
+
+### Parameter: `scopeMaps.name`
+
+The name of the scope map.
+
+- Required: No
+- Type: string
 
 ### Parameter: `softDeletePolicyDays`
 
@@ -1595,11 +1827,12 @@ Whether or not zone redundancy is enabled for this container registry.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `credentialSetsResourceIds` | array | The Resource IDs of the ACR Credential Sets. |
+| `credentialSetsSystemAssignedMIPrincipalIds` | array | The Principal IDs of the ACR Credential Sets system-assigned identities. |
 | `location` | string | The location the resource was deployed into. |
 | `loginServer` | string | The reference to the Azure container registry. |
 | `name` | string | The Name of the Azure container registry. |

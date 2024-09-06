@@ -59,99 +59,100 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    administrators: [
-      {
-        objectId: nestedDependencies.outputs.managedIdentityClientId
-        principalName: nestedDependencies.outputs.managedIdentityName
-        principalType: 'ServicePrincipal'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      administrators: [
+        {
+          objectId: nestedDependencies.outputs.managedIdentityClientId
+          principalName: nestedDependencies.outputs.managedIdentityName
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      skuName: 'Standard_D2s_v3'
+      tier: 'GeneralPurpose'
+      backupRetentionDays: 20
+      configurations: [
+        {
+          name: 'log_min_messages'
+          source: 'user-override'
+          value: 'INFO'
+        }
+      ]
+      databases: [
+        {
+          charset: 'UTF8'
+          collation: 'en_US.utf8'
+          name: 'testdb1'
+        }
+        {
+          name: 'testdb2'
+        }
+      ]
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      firewallRules: [
+        {
+          endIpAddress: '0.0.0.0'
+          name: 'AllowAllWindowsAzureIps'
+          startIpAddress: '0.0.0.0'
+        }
+        {
+          endIpAddress: '10.10.10.10'
+          name: 'test-rule1'
+          startIpAddress: '10.10.10.1'
+        }
+        {
+          endIpAddress: '100.100.100.10'
+          name: 'test-rule2'
+          startIpAddress: '100.100.100.1'
+        }
+      ]
+      geoRedundantBackup: 'Disabled'
+      highAvailability: 'SameZone'
+      location: resourceLocation
+      storageSizeGB: 1024
+      version: '14'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
-    skuName: 'Standard_D2s_v3'
-    tier: 'GeneralPurpose'
-    backupRetentionDays: 20
-    configurations: [
-      {
-        name: 'log_min_messages'
-        source: 'user-override'
-        value: 'INFO'
-      }
-    ]
-    databases: [
-      {
-        charset: 'UTF8'
-        collation: 'en_US.utf8'
-        name: 'testdb1'
-      }
-      {
-        name: 'testdb2'
-      }
-    ]
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    firewallRules: [
-      {
-        endIpAddress: '0.0.0.0'
-        name: 'AllowAllWindowsAzureIps'
-        startIpAddress: '0.0.0.0'
-      }
-      {
-        endIpAddress: '10.10.10.10'
-        name: 'test-rule1'
-        startIpAddress: '10.10.10.1'
-      }
-      {
-        endIpAddress: '100.100.100.10'
-        name: 'test-rule2'
-        startIpAddress: '100.100.100.1'
-      }
-    ]
-    geoRedundantBackup: 'Disabled'
-    highAvailability: 'SameZone'
-    location: resourceLocation
-    storageSizeGB: 1024
-    version: '14'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
-}]
+]
