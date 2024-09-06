@@ -20,6 +20,10 @@ This module deploys the Managed DevOps Pool resource.
 | `Microsoft.DevOpsInfrastructure/pools` | [2024-04-04-preview](https://learn.microsoft.com/en-us/azure/templates) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
+## Notes
+
+The Managed DevOps Pool resource requires external permissions in Azure DevOps. Make sure that the deployment principal has permission in Azure DevOps : [Managed DevOps Pools - Verify Azure DevOps Permissions](https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/prerequisites?view=azure-devops&tabs=azure-portal#verify-azure-devops-permissions)
+
 ## Usage examples
 
 The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.
