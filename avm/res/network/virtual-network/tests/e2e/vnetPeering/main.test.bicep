@@ -80,7 +80,7 @@ module testDeployment '../../../main.bicep' = [
           remotePeeringAllowVirtualNetworkAccess: true
           remotePeeringEnabled: true
           remotePeeringName: 'customName'
-          remoteVirtualNetworkId: nestedDependencies.outputs.virtualNetworkResourceId
+          remoteVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
           useRemoteGateways: false
         }
       ]
@@ -90,8 +90,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
