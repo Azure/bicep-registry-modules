@@ -8,7 +8,6 @@ This module deploys a Compute Image.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -121,11 +120,13 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     osState: 'Generalized'
     roleAssignments: [
       {
+        name: '2dfcdedd-220c-4b6b-b8bd-58e22e0c5434'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -193,11 +194,13 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "2dfcdedd-220c-4b6b-b8bd-58e22e0c5434",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -321,7 +324,6 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -490,6 +492,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -536,6 +539,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -588,7 +598,6 @@ Default is false. Specifies whether an image is zone resilient or not. Zone resi
 - Type: bool
 - Default: `False`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -597,10 +606,6 @@ Default is false. Specifies whether an image is zone resilient or not. Zone resi
 | `name` | string | The name of the image. |
 | `resourceGroupName` | string | The resource group the image was deployed into. |
 | `resourceId` | string | The resource ID of the image. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

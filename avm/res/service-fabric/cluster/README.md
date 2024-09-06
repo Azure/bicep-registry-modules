@@ -8,7 +8,6 @@ This module deploys a Service Fabric Cluster.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -275,11 +274,13 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     ]
     roleAssignments: [
       {
+        name: '26b52f01-eebc-4056-a516-41541369258c'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -491,11 +492,13 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "26b52f01-eebc-4056-a516-41541369258c",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -899,7 +902,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -1353,6 +1355,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1399,6 +1402,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1525,7 +1535,6 @@ Boolean to pause automatic runtime version upgrades to the cluster.
 - Type: bool
 - Default: `False`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1535,10 +1544,6 @@ Boolean to pause automatic runtime version upgrades to the cluster.
 | `name` | string | The Service Fabric Cluster name. |
 | `resourceGroupName` | string | The Service Fabric Cluster resource group. |
 | `resourceId` | string | The Service Fabric Cluster resource ID. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

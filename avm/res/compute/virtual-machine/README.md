@@ -19,10 +19,11 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates) |
-| `Microsoft.Compute/virtualMachines` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachines) |
+| `Microsoft.Compute/virtualMachines` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-01/virtualMachines) |
 | `Microsoft.Compute/virtualMachines/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions) |
 | `Microsoft.DevTestLab/schedules` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules) |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
+| `Microsoft.Insights/dataCollectionRuleAssociations` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRuleAssociations) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Maintenance/configurationAssignments` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments) |
 | `Microsoft.Network/networkInterfaces` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkInterfaces) |
@@ -415,9 +416,20 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               publicIpNameSuffix: '-pip-01'
               roleAssignments: [
                 {
+                  name: '696e6067-3ddc-4b71-bf97-9caebeba441a'
                   principalId: '<principalId>'
                   principalType: 'ServicePrincipal'
-                  roleDefinitionIdOrName: 'Reader'
+                  roleDefinitionIdOrName: 'Owner'
+                }
+                {
+                  principalId: '<principalId>'
+                  principalType: 'ServicePrincipal'
+                  roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+                }
+                {
+                  principalId: '<principalId>'
+                  principalType: 'ServicePrincipal'
+                  roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
                 }
               ]
               zones: [
@@ -432,9 +444,20 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         name: 'nic-test-01'
         roleAssignments: [
           {
+            name: 'ff72f58d-a3cf-42fd-9c27-c61906bdddfe'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
       }
@@ -543,8 +566,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     extensionMonitoringAgentConfig: {
+      dataCollectionRuleAssociations: [
+        {
+          dataCollectionRuleResourceId: '<dataCollectionRuleResourceId>'
+          name: 'SendMetricsToLAW'
+        }
+      ]
       enabled: true
-      monitoringWorkspaceResourceId: '<monitoringWorkspaceResourceId>'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -580,11 +608,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     rebootSetting: 'IfRequired'
     roleAssignments: [
       {
+        name: 'eb01de52-d2be-4272-a7b9-13de6c399e27'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -680,9 +710,20 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                 "publicIpNameSuffix": "-pip-01",
                 "roleAssignments": [
                   {
+                    "name": "696e6067-3ddc-4b71-bf97-9caebeba441a",
                     "principalId": "<principalId>",
                     "principalType": "ServicePrincipal",
-                    "roleDefinitionIdOrName": "Reader"
+                    "roleDefinitionIdOrName": "Owner"
+                  },
+                  {
+                    "principalId": "<principalId>",
+                    "principalType": "ServicePrincipal",
+                    "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+                  },
+                  {
+                    "principalId": "<principalId>",
+                    "principalType": "ServicePrincipal",
+                    "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
                   }
                 ],
                 "zones": [
@@ -697,9 +738,20 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "name": "nic-test-01",
           "roleAssignments": [
             {
+              "name": "ff72f58d-a3cf-42fd-9c27-c61906bdddfe",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ]
         }
@@ -846,8 +898,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "extensionMonitoringAgentConfig": {
       "value": {
+        "dataCollectionRuleAssociations": [
+          {
+            "dataCollectionRuleResourceId": "<dataCollectionRuleResourceId>",
+            "name": "SendMetricsToLAW"
+          }
+        ],
         "enabled": true,
-        "monitoringWorkspaceResourceId": "<monitoringWorkspaceResourceId>",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -899,11 +956,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "eb01de52-d2be-4272-a7b9-13de6c399e27",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -1148,6 +1207,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     extensionMonitoringAgentConfig: {
+      dataCollectionRuleAssociations: [
+        {
+          dataCollectionRuleResourceId: '<dataCollectionRuleResourceId>'
+          name: 'SendMetricsToLAW'
+        }
+      ]
       enabled: true
       tags: {
         Environment: 'Non-Prod'
@@ -1470,6 +1535,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "extensionMonitoringAgentConfig": {
       "value": {
+        "dataCollectionRuleAssociations": [
+          {
+            "dataCollectionRuleResourceId": "<dataCollectionRuleResourceId>",
+            "name": "SendMetricsToLAW"
+          }
+        ],
         "enabled": true,
         "tags": {
           "Environment": "Non-Prod",
@@ -2100,9 +2171,20 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               publicIpNameSuffix: '-pip-01'
               roleAssignments: [
                 {
+                  name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
                   principalId: '<principalId>'
                   principalType: 'ServicePrincipal'
-                  roleDefinitionIdOrName: 'Reader'
+                  roleDefinitionIdOrName: 'Owner'
+                }
+                {
+                  principalId: '<principalId>'
+                  principalType: 'ServicePrincipal'
+                  roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+                }
+                {
+                  principalId: '<principalId>'
+                  principalType: 'ServicePrincipal'
+                  roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
                 }
               ]
               zones: [
@@ -2117,9 +2199,20 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         name: 'nic-test-01'
         roleAssignments: [
           {
+            name: '95fc1cc2-05ed-4f5a-a22c-a6ca852df7e7'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
       }
@@ -2262,8 +2355,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     extensionMonitoringAgentConfig: {
+      dataCollectionRuleAssociations: [
+        {
+          dataCollectionRuleResourceId: '<dataCollectionRuleResourceId>'
+          name: 'SendMetricsToLAW'
+        }
+      ]
       enabled: true
-      monitoringWorkspaceResourceId: '<monitoringWorkspaceResourceId>'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -2294,11 +2392,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     rebootSetting: 'IfRequired'
     roleAssignments: [
       {
+        name: 'c70e8c48-6945-4607-9695-1098ba5a86ed'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -2395,9 +2495,20 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                 "publicIpNameSuffix": "-pip-01",
                 "roleAssignments": [
                   {
+                    "name": "e962e7c1-261a-4afd-b5ad-17a640a0b7bc",
                     "principalId": "<principalId>",
                     "principalType": "ServicePrincipal",
-                    "roleDefinitionIdOrName": "Reader"
+                    "roleDefinitionIdOrName": "Owner"
+                  },
+                  {
+                    "principalId": "<principalId>",
+                    "principalType": "ServicePrincipal",
+                    "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+                  },
+                  {
+                    "principalId": "<principalId>",
+                    "principalType": "ServicePrincipal",
+                    "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
                   }
                 ],
                 "zones": [
@@ -2412,9 +2523,20 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "name": "nic-test-01",
           "roleAssignments": [
             {
+              "name": "95fc1cc2-05ed-4f5a-a22c-a6ca852df7e7",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ]
         }
@@ -2599,8 +2721,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "extensionMonitoringAgentConfig": {
       "value": {
+        "dataCollectionRuleAssociations": [
+          {
+            "dataCollectionRuleResourceId": "<dataCollectionRuleResourceId>",
+            "name": "SendMetricsToLAW"
+          }
+        ],
         "enabled": true,
-        "monitoringWorkspaceResourceId": "<monitoringWorkspaceResourceId>",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -2647,11 +2774,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "c70e8c48-6945-4607-9695-1098ba5a86ed",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -3083,7 +3212,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -3124,6 +3252,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`disablePasswordAuthentication`](#parameter-disablepasswordauthentication) | bool | Specifies whether password authentication should be disabled. |
 | [`enableAutomaticUpdates`](#parameter-enableautomaticupdates) | bool | Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. When patchMode is set to Manual, this parameter must be set to false. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning. |
 | [`enableEvictionPolicy`](#parameter-enableevictionpolicy) | bool | Specifies the eviction policy for the low priority virtual machine. Will result in 'Deallocate' eviction policy. |
+| [`enableHotpatching`](#parameter-enablehotpatching) | bool | Enables customers to patch their Azure VMs without requiring a reboot. For enableHotpatching, the 'provisionVMAgent' must be set to true and 'patchMode' must be set to 'AutomaticByPlatform'. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionAtHost`](#parameter-encryptionathost) | bool | This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs. |
 | [`extensionAadJoinConfig`](#parameter-extensionaadjoinconfig) | object | The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed. To enroll in Intune, add the setting mdmId: "0000000a-0000-0000-c000-000000000000". |
@@ -3160,7 +3289,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sasTokenValidityLength`](#parameter-sastokenvaliditylength) | string | SAS token validity length to use to download files from storage accounts. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours. |
 | [`secureBootEnabled`](#parameter-securebootenabled) | bool | Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings. |
-| [`securityType`](#parameter-securitytype) | string | Specifies the SecurityType of the virtual machine. It is set as TrustedLaunch to enable UefiSettings. |
+| [`securityType`](#parameter-securitytype) | string | Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`timeZone`](#parameter-timezone) | string | Specifies the time zone of the virtual machine. e.g. 'Pacific Standard Time'. Possible values can be `TimeZoneInfo.id` value from time zones returned by `TimeZoneInfo.GetSystemTimeZones`. |
 | [`ultraSSDEnabled`](#parameter-ultrassdenabled) | bool | The flag that enables or disables a capability to have one or more managed data disks with UltraSSD_LRS storage account type on the VM or VMSS. Managed disks with storage account type UltraSSD_LRS can be added to a virtual machine or virtual machine scale set only if this property is enabled. |
@@ -3654,6 +3783,14 @@ Specifies the eviction policy for the low priority virtual machine. Will result 
 - Type: bool
 - Default: `False`
 
+### Parameter: `enableHotpatching`
+
+Enables customers to patch their Azure VMs without requiring a reboot. For enableHotpatching, the 'provisionVMAgent' must be set to true and 'patchMode' must be set to 'AutomaticByPlatform'.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -3816,6 +3953,7 @@ The configuration for the [Monitoring Agent] extension. Must at least contain th
 - Default:
   ```Bicep
   {
+      dataCollectionRuleAssociations: []
       enabled: false
   }
   ```
@@ -4088,6 +4226,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -4138,6 +4277,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -4173,11 +4319,19 @@ Specifies whether secure boot should be enabled on the virtual machine. This par
 
 ### Parameter: `securityType`
 
-Specifies the SecurityType of the virtual machine. It is set as TrustedLaunch to enable UefiSettings.
+Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set.
 
 - Required: No
 - Type: string
 - Default: `''`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'ConfidentialVM'
+    'TrustedLaunch'
+  ]
+  ```
 
 ### Parameter: `tags`
 
@@ -4233,7 +4387,6 @@ Do not provide a value! This date value is used to generate a registration token
 - Required: No
 - Type: string
 - Default: `[utcNow('u')]`
-
 
 ## Outputs
 

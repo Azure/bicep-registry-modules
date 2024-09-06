@@ -66,9 +66,13 @@ module testDeployment '../../../main.bicep' = [
         {
           service: 'blob'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
         }
       ]
       blobServices: {

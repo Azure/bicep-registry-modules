@@ -10,7 +10,6 @@ This module deploys a Public SSH Key.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -106,11 +105,13 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
     publicKey: '<publicKey>'
     roleAssignments: [
       {
+        name: '74ec0421-c3f4-46f2-acf0-b519fe6fcf1c'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -165,11 +166,13 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "74ec0421-c3f4-46f2-acf0-b519fe6fcf1c",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -309,7 +312,6 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -417,6 +419,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -467,6 +470,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -491,7 +501,6 @@ Tags of the availability set resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -500,10 +509,6 @@ Tags of the availability set resource.
 | `name` | string | The name of the Public SSH Key. |
 | `resourceGroupName` | string | The name of the Resource Group the Public SSH Key was created in. |
 | `resourceId` | string | The resource ID of the Public SSH Key. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

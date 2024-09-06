@@ -8,7 +8,6 @@ This module deploys an Azure Active Directory Domain Services (AADDS) instance.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -186,7 +185,6 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -663,6 +661,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -709,6 +708,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -805,7 +811,6 @@ The value is to enable clients making request using TLSv1.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -814,10 +819,6 @@ The value is to enable clients making request using TLSv1.
 | `name` | string | The domain name of the Azure Active Directory Domain Services(Azure ADDS). |
 | `resourceGroupName` | string | The name of the resource group the Azure Active Directory Domain Services(Azure ADDS) was created in. |
 | `resourceId` | string | The resource ID of the Azure Active Directory Domain Services(Azure ADDS). |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 

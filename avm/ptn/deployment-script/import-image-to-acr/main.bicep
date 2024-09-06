@@ -32,6 +32,12 @@ param managedIdentityName string?
 })
 param image string
 
+@description('Optional. The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline.')
+@metadata({
+  example: 'your-image-name:tag'
+})
+param newImageName string = last(split(image, '/'))
+
 @description('Optional. The image will be overwritten if it already exists in the ACR with the same tag. Default is false.')
 param overwriteExistingImage bool = false
 
@@ -167,6 +173,10 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.2.3' = {
           value: image
         }
         {
+          name: 'newImageName'
+          value: newImageName
+        }
+        {
           name: 'overwriteExistingImage'
           value: toLower(string(overwriteExistingImage))
         }
@@ -200,9 +210,9 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.2.3' = {
     do
       echo "Importing Image ($retryLoopCount): $imageName into ACR: $acrName\n"
       if [ $overwriteExistingImage = 'true' ]; then
-        az acr import -n $acrName --source $imageName --force
+        az acr import -n $acrName --source $imageName --image $newImageName --force
       else
-        az acr import -n $acrName --source $imageName
+        az acr import -n $acrName --source $imageName --image $newImageName
       fi
 
       sleep $retrySleep

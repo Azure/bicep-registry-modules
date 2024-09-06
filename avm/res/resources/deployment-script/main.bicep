@@ -37,8 +37,8 @@ param scriptContent string?
 @description('Optional. Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent parameter instead.')
 param primaryScriptUri string?
 
-@description('Optional. The environment variables to pass over to the script. The list is passed as an object with a key name "secureList" and the value is the list of environment variables (array). The list must have a \'name\' and a \'value\' or a \'secretValue\' property for each object.')
-param environmentVariables environmentVariableType
+@description('Optional. The environment variables to pass over to the script.')
+param environmentVariables environmentVariableType[]?
 
 @description('Optional. List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent).')
 param supportingScriptUris array?
@@ -101,6 +101,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 var subnetIds = [
   for subnetResourceId in (subnetResourceIds ?? []): {
@@ -176,7 +187,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     containerSettings: !empty(containerSettings) ? containerSettings : null
     storageAccountSettings: !empty(storageAccountResourceId) ? storageAccountSettings : null
     arguments: arguments
-    environmentVariables: environmentVariables != null ? environmentVariables!.secureList : []
+    environmentVariables: environmentVariables
     scriptContent: !empty(scriptContent) ? scriptContent : null
     primaryScriptUri: !empty(primaryScriptUri) ? primaryScriptUri : null
     supportingScriptUris: !empty(supportingScriptUris) ? supportingScriptUris : null
@@ -199,14 +210,10 @@ resource deploymentScript_lock 'Microsoft.Authorization/locks@2020-05-01' = if (
 }
 
 resource deploymentScript_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(deploymentScript.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(deploymentScript.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -240,7 +247,7 @@ output name string = deploymentScript.name
 output location string = deploymentScript.location
 
 @description('The output of the deployment script.')
-output outputs object = contains(deploymentScript.properties, 'outputs') ? deploymentScript.properties.outputs : {}
+output outputs object = deploymentScript.properties.?outputs ?? {}
 
 @description('The logs of the deployment script.')
 output deploymentScriptLogs string[] = split(deploymentScriptLogs.properties.log, '\n')
@@ -263,6 +270,9 @@ type managedIdentitiesType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -285,12 +295,14 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]?
 
-@secure()
 type environmentVariableType = {
-  @description('Optional. The list of environment variables to pass over to the deployment script.')
-  secureList: {
-    name: string
-    secureValue: string?
-    value: string?
-  }[]
-}?
+  @description('Required. The name of the environment variable.')
+  name: string
+
+  @description('Required. The value of the secure environment variable.')
+  @secure()
+  secureValue: string?
+
+  @description('Required. The value of the environment variable.')
+  value: string?
+}
