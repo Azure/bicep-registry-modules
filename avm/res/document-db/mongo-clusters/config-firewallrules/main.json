@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "17644858630860177754"
+      "version": "0.28.1.47646",
+      "templateHash": "9519342785600081088"
     },
     "name": "DocumentDB Mongo Clusters Config FireWall Rules",
     "description": "This module config firewall rules for DocumentDB Mongo Cluster.",
