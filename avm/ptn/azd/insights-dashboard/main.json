@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "6814263572107896565"
+      "templateHash": "7848250028319427275"
     },
     "name": "Application Insights Components",
     "description": "Creates an Application Insights instance based on an existing Log Analytics workspace.",
@@ -2350,7 +2350,7 @@
       "metadata": {
         "description": "The resource name of the dashboard."
       },
-      "value": "[reference('applicationInsightsDashboard').outputs.dashboardName.value]"
+      "value": "[if(not(empty(parameters('dashboardName'))), reference('applicationInsightsDashboard').outputs.dashboardName.value, '')]"
     },
     "applicationInsightsResourceId": {
       "type": "string",
@@ -2364,7 +2364,7 @@
       "metadata": {
         "description": "The resource ID of the dashboard."
       },
-      "value": "[reference('applicationInsightsDashboard').outputs.dashboardResourceId.value]"
+      "value": "[if(not(empty(parameters('dashboardName'))), reference('applicationInsightsDashboard').outputs.dashboardResourceId.value, '')]"
     },
     "applicationInsightsConnectionString": {
       "type": "string",

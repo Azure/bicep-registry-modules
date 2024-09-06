@@ -31,6 +31,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/insights-dashboard:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
 
 ### Example 1: _Using only defaults_
 
@@ -49,7 +50,6 @@ module insightsDashboard 'br/public:avm/ptn/azd/insights-dashboard:<version>' = 
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'aidmin001'
     // Non-required parameters
-    dashboardName: '<dashboardName>'
     location: '<location>'
   }
 }
@@ -75,8 +75,73 @@ module insightsDashboard 'br/public:avm/ptn/azd/insights-dashboard:<version>' = 
       "value": "aidmin001"
     },
     // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
+
+This instance deploys the module using large parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module insightsDashboard 'br/public:avm/ptn/azd/insights-dashboard:<version>' = {
+  name: 'insightsDashboardDeployment'
+  params: {
+    // Required parameters
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    name: 'icmax001'
+    // Non-required parameters
+    applicationType: 'web'
+    dashboardName: 'icmaxdb001'
+    enableTelemetry: true
+    kind: 'web'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    "name": {
+      "value": "icmax001"
+    },
+    // Non-required parameters
+    "applicationType": {
+      "value": "web"
+    },
     "dashboardName": {
-      "value": "<dashboardName>"
+      "value": "icmaxdb001"
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "kind": {
+      "value": "web"
     },
     "location": {
       "value": "<location>"

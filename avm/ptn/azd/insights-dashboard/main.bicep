@@ -94,13 +94,15 @@ output resourceGroupName string = resourceGroup().name
 output applicationInsightsName string = applicationInsights.outputs.name
 
 @description('The resource name of the dashboard.')
-output dashboardName string = applicationInsightsDashboard.outputs.dashboardName
+output dashboardName string = !empty(dashboardName) ? applicationInsightsDashboard.outputs.dashboardName : ''
 
 @description('The resource ID of the application insights.')
 output applicationInsightsResourceId string = applicationInsights.outputs.resourceId
 
 @description('The resource ID of the dashboard.')
-output dashboardResourceId string = applicationInsightsDashboard.outputs.dashboardResourceId
+output dashboardResourceId string = !empty(dashboardName)
+  ? applicationInsightsDashboard.outputs.dashboardResourceId
+  : ''
 
 @description('The connection string of the application insights.')
 output applicationInsightsConnectionString string = applicationInsights.outputs.connectionString
