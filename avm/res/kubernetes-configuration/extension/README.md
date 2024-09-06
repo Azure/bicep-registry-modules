@@ -351,7 +351,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -461,7 +460,6 @@ Version of the extension for this extension, if it is "pinned" to a specific ver
 
 - Required: No
 - Type: string
-
 
 ## Outputs
 

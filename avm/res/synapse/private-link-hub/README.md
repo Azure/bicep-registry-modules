@@ -340,7 +340,6 @@ module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -917,7 +916,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 
