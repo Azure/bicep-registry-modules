@@ -197,7 +197,12 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
       managedResourceGroupId: !empty(managedResourceGroupResourceId)
         ? managedResourceGroupResourceId
         : '${subscription().id}/resourceGroups/rg-${name}-managed'
-      defaultCatalog: defaultCatalog
+      defaultCatalog: !empty(defaultCatalog)
+        ? {
+            initialName: ''
+            initialType: defaultCatalog.?initialType
+          }
+        : null
       parameters: union(
         // Always added parameters
         {
@@ -746,8 +751,9 @@ type diagnosticSettingType = {
 }[]?
 
 type defaultCatalogType = {
-  @description('Optional. Set the name of the Catalog.')
-  initialName: '' // This value cannot be set to a custom value. Reason --> 'InvalidInitialCatalogName' message: 'Currently custom initial catalog name is not supported. This capability will be added in future.'
+  //This value cannot be set to a custom value. Reason --> 'InvalidInitialCatalogName' message: 'Currently custom initial catalog name is not supported. This capability will be added in future.'
+  //@description('Optional. Set the name of the Catalog.')
+  //initialName: ''
 
   @description('Required. Choose between HiveMetastore or UnityCatalog.')
   initialType: 'HiveMetastore' | 'UnityCatalog'

@@ -878,12 +878,6 @@ The default catalog configuration for the Databricks workspace.
 | :-- | :-- | :-- |
 | [`initialType`](#parameter-defaultcataloginitialtype) | string | Choose between HiveMetastore or UnityCatalog. |
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`initialName`](#parameter-defaultcataloginitialname) | string | Set the name of the Catalog. |
-
 ### Parameter: `defaultCatalog.initialType`
 
 Choose between HiveMetastore or UnityCatalog.
@@ -895,19 +889,6 @@ Choose between HiveMetastore or UnityCatalog.
   [
     'HiveMetastore'
     'UnityCatalog'
-  ]
-  ```
-
-### Parameter: `defaultCatalog.initialName`
-
-Set the name of the Catalog.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    ''
   ]
   ```
 
