@@ -8,7 +8,6 @@ This module deploys a DocumentDB Mongo Cluster.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -165,7 +164,6 @@ module mongoClusters 'br/public:avm/res/document-db/mongo-clusters:<version>' = 
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -306,7 +304,6 @@ Tags of the Database Account resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -315,10 +312,6 @@ Tags of the Database Account resource.
 | `name` | string | The name of the mongo cluster. |
 | `resourceGroupName` | string | The name of the resource group the mongo cluster was created in. |
 | `resourceId` | string | The resource ID of the mongo cluster. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
