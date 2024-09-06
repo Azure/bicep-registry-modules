@@ -8,7 +8,6 @@ This module deploys a Role Assignment at a Management Group, Subscription or Res
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -408,7 +407,6 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -544,7 +542,6 @@ Subscription ID of the subscription to assign the RBAC role to. If no Resource G
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -552,10 +549,6 @@ Subscription ID of the subscription to assign the RBAC role to. If no Resource G
 | `name` | string | The GUID of the Role Assignment. |
 | `resourceId` | string | The resource ID of the Role Assignment. |
 | `scope` | string | The scope this Role Assignment applies to. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
