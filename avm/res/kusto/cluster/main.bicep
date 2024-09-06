@@ -364,7 +364,10 @@ module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint
 output resourceGroupName string = resourceGroup().name
 
 @description('The resource id of the kusto cluster.')
-output resourceId string = kustoCluster.id
+output resourceId string = kustoCluster.?id
+
+@description('The principal ID of the system assigned identity.')
+output systemAssignedPrincipalId string = kustoCluster.?identity.?principalId ?? ''
 
 @description('The name of the kusto cluster.')
 output name string = kustoCluster.name
