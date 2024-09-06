@@ -8,7 +8,6 @@ This module deploys a DevTest Lab.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -733,7 +732,6 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -767,7 +765,7 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
 | [`labStorageType`](#parameter-labstoragetype) | string | Type of storage used by the lab. It can be either Premium or Standard. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. DevTest Labs creates a system-assigned identity by default the first time it creates the lab environment. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. For new labs created after 8/10/2020, the lab's system assigned identity is set to On by default and lab owner will not be able to turn this off for the lifecycle of the lab. |
 | [`managementIdentitiesResourceIds`](#parameter-managementidentitiesresourceids) | array | The resource ID(s) to assign to the virtual machines associated with this lab. |
 | [`mandatoryArtifactsResourceIdsLinux`](#parameter-mandatoryartifactsresourceidslinux) | array | The ordered list of artifact resource IDs that should be applied on all Linux VM creations by default, prior to the artifacts specified by the user. |
 | [`mandatoryArtifactsResourceIdsWindows`](#parameter-mandatoryartifactsresourceidswindows) | array | The ordered list of artifact resource IDs that should be applied on all Windows VM creations by default, prior to the artifacts specified by the user. |
@@ -915,7 +913,7 @@ Artifact sources to create for the lab.
 | :-- | :-- | :-- |
 | [`branchRef`](#parameter-artifactsourcesbranchref) | string | The artifact source's branch reference (e.g. main or master). |
 | [`displayName`](#parameter-artifactsourcesdisplayname) | string | The display name of the artifact source. Default is the name of the artifact source. |
-| [`securityToken`](#parameter-artifactsourcessecuritytoken) | securestring | The security token to authenticate to the artifact source. |
+| [`securityToken`](#parameter-artifactsourcessecuritytoken) | securestring | The security token to authenticate to the artifact source. Private artifacts use the system-identity of the lab to store the security token for the artifact source in the lab's managed Azure Key Vault. Access to the Azure Key Vault is granted automatically only when the lab is created with a system-assigned identity. |
 | [`sourceType`](#parameter-artifactsourcessourcetype) | string | The artifact source's type. |
 | [`status`](#parameter-artifactsourcesstatus) | string | Indicates if the artifact source is enabled (values: Enabled, Disabled). Default is "Enabled". |
 | [`tags`](#parameter-artifactsourcestags) | object | The tags of the artifact source. |
@@ -964,7 +962,7 @@ The display name of the artifact source. Default is the name of the artifact sou
 
 ### Parameter: `artifactsources.securityToken`
 
-The security token to authenticate to the artifact source.
+The security token to authenticate to the artifact source. Private artifacts use the system-identity of the lab to store the security token for the artifact source in the lab's managed Azure Key Vault. Access to the Azure Key Vault is granted automatically only when the lab is created with a system-assigned identity.
 
 - Required: No
 - Type: securestring
@@ -1401,7 +1399,7 @@ Specify the name of lock.
 
 ### Parameter: `managedIdentities`
 
-The managed identity definition for this resource. DevTest Labs creates a system-assigned identity by default the first time it creates the lab environment.
+The managed identity definition for this resource. For new labs created after 8/10/2020, the lab's system assigned identity is set to On by default and lab owner will not be able to turn this off for the lifecycle of the lab.
 
 - Required: No
 - Type: object
@@ -2124,7 +2122,6 @@ Resource Group allocation for virtual machines. If left empty, virtual machines 
 - Type: string
 - Default: `[resourceGroup().id]`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -2135,10 +2132,6 @@ Resource Group allocation for virtual machines. If left empty, virtual machines 
 | `resourceId` | string | The resource ID of the lab. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 | `uniqueIdentifier` | string | The unique identifier for the lab. Used to track tags that the lab applies to each resource that it creates. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
