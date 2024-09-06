@@ -8,7 +8,6 @@ This module deploys a DNS Resolver.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -329,7 +328,6 @@ module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -642,7 +640,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -651,10 +648,6 @@ Tags of the resource.
 | `name` | string | The name of the DNS Private Resolver. |
 | `resourceGroupName` | string | The resource group the DNS Private Resolver was deployed into. |
 | `resourceId` | string | The resource ID of the DNS Private Resolver. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
