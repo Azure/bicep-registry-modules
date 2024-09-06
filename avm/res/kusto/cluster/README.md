@@ -1707,6 +1707,7 @@ The resource ID of the subnet to which to deploy the Kusto Cluster.
 | `privateEndpoints` | array | The private endpoints of the kusto cluster. |
 | `resourceGroupName` | string | The resource group the kusto cluster was deployed into. |
 | `resourceId` | string | The resource id of the kusto cluster. |
+| `systemAssignedPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 
