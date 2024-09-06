@@ -126,7 +126,7 @@ module hubRouteTable 'br/public:avm/res/network/route-table:0.2.2' = [
 // Create hub virtual network route table route
 resource hubRoute 'Microsoft.Network/routeTables/routes@2023-11-01' = [
   for (peer, index) in (flatten(hubVirtualNetworkPeerings) ?? []): {
-    name: '${hubVirtualNetworkPeer_local[index].name}/${hubVirtualNetworkPeer_local[index].name}-to-${hubVirtualNetworkPeer_remote[index].name}-route'
+    name: '${hubVirtualNetworkPeer_local[index].name}/${hubVirtualNetworkPeer_local[index].name}-to-${peer.remoteVirtualNetworkName}-route'
     properties: {
       addressPrefix: hubVirtualNetworkPeer_remote[index].outputs.addressPrefix
       nextHopType: 'VirtualAppliance'

@@ -765,7 +765,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Optional parameters**
@@ -1744,7 +1743,6 @@ Location for all Resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-
 
 ## Outputs
 
