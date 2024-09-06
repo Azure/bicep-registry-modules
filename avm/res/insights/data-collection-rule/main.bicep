@@ -31,6 +31,20 @@ param tags object?
 //   Deployments   //
 // =============== //
 
+var builtInRoleNames = {
+  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'Role Based Access Control Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
+}
+
 var dataCollectionRulePropertiesUnion = union(
   {
     description: dataCollectionRuleProperties.?description
@@ -87,24 +101,15 @@ resource dataCollectionRuleAll 'Microsoft.Insights/dataCollectionRules@2023-03-1
 }
 
 // Using a module as a workaround for issues with conditional scope: https://github.com/Azure/bicep/issues/7367
-module dataCollectionRule_lock 'modules/nested_lock.bicep' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: '${uniqueString(deployment().name, location)}-DCR-Lock'
+module dataCollectionRule_conditionalScopeResources 'modules/nested_conditionalScope.bicep' = if ((!empty(lock ?? {}) && lock.?kind != 'None') || (!empty(roleAssignments ?? []))) {
+  name: '${uniqueString(deployment().name, location)}-DCR-ConditionalScope'
   params: {
+    dataCollectionRuleName: dataCollectionRuleProperties.kind == 'All'
+      ? dataCollectionRuleAll.name
+      : dataCollectionRule.name
+    builtInRoleNames: builtInRoleNames
     lock: lock
-    dataCollectionRuleName: dataCollectionRuleProperties.kind == 'All'
-      ? dataCollectionRuleAll.name
-      : dataCollectionRule.name
-  }
-}
-
-// Using a module as a workaround for issues with conditional scope: https://github.com/Azure/bicep/issues/7367
-module dataCollectionRule_roleAssignments 'modules/nested_roleAssignments.bicep' = if (!empty(roleAssignments ?? [])) {
-  name: '${uniqueString(deployment().name, location)}-DCR-RoleAssignments'
-  params: {
     roleAssignments: roleAssignments
-    dataCollectionRuleName: dataCollectionRuleProperties.kind == 'All'
-      ? dataCollectionRuleAll.name
-      : dataCollectionRule.name
   }
 }
 
@@ -130,39 +135,7 @@ output location string = dataCollectionRuleProperties.kind == 'All'
 //   Definitions   //
 // =============== //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+import { roleAssignmentType, lockType } from 'modules/nested_conditionalScope.bicep'
 
 @discriminator('kind')
 type dataCollectionRulePropertiesType =

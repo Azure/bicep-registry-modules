@@ -1,21 +1,17 @@
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@description('Optional. Name of the Data Collection Rule to assign the role(s) to.')
+@description('Optional. Built-in role names.')
+param builtInRoleNames object = {}
+
+@description('Optional. The lock settings of the service.')
+param lock lockType
+
+@description('Required. Name of the Data Collection Rule to assign the role(s) to.')
 param dataCollectionRuleName string
 
-var builtInRoleNames = {
-  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
-  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-  )
-  'User Access Administrator': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
-  )
+resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' existing = {
+  name: dataCollectionRuleName
 }
 
 var formattedRoleAssignments = [
@@ -28,10 +24,6 @@ var formattedRoleAssignments = [
       : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
   })
 ]
-
-resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' existing = {
-  name: dataCollectionRuleName
-}
 
 resource dataCollectionRule_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
@@ -49,6 +41,31 @@ resource dataCollectionRule_roleAssignments 'Microsoft.Authorization/roleAssignm
   }
 ]
 
+resource dataCollectionRule_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${dataCollectionRuleName}'
+  scope: dataCollectionRule
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
+  }
+}
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+type lockType = {
+  @description('Optional. Specify the name of lock.')
+  name: string?
+
+  @description('Optional. Specify the type of lock.')
+  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
+}?
+
+@export()
 type roleAssignmentType = {
   @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
   name: string?
