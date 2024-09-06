@@ -8,7 +8,6 @@ This module deploys a Virtual Network (vNet).
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -766,7 +765,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1173,7 +1171,6 @@ If the encrypted VNet allows VM that does not support encryption. Can only be us
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1184,10 +1181,6 @@ If the encrypted VNet allows VM that does not support encryption. Can only be us
 | `resourceId` | string | The resource ID of the virtual network. |
 | `subnetNames` | array | The names of the deployed subnets. |
 | `subnetResourceIds` | array | The resource IDs of the deployed subnets. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 
