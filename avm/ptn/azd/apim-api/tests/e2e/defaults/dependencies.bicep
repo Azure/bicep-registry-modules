@@ -7,11 +7,11 @@ param apimServicename string
 @description('Required. The name of the owner of the API Management service.')
 param publisherName string
 
-@description('Required. The name of the Site to create.')
-param siteName string
+@description('Required. The name of the App Service to create.')
+param appServiceName string
 
-@description('Required. The name of the Server Farm to create.')
-param serverFarmName string
+@description('Required. The name of the App Service Plan to create.')
+param appServicePlanName string
 
 @description('Required. The name of the Log Analytics Workspace to create.')
 param logAnalyticsWorkspaceName string
@@ -39,19 +39,19 @@ module apimService 'br/public:avm/res/api-management/service:0.4.0' = {
   }
 }
 
-module site 'br/public:avm/res/web/site:0.6.0' = {
+module app 'br/public:avm/res/web/site:0.6.0' = {
   name: 'siteDeployment'
   params: {
     kind: 'app'
-    name: siteName
-    serverFarmResourceId: serverFarm.outputs.resourceId
+    name: appServiceName
+    serverFarmResourceId: appServicePlan.outputs.resourceId
   }
 }
 
-module serverFarm 'br/public:avm/res/web/serverfarm:0.2.2' = {
+module appServicePlan 'br/public:avm/res/web/serverfarm:0.2.2' = {
   name: 'serverDeployment'
   params: {
-    name: serverFarmName
+    name: appServicePlanName
     skuCapacity: 2
     skuName: 'S1'
   }
@@ -60,13 +60,6 @@ module serverFarm 'br/public:avm/res/web/serverfarm:0.2.2' = {
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: logAnalyticsWorkspaceName
   location: location
-  tags: {
-    Environment: 'Non-Prod'
-    Role: 'DeploymentValidation'
-  }
-  identity: {
-    type: 'SystemAssigned'
-  }
   properties: {
     sku: {
       name: 'PerGB2018'
@@ -85,4 +78,4 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
 }
 
 @description('The default hostname of the site.')
-output siteHostName string = 'https://${site.outputs.defaultHostname}'
+output siteHostName string = 'https://${app.outputs.defaultHostname}'

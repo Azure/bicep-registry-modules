@@ -70,10 +70,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource apimService 'Microsoft.ApiManagement/service@2022-08-01' existing = {
-  name: name
-}
-
 resource restApi 'Microsoft.ApiManagement/service/apis@2022-08-01' = {
   name: apiName
   parent: apimService
@@ -138,6 +134,10 @@ resource apiDiagnostics 'Microsoft.ApiManagement/service/apis/diagnostics@2022-0
     }
     verbosity: 'verbose'
   }
+}
+
+resource apimService 'Microsoft.ApiManagement/service@2022-08-01' existing = {
+  name: name
 }
 
 resource apiAppProperties 'Microsoft.Web/sites/config@2022-09-01' = if (!empty(apiAppName)) {
