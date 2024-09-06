@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'With audit settings'
-metadata description = 'This instance deploys the module with auditing settings.'
+metadata name = 'Using an IPv6 address space'
+metadata description = 'This instance deploys the module using an IPv6 address space.'
 
 // ========== //
 // Parameters //
@@ -9,19 +9,15 @@ metadata description = 'This instance deploys the module with auditing settings.
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-sql.servers-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-network.virtualnetworks-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ssaud'
+param serviceShort string = 'nvnipv6'
 
-@description('Optional. The password to leverage for the login.')
-@secure()
-param password string = newGuid()
-
-@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
+@description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
@@ -33,15 +29,6 @@ param namePrefix string = '#_namePrefix_#'
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: resourceLocation
-}
-
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  params: {
-    storageAccountName: 'dep${namePrefix}audstore${serviceShort}'
-    location: resourceLocation
-  }
 }
 
 // ============== //
@@ -56,16 +43,19 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      administratorLogin: 'adminUserName'
-      administratorLoginPassword: password
-      managedIdentities: {
-        systemAssigned: true
-      }
-      auditSettings: {
-        state: 'Enabled'
-        isManagedIdentityInUse: true
-        storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-      }
+      addressPrefixes: [
+        '10.0.0.0/21'
+        'fd00:592b:3014::/64'
+      ]
+      subnets: [
+        {
+          name: 'ipv6-subnet'
+          addressPrefixes: [
+            '10.0.0.0/24'
+            'fd00:592b:3014::/64'
+          ]
+        }
+      ]
     }
   }
 ]
