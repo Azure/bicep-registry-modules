@@ -43,7 +43,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
   params: {
     // Required parameters
     administratorLogin: 'Admin001'
-    administratorLoginPassword: 'Admin123'
+    administratorLoginPassword: '<administratorLoginPassword>'
     name: 'ddmcdefmin001'
     nodeCount: 2
     sku: 'M30'
@@ -71,7 +71,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
       "value": "Admin001"
     },
     "administratorLoginPassword": {
-      "value": "Admin123"
+      "value": "<administratorLoginPassword>"
     },
     "name": {
       "value": "ddmcdefmin001"
@@ -111,7 +111,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
   params: {
     // Required parameters
     administratorLogin: 'Admin001'
-    administratorLoginPassword: 'Admin123'
+    administratorLoginPassword: '<administratorLoginPassword>'
     name: 'ddmcwaf001'
     nodeCount: 2
     sku: 'M30'
@@ -139,7 +139,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
       "value": "Admin001"
     },
     "administratorLoginPassword": {
-      "value": "Admin123"
+      "value": "<administratorLoginPassword>"
     },
     "name": {
       "value": "ddmcwaf001"
@@ -309,9 +309,11 @@ Tags of the Database Account resource.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `connectionStringKey` | string | The connection string key of the mongo cluster. |
+| `firewallRulename` | string | The name of the firewall rule. |
+| `firewallRuleResourceId` | string | The resource ID of the firewall rule. |
+| `mongoClusterResourceId` | string | The resource ID of the mongo cluster. |
 | `name` | string | The name of the mongo cluster. |
-| `resourceGroupName` | string | The name of the resource group the mongo cluster was created in. |
-| `resourceId` | string | The resource ID of the mongo cluster. |
+| `resourceGroupName` | string | The name of the resource group the firewall rule was created in. |
 
 ## Data Collection
 

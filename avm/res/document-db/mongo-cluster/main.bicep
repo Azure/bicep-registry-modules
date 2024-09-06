@@ -89,7 +89,7 @@ resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2024-02-15-preview' = 
   }
 }
 
-module configFireWallRules './config-firewallrules/main.bicep' = {
+module mongoCluster_configFireWallRules './config-firewall-rule/main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-configfwr'
   params: {
     mongoClusterName: mongoCluster.name
@@ -103,9 +103,15 @@ module configFireWallRules './config-firewallrules/main.bicep' = {
 output name string = mongoCluster.name
 
 @description('The resource ID of the mongo cluster.')
-output resourceId string = mongoCluster.id
+output mongoClusterResourceId string = mongoCluster.id
 
-@description('The name of the resource group the mongo cluster was created in.')
+@description('The name of the firewall rule.')
+output firewallRulename string = allowAllIPsFirewall ? mongoCluster_configFireWallRules.outputs.fireWallAllName : allowAzureIPsFirewall ? mongoCluster_configFireWallRules.outputs.fireWallAzureName : mongoCluster_configFireWallRules.outputs.firewallSingle[0].name
+
+@description('The resource ID of the firewall rule.')
+output firewallRuleResourceId string = allowAllIPsFirewall ? mongoCluster_configFireWallRules.outputs.fireWallAllResourceId : allowAzureIPsFirewall ? mongoCluster_configFireWallRules.outputs.fireWallAzureResourceId : mongoCluster_configFireWallRules.outputs.firewallSingle[0].ResourceId
+
+@description('The name of the resource group the firewall rule was created in.')
 output resourceGroupName string = resourceGroup().name
 
 @description('The connection string key of the mongo cluster.')

@@ -11,7 +11,7 @@ param allowAzureIPsFirewall bool = false
 @description('Optional. IP addresses to allow access to the cluster from.')
 param allowedSingleIPs array = []
 
-@description('Required. Name of the Mongo Cluster.')
+@description('Conditional. The name of the parent mongo cluster. Required if the template is used in a standalone deployment.')
 param mongoClusterName string
 
 resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2024-02-15-preview' existing = {
@@ -49,3 +49,36 @@ resource firewall_single 'Microsoft.DocumentDB/mongoClusters/firewallRules@2024-
 
 @description('The name of the resource group the mongo cluster was created in.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The name of the firewall_all.')
+output fireWallAllName string = allowAllIPsFirewall ? firewall_all.name : ''
+
+@description('The resource ID of the firewall_all.')
+output fireWallAllResourceId string = allowAllIPsFirewall ? firewall_all.id : ''
+
+@description('The name of the firewall_azure.')
+output fireWallAzureName string = allowAzureIPsFirewall ? firewall_azure.name : ''
+
+@description('The resource ID of the firewall_azure.')
+output fireWallAzureResourceId string = allowAzureIPsFirewall ? firewall_azure.id : ''
+
+@description('The name and resource ID of firewall_single.')
+output firewallSingle firewallSetType[] = [
+  for index in range(0, length(allowedSingleIPs ?? [])): {
+    name: firewall_single[index].name
+    ResourceId: firewall_single[index].id
+  }
+]
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+type firewallSetType = {
+  @description('The name of the created firewall rule.')
+  name: string
+
+  @description('The resource ID of the created firewall rule.')
+  ResourceId: string
+}

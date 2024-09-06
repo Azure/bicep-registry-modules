@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "576645373098160061"
+      "templateHash": "16658906984635737681"
     },
     "name": "DocumentDB Mongo Clusters",
     "description": "This module deploys a DocumentDB Mongo Cluster.",
@@ -157,7 +157,7 @@
         ]
       }
     },
-    "configFireWallRules": {
+    "mongoCluster_configFireWallRules": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-configfwr', uniqueString(deployment().name, parameters('location')))]",
@@ -182,16 +182,39 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "9519342785600081088"
+              "templateHash": "13010629320323779184"
             },
             "name": "DocumentDB Mongo Clusters Config FireWall Rules",
             "description": "This module config firewall rules for DocumentDB Mongo Cluster.",
             "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "firewallSetType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The name of the created firewall rule."
+                  }
+                },
+                "ResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The resource ID of the created firewall rule."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            }
           },
           "parameters": {
             "allowAllIPsFirewall": {
@@ -218,12 +241,18 @@
             "mongoClusterName": {
               "type": "string",
               "metadata": {
-                "description": "Required. Name of the Mongo Cluster."
+                "description": "Conditional. The name of the parent mongo cluster. Required if the template is used in a standalone deployment."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "mongoCluster": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/mongoClusters",
+              "apiVersion": "2024-02-15-preview",
+              "name": "[parameters('mongoClusterName')]"
+            },
+            "firewall_all": {
               "condition": "[parameters('allowAllIPsFirewall')]",
               "type": "Microsoft.DocumentDB/mongoClusters/firewallRules",
               "apiVersion": "2024-02-15-preview",
@@ -231,9 +260,12 @@
               "properties": {
                 "startIpAddress": "0.0.0.0",
                 "endIpAddress": "255.255.255.255"
-              }
+              },
+              "dependsOn": [
+                "mongoCluster"
+              ]
             },
-            {
+            "firewall_azure": {
               "condition": "[parameters('allowAzureIPsFirewall')]",
               "type": "Microsoft.DocumentDB/mongoClusters/firewallRules",
               "apiVersion": "2024-02-15-preview",
@@ -241,9 +273,12 @@
               "properties": {
                 "startIpAddress": "0.0.0.0",
                 "endIpAddress": "0.0.0.0"
-              }
+              },
+              "dependsOn": [
+                "mongoCluster"
+              ]
             },
-            {
+            "firewall_single": {
               "copy": {
                 "name": "firewall_single",
                 "count": "[length(parameters('allowedSingleIPs'))]"
@@ -254,9 +289,12 @@
               "properties": {
                 "startIpAddress": "[parameters('allowedSingleIPs')[copyIndex()]]",
                 "endIpAddress": "[parameters('allowedSingleIPs')[copyIndex()]]"
-              }
+              },
+              "dependsOn": [
+                "mongoCluster"
+              ]
             }
-          ],
+          },
           "outputs": {
             "resourceGroupName": {
               "type": "string",
@@ -264,6 +302,50 @@
                 "description": "The name of the resource group the mongo cluster was created in."
               },
               "value": "[resourceGroup().name]"
+            },
+            "fireWallAllName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the firewall_all."
+              },
+              "value": "[if(parameters('allowAllIPsFirewall'), 'allow-all-IPs', '')]"
+            },
+            "fireWallAllResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the firewall_all."
+              },
+              "value": "[if(parameters('allowAllIPsFirewall'), resourceId('Microsoft.DocumentDB/mongoClusters/firewallRules', parameters('mongoClusterName'), 'allow-all-IPs'), '')]"
+            },
+            "fireWallAzureName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the firewall_azure."
+              },
+              "value": "[if(parameters('allowAzureIPsFirewall'), 'allow-all-azure-internal-IPs', '')]"
+            },
+            "fireWallAzureResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the firewall_azure."
+              },
+              "value": "[if(parameters('allowAzureIPsFirewall'), resourceId('Microsoft.DocumentDB/mongoClusters/firewallRules', parameters('mongoClusterName'), 'allow-all-azure-internal-IPs'), '')]"
+            },
+            "firewallSingle": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/firewallSetType"
+              },
+              "metadata": {
+                "description": "The name and resource ID of firewall_single."
+              },
+              "copy": {
+                "count": "[length(range(0, length(coalesce(parameters('allowedSingleIPs'), createArray()))))]",
+                "input": {
+                  "name": "[format('allow-single-{0}', replace(parameters('allowedSingleIPs')[range(0, length(coalesce(parameters('allowedSingleIPs'), createArray())))[copyIndex()]], '.', ''))]",
+                  "ResourceId": "[resourceId('Microsoft.DocumentDB/mongoClusters/firewallRules', parameters('mongoClusterName'), format('allow-single-{0}', replace(parameters('allowedSingleIPs')[range(0, length(coalesce(parameters('allowedSingleIPs'), createArray())))[copyIndex()]], '.', '')))]"
+                }
+              }
             }
           }
         }
@@ -281,17 +363,31 @@
       },
       "value": "[parameters('name')]"
     },
-    "resourceId": {
+    "mongoClusterResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the mongo cluster."
       },
       "value": "[resourceId('Microsoft.DocumentDB/mongoClusters', parameters('name'))]"
     },
+    "firewallRulename": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the firewall rule."
+      },
+      "value": "[if(parameters('allowAllIPsFirewall'), reference('mongoCluster_configFireWallRules').outputs.fireWallAllName.value, if(parameters('allowAzureIPsFirewall'), reference('mongoCluster_configFireWallRules').outputs.fireWallAzureName.value, reference('mongoCluster_configFireWallRules').outputs.firewallSingle.value[0].name))]"
+    },
+    "firewallRuleResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the firewall rule."
+      },
+      "value": "[if(parameters('allowAllIPsFirewall'), reference('mongoCluster_configFireWallRules').outputs.fireWallAllResourceId.value, if(parameters('allowAzureIPsFirewall'), reference('mongoCluster_configFireWallRules').outputs.fireWallAzureResourceId.value, reference('mongoCluster_configFireWallRules').outputs.firewallSingle.value[0].ResourceId))]"
+    },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the resource group the mongo cluster was created in."
+        "description": "The name of the resource group the firewall rule was created in."
       },
       "value": "[resourceGroup().name]"
     },

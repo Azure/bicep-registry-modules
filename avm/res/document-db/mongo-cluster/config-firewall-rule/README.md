@@ -16,11 +16,11 @@ This module config firewall rules for DocumentDB Mongo Cluster.
 
 ## Parameters
 
-**Required parameters**
+**Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`mongoClusterName`](#parameter-mongoclustername) | string | Name of the Mongo Cluster. |
+| [`mongoClusterName`](#parameter-mongoclustername) | string | The name of the parent mongo cluster. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
@@ -32,7 +32,7 @@ This module config firewall rules for DocumentDB Mongo Cluster.
 
 ### Parameter: `mongoClusterName`
 
-Name of the Mongo Cluster.
+The name of the parent mongo cluster. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
@@ -65,4 +65,9 @@ IP addresses to allow access to the cluster from.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `fireWallAllName` | string | The name of the firewall_all. |
+| `fireWallAllResourceId` | string | The resource ID of the firewall_all. |
+| `fireWallAzureName` | string | The name of the firewall_azure. |
+| `fireWallAzureResourceId` | string | The resource ID of the firewall_azure. |
+| `firewallSingle` | array | The name and resource ID of firewall_single. |
 | `resourceGroupName` | string | The name of the resource group the mongo cluster was created in. |
