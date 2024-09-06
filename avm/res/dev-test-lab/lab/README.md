@@ -2065,7 +2065,7 @@ The permission policy of the subnet for allowing public IP addresses (i.e. Allow
 
 Backend ports that virtual machines on this subnet are allowed to expose.
 
-- Required: No
+- Required: Yes
 - Type: array
 
 **Required parameters**

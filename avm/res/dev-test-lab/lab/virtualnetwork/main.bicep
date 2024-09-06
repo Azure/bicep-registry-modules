@@ -83,7 +83,7 @@ type subnetOverrideType = {
 
       @sys.description('Required. Protocol type of the port.')
       transportProtocol: 'Tcp' | 'Udp'
-    }[]?
+    }[]
   }?
 
   @sys.description('Optional. Indicates whether this subnet can be used during virtual machine creation (i.e. Allow, Deny).')
