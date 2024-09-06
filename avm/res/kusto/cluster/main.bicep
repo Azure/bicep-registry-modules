@@ -367,7 +367,7 @@ output resourceGroupName string = resourceGroup().name
 output resourceId string = kustoCluster.?id
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedPrincipalId string = kustoCluster.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string = kustoCluster.?identity.?principalId ?? ''
 
 @description('The name of the kusto cluster.')
 output name string = kustoCluster.name
