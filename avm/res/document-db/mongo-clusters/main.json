@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "18078511602309159134"
+      "version": "0.28.1.47646",
+      "templateHash": "576645373098160061"
     },
     "name": "DocumentDB Mongo Clusters",
     "description": "This module deploys a DocumentDB Mongo Cluster.",
@@ -120,7 +120,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.documentdb-databaseaccount.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.documentdb-mongocluster.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -186,8 +186,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "17644858630860177754"
+              "version": "0.28.1.47646",
+              "templateHash": "9519342785600081088"
             },
             "name": "DocumentDB Mongo Clusters Config FireWall Rules",
             "description": "This module config firewall rules for DocumentDB Mongo Cluster.",
