@@ -72,9 +72,13 @@ module testDeployment '../../../main.bicep' = [
       sqlAdministratorLogin: 'synwsadmin'
       privateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'SQL'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
           tags: {
