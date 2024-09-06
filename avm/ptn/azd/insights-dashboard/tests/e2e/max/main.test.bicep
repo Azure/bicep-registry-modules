@@ -53,7 +53,6 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       logAnalyticsWorkspaceResourceId: dependencies.outputs.logAnalyticsWorkspaceResourceId
       dashboardName: '${namePrefix}${serviceShort}db001'
-      enableTelemetry: true
       kind: 'web'
       applicationType: 'web'
     }

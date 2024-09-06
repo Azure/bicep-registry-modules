@@ -104,7 +104,6 @@ module insightsDashboard 'br/public:avm/ptn/azd/insights-dashboard:<version>' = 
     // Non-required parameters
     applicationType: 'web'
     dashboardName: 'icmaxdb001'
-    enableTelemetry: true
     kind: 'web'
     location: '<location>'
   }
@@ -136,9 +135,6 @@ module insightsDashboard 'br/public:avm/ptn/azd/insights-dashboard:<version>' = 
     },
     "dashboardName": {
       "value": "icmaxdb001"
-    },
-    "enableTelemetry": {
-      "value": true
     },
     "kind": {
       "value": "web"
