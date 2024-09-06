@@ -100,9 +100,7 @@ output dashboardName string = !empty(dashboardName) ? applicationInsightsDashboa
 output applicationInsightsResourceId string = applicationInsights.outputs.resourceId
 
 @description('The resource ID of the dashboard.')
-output dashboardResourceId string = !empty(dashboardName)
-  ? applicationInsightsDashboard.outputs.dashboardResourceId
-  : ''
+output dashboardResourceId string = !empty(dashboardName) ? applicationInsightsDashboard.outputs.dashboardResourceId : ''
 
 @description('The connection string of the application insights.')
 output applicationInsightsConnectionString string = applicationInsights.outputs.connectionString
