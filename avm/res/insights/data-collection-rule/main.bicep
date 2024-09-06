@@ -56,6 +56,26 @@ var formattedRoleAssignments = [
   })
 ]
 
+var dataCollectionRulePropertiesUnion = union(
+  {
+    description: dataCollectionRuleProperties.?description
+  },
+  dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows' || dataCollectionRuleProperties.kind == 'All'
+    ? {
+        dataSources: dataCollectionRuleProperties.dataSources
+        dataFlows: dataCollectionRuleProperties.dataFlows
+        destinations: dataCollectionRuleProperties.destinations
+        dataCollectionEndpointId: dataCollectionRuleProperties.?dataCollectionEndpointResourceId
+        streamDeclarations: dataCollectionRuleProperties.?streamDeclarations
+      }
+    : {},
+  dataCollectionRuleProperties.kind == 'AgentSettings'
+    ? {
+        agentSettings: dataCollectionRuleProperties.agentSettings
+      }
+    : {}
+)
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.insights-datacollectionrule.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -75,30 +95,20 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
+resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' = if (dataCollectionRuleProperties.kind != 'All') {
   kind: dataCollectionRuleProperties.kind
   location: location
   name: name
   tags: tags
-  properties: union(
-    {
-      description: dataCollectionRuleProperties.?description
-    },
-    dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows'
-      ? {
-          dataSources: dataCollectionRuleProperties.dataSources
-          dataFlows: dataCollectionRuleProperties.dataFlows
-          destinations: dataCollectionRuleProperties.destinations
-          dataCollectionEndpointId: dataCollectionRuleProperties.?dataCollectionEndpointResourceId
-          streamDeclarations: dataCollectionRuleProperties.?streamDeclarations
-        }
-      : {},
-    dataCollectionRuleProperties.kind == 'AgentSettings'
-      ? {
-          agentSettings: dataCollectionRuleProperties.agentSettings
-        }
-      : {}
-  )
+  properties: dataCollectionRulePropertiesUnion
+}
+
+// Using a separate resource for All kind as it requires that the "kind' is not set on the resource and 'kind: null' is not allowed for this resource type
+resource dataCollectionRuleAll 'Microsoft.Insights/dataCollectionRules@2023-03-11' = if (dataCollectionRuleProperties.kind == 'All') {
+  location: location
+  name: name
+  tags: tags
+  properties: dataCollectionRulePropertiesUnion
 }
 
 resource dataCollectionRule_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
@@ -109,13 +119,13 @@ resource dataCollectionRule_lock 'Microsoft.Authorization/locks@2020-05-01' = if
       ? 'Cannot delete resource or child resources.'
       : 'Cannot delete or modify the resource or child resources.'
   }
-  scope: dataCollectionRule
+  scope: dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll : dataCollectionRule
 }
 
 resource dataCollectionRule_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: roleAssignment.?name ?? guid(
-      dataCollectionRule.id,
+      dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll.id : dataCollectionRule.id,
       roleAssignment.principalId,
       roleAssignment.roleDefinitionId
     )
@@ -128,7 +138,7 @@ resource dataCollectionRule_roleAssignments 'Microsoft.Authorization/roleAssignm
       conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
-    scope: dataCollectionRule
+    scope: dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll : dataCollectionRule
   }
 ]
 
@@ -137,16 +147,18 @@ resource dataCollectionRule_roleAssignments 'Microsoft.Authorization/roleAssignm
 // =========== //
 
 @description('The name of the dataCollectionRule.')
-output name string = dataCollectionRule.name
+output name string = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll.name : dataCollectionRule.name
 
 @description('The resource ID of the dataCollectionRule.')
-output resourceId string = dataCollectionRule.id
+output resourceId string = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll.id : dataCollectionRule.id
 
 @description('The name of the resource group the dataCollectionRule was created in.')
 output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
-output location string = dataCollectionRule.location
+output location string = dataCollectionRuleProperties.kind == 'All'
+  ? dataCollectionRuleAll.location
+  : dataCollectionRule.location
 
 // =============== //
 //   Definitions   //
@@ -190,6 +202,7 @@ type roleAssignmentType = {
 type dataCollectionRulePropertiesType =
   | linuxDcrPropertiesType
   | windowsDcrPropertiesType
+  | allPlatformsDcrPropertiesType
   | agentSettingsDcrPropertiesType
 
 type linuxDcrPropertiesType = {
@@ -218,6 +231,29 @@ type linuxDcrPropertiesType = {
 type windowsDcrPropertiesType = {
   @description('Required. The platform type specifies the type of resources this rule can apply to.')
   kind: 'Windows'
+
+  @description('Required. Specification of data sources that will be collected.')
+  dataSources: object
+
+  @description('Required. The specification of data flows.')
+  dataFlows: array
+
+  @description('Required. Specification of destinations that can be used in data flows.')
+  destinations: object
+
+  @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
+  dataCollectionEndpointResourceId: string?
+
+  @description('Optional. Declaration of custom streams used in this rule.')
+  streamDeclarations: object?
+
+  @description('Optional. Description of the data collection rule.')
+  description: string?
+}
+
+type allPlatformsDcrPropertiesType = {
+  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  kind: 'All'
 
   @description('Required. Specification of data sources that will be collected.')
   dataSources: object

@@ -380,7 +380,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
           }
         ]
       }
-      kind: 'Windows'
+      kind: 'All'
       streamDeclarations: {
         'Custom-CustomTableBasic_CL': {
           columns: [
@@ -465,7 +465,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
             }
           ]
         },
-        "kind": "Windows",
+        "kind": "All",
         "streamDeclarations": {
           "Custom-CustomTableBasic_CL": {
             "columns": [
