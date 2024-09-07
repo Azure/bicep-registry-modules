@@ -144,14 +144,26 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       autoUpgradeProfileUpgradeChannel: 'stable'
-      autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
-      maintenanceConfiguration: {
+      clusterMaintenanceConfiguration: {
         maintenanceWindow: {
+          name: 'aksManagedAutoUpgradeSchedule'
           durationHours: 4
           startTime: '20:00'
           relativeMonthlySchedule: {
             dayOfWeek: 'Sunday'
             intervalMonths: 1
+          }
+        }
+      }
+      autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
+      nodeOSMaintenanceConfiguration: {
+        maintenanceWindow: {
+          name: 'aksManagedNodeOSUpgradeSchedule'
+          durationHours: 4
+          startTime: '20:00'
+          weeklySchedule: {
+            dayOfWeek: 'Saturday'
+            intervalWeeks: 1
           }
         }
       }
