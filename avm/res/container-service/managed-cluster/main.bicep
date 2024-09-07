@@ -270,6 +270,15 @@ param autoScalerProfileSkipNodesWithSystemPods bool = true
 @description('Optional. Auto-upgrade channel on the AKS cluster.')
 param autoUpgradeProfileUpgradeChannel string = 'stable'
 
+@allowed([
+  'NodeImage'
+  'None'
+  'SecurityPatch'
+  'Unmanaged'
+])
+@description('Optional. Auto-upgrade channel on the Node Os.')
+param autoNodeOsUpgradeProfileUpgradeChannel string = 'Unmanaged'
+
 @description('Optional. Running in Kubenet is disabled by default due to the security related nature of AAD Pod Identity and the risks of IP spoofing.')
 param podIdentityProfileAllowNetworkPluginKubenet bool = false
 
@@ -684,6 +693,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
     }
     autoUpgradeProfile: {
       upgradeChannel: autoUpgradeProfileUpgradeChannel
+      nodeOSUpgradeChannel: autoNodeOsUpgradeProfileUpgradeChannel
     }
     apiServerAccessProfile: {
       authorizedIPRanges: authorizedIPRanges

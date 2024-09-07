@@ -232,6 +232,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         vnetSubnetID: '<vnetSubnetID>'
       }
     ]
+    autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
     autoUpgradeProfileUpgradeChannel: 'stable'
     customerManagedKey: {
       keyName: '<keyName>'
@@ -457,6 +458,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "vnetSubnetID": "<vnetSubnetID>"
         }
       ]
+    },
+    "autoNodeOsUpgradeProfileUpgradeChannel": {
+      "value": "Unmanaged"
     },
     "autoUpgradeProfileUpgradeChannel": {
       "value": "stable"
@@ -1304,6 +1308,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         vmSize: 'Standard_DS2_v2'
       }
     ]
+    autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
     autoUpgradeProfileUpgradeChannel: 'stable'
     diagnosticSettings: [
       {
@@ -1447,6 +1452,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         }
       ]
     },
+    "autoNodeOsUpgradeProfileUpgradeChannel": {
+      "value": "Unmanaged"
+    },
     "autoUpgradeProfileUpgradeChannel": {
       "value": "stable"
     },
@@ -1568,6 +1576,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`adminUsername`](#parameter-adminusername) | string | Specifies the administrator username of Linux virtual machines. |
 | [`agentPools`](#parameter-agentpools) | array | Define one or more secondary/additional agent pools. |
 | [`authorizedIPRanges`](#parameter-authorizedipranges) | array | IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer. |
+| [`autoNodeOsUpgradeProfileUpgradeChannel`](#parameter-autonodeosupgradeprofileupgradechannel) | string | Auto-upgrade channel on the Node Os. |
 | [`autoScalerProfileBalanceSimilarNodeGroups`](#parameter-autoscalerprofilebalancesimilarnodegroups) | bool | Specifies the balance of similar node groups for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileExpander`](#parameter-autoscalerprofileexpander) | string | Specifies the expand strategy for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileMaxEmptyBulkDelete`](#parameter-autoscalerprofilemaxemptybulkdelete) | string | Specifies the maximum empty bulk delete for the auto-scaler of the AKS cluster. |
@@ -2129,6 +2138,23 @@ IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is 
 
 - Required: No
 - Type: array
+
+### Parameter: `autoNodeOsUpgradeProfileUpgradeChannel`
+
+Auto-upgrade channel on the Node Os.
+
+- Required: No
+- Type: string
+- Default: `'Unmanaged'`
+- Allowed:
+  ```Bicep
+  [
+    'NodeImage'
+    'None'
+    'SecurityPatch'
+    'Unmanaged'
+  ]
+  ```
 
 ### Parameter: `autoScalerProfileBalanceSimilarNodeGroups`
 

@@ -139,6 +139,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       autoUpgradeProfileUpgradeChannel: 'stable'
+      autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
       networkPlugin: 'azure'
       networkPolicy: 'azure'
       skuTier: 'Standard'
