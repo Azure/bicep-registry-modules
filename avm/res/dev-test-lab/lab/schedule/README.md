@@ -9,8 +9,6 @@ Lab schedules are used to modify the settings for auto-shutdown, auto-start for 
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -39,8 +37,7 @@ Lab schedules are used to modify the settings for auto-shutdown, auto-start for 
 | :-- | :-- | :-- |
 | [`dailyRecurrence`](#parameter-dailyrecurrence) | object | If the schedule will occur once each day of the week, specify the daily recurrence. |
 | [`hourlyRecurrence`](#parameter-hourlyrecurrence) | object | If the schedule will occur multiple times a day, specify the hourly recurrence. |
-| [`notificationSettingsStatus`](#parameter-notificationsettingsstatus) | string | If notifications are enabled for this schedule (i.e. Enabled, Disabled). |
-| [`notificationSettingsTimeInMinutes`](#parameter-notificationsettingstimeinminutes) | int | Time in minutes before event at which notification will be sent. Optional if "notificationSettingsStatus" is set to "Enabled". Default is 30 minutes. |
+| [`notificationSettings`](#parameter-notificationsettings) | object | The notification settings for the schedule. |
 | [`status`](#parameter-status) | string | The status of the schedule (i.e. Enabled, Disabled). |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`targetResourceId`](#parameter-targetresourceid) | string | The resource ID to which the schedule belongs. |
@@ -88,7 +85,19 @@ If the schedule will occur once each day of the week, specify the daily recurren
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`time`](#parameter-dailyrecurrencetime) | string | The time of day the schedule will occur. |
+
+### Parameter: `dailyRecurrence.time`
+
+The time of day the schedule will occur.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `hourlyRecurrence`
 
@@ -96,15 +105,69 @@ If the schedule will occur multiple times a day, specify the hourly recurrence.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
-### Parameter: `notificationSettingsStatus`
+**Required parameters**
 
-If notifications are enabled for this schedule (i.e. Enabled, Disabled).
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`minute`](#parameter-hourlyrecurrenceminute) | int | Minutes of the hour the schedule will run. |
+
+### Parameter: `hourlyRecurrence.minute`
+
+Minutes of the hour the schedule will run.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `notificationSettings`
+
+The notification settings for the schedule.
+
+- Required: No
+- Type: object
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`emailRecipient`](#parameter-notificationsettingsemailrecipient) | string | The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webHookUrl" is empty. |
+| [`webHookUrl`](#parameter-notificationsettingswebhookurl) | string | The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`notificationLocale`](#parameter-notificationsettingsnotificationlocale) | string | The locale to use when sending a notification (fallback for unsupported languages is EN). |
+| [`status`](#parameter-notificationsettingsstatus) | string | If notifications are enabled for this schedule (i.e. Enabled, Disabled). Default is Disabled. |
+| [`timeInMinutes`](#parameter-notificationsettingstimeinminutes) | int | Time in minutes before event at which notification will be sent. Default is 30 minutes if status is Enabled and not specified. |
+
+### Parameter: `notificationSettings.emailRecipient`
+
+The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webHookUrl" is empty.
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
+
+### Parameter: `notificationSettings.webHookUrl`
+
+The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty.
+
+- Required: No
+- Type: string
+
+### Parameter: `notificationSettings.notificationLocale`
+
+The locale to use when sending a notification (fallback for unsupported languages is EN).
+
+- Required: No
+- Type: string
+
+### Parameter: `notificationSettings.status`
+
+If notifications are enabled for this schedule (i.e. Enabled, Disabled). Default is Disabled.
+
+- Required: No
+- Type: string
 - Allowed:
   ```Bicep
   [
@@ -113,13 +176,12 @@ If notifications are enabled for this schedule (i.e. Enabled, Disabled).
   ]
   ```
 
-### Parameter: `notificationSettingsTimeInMinutes`
+### Parameter: `notificationSettings.timeInMinutes`
 
-Time in minutes before event at which notification will be sent. Optional if "notificationSettingsStatus" is set to "Enabled". Default is 30 minutes.
+Time in minutes before event at which notification will be sent. Default is 30 minutes if status is Enabled and not specified.
 
 - Required: No
 - Type: int
-- Default: `30`
 
 ### Parameter: `status`
 
@@ -149,7 +211,6 @@ The resource ID to which the schedule belongs.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `timeZoneId`
 
@@ -165,8 +226,27 @@ If the schedule will occur only some days of the week, specify the weekly recurr
 
 - Required: No
 - Type: object
-- Default: `{}`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`time`](#parameter-weeklyrecurrencetime) | string | The time of day the schedule will occur. |
+| [`weekdays`](#parameter-weeklyrecurrenceweekdays) | array | The days of the week for which the schedule is set (e.g. Sunday, Monday, Tuesday, etc.). |
+
+### Parameter: `weeklyRecurrence.time`
+
+The time of day the schedule will occur.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `weeklyRecurrence.weekdays`
+
+The days of the week for which the schedule is set (e.g. Sunday, Monday, Tuesday, etc.).
+
+- Required: Yes
+- Type: array
 
 ## Outputs
 
@@ -175,11 +255,3 @@ If the schedule will occur only some days of the week, specify the weekly recurr
 | `name` | string | The name of the schedule. |
 | `resourceGroupName` | string | The name of the resource group the schedule was created in. |
 | `resourceId` | string | The resource ID of the schedule. |
-
-## Cross-referenced modules
-
-_None_
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
