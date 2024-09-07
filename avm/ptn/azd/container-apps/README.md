@@ -2,6 +2,8 @@
 
 Creates an Azure Container Registry and an Azure Container Apps environment.
 
+**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -144,7 +146,6 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -337,7 +338,6 @@ Zone redundancy setting.
 - Required: No
 - Type: bool
 - Default: `True`
-
 
 ## Outputs
 
