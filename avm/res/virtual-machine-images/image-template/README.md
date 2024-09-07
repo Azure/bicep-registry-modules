@@ -525,7 +525,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customizationSteps`](#parameter-customizationsteps) | array | Customization steps to be run when building the VM image. |
 | [`distributions`](#parameter-distributions) | array | The distribution targets where the image output needs to go to. |
 | [`imageSource`](#parameter-imagesource) | object | Image source definition in object format. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -536,6 +535,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`buildTimeoutInMinutes`](#parameter-buildtimeoutinminutes) | int | The image build timeout in minutes. 0 means the default 240 minutes. |
+| [`customizationSteps`](#parameter-customizationsteps) | array | Customization steps to be run when building the VM image. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -554,13 +554,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`baseTime`](#parameter-basetime) | string | Do not provide a value! This date value is used to generate a unique image template name. |
-
-### Parameter: `customizationSteps`
-
-Customization steps to be run when building the VM image.
-
-- Required: No
-- Type: array
 
 ### Parameter: `distributions`
 
@@ -610,6 +603,13 @@ The image build timeout in minutes. 0 means the default 240 minutes.
 - Required: No
 - Type: int
 - Default: `0`
+
+### Parameter: `customizationSteps`
+
+Customization steps to be run when building the VM image.
+
+- Required: No
+- Type: array
 
 ### Parameter: `enableTelemetry`
 
