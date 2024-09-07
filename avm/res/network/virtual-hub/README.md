@@ -9,8 +9,6 @@ If you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integ
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
-- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -474,7 +472,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -760,7 +757,6 @@ Resource ID of the VPN Gateway to link to.
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -769,16 +765,6 @@ Resource ID of the VPN Gateway to link to.
 | `name` | string | The name of the virtual hub. |
 | `resourceGroupName` | string | The resource group the virtual hub was deployed into. |
 | `resourceId` | string | The resource ID of the virtual hub. |
-
-## Cross-referenced modules
-
-_None_
-
-## Notes
-
-**Configuring Routing Intent**
-
-Due to limitations with the virtual hub resource provider, to fully enable routing intent this resource will need to be invoked twice within the virtual WAN pattern. The first invocation will create the Virtual Hub, after which the resource creating the firewall can be called; then the second invocation can configure routing intent. This ensures that the resources are created in the correct order, and that the required resource ID parameters are available when they are needed.
 
 ## Data Collection
 

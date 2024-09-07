@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "11421725796221742541"
+      "templateHash": "11994891550110156380"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace.",
@@ -215,6 +215,13 @@
               "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
             }
           },
+          "useThisWorkspace": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Instead of using an external reference, use the deployed instance as the target for its diagnostic settings. If set to `true`, the `workspaceResourceId` property is ignored."
+            }
+          },
           "workspaceResourceId": {
             "type": "string",
             "nullable": true,
@@ -409,13 +416,6 @@
         "description": "Optional. The diagnostic settings of the service."
       }
     },
-    "useDeployedWorkspaceForDiagnosticSettings": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Instead of using an external reference, use the deployed instance as the target for its diagnostic settings."
-      }
-    },
     "forceCmkForQuery": {
       "type": "bool",
       "defaultValue": true,
@@ -551,7 +551,7 @@
           }
         ],
         "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
-        "workspaceId": "[if(parameters('useDeployedWorkspaceForDiagnosticSettings'), resourceId('Microsoft.OperationalInsights/workspaces', parameters('name')), tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId'))]",
+        "workspaceId": "[if(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'useThisWorkspace'), false()), resourceId('Microsoft.OperationalInsights/workspaces', parameters('name')), tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId'))]",
         "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
         "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
         "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
