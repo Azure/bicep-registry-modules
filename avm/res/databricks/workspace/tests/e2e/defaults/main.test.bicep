@@ -43,6 +43,14 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      test: {
+        primary: {
+          addressPrefixes: ['oi']
+        }
+        secondary: {
+          addressPrefixes: ['there']
+        }
+      }
     }
   }
 ]
