@@ -32,14 +32,17 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/container-service/managed-cluster:<version>`.
 
-- [Automatic](#example-1-automatic)
+- [Using only defaults and use AKS Automatic mode](#example-1-using-only-defaults-and-use-aks-automatic-mode)
 - [Using Azure CNI Network Plugin.](#example-2-using-azure-cni-network-plugin)
 - [Using only defaults](#example-3-using-only-defaults)
 - [Using Kubenet Network Plugin.](#example-4-using-kubenet-network-plugin)
 - [Using Private Cluster.](#example-5-using-private-cluster)
 - [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Automatic_
+### Example 1: _Using only defaults and use AKS Automatic mode_
+
+This instance deploys the module with the set of automatic parameters.
+
 
 <details>
 
@@ -60,8 +63,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     // Non-required parameters
-    location: '<location>'
-    maintenanceConfiguration: {
+    clusterMaintenanceConfiguration: {
       maintenanceWindow: {
         durationHours: 4
         schedule: {
@@ -78,6 +80,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         utcOffset: '+00:00'
       }
     }
+    location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
@@ -112,10 +115,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "maintenanceConfiguration": {
+    "clusterMaintenanceConfiguration": {
       "value": {
         "maintenanceWindow": {
           "durationHours": 4,
@@ -133,6 +133,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "utcOffset": "+00:00"
         }
       }
+    },
+    "location": {
+      "value": "<location>"
     },
     "managedIdentities": {
       "value": {

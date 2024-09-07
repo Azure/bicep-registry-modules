@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "12560765568584123188"
+      "templateHash": "11297225739759243677"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1848,6 +1848,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "name": {
+            "value": "aksManagedAutoUpgradeSchedule"
+          },
           "maintenanceWindow": {
             "value": "[parameters('clusterMaintenanceConfiguration').maintenanceWindow]"
           },
@@ -1939,6 +1942,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "name": {
+            "value": "aksManagedNodeOSUpgradeSchedule"
+          },
           "maintenanceWindow": {
             "value": "[parameters('nodeOSMaintenanceConfiguration').maintenanceWindow]"
           },

@@ -773,6 +773,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
 module managedCluster_maintenanceConfigurations 'maintenance-configurations/main.bicep' = if (!empty(clusterMaintenanceConfiguration)) {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfigurations'
   params: {
+    name: 'aksManagedAutoUpgradeSchedule'
     maintenanceWindow: clusterMaintenanceConfiguration!.maintenanceWindow
     managedClusterName: managedCluster.name
   }
@@ -781,6 +782,7 @@ module managedCluster_maintenanceConfigurations 'maintenance-configurations/main
 module managedClusterNodeOS_maintenanceConfigurations 'maintenance-configurations/main.bicep' = if (!empty(nodeOSMaintenanceConfiguration)) {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfigurations'
   params: {
+    name: 'aksManagedNodeOSUpgradeSchedule'
     maintenanceWindow: nodeOSMaintenanceConfiguration!.maintenanceWindow
     managedClusterName: managedCluster.name
   }
