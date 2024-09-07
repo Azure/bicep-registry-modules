@@ -7,7 +7,7 @@ This module deploys a Digital Twins Instance ServiceBus Endpoint.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
+
 
 ## Resource Types
 
@@ -152,9 +152,3 @@ SecondaryConnectionString of the endpoint for key-based authentication. Will be 
 | `resourceId` | string | The resource ID of the Endpoint. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API. |
 
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |

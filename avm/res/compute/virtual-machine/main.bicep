@@ -14,7 +14,12 @@ param vmSize string
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool = true
 
-@description('Optional. Specifies the SecurityType of the virtual machine. It is set as TrustedLaunch to enable UefiSettings.')
+@description('Optional. Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set.')
+@allowed([
+  ''
+  'ConfidentialVM'
+  'TrustedLaunch'
+])
 param securityType string = ''
 
 @description('Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings.')
@@ -159,6 +164,7 @@ param extensionAntiMalwareConfig object = {
 @description('Optional. The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionMonitoringAgentConfig object = {
   enabled: false
+  dataCollectionRuleAssociations: []
 }
 
 @description('Optional. The configuration for the [Dependency Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
@@ -281,6 +287,9 @@ param rebootSetting string = 'IfRequired'
 ])
 param patchAssessmentMode string = 'ImageDefault'
 
+@description('Optional. Enables customers to patch their Azure VMs without requiring a reboot. For enableHotpatching, the \'provisionVMAgent\' must be set to true and \'patchMode\' must be set to \'AutomaticByPlatform\'.')
+param enableHotpatching bool = false
+
 @description('Optional. Specifies the time zone of the virtual machine. e.g. \'Pacific Standard Time\'. Possible values can be `TimeZoneInfo.id` value from time zones returned by `TimeZoneInfo.GetSystemTimeZones`.')
 param timeZone string = ''
 
@@ -327,6 +336,7 @@ var windowsConfiguration = {
     ? {
         patchMode: patchMode
         assessmentMode: patchAssessmentMode
+        enableHotpatching: (patchMode =~ 'AutomaticByPlatform') ? enableHotpatching : false
         automaticByPlatformSettings: (patchMode =~ 'AutomaticByPlatform')
           ? {
               bypassPlatformSafetyChecksOnUserSchedule: bypassPlatformSafetyChecksOnUserSchedule
@@ -408,7 +418,7 @@ var builtInRoleNames = {
   )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -493,7 +503,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
   }
 ]
 
-resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
+resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
   name: name
   location: location
   identity: identity
@@ -749,29 +759,6 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
   ]
 }
 
-resource vm_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId)) {
-  name: last(split(
-    (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-      ? extensionMonitoringAgentConfig.monitoringWorkspaceId
-      : 'law'),
-    '/'
-  ))!
-  scope: az.resourceGroup(
-    split(
-      (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-        ? extensionMonitoringAgentConfig.monitoringWorkspaceId
-        : '//'),
-      '/'
-    )[2],
-    split(
-      (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-        ? extensionMonitoringAgentConfig.monitoringWorkspaceId
-        : '////'),
-      '/'
-    )[4]
-  )
-}
-
 module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonitoringAgentConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-AzureMonitorAgent'
   params: {
@@ -783,24 +770,26 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonit
     typeHandlerVersion: extensionMonitoringAgentConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.22' : '1.29')
     autoUpgradeMinorVersion: extensionMonitoringAgentConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionMonitoringAgentConfig.?enableAutomaticUpgrade ?? false
-    settings: {
-      workspaceId: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-        ? vm_logAnalyticsWorkspace.properties.customerId
-        : ''
-      GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
-    }
     supressFailures: extensionMonitoringAgentConfig.?supressFailures ?? false
     tags: extensionMonitoringAgentConfig.?tags ?? tags
-    protectedSettings: {
-      workspaceKey: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-        ? vm_logAnalyticsWorkspace.listKeys().primarySharedKey
-        : ''
-    }
   }
   dependsOn: [
     vm_microsoftAntiMalwareExtension
   ]
 }
+
+resource vm_dataCollectionRuleAssociations 'Microsoft.Insights/dataCollectionRuleAssociations@2023-03-11' = [
+  for (dataCollectionRuleAssociation, index) in extensionMonitoringAgentConfig.dataCollectionRuleAssociations: if (extensionMonitoringAgentConfig.enabled) {
+    name: dataCollectionRuleAssociation.name
+    scope: vm
+    properties: {
+      dataCollectionRuleId: dataCollectionRuleAssociation.dataCollectionRuleResourceId
+    }
+    dependsOn: [
+      vm_azureMonitorAgentExtension
+    ]
+  }
+]
 
 module vm_dependencyAgentExtension 'extension/main.bicep' = if (extensionDependencyAgentConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-DependencyAgent'

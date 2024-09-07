@@ -64,7 +64,6 @@ The folder containing Azure Resource Manager templates. Required if "folderPath"
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `folderPath`
 
@@ -72,7 +71,6 @@ The folder containing artifacts. At least one folder path is required. Required 
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `labName`
 
@@ -87,7 +85,6 @@ The artifact source's branch reference (e.g. main or master).
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `displayName`
 
@@ -103,7 +100,6 @@ The security token to authenticate to the artifact source.
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `sourceType`
 
@@ -111,11 +107,9 @@ The artifact source's type.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'GitHub'
     'StorageAccount'
     'VsoGit'

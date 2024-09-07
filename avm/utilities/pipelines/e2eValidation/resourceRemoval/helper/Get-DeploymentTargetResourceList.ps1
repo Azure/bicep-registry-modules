@@ -53,7 +53,8 @@ function Get-DeploymentOperationAtScope {
         [Parameter(Mandatory = $false)]
         [ValidateSet(
             'Create', # any resource creation
-            'Read' # E.g., 'existing' resources
+            'Read', # E.g., 'existing' resources
+            'EvaluateDeploymentOutput' # Nobody knows
         )]
         [string[]] $ProvisioningOperationsToInclude = @('Create'),
 
@@ -99,7 +100,7 @@ function Get-DeploymentOperationAtScope {
     } else {
         $deploymentOperations = ($response.content | ConvertFrom-Json).value.properties
         $deploymentOperationsFiltered = $deploymentOperations | Where-Object { $_.provisioningOperation -in $ProvisioningOperationsToInclude }
-        return $deploymentOperationsFiltered
+        return $deploymentOperationsFiltered ?? $true # Returning true to indicate that the deployment was found, but did not contain any relevant operations
     }
 }
 
@@ -121,6 +122,9 @@ Optional. The ID of the management group to fetch deployments from. Relevant for
 
 .PARAMETER Scope
 Mandatory. The scope to search in
+
+.PARAMETER DoThrow
+Optional. Throw an exception if a deployment cannot be found. If not set, a warning is returned instead.
 
 .EXAMPLE
 Get-DeploymentTargetResourceListInner -Name 'keyvault-12356' -Scope 'resourcegroup'
@@ -158,7 +162,10 @@ function Get-DeploymentTargetResourceListInner {
             'managementgroup',
             'tenant'
         )]
-        [string] $Scope
+        [string] $Scope,
+
+        [Parameter(Mandatory = $false)]
+        [switch] $DoThrow
     )
 
     $resultSet = [System.Collections.ArrayList]@()
@@ -177,7 +184,13 @@ function Get-DeploymentTargetResourceListInner {
                 if ($op = Get-DeploymentOperationAtScope @baseInputObject -ResourceGroupName $resourceGroupName -SubscriptionId $currentContext.Subscription.Id) {
                     [array]$deploymentTargets = $op.TargetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
                 } else {
-                    throw 'NoDeploymentFound'
+                    $message = "Not found deployment [$Name] in scope [$Scope] of Resource Group [$ResourceGroupName]."
+                    if ($DoThrow) {
+                        throw $message
+                    } else {
+                        Write-Warning "$message Ignoring, as nested deployment."
+                        return
+                    }
                 }
             } else {
                 # In case the resource group itself was already deleted, there is no need to try and fetch deployments from it
@@ -190,21 +203,41 @@ function Get-DeploymentTargetResourceListInner {
             if ($op = Get-DeploymentOperationAtScope @baseInputObject -SubscriptionId $currentContext.Subscription.Id) {
                 [array]$deploymentTargets = $op.TargetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
             } else {
-                throw 'NoDeploymentFound'
+                $message = "Not found deployment [$Name] in scope [$Scope]."
+                if ($DoThrow) {
+                    throw $message
+                } else {
+                    Write-Warning "$message Ignoring, as nested deployment."
+                    return
+                }
             }
             break
         }
         'managementgroup' {
             if ($op = Get-DeploymentOperationAtScope @baseInputObject -ManagementGroupId $ManagementGroupId) {
                 [array]$deploymentTargets = $op.TargetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
+            } else {
+                $message = "Not found deployment [$Name] in scope [$Scope]."
+                if ($DoThrow) {
+                    throw $message
+                } else {
+                    Write-Warning "$message Ignoring, as nested deployment."
+                    return
+                }
             }
-            throw 'NoDeploymentFound'
+            break
         }
         'tenant' {
             if ($op = Get-DeploymentOperationAtScope @baseInputObject) {
                 [array]$deploymentTargets = $op.TargetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
             } else {
-                throw 'NoDeploymentFound'
+                $message = "Not found deployment [$Name] in scope [$Scope]."
+                if ($DoThrow) {
+                    throw $message
+                } else {
+                    Write-Warning "$message Ignoring, as nested deployment."
+                    return
+                }
             }
             break
         }
@@ -213,7 +246,7 @@ function Get-DeploymentTargetResourceListInner {
     ###########################
     # Manage nested resources #
     ###########################
-    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -notmatch '\/deployments\/' } )) {
+    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -notmatch '\/Microsoft\.Resources\/deployments\/' } )) {
         Write-Verbose ('Found deployed resource [{0}]' -f $deployment)
         [array]$resultSet += $deployment
     }
@@ -221,7 +254,7 @@ function Get-DeploymentTargetResourceListInner {
     #############################
     # Manage nested deployments #
     #############################
-    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -match '\/deployments\/' } )) {
+    foreach ($deployment in ($deploymentTargets | Where-Object { $_ -match '\/Microsoft\.Resources\/deployments\/' } )) {
         $name = Split-Path $deployment -Leaf
         if ($deployment -match '/resourceGroups/') {
             # Resource Group Level Child Deployments #
@@ -358,7 +391,7 @@ function Get-DeploymentTargetResourceList {
                 $innerInputObject['ManagementGroupId'] = $ManagementGroupId
             }
             try {
-                $targetResources = Get-DeploymentTargetResourceListInner @innerInputObject
+                $targetResources = Get-DeploymentTargetResourceListInner @innerInputObject -DoThrow # Specifying [-DoThrow] for top-level deployments that we definitely want to resolve
                 Write-Verbose ('Found & resolved deployment [{0}]. [{1}] resources found to remove.' -f $deploymentNameObject.Name, $targetResources.Count) -Verbose
                 $deploymentNameObject.Resolved = $true
                 $resourcesToRemove += $targetResources
@@ -379,7 +412,7 @@ function Get-DeploymentTargetResourceList {
     if ($searchRetryCount -gt $searchRetryLimit) {
         $remainingDeploymentNames = ($deploymentNameObjects | Where-Object { -not $_.Resolved }).Name
 
-        # We don't want to outright throw an exception as we want to remove as many resources as possible before failing the script in the calling functino
+        # We don't want to outright throw an exception as we want to remove as many resources as possible before failing the script in the calling function
         return @{
             resolveError      = ('No deployment for the deployment name(s) [{0}] found' -f ($remainingDeploymentNames -join ', '))
             resourcesToRemove = $resourcesToRemove

@@ -16,7 +16,7 @@ This module deploys a Data Collection Endpoint.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/dataCollectionEndpoints` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/dataCollectionEndpoints) |
+| `Microsoft.Insights/dataCollectionEndpoints` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionEndpoints) |
 
 ## Usage examples
 

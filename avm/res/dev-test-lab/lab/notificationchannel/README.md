@@ -69,7 +69,6 @@ The email recipient to send notifications to (can be a list of semi-colon separa
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `labName`
 

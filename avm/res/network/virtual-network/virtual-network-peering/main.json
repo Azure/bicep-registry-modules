@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "1725716682351191048"
+      "templateHash": "5206620163504251868"
     },
     "name": "Virtual Network Peerings",
     "description": "This module deploys a Virtual Network Peering.",
@@ -14,9 +14,9 @@
   "parameters": {
     "name": {
       "type": "string",
-      "defaultValue": "[format('{0}-{1}', parameters('localVnetName'), last(split(parameters('remoteVirtualNetworkId'), '/')))]",
+      "defaultValue": "[format('peer-{0}-{1}', parameters('localVnetName'), last(split(parameters('remoteVirtualNetworkResourceId'), '/')))]",
       "metadata": {
-        "description": "Optional. The Name of Vnet Peering resource. If not provided, default value will be localVnetName-remoteVnetName."
+        "description": "Optional. The Name of VNET Peering resource. If not provided, default value will be localVnetName-remoteVnetName."
       }
     },
     "localVnetName": {
@@ -25,7 +25,7 @@
         "description": "Conditional. The name of the parent Virtual Network to add the peering to. Required if the template is used in a standalone deployment."
       }
     },
-    "remoteVirtualNetworkId": {
+    "remoteVirtualNetworkResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. The Resource ID of the VNet that is this Local VNet is being peered to. Should be in the format of a Resource ID."
@@ -70,7 +70,7 @@
   "resources": [
     {
       "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('localVnetName'), parameters('name'))]",
       "properties": {
         "allowForwardedTraffic": "[parameters('allowForwardedTraffic')]",
@@ -79,7 +79,7 @@
         "doNotVerifyRemoteGateways": "[parameters('doNotVerifyRemoteGateways')]",
         "useRemoteGateways": "[parameters('useRemoteGateways')]",
         "remoteVirtualNetwork": {
-          "id": "[parameters('remoteVirtualNetworkId')]"
+          "id": "[parameters('remoteVirtualNetworkResourceId')]"
         }
       }
     }

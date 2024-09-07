@@ -776,7 +776,7 @@ function Set-CrossReferencesSection {
 
     $dependencies = $CrossReferencedModuleList[$FullModuleIdentifier]
 
-    if ($dependencies -and -not $dependencies['localPathReferences'] -and -not $dependencies['remoteReferences']) {
+    if (-not $dependencies -or ($dependencies -and -not $dependencies['localPathReferences'] -and -not $dependencies['remoteReferences'])) {
         # no cross references in the template
         return $ReadMeFileContent
     }
@@ -1124,10 +1124,10 @@ function ConvertTo-FormattedJSONParameterObject {
 
             # Individual checks
             $isLineWithEmptyObjectValue = $line -match '^.+:\s*{\s*}\s*$' # e.g., test: {}
-            $isLineWithObjectPropertyReferenceValue = $lineValue -like '*.*' # e.g., resourceGroupResources.outputs.virtualWWANResourceId`
+            $isLineWithObjectPropertyReferenceValue = $lineValue -match '(?<=[^"])\b\.\b(?=[^"]*$)' # e.g., resourceGroupResources.outputs.virtualWWANResourceId, but not "domainName": "onmicrosoft.com"
             $isLineWithReferenceInLineKey = ($line -split ':')[0].Trim() -like '*.*'
             $isLineWithStringNestedReference = $lineValue -match "['|`"]{1}.*\$\{.+" # e.g., "Download ${initializeSoftwareScriptName}"  or '${last(...)}'
-            $isLineWithStringValue = $lineValue -match '".+"' # e.g. "value"
+            $isLineWithStringValue = $lineValue -match '^".+"$' # e.g. "value"
             $isLineWithFunction = $lineValue -match '^[a-zA-Z]+\(.+' # e.g., split(something)
             $isLineWithPlainValue = $lineValue -match '^\w+$' # e.g. adminPassword: password
             $isLineWithPrimitiveValue = $lineValue -match '^\s*true|false|[0-9]+$' # e.g., isSecure: true

@@ -6,8 +6,7 @@ This module deploys a Hosting Environment Custom DNS Suffix Configuration.
 
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
-- [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
+
 
 ## Resource Types
 
@@ -67,9 +66,3 @@ The name of the parent Hosting Environment. Required if the template is used in 
 | `resourceGroupName` | string | The resource group of the deployed configuration. |
 | `resourceId` | string | The resource ID of the deployed configuration. |
 
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
