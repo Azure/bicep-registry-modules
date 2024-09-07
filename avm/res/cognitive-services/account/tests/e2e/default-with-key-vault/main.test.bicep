@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using defaults with key vault'
-metadata description = 'This instance deploys the module with the minimum set of required parameters and stores the keys in key vault.'
+metadata name = 'Storing keys of service in key vault'
+metadata description = 'This instance deploys the module and stores its keys in a key vault.'
 
 // ========== //
 // Parameters //
@@ -55,8 +55,8 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       secretsExportConfiguration: {
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        accessKey1: 'Custom-key1-name'
-        accessKey2: 'Custom-key2-name'
+        accessKey1Name: '${namePrefix}${serviceShort}001-accessKey1'
+        accessKey2Name: '${namePrefix}${serviceShort}001-accessKey2'
       }
     }
   }
