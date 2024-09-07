@@ -237,12 +237,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     clusterMaintenanceConfiguration: {
       maintenanceWindow: {
         durationHours: 4
-        name: 'aksManagedAutoUpgradeSchedule'
-        relativeMonthlySchedule: {
-          dayOfWeek: 'Sunday'
-          intervalMonths: 1
+        schedule: {
+          weekly: {
+            dayOfWeek: 'Sunday'
+            intervalWeeks: 1
+          }
         }
-        startTime: '20:00'
+        startDate: '2024-07-15'
+        startTime: '00:00'
+        utcOffset: '+00:00'
       }
     }
     customerManagedKey: {
@@ -355,12 +358,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     nodeOSMaintenanceConfiguration: {
       maintenanceWindow: {
         durationHours: 4
-        name: 'aksManagedNodeOSUpgradeSchedule'
-        startTime: '20:00'
-        weeklySchedule: {
-          dayOfWeek: 'Saturday'
-          intervalWeeks: 1
+        schedule: {
+          weekly: {
+            dayOfWeek: 'Sunday'
+            intervalWeeks: 1
+          }
         }
+        startDate: '2024-07-15'
+        startTime: '00:00'
+        utcOffset: '+00:00'
       }
     }
     omsAgentEnabled: true
@@ -491,12 +497,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": {
         "maintenanceWindow": {
           "durationHours": 4,
-          "name": "aksManagedAutoUpgradeSchedule",
-          "relativeMonthlySchedule": {
-            "dayOfWeek": "Sunday",
-            "intervalMonths": 1
+          "schedule": {
+            "weekly": {
+              "dayOfWeek": "Sunday",
+              "intervalWeeks": 1
+            }
           },
-          "startTime": "20:00"
+          "startDate": "2024-07-15",
+          "startTime": "00:00",
+          "utcOffset": "+00:00"
         }
       }
     },
@@ -655,12 +664,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": {
         "maintenanceWindow": {
           "durationHours": 4,
-          "name": "aksManagedNodeOSUpgradeSchedule",
-          "startTime": "20:00",
-          "weeklySchedule": {
-            "dayOfWeek": "Saturday",
-            "intervalWeeks": 1
-          }
+          "schedule": {
+            "weekly": {
+              "dayOfWeek": "Sunday",
+              "intervalWeeks": 1
+            }
+          },
+          "startDate": "2024-07-15",
+          "startTime": "00:00",
+          "utcOffset": "+00:00"
         }
       }
     },
@@ -1361,12 +1373,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     clusterMaintenanceConfiguration: {
       maintenanceWindow: {
         durationHours: 4
-        name: 'aksManagedAutoUpgradeSchedule'
-        relativeMonthlySchedule: {
-          dayOfWeek: 'Sunday'
-          intervalMonths: 1
+        schedule: {
+          weekly: {
+            dayOfWeek: 'Sunday'
+            intervalWeeks: 1
+          }
         }
-        startTime: '20:00'
+        startDate: '2024-07-15'
+        startTime: '00:00'
+        utcOffset: '+00:00'
       }
     }
     diagnosticSettings: [
@@ -1413,12 +1428,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     nodeOSMaintenanceConfiguration: {
       maintenanceWindow: {
         durationHours: 4
-        name: 'aksManagedNodeOSUpgradeSchedule'
-        startTime: '20:00'
-        weeklySchedule: {
-          dayOfWeek: 'Saturday'
-          intervalWeeks: 1
+        schedule: {
+          weekly: {
+            dayOfWeek: 'Sunday'
+            intervalWeeks: 1
+          }
         }
+        startDate: '2024-07-15'
+        startTime: '00:00'
+        utcOffset: '+00:00'
       }
     }
     omsAgentEnabled: true
@@ -1532,12 +1550,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": {
         "maintenanceWindow": {
           "durationHours": 4,
-          "name": "aksManagedAutoUpgradeSchedule",
-          "relativeMonthlySchedule": {
-            "dayOfWeek": "Sunday",
-            "intervalMonths": 1
+          "schedule": {
+            "weekly": {
+              "dayOfWeek": "Sunday",
+              "intervalWeeks": 1
+            }
           },
-          "startTime": "20:00"
+          "startDate": "2024-07-15",
+          "startTime": "00:00",
+          "utcOffset": "+00:00"
         }
       }
     },
@@ -1606,12 +1627,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": {
         "maintenanceWindow": {
           "durationHours": 4,
-          "name": "aksManagedNodeOSUpgradeSchedule",
-          "startTime": "20:00",
-          "weeklySchedule": {
-            "dayOfWeek": "Saturday",
-            "intervalWeeks": 1
-          }
+          "schedule": {
+            "weekly": {
+              "dayOfWeek": "Sunday",
+              "intervalWeeks": 1
+            }
+          },
+          "startDate": "2024-07-15",
+          "startTime": "00:00",
+          "utcOffset": "+00:00"
         }
       }
     },
