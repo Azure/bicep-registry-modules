@@ -481,7 +481,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
     keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
     secretsToSet: union(
       [],
-      contains(secretsExportConfiguration!, 'accessKey1')
+      contains(secretsExportConfiguration!, 'accessKey1Name')
         ? [
             {
               name: secretsExportConfiguration!.accessKey1Name
@@ -489,7 +489,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
             }
           ]
         : [],
-      contains(secretsExportConfiguration!, 'accessKey2')
+      contains(secretsExportConfiguration!, 'accessKey2Name')
         ? [
             {
               name: secretsExportConfiguration!.accessKey2Name
