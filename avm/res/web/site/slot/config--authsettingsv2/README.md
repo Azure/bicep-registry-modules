@@ -8,7 +8,6 @@ This module deploys a Site Auth Settings V2 Configuration.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 
-
 ## Resource Types
 
 | Resource Type | API Version |

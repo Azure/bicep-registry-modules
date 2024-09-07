@@ -1895,7 +1895,7 @@ Switch to make the Event Hub Namespace zone redundant.
 
 - Required: No
 - Type: bool
-
+- Default: `True`
 
 ## Outputs
 

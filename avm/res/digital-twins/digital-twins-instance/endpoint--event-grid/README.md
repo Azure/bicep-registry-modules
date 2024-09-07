@@ -8,7 +8,6 @@ This module deploys a Digital Twins Instance Event Grid Endpoint.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 
-
 ## Resource Types
 
 | Resource Type | API Version |
@@ -90,4 +89,3 @@ The name of the Digital Twin Endpoint.
 | `name` | string | The name of the Endpoint. |
 | `resourceGroupName` | string | The name of the resource group the resource was created in. |
 | `resourceId` | string | The resource ID of the Endpoint. |
-

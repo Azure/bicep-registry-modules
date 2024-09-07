@@ -3263,6 +3263,14 @@ A list of availability zones denoting where the resource needs to come from.
 
 - Required: No
 - Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ## Outputs
 

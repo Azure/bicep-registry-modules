@@ -87,7 +87,7 @@ param imageTemplateName string = 'it-aib'
 @description('Required. The image source to use for the Image Template.')
 param imageTemplateImageSource object
 
-@description('Conditional. The customization steps to use for the Image Template. Required if Image Template is deployed.')
+@description('Optional. The customization steps to use for the Image Template.')
 @minLength(1)
 param imageTemplateCustomizationSteps array?
 
@@ -438,11 +438,11 @@ resource dsMsi_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-0
   scope: resourceGroup(resourceGroupName)
 }
 
-module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.2.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
+module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.3.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
   name: '${deployment().name}-it'
   scope: resourceGroup(resourceGroupName)
   params: {
-    customizationSteps: imageTemplateCustomizationSteps!
+    customizationSteps: imageTemplateCustomizationSteps
     imageSource: imageTemplateImageSource
     name: imageTemplateName
     enableTelemetry: enableTelemetry
@@ -478,7 +478,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
       imageSubnetName
     )
     location: location
-    stagingResourceGroup: imageTemplateRg.id
+    stagingResourceGroupResourceId: imageTemplateRg.id
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Contributor'

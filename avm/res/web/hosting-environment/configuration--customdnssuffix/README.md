@@ -6,7 +6,7 @@ This module deploys a Hosting Environment Custom DNS Suffix Configuration.
 
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
-
+- [Outputs](#Outputs)
 
 ## Resource Types
 
@@ -65,4 +65,3 @@ The name of the parent Hosting Environment. Required if the template is used in 
 | `name` | string | The name of the configuration. |
 | `resourceGroupName` | string | The resource group of the deployed configuration. |
 | `resourceId` | string | The resource ID of the deployed configuration. |
-

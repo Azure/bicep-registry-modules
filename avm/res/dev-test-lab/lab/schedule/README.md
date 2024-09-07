@@ -227,6 +227,27 @@ If the schedule will occur only some days of the week, specify the weekly recurr
 - Required: No
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`time`](#parameter-weeklyrecurrencetime) | string | The time of day the schedule will occur. |
+| [`weekdays`](#parameter-weeklyrecurrenceweekdays) | array | The days of the week for which the schedule is set (e.g. Sunday, Monday, Tuesday, etc.). |
+
+### Parameter: `weeklyRecurrence.time`
+
+The time of day the schedule will occur.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `weeklyRecurrence.weekdays`
+
+The days of the week for which the schedule is set (e.g. Sunday, Monday, Tuesday, etc.).
+
+- Required: Yes
+- Type: array
+
 ## Outputs
 
 | Output | Type | Description |

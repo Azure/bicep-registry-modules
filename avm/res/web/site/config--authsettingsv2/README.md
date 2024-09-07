@@ -73,3 +73,4 @@ The name of the parent site resource. Required if the template is used in a stan
 | :-- | :-- | :-- |
 | `name` | string | The name of the site config. |
 | `resourceGroupName` | string | The resource group the site config was deployed into. |
+| `resourceId` | string | The resource ID of the site config. |

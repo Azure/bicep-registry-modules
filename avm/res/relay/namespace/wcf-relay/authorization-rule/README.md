@@ -8,7 +8,6 @@ This module deploys a WCF Relay Authorization Rule.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 
-
 ## Resource Types
 
 | Resource Type | API Version |
@@ -80,4 +79,3 @@ The rights associated with the rule.
 | `name` | string | The name of the authorization rule. |
 | `resourceGroupName` | string | The name of the Resource Group the authorization rule was created in. |
 | `resourceId` | string | The Resource ID of the authorization rule. |
-

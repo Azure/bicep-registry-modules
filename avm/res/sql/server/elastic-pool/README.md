@@ -165,7 +165,8 @@ Tags of the resource.
 Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones.
 
 - Required: No
-
+- Type: bool
+- Default: `True`
 
 ## Outputs
 

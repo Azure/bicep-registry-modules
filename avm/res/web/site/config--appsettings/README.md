@@ -106,7 +106,6 @@ If the provided storage account requires Identity based authentication ('allowSh
 | `resourceGroupName` | string | The resource group the site config was deployed into. |
 | `resourceId` | string | The resource ID of the site config. |
 
-
 ## Notes
 
 ### Parameter Usage: `appSettingsKeyValuePairs`

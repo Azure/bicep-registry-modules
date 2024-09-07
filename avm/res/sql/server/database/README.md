@@ -482,7 +482,7 @@ Whether or not this database is zone redundant.
 
 - Required: No
 - Type: bool
-
+- Default: `True`
 
 ## Outputs
 

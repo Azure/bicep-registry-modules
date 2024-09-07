@@ -8,7 +8,6 @@ This module deploys a Virtual Network Peering.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 
-
 ## Resource Types
 
 | Resource Type | API Version |
@@ -108,4 +107,4 @@ If remote gateways can be used on this virtual network. If the flag is set to tr
 | :-- | :-- | :-- |
 | `name` | string | The name of the virtual network peering. |
 | `resourceGroupName` | string | The resource group the virtual network peering was deployed into. |
-
+| `resourceId` | string | The resource ID of the virtual network peering. |

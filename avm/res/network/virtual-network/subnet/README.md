@@ -258,6 +258,27 @@ The service endpoints to enable on the subnet.
 - Type: array
 - Default: `[]`
 
+### Parameter: `sharingScope`
+
+Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DelegatedServices'
+    'Tenant'
+  ]
+  ```
+
+### Parameter: `name`
+
+The Name of the subnet resource.
+
+- Required: Yes
+- Type: string
+
 ## Outputs
 
 | Output | Type | Description |

@@ -35,15 +35,6 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       computeGalleryName: 'gal${namePrefix}${serviceShort}'
       computeGalleryImageDefinitionName: computeGalleryImageDefinitionName
-      imageTemplateCustomizationSteps: [
-        {
-          type: 'Shell'
-          name: 'Example script'
-          inline: [
-            'echo \'Hola folks\''
-          ]
-        }
-      ]
       assetsStorageAccountName: 'st${namePrefix}${serviceShort}'
       computeGalleryImageDefinitions: [
         {

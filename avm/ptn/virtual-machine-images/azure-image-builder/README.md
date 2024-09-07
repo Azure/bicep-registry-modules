@@ -95,15 +95,6 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     // Non-required parameters
     assetsStorageAccountName: 'stapvmiaibmin'
     deploymentsToPerform: '<deploymentsToPerform>'
-    imageTemplateCustomizationSteps: [
-      {
-        inline: [
-          'echo \'Hola folks\''
-        ]
-        name: 'Example script'
-        type: 'Shell'
-      }
-    ]
     location: '<location>'
     resourceGroupName: '<resourceGroupName>'
   }
@@ -156,17 +147,6 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     },
     "deploymentsToPerform": {
       "value": "<deploymentsToPerform>"
-    },
-    "imageTemplateCustomizationSteps": {
-      "value": [
-        {
-          "inline": [
-            "echo \"Hola folks\""
-          ],
-          "name": "Example script",
-          "type": "Shell"
-        }
-      ]
     },
     "location": {
       "value": "<location>"
@@ -727,7 +707,6 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -738,12 +717,6 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 | [`computeGalleryImageDefinitions`](#parameter-computegalleryimagedefinitions) | array | The Image Definitions in the Azure Compute Gallery. |
 | [`computeGalleryName`](#parameter-computegalleryname) | string | The name of the Azure Compute Gallery. |
 | [`imageTemplateImageSource`](#parameter-imagetemplateimagesource) | object | The image source to use for the Image Template. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`imageTemplateCustomizationSteps`](#parameter-imagetemplatecustomizationsteps) | array | The customization steps to use for the Image Template. Required if Image Template is deployed. |
 
 **Optional parameters**
 
@@ -758,6 +731,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`imageManagedIdentityName`](#parameter-imagemanagedidentityname) | string | The name of the Managed Identity used by the Azure Image Builder. |
 | [`imageSubnetName`](#parameter-imagesubnetname) | string | The name of the Image Template Virtual Network Subnet to create. |
+| [`imageTemplateCustomizationSteps`](#parameter-imagetemplatecustomizationsteps) | array | The customization steps to use for the Image Template. |
 | [`imageTemplateDeploymentScriptName`](#parameter-imagetemplatedeploymentscriptname) | string | The name of the Deployment Script to trigger the image template baking. |
 | [`imageTemplateName`](#parameter-imagetemplatename) | string | The name of the Image Template. |
 | [`imageTemplateResourceGroupName`](#parameter-imagetemplateresourcegroupname) | string | The name of the Resource Group to deploy the Image Template resources into. |
@@ -806,13 +780,6 @@ The image source to use for the Image Template.
 
 - Required: Yes
 - Type: object
-
-### Parameter: `imageTemplateCustomizationSteps`
-
-The customization steps to use for the Image Template. Required if Image Template is deployed.
-
-- Required: No
-- Type: array
 
 ### Parameter: `assetsStorageAccountContainerName`
 
@@ -893,6 +860,13 @@ The name of the Image Template Virtual Network Subnet to create.
 - Required: No
 - Type: string
 - Default: `'subnet-it'`
+
+### Parameter: `imageTemplateCustomizationSteps`
+
+The customization steps to use for the Image Template.
+
+- Required: No
+- Type: array
 
 ### Parameter: `imageTemplateDeploymentScriptName`
 
@@ -1042,11 +1016,9 @@ Do not provide a value! This date value is used to generate a SAS token to acces
 - Type: string
 - Default: `[utcNow()]`
 
-
 ## Outputs
 
-| Output | Type |
-| :-- | :-- |
+_None_
 
 ## Cross-referenced modules
 
@@ -1059,7 +1031,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/virtual-network:0.1.6` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.3.1` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.9.1` | Remote reference |
-| `br/public:avm/res/virtual-machine-images/image-template:0.2.1` | Remote reference |
+| `br/public:avm/res/virtual-machine-images/image-template:0.3.1` | Remote reference |
 
 ## Notes
 
