@@ -770,6 +770,16 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
 module managedCluster_maintenanceConfigurations 'maintenance-configurations/main.bicep' = if (!empty(maintenanceConfiguration)) {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfigurations'
   params: {
+    name: 'aksManagedAutoUpgradeSchedule'
+    maintenanceWindow: maintenanceConfiguration!.maintenanceWindow
+    managedClusterName: managedCluster.name
+  }
+}
+
+module managedClusterNodeOS_maintenanceConfigurations 'maintenance-configurations/main.bicep' = if (!empty(maintenanceConfiguration)) {
+  name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfigurations'
+  params: {
+    name: 'aksManagedNodeOSUpgradeSchedule'
     maintenanceWindow: maintenanceConfiguration!.maintenanceWindow
     managedClusterName: managedCluster.name
   }

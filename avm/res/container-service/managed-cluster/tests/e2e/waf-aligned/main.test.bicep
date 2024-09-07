@@ -140,6 +140,16 @@ module testDeployment '../../../main.bicep' = [
       ]
       autoUpgradeProfileUpgradeChannel: 'stable'
       autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
+      maintenanceConfiguration: {
+        maintenanceWindow: {
+          durationHours: 4
+          startTime: '20:00'
+          relativeMonthlySchedule: {
+            dayOfWeek: 'Sunday'
+            intervalMonths: 1
+          }
+        }
+      }
       networkPlugin: 'azure'
       networkPolicy: 'azure'
       skuTier: 'Standard'

@@ -332,6 +332,16 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    maintenanceConfiguration: {
+      maintenanceWindow: {
+        durationHours: 4
+        relativeMonthlySchedule: {
+          dayOfWeek: 'Sunday'
+          intervalMonths: 1
+        }
+        startTime: '20:00'
+      }
+    }
     managedIdentities: {
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
@@ -595,6 +605,18 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "maintenanceConfiguration": {
+      "value": {
+        "maintenanceWindow": {
+          "durationHours": 4,
+          "relativeMonthlySchedule": {
+            "dayOfWeek": "Sunday",
+            "intervalMonths": 1
+          },
+          "startTime": "20:00"
+        }
       }
     },
     "managedIdentities": {
@@ -1343,6 +1365,16 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     enableAzureDefender: true
     enablePrivateCluster: true
     location: '<location>'
+    maintenanceConfiguration: {
+      maintenanceWindow: {
+        durationHours: 4
+        relativeMonthlySchedule: {
+          dayOfWeek: 'Sunday'
+          intervalMonths: 1
+        }
+        startTime: '20:00'
+      }
+    }
     managedIdentities: {
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
@@ -1502,6 +1534,18 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "location": {
       "value": "<location>"
+    },
+    "maintenanceConfiguration": {
+      "value": {
+        "maintenanceWindow": {
+          "durationHours": 4,
+          "relativeMonthlySchedule": {
+            "dayOfWeek": "Sunday",
+            "intervalMonths": 1
+          },
+          "startTime": "20:00"
+        }
+      }
     },
     "managedIdentities": {
       "value": {
