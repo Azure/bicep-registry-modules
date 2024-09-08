@@ -50,8 +50,6 @@ module testDeployment '../../../main.bicep' = [
           mode: 'System'
         }
       ]
-      autoUpgradeProfileUpgradeChannel: 'stable'
-      autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
       maintenanceConfigurations: [
         {
           name: 'aksManagedAutoUpgradeSchedule'

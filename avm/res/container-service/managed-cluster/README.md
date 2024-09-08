@@ -753,8 +753,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     // Non-required parameters
-    autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
-    autoUpgradeProfileUpgradeChannel: 'stable'
     location: '<location>'
     maintenanceConfigurations: [
       {
@@ -822,12 +820,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     },
     // Non-required parameters
-    "autoNodeOsUpgradeProfileUpgradeChannel": {
-      "value": "Unmanaged"
-    },
-    "autoUpgradeProfileUpgradeChannel": {
-      "value": "stable"
-    },
     "location": {
       "value": "<location>"
     },
