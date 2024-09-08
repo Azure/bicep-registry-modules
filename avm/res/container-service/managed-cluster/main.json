@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "11297225739759243677"
+      "templateHash": "3390155000690472882"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -671,12 +671,25 @@
       "nullable": true
     },
     "maintenanceConfigurationType": {
-      "type": "object",
-      "properties": {
-        "maintenanceWindow": {
-          "type": "object",
-          "metadata": {
-            "description": "Required. Maintenance window for the maintenance configuration."
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "allowedValues": [
+              "aksManagedAutoUpgradeSchedule",
+              "aksManagedNodeOSUpgradeSchedule"
+            ],
+            "metadata": {
+              "description": "Required. Name of maintenance window."
+            }
+          },
+          "maintenanceWindow": {
+            "type": "object",
+            "metadata": {
+              "description": "Required. Maintenance window for the maintenance configuration."
+            }
           }
         }
       },
@@ -985,16 +998,10 @@
         "description": "Optional. Define one or more secondary/additional agent pools."
       }
     },
-    "clusterMaintenanceConfiguration": {
+    "maintenanceConfigurations": {
       "$ref": "#/definitions/maintenanceConfigurationType",
       "metadata": {
-        "description": "Optional. Cluster auto upgrade configuration window."
-      }
-    },
-    "nodeOSMaintenanceConfiguration": {
-      "$ref": "#/definitions/maintenanceConfigurationType",
-      "metadata": {
-        "description": "Optional. Node OS auto upgrade configureation window."
+        "description": "Optional. Maintenance Window for Cluster auto upgrade and node OS upgrade."
       }
     },
     "costAnalysisEnabled": {
@@ -1838,104 +1845,14 @@
       ]
     },
     "managedCluster_maintenanceConfigurations": {
-      "condition": "[not(empty(parameters('clusterMaintenanceConfiguration')))]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-ManagedCluster-MaintenanceConfigurations', uniqueString(deployment().name, parameters('location')))]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "name": {
-            "value": "aksManagedAutoUpgradeSchedule"
-          },
-          "maintenanceWindow": {
-            "value": "[parameters('clusterMaintenanceConfiguration').maintenanceWindow]"
-          },
-          "managedClusterName": {
-            "value": "[parameters('name')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "12168542117744033419"
-            },
-            "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
-            "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
-            "owner": "Azure/module-maintainers"
-          },
-          "parameters": {
-            "maintenanceWindow": {
-              "type": "object",
-              "metadata": {
-                "description": "Required. Maintenance window for the maintenance configuration."
-              }
-            },
-            "managedClusterName": {
-              "type": "string",
-              "metadata": {
-                "description": "Conditional. The name of the parent managed cluster. Required if the template is used in a standalone deployment."
-              }
-            },
-            "name": {
-              "type": "string",
-              "defaultValue": "aksManagedAutoUpgradeSchedule",
-              "metadata": {
-                "description": "Optional. Name of the maintenance configuration."
-              }
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.ContainerService/managedClusters/maintenanceConfigurations",
-              "apiVersion": "2023-10-01",
-              "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
-              "properties": {
-                "maintenanceWindow": "[parameters('maintenanceWindow')]"
-              }
-            }
-          ],
-          "outputs": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the maintenance configuration."
-              },
-              "value": "[parameters('name')]"
-            },
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the maintenance configuration."
-              },
-              "value": "[resourceId('Microsoft.ContainerService/managedClusters/maintenanceConfigurations', parameters('managedClusterName'), parameters('name'))]"
-            },
-            "resourceGroupName": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource group the agent pool was deployed into."
-              },
-              "value": "[resourceGroup().name]"
-            }
-          }
-        }
+      "copy": {
+        "name": "managedCluster_maintenanceConfigurations",
+        "count": "[length(coalesce(parameters('maintenanceConfigurations'), createArray()))]"
       },
-      "dependsOn": [
-        "managedCluster"
-      ]
-    },
-    "managedClusterNodeOS_maintenanceConfigurations": {
-      "condition": "[not(empty(parameters('nodeOSMaintenanceConfiguration')))]",
+      "condition": "[not(empty(coalesce(parameters('maintenanceConfigurations'), createArray())[copyIndex()]))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-ManagedCluster-MaintenanceConfigurations', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-ManagedCluster-MaintenanceConfigurations-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1943,10 +1860,10 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "aksManagedNodeOSUpgradeSchedule"
+            "value": "[coalesce(parameters('maintenanceConfigurations'), createArray())[copyIndex()].name]"
           },
           "maintenanceWindow": {
-            "value": "[parameters('nodeOSMaintenanceConfiguration').maintenanceWindow]"
+            "value": "[coalesce(parameters('maintenanceConfigurations'), createArray())[copyIndex()].maintenanceWindow]"
           },
           "managedClusterName": {
             "value": "[parameters('name')]"

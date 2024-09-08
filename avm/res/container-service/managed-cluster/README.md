@@ -63,24 +63,27 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     // Non-required parameters
-    clusterMaintenanceConfiguration: {
-      maintenanceWindow: {
-        durationHours: 4
-        schedule: {
-          absoluteMonthly: '<absoluteMonthly>'
-          daily: '<daily>'
-          relativeMonthly: '<relativeMonthly>'
-          weekly: {
-            dayOfWeek: 'Sunday'
-            intervalWeeks: 1
-          }
-        }
-        startDate: '2024-07-03'
-        startTime: '00:00'
-        utcOffset: '+00:00'
-      }
-    }
     location: '<location>'
+    maintenanceConfigurations: [
+      {
+        maintenanceWindow: {
+          durationHours: 4
+          schedule: {
+            absoluteMonthly: '<absoluteMonthly>'
+            daily: '<daily>'
+            relativeMonthly: '<relativeMonthly>'
+            weekly: {
+              dayOfWeek: 'Sunday'
+              intervalWeeks: 1
+            }
+          }
+          startDate: '2024-07-03'
+          startTime: '00:00'
+          utcOffset: '+00:00'
+        }
+        name: 'aksManagedAutoUpgradeSchedule'
+      }
+    ]
     managedIdentities: {
       systemAssigned: true
     }
@@ -115,27 +118,30 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     },
     // Non-required parameters
-    "clusterMaintenanceConfiguration": {
-      "value": {
-        "maintenanceWindow": {
-          "durationHours": 4,
-          "schedule": {
-            "absoluteMonthly": "<absoluteMonthly>",
-            "daily": "<daily>",
-            "relativeMonthly": "<relativeMonthly>",
-            "weekly": {
-              "dayOfWeek": "Sunday",
-              "intervalWeeks": 1
-            }
-          },
-          "startDate": "2024-07-03",
-          "startTime": "00:00",
-          "utcOffset": "+00:00"
-        }
-      }
-    },
     "location": {
       "value": "<location>"
+    },
+    "maintenanceConfigurations": {
+      "value": [
+        {
+          "maintenanceWindow": {
+            "durationHours": 4,
+            "schedule": {
+              "absoluteMonthly": "<absoluteMonthly>",
+              "daily": "<daily>",
+              "relativeMonthly": "<relativeMonthly>",
+              "weekly": {
+                "dayOfWeek": "Sunday",
+                "intervalWeeks": 1
+              }
+            },
+            "startDate": "2024-07-03",
+            "startTime": "00:00",
+            "utcOffset": "+00:00"
+          },
+          "name": "aksManagedAutoUpgradeSchedule"
+        }
+      ]
     },
     "managedIdentities": {
       "value": {
@@ -234,20 +240,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
     autoUpgradeProfileUpgradeChannel: 'stable'
-    clusterMaintenanceConfiguration: {
-      maintenanceWindow: {
-        durationHours: 4
-        schedule: {
-          weekly: {
-            dayOfWeek: 'Sunday'
-            intervalWeeks: 1
-          }
-        }
-        startDate: '2024-07-15'
-        startTime: '00:00'
-        utcOffset: '+00:00'
-      }
-    }
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultNetworkAccess: 'Public'
@@ -346,6 +338,38 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    maintenanceConfigurations: [
+      {
+        maintenanceWindow: {
+          durationHours: 4
+          schedule: {
+            weekly: {
+              dayOfWeek: 'Sunday'
+              intervalWeeks: 1
+            }
+          }
+          startDate: '2024-07-15'
+          startTime: '00:00'
+          utcOffset: '+00:00'
+        }
+        name: 'aksManagedAutoUpgradeSchedule'
+      }
+      {
+        maintenanceWindow: {
+          durationHours: 4
+          schedule: {
+            weekly: {
+              dayOfWeek: 'Sunday'
+              intervalWeeks: 1
+            }
+          }
+          startDate: '2024-07-15'
+          startTime: '00:00'
+          utcOffset: '+00:00'
+        }
+        name: 'aksManagedNodeOSUpgradeSchedule'
+      }
+    ]
     managedIdentities: {
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
@@ -355,20 +379,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     networkDataplane: 'azure'
     networkPlugin: 'azure'
     networkPluginMode: 'overlay'
-    nodeOSMaintenanceConfiguration: {
-      maintenanceWindow: {
-        durationHours: 4
-        schedule: {
-          weekly: {
-            dayOfWeek: 'Sunday'
-            intervalWeeks: 1
-          }
-        }
-        startDate: '2024-07-15'
-        startTime: '00:00'
-        utcOffset: '+00:00'
-      }
-    }
     omsAgentEnabled: true
     openServiceMeshEnabled: true
     roleAssignments: [
@@ -492,22 +502,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "autoUpgradeProfileUpgradeChannel": {
       "value": "stable"
-    },
-    "clusterMaintenanceConfiguration": {
-      "value": {
-        "maintenanceWindow": {
-          "durationHours": 4,
-          "schedule": {
-            "weekly": {
-              "dayOfWeek": "Sunday",
-              "intervalWeeks": 1
-            }
-          },
-          "startDate": "2024-07-15",
-          "startTime": "00:00",
-          "utcOffset": "+00:00"
-        }
-      }
     },
     "customerManagedKey": {
       "value": {
@@ -641,6 +635,40 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         "name": "myCustomLockName"
       }
     },
+    "maintenanceConfigurations": {
+      "value": [
+        {
+          "maintenanceWindow": {
+            "durationHours": 4,
+            "schedule": {
+              "weekly": {
+                "dayOfWeek": "Sunday",
+                "intervalWeeks": 1
+              }
+            },
+            "startDate": "2024-07-15",
+            "startTime": "00:00",
+            "utcOffset": "+00:00"
+          },
+          "name": "aksManagedAutoUpgradeSchedule"
+        },
+        {
+          "maintenanceWindow": {
+            "durationHours": 4,
+            "schedule": {
+              "weekly": {
+                "dayOfWeek": "Sunday",
+                "intervalWeeks": 1
+              }
+            },
+            "startDate": "2024-07-15",
+            "startTime": "00:00",
+            "utcOffset": "+00:00"
+          },
+          "name": "aksManagedNodeOSUpgradeSchedule"
+        }
+      ]
+    },
     "managedIdentities": {
       "value": {
         "userAssignedResourcesIds": [
@@ -659,22 +687,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "networkPluginMode": {
       "value": "overlay"
-    },
-    "nodeOSMaintenanceConfiguration": {
-      "value": {
-        "maintenanceWindow": {
-          "durationHours": 4,
-          "schedule": {
-            "weekly": {
-              "dayOfWeek": "Sunday",
-              "intervalWeeks": 1
-            }
-          },
-          "startDate": "2024-07-15",
-          "startTime": "00:00",
-          "utcOffset": "+00:00"
-        }
-      }
     },
     "omsAgentEnabled": {
       "value": true
@@ -1370,20 +1382,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
     autoUpgradeProfileUpgradeChannel: 'stable'
-    clusterMaintenanceConfiguration: {
-      maintenanceWindow: {
-        durationHours: 4
-        schedule: {
-          weekly: {
-            dayOfWeek: 'Sunday'
-            intervalWeeks: 1
-          }
-        }
-        startDate: '2024-07-15'
-        startTime: '00:00'
-        utcOffset: '+00:00'
-      }
-    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1417,6 +1415,38 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     enableAzureDefender: true
     enablePrivateCluster: true
     location: '<location>'
+    maintenanceConfigurations: [
+      {
+        maintenanceWindow: {
+          durationHours: 4
+          schedule: {
+            weekly: {
+              dayOfWeek: 'Sunday'
+              intervalWeeks: 1
+            }
+          }
+          startDate: '2024-07-15'
+          startTime: '00:00'
+          utcOffset: '+00:00'
+        }
+        name: 'aksManagedAutoUpgradeSchedule'
+      }
+      {
+        maintenanceWindow: {
+          durationHours: 4
+          schedule: {
+            weekly: {
+              dayOfWeek: 'Sunday'
+              intervalWeeks: 1
+            }
+          }
+          startDate: '2024-07-15'
+          startTime: '00:00'
+          utcOffset: '+00:00'
+        }
+        name: 'aksManagedNodeOSUpgradeSchedule'
+      }
+    ]
     managedIdentities: {
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
@@ -1425,20 +1455,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     monitoringWorkspaceId: '<monitoringWorkspaceId>'
     networkPlugin: 'azure'
     networkPolicy: 'azure'
-    nodeOSMaintenanceConfiguration: {
-      maintenanceWindow: {
-        durationHours: 4
-        schedule: {
-          weekly: {
-            dayOfWeek: 'Sunday'
-            intervalWeeks: 1
-          }
-        }
-        startDate: '2024-07-15'
-        startTime: '00:00'
-        utcOffset: '+00:00'
-      }
-    }
     omsAgentEnabled: true
     privateDNSZone: '<privateDNSZone>'
     serviceCidr: '10.10.200.0/24'
@@ -1546,22 +1562,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "autoUpgradeProfileUpgradeChannel": {
       "value": "stable"
     },
-    "clusterMaintenanceConfiguration": {
-      "value": {
-        "maintenanceWindow": {
-          "durationHours": 4,
-          "schedule": {
-            "weekly": {
-              "dayOfWeek": "Sunday",
-              "intervalWeeks": 1
-            }
-          },
-          "startDate": "2024-07-15",
-          "startTime": "00:00",
-          "utcOffset": "+00:00"
-        }
-      }
-    },
     "diagnosticSettings": {
       "value": [
         {
@@ -1607,6 +1607,40 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "location": {
       "value": "<location>"
     },
+    "maintenanceConfigurations": {
+      "value": [
+        {
+          "maintenanceWindow": {
+            "durationHours": 4,
+            "schedule": {
+              "weekly": {
+                "dayOfWeek": "Sunday",
+                "intervalWeeks": 1
+              }
+            },
+            "startDate": "2024-07-15",
+            "startTime": "00:00",
+            "utcOffset": "+00:00"
+          },
+          "name": "aksManagedAutoUpgradeSchedule"
+        },
+        {
+          "maintenanceWindow": {
+            "durationHours": 4,
+            "schedule": {
+              "weekly": {
+                "dayOfWeek": "Sunday",
+                "intervalWeeks": 1
+              }
+            },
+            "startDate": "2024-07-15",
+            "startTime": "00:00",
+            "utcOffset": "+00:00"
+          },
+          "name": "aksManagedNodeOSUpgradeSchedule"
+        }
+      ]
+    },
     "managedIdentities": {
       "value": {
         "userAssignedResourcesIds": [
@@ -1622,22 +1656,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "networkPolicy": {
       "value": "azure"
-    },
-    "nodeOSMaintenanceConfiguration": {
-      "value": {
-        "maintenanceWindow": {
-          "durationHours": 4,
-          "schedule": {
-            "weekly": {
-              "dayOfWeek": "Sunday",
-              "intervalWeeks": 1
-            }
-          },
-          "startDate": "2024-07-15",
-          "startTime": "00:00",
-          "utcOffset": "+00:00"
-        }
-      }
     },
     "omsAgentEnabled": {
       "value": true
@@ -1718,7 +1736,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`azurePolicyEnabled`](#parameter-azurepolicyenabled) | bool | Specifies whether the azurepolicy add-on is enabled or not. For security reasons, this setting should be enabled. |
 | [`azurePolicyVersion`](#parameter-azurepolicyversion) | string | Specifies the azure policy version to use. |
 | [`backendPoolType`](#parameter-backendpooltype) | string | The type of the managed inbound Load Balancer BackendPool. |
-| [`clusterMaintenanceConfiguration`](#parameter-clustermaintenanceconfiguration) | object | Cluster auto upgrade configuration window. |
 | [`costAnalysisEnabled`](#parameter-costanalysisenabled) | bool | Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -1760,6 +1777,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`loadBalancerSku`](#parameter-loadbalancersku) | string | Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools. |
 | [`location`](#parameter-location) | string | Specifies the location of AKS cluster. It picks up Resource Group's location by default. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`maintenanceConfigurations`](#parameter-maintenanceconfigurations) | array | Maintenance Window for Cluster auto upgrade and node OS upgrade. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
 | [`managedOutboundIPCount`](#parameter-managedoutboundipcount) | int | Outbound IP Count for the Load balancer. |
 | [`metricAnnotationsAllowList`](#parameter-metricannotationsallowlist) | string | A comma-separated list of Kubernetes cluster metrics annotations. |
@@ -1769,7 +1787,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`networkPlugin`](#parameter-networkplugin) | string | Specifies the network plugin used for building Kubernetes network. |
 | [`networkPluginMode`](#parameter-networkpluginmode) | string | Network plugin mode used for building the Kubernetes network. Not compatible with kubenet network plugin. |
 | [`networkPolicy`](#parameter-networkpolicy) | string | Specifies the network policy used for building Kubernetes network. - calico or azure. |
-| [`nodeOSMaintenanceConfiguration`](#parameter-nodeosmaintenanceconfiguration) | object | Node OS auto upgrade configureation window. |
 | [`nodeResourceGroup`](#parameter-noderesourcegroup) | string | Name of the resource group containing agent pool nodes. |
 | [`omsAgentEnabled`](#parameter-omsagentenabled) | bool | Specifies whether the OMS agent is enabled. |
 | [`openServiceMeshEnabled`](#parameter-openservicemeshenabled) | bool | Specifies whether the openServiceMesh add-on is enabled or not. |
@@ -2471,26 +2488,6 @@ The type of the managed inbound Load Balancer BackendPool.
   ]
   ```
 
-### Parameter: `clusterMaintenanceConfiguration`
-
-Cluster auto upgrade configuration window.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`maintenanceWindow`](#parameter-clustermaintenanceconfigurationmaintenancewindow) | object | Maintenance window for the maintenance configuration. |
-
-### Parameter: `clusterMaintenanceConfiguration.maintenanceWindow`
-
-Maintenance window for the maintenance configuration.
-
-- Required: Yes
-- Type: object
-
 ### Parameter: `costAnalysisEnabled`
 
 Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed.
@@ -3120,6 +3117,41 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
+### Parameter: `maintenanceConfigurations`
+
+Maintenance Window for Cluster auto upgrade and node OS upgrade.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`maintenanceWindow`](#parameter-maintenanceconfigurationsmaintenancewindow) | object | Maintenance window for the maintenance configuration. |
+| [`name`](#parameter-maintenanceconfigurationsname) | string | Name of maintenance window. |
+
+### Parameter: `maintenanceConfigurations.maintenanceWindow`
+
+Maintenance window for the maintenance configuration.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `maintenanceConfigurations.name`
+
+Name of maintenance window.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'aksManagedAutoUpgradeSchedule'
+    'aksManagedNodeOSUpgradeSchedule'
+  ]
+  ```
+
 ### Parameter: `managedIdentities`
 
 The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.
@@ -3233,26 +3265,6 @@ Specifies the network policy used for building Kubernetes network. - calico or a
     'calico'
   ]
   ```
-
-### Parameter: `nodeOSMaintenanceConfiguration`
-
-Node OS auto upgrade configureation window.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`maintenanceWindow`](#parameter-nodeosmaintenanceconfigurationmaintenancewindow) | object | Maintenance window for the maintenance configuration. |
-
-### Parameter: `nodeOSMaintenanceConfiguration.maintenanceWindow`
-
-Maintenance window for the maintenance configuration.
-
-- Required: Yes
-- Type: object
 
 ### Parameter: `nodeResourceGroup`
 

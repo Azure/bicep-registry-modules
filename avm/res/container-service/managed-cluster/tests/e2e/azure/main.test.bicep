@@ -144,35 +144,39 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       autoUpgradeProfileUpgradeChannel: 'stable'
-      clusterMaintenanceConfiguration: {
-        maintenanceWindow: {
-          schedule: {
-            weekly: {
-              intervalWeeks: 1
-              dayOfWeek: 'Sunday'
-            }
-          }
-          durationHours: 4
-          utcOffset: '+00:00'
-          startDate: '2024-07-15'
-          startTime: '00:00'
-        }
-      }
       autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
-      nodeOSMaintenanceConfiguration: {
-        maintenanceWindow: {
-          schedule: {
-            weekly: {
-              intervalWeeks: 1
-              dayOfWeek: 'Sunday'
+      maintenanceConfigurations: [
+        {
+          name: 'aksManagedAutoUpgradeSchedule'
+          maintenanceWindow: {
+            schedule: {
+              weekly: {
+                intervalWeeks: 1
+                dayOfWeek: 'Sunday'
+              }
             }
+            durationHours: 4
+            utcOffset: '+00:00'
+            startDate: '2024-07-15'
+            startTime: '00:00'
           }
-          durationHours: 4
-          utcOffset: '+00:00'
-          startDate: '2024-07-15'
-          startTime: '00:00'
         }
-      }
+        {
+          name: 'aksManagedNodeOSUpgradeSchedule'
+          maintenanceWindow: {
+            schedule: {
+              weekly: {
+                intervalWeeks: 1
+                dayOfWeek: 'Sunday'
+              }
+            }
+            durationHours: 4
+            utcOffset: '+00:00'
+            startDate: '2024-07-15'
+            startTime: '00:00'
+          }
+        }
+      ]
       enableWorkloadIdentity: true
       enableOidcIssuerProfile: true
       networkPlugin: 'azure'
