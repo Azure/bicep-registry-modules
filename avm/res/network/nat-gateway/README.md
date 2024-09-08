@@ -485,7 +485,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -726,7 +725,6 @@ Tags for the resource.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 
