@@ -7,7 +7,10 @@ param dataCollectionEndpointName string
 @description('Required. The name of the log analytics workspace to create.')
 param logAnalyticsWorkspaceName string
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+@description('Required. The name of the managed identity to create.')
+param managedIdentityName string
+
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
   name: logAnalyticsWorkspaceName
   location: location
 
@@ -31,7 +34,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
   }
 }
 
-resource dataCollectionEndpoint 'Microsoft.Insights/dataCollectionEndpoints@2021-04-01' = {
+resource dataCollectionEndpoint 'Microsoft.Insights/dataCollectionEndpoints@2023-03-11' = {
   kind: 'Windows'
   location: location
   name: dataCollectionEndpointName
@@ -42,6 +45,11 @@ resource dataCollectionEndpoint 'Microsoft.Insights/dataCollectionEndpoints@2021
   }
 }
 
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: managedIdentityName
+  location: location
+}
+
 @description('The resource ID of the created Log Analytics Workspace.')
 output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.id
 
@@ -50,3 +58,6 @@ output logAnalyticsWorkspaceName string = logAnalyticsWorkspace.name
 
 @description('The resource ID of the created Data Collection Endpoint.')
 output dataCollectionEndpointResourceId string = dataCollectionEndpoint.id
+
+@description('The resource ID of the created Managed Identity.')
+output managedIdentityResourceId string = managedIdentity.id
