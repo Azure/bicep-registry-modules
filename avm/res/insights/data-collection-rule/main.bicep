@@ -21,7 +21,7 @@ param location string = resourceGroup().location
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
-@description('Optional. The managed identity definition for this resource.')
+@description('Optional. The managed identity definition for this resource. Only one type of, and up to one managed identity is supported.')
 param managedIdentities managedIdentitiesType
 
 @description('Optional. Array of role assignments to create.')

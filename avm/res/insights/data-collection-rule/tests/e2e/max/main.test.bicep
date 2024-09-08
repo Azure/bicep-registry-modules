@@ -117,7 +117,7 @@ module testDeployment '../../../main.bicep' = [
         name: 'myCustomLockName'
       }
       managedIdentities: {
-        systemAssigned: true
+        systemAssigned: false
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]

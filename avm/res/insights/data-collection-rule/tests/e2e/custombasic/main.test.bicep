@@ -36,7 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     dataCollectionEndpointName: 'dep-${namePrefix}-dce-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -111,11 +110,6 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
         }
-      }
-      managedIdentities: {
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
       }
       tags: {
         'hidden-title': 'This is visible in the resource name'

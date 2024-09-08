@@ -406,11 +406,6 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     name: 'idcrcusbas001'
     // Non-required parameters
     location: '<location>'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       kind: 'Windows'
@@ -500,13 +495,6 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
     },
     "tags": {
       "value": {
@@ -1237,7 +1225,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
       name: 'myCustomLockName'
     }
     managedIdentities: {
-      systemAssigned: true
+      systemAssigned: false
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -1359,7 +1347,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
+        "systemAssigned": false,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
@@ -1960,7 +1948,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of, and up to one managed identity is supported. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 
@@ -2032,7 +2020,7 @@ Specify the name of lock.
 
 ### Parameter: `managedIdentities`
 
-The managed identity definition for this resource.
+The managed identity definition for this resource. Only one type of, and up to one managed identity is supported.
 
 - Required: No
 - Type: object

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "3740033198213213168"
+      "templateHash": "6159067500010827927"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule.",
@@ -422,7 +422,7 @@
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentitiesType",
       "metadata": {
-        "description": "Optional. The managed identity definition for this resource."
+        "description": "Optional. The managed identity definition for this resource. Only one type of, and up to one managed identity is supported."
       }
     },
     "roleAssignments": {
