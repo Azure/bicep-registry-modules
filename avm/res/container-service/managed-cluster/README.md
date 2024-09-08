@@ -754,38 +754,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     // Non-required parameters
     location: '<location>'
-    maintenanceConfigurations: [
-      {
-        maintenanceWindow: {
-          durationHours: 4
-          schedule: {
-            weekly: {
-              dayOfWeek: 'Sunday'
-              intervalWeeks: 1
-            }
-          }
-          startDate: '2024-07-15'
-          startTime: '00:00'
-          utcOffset: '+00:00'
-        }
-        name: 'aksManagedAutoUpgradeSchedule'
-      }
-      {
-        maintenanceWindow: {
-          durationHours: 4
-          schedule: {
-            weekly: {
-              dayOfWeek: 'Sunday'
-              intervalWeeks: 1
-            }
-          }
-          startDate: '2024-07-15'
-          startTime: '00:00'
-          utcOffset: '+00:00'
-        }
-        name: 'aksManagedNodeOSUpgradeSchedule'
-      }
-    ]
     managedIdentities: {
       systemAssigned: true
     }
@@ -822,40 +790,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "maintenanceConfigurations": {
-      "value": [
-        {
-          "maintenanceWindow": {
-            "durationHours": 4,
-            "schedule": {
-              "weekly": {
-                "dayOfWeek": "Sunday",
-                "intervalWeeks": 1
-              }
-            },
-            "startDate": "2024-07-15",
-            "startTime": "00:00",
-            "utcOffset": "+00:00"
-          },
-          "name": "aksManagedAutoUpgradeSchedule"
-        },
-        {
-          "maintenanceWindow": {
-            "durationHours": 4,
-            "schedule": {
-              "weekly": {
-                "dayOfWeek": "Sunday",
-                "intervalWeeks": 1
-              }
-            },
-            "startDate": "2024-07-15",
-            "startTime": "00:00",
-            "utcOffset": "+00:00"
-          },
-          "name": "aksManagedNodeOSUpgradeSchedule"
-        }
-      ]
     },
     "managedIdentities": {
       "value": {
