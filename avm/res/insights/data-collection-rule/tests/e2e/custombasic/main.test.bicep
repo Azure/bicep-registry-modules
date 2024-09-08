@@ -53,7 +53,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       dataCollectionRuleProperties: {
-        kind: 'Windows'
+        kind: 'All'
         dataCollectionEndpointResourceId: nestedDependencies.outputs.dataCollectionEndpointResourceId
         description: 'Collecting custom text logs without ingestion-time transformation.'
         dataFlows: [

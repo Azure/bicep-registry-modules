@@ -1150,7 +1150,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -2118,7 +2117,6 @@ List of variables to be created in the automation account.
 - Required: No
 - Type: array
 - Default: `[]`
-
 
 ## Outputs
 
