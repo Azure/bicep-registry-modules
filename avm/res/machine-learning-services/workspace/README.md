@@ -984,7 +984,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -2343,7 +2342,6 @@ The resource ID of the default resource group for projects created in the worksp
 
 - Required: No
 - Type: string
-
 
 ## Outputs
 

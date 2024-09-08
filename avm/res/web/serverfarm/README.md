@@ -8,7 +8,6 @@ This module deploys an App Service Plan.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -359,7 +358,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -780,7 +778,6 @@ Zone Redundant server farms can only be used on Premium or ElasticPremium SKU ti
 - Type: bool
 - Default: `[if(or(startsWith(parameters('skuName'), 'P'), startsWith(parameters('skuName'), 'EP')), true(), false())]`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -789,10 +786,6 @@ Zone Redundant server farms can only be used on Premium or ElasticPremium SKU ti
 | `name` | string | The name of the app service plan. |
 | `resourceGroupName` | string | The resource group the app service plan was deployed into. |
 | `resourceId` | string | The resource ID of the app service plan. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
