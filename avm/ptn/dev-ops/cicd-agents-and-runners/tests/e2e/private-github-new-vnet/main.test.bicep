@@ -14,7 +14,7 @@ param resourceGroupName string = 'dep-${namePrefix}-githubrunners-${serviceShort
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
-@description('Required. The personal access token for the Azure DevOps organization.')
+@description('Optional. The personal access token for the Azure DevOps organization.')
 @secure()
 param personalAccessToken string = newGuid()
 

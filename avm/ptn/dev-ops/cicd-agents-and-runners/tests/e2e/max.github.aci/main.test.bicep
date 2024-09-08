@@ -14,7 +14,7 @@ param resourceGroupName string = 'dep-${namePrefix}-githubRunner-${serviceShort}
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
-@description('Required. The personal access token for the GitHub organization.')
+@description('Optional. The personal access token for the GitHub organization.')
 @secure()
 param personalAccessToken string = newGuid()
 

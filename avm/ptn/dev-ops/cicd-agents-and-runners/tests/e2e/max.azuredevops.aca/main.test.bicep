@@ -14,7 +14,7 @@ param resourceGroupName string = 'dep-${namePrefix}-devopsrunners-${serviceShort
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'eastus2'
 
-@description('Required. The personal access token for the Azure DevOps organization.')
+@description('Optional. The personal access token for the Azure DevOps organization.')
 @secure()
 param personalAccessToken string = newGuid()
 

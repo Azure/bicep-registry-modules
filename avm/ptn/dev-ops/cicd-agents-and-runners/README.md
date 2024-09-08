@@ -871,7 +871,6 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -950,7 +949,6 @@ Whether to use private or public networking for the Azure Container Registry.
 - Type: bool
 - Default: `True`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -972,7 +970,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.3.0` | Remote reference |
 | `br/public:avm/res/network/nat-gateway:1.1.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.5.0` | Remote reference |
-| `br/public:avm/res/network/public-ip-address:0.5.1' = if (empty(networkingConfiguration.?natGatewayResourceId ?? '') && empty(networkingConfiguration.?natGatewayPublicIpAddressResourceId ?? '') && networkingConfiguration.networkType == 'createNew` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.5.1` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.2.0` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.5.0` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.3.1` | Remote reference |
