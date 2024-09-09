@@ -48,8 +48,11 @@ jobs:
   #   Removal   #
   ###############
   job_cleanup_subscription_deployments:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: "Remove Subscription deployments"
+    environment: avm-validation
+    permissions:
+      id-token: write # For OIDC
     needs:
       - job_initialize_pipeline
     if: ${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).handleSubscriptionScope == 'true' }}
@@ -62,10 +65,17 @@ jobs:
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
 
+      # [Azure login] task(s)
+      # ------------------------------
+      # Supports both OIDC and service principal with secret
+      # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
       - name: Azure Login
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.VALIDATE_CLIENT_ID }}
+          tenant-id: ${{ secrets.VALIDATE_TENANT_ID }}
+          subscription-id: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
 
       - name: Remove deployments
@@ -87,8 +97,11 @@ jobs:
           azPSVersion: "latest"
 
   job_cleanup_managementGroup_deployments:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: "Remove Management Group deployments"
+    environment: avm-validation
+    permissions:
+      id-token: write # For OIDC
     needs:
       - job_initialize_pipeline
     if: ${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).handleManagementGroupScope == 'true' }}
@@ -101,10 +114,17 @@ jobs:
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
 
+      # [Azure login] task(s)
+      # ------------------------------
+      # Supports both OIDC and service principal with secret
+      # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
       - name: Azure Login
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.VALIDATE_CLIENT_ID }}
+          tenant-id: ${{ secrets.VALIDATE_TENANT_ID }}
+          subscription-id: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
 
       - name: Remove deployments
@@ -114,13 +134,18 @@ jobs:
             # Load used functions
             . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'deploymentRemoval' 'Clear-ManagementGroupDeploymentHistory.ps1')
 
-            $functionInput = @{
-              ManagementGroupId            = '${{ secrets.ARM_MGMTGROUP_ID }}'
-              maxDeploymentRetentionInDays = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).maxDeploymentRetentionInDays }}'
+            $mgmtGroupIdInput = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).customManagementGroupId }}'
+
+            foreach($mgmtGroupId in @('${{ secrets.ARM_MGMTGROUP_ID }}', 'bicep-lz-vending-automation-child')) {
+              Write-Verbose "Processing mgmtGroupId [$mgmtGroupId]" -Verbose
+              $functionInput = @{
+                ManagementGroupId            = $mgmtGroupId
+                maxDeploymentRetentionInDays = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).maxDeploymentRetentionInDays }}'
+              }
+
+              Write-Verbose "Invoke task with" -Verbose
+              Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+              Clear-ManagementGroupDeploymentHistory @functionInput
             }
-
-            Write-Verbose "Invoke task with" -Verbose
-            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-
-            Clear-ManagementGroupDeploymentHistory @functionInput
           azPSVersion: "latest"

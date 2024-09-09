@@ -1,5 +1,10 @@
 # Azure Front Doors `[Microsoft.Network/frontDoors]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Azure Front Door.
 
 ## Navigation
@@ -8,7 +13,6 @@ This module deploys an Azure Front Door.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -856,7 +860,6 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1260,7 +1263,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1268,10 +1270,6 @@ Resource tags.
 | `name` | string | The name of the front door. |
 | `resourceGroupName` | string | The resource group the front door was deployed into. |
 | `resourceId` | string | The resource ID of the front door. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

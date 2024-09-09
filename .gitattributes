@@ -1,2 +1,4 @@
 * text=auto
 *.bicep text eol=lf
+*.ps1 text eol=lf
+*.sh text eol=lf

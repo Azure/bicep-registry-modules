@@ -11,6 +11,9 @@ param location string = resourceGroup().location
 @description('Optional. The description of the scheduled query rule.')
 param alertDescription string = ''
 
+@description('Optional. The display name of the scheduled query rule.')
+param alertDisplayName string?
+
 @description('Optional. The flag which indicates whether this scheduled query rule is enabled.')
 param enabled bool = true
 
@@ -35,6 +38,9 @@ param targetResourceTypes array = []
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
+
+@description('Optional. Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert.')
+param ruleResolveConfiguration object?
 
 @description('Required. The list of resource IDs that this scheduled query rule is scoped to.')
 param scopes array
@@ -74,7 +80,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -114,7 +120,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource queryRule 'Microsoft.Insights/scheduledQueryRules@2021-02-01-preview' = {
+resource queryRule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' = {
   name: name
   location: location
   tags: tags
@@ -127,11 +133,12 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2021-02-01-preview' =
     autoMitigate: (kind == 'LogAlert') ? autoMitigate : null
     criteria: criterias
     description: alertDescription
-    displayName: name
+    displayName: alertDisplayName ?? name
     enabled: enabled
     evaluationFrequency: (kind == 'LogAlert' && !empty(evaluationFrequency)) ? evaluationFrequency : null
     muteActionsDuration: (kind == 'LogAlert' && !empty(suppressForMinutes)) ? suppressForMinutes : null
     overrideQueryTimeRange: (kind == 'LogAlert' && !empty(queryTimeRange)) ? queryTimeRange : null
+    ruleResolveConfiguration: (kind == 'LogAlert' && !empty(ruleResolveConfiguration)) ? ruleResolveConfiguration : null
     scopes: scopes
     severity: (kind == 'LogAlert') ? severity : null
     skipQueryValidation: (kind == 'LogAlert') ? skipQueryValidation : null
