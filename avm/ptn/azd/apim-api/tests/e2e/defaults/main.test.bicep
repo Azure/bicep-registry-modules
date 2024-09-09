@@ -13,9 +13,6 @@ param resourceGroupName string = 'dep-${namePrefix}-apim-api-${serviceShort}-rg'
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
-@description('.')
-param apimServiceName string = '${namePrefix}-as-${serviceShort}001'
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'aapmin'
 
@@ -39,7 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     appServicePlanName: 'dep-${namePrefix}-sp-${serviceShort}'
     appServiceName: 'dep-${namePrefix}-aps-${serviceShort}'
-    apimServicename: apimServiceName
+    apimServicename: '${namePrefix}-as-${serviceShort}001'
     publisherName: 'dep-${namePrefix}-pn-x-001'
     applicationInsightsName: 'dep-${namePrefix}-ais-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
@@ -55,7 +52,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     location: resourceLocation
-    name: apimServiceName
+    name: '${namePrefix}-as-${serviceShort}001'
     apiDisplayName: '${namePrefix}-apd-${serviceShort}'
     apiPath: '${namePrefix}-apipath-${serviceShort}'
     webFrontendUrl: nestedDependencies.outputs.siteHostName

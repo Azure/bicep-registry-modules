@@ -2,6 +2,8 @@
 
 Creates and configure an API within an API Management service instance.
 
+**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -49,7 +51,7 @@ module apimApi 'br/public:avm/ptn/azd/apim-api:<version>' = {
     apiDisplayName: 'apd-aapmin'
     apiName: 'an-aapmin001'
     apiPath: 'apipath-aapmin'
-    name: '<name>'
+    name: 'as-aapmin001'
     webFrontendUrl: '<webFrontendUrl>'
     // Non-required parameters
     location: '<location>'
@@ -86,7 +88,7 @@ module apimApi 'br/public:avm/ptn/azd/apim-api:<version>' = {
       "value": "apipath-aapmin"
     },
     "name": {
-      "value": "<name>"
+      "value": "as-aapmin001"
     },
     "webFrontendUrl": {
       "value": "<webFrontendUrl>"
