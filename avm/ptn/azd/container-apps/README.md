@@ -145,7 +145,6 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -337,7 +336,6 @@ Zone redundancy setting.
 - Required: No
 - Type: bool
 - Default: `True`
-
 
 ## Outputs
 

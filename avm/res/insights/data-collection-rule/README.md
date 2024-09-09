@@ -202,6 +202,9 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     name: 'idcrcusadv001'
     // Non-required parameters
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       kind: 'Windows'
@@ -308,6 +311,11 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     "location": {
       "value": "<location>"
     },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
     "tags": {
       "value": {
         "hidden-title": "This is visible in the resource name",
@@ -379,7 +387,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
           }
         ]
       }
-      kind: 'Windows'
+      kind: 'All'
       streamDeclarations: {
         'Custom-CustomTableBasic_CL': {
           columns: [
@@ -464,7 +472,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
             }
           ]
         },
-        "kind": "Windows",
+        "kind": "All",
         "streamDeclarations": {
           "Custom-CustomTableBasic_CL": {
             "columns": [
@@ -1216,6 +1224,12 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     roleAssignments: [
       {
         name: '89a4d6fa-defb-4099-9196-173d94b91d67'
@@ -1329,6 +1343,14 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": false,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "roleAssignments": {
@@ -1926,6 +1948,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of, and up to one managed identity is supported. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 
@@ -1994,6 +2017,34 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource. Only one type of, and up to one managed identity is supported.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
 
 ### Parameter: `roleAssignments`
 
@@ -2107,6 +2158,7 @@ Resource tags.
 | `name` | string | The name of the dataCollectionRule. |
 | `resourceGroupName` | string | The name of the resource group the dataCollectionRule was created in. |
 | `resourceId` | string | The resource ID of the dataCollectionRule. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Data Collection
 
