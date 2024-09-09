@@ -129,6 +129,9 @@ output name string = mongoCluster.name
 @description('The resource ID of the mongo cluster.')
 output mongoClusterResourceId string = mongoCluster.id
 
+@description('The resource ID of the resource group the firewall rule was created in.')
+output resourceId string = resourceGroup().id
+
 @description('The name of the resource group the firewall rule was created in.')
 output resourceGroupName string = resourceGroup().name
 

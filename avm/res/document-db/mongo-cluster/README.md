@@ -435,6 +435,7 @@ Tags of the Database Account resource.
 | `mongoClusterResourceId` | string | The resource ID of the mongo cluster. |
 | `name` | string | The name of the mongo cluster. |
 | `resourceGroupName` | string | The name of the resource group the firewall rule was created in. |
+| `resourceId` | string | The resource ID of the resource group the firewall rule was created in. |
 
 ## Data Collection
 

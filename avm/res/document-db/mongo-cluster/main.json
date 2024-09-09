@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "13729236501335315807"
+      "templateHash": "4127832857130027142"
     },
     "name": "DocumentDB Mongo Clusters",
     "description": "This module deploys a DocumentDB Mongo Cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
@@ -337,6 +337,13 @@
         "description": "The resource ID of the mongo cluster."
       },
       "value": "[resourceId('Microsoft.DocumentDB/mongoClusters', parameters('name'))]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the resource group the firewall rule was created in."
+      },
+      "value": "[resourceGroup().id]"
     },
     "resourceGroupName": {
       "type": "string",
