@@ -129,7 +129,9 @@ var formattedUserAssignedIdentities = reduce(
 
 var identity = !empty(managedIdentities)
   ? {
-      type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None'
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -296,7 +298,7 @@ module kustoCluster_principalAssignments 'principal-assignment/main.bicep' = [
       principalId: principalAssignment.principalId
       principalType: principalAssignment.principalType
       role: principalAssignment.role
-      tenantId: contains(principalAssignment, 'tenantId') ? principalAssignment.tenantId : tenant().tenantId
+      tenantId: principalAssignment.?tenantId ?? tenant().tenantId
     }
   }
 ]
@@ -362,7 +364,10 @@ module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint
 output resourceGroupName string = resourceGroup().name
 
 @description('The resource id of the kusto cluster.')
-output resourceId string = kustoCluster.id
+output resourceId string = kustoCluster.?id
+
+@description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string = kustoCluster.?identity.?principalId ?? ''
 
 @description('The name of the kusto cluster.')
 output name string = kustoCluster.name
@@ -479,6 +484,9 @@ type lockType = {
 }?
 
 type managedIdentitiesType = {
+  @description('Optional. Enables system assigned managed identity on the resource.')
+  systemAssigned: bool?
+
   @description('Optional. The resource id(s) to assign to the resource.')
   userAssignedResourceIds: string[]
 }?
