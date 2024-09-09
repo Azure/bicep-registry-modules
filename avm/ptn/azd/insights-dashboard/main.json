@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "7848250028319427275"
+      "templateHash": "16185324363882257699"
     },
     "name": "Application Insights Components",
-    "description": "Creates an Application Insights instance based on an existing Log Analytics workspace.",
+    "description": "Creates an Application Insights instance based on an existing Log Analytics workspace.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
     "owner": "Azure/module-maintainers"
   },
   "parameters": {
