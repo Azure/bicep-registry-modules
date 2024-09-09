@@ -47,7 +47,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      administratorLogin: 'Admin001'
+      administratorLogin: 'Admin003'
       administratorLoginPassword: password
       nodeCount: 2
       sku: 'M30'
@@ -59,8 +59,8 @@ module testDeployment '../../../main.bicep' = [
         customRules: [
           {
             firewallRuleName: 'allow-1.2.3.4-to-5.6.7.8'
-            endIpAddress: '1.2.3.4'
-            startIpAddress: '5.6.7.8'
+            endIpAddress: '0.0.0.0'
+            startIpAddress: '255.255.255.254'
           }
         ]
         allowAzureIPs: true
