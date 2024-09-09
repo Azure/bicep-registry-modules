@@ -113,7 +113,6 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     customPublicSubnetName: '<customPublicSubnetName>'
     customVirtualNetworkResourceId: '<customVirtualNetworkResourceId>'
     defaultCatalog: {
-      initialName: ''
       initialType: 'UnityCatalog'
     }
     diagnosticSettings: [
@@ -252,7 +251,6 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     },
     "defaultCatalog": {
       "value": {
-        "initialName": "",
         "initialType": "UnityCatalog"
       }
     },
