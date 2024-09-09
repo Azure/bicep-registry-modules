@@ -8,7 +8,6 @@ This module deploys a Compute Disk
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -469,14 +468,13 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used. |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones). |
 | [`name`](#parameter-name) | string | The name of the disk that is being created. |
 | [`sku`](#parameter-sku) | string | The disks sku name. Can be . |
 
@@ -519,7 +517,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 
 ### Parameter: `availabilityZone`
 
-If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used.
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones).
 
 - Required: Yes
 - Type: int
@@ -550,7 +548,6 @@ The disks sku name. Can be .
   ```Bicep
   [
     'Premium_LRS'
-    'Premium_ZRS'
     'Premium_ZRS'
     'PremiumV2_LRS'
     'Standard_LRS'
@@ -951,7 +948,6 @@ If create option is Upload, this is the size of the contents of the upload inclu
 - Type: int
 - Default: `20972032`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -960,10 +956,6 @@ If create option is Upload, this is the size of the contents of the upload inclu
 | `name` | string | The name of the disk. |
 | `resourceGroupName` | string | The resource group the  disk was deployed into. |
 | `resourceId` | string | The resource ID of the disk. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

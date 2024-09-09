@@ -67,6 +67,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       internal: true
       dockerBridgeCidr: '172.16.0.1/28'
+      peerTrafficEncryption: true
       platformReservedCidr: '172.17.17.0/24'
       platformReservedDnsIP: '172.17.17.17'
       infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId

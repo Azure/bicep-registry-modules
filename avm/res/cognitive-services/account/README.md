@@ -153,13 +153,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 
 ### Example 2: _Using `AIServices` with `deployments` in parameter set_
 
-This instance deploys the module with the AI model deployment feature.'
-
-Note, this test is temporarily disabled as it needs to be enabled on the subscription.
-As we don't want other contributions from being blocked by this, we disabled the test for now / rely on a manual execution outside the CI environemnt
-You can find more information here: https://learn.microsoft.com/en-us/legal/cognitive-services/openai/limited-access
-And register here: https://aka.ms/oai/access
-
+This instance deploys the module with the AI model deployment feature.
 
 
 <details>
@@ -1114,7 +1108,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -2151,7 +2144,6 @@ The storage accounts for this resource.
 
 - Required: No
 - Type: array
-
 
 ## Outputs
 

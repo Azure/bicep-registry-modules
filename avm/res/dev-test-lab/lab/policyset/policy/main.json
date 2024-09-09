@@ -5,10 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "12174587300527865958"
+      "templateHash": "10307787353498465860"
     },
     "name": "DevTest Lab Policy Sets Policies",
-    "description": "This module deploys a DevTest Lab Policy Sets Policy.\n\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings.",
+    "description": "This module deploys a DevTest Lab Policy Sets Policy.\r\n\r\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings.",
     "owner": "Azure/module-maintainers"
   },
   "parameters": {
@@ -90,9 +90,9 @@
       "apiVersion": "2018-09-15",
       "name": "[format('{0}/{1}/{2}', parameters('labName'), 'default', parameters('name'))]",
       "properties": {
-        "description": "[parameters('description')]",
+        "description": "[coalesce(parameters('description'), '')]",
         "evaluatorType": "[parameters('evaluatorType')]",
-        "factData": "[parameters('factData')]",
+        "factData": "[coalesce(parameters('factData'), '')]",
         "factName": "[parameters('factName')]",
         "status": "[parameters('status')]",
         "threshold": "[parameters('threshold')]"

@@ -53,6 +53,9 @@ param platformReservedCidr string = ''
 @description('Conditional. An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param platformReservedDnsIP string = ''
 
+@description('Optional. Whether or not to encrypt peer traffic.')
+param peerTrafficEncryption bool = true
+
 @description('Optional. Whether or not this Managed Environment is zone-redundant.')
 param zoneRedundant bool = true
 
@@ -101,7 +104,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -146,7 +149,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09
   scope: resourceGroup(split(logAnalyticsWorkspaceResourceId, '/')[2], split(logAnalyticsWorkspaceResourceId, '/')[4])
 }
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-11-02-preview' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-02-02-preview' = {
   name: name
   location: location
   tags: tags
@@ -170,6 +173,11 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-11-02-previe
       dnsSuffix: dnsSuffix
     }
     openTelemetryConfiguration: !empty(openTelemetryConfiguration) ? openTelemetryConfiguration : null
+    peerTrafficConfiguration: {
+      encryption: {
+        enabled: peerTrafficEncryption
+      }
+    }
     vnetConfiguration: {
       internal: internal
       infrastructureSubnetId: !empty(infrastructureSubnetId) ? infrastructureSubnetId : null

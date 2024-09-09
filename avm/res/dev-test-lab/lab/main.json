@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "18263140101339219429"
+      "templateHash": "15435393299266858028"
     },
     "name": "DevTest Labs",
     "description": "This module deploys a DevTest Lab.",
@@ -125,6 +125,780 @@
         }
       },
       "nullable": true
+    },
+    "artifactsourcesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the artifact source."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The tags of the artifact source."
+            }
+          },
+          "displayName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The display name of the artifact source. Default is the name of the artifact source."
+            }
+          },
+          "branchRef": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The artifact source's branch reference (e.g. main or master)."
+            }
+          },
+          "folderPath": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Conditional. The folder containing artifacts. At least one folder path is required. Required if \"armTemplateFolderPath\" is empty."
+            }
+          },
+          "armTemplateFolderPath": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Conditional. The folder containing Azure Resource Manager templates. Required if \"folderPath\" is empty."
+            }
+          },
+          "sourceType": {
+            "type": "string",
+            "allowedValues": [
+              "GitHub",
+              "StorageAccount",
+              "VsoGit"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The artifact source's type."
+            }
+          },
+          "status": {
+            "type": "string",
+            "allowedValues": [
+              "Disabled",
+              "Enabled"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Indicates if the artifact source is enabled (values: Enabled, Disabled). Default is \"Enabled\"."
+            }
+          },
+          "uri": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The artifact source's URI."
+            }
+          },
+          "securityToken": {
+            "type": "securestring",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The security token to authenticate to the artifact source. Private artifacts use the system-identity of the lab to store the security token for the artifact source in the lab's managed Azure Key Vault. Access to the Azure Key Vault is granted automatically only when the lab is created with a system-assigned identity."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "virtualNetworkType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the virtual network."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The tags of the virtual network."
+            }
+          },
+          "externalProviderResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The external provider resource ID of the virtual network."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the virtual network."
+            }
+          },
+          "allowedSubnets": {
+            "$ref": "#/definitions/allowedSubnetType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The allowed subnets of the virtual network."
+            }
+          },
+          "subnetOverrides": {
+            "$ref": "#/definitions/subnetOverrideType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The subnet overrides of the virtual network."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "costsType": {
+      "type": "object",
+      "properties": {
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tags of the resource."
+          }
+        },
+        "cycleType": {
+          "type": "string",
+          "allowedValues": [
+            "CalendarMonth",
+            "Custom"
+          ],
+          "metadata": {
+            "description": "Required. Reporting cycle type."
+          }
+        },
+        "cycleStartDateTime": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. Reporting cycle start date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z). Required if cycleType is set to \"Custom\"."
+          }
+        },
+        "cycleEndDateTime": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. Reporting cycle end date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z). Required if cycleType is set to \"Custom\"."
+          }
+        },
+        "status": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Target cost status."
+          }
+        },
+        "target": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Lab target cost (e.g. 100). The target cost will appear in the \"Cost trend\" chart to allow tracking lab spending relative to the target cost for the current reporting cycleSetting the target cost to 0 will disable all thresholds."
+          }
+        },
+        "currencyCode": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The currency code of the cost. Default is \"USD\"."
+          }
+        },
+        "thresholdValue25DisplayOnChart": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Target Cost threshold at 25% display on chart. Indicates whether this threshold will be displayed on cost charts."
+          }
+        },
+        "thresholdValue25SendNotificationWhenExceeded": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Target cost threshold at 25% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded."
+          }
+        },
+        "thresholdValue50DisplayOnChart": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Target Cost threshold at 50% display on chart. Indicates whether this threshold will be displayed on cost charts."
+          }
+        },
+        "thresholdValue50SendNotificationWhenExceeded": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Target cost threshold at 50% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded."
+          }
+        },
+        "thresholdValue75DisplayOnChart": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Target Cost threshold at 75% display on chart. Indicates whether this threshold will be displayed on cost charts."
+          }
+        },
+        "thresholdValue75SendNotificationWhenExceeded": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Target cost threshold at 75% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded."
+          }
+        },
+        "thresholdValue100DisplayOnChart": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Target Cost threshold at 100% display on chart. Indicates whether this threshold will be displayed on cost charts."
+          }
+        },
+        "thresholdValue100SendNotificationWhenExceeded": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Target cost threshold at 100% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded."
+          }
+        },
+        "thresholdValue125DisplayOnChart": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Target Cost threshold at 125% display on chart. Indicates whether this threshold will be displayed on cost charts."
+          }
+        },
+        "thresholdValue125SendNotificationWhenExceeded": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Target cost threshold at 125% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "notificationChannelType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "allowedValues": [
+              "autoShutdown",
+              "costThreshold"
+            ],
+            "metadata": {
+              "description": "Required. The name of the notification channel."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The tags of the notification channel."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the notification."
+            }
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "metadata": {
+              "description": "Required. The list of event for which this notification is enabled. Can be \"AutoShutdown\" or \"Cost\"."
+            }
+          },
+          "emailRecipient": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if \"webHookUrl\" is empty."
+            }
+          },
+          "webHookUrl": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Conditional. The webhook URL to which the notification will be sent. Required if \"emailRecipient\" is empty."
+            }
+          },
+          "notificationLocale": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The locale to use when sending a notification (fallback for unsupported languages is EN)."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "policiesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the policy."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the policy."
+            }
+          },
+          "evaluatorType": {
+            "type": "string",
+            "allowedValues": [
+              "AllowedValuesPolicy",
+              "MaxValuePolicy"
+            ],
+            "metadata": {
+              "description": "Required. The evaluator type of the policy (i.e. AllowedValuesPolicy, MaxValuePolicy)."
+            }
+          },
+          "factData": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The fact data of the policy."
+            }
+          },
+          "factName": {
+            "type": "string",
+            "allowedValues": [
+              "EnvironmentTemplate",
+              "GalleryImage",
+              "LabPremiumVmCount",
+              "LabTargetCost",
+              "LabVmCount",
+              "LabVmSize",
+              "ScheduleEditPermission",
+              "UserOwnedLabPremiumVmCount",
+              "UserOwnedLabVmCount",
+              "UserOwnedLabVmCountInSubnet"
+            ],
+            "metadata": {
+              "description": "Required. The fact name of the policy."
+            }
+          },
+          "status": {
+            "type": "string",
+            "allowedValues": [
+              "Disabled",
+              "Enabled"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The status of the policy. Default is \"Enabled\"."
+            }
+          },
+          "threshold": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The threshold of the policy (i.e. a number for MaxValuePolicy, and a JSON array of values for AllowedValuesPolicy)."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "scheduleType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "allowedValues": [
+              "LabVmAutoStart",
+              "LabVmsShutdown"
+            ],
+            "metadata": {
+              "description": "Required. The name of the schedule."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The tags of the schedule."
+            }
+          },
+          "taskType": {
+            "type": "string",
+            "allowedValues": [
+              "LabVmsShutdownTask",
+              "LabVmsStartupTask"
+            ],
+            "metadata": {
+              "description": "Required. The task type of the schedule (e.g. LabVmsShutdownTask, LabVmsStartupTask)."
+            }
+          },
+          "dailyRecurrence": {
+            "$ref": "#/definitions/dailyRecurrenceType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The daily recurrence of the schedule."
+            }
+          },
+          "hourlyRecurrence": {
+            "$ref": "#/definitions/hourlyRecurrenceType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. If the schedule will occur multiple times a day, specify the hourly recurrence."
+            }
+          },
+          "weeklyRecurrence": {
+            "$ref": "#/definitions/weeklyRecurrenceType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. If the schedule will occur only some days of the week, specify the weekly recurrence."
+            }
+          },
+          "status": {
+            "type": "string",
+            "allowedValues": [
+              "Disabled",
+              "Enabled"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The status of the schedule (i.e. Enabled, Disabled). Default is \"Enabled\"."
+            }
+          },
+          "targetResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The resource ID to which the schedule belongs."
+            }
+          },
+          "timeZoneId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The time zone ID of the schedule. Defaults to \"Pacific Standard time\"."
+            }
+          },
+          "notificationSettings": {
+            "$ref": "#/definitions/notificationSettingsType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The notification settings for the schedule."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "allowedSubnetType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "allowPublicIp": {
+            "type": "string",
+            "allowedValues": [
+              "Allow",
+              "Default",
+              "Deny"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny))."
+            }
+          },
+          "resourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The resource ID of the allowed subnet."
+            }
+          },
+          "labSubnetName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the subnet as seen in the lab."
+            }
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "virtualnetwork/main.bicep"
+        }
+      }
+    },
+    "dailyRecurrenceType": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The time of day the schedule will occur."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "schedule/main.bicep"
+        }
+      }
+    },
+    "hourlyRecurrenceType": {
+      "type": "object",
+      "properties": {
+        "minute": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Minutes of the hour the schedule will run."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "schedule/main.bicep"
+        }
+      }
+    },
+    "notificationSettingsType": {
+      "type": "object",
+      "properties": {
+        "emailRecipient": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if \"webHookUrl\" is empty."
+          }
+        },
+        "notificationLocale": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The locale to use when sending a notification (fallback for unsupported languages is EN)."
+          }
+        },
+        "status": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If notifications are enabled for this schedule (i.e. Enabled, Disabled). Default is Disabled."
+          }
+        },
+        "timeInMinutes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Time in minutes before event at which notification will be sent. Default is 30 minutes if status is Enabled and not specified."
+          }
+        },
+        "webHookUrl": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The webhook URL to which the notification will be sent. Required if \"emailRecipient\" is empty."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "schedule/main.bicep"
+        }
+      }
+    },
+    "subnetOverrideType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "labSubnetName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name given to the subnet within the lab."
+            }
+          },
+          "resourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The resource ID of the subnet."
+            }
+          },
+          "sharedPublicIpAddressConfiguration": {
+            "type": "object",
+            "properties": {
+              "allowedPorts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "backendPort": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Required. Backend port of the target virtual machine."
+                      }
+                    },
+                    "transportProtocol": {
+                      "type": "string",
+                      "allowedValues": [
+                        "Tcp",
+                        "Udp"
+                      ],
+                      "metadata": {
+                        "description": "Required. Protocol type of the port."
+                      }
+                    }
+                  }
+                },
+                "metadata": {
+                  "description": "Required. Backend ports that virtual machines on this subnet are allowed to expose."
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny))."
+            }
+          },
+          "useInVmCreationPermission": {
+            "type": "string",
+            "allowedValues": [
+              "Allow",
+              "Default",
+              "Deny"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Indicates whether this subnet can be used during virtual machine creation (i.e. Allow, Deny)."
+            }
+          },
+          "usePublicIpAddressPermission": {
+            "type": "string",
+            "allowedValues": [
+              "Allow",
+              "Default",
+              "Deny"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Indicates whether public IP addresses can be assigned to virtual machines on this subnet (i.e. Allow, Deny)."
+            }
+          },
+          "virtualNetworkPoolName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The virtual network pool associated with this subnet."
+            }
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "virtualnetwork/main.bicep"
+        }
+      }
+    },
+    "weeklyRecurrenceType": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The time of day the schedule will occur."
+          }
+        },
+        "weekdays": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. The days of the week for which the schedule is set (e.g. Sunday, Monday, Tuesday, etc.)."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "schedule/main.bicep"
+        }
+      }
     }
   },
   "parameters": {
@@ -239,7 +1013,7 @@
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentitiesType",
       "metadata": {
-        "description": "Optional. The managed identity definition for this resource. DevTest Labs creates a system-assigned identity by default the first time it creates the lab environment."
+        "description": "Optional. The managed identity definition for this resource. For new labs created after 8/10/2020, the lab's system assigned identity is set to On by default and lab owner will not be able to turn this off for the lifecycle of the lab."
       }
     },
     "managementIdentitiesResourceIds": {
@@ -307,43 +1081,37 @@
       }
     },
     "virtualnetworks": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/virtualNetworkType",
       "metadata": {
         "description": "Optional. Virtual networks to create for the lab."
       }
     },
     "policies": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/policiesType",
       "metadata": {
         "description": "Optional. Policies to create for the lab."
       }
     },
     "schedules": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/scheduleType",
       "metadata": {
         "description": "Optional. Schedules to create for the lab."
       }
     },
     "notificationchannels": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/notificationChannelType",
       "metadata": {
         "description": "Conditional. Notification Channels to create for the lab. Required if the schedules property \"notificationSettingsStatus\" is set to \"Enabled."
       }
     },
     "artifactsources": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/artifactsourcesType",
       "metadata": {
         "description": "Optional. Artifact sources to create for the lab."
       }
     },
     "costs": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/costsType",
       "metadata": {
         "description": "Optional. Costs to create for the lab."
       }
@@ -365,7 +1133,7 @@
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), createObject('type', 'SystemAssigned'))]",
     "formattedManagementIdentities": "[if(not(empty(parameters('managementIdentitiesResourceIds'))), reduce(map(coalesce(parameters('managementIdentitiesResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next')))), createObject())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -466,7 +1234,7 @@
     "lab_virtualNetworks": {
       "copy": {
         "name": "lab_virtualNetworks",
-        "count": "[length(parameters('virtualnetworks'))]"
+        "count": "[length(coalesce(parameters('virtualnetworks'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -481,17 +1249,23 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('virtualnetworks')[copyIndex()].name]"
+            "value": "[coalesce(parameters('virtualnetworks'), createArray())[copyIndex()].name]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('virtualnetworks')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('virtualnetworks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "externalProviderResourceId": {
-            "value": "[parameters('virtualnetworks')[copyIndex()].externalProviderResourceId]"
+            "value": "[coalesce(parameters('virtualnetworks'), createArray())[copyIndex()].externalProviderResourceId]"
           },
-          "description": "[if(contains(parameters('virtualnetworks')[copyIndex()], 'description'), createObject('value', parameters('virtualnetworks')[copyIndex()].description), createObject('value', ''))]",
-          "allowedSubnets": "[if(contains(parameters('virtualnetworks')[copyIndex()], 'allowedSubnets'), createObject('value', parameters('virtualnetworks')[copyIndex()].allowedSubnets), createObject('value', createArray()))]",
-          "subnetOverrides": "[if(contains(parameters('virtualnetworks')[copyIndex()], 'subnetOverrides'), createObject('value', parameters('virtualnetworks')[copyIndex()].subnetOverrides), createObject('value', createArray()))]"
+          "description": {
+            "value": "[tryGet(coalesce(parameters('virtualnetworks'), createArray())[copyIndex()], 'description')]"
+          },
+          "allowedSubnets": {
+            "value": "[tryGet(coalesce(parameters('virtualnetworks'), createArray())[copyIndex()], 'allowedSubnets')]"
+          },
+          "subnetOverrides": {
+            "value": "[tryGet(coalesce(parameters('virtualnetworks'), createArray())[copyIndex()], 'subnetOverrides')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -501,11 +1275,140 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "1030641179919111475"
+              "templateHash": "12122718661184299591"
             },
             "name": "DevTest Lab Virtual Networks",
             "description": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines.",
             "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "allowedSubnetType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "allowPublicIp": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Allow",
+                      "Default",
+                      "Deny"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny))."
+                    }
+                  },
+                  "resourceId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The resource ID of the allowed subnet."
+                    }
+                  },
+                  "labSubnetName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the subnet as seen in the lab."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "subnetOverrideType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "labSubnetName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name given to the subnet within the lab."
+                    }
+                  },
+                  "resourceId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The resource ID of the subnet."
+                    }
+                  },
+                  "sharedPublicIpAddressConfiguration": {
+                    "type": "object",
+                    "properties": {
+                      "allowedPorts": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "backendPort": {
+                              "type": "int",
+                              "metadata": {
+                                "description": "Required. Backend port of the target virtual machine."
+                              }
+                            },
+                            "transportProtocol": {
+                              "type": "string",
+                              "allowedValues": [
+                                "Tcp",
+                                "Udp"
+                              ],
+                              "metadata": {
+                                "description": "Required. Protocol type of the port."
+                              }
+                            }
+                          }
+                        },
+                        "metadata": {
+                          "description": "Required. Backend ports that virtual machines on this subnet are allowed to expose."
+                        }
+                      }
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny))."
+                    }
+                  },
+                  "useInVmCreationPermission": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Allow",
+                      "Default",
+                      "Deny"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Indicates whether this subnet can be used during virtual machine creation (i.e. Allow, Deny)."
+                    }
+                  },
+                  "usePublicIpAddressPermission": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Allow",
+                      "Default",
+                      "Deny"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Indicates whether public IP addresses can be assigned to virtual machines on this subnet (i.e. Allow, Deny)."
+                    }
+                  },
+                  "virtualNetworkPoolName": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The virtual network pool associated with this subnet."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
+            }
           },
           "parameters": {
             "labName": {
@@ -535,21 +1438,19 @@
             },
             "description": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The description of the virtual network."
               }
             },
             "allowedSubnets": {
-              "type": "array",
-              "defaultValue": [],
+              "$ref": "#/definitions/allowedSubnetType",
               "metadata": {
                 "description": "Optional. The allowed subnets of the virtual network."
               }
             },
             "subnetOverrides": {
-              "type": "array",
-              "defaultValue": [],
+              "$ref": "#/definitions/subnetOverrideType",
               "metadata": {
                 "description": "Optional. The subnet overrides of the virtual network."
               }
@@ -610,7 +1511,7 @@
     "lab_policies": {
       "copy": {
         "name": "lab_policies",
-        "count": "[length(parameters('policies'))]"
+        "count": "[length(coalesce(parameters('policies'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -625,19 +1526,25 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('policies')[copyIndex()].name]"
+            "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].name]"
           },
-          "description": "[if(contains(parameters('policies')[copyIndex()], 'description'), createObject('value', parameters('policies')[copyIndex()].description), createObject('value', ''))]",
+          "description": {
+            "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'description')]"
+          },
           "evaluatorType": {
-            "value": "[parameters('policies')[copyIndex()].evaluatorType]"
+            "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].evaluatorType]"
           },
-          "factData": "[if(contains(parameters('policies')[copyIndex()], 'factData'), createObject('value', parameters('policies')[copyIndex()].factData), createObject('value', ''))]",
+          "factData": {
+            "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'factData')]"
+          },
           "factName": {
-            "value": "[parameters('policies')[copyIndex()].factName]"
+            "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].factName]"
           },
-          "status": "[if(contains(parameters('policies')[copyIndex()], 'status'), createObject('value', parameters('policies')[copyIndex()].status), createObject('value', 'Enabled'))]",
+          "status": {
+            "value": "[coalesce(tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'status'), 'Enabled')]"
+          },
           "threshold": {
-            "value": "[parameters('policies')[copyIndex()].threshold]"
+            "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].threshold]"
           }
         },
         "template": {
@@ -647,10 +1554,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "12174587300527865958"
+              "templateHash": "10307787353498465860"
             },
             "name": "DevTest Lab Policy Sets Policies",
-            "description": "This module deploys a DevTest Lab Policy Sets Policy.\n\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings.",
+            "description": "This module deploys a DevTest Lab Policy Sets Policy.\r\n\r\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
@@ -732,9 +1639,9 @@
               "apiVersion": "2018-09-15",
               "name": "[format('{0}/{1}/{2}', parameters('labName'), 'default', parameters('name'))]",
               "properties": {
-                "description": "[parameters('description')]",
+                "description": "[coalesce(parameters('description'), '')]",
                 "evaluatorType": "[parameters('evaluatorType')]",
-                "factData": "[parameters('factData')]",
+                "factData": "[coalesce(parameters('factData'), '')]",
                 "factName": "[parameters('factName')]",
                 "status": "[parameters('status')]",
                 "threshold": "[parameters('threshold')]"
@@ -773,7 +1680,7 @@
     "lab_schedules": {
       "copy": {
         "name": "lab_schedules",
-        "count": "[length(parameters('schedules'))]"
+        "count": "[length(coalesce(parameters('schedules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -788,22 +1695,35 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('schedules')[copyIndex()].name]"
+            "value": "[coalesce(parameters('schedules'), createArray())[copyIndex()].name]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('schedules')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('schedules'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "taskType": {
-            "value": "[parameters('schedules')[copyIndex()].taskType]"
+            "value": "[coalesce(parameters('schedules'), createArray())[copyIndex()].taskType]"
           },
-          "dailyRecurrence": "[if(contains(parameters('schedules')[copyIndex()], 'dailyRecurrence'), createObject('value', parameters('schedules')[copyIndex()].dailyRecurrence), createObject('value', createObject()))]",
-          "hourlyRecurrence": "[if(contains(parameters('schedules')[copyIndex()], 'hourlyRecurrence'), createObject('value', parameters('schedules')[copyIndex()].hourlyRecurrence), createObject('value', createObject()))]",
-          "weeklyRecurrence": "[if(contains(parameters('schedules')[copyIndex()], 'weeklyRecurrence'), createObject('value', parameters('schedules')[copyIndex()].weeklyRecurrence), createObject('value', createObject()))]",
-          "status": "[if(contains(parameters('schedules')[copyIndex()], 'status'), createObject('value', parameters('schedules')[copyIndex()].status), createObject('value', 'Enabled'))]",
-          "targetResourceId": "[if(contains(parameters('schedules')[copyIndex()], 'targetResourceId'), createObject('value', parameters('schedules')[copyIndex()].targetResourceId), createObject('value', ''))]",
-          "timeZoneId": "[if(contains(parameters('schedules')[copyIndex()], 'timeZoneId'), createObject('value', parameters('schedules')[copyIndex()].timeZoneId), createObject('value', 'Pacific Standard time'))]",
-          "notificationSettingsStatus": "[if(contains(parameters('schedules')[copyIndex()], 'notificationSettingsStatus'), createObject('value', parameters('schedules')[copyIndex()].notificationSettingsStatus), createObject('value', 'Disabled'))]",
-          "notificationSettingsTimeInMinutes": "[if(contains(parameters('schedules')[copyIndex()], 'notificationSettingsTimeInMinutes'), createObject('value', parameters('schedules')[copyIndex()].notificationSettingsTimeInMinutes), createObject('value', 30))]"
+          "dailyRecurrence": {
+            "value": "[tryGet(coalesce(parameters('schedules'), createArray())[copyIndex()], 'dailyRecurrence')]"
+          },
+          "hourlyRecurrence": {
+            "value": "[tryGet(coalesce(parameters('schedules'), createArray())[copyIndex()], 'hourlyRecurrence')]"
+          },
+          "weeklyRecurrence": {
+            "value": "[tryGet(coalesce(parameters('schedules'), createArray())[copyIndex()], 'weeklyRecurrence')]"
+          },
+          "status": {
+            "value": "[coalesce(tryGet(coalesce(parameters('schedules'), createArray())[copyIndex()], 'status'), 'Enabled')]"
+          },
+          "targetResourceId": {
+            "value": "[tryGet(coalesce(parameters('schedules'), createArray())[copyIndex()], 'targetResourceId')]"
+          },
+          "timeZoneId": {
+            "value": "[coalesce(tryGet(coalesce(parameters('schedules'), createArray())[copyIndex()], 'timeZoneId'), 'Pacific Standard time')]"
+          },
+          "notificationSettings": {
+            "value": "[tryGet(coalesce(parameters('schedules'), createArray())[copyIndex()], 'notificationSettings')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -813,11 +1733,115 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "12081847452316418446"
+              "templateHash": "9010276477624635732"
             },
             "name": "DevTest Lab Schedules",
-            "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines.",
+            "description": "This module deploys a DevTest Lab Schedule.\r\n\r\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines.",
             "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "dailyRecurrenceType": {
+              "type": "object",
+              "properties": {
+                "time": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The time of day the schedule will occur."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "hourlyRecurrenceType": {
+              "type": "object",
+              "properties": {
+                "minute": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. Minutes of the hour the schedule will run."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "weeklyRecurrenceType": {
+              "type": "object",
+              "properties": {
+                "time": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The time of day the schedule will occur."
+                  }
+                },
+                "weekdays": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. The days of the week for which the schedule is set (e.g. Sunday, Monday, Tuesday, etc.)."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "notificationSettingsType": {
+              "type": "object",
+              "properties": {
+                "emailRecipient": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if \"webHookUrl\" is empty."
+                  }
+                },
+                "notificationLocale": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The locale to use when sending a notification (fallback for unsupported languages is EN)."
+                  }
+                },
+                "status": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Disabled",
+                    "Enabled"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. If notifications are enabled for this schedule (i.e. Enabled, Disabled). Default is Disabled."
+                  }
+                },
+                "timeInMinutes": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Time in minutes before event at which notification will be sent. Default is 30 minutes if status is Enabled and not specified."
+                  }
+                },
+                "webHookUrl": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. The webhook URL to which the notification will be sent. Required if \"emailRecipient\" is empty."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
+            }
           },
           "parameters": {
             "labName": {
@@ -854,22 +1878,19 @@
               }
             },
             "dailyRecurrence": {
-              "type": "object",
-              "defaultValue": {},
+              "$ref": "#/definitions/dailyRecurrenceType",
               "metadata": {
                 "description": "Optional. If the schedule will occur once each day of the week, specify the daily recurrence."
               }
             },
             "hourlyRecurrence": {
-              "type": "object",
-              "defaultValue": {},
+              "$ref": "#/definitions/hourlyRecurrenceType",
               "metadata": {
                 "description": "Optional. If the schedule will occur multiple times a day, specify the hourly recurrence."
               }
             },
             "weeklyRecurrence": {
-              "type": "object",
-              "defaultValue": {},
+              "$ref": "#/definitions/weeklyRecurrenceType",
               "metadata": {
                 "description": "Optional. If the schedule will occur only some days of the week, specify the weekly recurrence."
               }
@@ -887,7 +1908,7 @@
             },
             "targetResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The resource ID to which the schedule belongs."
               }
@@ -899,22 +1920,10 @@
                 "description": "Optional. The time zone ID (e.g. Pacific Standard time)."
               }
             },
-            "notificationSettingsStatus": {
-              "type": "string",
-              "defaultValue": "Disabled",
-              "allowedValues": [
-                "Enabled",
-                "Disabled"
-              ],
+            "notificationSettings": {
+              "$ref": "#/definitions/notificationSettingsType",
               "metadata": {
-                "description": "Optional. If notifications are enabled for this schedule (i.e. Enabled, Disabled)."
-              }
-            },
-            "notificationSettingsTimeInMinutes": {
-              "type": "int",
-              "defaultValue": 30,
-              "metadata": {
-                "description": "Optional. Time in minutes before event at which notification will be sent. Optional if \"notificationSettingsStatus\" is set to \"Enabled\". Default is 30 minutes."
+                "description": "Optional. The notification settings for the schedule."
               }
             }
           },
@@ -932,13 +1941,13 @@
               "tags": "[parameters('tags')]",
               "properties": {
                 "taskType": "[parameters('taskType')]",
-                "dailyRecurrence": "[if(not(empty(parameters('dailyRecurrence'))), parameters('dailyRecurrence'), null())]",
-                "hourlyRecurrence": "[if(not(empty(parameters('hourlyRecurrence'))), parameters('hourlyRecurrence'), null())]",
-                "weeklyRecurrence": "[if(not(empty(parameters('weeklyRecurrence'))), parameters('weeklyRecurrence'), null())]",
+                "dailyRecurrence": "[parameters('dailyRecurrence')]",
+                "hourlyRecurrence": "[parameters('hourlyRecurrence')]",
+                "weeklyRecurrence": "[parameters('weeklyRecurrence')]",
                 "status": "[parameters('status')]",
-                "targetResourceId": "[if(not(empty(parameters('targetResourceId'))), parameters('targetResourceId'), null())]",
+                "targetResourceId": "[parameters('targetResourceId')]",
                 "timeZoneId": "[parameters('timeZoneId')]",
-                "notificationSettings": "[if(equals(parameters('notificationSettingsStatus'), 'Enabled'), createObject('status', parameters('notificationSettingsStatus'), 'timeInMinutes', parameters('notificationSettingsTimeInMinutes')), createObject())]"
+                "notificationSettings": "[parameters('notificationSettings')]"
               },
               "dependsOn": [
                 "lab"
@@ -977,7 +1986,7 @@
     "lab_notificationChannels": {
       "copy": {
         "name": "lab_notificationChannels",
-        "count": "[length(parameters('notificationchannels'))]"
+        "count": "[length(coalesce(parameters('notificationchannels'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -992,18 +2001,26 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('notificationchannels')[copyIndex()].name]"
+            "value": "[coalesce(parameters('notificationchannels'), createArray())[copyIndex()].name]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('notificationchannels')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('notificationchannels'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "description": "[if(contains(parameters('notificationchannels')[copyIndex()], 'description'), createObject('value', parameters('notificationchannels')[copyIndex()].description), createObject('value', ''))]",
+          "description": {
+            "value": "[tryGet(coalesce(parameters('notificationchannels'), createArray())[copyIndex()], 'description')]"
+          },
           "events": {
-            "value": "[parameters('notificationchannels')[copyIndex()].events]"
+            "value": "[coalesce(parameters('notificationchannels'), createArray())[copyIndex()].events]"
           },
-          "emailRecipient": "[if(contains(parameters('notificationchannels')[copyIndex()], 'emailRecipient'), createObject('value', parameters('notificationchannels')[copyIndex()].emailRecipient), createObject('value', ''))]",
-          "webHookUrl": "[if(contains(parameters('notificationchannels')[copyIndex()], 'webhookUrl'), createObject('value', parameters('notificationchannels')[copyIndex()].webhookUrl), createObject('value', ''))]",
-          "notificationLocale": "[if(contains(parameters('notificationchannels')[copyIndex()], 'notificationLocale'), createObject('value', parameters('notificationchannels')[copyIndex()].notificationLocale), createObject('value', 'en'))]"
+          "emailRecipient": {
+            "value": "[tryGet(coalesce(parameters('notificationchannels'), createArray())[copyIndex()], 'emailRecipient')]"
+          },
+          "webHookUrl": {
+            "value": "[tryGet(coalesce(parameters('notificationchannels'), createArray())[copyIndex()], 'webHookUrl')]"
+          },
+          "notificationLocale": {
+            "value": "[coalesce(tryGet(coalesce(parameters('notificationchannels'), createArray())[copyIndex()], 'notificationLocale'), 'en')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1013,10 +2030,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "7230564820615005386"
+              "templateHash": "95632191903979650"
             },
             "name": "DevTest Lab Notification Channels",
-            "description": "This module deploys a DevTest Lab Notification Channel.\n\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks.",
+            "description": "This module deploys a DevTest Lab Notification Channel.\r\n\r\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
@@ -1059,7 +2076,7 @@
             },
             "emailRecipient": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if \"webHookUrl\" is empty."
               }
@@ -1092,8 +2109,16 @@
               "name": "[format('{0}/{1}', parameters('labName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
+                "copy": [
+                  {
+                    "name": "events",
+                    "count": "[length(parameters('events'))]",
+                    "input": {
+                      "eventName": "[parameters('events')[copyIndex('events')]]"
+                    }
+                  }
+                ],
                 "description": "[parameters('description')]",
-                "events": "[parameters('events')]",
                 "emailRecipient": "[parameters('emailRecipient')]",
                 "webHookUrl": "[parameters('webHookUrl')]",
                 "notificationLocale": "[parameters('notificationLocale')]"
@@ -1135,7 +2160,7 @@
     "lab_artifactSources": {
       "copy": {
         "name": "lab_artifactSources",
-        "count": "[length(parameters('artifactsources'))]"
+        "count": "[length(coalesce(parameters('artifactsources'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1150,19 +2175,34 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('artifactsources')[copyIndex()].name]"
+            "value": "[coalesce(parameters('artifactsources'), createArray())[copyIndex()].name]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('artifactsources')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('artifactsources'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "displayName": "[if(contains(parameters('artifactsources')[copyIndex()], 'displayName'), createObject('value', parameters('artifactsources')[copyIndex()].displayName), createObject('value', parameters('artifactsources')[copyIndex()].name))]",
-          "branchRef": "[if(contains(parameters('artifactsources')[copyIndex()], 'branchRef'), createObject('value', parameters('artifactsources')[copyIndex()].branchRef), createObject('value', ''))]",
-          "folderPath": "[if(contains(parameters('artifactsources')[copyIndex()], 'folderPath'), createObject('value', parameters('artifactsources')[copyIndex()].folderPath), createObject('value', ''))]",
-          "armTemplateFolderPath": "[if(contains(parameters('artifactsources')[copyIndex()], 'armTemplateFolderPath'), createObject('value', parameters('artifactsources')[copyIndex()].armTemplateFolderPath), createObject('value', ''))]",
-          "sourceType": "[if(contains(parameters('artifactsources')[copyIndex()], 'sourceType'), createObject('value', parameters('artifactsources')[copyIndex()].sourceType), createObject('value', ''))]",
-          "status": "[if(contains(parameters('artifactsources')[copyIndex()], 'status'), createObject('value', parameters('artifactsources')[copyIndex()].status), createObject('value', 'Enabled'))]",
+          "displayName": {
+            "value": "[coalesce(tryGet(coalesce(parameters('artifactsources'), createArray())[copyIndex()], 'displayName'), coalesce(parameters('artifactsources'), createArray())[copyIndex()].name)]"
+          },
+          "branchRef": {
+            "value": "[tryGet(coalesce(parameters('artifactsources'), createArray())[copyIndex()], 'branchRef')]"
+          },
+          "folderPath": {
+            "value": "[tryGet(coalesce(parameters('artifactsources'), createArray())[copyIndex()], 'folderPath')]"
+          },
+          "armTemplateFolderPath": {
+            "value": "[tryGet(coalesce(parameters('artifactsources'), createArray())[copyIndex()], 'armTemplateFolderPath')]"
+          },
+          "sourceType": {
+            "value": "[tryGet(coalesce(parameters('artifactsources'), createArray())[copyIndex()], 'sourceType')]"
+          },
+          "status": {
+            "value": "[coalesce(tryGet(coalesce(parameters('artifactsources'), createArray())[copyIndex()], 'status'), 'Enabled')]"
+          },
           "uri": {
-            "value": "[parameters('artifactsources')[copyIndex()].uri]"
+            "value": "[coalesce(parameters('artifactsources'), createArray())[copyIndex()].uri]"
+          },
+          "securityToken": {
+            "value": "[tryGet(coalesce(parameters('artifactsources'), createArray())[copyIndex()], 'securityToken')]"
           }
         },
         "template": {
@@ -1173,10 +2213,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "15552685312013632487"
+              "templateHash": "13904061272597362111"
             },
             "name": "DevTest Lab Artifact Sources",
-            "description": "This module deploys a DevTest Lab Artifact Source.\n\nAn artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services.",
+            "description": "This module deploys a DevTest Lab Artifact Source.\r\n\r\nAn artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
@@ -1208,37 +2248,36 @@
             },
             "branchRef": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The artifact source's branch reference (e.g. main or master)."
               }
             },
             "folderPath": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Conditional. The folder containing artifacts. At least one folder path is required. Required if \"armTemplateFolderPath\" is empty."
               }
             },
             "armTemplateFolderPath": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Conditional. The folder containing Azure Resource Manager templates. Required if \"folderPath\" is empty."
               }
             },
             "securityToken": {
               "type": "securestring",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The security token to authenticate to the artifact source."
               }
             },
             "sourceType": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "allowedValues": [
-                "",
                 "GitHub",
                 "StorageAccount",
                 "VsoGit"
@@ -1279,11 +2318,11 @@
               "tags": "[parameters('tags')]",
               "properties": {
                 "displayName": "[parameters('displayName')]",
-                "branchRef": "[if(not(empty(parameters('branchRef'))), parameters('branchRef'), null())]",
-                "folderPath": "[if(not(empty(parameters('folderPath'))), parameters('folderPath'), null())]",
-                "armTemplateFolderPath": "[if(not(empty(parameters('armTemplateFolderPath'))), parameters('armTemplateFolderPath'), null())]",
-                "securityToken": "[if(not(empty(parameters('securityToken'))), parameters('securityToken'), null())]",
-                "sourceType": "[if(not(empty(parameters('sourceType'))), parameters('sourceType'), null())]",
+                "branchRef": "[parameters('branchRef')]",
+                "folderPath": "[parameters('folderPath')]",
+                "armTemplateFolderPath": "[parameters('armTemplateFolderPath')]",
+                "securityToken": "[parameters('securityToken')]",
+                "sourceType": "[parameters('sourceType')]",
                 "status": "[parameters('status')]",
                 "uri": "[parameters('uri')]"
               },
@@ -1338,24 +2377,54 @@
           "tags": {
             "value": "[coalesce(tryGet(parameters('costs'), 'tags'), parameters('tags'))]"
           },
-          "currencyCode": "[if(contains(parameters('costs'), 'currencyCode'), createObject('value', parameters('costs').currencyCode), createObject('value', 'USD'))]",
+          "currencyCode": {
+            "value": "[coalesce(tryGet(parameters('costs'), 'currencyCode'), 'USD')]"
+          },
           "cycleType": {
             "value": "[parameters('costs').cycleType]"
           },
-          "cycleStartDateTime": "[if(contains(parameters('costs'), 'cycleStartDateTime'), createObject('value', parameters('costs').cycleStartDateTime), createObject('value', ''))]",
-          "cycleEndDateTime": "[if(contains(parameters('costs'), 'cycleEndDateTime'), createObject('value', parameters('costs').cycleEndDateTime), createObject('value', ''))]",
-          "status": "[if(contains(parameters('costs'), 'status'), createObject('value', parameters('costs').status), createObject('value', 'Enabled'))]",
-          "target": "[if(contains(parameters('costs'), 'target'), createObject('value', parameters('costs').target), createObject('value', 0))]",
-          "thresholdValue25DisplayOnChart": "[if(contains(parameters('costs'), 'thresholdValue25DisplayOnChart'), createObject('value', parameters('costs').thresholdValue25DisplayOnChart), createObject('value', 'Disabled'))]",
-          "thresholdValue25SendNotificationWhenExceeded": "[if(contains(parameters('costs'), 'thresholdValue25SendNotificationWhenExceeded'), createObject('value', parameters('costs').thresholdValue25SendNotificationWhenExceeded), createObject('value', 'Disabled'))]",
-          "thresholdValue50DisplayOnChart": "[if(contains(parameters('costs'), 'thresholdValue50DisplayOnChart'), createObject('value', parameters('costs').thresholdValue50DisplayOnChart), createObject('value', 'Disabled'))]",
-          "thresholdValue50SendNotificationWhenExceeded": "[if(contains(parameters('costs'), 'thresholdValue50SendNotificationWhenExceeded'), createObject('value', parameters('costs').thresholdValue50SendNotificationWhenExceeded), createObject('value', 'Disabled'))]",
-          "thresholdValue75DisplayOnChart": "[if(contains(parameters('costs'), 'thresholdValue75DisplayOnChart'), createObject('value', parameters('costs').thresholdValue75DisplayOnChart), createObject('value', 'Disabled'))]",
-          "thresholdValue75SendNotificationWhenExceeded": "[if(contains(parameters('costs'), 'thresholdValue75SendNotificationWhenExceeded'), createObject('value', parameters('costs').thresholdValue75SendNotificationWhenExceeded), createObject('value', 'Disabled'))]",
-          "thresholdValue100DisplayOnChart": "[if(contains(parameters('costs'), 'thresholdValue100DisplayOnChart'), createObject('value', parameters('costs').thresholdValue100DisplayOnChart), createObject('value', 'Disabled'))]",
-          "thresholdValue100SendNotificationWhenExceeded": "[if(contains(parameters('costs'), 'thresholdValue100SendNotificationWhenExceeded'), createObject('value', parameters('costs').thresholdValue100SendNotificationWhenExceeded), createObject('value', 'Disabled'))]",
-          "thresholdValue125DisplayOnChart": "[if(contains(parameters('costs'), 'thresholdValue125DisplayOnChart'), createObject('value', parameters('costs').thresholdValue125DisplayOnChart), createObject('value', 'Disabled'))]",
-          "thresholdValue125SendNotificationWhenExceeded": "[if(contains(parameters('costs'), 'thresholdValue125SendNotificationWhenExceeded'), createObject('value', parameters('costs').thresholdValue125SendNotificationWhenExceeded), createObject('value', 'Disabled'))]"
+          "cycleStartDateTime": {
+            "value": "[tryGet(parameters('costs'), 'cycleStartDateTime')]"
+          },
+          "cycleEndDateTime": {
+            "value": "[tryGet(parameters('costs'), 'cycleEndDateTime')]"
+          },
+          "status": {
+            "value": "[coalesce(tryGet(parameters('costs'), 'status'), 'Enabled')]"
+          },
+          "target": {
+            "value": "[coalesce(tryGet(parameters('costs'), 'target'), 0)]"
+          },
+          "thresholdValue25DisplayOnChart": {
+            "value": "[coalesce(tryGet(parameters('costs'), 'thresholdValue25DisplayOnChart'), 'Disabled')]"
+          },
+          "thresholdValue25SendNotificationWhenExceeded": {
+            "value": "[coalesce(tryGet(parameters('costs'), 'thresholdValue25SendNotificationWhenExceeded'), 'Disabled')]"
+          },
+          "thresholdValue50DisplayOnChart": {
+            "value": "[coalesce(tryGet(parameters('costs'), 'thresholdValue50DisplayOnChart'), 'Disabled')]"
+          },
+          "thresholdValue50SendNotificationWhenExceeded": {
+            "value": "[coalesce(tryGet(parameters('costs'), 'thresholdValue50SendNotificationWhenExceeded'), 'Disabled')]"
+          },
+          "thresholdValue75DisplayOnChart": {
+            "value": "[coalesce(tryGet(parameters('costs'), 'thresholdValue75DisplayOnChart'), 'Disabled')]"
+          },
+          "thresholdValue75SendNotificationWhenExceeded": {
+            "value": "[coalesce(tryGet(parameters('costs'), 'thresholdValue75SendNotificationWhenExceeded'), 'Disabled')]"
+          },
+          "thresholdValue100DisplayOnChart": {
+            "value": "[coalesce(tryGet(parameters('costs'), 'thresholdValue100DisplayOnChart'), 'Disabled')]"
+          },
+          "thresholdValue100SendNotificationWhenExceeded": {
+            "value": "[coalesce(tryGet(parameters('costs'), 'thresholdValue100SendNotificationWhenExceeded'), 'Disabled')]"
+          },
+          "thresholdValue125DisplayOnChart": {
+            "value": "[coalesce(tryGet(parameters('costs'), 'thresholdValue125DisplayOnChart'), 'Disabled')]"
+          },
+          "thresholdValue125SendNotificationWhenExceeded": {
+            "value": "[coalesce(tryGet(parameters('costs'), 'thresholdValue125SendNotificationWhenExceeded'), 'Disabled')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1365,10 +2434,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "16348143074487982445"
+              "templateHash": "7509251296299887127"
             },
             "name": "DevTest Lab Costs",
-            "description": "This module deploys a DevTest Lab Cost.\n\nManage lab costs by setting a spending target that can be viewed in the Monthly Estimated Cost Trend chart. DevTest Labs can send a notification when spending reaches the specified target threshold.",
+            "description": "This module deploys a DevTest Lab Cost.\r\n\r\nManage lab costs by setting a spending target that can be viewed in the Monthly Estimated Cost Trend chart. DevTest Labs can send a notification when spending reaches the specified target threshold.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
@@ -1397,14 +2466,14 @@
             },
             "cycleStartDateTime": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Conditional. Reporting cycle start date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z). Required if cycleType is set to \"Custom\"."
               }
             },
             "cycleEndDateTime": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Conditional. Reporting cycle end date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z). Required if cycleType is set to \"Custom\"."
               }
