@@ -113,7 +113,7 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     'f7b75c60-3036-4b75-91c3-6b41c27c1689'
   )
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )

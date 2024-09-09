@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "4366309935211132094"
+      "templateHash": "17272299626990757362"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster.",
@@ -252,6 +252,13 @@
     "managedIdentitiesType": {
       "type": "object",
       "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
         "userAssignedResourceIds": {
           "type": "array",
           "items": {
@@ -869,7 +876,7 @@
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -1062,7 +1069,9 @@
           "role": {
             "value": "[parameters('principalAssignments')[copyIndex()].role]"
           },
-          "tenantId": "[if(contains(parameters('principalAssignments')[copyIndex()], 'tenantId'), createObject('value', parameters('principalAssignments')[copyIndex()].tenantId), createObject('value', tenant().tenantId))]"
+          "tenantId": {
+            "value": "[coalesce(tryGet(parameters('principalAssignments')[copyIndex()], 'tenantId'), tenant().tenantId)]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1946,6 +1955,13 @@
         "description": "The resource id of the kusto cluster."
       },
       "value": "[resourceId('Microsoft.Kusto/clusters', parameters('name'))]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[coalesce(tryGet(tryGet(reference('kustoCluster', '2023-08-15', 'full'), 'identity'), 'principalId'), '')]"
     },
     "name": {
       "type": "string",
