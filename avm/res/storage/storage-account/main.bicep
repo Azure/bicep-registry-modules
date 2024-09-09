@@ -209,7 +209,7 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     'c12c1c16-33a1-487b-954d-41c89c60f349'
   )
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -492,7 +492,7 @@ resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments
   }
 ]
 
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
+module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-storageAccount-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -533,8 +533,7 @@ module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoi
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -653,7 +652,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
         ? [
             {
               name: secretsExportConfiguration!.connectionString1
-              value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0]};EndpointSuffix=core.windows.net'
+              value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=core.windows.net'
             }
           ]
         : [],
@@ -669,7 +668,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
         ? [
             {
               name: secretsExportConfiguration!.connectionString2
-              value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[1]};EndpointSuffix=core.windows.net'
+              value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[1].value};EndpointSuffix=core.windows.net'
             }
           ]
         : []
@@ -699,6 +698,17 @@ output location string = storageAccount.location
 
 @description('All service endpoints of the deployed storage account, Note Standard_LRS and Standard_ZRS accounts only have a blob service endpoint.')
 output serviceEndpoints object = storageAccount.properties.primaryEndpoints
+
+@description('The private endpoints of the Storage Account.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: storageAccount_privateEndpoints[i].outputs.name
+    resourceId: storageAccount_privateEndpoints[i].outputs.resourceId
+    groupId: storageAccount_privateEndpoints[i].outputs.groupId
+    customDnsConfig: storageAccount_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: storageAccount_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
 
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
@@ -798,11 +808,20 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?

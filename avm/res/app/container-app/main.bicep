@@ -47,6 +47,9 @@ param service object = {}
 @description('Optional. Toggle to include the service configuration.')
 param includeAddOns bool = false
 
+@description('Optional. Settings to expose additional ports on container app.')
+param additionalPortMappings ingressPortMapping[]?
+
 @description('Optional. Bool indicating if HTTP connections to is allowed. If set to false HTTP connections are automatically redirected to HTTPS connections.')
 param ingressAllowInsecure bool = true
 
@@ -164,7 +167,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -217,6 +220,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
       ingress: disableIngress
         ? null
         : {
+            additionalPortMappings: additionalPortMappings
             allowInsecure: ingressTransport != 'tcp' ? ingressAllowInsecure : false
             customDomains: !empty(customDomains) ? customDomains : null
             corsPolicy: corsPolicy != null && ingressTransport != 'tcp'
@@ -249,7 +253,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
               : null
             transport: ingressTransport
           }
-          service: (includeAddOns && !empty(service)) ? service : null
+      service: (includeAddOns && !empty(service)) ? service : null
       maxInactiveRevisions: maxInactiveRevisions
       registries: !empty(registries) ? registries : null
       secrets: secretList
@@ -385,6 +389,17 @@ type container = {
 
   @description('Optional. Container volume mounts.')
   volumeMounts: volumeMount[]?
+}
+
+type ingressPortMapping = {
+  @description('Optional. Specifies the exposed port for the target port. If not specified, it defaults to target port.')
+  exposedPort: int?
+
+  @description('Required. Specifies whether the app port is accessible outside of the environment.')
+  external: bool
+
+  @description('Required. Specifies the port the container listens on.')
+  targetPort: int
 }
 
 type serviceBind = {
