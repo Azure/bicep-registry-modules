@@ -197,12 +197,6 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
       managedResourceGroupId: !empty(managedResourceGroupResourceId)
         ? managedResourceGroupResourceId
         : '${subscription().id}/resourceGroups/rg-${name}-managed'
-      defaultCatalog: !empty(defaultCatalog)
-        ? {
-            initialName: ''
-            initialType: defaultCatalog.?initialType
-          }
-        : null
       parameters: union(
         // Always added parameters
         {
@@ -335,6 +329,14 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
           accessConnector: {
             id: accessConnectorResourceId
             identityType: 'SystemAssigned'
+          }
+        }
+      : {},
+    !empty(defaultCatalog)
+      ? {
+          defaultCatalog: {
+            initialName: ''
+            initialType: defaultCatalog.?initialType
           }
         }
       : {}
