@@ -177,7 +177,7 @@ $([Environment]::NewLine)
 
     if ($incorrectUtilityLines.Count -gt 0) {
         $body += @"
-**Resource modules that are not correctly sorted:**
+**Utility modules that are not correctly sorted:**
 
 $($incorrectUtilityLines -join ([Environment]::NewLine))
 $([Environment]::NewLine)
