@@ -67,7 +67,48 @@ The allowed subnets of the virtual network.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`labSubnetName`](#parameter-allowedsubnetslabsubnetname) | string | The name of the subnet as seen in the lab. |
+| [`resourceId`](#parameter-allowedsubnetsresourceid) | string | The resource ID of the allowed subnet. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowPublicIp`](#parameter-allowedsubnetsallowpublicip) | string | The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny)). |
+
+### Parameter: `allowedSubnets.labSubnetName`
+
+The name of the subnet as seen in the lab.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `allowedSubnets.resourceId`
+
+The resource ID of the allowed subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `allowedSubnets.allowPublicIp`
+
+The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny)).
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Default'
+    'Deny'
+  ]
+  ```
 
 ### Parameter: `description`
 
@@ -75,7 +116,6 @@ The description of the virtual network.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `subnetOverrides`
 
@@ -83,7 +123,121 @@ The subnet overrides of the virtual network.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`labSubnetName`](#parameter-subnetoverrideslabsubnetname) | string | The name given to the subnet within the lab. |
+| [`resourceId`](#parameter-subnetoverridesresourceid) | string | The resource ID of the subnet. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sharedPublicIpAddressConfiguration`](#parameter-subnetoverridessharedpublicipaddressconfiguration) | object | The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny)). |
+| [`useInVmCreationPermission`](#parameter-subnetoverridesuseinvmcreationpermission) | string | Indicates whether this subnet can be used during virtual machine creation (i.e. Allow, Deny). |
+| [`usePublicIpAddressPermission`](#parameter-subnetoverridesusepublicipaddresspermission) | string | Indicates whether public IP addresses can be assigned to virtual machines on this subnet (i.e. Allow, Deny). |
+| [`virtualNetworkPoolName`](#parameter-subnetoverridesvirtualnetworkpoolname) | string | The virtual network pool associated with this subnet. |
+
+### Parameter: `subnetOverrides.labSubnetName`
+
+The name given to the subnet within the lab.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subnetOverrides.resourceId`
+
+The resource ID of the subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subnetOverrides.sharedPublicIpAddressConfiguration`
+
+The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny)).
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowedPorts`](#parameter-subnetoverridessharedpublicipaddressconfigurationallowedports) | array | Backend ports that virtual machines on this subnet are allowed to expose. |
+
+### Parameter: `subnetOverrides.sharedPublicIpAddressConfiguration.allowedPorts`
+
+Backend ports that virtual machines on this subnet are allowed to expose.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`backendPort`](#parameter-subnetoverridessharedpublicipaddressconfigurationallowedportsbackendport) | int | Backend port of the target virtual machine. |
+| [`transportProtocol`](#parameter-subnetoverridessharedpublicipaddressconfigurationallowedportstransportprotocol) | string | Protocol type of the port. |
+
+### Parameter: `subnetOverrides.sharedPublicIpAddressConfiguration.allowedPorts.backendPort`
+
+Backend port of the target virtual machine.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `subnetOverrides.sharedPublicIpAddressConfiguration.allowedPorts.transportProtocol`
+
+Protocol type of the port.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Tcp'
+    'Udp'
+  ]
+  ```
+
+### Parameter: `subnetOverrides.useInVmCreationPermission`
+
+Indicates whether this subnet can be used during virtual machine creation (i.e. Allow, Deny).
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Default'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `subnetOverrides.usePublicIpAddressPermission`
+
+Indicates whether public IP addresses can be assigned to virtual machines on this subnet (i.e. Allow, Deny).
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Default'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `subnetOverrides.virtualNetworkPoolName`
+
+The virtual network pool associated with this subnet.
+
+- Required: No
+- Type: string
 
 ### Parameter: `tags`
 
