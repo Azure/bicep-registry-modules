@@ -13,7 +13,7 @@ param enableTelemetry bool = true
 //
 
 @description('Optional. A map of the hub virtual networks to create.')
-param hubVirtualNetworks hubVirtualNetworkObject
+param hubVirtualNetworks hubVirtualNetworkType
 
 //
 // Add your variables here
@@ -347,90 +347,88 @@ type diagnosticSettingType = {
   marketplacePartnerResourceId: string?
 }[]?
 
-type hubVirtualNetworkObject = {
-  @description('Optional. Array of hub virtual networks to create.')
-  *: hubVirtualNetworkType?
-}?
-
 type hubVirtualNetworkType = {
-  @description('Required. The address prefixes for the virtual network.')
-  addressPrefixes: array
+  @description('Required. The hub virtual networks to create.')
+  *: {
+    @description('Required. The address prefixes for the virtual network.')
+    addressPrefixes: array
 
-  @description('Optional. The Azure Firewall config.')
-  azureFirewallSettings: azureFirewallType?
+    @description('Optional. The Azure Firewall config.')
+    azureFirewallSettings: azureFirewallType?
 
-  @description('Optional. The Azure Bastion config.')
-  bastionHost: {
-    @description('Optional. Enable/Disable copy/paste functionality.')
-    disableCopyPaste: bool?
+    @description('Optional. The Azure Bastion config.')
+    bastionHost: {
+      @description('Optional. Enable/Disable copy/paste functionality.')
+      disableCopyPaste: bool?
 
-    @description('Optional. Enable/Disable file copy functionality.')
-    enableFileCopy: bool?
+      @description('Optional. Enable/Disable file copy functionality.')
+      enableFileCopy: bool?
 
-    @description('Optional. Enable/Disable IP connect functionality.')
-    enableIpConnect: bool?
+      @description('Optional. Enable/Disable IP connect functionality.')
+      enableIpConnect: bool?
 
-    @description('Optional. Enable/Disable shareable link functionality.')
-    enableShareableLink: bool?
+      @description('Optional. Enable/Disable shareable link functionality.')
+      enableShareableLink: bool?
 
-    @description('Optional. The number of scale units for the Bastion host. Defaults to 4.')
-    scaleUnits: int?
+      @description('Optional. The number of scale units for the Bastion host. Defaults to 4.')
+      scaleUnits: int?
 
-    @description('Optional. The SKU name of the Bastion host. Defaults to Standard.')
-    skuName: string?
-  }?
+      @description('Optional. The SKU name of the Bastion host. Defaults to Standard.')
+      skuName: string?
+    }?
 
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
+    @description('Optional. Enable/Disable usage telemetry for module.')
+    enableTelemetry: bool?
 
-  @description('Optional. Enable/Disable Azure Bastion for the virtual network.')
-  enableBastion: bool?
+    @description('Optional. Enable/Disable Azure Bastion for the virtual network.')
+    enableBastion: bool?
 
-  @description('Optional. Enable/Disable Azure Firewall for the virtual network.')
-  enableAzureFirewall: bool?
+    @description('Optional. Enable/Disable Azure Firewall for the virtual network.')
+    enableAzureFirewall: bool?
 
-  @description('Optional. The location of the virtual network. Defaults to the location of the resource group.')
-  location: string?
+    @description('Optional. The location of the virtual network. Defaults to the location of the resource group.')
+    location: string?
 
-  @description('Optional. The lock settings of the virtual network.')
-  lock: lockType?
+    @description('Optional. The lock settings of the virtual network.')
+    lock: lockType?
 
-  @description('Optional. The diagnostic settings of the virtual network.')
-  diagnosticSettings: diagnosticSettingType?
+    @description('Optional. The diagnostic settings of the virtual network.')
+    diagnosticSettings: diagnosticSettingType?
 
-  @description('Optional. The DDoS protection plan resource ID.')
-  ddosProtectionPlanResourceId: string?
+    @description('Optional. The DDoS protection plan resource ID.')
+    ddosProtectionPlanResourceId: string?
 
-  @description('Optional. The DNS servers of the virtual network.')
-  dnsServers: array?
+    @description('Optional. The DNS servers of the virtual network.')
+    dnsServers: array?
 
-  @description('Optional. The flow timeout in minutes.')
-  flowTimeoutInMinutes: int?
+    @description('Optional. The flow timeout in minutes.')
+    flowTimeoutInMinutes: int?
 
-  @description('Optional. Enable/Disable peering for the virtual network.')
-  enablePeering: bool?
+    @description('Optional. Enable/Disable peering for the virtual network.')
+    enablePeering: bool?
 
-  @description('Optional. The peerings of the virtual network.')
-  peeringSettings: peeringSettingsType?
+    @description('Optional. The peerings of the virtual network.')
+    peeringSettings: peeringSettingsType?
 
-  @description('Optional. The role assignments to create.')
-  roleAssignments: roleAssignmentType?
+    @description('Optional. The role assignments to create.')
+    roleAssignments: roleAssignmentType?
 
-  @description('Optional. Routes to add to the virtual network route table.')
-  routes: array?
+    @description('Optional. Routes to add to the virtual network route table.')
+    routes: array?
 
-  @description('Optional. The subnets of the virtual network.')
-  subnets: array?
+    @description('Optional. The subnets of the virtual network.')
+    subnets: array?
 
-  @description('Optional. The tags of the virtual network.')
-  tags: object?
+    @description('Optional. The tags of the virtual network.')
+    tags: object?
 
-  @description('Optional. Enable/Disable VNet encryption.')
-  vnetEncryption: bool?
+    @description('Optional. Enable/Disable VNet encryption.')
+    vnetEncryption: bool?
 
-  @description('Optional. The VNet encryption enforcement settings of the virtual network.')
-  vnetEncryptionEnforcement: string?
-}
+    @description('Optional. The VNet encryption enforcement settings of the virtual network.')
+    vnetEncryptionEnforcement: string?
+  }
+}?
 
 type peeringSettingsType = {
   @description('Optional. Allow forwarded traffic.')
@@ -508,5 +506,5 @@ type azureFirewallType = {
   threatIntelMode: string?
 
   @description('Optional. Zones.')
-  zones: array?
+  zones: int[]?
 }?

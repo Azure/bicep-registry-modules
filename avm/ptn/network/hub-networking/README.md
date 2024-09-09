@@ -790,17 +790,17 @@ A map of the hub virtual networks to create.
 - Required: No
 - Type: object
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`>Any_other_property<`](#parameter-hubvirtualnetworks>any_other_property<) | object | Array of hub virtual networks to create. |
+| [`>Any_other_property<`](#parameter-hubvirtualnetworks>any_other_property<) | object | The hub virtual networks to create. |
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<`
 
-Array of hub virtual networks to create.
+The hub virtual networks to create.
 
-- Required: No
+- Required: Yes
 - Type: object
 
 **Required parameters**
