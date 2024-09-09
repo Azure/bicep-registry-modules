@@ -2,6 +2,8 @@
 
 This module deploys a DocumentDB Mongo Cluster.
 
+**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -26,7 +28,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/document-db/mongo-cluster:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [WAF-aligned](#example-2-waf-aligned)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -96,7 +99,111 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
 </details>
 <p>
 
-### Example 2: _WAF-aligned_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with the maximum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
+  name: 'mongoClusterDeployment'
+  params: {
+    // Required parameters
+    administratorLogin: 'Admin001'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    name: 'ddmcdefmax001'
+    nodeCount: 2
+    sku: 'M30'
+    storage: 256
+    // Non-required parameters
+    createMode: 'Default'
+    highAvailabilityMode: false
+    location: '<location>'
+    networkAcls: {
+      allowAllIPs: true
+      allowAzureIPs: true
+      customRules: [
+        {
+          endIpAddress: '1.2.3.4'
+          firewallRuleName: 'allow-1.2.3.4-to-5.6.7.8'
+          startIpAddress: '5.6.7.8'
+        }
+      ]
+    }
+    nodeType: 'Shard'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "administratorLogin": {
+      "value": "Admin001"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "name": {
+      "value": "ddmcdefmax001"
+    },
+    "nodeCount": {
+      "value": 2
+    },
+    "sku": {
+      "value": "M30"
+    },
+    "storage": {
+      "value": 256
+    },
+    // Non-required parameters
+    "createMode": {
+      "value": "Default"
+    },
+    "highAvailabilityMode": {
+      "value": false
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "networkAcls": {
+      "value": {
+        "allowAllIPs": true,
+        "allowAzureIPs": true,
+        "customRules": [
+          {
+            "endIpAddress": "1.2.3.4",
+            "firewallRuleName": "allow-1.2.3.4-to-5.6.7.8",
+            "startIpAddress": "5.6.7.8"
+          }
+        ]
+      }
+    },
+    "nodeType": {
+      "value": "Shard"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -181,13 +288,11 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`allowAllIPsFirewall`](#parameter-allowallipsfirewall) | bool | Whether to allow all IPs or not. Warning: No IP addresses will be blocked and any host on the Internet can access the coordinator in this server group. It is strongly recommended to use this rule only temporarily and only on test clusters that do not contain sensitive data. |
-| [`allowAzureIPsFirewall`](#parameter-allowazureipsfirewall) | bool | Whether to allow Azure internal IPs or not. |
-| [`allowedSingleIPs`](#parameter-allowedsingleips) | array | IP addresses to allow access to the cluster from. |
 | [`createMode`](#parameter-createmode) | string | Mode to create the mongo cluster. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`highAvailabilityMode`](#parameter-highavailabilitymode) | bool | Whether high availability is enabled on the node group. |
 | [`location`](#parameter-location) | string | Default to current resource group scope location. Location for all resources. |
+| [`networkAcls`](#parameter-networkacls) | object | IP addresses to allow access to the cluster from. |
 | [`nodeType`](#parameter-nodetype) | string | Deployed Node type in the node group. |
 | [`tags`](#parameter-tags) | object | Tags of the Database Account resource. |
 
@@ -233,30 +338,6 @@ Disk storage size for the node group in GB.
 - Required: Yes
 - Type: int
 
-### Parameter: `allowAllIPsFirewall`
-
-Whether to allow all IPs or not. Warning: No IP addresses will be blocked and any host on the Internet can access the coordinator in this server group. It is strongly recommended to use this rule only temporarily and only on test clusters that do not contain sensitive data.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `allowAzureIPsFirewall`
-
-Whether to allow Azure internal IPs or not.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `allowedSingleIPs`
-
-IP addresses to allow access to the cluster from.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
 ### Parameter: `createMode`
 
 Mode to create the mongo cluster.
@@ -289,6 +370,47 @@ Default to current resource group scope location. Location for all resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
+### Parameter: `networkAcls`
+
+IP addresses to allow access to the cluster from.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowAllIPs`](#parameter-networkaclsallowallips) | bool | Indicates whether to allow all IP addresses. |
+| [`allowAzureIPs`](#parameter-networkaclsallowazureips) | bool | Indicates whether to allow all Azure internal IP addresses. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`customRules`](#parameter-networkaclscustomrules) | array | List of custom firewall rules. |
+
+### Parameter: `networkAcls.allowAllIPs`
+
+Indicates whether to allow all IP addresses.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `networkAcls.allowAzureIPs`
+
+Indicates whether to allow all Azure internal IP addresses.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `networkAcls.customRules`
+
+List of custom firewall rules.
+
+- Required: No
+- Type: array
+
 ### Parameter: `nodeType`
 
 Deployed Node type in the node group.
@@ -309,8 +431,7 @@ Tags of the Database Account resource.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `connectionStringKey` | string | The connection string key of the mongo cluster. |
-| `firewallRulename` | string | The name of the firewall rule. |
-| `firewallRuleResourceId` | string | The resource ID of the firewall rule. |
+| `firewallRules` | array | The name and resource ID of firewall rule. |
 | `mongoClusterResourceId` | string | The resource ID of the mongo cluster. |
 | `name` | string | The name of the mongo cluster. |
 | `resourceGroupName` | string | The name of the resource group the firewall rule was created in. |

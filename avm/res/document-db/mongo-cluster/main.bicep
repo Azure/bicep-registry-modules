@@ -1,5 +1,7 @@
 metadata name = 'DocumentDB Mongo Clusters'
-metadata description = 'This module deploys a DocumentDB Mongo Cluster.'
+metadata description = '''This module deploys a DocumentDB Mongo Cluster.
+
+**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.'''
 metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Mongo Cluster.')
@@ -19,15 +21,6 @@ param administratorLogin string
 @minLength(8)
 @maxLength(128)
 param administratorLoginPassword string
-
-@description('Optional. Whether to allow all IPs or not. Warning: No IP addresses will be blocked and any host on the Internet can access the coordinator in this server group. It is strongly recommended to use this rule only temporarily and only on test clusters that do not contain sensitive data.')
-param allowAllIPsFirewall bool = false
-
-@description('Optional. Whether to allow Azure internal IPs or not.')
-param allowAzureIPsFirewall bool = false
-
-@description('Optional. IP addresses to allow access to the cluster from.')
-param allowedSingleIPs array = []
 
 @description('Optional. Mode to create the mongo cluster.')
 param createMode string = 'Default'
@@ -49,6 +42,35 @@ param sku string
 
 @description('Required. Disk storage size for the node group in GB.')
 param storage int
+
+@description('Optional. IP addresses to allow access to the cluster from.')
+param networkAcls networkAclsType?
+
+var firewallRules = union(
+  map(networkAcls.?customRules ?? [], customRule => {
+    name: customRule.?firewallRuleName ?? 'allow-${replace(customRule.startIpAddress, '.', '')}-to-${replace(customRule.endIpAddress, '.', '')}'
+    startIpAddress: customRule.startIpAddress
+    endIpAddress: customRule.endIpAddress
+  }),
+  networkAcls.?allowAllIPs ?? false
+    ? [
+        {
+          name: 'allow-all-IPs'
+          startIpAddress: '0.0.0.0'
+          endIpAddress: '255.255.255.255'
+        }
+      ]
+    : [],
+  networkAcls.?allowAzureIPs ?? false
+    ? [
+        {
+          name: 'allow-all-azure-internal-IPs'
+          startIpAddress: '0.0.0.0'
+          endIpAddress: '0.0.0.0'
+        }
+      ]
+    : []
+)
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -89,15 +111,17 @@ resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2024-02-15-preview' = 
   }
 }
 
-module mongoCluster_configFireWallRules './config-firewall-rule/main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-configfwr'
-  params: {
-    mongoClusterName: mongoCluster.name
-    allowAllIPsFirewall: allowAllIPsFirewall
-    allowAzureIPsFirewall: allowAzureIPsFirewall
-    allowedSingleIPs: allowedSingleIPs
+module mongoCluster_configFireWallRules 'firewall-rule/main.bicep' = [
+  for (firewallRule, index) in firewallRules: {
+    name: '${uniqueString(deployment().name, location)}-firewallRule-${index}'
+    params: {
+      mongoClusterName: mongoCluster.name
+      name: firewallRule.name
+      startIpAddress: firewallRule.startIpAddress
+      endIpAddress: firewallRule.endIpAddress
+    }
   }
-}
+]
 
 @description('The name of the mongo cluster.')
 output name string = mongoCluster.name
@@ -105,14 +129,50 @@ output name string = mongoCluster.name
 @description('The resource ID of the mongo cluster.')
 output mongoClusterResourceId string = mongoCluster.id
 
-@description('The name of the firewall rule.')
-output firewallRulename string = allowAllIPsFirewall ? mongoCluster_configFireWallRules.outputs.fireWallAllName : allowAzureIPsFirewall ? mongoCluster_configFireWallRules.outputs.fireWallAzureName : mongoCluster_configFireWallRules.outputs.firewallSingle[0].name
-
-@description('The resource ID of the firewall rule.')
-output firewallRuleResourceId string = allowAllIPsFirewall ? mongoCluster_configFireWallRules.outputs.fireWallAllResourceId : allowAzureIPsFirewall ? mongoCluster_configFireWallRules.outputs.fireWallAzureResourceId : mongoCluster_configFireWallRules.outputs.firewallSingle[0].ResourceId
-
 @description('The name of the resource group the firewall rule was created in.')
 output resourceGroupName string = resourceGroup().name
 
 @description('The connection string key of the mongo cluster.')
 output connectionStringKey string = mongoCluster.properties.connectionString
+
+@description('The name and resource ID of firewall rule.')
+output firewallRules firewallSetType[] = [
+  for index in range(0, length(firewallRules ?? [])): {
+    name: mongoCluster_configFireWallRules[index].outputs.name
+    resourceId: mongoCluster_configFireWallRules[index].outputs.resourceId
+  }
+]
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+type networkAclsType = {
+  @description('Optional. List of custom firewall rules.')
+  customRules: [
+    {
+      @description('Optional. The name of the custom firewall rule.')
+      firewallRuleName: string?
+
+      @description('Required. The starting IP address for the custom firewall rule.')
+      startIpAddress: string
+
+      @description('Required. The ending IP address for the custom firewall rule.')
+      endIpAddress: string
+    }
+  ]?
+
+  @description('Required. Indicates whether to allow all IP addresses.')
+  allowAllIPs: bool
+
+  @description('Required. Indicates whether to allow all Azure internal IP addresses.')
+  allowAzureIPs: bool
+}
+
+type firewallSetType = {
+  @description('The name of the created firewall rule.')
+  name: string
+
+  @description('The resource ID of the created firewall rule.')
+  resourceId: string
+}
