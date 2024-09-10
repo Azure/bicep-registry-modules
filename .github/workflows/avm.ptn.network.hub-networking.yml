@@ -1,8 +1,5 @@
 name: "avm.ptn.network.hub-networking"
-
 on:
-  schedule:
-    - cron: "0 12 1/15 * *" # Bi-Weekly Test (on 1st & 15th of month)
   workflow_dispatch:
     inputs:
       staticValidation:
@@ -20,7 +17,10 @@ on:
         description: "Remove deployed module"
         required: false
         default: true
-
+      customLocation:
+        type: string
+        description: "Default location overwrite (e.g., eastus)"
+        required: false
   push:
     branches:
       - main
@@ -30,15 +30,13 @@ on:
       - ".github/workflows/avm.ptn.network.hub-networking.yml"
       - "avm/ptn/network/hub-networking/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
-
 env:
   modulePath: "avm/ptn/network/hub-networking"
   workflowPath: ".github/workflows/avm.ptn.network.hub-networking.yml"
-
 concurrency:
   group: ${{ github.workflow }}
-
 jobs:
   ###########################
   #   Initialize pipeline   #
@@ -66,7 +64,6 @@ jobs:
       moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
       psRuleModuleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.psRuleModuleTestFilePaths }}
       modulePath: "${{ env.modulePath }}"
-
   ##############################
   #   Call reusable workflow   #
   ##############################

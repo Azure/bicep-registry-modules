@@ -4,16 +4,17 @@ metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. The name of the subnet.')
 param subnetName string = ''
-
 @description('Optional. The name of the virtual network.')
 param virtualNetworkName string = ''
 
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' existing = {
-  name: '${virtualNetworkName}/${subnetName}'
+resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' existing = {
+  name: virtualNetworkName
+  resource subnet 'subnets@2023-11-01' existing = {
+    name: subnetName
+  }
 }
 
 @description('Subnet ID')
-output subnetId string = subnet.id
-
+output subnetId string = vnet::subnet.id
 @description('Subnet address prefix')
-output addressPrefix string = subnet.properties.addressPrefix
+output addressPrefix string = vnet::subnet.properties.addressPrefix

@@ -103,7 +103,6 @@ module testDeployment '../../../main.bicep' = [
           enablePeering: false
           enableTelemetry: true
           flowTimeoutInMinutes: 30
-          ddosProtectionPlanResourceId: ''
           dnsServers: ['10.0.1.6', '10.0.1.7']
           diagnosticSettings: [
             {

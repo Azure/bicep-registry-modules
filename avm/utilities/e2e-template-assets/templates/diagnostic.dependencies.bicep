@@ -42,9 +42,6 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-12
 resource eventHubNamespace 'Microsoft.EventHub/namespaces@2021-11-01' = {
   name: eventHubNamespaceName
   location: location
-  properties: {
-    disableLocalAuth: true
-  }
 
   resource eventHub 'eventhubs@2021-11-01' = {
     name: eventHubNamespaceEventHubName
