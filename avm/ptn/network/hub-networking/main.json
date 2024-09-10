@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "8091291469048769594"
+      "version": "0.29.47.4906",
+      "templateHash": "71030969474630763"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
@@ -43,6 +43,13 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            }
+          },
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
@@ -224,205 +231,201 @@
       },
       "nullable": true
     },
-    "hubVirtualNetworkObject": {
+    "hubVirtualNetworkType": {
       "type": "object",
       "properties": {},
       "additionalProperties": {
-        "$ref": "#/definitions/hubVirtualNetworkType",
-        "nullable": true,
+        "type": "object",
+        "properties": {
+          "addressPrefixes": {
+            "type": "array",
+            "metadata": {
+              "description": "Required. The address prefixes for the virtual network."
+            }
+          },
+          "azureFirewallSettings": {
+            "$ref": "#/definitions/azureFirewallType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The Azure Firewall config."
+            }
+          },
+          "bastionHost": {
+            "type": "object",
+            "properties": {
+              "disableCopyPaste": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable/Disable copy/paste functionality."
+                }
+              },
+              "enableFileCopy": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable/Disable file copy functionality."
+                }
+              },
+              "enableIpConnect": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable/Disable IP connect functionality."
+                }
+              },
+              "enableShareableLink": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable/Disable shareable link functionality."
+                }
+              },
+              "scaleUnits": {
+                "type": "int",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The number of scale units for the Bastion host. Defaults to 4."
+                }
+              },
+              "skuName": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The SKU name of the Bastion host. Defaults to Standard."
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The Azure Bastion config."
+            }
+          },
+          "enableTelemetry": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Enable/Disable usage telemetry for module."
+            }
+          },
+          "enableBastion": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Enable/Disable Azure Bastion for the virtual network."
+            }
+          },
+          "enableAzureFirewall": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Enable/Disable Azure Firewall for the virtual network."
+            }
+          },
+          "location": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The location of the virtual network. Defaults to the location of the resource group."
+            }
+          },
+          "lock": {
+            "$ref": "#/definitions/lockType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The lock settings of the virtual network."
+            }
+          },
+          "diagnosticSettings": {
+            "$ref": "#/definitions/diagnosticSettingType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The diagnostic settings of the virtual network."
+            }
+          },
+          "ddosProtectionPlanResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The DDoS protection plan resource ID."
+            }
+          },
+          "dnsServers": {
+            "type": "array",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The DNS servers of the virtual network."
+            }
+          },
+          "flowTimeoutInMinutes": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The flow timeout in minutes."
+            }
+          },
+          "enablePeering": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Enable/Disable peering for the virtual network."
+            }
+          },
+          "peeringSettings": {
+            "$ref": "#/definitions/peeringSettingsType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The peerings of the virtual network."
+            }
+          },
+          "roleAssignments": {
+            "$ref": "#/definitions/roleAssignmentType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The role assignments to create."
+            }
+          },
+          "routes": {
+            "type": "array",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Routes to add to the virtual network route table."
+            }
+          },
+          "subnets": {
+            "type": "array",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The subnets of the virtual network."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The tags of the virtual network."
+            }
+          },
+          "vnetEncryption": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Enable/Disable VNet encryption."
+            }
+          },
+          "vnetEncryptionEnforcement": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The VNet encryption enforcement settings of the virtual network."
+            }
+          }
+        },
         "metadata": {
-          "description": "Optional. Array of hub virtual networks to create."
+          "description": "Required. The hub virtual networks to create."
         }
       },
       "nullable": true
-    },
-    "hubVirtualNetworkType": {
-      "type": "object",
-      "properties": {
-        "addressPrefixes": {
-          "type": "array",
-          "metadata": {
-            "description": "Required. The address prefixes for the virtual network."
-          }
-        },
-        "azureFirewallSettings": {
-          "$ref": "#/definitions/azureFirewallType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The Azure Firewall config."
-          }
-        },
-        "bastionHost": {
-          "type": "object",
-          "properties": {
-            "disableCopyPaste": {
-              "type": "bool",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Enable/Disable copy/paste functionality."
-              }
-            },
-            "enableFileCopy": {
-              "type": "bool",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Enable/Disable file copy functionality."
-              }
-            },
-            "enableIpConnect": {
-              "type": "bool",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Enable/Disable IP connect functionality."
-              }
-            },
-            "enableShareableLink": {
-              "type": "bool",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Enable/Disable shareable link functionality."
-              }
-            },
-            "scaleUnits": {
-              "type": "int",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The number of scale units for the Bastion host. Defaults to 4."
-              }
-            },
-            "skuName": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The SKU name of the Bastion host. Defaults to Standard."
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The Azure Bastion config."
-          }
-        },
-        "enableTelemetry": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable usage telemetry for module."
-          }
-        },
-        "enableBastion": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable Azure Bastion for the virtual network."
-          }
-        },
-        "enableAzureFirewall": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable Azure Firewall for the virtual network."
-          }
-        },
-        "location": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The location of the virtual network. Defaults to the location of the resource group."
-          }
-        },
-        "lock": {
-          "$ref": "#/definitions/lockType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The lock settings of the virtual network."
-          }
-        },
-        "diagnosticSettings": {
-          "$ref": "#/definitions/diagnosticSettingType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The diagnostic settings of the virtual network."
-          }
-        },
-        "ddosProtectionPlanResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The DDoS protection plan resource ID."
-          }
-        },
-        "dnsServers": {
-          "type": "array",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The DNS servers of the virtual network."
-          }
-        },
-        "flowTimeoutInMinutes": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The flow timeout in minutes."
-          }
-        },
-        "enablePeering": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable peering for the virtual network."
-          }
-        },
-        "peeringSettings": {
-          "$ref": "#/definitions/peeringSettingsType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The peerings of the virtual network."
-          }
-        },
-        "roleAssignments": {
-          "$ref": "#/definitions/roleAssignmentType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The role assignments to create."
-          }
-        },
-        "routes": {
-          "type": "array",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Routes to add to the virtual network route table."
-          }
-        },
-        "subnets": {
-          "type": "array",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The subnets of the virtual network."
-          }
-        },
-        "tags": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The tags of the virtual network."
-          }
-        },
-        "vnetEncryption": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable VNet encryption."
-          }
-        },
-        "vnetEncryptionEnforcement": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The VNet encryption enforcement settings of the virtual network."
-          }
-        }
-      }
     },
     "peeringSettingsType": {
       "type": "array",
@@ -606,6 +609,9 @@
         },
         "zones": {
           "type": "array",
+          "items": {
+            "type": "int"
+          },
           "nullable": true,
           "metadata": {
             "description": "Optional. Zones."
@@ -631,7 +637,7 @@
       }
     },
     "hubVirtualNetworks": {
-      "$ref": "#/definitions/hubVirtualNetworkObject",
+      "$ref": "#/definitions/hubVirtualNetworkType",
       "metadata": {
         "description": "Optional. A map of the hub virtual networks to create."
       }
@@ -667,16 +673,6 @@
         }
       }
     },
-    "hubVirtualNetworkPeer_remote": {
-      "copy": {
-        "name": "hubVirtualNetworkPeer_remote",
-        "count": "[length(flatten(variables('hubVirtualNetworkPeerings')))]"
-      },
-      "existing": true,
-      "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2023-11-01",
-      "name": "[flatten(variables('hubVirtualNetworkPeerings'))[copyIndex()].remoteVirtualNetworkName]"
-    },
     "hubVirtualNetworkPeer_local": {
       "copy": {
         "name": "hubVirtualNetworkPeer_local",
@@ -695,21 +691,20 @@
       },
       "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
       "apiVersion": "2023-11-01",
-      "name": "[format('{0}/{1}-to-{2}', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, flatten(variables('hubVirtualNetworkPeerings'))[copyIndex()].remoteVirtualNetworkName)]",
+      "name": "[format('{0}/{1}-to-{2}-peering', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray())[copyIndex()].remoteVirtualNetworkName)]",
       "properties": {
         "allowForwardedTraffic": "[coalesce(coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray())[copyIndex()].allowForwardedTraffic, false())]",
         "allowGatewayTransit": "[coalesce(coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray())[copyIndex()].allowGatewayTransit, false())]",
         "allowVirtualNetworkAccess": "[coalesce(coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray())[copyIndex()].allowVirtualNetworkAccess, true())]",
         "useRemoteGateways": "[coalesce(coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray())[copyIndex()].useRemoteGateways, false())]",
         "remoteVirtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks', flatten(variables('hubVirtualNetworkPeerings'))[copyIndex()].remoteVirtualNetworkName)]"
+          "id": "[reference(format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())).outputs.resourceId.value]"
         }
       },
       "dependsOn": [
         "hubVirtualNetwork",
         "[format('hubVirtualNetworkPeer_local[{0}]', copyIndex())]",
         "[format('hubVirtualNetworkPeer_local[{0}]', copyIndex())]",
-        "[format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())]",
         "[format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())]"
       ]
     },
@@ -720,9 +715,9 @@
       },
       "type": "Microsoft.Network/routeTables/routes",
       "apiVersion": "2023-11-01",
-      "name": "[format('{0}/{1}-to-{2}-route', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, flatten(variables('hubVirtualNetworkPeerings'))[copyIndex()].remoteVirtualNetworkName)]",
+      "name": "[format('{0}/{1}-to-{2}-route', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray())[copyIndex()].remoteVirtualNetworkName)]",
       "properties": {
-        "addressPrefix": "[reference(format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())).addressSpace.addressPrefixes[0]]",
+        "addressPrefix": "[reference(format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())).outputs.addressPrefix.value]",
         "nextHopType": "VirtualAppliance",
         "nextHopIpAddress": "[reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.privateIp.value]"
       },
@@ -730,7 +725,6 @@
         "[format('hubAzureFirewall[{0}]', copyIndex())]",
         "[format('hubVirtualNetworkPeer_local[{0}]', copyIndex())]",
         "[format('hubVirtualNetworkPeer_local[{0}]', copyIndex())]",
-        "[format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())]",
         "[format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())]",
         "hubVirtualNetworkPeering"
       ]
@@ -1952,6 +1946,82 @@
           }
         }
       }
+    },
+    "hubVirtualNetworkPeer_remote": {
+      "copy": {
+        "name": "hubVirtualNetworkPeer_remote",
+        "count": "[length(flatten(variables('hubVirtualNetworkPeerings')))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}-nvnp', uniqueString(deployment().name, parameters('location')), flatten(variables('hubVirtualNetworkPeerings'))[copyIndex()].remoteVirtualNetworkName)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[flatten(variables('hubVirtualNetworkPeerings'))[copyIndex()].remoteVirtualNetworkName]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "9428503734021892416"
+            },
+            "name": "Virtual Networks",
+            "description": "This module deploys a Virtual Network.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the parent virtual network. Required if the template is used in a standalone deployment."
+              }
+            }
+          },
+          "resources": [],
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the virtual network peering was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the virtual network peering."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the virtual network peering."
+              },
+              "value": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]"
+            },
+            "addressPrefix": {
+              "type": "string",
+              "metadata": {
+                "description": "The address space of the virtual network."
+              },
+              "value": "[reference(resourceId('Microsoft.Network/virtualNetworks', parameters('name')), '2023-11-01').addressSpace.addressPrefixes[0]]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "hubVirtualNetwork"
+      ]
     },
     "hubRouteTable": {
       "copy": {
@@ -5937,8 +6007,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "14647294443648054254"
+              "version": "0.29.47.4906",
+              "templateHash": "6897149805682771371"
             },
             "name": "Existing Virtual Network Subnets",
             "description": "This module retrieves an existing Virtual Network Subnet.",
@@ -5967,14 +6037,14 @@
               "metadata": {
                 "description": "Subnet ID"
               },
-              "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', split(format('{0}/{1}', parameters('virtualNetworkName'), parameters('subnetName')), '/')[0], split(format('{0}/{1}', parameters('virtualNetworkName'), parameters('subnetName')), '/')[1])]"
+              "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
             },
             "addressPrefix": {
               "type": "string",
               "metadata": {
                 "description": "Subnet address prefix"
               },
-              "value": "[reference(resourceId('Microsoft.Network/virtualNetworks/subnets', split(format('{0}/{1}', parameters('virtualNetworkName'), parameters('subnetName')), '/')[0], split(format('{0}/{1}', parameters('virtualNetworkName'), parameters('subnetName')), '/')[1]), '2023-11-01').addressPrefix]"
+              "value": "[reference(resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName')), '2023-11-01').addressPrefix]"
             }
           }
         }
@@ -6020,8 +6090,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "1921223386989746708"
+              "version": "0.29.47.4906",
+              "templateHash": "11735652948112662202"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet.",
@@ -6033,6 +6103,13 @@
               "items": {
                 "type": "object",
                 "properties": {
+                  "name": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                    }
+                  },
                   "roleDefinitionIdOrName": {
                     "type": "string",
                     "metadata": {
@@ -6209,6 +6286,13 @@
             }
           },
           "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -6250,20 +6334,20 @@
             "subnet_roleAssignments": {
               "copy": {
                 "name": "subnet_roleAssignments",
-                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.Network/virtualNetworks/{0}/subnets/{1}', parameters('virtualNetworkName'), parameters('name'))]",
-              "name": "[guid(resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
-                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               },
               "dependsOn": [
                 "subnet"
@@ -6274,21 +6358,21 @@
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The resource group the virtual network peering was deployed into."
+                "description": "The resource group the subnet was deployed into."
               },
               "value": "[resourceGroup().name]"
             },
             "subnetName": {
               "type": "string",
               "metadata": {
-                "description": "The name of the virtual network peering."
+                "description": "The name of the subnet."
               },
               "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The resource ID of the virtual network peering."
+                "description": "The resource ID of the subnet."
               },
               "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name'))]"
             },

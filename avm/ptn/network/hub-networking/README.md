@@ -1165,6 +1165,7 @@ Role assignments.
 | [`conditionVersion`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments.principalId`
@@ -1211,6 +1212,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1632,6 +1640,7 @@ The role assignments to create.
 | [`conditionVersion`](#parameter-hubvirtualnetworks>any_other_property<roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-hubvirtualnetworks>any_other_property<roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-hubvirtualnetworks>any_other_property<roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-hubvirtualnetworks>any_other_property<roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-hubvirtualnetworks>any_other_property<roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments.principalId`
@@ -1678,6 +1687,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.>Any_other_property<.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
