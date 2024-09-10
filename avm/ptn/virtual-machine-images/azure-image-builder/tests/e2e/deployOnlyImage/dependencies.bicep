@@ -263,16 +263,41 @@ module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.3.
   }
 }
 
+@description('The image definitions used in the Azure Compute Gallery.')
 output computeGalleryImageDefinitions array = computeGalleryImageDefinitionsVar
+
+@description('The name of the created Resource Group.')
 output resourceGroupName string = rg.name
+
+@description('The name of the created Azure Compute Gallery')
 output computeGalleryName string = azureComputeGallery.outputs.name
+
+@description('The name of the created Virtual Network')
 output virtualNetworkName string = vnet.outputs.name
+
+@description('The name of the Storage Account Container hosting the customization files used by the Azure Image Builder.')
 output assetsStorageAccountContainerName string = assetsStorageAccountContainerName
+
+@description('The name of the create Storage Account hosting the customization files used by the Azure Image Builder.')
 output assetsStorageAccountName string = assetsStorageAccount.outputs.name
+
+@description('The name of the User-Assigned-Identity used by the Deployment Scripts.')
 output deploymentScriptManagedIdentityName string = dsMsi.outputs.name
+
+@description('The name of the Storage Account used by the Deployment Scripts.')
 output deploymentScriptStorageAccountName string = dsStorageAccount.outputs.name
+
+@description('The name of the subnet used by the Azure Image Builder.')
 output imageSubnetName string = last(split(vnet.outputs.subnetResourceIds[0], '/'))
+
+@description('The name of the subnet used by the Deployment Scripts.')
 output deploymentScriptSubnetName string = last(split(vnet.outputs.subnetResourceIds[1], '/'))
+
+@description('The name of the User-Assigned-Identity used by the Azure Image Builder.')
 output imageManagedIdentityName string = imageMSI.outputs.name
+
+@description('The name of the Resource Group used by the Azure Image Builder.')
 output imageTemplateResourceGroupName string = imageTemplateRg.outputs.name
+
+@description('The name of the script uploaded to the Assets Storage Account to use in the Azure Image Builder customization steps.')
 output exampleScriptName string = exampleScriptName
