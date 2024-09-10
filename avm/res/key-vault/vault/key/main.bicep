@@ -150,6 +150,12 @@ resource key_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01
   }
 ]
 
+@description('The uri of the key.')
+output keyUri string = key.properties.keyUri
+
+@description('The uri with version of the key.')
+output keyUriWithVersion string = key.properties.keyUriWithVersion
+
 @description('The name of the key.')
 output name string = key.name
 

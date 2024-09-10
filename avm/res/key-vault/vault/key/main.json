@@ -273,6 +273,20 @@
     }
   },
   "outputs": {
+    "keyUri": {
+      "type": "string",
+      "metadata": {
+        "description": "The uri of the key."
+      },
+      "value": "[reference(resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), parameters('name')).properties.keyUri]"
+    },
+    "keyUriWithVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "The uri with version of the key."
+      },
+      "value": "[reference(resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), parameters('name')).properties.keyUriWithVersion]"
+    },
     "name": {
       "type": "string",
       "metadata": {
