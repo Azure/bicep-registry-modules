@@ -9,11 +9,14 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Required. The SKU of the Service Bus Namespace.')
-param skuObject skuType
+@description('Required. The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default.')
+param skuObject skuType = {
+  name: 'Premium'
+  capacity: 2
+}
 
-@description('Optional. Enabling this property creates a Premium Service Bus Namespace in regions supported availability zones.')
-param zoneRedundant bool = false
+@description('Optional. Enabled by default in order to align with resiliency best practices, thus requires Premium SKU.')
+param zoneRedundant bool = true
 
 @allowed([
   '1.0'
