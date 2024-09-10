@@ -11,8 +11,8 @@ param location string = resourceGroup().location
 @description('Optional. Specifies the name of the Public IP used by the Virtual Network Gateway. If it\'s not provided, a \'-pip\' suffix will be appended to the gateway\'s name.')
 param gatewayPipName string = '${name}-pip1'
 
-@description('Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip\' suffix will be appended to the gateway\'s name.')
-param activeGatewayPipName string = '${name}-pip2'
+// @description('Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip\' suffix will be appended to the gateway\'s name.')
+// param activeGatewayPipName string = '${name}-pip2'
 
 @description('Optional. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix.')
 param publicIPPrefixResourceId string = ''
@@ -146,7 +146,7 @@ var isActiveActiveValid = gatewayType != 'ExpressRoute' ? activeActive : false
 var virtualGatewayPipNameVar = isActiveActiveValid
   ? [
       gatewayPipName
-      activeGatewayPipName
+      bgpSettings.activeGatewayPipName
     ]
   : [
       gatewayPipName
@@ -159,7 +159,7 @@ var vpnTypeVar = gatewayType != 'ExpressRoute' ? vpnType : 'PolicyBased'
 // Potential configurations (active-active vs active-passive)
 var bgpSettingsVar = bgpSettings.?activeActive == 'false'
   ? {
-      asn: bgpSettings.?asn ?? 65815
+      asn: bgpSettings.?asn ?? 65515
       bgpPeeringAddresses: [
         {
           customBgpIpAddresses: bgpSettings.?customBgpIpAddresses
@@ -168,7 +168,7 @@ var bgpSettingsVar = bgpSettings.?activeActive == 'false'
       ]
     }
   : {
-      asn: bgpSettings.?asn ?? 65815
+      asn: bgpSettings.?asn ?? 65515
       bgpPeeringAddresses: [
         {
           customBgpIpAddresses: bgpSettings.?customBgpIpAddresses
@@ -205,7 +205,7 @@ var ipConfiguration = isActiveActiveValid
           }
           publicIPAddress: {
             id: isActiveActiveValid
-              ? az.resourceId('Microsoft.Network/publicIPAddresses', activeGatewayPipName)
+              ? az.resourceId('Microsoft.Network/publicIPAddresses', bgpSettings.activeGatewayPipName)
               : az.resourceId('Microsoft.Network/publicIPAddresses', gatewayPipName)
           }
         }
@@ -545,20 +545,61 @@ type diagnosticSettingType = {
   marketplacePartnerResourceId: string?
 }[]?
 
-type bgpSingleApipaType = {
-  activeActive: 'false'
+// type bgpSingleApipaType = {
+//   activeActive: 'false'
   
+//   @description('Optional. The Autonomous System Number value.')
+//   @minValue(0)
+//   @maxValue(4294967295)
+//   asn: int? 
+
+//   @description('Optional. The list of custom BGP Address (APIPA) peering addresses which belong to IP configuration.')
+//   customBgpIpAddresses: string[]?
+// }
+
+// type bgpDoubleApipaType = {
+//   activeActive: 'true'
+  
+//   @description('Optional. The Autonomous System Number value.')
+//   @minValue(0)
+//   @maxValue(4294967295)
+//   asn: int? 
+
+//   @description('Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
+//   customBgpIpAddresses: string[]?
+  
+//   @description('Optional. The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
+//   secondCustomBgpIpAddresses: string[]?
+// }
+
+type activeActiveNoBGPType = {
+  activeActiveBGPMode: 'activeActiveNoBGP'
+
+  @description('Required. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip\' suffix will be appended to the gateway\'s name.')
+  activeGatewayPipName: string
+
+}
+
+type activePassiveBGPType = {
+  activeActiveBGPMode: 'activePassiveBGP'
+
+  @description('Required. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip\' suffix will be appended to the gateway\'s name.')
+  activeGatewayPipName: string
+
   @description('Optional. The Autonomous System Number value.')
   @minValue(0)
   @maxValue(4294967295)
   asn: int? 
 
-  @description('Optional. The list of custom BGP Address (APIPA) peering addresses which belong to IP configuration.')
+  @description('Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
   customBgpIpAddresses: string[]?
 }
 
-type bgpDoubleApipaType = {
-  activeActive: 'true'
+type activeActiveBGPType = {
+  activeActiveBGPMode: 'activeActiveBGP'
+
+  @description('Required. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip\' suffix will be appended to the gateway\'s name.')
+  activeGatewayPipName: string
   
   @description('Optional. The Autonomous System Number value.')
   @minValue(0)
@@ -572,7 +613,7 @@ type bgpDoubleApipaType = {
   secondCustomBgpIpAddresses: string[]?
 }
 
-@discriminator('activeActive')
-type bgpSettingType = bgpSingleApipaType | bgpDoubleApipaType
+@discriminator('activeActiveBGPMode')
+type bgpSettingType = activeActiveNoBGPType | activeActiveBGPType | activePassiveBGPType
 
 

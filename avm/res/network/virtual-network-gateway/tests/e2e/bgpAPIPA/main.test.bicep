@@ -59,10 +59,10 @@ module testDeployment '../../../main.bicep' = [
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
       activeActive:false
       bgpSettings: {
-        activeActive: 'false'
-        customBgpIpAddresses: ['169.254.21.4','169.254.21.5']
-        asn: 65515
+        activeActiveBGPMode: 'activeActiveBGP'
+        activeGatewayPipName: '${namePrefix}-pip-${serviceShort}-active' 
       }
+
       domainNameLabel: [
         '${namePrefix}-dm-${serviceShort}'
       ]
