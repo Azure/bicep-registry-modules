@@ -11,6 +11,9 @@ metadata description = 'This instance deploys the module saving its secrets in a
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-documentdb.databaseaccounts-${serviceShort}-rg'
 
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
+
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'dddaskvs'
 
@@ -21,24 +24,20 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param password string = newGuid()
 
-// Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'eastasia'
-
 // ============== //
 // General resources
 // ============== //
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
-    location: enforcedLocation
+    location: resourceLocation
   }
 }
 
@@ -48,9 +47,9 @@ module nestedDependencies 'dependencies.bicep' = {
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    location: enforcedLocation
+    location: resourceLocation
     name: '${namePrefix}-kv-ref'
     secretsExportConfiguration: {
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId

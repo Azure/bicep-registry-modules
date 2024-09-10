@@ -201,7 +201,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     // Required parameters
     administratorLogin: 'Admin003'
     administratorLoginPassword: '<administratorLoginPassword>'
-    name: 'ddmcdefmax001'
+    name: 'ddmcmax001'
     nodeCount: 2
     sku: 'M30'
     storage: 256
@@ -305,7 +305,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
       "value": "<administratorLoginPassword>"
     },
     "name": {
-      "value": "ddmcdefmax001"
+      "value": "ddmcmax001"
     },
     "nodeCount": {
       "value": 2
