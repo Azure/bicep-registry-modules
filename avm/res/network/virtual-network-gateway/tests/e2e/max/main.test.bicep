@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.virtualnetworkgatewa
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nvgmwaf'
+param serviceShort string = 'nvgmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -37,6 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     localNetworkGatewayName: 'dep-${namePrefix}-lng-${serviceShort}'
   }
 }
@@ -54,6 +55,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
     location: resourceLocation
   }
 }
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -70,12 +72,9 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'VpnGw2AZ'
       gatewayType: 'Vpn'
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
-      activeActiveBgpSettings: {
-        activeActiveBGPMode:'activeActiveBGP'
+      activeActiveBgpSettings:{
+        activeActiveBGPMode: 'activeActiveBGP'
         activeGatewayPipName: '${namePrefix}${serviceShort}001-pip2'
-        customBgpIpAddresses: ['169.254.21.4','169.254.21.5']
-        secondCustomBgpIpAddresses:  ['169.254.22.4','169.254.22.5']
-        asn: 65515
       }
       diagnosticSettings: [
         {
@@ -102,6 +101,26 @@ module testDeployment '../../../main.bicep' = [
         1
         2
         3
+      ]
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
       ]
       vpnType: 'RouteBased'
       tags: {

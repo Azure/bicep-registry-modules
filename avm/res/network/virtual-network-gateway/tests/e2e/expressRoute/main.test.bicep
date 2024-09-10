@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'ExpressRoute'
+metadata description = 'This instance deploys the module with the ExpressRoute set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.virtualnetworkgatewa
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nvgmin'
+param serviceShort string = 'nvger'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -26,7 +26,6 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: resourceLocation
@@ -38,7 +37,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    localNetworkGatewayName: 'dep-${namePrefix}-lng-${serviceShort}'
   }
 }
 
@@ -54,17 +52,22 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      skuName: 'VpnGw2AZ'
-      gatewayType: 'Vpn'
+      skuName: 'ErGw1AZ'
+      gatewayType: 'ExpressRoute'
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
+      activeActiveBgpSettings:{
+        activeActiveBGPMode: 'activeActiveBGP'
+        activeGatewayPipName: '${namePrefix}${serviceShort}001-pip2'
+      }
+      domainNameLabel: [
+        '${namePrefix}-dm-${serviceShort}'
+      ]
+      gatewayPipName: '${namePrefix}-pip-${serviceShort}'
       publicIpZones: [
         1
         2
         3
       ]
-      activeActiveBgpSettings: {
-        activeActiveBGPMode:'activePassiveNoBGP'
-      }
     }
     dependsOn: [
       nestedDependencies
