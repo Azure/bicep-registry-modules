@@ -24,7 +24,7 @@ param location string = resourceGroup().location
 })
 param tags object?
 
-@sys.description('Optional. Specifies the SKU, also referred as \'edition\' of the Azure Machine Learning workspace.')
+@description('Optional. Specifies the SKU, also referred as \'edition\' of the Azure Machine Learning workspace.')
 @allowed([
   'Free'
   'Basic'
@@ -33,7 +33,7 @@ param tags object?
 ])
 param projectSku string = 'Basic'
 
-@sys.description('Optional. The type of Azure Machine Learning workspace to create.')
+@description('Optional. The type of Azure Machine Learning workspace to create.')
 @allowed([
   'Default'
   'Project'
@@ -52,10 +52,10 @@ param hbiWorkspace bool = false
 ])
 param publicNetworkAccess string = 'Enabled'
 
-@description('Required. The name of the AI Studio Hub Resource where this project should be created.')
-param hubName string
+@description('Required. The resource ID of the AI Studio Hub Resource where this project should be created.')
+param hubResourceId string
 
-@description('Required. Name of the key vault.')
+@description('Required. The name of the key vault.')
 param keyVaultName string
 
 @description('Optional. The managed identity definition for the machine learning resource. At least one identity type is required.')
@@ -63,7 +63,7 @@ param projectManagedIdentities managedIdentitiesType = {
   systemAssigned: true
 }
 
-@description('Required. Name of the user assigned identity.')
+@description('Required. The name of the user assigned identity.')
 param userAssignedtName string
 
 @description('Optional. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
@@ -105,7 +105,7 @@ module project 'br/public:avm/res/machine-learning-services/workspace:0.7.0' = {
     managedIdentities: projectManagedIdentities
     hbiWorkspace: hbiWorkspace
     publicNetworkAccess: publicNetworkAccess
-    hubResourceId: hub.id
+    hubResourceId: hubResourceId
   }
 }
 
@@ -135,10 +135,6 @@ module mlServiceRoleAssigned 'br/public:avm/res/managed-identity/user-assigned-i
       }
     ]
   }
-}
-
-resource hub 'Microsoft.MachineLearningServices/workspaces@2024-01-01-preview' existing = {
-  name: hubName
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {

@@ -35,7 +35,9 @@ module dependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-dependencies'
   scope: resourceGroup
   params: {
-    name: 'dep-${namePrefix}-hub-${serviceShort}'
+    hubName: '${namePrefix}${serviceShort}hub001'
+    keyVaultName: '${namePrefix}${serviceShort}kv001'
+    storageAccountName: '${namePrefix}${serviceShort}sa001'
   }
 }
 
@@ -51,9 +53,9 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      hubName: '${namePrefix}${serviceShort}hub001'
-      keyVaultName: '${namePrefix}${serviceShort}kv001'
+      keyVaultName: dependencies.outputs.keyVaultName
       userAssignedtName: '${namePrefix}${serviceShort}uai001'
+      hubResourceId: dependencies.outputs.hubResourceId
     }
   }
 ]

@@ -56,8 +56,8 @@ module mlProject 'br/public:avm/ptn/azd/ml-project:<version>' = {
   name: 'mlProjectDeployment'
   params: {
     // Required parameters
-    hubName: 'mlpminhub001'
-    keyVaultName: 'mlpminkv001'
+    hubResourceId: '<hubResourceId>'
+    keyVaultName: '<keyVaultName>'
     name: 'mlpmin001'
     userAssignedtName: 'mlpminuai001'
     // Non-required parameters
@@ -79,11 +79,11 @@ module mlProject 'br/public:avm/ptn/azd/ml-project:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "hubName": {
-      "value": "mlpminhub001"
+    "hubResourceId": {
+      "value": "<hubResourceId>"
     },
     "keyVaultName": {
-      "value": "mlpminkv001"
+      "value": "<keyVaultName>"
     },
     "name": {
       "value": "mlpmin001"
@@ -108,10 +108,10 @@ module mlProject 'br/public:avm/ptn/azd/ml-project:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`hubName`](#parameter-hubname) | string | The name of the AI Studio Hub Resource where this project should be created. |
-| [`keyVaultName`](#parameter-keyvaultname) | string | Name of the key vault. |
+| [`hubResourceId`](#parameter-hubresourceid) | string | The resource ID of the AI Studio Hub Resource where this project should be created. |
+| [`keyVaultName`](#parameter-keyvaultname) | string | The name of the key vault. |
 | [`name`](#parameter-name) | string | The name of the machine learning workspace. |
-| [`userAssignedtName`](#parameter-userassignedtname) | string | Name of the user assigned identity. |
+| [`userAssignedtName`](#parameter-userassignedtname) | string | The name of the user assigned identity. |
 
 **Optional parameters**
 
@@ -127,16 +127,16 @@ module mlProject 'br/public:avm/ptn/azd/ml-project:<version>' = {
 | [`roleDefinitionIdOrName`](#parameter-roledefinitionidorname) | array | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
-### Parameter: `hubName`
+### Parameter: `hubResourceId`
 
-The name of the AI Studio Hub Resource where this project should be created.
+The resource ID of the AI Studio Hub Resource where this project should be created.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `keyVaultName`
 
-Name of the key vault.
+The name of the key vault.
 
 - Required: Yes
 - Type: string
@@ -150,7 +150,7 @@ The name of the machine learning workspace.
 
 ### Parameter: `userAssignedtName`
 
-Name of the user assigned identity.
+The name of the user assigned identity.
 
 - Required: Yes
 - Type: string

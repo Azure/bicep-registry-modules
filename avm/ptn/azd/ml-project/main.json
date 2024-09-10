@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "4991331511004701920"
+      "templateHash": "6769328970490435151"
     },
     "name": "Machine Learning workspace",
     "description": "Create a machine learning workspace, configure the key vault access policy and assign role permissions to the machine learning instance.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
@@ -109,16 +109,16 @@
         "description": "Optional. Whether or not public network access is allowed for this machine learning resource. For security reasons it should be disabled."
       }
     },
-    "hubName": {
+    "hubResourceId": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the AI Studio Hub Resource where this project should be created."
+        "description": "Required. The resource ID of the AI Studio Hub Resource where this project should be created."
       }
     },
     "keyVaultName": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the key vault."
+        "description": "Required. The name of the key vault."
       }
     },
     "projectManagedIdentities": {
@@ -133,7 +133,7 @@
     "userAssignedtName": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the user assigned identity."
+        "description": "Required. The name of the user assigned identity."
       }
     },
     "roleDefinitionIdOrName": {
@@ -167,12 +167,6 @@
           }
         }
       }
-    },
-    "hub": {
-      "existing": true,
-      "type": "Microsoft.MachineLearningServices/workspaces",
-      "apiVersion": "2024-01-01-preview",
-      "name": "[parameters('hubName')]"
     },
     "keyVault": {
       "existing": true,
@@ -212,7 +206,7 @@
             "value": "[parameters('publicNetworkAccess')]"
           },
           "hubResourceId": {
-            "value": "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('hubName'))]"
+            "value": "[parameters('hubResourceId')]"
           }
         },
         "template": {
@@ -3980,10 +3974,7 @@
             }
           }
         }
-      },
-      "dependsOn": [
-        "hub"
-      ]
+      }
     },
     "keyVaultAccess": {
       "type": "Microsoft.Resources/deployments",
