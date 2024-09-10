@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the parent virtual network. Required if the template is used in a standalone deployment.')
 param name string
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' existing = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-01-01' existing = {
   name: name
 }
 
