@@ -571,6 +571,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           scaleUnits: 2
           skuName: 'Standard'
         }
+        ddosProtectionPlanResourceId: ''
         diagnosticSettings: [
           {
             eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -690,6 +691,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "scaleUnits": 2,
             "skuName": "Standard"
           },
+          "ddosProtectionPlanResourceId": "",
           "diagnosticSettings": [
             {
               "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
