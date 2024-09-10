@@ -18,15 +18,6 @@ Creates a container app in an Azure Container App environment.
 | `Microsoft.App/containerApps` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-03-01/containerApps) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries) |
-| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
-| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/credentialSets) |
-| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
-| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/scopeMaps) |
-| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -52,8 +43,8 @@ module containerApp 'br/public:avm/ptn/azd/container-app:<version>' = {
   name: 'containerAppDeployment'
   params: {
     // Required parameters
-    containerAppName: 'acamin001'
     containerAppsEnvironmentName: '<containerAppsEnvironmentName>'
+    name: 'acamin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -73,11 +64,11 @@ module containerApp 'br/public:avm/ptn/azd/container-app:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "containerAppName": {
-      "value": "acamin001"
-    },
     "containerAppsEnvironmentName": {
       "value": "<containerAppsEnvironmentName>"
+    },
+    "name": {
+      "value": "acamin001"
     },
     // Non-required parameters
     "location": {
@@ -96,8 +87,8 @@ module containerApp 'br/public:avm/ptn/azd/container-app:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`containerAppName`](#parameter-containerappname) | string | The name of the Container App. |
 | [`containerAppsEnvironmentName`](#parameter-containerappsenvironmentname) | string | Name of the environment for container apps. |
+| [`name`](#parameter-name) | string | The name of the Container App. |
 
 **Optional parameters**
 
@@ -133,18 +124,18 @@ module containerApp 'br/public:avm/ptn/azd/container-app:<version>' = {
 | [`serviceType`](#parameter-servicetype) | string | The name of the container apps add-on to use. e.g. redis. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`targetPort`](#parameter-targetport) | int | The target port for the container. |
-| [`userIdentityId`](#parameter-useridentityid) | string | The id of the user identity. |
-
-### Parameter: `containerAppName`
-
-The name of the Container App.
-
-- Required: Yes
-- Type: string
+| [`userAssignedIdentityResourceId`](#parameter-userassignedidentityresourceid) | string | The resource id of the user-assigned identity. |
 
 ### Parameter: `containerAppsEnvironmentName`
 
 Name of the environment for container apps.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `name`
+
+The name of the Container App.
 
 - Required: Yes
 - Type: string
@@ -258,7 +249,40 @@ The environment variables for the container.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-envname) | string | Environment variable name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`secretRef`](#parameter-envsecretref) | string | Name of the Container App secret from which to pull the environment variable value. |
+| [`value`](#parameter-envvalue) | string | Non-secret environment variable value. |
+
+### Parameter: `env.name`
+
+Environment variable name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `env.secretRef`
+
+Name of the Container App secret from which to pull the environment variable value.
+
+- Required: No
+- Type: string
+
+### Parameter: `env.value`
+
+Non-secret environment variable value.
+
+- Required: No
+- Type: string
 
 ### Parameter: `external`
 
@@ -419,9 +443,9 @@ The target port for the container.
 - Type: int
 - Default: `80`
 
-### Parameter: `userIdentityId`
+### Parameter: `userAssignedIdentityResourceId`
 
-The id of the user identity.
+The resource id of the user-assigned identity.
 
 - Required: No
 - Type: string
@@ -431,11 +455,12 @@ The id of the user identity.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `containerAppName` | string | The name of the Container App. |
 | `defaultDomain` | string | The Default domain of the Managed Environment. |
 | `identityPrincipalId` | string | The principal ID of the identity. |
 | `imageName` | string | The name of the container image. |
+| `name` | string | The name of the Container App. |
 | `resourceGroupName` | string | The name of the resource group the Container App was deployed into. |
+| `resourceId` | string | The resource ID of the Container App. |
 | `serviceBind` | object | The service binds associated with the container. |
 | `uri` | string | The uri of the Container App. |
 
@@ -445,8 +470,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.1` | Remote reference |
 | `br/public:avm/res/app/container-app:0.10.0` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.4.0` | Remote reference |
 
 ## Data Collection
 

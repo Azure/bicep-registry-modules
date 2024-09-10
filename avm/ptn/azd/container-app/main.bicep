@@ -3,7 +3,7 @@ metadata description = 'Creates a container app in an Azure Container App enviro
 metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Container App.')
-param containerAppName string
+param name string
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -50,7 +50,7 @@ param daprAppId string = containerName
 param daprEnabled bool = false
 
 @description('Optional. The environment variables for the container.')
-param env array = []
+param env environmentVar[]?
 
 @description('Optional. Specifies if the resource ingress is exposed externally.')
 param external bool = true
@@ -109,8 +109,8 @@ param includeAddOns bool = false
 @description('Optional. The principal ID of the principal to assign the role to.')
 param principalId string = ''
 
-@description('Optional. The id of the user identity.')
-param userIdentityId string = ''
+@description('Optional. The resource id of the user-assigned identity.')
+param userAssignedIdentityResourceId string = ''
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -143,11 +143,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 module containerApp 'br/public:avm/res/app/container-app:0.10.0' = {
   name: '${uniqueString(deployment().name, location)}-container-app'
   params: {
-    name: containerAppName
+    name: name
     location: location
     tags: tags
     managedIdentities: !empty(identityName) && normalizedIdentityType == 'UserAssigned'
-      ? { userAssignedResourceIds: [userIdentityId] }
+      ? { userAssignedResourceIds: [userAssignedIdentityResourceId] }
       : { systemAssigned: normalizedIdentityType == 'SystemAssigned' }
     environmentResourceId: containerAppsEnvironment.id
     activeRevisionsMode: revisionMode
@@ -175,7 +175,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.10.0' = {
       ? [
           {
             server: '${containerRegistryName}.${containerRegistryHostSuffix}'
-            identity: userIdentityId
+            identity: userAssignedIdentityResourceId
           }
         ]
       : []
@@ -200,7 +200,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.10.0' = {
 module containerRegistryAccess 'modules/registry-access.bicep' = if (usePrivateRegistry) {
   name: '${uniqueString(deployment().name, location)}-registry-access'
   params: {
-    name: containerRegistryName
+    containerRegistryName: containerRegistryName
     principalId: usePrivateRegistry ? principalId : ''
   }
 }
@@ -224,7 +224,7 @@ output identityPrincipalId string = normalizedIdentityType == 'None'
 output imageName string = imageName
 
 @description('The name of the Container App.')
-output containerAppName string = containerApp.outputs.name
+output name string = containerApp.outputs.name
 
 @description('The service binds associated with the container.')
 output serviceBind object = !empty(serviceType)
@@ -233,3 +233,17 @@ output serviceBind object = !empty(serviceType)
 
 @description('The uri of the Container App.')
 output uri string = ingressEnabled ? 'https://${containerApp.outputs.fqdn}' : ''
+
+@description('The resource ID of the Container App.')
+output resourceId string = containerApp.outputs.resourceId
+
+type environmentVar = {
+  @description('Required. Environment variable name.')
+  name: string
+
+  @description('Optional. Name of the Container App secret from which to pull the environment variable value.')
+  secretRef: string?
+
+  @description('Optional. Non-secret environment variable value.')
+  value: string?
+}

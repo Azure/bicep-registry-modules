@@ -3,7 +3,7 @@ metadata description = 'Assigns ACR Pull permissions to access an Azure Containe
 metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the container registry.')
-param name string
+param containerRegistryName string
 
 @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
 param principalId string
@@ -13,16 +13,16 @@ var acrPullRole = subscriptionResourceId(
   '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 )
 
-module aksAcrPull 'br/public:avm/res/container-registry/registry:0.4.0' = {
+module aksAcrPull 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.1' = {
   name: 'acrpullrole-deployment'
   params: {
-    name: name
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: acrPullRole
-        principalType: 'ServicePrincipal'
-        principalId: principalId
-      }
-    ]
+    principalId: principalId
+    resourceId: containerRegistry.id
+    roleDefinitionId: acrPullRole
+    principalType: 'ServicePrincipal'
   }
+}
+
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' existing = {
+  name: containerRegistryName
 }
