@@ -207,6 +207,20 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     storage: 256
     // Non-required parameters
     createMode: 'Default'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     highAvailabilityMode: false
     location: '<location>'
     networkAcls: {
@@ -214,13 +228,59 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
       allowAzureIPs: true
       customRules: [
         {
-          endIpAddress: '0.0.0.0'
+          endIpAddress: '5.6.7.8'
           firewallRuleName: 'allow-1.2.3.4-to-5.6.7.8'
-          startIpAddress: '255.255.255.254'
+          startIpAddress: '1.2.3.4'
         }
       ]
     }
     nodeType: 'Shard'
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    roleAssignments: [
+      {
+        name: '60395919-cfd3-47bf-8349-775ddebb255e'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
   }
 }
 ```
@@ -260,6 +320,22 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     "createMode": {
       "value": "Default"
     },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "highAvailabilityMode": {
       "value": false
     },
@@ -272,15 +348,65 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
         "allowAzureIPs": true,
         "customRules": [
           {
-            "endIpAddress": "0.0.0.0",
+            "endIpAddress": "5.6.7.8",
             "firewallRuleName": "allow-1.2.3.4-to-5.6.7.8",
-            "startIpAddress": "255.255.255.254"
+            "startIpAddress": "1.2.3.4"
           }
         ]
       }
     },
     "nodeType": {
       "value": "Shard"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "60395919-cfd3-47bf-8349-775ddebb255e",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
     }
   }
 }
@@ -703,7 +829,6 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -724,14 +849,8 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
-
-### Parameter: `privateEndpoints.service`
-
-The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -1080,6 +1199,13 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `privateEndpoints.service`
+
+The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".
+
+- Required: No
+- Type: string
+
 ### Parameter: `privateEndpoints.tags`
 
 Tags to be applied on all resources/resource groups in this deployment.
@@ -1201,7 +1327,7 @@ Key vault reference and secret settings for the module's secrets export.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`connectionStringSecretName`](#parameter-secretsexportconfigurationconnectionstringsecretname) | string | The primary write connection string secret name to create. |
+| [`connectionStringSecretName`](#parameter-secretsexportconfigurationconnectionstringsecretname) | string | The name to use when creating the primary write connection string secret. |
 
 ### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
@@ -1212,7 +1338,7 @@ The resource ID of the key vault where to store the secrets of this module.
 
 ### Parameter: `secretsExportConfiguration.connectionStringSecretName`
 
-The primary write connection string secret name to create.
+The name to use when creating the primary write connection string secret.
 
 - Required: No
 - Type: string

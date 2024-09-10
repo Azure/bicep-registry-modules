@@ -35,6 +35,31 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    location: resourceLocation
+    managedIdentityName: 'dep-${namePrefix}-msi-ds-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+  }
+}
+
+// Diagnostics
+// ===========
+module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  params: {
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
+    location: resourceLocation
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -49,23 +74,90 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       administratorLogin: 'Admin003'
       administratorLoginPassword: password
-      nodeCount: 2
-      sku: 'M30'
-      storage: 256
       createMode: 'Default'
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
       highAvailabilityMode: false
-      nodeType: 'Shard'
       networkAcls: {
         customRules: [
           {
             firewallRuleName: 'allow-1.2.3.4-to-5.6.7.8'
-            endIpAddress: '0.0.0.0'
-            startIpAddress: '255.255.255.254'
+            endIpAddress: '5.6.7.8'
+            startIpAddress: '1.2.3.4'
           }
         ]
         allowAzureIPs: true
         allowAllIPs: true
       }
+      nodeCount: 2
+      nodeType: 'Shard'
+      privateEndpoints: [
+        {
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
+        }
+        {
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
+        }
+      ]
+      roleAssignments: [
+        {
+          name: '60395919-cfd3-47bf-8349-775ddebb255e'
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      sku: 'M30'
+      storage: 256
     }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
+    ]
   }
 ]

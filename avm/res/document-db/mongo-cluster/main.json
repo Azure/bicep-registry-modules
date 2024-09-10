@@ -5,14 +5,176 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "10240819741152451982"
+      "version": "0.27.1.19265",
+      "templateHash": "16039670595397968634"
     },
     "name": "DocumentDB Mongo Clusters",
     "description": "This module deploys a DocumentDB Mongo Cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "diagnosticSettingType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of diagnostic setting."
+            }
+          },
+          "logCategoriesAndGroups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                  }
+                },
+                "categoryGroup": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+            }
+          },
+          "metricCategories": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+            }
+          },
+          "logAnalyticsDestinationType": {
+            "type": "string",
+            "allowedValues": [
+              "AzureDiagnostics",
+              "Dedicated"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+            }
+          },
+          "workspaceResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "storageAccountResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "eventHubAuthorizationRuleResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+            }
+          },
+          "eventHubName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "marketplacePartnerResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "firewallSetType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The name of the created firewall rule."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource ID of the created firewall rule."
+          }
+        }
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
     "networkAclsType": {
       "type": "object",
       "properties": {
@@ -64,139 +226,6 @@
         }
       }
     },
-    "firewallSetType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "The name of the created firewall rule."
-          }
-        },
-        "resourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "The resource ID of the created firewall rule."
-          }
-        }
-      }
-    },
-    "secretsExportConfigurationType": {
-      "type": "object",
-      "properties": {
-        "keyVaultResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource ID of the key vault where to store the secrets of this module."
-          }
-        },
-        "connectionStringSecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The primary write connection string secret name to create."
-          }
-        }
-      }
-    },
-    "lockType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the name of lock."
-          }
-        },
-        "kind": {
-          "type": "string",
-          "allowedValues": [
-            "CanNotDelete",
-            "None",
-            "ReadOnly"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the type of lock."
-          }
-        }
-      },
-      "nullable": true
-    },
-    "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
     "privateEndpointType": {
       "type": "array",
       "items": {
@@ -225,8 +254,9 @@
           },
           "service": {
             "type": "string",
+            "nullable": true,
             "metadata": {
-              "description": "Required. The subresource to deploy the private endpoint for. For example \"blob\", \"table\", \"queue\" or \"file\"."
+              "description": "Optional. The subresource to deploy the private endpoint for. For example \"vault\", \"mysqlServer\" or \"dataFactory\"."
             }
           },
           "subnetResourceId": {
@@ -416,7 +446,7 @@
       },
       "nullable": true
     },
-    "diagnosticSettingType": {
+    "roleAssignmentType": {
       "type": "array",
       "items": {
         "type": "object",
@@ -425,116 +455,87 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of diagnostic setting."
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
             }
           },
-          "logCategoriesAndGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                  }
-                },
-                "categoryGroup": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
+          "roleDefinitionIdOrName": {
+            "type": "string",
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
             }
           },
-          "metricCategories": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
+          "principalId": {
+            "type": "string",
             "metadata": {
-              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
             }
           },
-          "logAnalyticsDestinationType": {
+          "principalType": {
             "type": "string",
             "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
+              "Device",
+              "ForeignGroup",
+              "Group",
+              "ServicePrincipal",
+              "User"
             ],
             "nullable": true,
             "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+              "description": "Optional. The principal type of the assigned principal ID."
             }
           },
-          "workspaceResourceId": {
+          "description": {
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+              "description": "Optional. The description of the role assignment."
             }
           },
-          "storageAccountResourceId": {
+          "condition": {
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
             }
           },
-          "eventHubAuthorizationRuleResourceId": {
+          "conditionVersion": {
+            "type": "string",
+            "allowedValues": [
+              "2.0"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Version of the condition."
+            }
+          },
+          "delegatedManagedIdentityResourceId": {
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+              "description": "Optional. The Resource Id of the delegated managed identity resource."
             }
           }
         }
       },
       "nullable": true
+    },
+    "secretsExportConfigurationType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the key vault where to store the secrets of this module."
+          }
+        },
+        "connectionStringSecretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name to use when creating the primary write connection string secret."
+          }
+        }
+      }
     },
     "secretsOutputType": {
       "type": "object",
@@ -611,6 +612,12 @@
         "description": "Optional. Mode to create the mongo cluster."
       }
     },
+    "diagnosticSettings": {
+      "$ref": "#/definitions/diagnosticSettingType",
+      "metadata": {
+        "description": "Optional. The diagnostic settings of the service."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -623,6 +630,19 @@
       "defaultValue": false,
       "metadata": {
         "description": "Optional. Whether high availability is enabled on the node group."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "networkAcls": {
+      "$ref": "#/definitions/networkAclsType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. IP addresses to allow access to the cluster from."
       }
     },
     "nodeCount": {
@@ -638,6 +658,25 @@
         "description": "Optional. Deployed Node type in the node group."
       }
     },
+    "privateEndpoints": {
+      "$ref": "#/definitions/privateEndpointType",
+      "metadata": {
+        "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
+      }
+    },
+    "roleAssignments": {
+      "$ref": "#/definitions/roleAssignmentType",
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "secretsExportConfiguration": {
+      "$ref": "#/definitions/secretsExportConfigurationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Key vault reference and secret settings for the module's secrets export."
+      }
+    },
     "sku": {
       "type": "string",
       "metadata": {
@@ -648,44 +687,6 @@
       "type": "int",
       "metadata": {
         "description": "Required. Disk storage size for the node group in GB."
-      }
-    },
-    "networkAcls": {
-      "$ref": "#/definitions/networkAclsType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. IP addresses to allow access to the cluster from."
-      }
-    },
-    "secretsExportConfiguration": {
-      "$ref": "#/definitions/secretsExportConfigurationType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Key vault reference and secret settings for the module's secrets export."
-      }
-    },
-    "privateEndpoints": {
-      "$ref": "#/definitions/privateEndpointType",
-      "metadata": {
-        "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
-      }
-    },
-    "lock": {
-      "$ref": "#/definitions/lockType",
-      "metadata": {
-        "description": "Optional. The lock settings of the service."
-      }
-    },
-    "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
-      "metadata": {
-        "description": "Optional. The diagnostic settings of the service."
-      }
-    },
-    "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
-      "metadata": {
-        "description": "Optional. Array of role assignments to create."
       }
     }
   },
@@ -699,16 +700,6 @@
     ],
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-      "Key Vault Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
-      "Key Vault Certificates Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a4417e6f-fecd-4de8-b567-7b0420556985')]",
-      "Key Vault Certificate User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db79e9a7-68ee-4b58-9aeb-b90e7c24fcba')]",
-      "Key Vault Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f25e0fa2-a7c8-4377-a976-54943a77a395')]",
-      "Key Vault Crypto Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '14b46e9e-c2b7-41b4-b07b-48a6ebf60603')]",
-      "Key Vault Crypto Service Encryption User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e147488a-f6f5-4113-8e2d-b22465e65bf6')]",
-      "Key Vault Crypto User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424')]",
-      "Key Vault Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '21090545-7ca7-4776-b22c-e363652d74d2')]",
-      "Key Vault Secrets Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')]",
-      "Key Vault Secrets User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
@@ -854,8 +845,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "11328804906323315999"
+              "version": "0.27.1.19265",
+              "templateHash": "17488832106654361029"
             },
             "name": "DocumentDB Mongo Clusters Config FireWall Rules",
             "description": "This module config firewall rules for DocumentDB Mongo Cluster.",
@@ -954,8 +945,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "10996761830880776715"
+              "version": "0.27.1.19265",
+              "templateHash": "956281147068451461"
             }
           },
           "definitions": {
@@ -1077,10 +1068,10 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.DocumentDB/mongoClusters', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.DocumentDB/mongoClusters', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'mongoCluster'), copyIndex()))]"
           },
-          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.DocumentDB/mongoClusters', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.DocumentDB/mongoClusters', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service))))), createObject('value', null()))]",
-          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.DocumentDB/mongoClusters', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.DocumentDB/mongoClusters', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.DocumentDB/mongoClusters', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'mongoCluster'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.DocumentDB/mongoClusters', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'mongoCluster')))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.DocumentDB/mongoClusters', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'mongoCluster'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.DocumentDB/mongoClusters', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'mongoCluster')), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
