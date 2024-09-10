@@ -133,7 +133,7 @@ var zones = [for zone in publicIpZones: string(zone)]
 
 var gatewayPipAllocationMethod = skuName == 'Basic' ? 'Dynamic' : 'Static'
 
-var activeActive = activeActiveBgpSettings.activeActiveBGPMode == 'activeActiveNoBGP' || activeActiveBgpSettings.activeActiveBGPMode == 'activeActiveBGP'
+var activeActive = activeActiveBgpSettings.activeActiveBGPMode == 'activeActiveNoBGP' || activeActiveBgpSettings.activeActiveBGPMode == 'activeActiveBGP' ? true : false 
 
 var isActiveActiveValid = gatewayType != 'ExpressRoute' ? activeActive : false
 var virtualGatewayPipNameVar = isActiveActiveValid
