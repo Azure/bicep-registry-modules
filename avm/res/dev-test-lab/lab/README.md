@@ -8,7 +8,6 @@ This module deploys a DevTest Lab.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -150,6 +149,8 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
       target: 450
       thresholdValue100DisplayOnChart: 'Enabled'
       thresholdValue100SendNotificationWhenExceeded: 'Enabled'
+      thresholdValue125DisplayOnChart: 'Disabled'
+      thresholdValue75DisplayOnChart: 'Enabled'
     }
     disableAutoUpgradeCseMinorVersion: true
     encryptionDiskEncryptionSetId: '<encryptionDiskEncryptionSetId>'
@@ -321,6 +322,11 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
             labSubnetName: '<labSubnetName>'
             resourceId: '<resourceId>'
           }
+          {
+            allowPublicIp: 'Deny'
+            labSubnetName: '<labSubnetName>'
+            resourceId: '<resourceId>'
+          }
         ]
         description: 'lab virtual network description'
         externalProviderResourceId: '<externalProviderResourceId>'
@@ -343,6 +349,12 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
             }
             useInVmCreationPermission: 'Allow'
             usePublicIpAddressPermission: 'Allow'
+          }
+          {
+            labSubnetName: '<labSubnetName>'
+            resourceId: '<resourceId>'
+            useInVmCreationPermission: 'Deny'
+            usePublicIpAddressPermission: 'Deny'
           }
         ]
       }
@@ -426,7 +438,9 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
         "status": "Enabled",
         "target": 450,
         "thresholdValue100DisplayOnChart": "Enabled",
-        "thresholdValue100SendNotificationWhenExceeded": "Enabled"
+        "thresholdValue100SendNotificationWhenExceeded": "Enabled",
+        "thresholdValue125DisplayOnChart": "Disabled",
+        "thresholdValue75DisplayOnChart": "Enabled"
       }
     },
     "disableAutoUpgradeCseMinorVersion": {
@@ -635,6 +649,11 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
               "allowPublicIp": "Allow",
               "labSubnetName": "<labSubnetName>",
               "resourceId": "<resourceId>"
+            },
+            {
+              "allowPublicIp": "Deny",
+              "labSubnetName": "<labSubnetName>",
+              "resourceId": "<resourceId>"
             }
           ],
           "description": "lab virtual network description",
@@ -658,6 +677,12 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
               },
               "useInVmCreationPermission": "Allow",
               "usePublicIpAddressPermission": "Allow"
+            },
+            {
+              "labSubnetName": "<labSubnetName>",
+              "resourceId": "<resourceId>",
+              "useInVmCreationPermission": "Deny",
+              "usePublicIpAddressPermission": "Deny"
             }
           ]
         }
@@ -732,7 +757,6 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -2028,7 +2052,7 @@ The resource ID of the subnet.
 
 The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny)).
 
-- Required: Yes
+- Required: No
 - Type: object
 
 **Required parameters**
@@ -2124,7 +2148,6 @@ Resource Group allocation for virtual machines. If left empty, virtual machines 
 - Type: string
 - Default: `[resourceGroup().id]`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -2135,10 +2158,6 @@ Resource Group allocation for virtual machines. If left empty, virtual machines 
 | `resourceId` | string | The resource ID of the lab. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 | `uniqueIdentifier` | string | The unique identifier for the lab. Used to track tags that the lab applies to each resource that it creates. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

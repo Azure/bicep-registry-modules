@@ -8,7 +8,6 @@ This module deploys a Logic App (Workflow).
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -476,7 +475,6 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -980,7 +978,6 @@ The definitions for one or more triggers that instantiate your workflow. You can
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -990,10 +987,6 @@ The definitions for one or more triggers that instantiate your workflow. You can
 | `resourceGroupName` | string | The resource group the logic app was deployed into. |
 | `resourceId` | string | The resource ID of the logic app. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 
