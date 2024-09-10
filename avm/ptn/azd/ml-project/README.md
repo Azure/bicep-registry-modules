@@ -108,7 +108,7 @@ module mlProject 'br/public:avm/ptn/azd/ml-project:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`hubName`](#parameter-hubname) | string | The name of the AI Studio Hub Resource where this project should be created |
+| [`hubName`](#parameter-hubname) | string | The name of the AI Studio Hub Resource where this project should be created. |
 | [`keyVaultName`](#parameter-keyvaultname) | string | Name of the key vault. |
 | [`name`](#parameter-name) | string | The name of the machine learning workspace. |
 | [`userAssignedtName`](#parameter-userassignedtname) | string | Name of the user assigned identity. |
@@ -129,7 +129,7 @@ module mlProject 'br/public:avm/ptn/azd/ml-project:<version>' = {
 
 ### Parameter: `hubName`
 
-The name of the AI Studio Hub Resource where this project should be created
+The name of the AI Studio Hub Resource where this project should be created.
 
 - Required: Yes
 - Type: string

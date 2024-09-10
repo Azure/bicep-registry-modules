@@ -52,7 +52,7 @@ param hbiWorkspace bool = false
 ])
 param publicNetworkAccess string = 'Enabled'
 
-@description('Required. The name of the AI Studio Hub Resource where this project should be created')
+@description('Required. The name of the AI Studio Hub Resource where this project should be created.')
 param hubName string
 
 @description('Required. Name of the key vault.')
