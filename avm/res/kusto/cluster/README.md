@@ -1699,7 +1699,6 @@ The resource ID of the subnet to which to deploy the Kusto Cluster.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `identity` | object | The identity of the cluster. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the kusto cluster. |
 | `privateEndpoints` | array | The private endpoints of the kusto cluster. |
