@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "11221684661225415518"
+      "templateHash": "17393836432150537561"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -642,7 +642,7 @@
         "allowRemoteVnetTraffic": "[parameters('allowRemoteVnetTraffic')]",
         "allowVirtualWanTraffic": "[parameters('allowVirtualWanTraffic')]",
         "enableBgp": "[not(empty(parameters('activeActiveBgpSettings')))]",
-        "activeActiveBgpSettings": "[if(not(empty(parameters('activeActiveBgpSettings'))), variables('bgpSettingsVar'), null())]",
+        "bgpSettings": "[if(not(empty(parameters('activeActiveBgpSettings'))), variables('bgpSettingsVar'), null())]",
         "disableIPSecReplayProtection": "[parameters('disableIPSecReplayProtection')]",
         "enableDnsForwarding": "[if(equals(parameters('gatewayType'), 'ExpressRoute'), parameters('enableDnsForwarding'), null())]",
         "enablePrivateIpAddress": "[parameters('enablePrivateIpAddress')]",
@@ -726,7 +726,7 @@
       "scope": "[format('Microsoft.Network/virtualNetworkGateways/{0}', parameters('name'))]",
       "name": "[guid(resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+        "roleDefinitionId": "[if(coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), contains(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'roleDefinitionIdOrName'), '/providers/Microsoft.Authorization/roleDefinitions/')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName))]",
         "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
         "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
         "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
@@ -1360,11 +1360,21 @@
           "virtualNetworkGatewayName": {
             "value": "[parameters('name')]"
           },
-          "externalMappings": "[if(contains(parameters('natRules')[copyIndex()], 'externalMappings'), createObject('value', parameters('natRules')[copyIndex()].externalMappings), createObject('value', createArray()))]",
-          "internalMappings": "[if(contains(parameters('natRules')[copyIndex()], 'internalMappings'), createObject('value', parameters('natRules')[copyIndex()].internalMappings), createObject('value', createArray()))]",
-          "ipConfigurationId": "[if(contains(parameters('natRules')[copyIndex()], 'ipConfigurationId'), createObject('value', parameters('natRules')[copyIndex()].ipConfigurationId), createObject('value', ''))]",
-          "mode": "[if(contains(parameters('natRules')[copyIndex()], 'mode'), createObject('value', parameters('natRules')[copyIndex()].mode), createObject('value', ''))]",
-          "type": "[if(contains(parameters('natRules')[copyIndex()], 'type'), createObject('value', parameters('natRules')[copyIndex()].type), createObject('value', ''))]"
+          "externalMappings": {
+            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'externalMappings'), createArray())]"
+          },
+          "internalMappings": {
+            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'internalMappings'), createArray())]"
+          },
+          "ipConfigurationId": {
+            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'ipConfigurationId'), '')]"
+          },
+          "mode": {
+            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'mode'), '')]"
+          },
+          "type": {
+            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'type'), '')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

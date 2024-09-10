@@ -30,7 +30,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/virtual-network-gateway:<version>`.
 
-- [Aadvpn](#example-1-aadvpn)
+- [AAD-VPN](#example-1-aad-vpn)
 - [VPN Active Active with BGP settings](#example-2-vpn-active-active-with-bgp-settings)
 - [VPN Active Active with BGP settings](#example-3-vpn-active-active-with-bgp-settings)
 - [VPN Active Active without BGP settings](#example-4-vpn-active-active-without-bgp-settings)
@@ -43,7 +43,10 @@ The following section provides usage examples for the module, which were used to
 - [VPN](#example-11-vpn)
 - [WAF-aligned](#example-12-waf-aligned)
 
-### Example 1: _Aadvpn_
+### Example 1: _AAD-VPN_
+
+This instance deploys the module with the AAD set of required parameters.
+
 
 <details>
 
@@ -54,14 +57,16 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
+    activeActiveBgpSettings: {
+      activeActiveBGPMode: 'activePassiveNoBGP'
+    }
     gatewayType: 'Vpn'
-    name: 'nvngavpn001'
+    name: 'nvgavpn001'
     skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
-    activeActive: false
     domainNameLabel: [
-      'dm-nvngavpn'
+      'dm-nvgavpn'
     ]
     location: '<location>'
     publicIpZones: [
@@ -98,11 +103,16 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "activeActiveBgpSettings": {
+      "value": {
+        "activeActiveBGPMode": "activePassiveNoBGP"
+      }
+    },
     "gatewayType": {
       "value": "Vpn"
     },
     "name": {
-      "value": "nvngavpn001"
+      "value": "nvgavpn001"
     },
     "skuName": {
       "value": "VpnGw2AZ"
@@ -111,12 +121,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "<vNetResourceId>"
     },
     // Non-required parameters
-    "activeActive": {
-      "value": false
-    },
     "domainNameLabel": {
       "value": [
-        "dm-nvngavpn"
+        "dm-nvgavpn"
       ]
     },
     "location": {
@@ -286,17 +293,25 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     // Required parameters
     activeActiveBgpSettings: {
       activeActiveBGPMode: 'activeActiveBGP'
-      activeGatewayPipName: 'nvgaab001-pip2'
+      activeGatewayPipName: 'nvgaaa001-pip2'
+      customBgpIpAddresses: [
+        '169.254.21.4'
+        '169.254.21.5'
+      ]
+      secondCustomBgpIpAddresses: [
+        '169.254.22.4'
+        '169.254.22.5'
+      ]
     }
     gatewayType: 'Vpn'
-    name: 'nvgaab001'
+    name: 'nvgaaa001'
     skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
     disableIPSecReplayProtection: true
     domainNameLabel: [
-      'dm-nvgaab'
+      'dm-nvgaaa'
     ]
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
@@ -329,14 +344,22 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "activeActiveBgpSettings": {
       "value": {
         "activeActiveBGPMode": "activeActiveBGP",
-        "activeGatewayPipName": "nvgaab001-pip2"
+        "activeGatewayPipName": "nvgaaa001-pip2",
+        "customBgpIpAddresses": [
+          "169.254.21.4",
+          "169.254.21.5"
+        ],
+        "secondCustomBgpIpAddresses": [
+          "169.254.22.4",
+          "169.254.22.5"
+        ]
       }
     },
     "gatewayType": {
       "value": "Vpn"
     },
     "name": {
-      "value": "nvgaab001"
+      "value": "nvgaaa001"
     },
     "skuName": {
       "value": "VpnGw2AZ"
@@ -353,7 +376,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "domainNameLabel": {
       "value": [
-        "dm-nvgaab"
+        "dm-nvgaaa"
       ]
     },
     "enableBgpRouteTranslationForNat": {
@@ -650,14 +673,14 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       activeActiveBGPMode: 'activePassiveNoBGP'
     }
     gatewayType: 'Vpn'
-    name: 'nvgapb001'
+    name: 'nvgap001'
     skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
     disableIPSecReplayProtection: true
     domainNameLabel: [
-      'dm-nvgapb'
+      'dm-nvgap'
     ]
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
@@ -696,7 +719,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "Vpn"
     },
     "name": {
-      "value": "nvgapb001"
+      "value": "nvgap001"
     },
     "skuName": {
       "value": "VpnGw2AZ"
@@ -713,7 +736,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "domainNameLabel": {
       "value": [
-        "dm-nvgapb"
+        "dm-nvgap"
       ]
     },
     "enableBgpRouteTranslationForNat": {

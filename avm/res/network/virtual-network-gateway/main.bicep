@@ -340,7 +340,7 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2023-04
     allowRemoteVnetTraffic: allowRemoteVnetTraffic
     allowVirtualWanTraffic: allowVirtualWanTraffic
     enableBgp: !empty(activeActiveBgpSettings)
-    activeActiveBgpSettings: !empty(activeActiveBgpSettings) ? bgpSettingsVar : null
+    bgpSettings: !empty(activeActiveBgpSettings) ? bgpSettingsVar : null
     disableIPSecReplayProtection: disableIPSecReplayProtection
     enableDnsForwarding: gatewayType == 'ExpressRoute' ? enableDnsForwarding : null
     enablePrivateIpAddress: enablePrivateIpAddress
@@ -370,11 +370,11 @@ module virtualNetworkGateway_natRules 'nat-rule/main.bicep' = [
     params: {
       name: natRule.name
       virtualNetworkGatewayName: virtualNetworkGateway.name
-      externalMappings: contains(natRule, 'externalMappings') ? natRule.externalMappings : []
-      internalMappings: contains(natRule, 'internalMappings') ? natRule.internalMappings : []
-      ipConfigurationId: contains(natRule, 'ipConfigurationId') ? natRule.ipConfigurationId : ''
-      mode: contains(natRule, 'mode') ? natRule.mode : ''
-      type: contains(natRule, 'type') ? natRule.type : ''
+      externalMappings: natRule.?externalMappings ?? []
+      internalMappings: natRule.?internalMappings ?? []
+      ipConfigurationId: natRule.?ipConfigurationId ?? ''
+      mode: natRule.?mode ?? ''
+      type: natRule.?type ?? ''
     }
   }
 ]
@@ -423,9 +423,7 @@ resource virtualNetworkGateway_roleAssignments 'Microsoft.Authorization/roleAssi
   for (roleAssignment, index) in (roleAssignments ?? []): {
     name: guid(virtualNetworkGateway.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+      roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? contains(roleAssignment.?roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
             ? roleAssignment.roleDefinitionIdOrName
             : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
       principalId: roleAssignment.principalId

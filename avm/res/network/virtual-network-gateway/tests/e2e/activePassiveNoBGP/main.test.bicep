@@ -45,39 +45,39 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-// @batchSize(1)
-// module testDeployment '../../../main.bicep' = [
-//   for iteration in ['init', 'idem']: {
-//     scope: resourceGroup
-//     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-//     params: {
-//       location: resourceLocation
-//       name: '${namePrefix}${serviceShort}001'
-//       vpnGatewayGeneration: 'Generation2'
-//       skuName: 'VpnGw2AZ'
-//       gatewayType: 'Vpn'
-//       vNetResourceId: nestedDependencies.outputs.vnetResourceId
-//       activeActiveBgpSettings: {
-//         activeActiveBGPMode:'activePassiveNoBGP'
-//         }
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      vpnGatewayGeneration: 'Generation2'
+      skuName: 'VpnGw2AZ'
+      gatewayType: 'Vpn'
+      vNetResourceId: nestedDependencies.outputs.vnetResourceId
+      activeActiveBgpSettings: {
+        activeActiveBGPMode:'activePassiveNoBGP'
+        }
 
-//       domainNameLabel: [
-//         '${namePrefix}-dm-${serviceShort}'
-//       ]
-//       publicIpZones: [
-//         1
-//         2
-//         3
-//       ]
-//       vpnType: 'RouteBased'
-//       enablePrivateIpAddress: true
-//       gatewayDefaultSiteLocalNetworkGatewayId: nestedDependencies.outputs.localNetworkGatewayResourceId
-//       disableIPSecReplayProtection: true
-//       allowRemoteVnetTraffic: true
-//       enableBgpRouteTranslationForNat: true
-//     }
-//     dependsOn: [
-//       nestedDependencies
-//     ]
-//   }
-// ]
+      domainNameLabel: [
+        '${namePrefix}-dm-${serviceShort}'
+      ]
+      publicIpZones: [
+        1
+        2
+        3
+      ]
+      vpnType: 'RouteBased'
+      enablePrivateIpAddress: true
+      gatewayDefaultSiteLocalNetworkGatewayId: nestedDependencies.outputs.localNetworkGatewayResourceId
+      disableIPSecReplayProtection: true
+      allowRemoteVnetTraffic: true
+      enableBgpRouteTranslationForNat: true
+    }
+    dependsOn: [
+      nestedDependencies
+    ]
+  }
+]
