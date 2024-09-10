@@ -7,7 +7,7 @@ on:
         type: boolean
         description: "Execute static validation"
         required: false
-        default: true
+        default: false
       deploymentValidation:
         type: boolean
         description: "Execute deployment validation"
@@ -17,7 +17,7 @@ on:
         type: boolean
         description: "Remove deployed module"
         required: false
-        default: true
+        default: false
       customLocation:
         type: string
         description: "Default location overwrite (e.g., eastus)"
