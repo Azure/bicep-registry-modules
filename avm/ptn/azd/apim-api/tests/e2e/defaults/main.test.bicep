@@ -52,7 +52,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     location: resourceLocation
-    name: nestedDependencies.outputs.apimOutputName
+    name: nestedDependencies.outputs.apimName
     apiDisplayName: '${namePrefix}-apd-${serviceShort}'
     apiPath: '${namePrefix}-apipath-${serviceShort}'
     webFrontendUrl: nestedDependencies.outputs.siteHostName
