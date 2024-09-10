@@ -508,7 +508,6 @@ module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1211,7 +1210,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 

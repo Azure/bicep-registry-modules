@@ -15,7 +15,7 @@ Required. The name of the Storage Account to upload to
 Required. The container to upload the files to
 
 .EXAMPLE
-Set-StorageContainerContentByEnvVar -StorageAccountName 'mystorage' -TargetContainer 'myContainer'
+. 'Set-StorageContainerContentByEnvVar.ps1' -StorageAccountName 'mystorage' -TargetContainer 'myContainer'
 
 Upload any required data to the storage account 'mystorage' and container 'myContainer'.
 #>
@@ -33,9 +33,9 @@ Write-Verbose 'Fetching & storing scripts' -Verbose
 $contentDirectoryName = 'scripts'
 $contentDirectory = (New-Item $contentDirectoryName -ItemType 'Directory' -Force).FullName
 $scriptPaths = @()
-foreach ($scriptEnvVar in (Get-ChildItem 'env:*').Name | Where-Object { $_ -like 'script_*' }) {
+foreach ($scriptEnvVar in (Get-ChildItem 'env:*').Name | Where-Object { $_ -like '__SCRIPT__*' }) {
     # Handle value like 'script_Initialize__LinuxSoftware_ps1'
-    $scriptName = $scriptEnvVar -replace 'script_', '' -replace '__', '-' -replace '_', '.'
+    $scriptName = $scriptEnvVar -replace '__SCRIPT__', '' -replace '__', '-' -replace '_', '.'
     $scriptContent = (Get-Item env:$scriptEnvVar).Value
 
     Write-Verbose ('Storing file [{0}] with length [{1}]' -f $scriptName, $scriptContent.Length) -Verbose
