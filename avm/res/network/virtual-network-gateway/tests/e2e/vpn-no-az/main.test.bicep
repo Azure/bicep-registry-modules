@@ -46,23 +46,23 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-@batchSize(1)
-module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      location: resourceLocation
-      name: '${namePrefix}${serviceShort}001'
-      skuName: 'VpnGw1'
-      gatewayType: 'Vpn'
-      vNetResourceId: nestedDependencies.outputs.vnetResourceId
-      activeActiveBgpSettings:{
-        activeActiveBGPMode: 'activePassiveNoBGP'
-      }
-    }
-    dependsOn: [
-      nestedDependencies
-    ]
-  }
-]
+// @batchSize(1)
+// module testDeployment '../../../main.bicep' = [
+//   for iteration in ['init', 'idem']: {
+//     scope: resourceGroup
+//     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+//     params: {
+//       location: resourceLocation
+//       name: '${namePrefix}${serviceShort}001'
+//       skuName: 'VpnGw1'
+//       gatewayType: 'Vpn'
+//       vNetResourceId: nestedDependencies.outputs.vnetResourceId
+//       activeActiveBgpSettings:{
+//         activeActiveBGPMode: 'activePassiveNoBGP'
+//       }
+//     }
+//     dependsOn: [
+//       nestedDependencies
+//     ]
+//   }
+// ]

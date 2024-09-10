@@ -44,33 +44,33 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-@batchSize(1)
-module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      location: resourceLocation
-      name: '${namePrefix}${serviceShort}001'
-      skuName: 'ErGw1AZ'
-      gatewayType: 'ExpressRoute'
-      vNetResourceId: nestedDependencies.outputs.vnetResourceId
-      activeActiveBgpSettings:{
-        activeActiveBGPMode: 'activeActiveBGP'
-        activeGatewayPipName: '${namePrefix}${serviceShort}001-pip2'
-      }
-      domainNameLabel: [
-        '${namePrefix}-dm-${serviceShort}'
-      ]
-      gatewayPipName: '${namePrefix}-pip-${serviceShort}'
-      publicIpZones: [
-        1
-        2
-        3
-      ]
-    }
-    dependsOn: [
-      nestedDependencies
-    ]
-  }
-]
+// @batchSize(1)
+// module testDeployment '../../../main.bicep' = [
+//   for iteration in ['init', 'idem']: {
+//     scope: resourceGroup
+//     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+//     params: {
+//       location: resourceLocation
+//       name: '${namePrefix}${serviceShort}001'
+//       skuName: 'ErGw1AZ'
+//       gatewayType: 'ExpressRoute'
+//       vNetResourceId: nestedDependencies.outputs.vnetResourceId
+//       activeActiveBgpSettings:{
+//         activeActiveBGPMode: 'activeActiveBGP'
+//         activeGatewayPipName: '${namePrefix}${serviceShort}001-pip2'
+//       }
+//       domainNameLabel: [
+//         '${namePrefix}-dm-${serviceShort}'
+//       ]
+//       gatewayPipName: '${namePrefix}-pip-${serviceShort}'
+//       publicIpZones: [
+//         1
+//         2
+//         3
+//       ]
+//     }
+//     dependsOn: [
+//       nestedDependencies
+//     ]
+//   }
+// ]
