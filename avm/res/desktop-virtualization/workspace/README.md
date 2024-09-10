@@ -470,7 +470,6 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1188,7 +1187,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 
