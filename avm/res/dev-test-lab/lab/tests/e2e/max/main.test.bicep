@@ -129,15 +129,20 @@ module testDeployment '../../../main.bicep' = [
           description: 'lab virtual network description'
           allowedSubnets: [
             {
-              labSubnetName: nestedDependencies.outputs.subnetName
-              resourceId: nestedDependencies.outputs.subnetResourceId
+              labSubnetName: nestedDependencies.outputs.subnet1Name
+              resourceId: nestedDependencies.outputs.subnet1ResourceId
               allowPublicIp: 'Allow'
+            }
+            {
+              labSubnetName: nestedDependencies.outputs.subnet2Name
+              resourceId: nestedDependencies.outputs.subnet2ResourceId
+              allowPublicIp: 'Deny'
             }
           ]
           subnetOverrides: [
             {
-              labSubnetName: nestedDependencies.outputs.subnetName
-              resourceId: nestedDependencies.outputs.subnetResourceId
+              labSubnetName: nestedDependencies.outputs.subnet1Name
+              resourceId: nestedDependencies.outputs.subnet1ResourceId
               useInVmCreationPermission: 'Allow'
               usePublicIpAddressPermission: 'Allow'
               sharedPublicIpAddressConfiguration: {
@@ -153,14 +158,20 @@ module testDeployment '../../../main.bicep' = [
                 ]
               }
             }
+            {
+              labSubnetName: nestedDependencies.outputs.subnet2Name
+              resourceId: nestedDependencies.outputs.subnet2ResourceId
+              useInVmCreationPermission: 'Deny'
+              usePublicIpAddressPermission: 'Deny'
+            }
           ]
         }
       ]
       policies: [
         {
-          name: nestedDependencies.outputs.subnetName
+          name: nestedDependencies.outputs.subnet1Name
           evaluatorType: 'MaxValuePolicy'
-          factData: nestedDependencies.outputs.subnetResourceId
+          factData: nestedDependencies.outputs.subnet1ResourceId
           factName: 'UserOwnedLabVmCountInSubnet'
           threshold: '1'
         }
@@ -308,6 +319,8 @@ module testDeployment '../../../main.bicep' = [
         currencyCode: 'AUD'
         thresholdValue100DisplayOnChart: 'Enabled'
         thresholdValue100SendNotificationWhenExceeded: 'Enabled'
+        thresholdValue125DisplayOnChart: 'Disabled'
+        thresholdValue75DisplayOnChart: 'Enabled'
       }
     }
   }
