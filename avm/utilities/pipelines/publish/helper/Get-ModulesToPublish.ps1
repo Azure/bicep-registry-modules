@@ -84,7 +84,7 @@ function Get-TemplateFileToPublish {
         [string[]] $PathsToInclude = @()
     )
 
-    $ModuleRelativeFolderPath = ('avm/{0}' -f ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]) -replace '\\', '/'
+    $ModuleRelativeFolderPath = (($ModuleFolderPath -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
     $ModifiedFiles = Get-ModifiedFileList -Verbose
     Write-Verbose "Looking for modified files under: [$ModuleRelativeFolderPath]" -Verbose
     $modifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { $_ -like "*$ModuleFolderPath*" }
@@ -110,7 +110,7 @@ function Get-TemplateFileToPublish {
 
     Write-Verbose ('Modified modules found: [{0}]' -f $TemplateFilesToPublish.count) -Verbose
     $TemplateFilesToPublish | ForEach-Object {
-        $RelPath = ('avm/{0}' -f ($_ -split '[\/|\\]avm[\/|\\]')[-1]) -replace '\\', '/'
+        $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
         $RelPath = $RelPath.Split('/main.')[0]
         Write-Verbose " - [$RelPath]" -Verbose
     }

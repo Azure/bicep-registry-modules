@@ -1,4 +1,4 @@
-﻿#region helper
+#region helper
 <#
 .SYNOPSIS
 Get all deployment operations at a given scope
