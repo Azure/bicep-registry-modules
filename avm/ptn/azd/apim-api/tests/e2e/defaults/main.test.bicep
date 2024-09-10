@@ -36,7 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     appServicePlanName: 'dep-${namePrefix}-sp-${serviceShort}'
     appServiceName: 'dep-${namePrefix}-aps-${serviceShort}'
-    apimServicename: '${namePrefix}-as-${serviceShort}001'
+    apimServiceName: '${namePrefix}-as-${serviceShort}001'
     publisherName: 'dep-${namePrefix}-pn-x-001'
     applicationInsightsName: 'dep-${namePrefix}-ais-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
@@ -52,7 +52,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     location: resourceLocation
-    name: '${namePrefix}-as-${serviceShort}001'
+    name: nestedDependencies.outputs.apimOutputName
     apiDisplayName: '${namePrefix}-apd-${serviceShort}'
     apiPath: '${namePrefix}-apipath-${serviceShort}'
     webFrontendUrl: nestedDependencies.outputs.siteHostName

@@ -2,7 +2,7 @@
 param location string = resourceGroup().location
 
 @description('Required. The name of the API Management service to create.')
-param apimServicename string
+param apimServiceName string
 
 @description('Required. The name of the owner of the API Management service.')
 param publisherName string
@@ -22,7 +22,7 @@ param applicationInsightsName string
 module apimService 'br/public:avm/res/api-management/service:0.4.0' = {
   name: 'serviceDeployment'
   params: {
-    name: apimServicename
+    name: apimServiceName
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: publisherName
     location: location
@@ -79,3 +79,6 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
 
 @description('The default hostname of the site.')
 output siteHostName string = 'https://${app.outputs.defaultHostname}'
+
+@description('The name of the API Management service.')
+output apimOutputName string = apimService.outputs.name

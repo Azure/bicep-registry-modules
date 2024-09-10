@@ -51,7 +51,7 @@ module apimApi 'br/public:avm/ptn/azd/apim-api:<version>' = {
     apiDisplayName: 'apd-aapmin'
     apiName: 'an-aapmin001'
     apiPath: 'apipath-aapmin'
-    name: 'as-aapmin001'
+    name: '<name>'
     webFrontendUrl: '<webFrontendUrl>'
     // Non-required parameters
     location: '<location>'
@@ -88,7 +88,7 @@ module apimApi 'br/public:avm/ptn/azd/apim-api:<version>' = {
       "value": "apipath-aapmin"
     },
     "name": {
-      "value": "as-aapmin001"
+      "value": "<name>"
     },
     "webFrontendUrl": {
       "value": "<webFrontendUrl>"
