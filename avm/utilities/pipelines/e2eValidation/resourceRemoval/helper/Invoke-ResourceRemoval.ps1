@@ -148,6 +148,12 @@ function Invoke-ResourceRemoval {
             break
         }
         'Microsoft.VirtualMachineImages/imageTemplates' {
+            # Note: If you ever run into the issue that you cannot remove the image template because of an issue with the MSI (e.g., because the below logic was not executed in the pipeline), you can follow these manual steps:
+            # 1. Unassign the existing MSI (az image builder identity remove --resource-group <itRg> --name <itName> --user-assigned <msiResourceId> --yes)
+            # 2. Trigger image template removal (will fail, but remove the cached 'running' state)
+            # 3. Assign a new MSI (az image builder identity assign --resource-group <itRg> --name <itName> --user-assigned <msiResourceId>)
+            # 4. Trigger image template removal again, which removes the resource for good
+
             $resourceGroupName = $ResourceId.Split('/')[4]
             $resourceName = Split-Path $ResourceId -Leaf
 
