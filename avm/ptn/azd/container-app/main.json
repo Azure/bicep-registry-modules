@@ -6,14 +6,14 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "4797179982482689227"
+      "templateHash": "17953814165342158361"
     },
     "name": "avm/ptn/azd/container-app",
     "description": "Creates a container app in an Azure Container App environment.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "environmentVar": {
+    "environmentType": {
       "type": "object",
       "properties": {
         "name": {
@@ -151,7 +151,7 @@
     "env": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/environmentVar"
+        "$ref": "#/definitions/environmentType"
       },
       "nullable": true,
       "metadata": {

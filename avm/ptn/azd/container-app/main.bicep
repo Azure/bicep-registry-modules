@@ -50,7 +50,7 @@ param daprAppId string = containerName
 param daprEnabled bool = false
 
 @description('Optional. The environment variables for the container.')
-param env environmentVar[]?
+param env environmentType[]?
 
 @description('Optional. Specifies if the resource ingress is exposed externally.')
 param external bool = true
@@ -237,7 +237,7 @@ output uri string = ingressEnabled ? 'https://${containerApp.outputs.fqdn}' : ''
 @description('The resource ID of the Container App.')
 output resourceId string = containerApp.outputs.resourceId
 
-type environmentVar = {
+type environmentType = {
   @description('Required. Environment variable name.')
   name: string
 
