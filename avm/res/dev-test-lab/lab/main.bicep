@@ -57,7 +57,7 @@ param premiumDataDisks string = 'Disabled'
 @description('Optional. The properties of any lab support message associated with this lab.')
 param support object = {}
 
-@description('Optional. The managed identity definition for this resource. DevTest Labs creates a system-assigned identity by default the first time it creates the lab environment.')
+@description('Optional. The managed identity definition for this resource. For new labs created after 8/10/2020, the lab\'s system assigned identity is set to On by default and lab owner will not be able to turn this off for the lifecycle of the lab.')
 param managedIdentities managedIdentitiesType
 
 @description('Optional. The resource ID(s) to assign to the virtual machines associated with this lab.')
@@ -125,7 +125,9 @@ var identity = !empty(managedIdentities)
       type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned'
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
-  : any(null)
+  : {
+      type: 'SystemAssigned'
+    }
 
 var formattedManagementIdentities = !empty(managementIdentitiesResourceIds)
   ? reduce(map((managementIdentitiesResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next))
@@ -439,7 +441,7 @@ type artifactsourcesType = {
   @description('Required. The artifact source\'s URI.')
   uri: string
 
-  @description('Optional. The security token to authenticate to the artifact source.')
+  @description('Optional. The security token to authenticate to the artifact source. Private artifacts use the system-identity of the lab to store the security token for the artifact source in the lab\'s managed Azure Key Vault. Access to the Azure Key Vault is granted automatically only when the lab is created with a system-assigned identity.')
   @secure()
   securityToken: string?
 }[]?
@@ -459,10 +461,10 @@ type virtualNetworkType = {
   description: string?
 
   @description('Optional. The allowed subnets of the virtual network.')
-  allowedSubnets: allowedSubnetType[]?
+  allowedSubnets: allowedSubnetType?
 
   @description('Optional. The subnet overrides of the virtual network.')
-  subnetOverrides: subnetOverrideType[]?
+  subnetOverrides: subnetOverrideType?
 }[]?
 
 type costsType = {

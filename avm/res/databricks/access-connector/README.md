@@ -8,7 +8,6 @@ This module deploys an Azure Databricks Access Connector.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -281,7 +280,6 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:<version>'
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -492,7 +490,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -502,10 +499,6 @@ Tags of the resource.
 | `resourceGroupName` | string | The resource group of the deployed access connector. |
 | `resourceId` | string | The resource ID of the deployed access connector. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
