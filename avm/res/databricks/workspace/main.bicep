@@ -113,6 +113,9 @@ param storageAccountPrivateEndpoints privateEndpointType
 @description('Conditional. The resource ID of the associated access connector for private access to the managed workspace storage account. Required if privateStorageAccount is enabled.')
 param accessConnectorResourceId string = ''
 
+@description('Optional. The default catalog configuration for the Databricks workspace.')
+param defaultCatalog defaultCatalogType?
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -326,6 +329,14 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
           accessConnector: {
             id: accessConnectorResourceId
             identityType: 'SystemAssigned'
+          }
+        }
+      : {},
+    !empty(defaultCatalog)
+      ? {
+          defaultCatalog: {
+            initialName: ''
+            initialType: defaultCatalog.?initialType
           }
         }
       : {}
@@ -740,3 +751,12 @@ type diagnosticSettingType = {
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?
+
+type defaultCatalogType = {
+  //This value cannot be set to a custom value. Reason --> 'InvalidInitialCatalogName' message: 'Currently custom initial catalog name is not supported. This capability will be added in future.'
+  //@description('Optional. Set the name of the Catalog.')
+  //initialName: ''
+
+  @description('Required. Choose between HiveMetastore or UnityCatalog.')
+  initialType: 'HiveMetastore' | 'UnityCatalog'
+}
