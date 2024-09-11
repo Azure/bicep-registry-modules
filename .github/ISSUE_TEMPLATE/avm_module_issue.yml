@@ -47,6 +47,7 @@ body:
         # - "avm/ptn/avd-lza/management-plane"
         # - "avm/ptn/avd-lza/networking"
         # - "avm/ptn/avd-lza/session-hosts"
+        - "avm/ptn/azd/apim-api"
         - "avm/ptn/azd/container-apps"
         - "avm/ptn/azd/insights-dashboard"
         - "avm/ptn/deployment-script/import-image-to-acr"
