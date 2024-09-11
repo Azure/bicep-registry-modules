@@ -12,6 +12,7 @@
 #/avm/ptn/avd-lza/management-plane/ @Azure/avm-ptn-avd-lza-managementplane-module-owners-bicep @Azure/avm-module-reviewers-bicep
 #/avm/ptn/avd-lza/networking/ @Azure/avm-ptn-avd-lza-networking-module-owners-bicep @Azure/avm-module-reviewers-bicep
 #/avm/ptn/avd-lza/session-hosts/ @Azure/avm-ptn-avd-lza-sessionhosts-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/azd/apim-api/ @Azure/avm-ptn-azd-apimapi-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/container-apps/ @Azure/avm-ptn-azd-containerapps-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/insights-dashboard/ @Azure/avm-ptn-azd-insightsdashboard-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/deployment-script/import-image-to-acr/ @Azure/avm-ptn-deploymentscript-importimagetoacr-module-owners-bicep @Azure/avm-module-reviewers-bicep
