@@ -134,6 +134,7 @@ var zones = [for zone in publicIpZones: string(zone)]
 var gatewayPipAllocationMethod = skuName == 'Basic' ? 'Dynamic' : 'Static'
 
 var activeActive = activeActiveBgpSettings.activeActiveBGPMode == 'activeActiveNoBGP' || activeActiveBgpSettings.activeActiveBGPMode == 'activeActiveBGP'
+var isBgp = activeActiveBgpSettings.activeActiveBGPMode == 'activeActiveBGP' || activeActiveBgpSettings.activeActiveBGPMode == 'activePassiveBGP'
 
 var isActiveActiveValid = gatewayType != 'ExpressRoute' ? activeActive : false
 var virtualGatewayPipNameVar = isActiveActiveValid
@@ -148,7 +149,7 @@ var virtualGatewayPipNameVar = isActiveActiveValid
 var vpnTypeVar = gatewayType != 'ExpressRoute' ? vpnType : 'PolicyBased'
 
 // Potential configurations (active-active vs active-passive)
-var bgpSettingsVar = activeActiveBgpSettings.?activeActive == false
+var bgpSettingsVar = isActiveActiveValid
   ? {
       asn: activeActiveBgpSettings.?asn ?? 65515
       bgpPeeringAddresses: [
@@ -339,8 +340,8 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2023-04
     activeActive: isActiveActiveValid
     allowRemoteVnetTraffic: allowRemoteVnetTraffic
     allowVirtualWanTraffic: allowVirtualWanTraffic
-    enableBgp: !empty(activeActiveBgpSettings)
-    bgpSettings: !empty(activeActiveBgpSettings) ? bgpSettingsVar : null
+    enableBgp: isBgp
+    bgpSettings: isBgp ? bgpSettingsVar : null
     disableIPSecReplayProtection: disableIPSecReplayProtection
     enableDnsForwarding: gatewayType == 'ExpressRoute' ? enableDnsForwarding : null
     enablePrivateIpAddress: enablePrivateIpAddress
