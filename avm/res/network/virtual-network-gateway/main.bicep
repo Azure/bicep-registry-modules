@@ -67,8 +67,8 @@ param vpnType string = 'RouteBased'
 @description('Required. Virtual Network resource ID.')
 param vNetResourceId string
 
-@description('Required. Specifies one of the following four configurations: Active-Active with or without BGP, Active-Passive with or without BGP.')
-param activeActiveBgpSettings activeActiveBgpSettingType
+@description('Required. Specifies one of the following four configurations: Active-Active with (clusterMode = activeActiveBgp) or without (clusterMode = activeActiveNoBgp) BGP, Active-Passive with (clusterMode = activePassiveBgp) or without (clusterMode = activePassiveNoBgp) BGP.')
+param clusterSettings clusterSettingType
 
 @description('Optional. The IP address range from which VPN clients will receive an IP address when connected. Range specified must not overlap with on-premise network.')
 param vpnClientAddressPoolPrefix string = ''
@@ -133,14 +133,17 @@ var zones = [for zone in publicIpZones: string(zone)]
 
 var gatewayPipAllocationMethod = skuName == 'Basic' ? 'Dynamic' : 'Static'
 
-var activeActive = activeActiveBgpSettings.activeActiveBGPMode == 'activeActiveNoBGP' || activeActiveBgpSettings.activeActiveBGPMode == 'activeActiveBGP'
-var isBgp = activeActiveBgpSettings.activeActiveBGPMode == 'activeActiveBGP' || activeActiveBgpSettings.activeActiveBGPMode == 'activePassiveBGP'
+var activeActive = clusterSettings.clusterMode == 'activeActiveNoBgp' || clusterSettings.clusterMode == 'activeActiveBgp'
+var isBgp = clusterSettings.clusterMode == 'activeActiveBgp' || clusterSettings.clusterMode == 'activePassiveBgp'
 
 var isActiveActiveValid = gatewayType != 'ExpressRoute' ? activeActive : false
+
+var activeGatewayPipNameVar = isActiveActiveValid ? clusterSettings.?activeGatewayPipName ?? '${name}-pip2' : null
+
 var virtualGatewayPipNameVar = isActiveActiveValid
   ? [
       gatewayPipName
-      activeActiveBgpSettings.?activeGatewayPipName ?? '${name}-pip2'
+      activeGatewayPipNameVar
     ]
   : [
       gatewayPipName
@@ -148,26 +151,27 @@ var virtualGatewayPipNameVar = isActiveActiveValid
 
 var vpnTypeVar = gatewayType != 'ExpressRoute' ? vpnType : 'PolicyBased'
 
+
 // Potential configurations (active-active vs active-passive)
 var bgpSettingsVar = isActiveActiveValid
   ? {
-      asn: activeActiveBgpSettings.?asn ?? 65515
+      asn: clusterSettings.?asn ?? 65515
       bgpPeeringAddresses: [
         {
-          customBgpIpAddresses: activeActiveBgpSettings.?customBgpIpAddresses
+          customBgpIpAddresses: clusterSettings.?customBgpIpAddresses
           ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
         }
         {
-          customBgpIpAddresses: activeActiveBgpSettings.?secondCustomBgpIpAddresses
+          customBgpIpAddresses: clusterSettings.?secondCustomBgpIpAddresses
           ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig2'
         }
       ]
     }
   : {
-      asn: activeActiveBgpSettings.?asn ?? 65515
+      asn: clusterSettings.?asn ?? 65515
       bgpPeeringAddresses: [
         {
-          customBgpIpAddresses: activeActiveBgpSettings.?customBgpIpAddresses
+          customBgpIpAddresses: clusterSettings.?customBgpIpAddresses
           ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
         }
       ]
@@ -197,7 +201,7 @@ var ipConfiguration = isActiveActiveValid
           }
           publicIPAddress: {
             id: isActiveActiveValid
-              ? az.resourceId('Microsoft.Network/publicIPAddresses', activeActiveBgpSettings.activeGatewayPipName)
+              ? az.resourceId('Microsoft.Network/publicIPAddresses', activeGatewayPipNameVar)
               : az.resourceId('Microsoft.Network/publicIPAddresses', gatewayPipName)
           }
         }
@@ -535,24 +539,24 @@ type diagnosticSettingType = {
   marketplacePartnerResourceId: string?
 }[]?
 
-type activePassiveNoBGPType = {
+type activePassiveNoBgpType = {
   
-  activeActiveBGPMode: 'activePassiveNoBGP'
+  clusterMode: 'activePassiveNoBgp'
 
 }
 
-type activeActiveNoBGPType = {
+type activeActiveNoBgpType = {
   
-  activeActiveBGPMode: 'activeActiveNoBGP'
+  clusterMode: 'activeActiveNoBgp'
 
   @description('Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip\' suffix will be appended to the gateway\'s name.')
   activeGatewayPipName: string?
 
 }
 
-type activePassiveBGPType = {
+type activePassiveBgpType = {
   
-  activeActiveBGPMode: 'activePassiveBGP'
+  clusterMode: 'activePassiveBgp'
 
   @description('Optional. The Autonomous System Number value.')
   @minValue(0)
@@ -563,9 +567,9 @@ type activePassiveBGPType = {
   customBgpIpAddresses: string[]?
 }
 
-type activeActiveBGPType = {
+type activeActiveBgpType = {
   
-  activeActiveBGPMode: 'activeActiveBGP'
+  clusterMode: 'activeActiveBgp'
 
   @description('Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip\' suffix will be appended to the gateway\'s name.')
   activeGatewayPipName: string?
@@ -582,7 +586,7 @@ type activeActiveBGPType = {
   secondCustomBgpIpAddresses: string[]?
 }
 
-@discriminator('activeActiveBGPMode')
-type activeActiveBgpSettingType = activeActiveNoBGPType | activeActiveBGPType | activePassiveBGPType |activePassiveNoBGPType
+@discriminator('clusterMode')
+type clusterSettingType = activeActiveNoBgpType | activeActiveBgpType | activePassiveBgpType | activePassiveNoBgpType
 
 

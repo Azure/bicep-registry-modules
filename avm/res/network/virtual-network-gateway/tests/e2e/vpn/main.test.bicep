@@ -57,8 +57,8 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'VpnGw2AZ'
       gatewayType: 'Vpn'
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
-      activeActiveBgpSettings:{
-        activeActiveBGPMode: 'activeActiveNoBGP'
+      clusterSettings:{
+        clusterMode: 'activeActiveNoBgp'
       }
       domainNameLabel: [
         '${namePrefix}-dm-${serviceShort}'

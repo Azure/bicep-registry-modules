@@ -57,8 +57,8 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
-    activeActiveBgpSettings: {
-      activeActiveBGPMode: 'activePassiveNoBGP'
+    clusterSettings: {
+      clusterMode: 'activePassiveNoBgp'
     }
     gatewayType: 'Vpn'
     name: 'nvgavpn001'
@@ -103,9 +103,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "activeActiveBgpSettings": {
+    "clusterSettings": {
       "value": {
-        "activeActiveBGPMode": "activePassiveNoBGP"
+        "clusterMode": "activePassiveNoBgp"
       }
     },
     "gatewayType": {
@@ -173,9 +173,8 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
-    activeActiveBgpSettings: {
-      activeActiveBGPMode: 'activeActiveBGP'
-      activeGatewayPipName: 'nvgaab001-pip2'
+    clusterSettings: {
+      clusterMode: 'activeActiveBgp'
     }
     gatewayType: 'Vpn'
     name: 'nvgaab001'
@@ -215,10 +214,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "activeActiveBgpSettings": {
+    "clusterSettings": {
       "value": {
-        "activeActiveBGPMode": "activeActiveBGP",
-        "activeGatewayPipName": "nvgaab001-pip2"
+        "clusterMode": "activeActiveBgp"
       }
     },
     "gatewayType": {
@@ -291,9 +289,8 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
-    activeActiveBgpSettings: {
-      activeActiveBGPMode: 'activeActiveBGP'
-      activeGatewayPipName: 'nvgaaa001-pip2'
+    clusterSettings: {
+      clusterMode: 'activeActiveBgp'
       customBgpIpAddresses: [
         '169.254.21.4'
         '169.254.21.5'
@@ -341,10 +338,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "activeActiveBgpSettings": {
+    "clusterSettings": {
       "value": {
-        "activeActiveBGPMode": "activeActiveBGP",
-        "activeGatewayPipName": "nvgaaa001-pip2",
+        "clusterMode": "activeActiveBgp",
         "customBgpIpAddresses": [
           "169.254.21.4",
           "169.254.21.5"
@@ -425,9 +421,8 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
-    activeActiveBgpSettings: {
-      activeActiveBGPMode: 'activeActiveNoBGP'
-      activeGatewayPipName: 'nvgaa001-pip2'
+    clusterSettings: {
+      clusterMode: 'activeActiveNoBgp'
     }
     gatewayType: 'Vpn'
     name: 'nvgaa001'
@@ -467,10 +462,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "activeActiveBgpSettings": {
+    "clusterSettings": {
       "value": {
-        "activeActiveBGPMode": "activeActiveNoBGP",
-        "activeGatewayPipName": "nvgaa001-pip2"
+        "clusterMode": "activeActiveNoBgp"
       }
     },
     "gatewayType": {
@@ -543,9 +537,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
-    activeActiveBgpSettings: {
-      activeActiveBGPMode: 'activePassiveBGP'
+    clusterSettings: {
       asn: 65815
+      clusterMode: 'activePassiveBgp'
       customBgpIpAddresses: [
         '169.254.21.4'
         '169.254.21.5'
@@ -589,10 +583,10 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "activeActiveBgpSettings": {
+    "clusterSettings": {
       "value": {
-        "activeActiveBGPMode": "activePassiveBGP",
         "asn": 65815,
+        "clusterMode": "activePassiveBgp",
         "customBgpIpAddresses": [
           "169.254.21.4",
           "169.254.21.5"
@@ -669,8 +663,8 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
-    activeActiveBgpSettings: {
-      activeActiveBGPMode: 'activePassiveNoBGP'
+    clusterSettings: {
+      clusterMode: 'activePassiveNoBgp'
     }
     gatewayType: 'Vpn'
     name: 'nvgap001'
@@ -710,9 +704,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "activeActiveBgpSettings": {
+    "clusterSettings": {
       "value": {
-        "activeActiveBGPMode": "activePassiveNoBGP"
+        "clusterMode": "activePassiveNoBgp"
       }
     },
     "gatewayType": {
@@ -785,8 +779,8 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
-    activeActiveBgpSettings: {
-      activeActiveBGPMode: 'activePassiveNoBGP'
+    clusterSettings: {
+      clusterMode: 'activePassiveNoBgp'
     }
     gatewayType: 'Vpn'
     name: 'nvgmin001'
@@ -816,9 +810,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "activeActiveBgpSettings": {
+    "clusterSettings": {
       "value": {
-        "activeActiveBGPMode": "activePassiveNoBGP"
+        "clusterMode": "activePassiveNoBgp"
       }
     },
     "gatewayType": {
@@ -865,9 +859,8 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
-    activeActiveBgpSettings: {
-      activeActiveBGPMode: 'activeActiveBGP'
-      activeGatewayPipName: 'nvger001-pip2'
+    clusterSettings: {
+      clusterMode: 'activeActiveBgp'
     }
     gatewayType: 'ExpressRoute'
     name: 'nvger001'
@@ -901,10 +894,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "activeActiveBgpSettings": {
+    "clusterSettings": {
       "value": {
-        "activeActiveBGPMode": "activeActiveBGP",
-        "activeGatewayPipName": "nvger001-pip2"
+        "clusterMode": "activeActiveBgp"
       }
     },
     "gatewayType": {
@@ -959,9 +951,17 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
-    activeActiveBgpSettings: {
-      activeActiveBGPMode: 'activeActiveBGP'
+    clusterSettings: {
       activeGatewayPipName: 'nvgmax001-pip2'
+      clusterMode: 'activeActiveBgp'
+      customBgpIpAddresses: [
+        '169.254.21.4'
+        '169.254.21.5'
+      ]
+      secondCustomBgpIpAddresses: [
+        '169.254.22.4'
+        '169.254.22.5'
+      ]
     }
     gatewayType: 'Vpn'
     name: 'nvgmax001'
@@ -1075,10 +1075,18 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "activeActiveBgpSettings": {
+    "clusterSettings": {
       "value": {
-        "activeActiveBGPMode": "activeActiveBGP",
-        "activeGatewayPipName": "nvgmax001-pip2"
+        "activeGatewayPipName": "nvgmax001-pip2",
+        "clusterMode": "activeActiveBgp",
+        "customBgpIpAddresses": [
+          "169.254.21.4",
+          "169.254.21.5"
+        ],
+        "secondCustomBgpIpAddresses": [
+          "169.254.22.4",
+          "169.254.22.5"
+        ]
       }
     },
     "gatewayType": {
@@ -1235,8 +1243,8 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
-    activeActiveBgpSettings: {
-      activeActiveBGPMode: 'activePassiveNoBGP'
+    clusterSettings: {
+      clusterMode: 'activePassiveNoBgp'
     }
     gatewayType: 'Vpn'
     name: 'nvgnaz001'
@@ -1261,9 +1269,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "activeActiveBgpSettings": {
+    "clusterSettings": {
       "value": {
-        "activeActiveBGPMode": "activePassiveNoBGP"
+        "clusterMode": "activePassiveNoBgp"
       }
     },
     "gatewayType": {
@@ -1303,9 +1311,8 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
-    activeActiveBgpSettings: {
-      activeActiveBGPMode: 'activeActiveNoBGP'
-      activeGatewayPipName: 'nvgvpn001-pip2'
+    clusterSettings: {
+      clusterMode: 'activeActiveNoBgp'
     }
     gatewayType: 'Vpn'
     name: 'nvgvpn001'
@@ -1345,10 +1352,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "activeActiveBgpSettings": {
+    "clusterSettings": {
       "value": {
-        "activeActiveBGPMode": "activeActiveNoBGP",
-        "activeGatewayPipName": "nvgvpn001-pip2"
+        "clusterMode": "activeActiveNoBgp"
       }
     },
     "gatewayType": {
@@ -1421,10 +1427,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
-    activeActiveBgpSettings: {
-      activeActiveBGPMode: 'activeActiveBGP'
-      activeGatewayPipName: 'nvgmwaf001-pip2'
+    clusterSettings: {
       asn: 65515
+      clusterMode: 'activeActiveBgp'
       customBgpIpAddresses: [
         '169.254.21.4'
         '169.254.21.5'
@@ -1529,11 +1534,10 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "activeActiveBgpSettings": {
+    "clusterSettings": {
       "value": {
-        "activeActiveBGPMode": "activeActiveBGP",
-        "activeGatewayPipName": "nvgmwaf001-pip2",
         "asn": 65515,
+        "clusterMode": "activeActiveBgp",
         "customBgpIpAddresses": [
           "169.254.21.4",
           "169.254.21.5"
@@ -1672,7 +1676,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`activeActiveBgpSettings`](#parameter-activeactivebgpsettings) | object | Specifies one of the following four configurations: Active-Active with or without BGP, Active-Passive with or without BGP. |
+| [`clusterSettings`](#parameter-clustersettings) | object | Specifies one of the following four configurations: Active-Active with (clusterMode = activeActiveBgp) or without (clusterMode = activeActiveNoBgp) BGP, Active-Passive with (clusterMode = activePassiveBgp) or without (clusterMode = activePassiveNoBgp) BGP. |
 | [`gatewayType`](#parameter-gatewaytype) | string | Specifies the gateway type. E.g. VPN, ExpressRoute. |
 | [`name`](#parameter-name) | string | Specifies the Virtual Network Gateway name. |
 | [`skuName`](#parameter-skuname) | string | The SKU of the Gateway. |
@@ -1708,9 +1712,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 | [`vpnGatewayGeneration`](#parameter-vpngatewaygeneration) | string | The generation for this VirtualNetworkGateway. Must be None if virtualNetworkGatewayType is not VPN. |
 | [`vpnType`](#parameter-vpntype) | string | Specifies the VPN type. |
 
-### Parameter: `activeActiveBgpSettings`
+### Parameter: `clusterSettings`
 
-Specifies one of the following four configurations: Active-Active with or without BGP, Active-Passive with or without BGP.
+Specifies one of the following four configurations: Active-Active with (clusterMode = activeActiveBgp) or without (clusterMode = activeActiveNoBgp) BGP, Active-Passive with (clusterMode = activePassiveBgp) or without (clusterMode = activePassiveNoBgp) BGP.
 
 - Required: Yes
 - Type: object
