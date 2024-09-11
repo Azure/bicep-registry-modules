@@ -148,7 +148,7 @@ var virtualGatewayPipNameVar = isActiveActiveValid
 var vpnTypeVar = gatewayType != 'ExpressRoute' ? vpnType : 'PolicyBased'
 
 // Potential configurations (active-active vs active-passive)
-var bgpSettingsVar = activeActiveBgpSettings.?activeActive == false
+var bgpSettingsVar = activeActiveBgpSettings.?activeActive == true
   ? {
       asn: activeActiveBgpSettings.?asn ?? 65515
       bgpPeeringAddresses: [
