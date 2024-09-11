@@ -133,7 +133,9 @@ var zones = [for zone in publicIpZones: string(zone)]
 
 var gatewayPipAllocationMethod = skuName == 'Basic' ? 'Dynamic' : 'Static'
 
-var activeActive = activeActiveBgpSettings.activeActiveBGPMode == 'activeActiveNoBGP' || activeActiveBgpSettings.activeActiveBGPMode == 'activeActiveBGP' ? true : false 
+var activeActive = activeActiveBgpSettings.activeActiveBGPMode == 'activeActiveNoBGP' || activeActiveBgpSettings.activeActiveBGPMode == 'activeActiveBGP'
+var isBGP = activeActiveBgpSettings.activeActiveBGPMode == 'activeActiveBGP' || activeActiveBgpSettings.activeActiveBGPMode == 'activePassiveBGP'
+
 
 var isActiveActiveValid = gatewayType != 'ExpressRoute' ? activeActive : false
 var virtualGatewayPipNameVar = isActiveActiveValid
@@ -147,8 +149,8 @@ var virtualGatewayPipNameVar = isActiveActiveValid
 
 var vpnTypeVar = gatewayType != 'ExpressRoute' ? vpnType : 'PolicyBased'
 
-// Potential configurations (active-active vs active-passive)
-var bgpSettingsVar = activeActiveBgpSettings.?activeActive == false
+// Potential BGP configurations (active-active vs active-passive)
+var bgpSettingsVar = isBGP
   ? {
       asn: activeActiveBgpSettings.?asn ?? 65515
       bgpPeeringAddresses: [
