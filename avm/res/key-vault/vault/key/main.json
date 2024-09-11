@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "14269695922191217406"
+      "templateHash": "11345639823061254967"
     },
     "name": "Key Vault Keys",
     "description": "This module deploys a Key Vault Key.",
@@ -278,14 +278,14 @@
       "metadata": {
         "description": "The uri of the key."
       },
-      "value": "[reference(resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), parameters('name')).properties.keyUri]"
+      "value": "[reference('key').keyUri]"
     },
     "keyUriWithVersion": {
       "type": "string",
       "metadata": {
         "description": "The uri with version of the key."
       },
-      "value": "[reference(resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), parameters('name')).properties.keyUriWithVersion]"
+      "value": "[reference('key').keyUriWithVersion]"
     },
     "name": {
       "type": "string",
