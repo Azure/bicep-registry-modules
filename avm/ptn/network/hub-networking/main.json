@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "15753612155300193862"
+      "templateHash": "16125038131264690243"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
@@ -648,7 +648,7 @@
       {
         "name": "hubVirtualNetworkPeerings",
         "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]",
-        "input": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex('hubVirtualNetworkPeerings')].value.peeringSettings, createArray())]"
+        "input": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex('hubVirtualNetworkPeerings')].value, 'peeringSettings'), createArray())]"
       }
     ]
   },
@@ -750,40 +750,40 @@
             "value": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.addressPrefixes]"
           },
           "ddosProtectionPlanResourceId": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.ddosProtectionPlanResourceId, '')]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'ddosProtectionPlanResourceId'), '')]"
           },
           "diagnosticSettings": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.diagnosticSettings, createArray())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'diagnosticSettings'), createArray())]"
           },
           "dnsServers": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.dnsServers, createArray())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'dnsServers'), createArray())]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableTelemetry, true())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'enableTelemetry'), true())]"
           },
           "flowTimeoutInMinutes": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.flowTimeoutInMinutes, 0)]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'flowTimeoutInMinutes'), 0)]"
           },
           "location": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.location, '')]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'location'), '')]"
           },
           "lock": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.lock, createObject())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'lock'), createObject())]"
           },
           "roleAssignments": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.roleAssignments, createArray())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'roleAssignments'), createArray())]"
           },
           "subnets": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.subnets, createArray())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'subnets'), createArray())]"
           },
           "tags": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.tags, createObject())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'tags'), createObject())]"
           },
           "vnetEncryption": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.vnetEncryption, false())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'vnetEncryption'), false())]"
           },
           "vnetEncryptionEnforcement": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.vnetEncryptionEnforcement, '')]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'vnetEncryptionEnforcement'), '')]"
           }
         },
         "template": {
@@ -2385,22 +2385,22 @@
             "value": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key]"
           },
           "location": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.location, parameters('location'))]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'location'), parameters('location'))]"
           },
           "disableBgpRoutePropagation": {
             "value": true
           },
           "enableTelemetry": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableTelemetry, true())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'enableTelemetry'), true())]"
           },
           "roleAssignments": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.roleAssignments, createArray())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'roleAssignments'), createArray())]"
           },
           "routes": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.routes, createArray())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'routes'), createArray())]"
           },
           "tags": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.tags, createObject())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'tags'), createObject())]"
           }
         },
         "template": {
@@ -2772,37 +2772,37 @@
             "value": "[reference(format('hubVirtualNetwork[{0}]', copyIndex())).outputs.resourceId.value]"
           },
           "diagnosticSettings": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.diagnosticSettings, createArray())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'diagnosticSettings'), createArray())]"
           },
           "disableCopyPaste": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.bastionHost.disableCopyPaste, true())]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'bastionHost'), 'disableCopyPaste'), true())]"
           },
           "enableFileCopy": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.bastionHost.enableFileCopy, false())]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'bastionHost'), 'enableFileCopy'), false())]"
           },
           "enableIpConnect": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.bastionHost.enableIpConnect, false())]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'bastionHost'), 'enableIpConnect'), false())]"
           },
           "enableShareableLink": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.bastionHost.enableShareableLink, false())]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'bastionHost'), 'enableShareableLink'), false())]"
           },
           "location": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.location, parameters('location'))]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'location'), parameters('location'))]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableTelemetry, true())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'enableTelemetry'), true())]"
           },
           "roleAssignments": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.roleAssignments, createArray())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'roleAssignments'), createArray())]"
           },
           "scaleUnits": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.bastionHost.scaleUnits, 4)]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'bastionHost'), 'scaleUnits'), 4)]"
           },
           "skuName": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.bastionHost.skuName, 'Standard')]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'bastionHost'), 'skuName'), 'Standard')]"
           },
           "tags": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.tags, createObject())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'tags'), createObject())]"
           }
         },
         "template": {
@@ -3989,67 +3989,67 @@
             "value": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key]"
           },
           "hubIPAddresses": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.azureFirewallSettings.hubIpAddresses, createObject())]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'hubIpAddresses'), createObject())]"
           },
           "virtualHubId": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.azureFirewallSettings.virtualHub, '')]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'virtualHub'), '')]"
           },
           "virtualNetworkResourceId": {
             "value": "[coalesce(reference(format('hubVirtualNetwork[{0}]', copyIndex())).outputs.resourceId.value, '')]"
           },
           "additionalPublicIpConfigurations": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.azureFirewallSettings.additionalPublicIpConfigurations, createArray())]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'additionalPublicIpConfigurations'), createArray())]"
           },
           "applicationRuleCollections": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.azureFirewallSettings.applicationRuleCollections, createArray())]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'applicationRuleCollections'), createArray())]"
           },
           "azureSkuTier": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.azureFirewallSettings.azureSkuTier, createObject())]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'azureSkuTier'), createObject())]"
           },
           "diagnosticSettings": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.diagnosticSettings, createArray())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'diagnosticSettings'), createArray())]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableTelemetry, true())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'enableTelemetry'), true())]"
           },
           "firewallPolicyId": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.azureFirewallSettings.firewallPolicyId, '')]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'firewallPolicyId'), '')]"
           },
           "location": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.location, parameters('location'))]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'location'), parameters('location'))]"
           },
           "lock": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.lock, createObject())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'lock'), createObject())]"
           },
           "managementIPAddressObject": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.azureFirewallSettings.managementIPAddressObject, '')]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'managementIPAddressObject'), createObject())]"
           },
           "managementIPResourceID": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.azureFirewallSettings.managementIPResourceID, '')]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'managementIPResourceID'), '')]"
           },
           "natRuleCollections": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.azureFirewallSettings.natRuleCollections, createArray())]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'natRuleCollections'), createArray())]"
           },
           "networkRuleCollections": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.azureFirewallSettings.networkRuleCollections, createArray())]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'networkRuleCollections'), createArray())]"
           },
           "publicIPAddressObject": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.azureFirewallSettings.publicIPAddressObject, createObject())]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'publicIPAddressObject'), createObject())]"
           },
           "publicIPResourceID": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.azureFirewallSettings.publicIPResourceID, '')]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'publicIPResourceID'), '')]"
           },
           "roleAssignments": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.roleAssignments, createArray())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'roleAssignments'), createArray())]"
           },
           "tags": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.tags, createObject())]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'tags'), createObject())]"
           },
           "threatIntelMode": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.azureFirewallSettings.threatIntelMode, '')]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'threatIntelMode'), '')]"
           },
           "zones": {
-            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.azureFirewallSettings.zones, createArray())]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'zones'), createArray())]"
           }
         },
         "template": {

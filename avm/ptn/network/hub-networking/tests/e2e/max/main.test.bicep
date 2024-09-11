@@ -64,28 +64,13 @@ module testDeployment '../../../main.bicep' = [
         hub1: {
           addressPrefixes: array(addressPrefix)
           azureFirewallSettings: {
-            hubIpAddresses: {}
-            virtualHub: ''
-            additionalPublicIpConfigurations: []
-            applicationRuleCollections: []
             azureSkuTier: 'Standard'
-            diagnosticSettings: []
             enableTelemetry: true
-            firewallPolicyId: ''
             location: resourceLocation
-            lock: {}
-            managementIPAddressObject: {}
-            managementIPResourceID: ''
-            natRuleCollections: []
-            networkRuleCollections: []
             publicIPAddressObject: {
               name: 'hub1-waf-pip'
             }
-            publicIPResourceID: ''
-            roleAssignments: []
-            tags: {}
             threatIntelMode: 'Alert'
-            zones: []
           }
           bastionHost: {
             disableCopyPaste: true
@@ -95,7 +80,6 @@ module testDeployment '../../../main.bicep' = [
             scaleUnits: 2
             skuName: 'Standard'
           }
-          ddosProtectionPlanResourceId: ''
           dnsServers: ['10.0.1.4', '10.0.1.5']
           diagnosticSettings: [
             {
@@ -130,7 +114,6 @@ module testDeployment '../../../main.bicep' = [
               remoteVirtualNetworkName: 'hub2'
             }
           ]
-          roleAssignments: []
           routes: [
             {
               name: 'defaultRoute'
@@ -165,26 +148,12 @@ module testDeployment '../../../main.bicep' = [
         hub2: {
           addressPrefixes: array(addressPrefix2)
           azureFirewallSettings: {
-            hubIpAddresses: {}
-            virtualHub: ''
-            additionalPublicIpConfigurations: []
-            applicationRuleCollections: []
             azureSkuTier: 'Standard'
-            diagnosticSettings: []
             enableTelemetry: true
-            firewallPolicyId: ''
             location: resourceLocation
-            lock: {}
-            managementIPAddressObject: {}
-            managementIPResourceID: ''
-            natRuleCollections: []
-            networkRuleCollections: []
             publicIPAddressObject: {
               name: 'hub2-waf-pip'
             }
-            publicIPResourceID: ''
-            roleAssignments: []
-            tags: {}
             threatIntelMode: 'Alert'
             zones: [
               1
@@ -200,9 +169,6 @@ module testDeployment '../../../main.bicep' = [
             scaleUnits: 2
             skuName: 'Standard'
           }
-          ddosProtectionPlanResourceId: ''
-          dnsServers: []
-          diagnosticSettings: []
           enableAzureFirewall: true
           enableBastion: true
           enablePeering: false
@@ -222,7 +188,6 @@ module testDeployment '../../../main.bicep' = [
               remoteVirtualNetworkName: 'hub1'
             }
           ]
-          roleAssignments: []
           routes: [
             {
               name: 'defaultRoute'

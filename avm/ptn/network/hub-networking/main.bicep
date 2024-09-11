@@ -17,7 +17,7 @@ param hubVirtualNetworks hubVirtualNetworkType
 
 //
 // Add your variables here
-var hubVirtualNetworkPeerings = [for (hub, index) in items(hubVirtualNetworks ?? {}): hub.value.peeringSettings ?? []]
+var hubVirtualNetworkPeerings = [for (hub, index) in items(hubVirtualNetworks ?? {}): hub.value.?peeringSettings ?? []]
 
 // ============== //
 // Resources      //
@@ -50,18 +50,18 @@ module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.4.0' = [
       name: hub.key
       addressPrefixes: hub.value.addressPrefixes
       // Non-required parameters
-      ddosProtectionPlanResourceId: hub.value.ddosProtectionPlanResourceId ?? ''
-      diagnosticSettings: hub.value.diagnosticSettings ?? []
-      dnsServers: hub.value.dnsServers ?? []
-      enableTelemetry: hub.value.enableTelemetry ?? true
-      flowTimeoutInMinutes: hub.value.flowTimeoutInMinutes ?? 0
-      location: hub.value.location ?? ''
-      lock: hub.value.lock ?? {}
-      roleAssignments: hub.value.roleAssignments ?? []
-      subnets: hub.value.subnets ?? []
-      tags: hub.value.tags ?? {}
-      vnetEncryption: hub.value.vnetEncryption ?? false
-      vnetEncryptionEnforcement: hub.value.vnetEncryptionEnforcement ?? ''
+      ddosProtectionPlanResourceId: hub.value.?ddosProtectionPlanResourceId ?? ''
+      diagnosticSettings: hub.value.?diagnosticSettings ?? []
+      dnsServers: hub.value.?dnsServers ?? []
+      enableTelemetry: hub.value.?enableTelemetry ?? true
+      flowTimeoutInMinutes: hub.value.?flowTimeoutInMinutes ?? 0
+      location: hub.value.?location ?? ''
+      lock: hub.value.?lock ?? {}
+      roleAssignments: hub.value.?roleAssignments ?? []
+      subnets: hub.value.?subnets ?? []
+      tags: hub.value.?tags ?? {}
+      vnetEncryption: hub.value.?vnetEncryption ?? false
+      vnetEncryptionEnforcement: hub.value.?vnetEncryptionEnforcement ?? ''
     }
   }
 ]
@@ -112,12 +112,12 @@ module hubRouteTable 'br/public:avm/res/network/route-table:0.4.0' = [
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nrt'
     params: {
       name: hub.key
-      location: hub.value.location ?? location
+      location: hub.value.?location ?? location
       disableBgpRoutePropagation: true
-      enableTelemetry: hub.value.enableTelemetry ?? true
-      roleAssignments: hub.value.roleAssignments ?? []
-      routes: hub.value.routes ?? []
-      tags: hub.value.tags ?? {}
+      enableTelemetry: hub.value.?enableTelemetry ?? true
+      roleAssignments: hub.value.?roleAssignments ?? []
+      routes: hub.value.?routes ?? []
+      tags: hub.value.?tags ?? {}
     }
     dependsOn: hubVirtualNetwork
   }
@@ -147,17 +147,17 @@ module hubBastion 'br/public:avm/res/network/bastion-host:0.4.0' = [
       name: hub.key
       virtualNetworkResourceId: hubVirtualNetwork[index].outputs.resourceId
       // Non-required parameters
-      diagnosticSettings: hub.value.diagnosticSettings ?? []
-      disableCopyPaste: hub.value.bastionHost.disableCopyPaste ?? true
-      enableFileCopy: hub.value.bastionHost.enableFileCopy ?? false
-      enableIpConnect: hub.value.bastionHost.enableIpConnect ?? false
-      enableShareableLink: hub.value.bastionHost.enableShareableLink ?? false
-      location: hub.value.location ?? location
-      enableTelemetry: hub.value.enableTelemetry ?? true
-      roleAssignments: hub.value.roleAssignments ?? []
-      scaleUnits: hub.value.bastionHost.scaleUnits ?? 4
-      skuName: hub.value.bastionHost.skuName ?? 'Standard'
-      tags: hub.value.tags ?? {}
+      diagnosticSettings: hub.value.?diagnosticSettings ?? []
+      disableCopyPaste: hub.value.?bastionHost.?disableCopyPaste ?? true
+      enableFileCopy: hub.value.?bastionHost.?enableFileCopy ?? false
+      enableIpConnect: hub.value.?bastionHost.?enableIpConnect ?? false
+      enableShareableLink: hub.value.?bastionHost.?enableShareableLink ?? false
+      location: hub.value.?location ?? location
+      enableTelemetry: hub.value.?enableTelemetry ?? true
+      roleAssignments: hub.value.?roleAssignments ?? []
+      scaleUnits: hub.value.?bastionHost.?scaleUnits ?? 4
+      skuName: hub.value.?bastionHost.?skuName ?? 'Standard'
+      tags: hub.value.?tags ?? {}
     }
     dependsOn: hubVirtualNetwork
   }
@@ -172,28 +172,28 @@ module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.5.0' = [
       // Required parameters
       name: hub.key
       // Conditional parameters
-      hubIPAddresses: hub.value.azureFirewallSettings.hubIpAddresses ?? {}
-      virtualHubId: hub.value.azureFirewallSettings.virtualHub ?? ''
+      hubIPAddresses: hub.value.?azureFirewallSettings.?hubIpAddresses ?? {}
+      virtualHubId: hub.value.?azureFirewallSettings.?virtualHub ?? ''
       virtualNetworkResourceId: hubVirtualNetwork[index].outputs.resourceId ?? ''
       // Non-required parameters
-      additionalPublicIpConfigurations: hub.value.azureFirewallSettings.additionalPublicIpConfigurations ?? []
-      applicationRuleCollections: hub.value.azureFirewallSettings.applicationRuleCollections ?? []
-      azureSkuTier: hub.value.azureFirewallSettings.azureSkuTier ?? {}
-      diagnosticSettings: hub.value.diagnosticSettings ?? []
-      enableTelemetry: hub.value.enableTelemetry ?? true
-      firewallPolicyId: hub.value.azureFirewallSettings.firewallPolicyId ?? ''
-      location: hub.value.location ?? location
-      lock: hub.value.lock ?? {}
-      managementIPAddressObject: hub.value.azureFirewallSettings.managementIPAddressObject ?? ''
-      managementIPResourceID: hub.value.azureFirewallSettings.managementIPResourceID ?? ''
-      natRuleCollections: hub.value.azureFirewallSettings.natRuleCollections ?? []
-      networkRuleCollections: hub.value.azureFirewallSettings.networkRuleCollections ?? []
-      publicIPAddressObject: hub.value.azureFirewallSettings.publicIPAddressObject ?? {}
-      publicIPResourceID: hub.value.azureFirewallSettings.publicIPResourceID ?? ''
-      roleAssignments: hub.value.roleAssignments ?? []
-      tags: hub.value.tags ?? {}
-      threatIntelMode: hub.value.azureFirewallSettings.threatIntelMode ?? ''
-      zones: hub.value.azureFirewallSettings.zones ?? []
+      additionalPublicIpConfigurations: hub.value.?azureFirewallSettings.?additionalPublicIpConfigurations ?? []
+      applicationRuleCollections: hub.value.?azureFirewallSettings.?applicationRuleCollections ?? []
+      azureSkuTier: hub.value.?azureFirewallSettings.?azureSkuTier ?? {}
+      diagnosticSettings: hub.value.?diagnosticSettings ?? []
+      enableTelemetry: hub.value.?enableTelemetry ?? true
+      firewallPolicyId: hub.value.?azureFirewallSettings.?firewallPolicyId ?? ''
+      location: hub.value.?location ?? location
+      lock: hub.value.?lock ?? {}
+      managementIPAddressObject: hub.value.?azureFirewallSettings.?managementIPAddressObject ?? {}
+      managementIPResourceID: hub.value.?azureFirewallSettings.?managementIPResourceID ?? ''
+      natRuleCollections: hub.value.?azureFirewallSettings.?natRuleCollections ?? []
+      networkRuleCollections: hub.value.?azureFirewallSettings.?networkRuleCollections ?? []
+      publicIPAddressObject: hub.value.?azureFirewallSettings.?publicIPAddressObject ?? {}
+      publicIPResourceID: hub.value.?azureFirewallSettings.?publicIPResourceID ?? ''
+      roleAssignments: hub.value.?roleAssignments ?? []
+      tags: hub.value.?tags ?? {}
+      threatIntelMode: hub.value.?azureFirewallSettings.?threatIntelMode ?? ''
+      zones: hub.value.?azureFirewallSettings.?zones ?? []
     }
     dependsOn: hubVirtualNetwork
   }

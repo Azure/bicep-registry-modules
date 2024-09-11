@@ -97,28 +97,13 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
       hub1: {
         addressPrefixes: '<addressPrefixes>'
         azureFirewallSettings: {
-          additionalPublicIpConfigurations: []
-          applicationRuleCollections: []
           azureSkuTier: 'Standard'
-          diagnosticSettings: []
           enableTelemetry: true
-          firewallPolicyId: ''
-          hubIpAddresses: {}
           location: '<location>'
-          lock: {}
-          managementIPAddressObject: {}
-          managementIPResourceID: ''
-          natRuleCollections: []
-          networkRuleCollections: []
           publicIPAddressObject: {
             name: 'hub1-waf-pip'
           }
-          publicIPResourceID: ''
-          roleAssignments: []
-          tags: {}
           threatIntelMode: 'Alert'
-          virtualHub: ''
-          zones: []
         }
         bastionHost: {
           disableCopyPaste: true
@@ -128,7 +113,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           scaleUnits: 2
           skuName: 'Standard'
         }
-        ddosProtectionPlanResourceId: ''
         diagnosticSettings: [
           {
             eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -166,7 +150,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             useRemoteGateways: false
           }
         ]
-        roleAssignments: []
         routes: [
           {
             name: 'defaultRoute'
@@ -201,27 +184,13 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
       hub2: {
         addressPrefixes: '<addressPrefixes>'
         azureFirewallSettings: {
-          additionalPublicIpConfigurations: []
-          applicationRuleCollections: []
           azureSkuTier: 'Standard'
-          diagnosticSettings: []
           enableTelemetry: true
-          firewallPolicyId: ''
-          hubIpAddresses: {}
           location: '<location>'
-          lock: {}
-          managementIPAddressObject: {}
-          managementIPResourceID: ''
-          natRuleCollections: []
-          networkRuleCollections: []
           publicIPAddressObject: {
             name: 'hub2-waf-pip'
           }
-          publicIPResourceID: ''
-          roleAssignments: []
-          tags: {}
           threatIntelMode: 'Alert'
-          virtualHub: ''
           zones: [
             1
             2
@@ -236,9 +205,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           scaleUnits: 2
           skuName: 'Standard'
         }
-        ddosProtectionPlanResourceId: ''
-        diagnosticSettings: []
-        dnsServers: []
         enableAzureFirewall: true
         enableBastion: true
         enablePeering: false
@@ -258,7 +224,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             useRemoteGateways: false
           }
         ]
-        roleAssignments: []
         routes: [
           {
             name: 'defaultRoute'
@@ -313,28 +278,13 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         "hub1": {
           "addressPrefixes": "<addressPrefixes>",
           "azureFirewallSettings": {
-            "additionalPublicIpConfigurations": [],
-            "applicationRuleCollections": [],
             "azureSkuTier": "Standard",
-            "diagnosticSettings": [],
             "enableTelemetry": true,
-            "firewallPolicyId": "",
-            "hubIpAddresses": {},
             "location": "<location>",
-            "lock": {},
-            "managementIPAddressObject": {},
-            "managementIPResourceID": "",
-            "natRuleCollections": [],
-            "networkRuleCollections": [],
             "publicIPAddressObject": {
               "name": "hub1-waf-pip"
             },
-            "publicIPResourceID": "",
-            "roleAssignments": [],
-            "tags": {},
-            "threatIntelMode": "Alert",
-            "virtualHub": "",
-            "zones": []
+            "threatIntelMode": "Alert"
           },
           "bastionHost": {
             "disableCopyPaste": true,
@@ -344,7 +294,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "scaleUnits": 2,
             "skuName": "Standard"
           },
-          "ddosProtectionPlanResourceId": "",
           "diagnosticSettings": [
             {
               "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -382,7 +331,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
               "useRemoteGateways": false
             }
           ],
-          "roleAssignments": [],
           "routes": [
             {
               "name": "defaultRoute",
@@ -417,27 +365,13 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         "hub2": {
           "addressPrefixes": "<addressPrefixes>",
           "azureFirewallSettings": {
-            "additionalPublicIpConfigurations": [],
-            "applicationRuleCollections": [],
             "azureSkuTier": "Standard",
-            "diagnosticSettings": [],
             "enableTelemetry": true,
-            "firewallPolicyId": "",
-            "hubIpAddresses": {},
             "location": "<location>",
-            "lock": {},
-            "managementIPAddressObject": {},
-            "managementIPResourceID": "",
-            "natRuleCollections": [],
-            "networkRuleCollections": [],
             "publicIPAddressObject": {
               "name": "hub2-waf-pip"
             },
-            "publicIPResourceID": "",
-            "roleAssignments": [],
-            "tags": {},
             "threatIntelMode": "Alert",
-            "virtualHub": "",
             "zones": [
               1,
               2,
@@ -452,9 +386,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "scaleUnits": 2,
             "skuName": "Standard"
           },
-          "ddosProtectionPlanResourceId": "",
-          "diagnosticSettings": [],
-          "dnsServers": [],
           "enableAzureFirewall": true,
           "enableBastion": true,
           "enablePeering": false,
@@ -474,7 +405,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
               "useRemoteGateways": false
             }
           ],
-          "roleAssignments": [],
           "routes": [
             {
               "name": "defaultRoute",
@@ -535,27 +465,13 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
       hub1: {
         addressPrefixes: '<addressPrefixes>'
         azureFirewallSettings: {
-          additionalPublicIpConfigurations: []
-          applicationRuleCollections: []
           azureSkuTier: 'Standard'
-          diagnosticSettings: []
           enableTelemetry: true
-          firewallPolicyId: ''
-          hubIpAddresses: {}
           location: '<location>'
-          lock: {}
-          managementIPAddressObject: {}
-          managementIPResourceID: ''
-          natRuleCollections: []
-          networkRuleCollections: []
           publicIPAddressObject: {
             name: 'hub1PublicIp'
           }
-          publicIPResourceID: ''
-          roleAssignments: []
-          tags: {}
           threatIntelMode: 'Alert'
-          virtualHub: ''
           zones: [
             1
             2
@@ -570,7 +486,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           scaleUnits: 2
           skuName: 'Standard'
         }
-        ddosProtectionPlanResourceId: ''
         diagnosticSettings: [
           {
             eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -599,8 +514,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           kind: 'CanNotDelete'
           name: 'hub1Lock'
         }
-        peeringSettings: []
-        roleAssignments: []
         routes: [
           {
             name: 'defaultRoute'
@@ -655,27 +568,13 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         "hub1": {
           "addressPrefixes": "<addressPrefixes>",
           "azureFirewallSettings": {
-            "additionalPublicIpConfigurations": [],
-            "applicationRuleCollections": [],
             "azureSkuTier": "Standard",
-            "diagnosticSettings": [],
             "enableTelemetry": true,
-            "firewallPolicyId": "",
-            "hubIpAddresses": {},
             "location": "<location>",
-            "lock": {},
-            "managementIPAddressObject": {},
-            "managementIPResourceID": "",
-            "natRuleCollections": [],
-            "networkRuleCollections": [],
             "publicIPAddressObject": {
               "name": "hub1PublicIp"
             },
-            "publicIPResourceID": "",
-            "roleAssignments": [],
-            "tags": {},
             "threatIntelMode": "Alert",
-            "virtualHub": "",
             "zones": [
               1,
               2,
@@ -690,7 +589,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "scaleUnits": 2,
             "skuName": "Standard"
           },
-          "ddosProtectionPlanResourceId": "",
           "diagnosticSettings": [
             {
               "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -719,8 +617,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "kind": "CanNotDelete",
             "name": "hub1Lock"
           },
-          "peeringSettings": [],
-          "roleAssignments": [],
           "routes": [
             {
               "name": "defaultRoute",

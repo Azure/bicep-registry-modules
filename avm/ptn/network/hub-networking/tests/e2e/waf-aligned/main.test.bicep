@@ -63,26 +63,12 @@ module testDeployment '../../../main.bicep' = [
         hub1: {
           addressPrefixes: array(addressPrefix)
           azureFirewallSettings: {
-            hubIpAddresses: {}
-            virtualHub: ''
-            additionalPublicIpConfigurations: []
-            applicationRuleCollections: []
             azureSkuTier: 'Standard'
-            diagnosticSettings: []
             enableTelemetry: true
-            firewallPolicyId: ''
             location: resourceLocation
-            lock: {}
-            managementIPAddressObject: {}
-            managementIPResourceID: ''
-            natRuleCollections: []
-            networkRuleCollections: []
             publicIPAddressObject: {
               name: 'hub1PublicIp'
             }
-            publicIPResourceID: ''
-            roleAssignments: []
-            tags: {}
             threatIntelMode: 'Alert'
             zones: [
               1
@@ -103,7 +89,6 @@ module testDeployment '../../../main.bicep' = [
           enablePeering: false
           enableTelemetry: true
           flowTimeoutInMinutes: 30
-          ddosProtectionPlanResourceId: ''
           dnsServers: ['10.0.1.6', '10.0.1.7']
           diagnosticSettings: [
             {
@@ -124,8 +109,6 @@ module testDeployment '../../../main.bicep' = [
             kind: 'CanNotDelete'
             name: 'hub1Lock'
           }
-          peeringSettings: []
-          roleAssignments: []
           routes: [
             {
               name: 'defaultRoute'
