@@ -63,7 +63,7 @@ module testDeployment '../../../main.bicep' = [
         3
       ]
       clusterSettings: {
-        clusterMode:'activePassiveNoBgp'
+        clusterMode:'activeActiveNoBgp'
       }
     }
     dependsOn: [

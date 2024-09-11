@@ -428,9 +428,7 @@ resource virtualNetworkGateway_roleAssignments 'Microsoft.Authorization/roleAssi
   for (roleAssignment, index) in (roleAssignments ?? []): {
     name: guid(virtualNetworkGateway.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+      roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? contains(roleAssignment.?roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
             ? roleAssignment.roleDefinitionIdOrName
             : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
       principalId: roleAssignment.principalId
