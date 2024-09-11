@@ -357,7 +357,7 @@ module applicationInsights 'br/public:avm/ptn/azd/insights-dashboard:0.1.0' = if
     tags: tags
     name: applicationInsightsName
     dashboardName: applicationInsightsDashboardName
-    logAnalyticsWorkspaceResourceId: !empty(logAnalyticsName) ? logAnalytics.outputs.logAnalyticsWorkspaceId : ''
+    logAnalyticsWorkspaceResourceId: !empty(logAnalyticsName) ? logAnalytics.outputs.resourceId : ''
   }
 }
 
@@ -451,7 +451,7 @@ output searchServiceResourceId string = !empty(searchServiceName) ? searchServic
 output searchServiceName string = !empty(searchServiceName) ? searchService.outputs.name : ''
 
 @description('The endpoint of the search service.')
-output searchServiceEndpoint string = !empty(searchServiceName) ? searchService.outputs.privateEndpoints[0] : ''
+output searchServiceEndpoint string = !empty(searchServiceName) ? 'https://${searchService.outputs.name}.search.windows.net/' : ''
 
 @description('The connection string of the application insights.')
 output applicationInsightsConnectionString string = !empty(applicationInsightsName) ? applicationInsights.outputs.applicationInsightsConnectionString : ''

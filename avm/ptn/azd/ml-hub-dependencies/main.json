@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "6125610411467047321"
+      "templateHash": "6799127393431161652"
     },
     "name": "Azure Machine Learning Dependencies",
     "description": "Creates all the dependencies required for a Machine Learning Service.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
@@ -11853,7 +11853,7 @@
           "dashboardName": {
             "value": "[parameters('applicationInsightsDashboardName')]"
           },
-          "logAnalyticsWorkspaceResourceId": "[if(not(empty(parameters('logAnalyticsName'))), createObject('value', reference('logAnalytics').outputs.logAnalyticsWorkspaceId.value), createObject('value', ''))]"
+          "logAnalyticsWorkspaceResourceId": "[if(not(empty(parameters('logAnalyticsName'))), createObject('value', reference('logAnalytics').outputs.resourceId.value), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -18690,7 +18690,7 @@
       "metadata": {
         "description": "The endpoint of the search service."
       },
-      "value": "[if(not(empty(parameters('searchServiceName'))), reference('searchService').outputs.privateEndpoints.value[0], '')]"
+      "value": "[if(not(empty(parameters('searchServiceName'))), format('https://{0}.search.windows.net/', reference('searchService').outputs.name.value), '')]"
     },
     "applicationInsightsConnectionString": {
       "type": "string",

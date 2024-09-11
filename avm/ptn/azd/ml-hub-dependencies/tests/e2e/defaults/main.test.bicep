@@ -15,10 +15,13 @@ param resourceGroupName string = 'dep-${namePrefix}-azd-ml-hub-dependencies-${se
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'mhdpmin'
+param serviceShort string = 'hubdmin'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
 
 // ============ //
 // Dependencies //
@@ -40,9 +43,9 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      cognitiveServicesName: '${namePrefix}${serviceShort}cog001'
-      keyVaultName: '${namePrefix}${serviceShort}kv001'
-      storageAccountName: '${namePrefix}${serviceShort}sa001'
+      cognitiveServicesName: '${namePrefix}cs4${serviceShort}'
+      keyVaultName: '${namePrefix}kv4${serviceShort}'
+      storageAccountName: '${namePrefix}st4${serviceShort}'
     }
   }
 ]
