@@ -56,7 +56,7 @@ module testDeployment '../../../main.bicep' = [
       gatewayType: 'ExpressRoute'
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
       clusterSettings:{
-        clusterMode: 'activeActiveBgp'
+        clusterMode: 'activePassiveBgp'
       }
       domainNameLabel: [
         '${namePrefix}-dm-${serviceShort}'

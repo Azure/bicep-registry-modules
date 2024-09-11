@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "16587767882579216818"
+      "templateHash": "11444465642666169814"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -595,13 +595,14 @@
       }
     ],
     "gatewayPipAllocationMethod": "[if(equals(parameters('skuName'), 'Basic'), 'Dynamic', 'Static')]",
-    "activeActive": "[or(equals(parameters('clusterSettings').clusterMode, 'activeActiveNoBgp'), equals(parameters('clusterSettings').clusterMode, 'activeActiveBgp'))]",
-    "isBgp": "[or(equals(parameters('clusterSettings').clusterMode, 'activeActiveBgp'), equals(parameters('clusterSettings').clusterMode, 'activePassiveBgp'))]",
-    "isActiveActiveValid": "[if(not(equals(parameters('gatewayType'), 'ExpressRoute')), variables('activeActive'), false())]",
-    "virtualGatewayPipNameVar": "[if(variables('isActiveActiveValid'), createArray(parameters('gatewayPipName'), coalesce(tryGet(parameters('clusterSettings'), 'activeGatewayPipName'), format('{0}-pip2', parameters('name')))), createArray(parameters('gatewayPipName')))]",
-    "vpnTypeVar": "[if(not(equals(parameters('gatewayType'), 'ExpressRoute')), parameters('vpnType'), 'PolicyBased')]",
-    "bgpSettingsVar": "[if(variables('isActiveActiveValid'), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))), createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'secondCustomBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig2', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))))]",
-    "ipConfiguration": "[if(variables('isActiveActiveValid'), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName')))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', if(variables('isActiveActiveValid'), resourceId('Microsoft.Network/publicIPAddresses', parameters('clusterSettings').activeGatewayPipName), resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName'))))), 'name', 'vNetGatewayConfig2')), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName')))), 'name', 'vNetGatewayConfig1')))]",
+    "isExpressRoute": "[equals(parameters('gatewayType'), 'ExpressRoute')]",
+    "vpnTypeVar": "[if(not(variables('isExpressRoute')), parameters('vpnType'), 'PolicyBased')]",
+    "isBgp": "[and(or(equals(parameters('clusterSettings').clusterMode, 'activeActiveBgp'), equals(parameters('clusterSettings').clusterMode, 'activePassiveBgp')), not(variables('isExpressRoute')))]",
+    "isActiveActive": "[and(or(equals(parameters('clusterSettings').clusterMode, 'activeActiveNoBgp'), equals(parameters('clusterSettings').clusterMode, 'activeActiveBgp')), not(variables('isExpressRoute')))]",
+    "activeGatewayPipNameVar": "[if(variables('isActiveActive'), coalesce(tryGet(parameters('clusterSettings'), 'activeGatewayPipName'), format('{0}-pip2', parameters('name'))), null())]",
+    "virtualGatewayPipNameVar": "[if(variables('isActiveActive'), createArray(parameters('gatewayPipName'), variables('activeGatewayPipNameVar')), createArray(parameters('gatewayPipName')))]",
+    "bgpSettingsVar": "[if(variables('isActiveActive'), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))), createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'secondCustomBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig2', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))))]",
+    "ipConfiguration": "[if(variables('isActiveActive'), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName')))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', if(variables('isActiveActive'), resourceId('Microsoft.Network/publicIPAddresses', variables('activeGatewayPipNameVar')), resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName'))))), 'name', 'vNetGatewayConfig2')), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName')))), 'name', 'vNetGatewayConfig1')))]",
     "vpnClientConfiguration": "[if(not(empty(parameters('clientRootCertData'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'vpnClientRootCertificates', createArray(createObject('name', 'RootCert1', 'properties', createObject('publicCertData', parameters('clientRootCertData')))), 'vpnClientRevokedCertificates', if(not(empty(parameters('clientRevokedCertThumbprint'))), createArray(createObject('name', 'RevokedCert1', 'properties', createObject('thumbprint', parameters('clientRevokedCertThumbprint')))), null())), if(not(empty(parameters('vpnClientAadConfiguration'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'aadTenant', parameters('vpnClientAadConfiguration').aadTenant, 'aadAudience', parameters('vpnClientAadConfiguration').aadAudience, 'aadIssuer', parameters('vpnClientAadConfiguration').aadIssuer, 'vpnAuthenticationTypes', parameters('vpnClientAadConfiguration').vpnAuthenticationTypes, 'vpnClientProtocols', parameters('vpnClientAadConfiguration').vpnClientProtocols), null()))]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -641,13 +642,13 @@
       "tags": "[parameters('tags')]",
       "properties": {
         "ipConfigurations": "[variables('ipConfiguration')]",
-        "activeActive": "[variables('isActiveActiveValid')]",
+        "activeActive": "[variables('isActiveActive')]",
         "allowRemoteVnetTraffic": "[parameters('allowRemoteVnetTraffic')]",
         "allowVirtualWanTraffic": "[parameters('allowVirtualWanTraffic')]",
         "enableBgp": "[variables('isBgp')]",
         "bgpSettings": "[if(variables('isBgp'), variables('bgpSettingsVar'), null())]",
         "disableIPSecReplayProtection": "[parameters('disableIPSecReplayProtection')]",
-        "enableDnsForwarding": "[if(equals(parameters('gatewayType'), 'ExpressRoute'), parameters('enableDnsForwarding'), null())]",
+        "enableDnsForwarding": "[if(not(variables('isExpressRoute')), parameters('enableDnsForwarding'), null())]",
         "enablePrivateIpAddress": "[parameters('enablePrivateIpAddress')]",
         "enableBgpRouteTranslationForNat": "[parameters('enableBgpRouteTranslationForNat')]",
         "gatewayType": "[parameters('gatewayType')]",

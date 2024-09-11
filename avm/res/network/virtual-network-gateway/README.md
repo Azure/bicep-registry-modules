@@ -860,7 +860,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   params: {
     // Required parameters
     clusterSettings: {
-      clusterMode: 'activeActiveBgp'
+      clusterMode: 'activePassiveBgp'
     }
     gatewayType: 'ExpressRoute'
     name: 'nvger001'
@@ -896,7 +896,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     // Required parameters
     "clusterSettings": {
       "value": {
-        "clusterMode": "activeActiveBgp"
+        "clusterMode": "activePassiveBgp"
       }
     },
     "gatewayType": {

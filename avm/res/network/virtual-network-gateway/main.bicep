@@ -133,14 +133,17 @@ var zones = [for zone in publicIpZones: string(zone)]
 
 var gatewayPipAllocationMethod = skuName == 'Basic' ? 'Dynamic' : 'Static'
 
-var activeActive = clusterSettings.clusterMode == 'activeActiveNoBgp' || clusterSettings.clusterMode == 'activeActiveBgp'
-var isBgp = clusterSettings.clusterMode == 'activeActiveBgp' || clusterSettings.clusterMode == 'activePassiveBgp'
+var isExpressRoute = gatewayType == 'ExpressRoute'
 
-var isActiveActiveValid = gatewayType != 'ExpressRoute' ? activeActive : false
+var vpnTypeVar = !isExpressRoute ? vpnType : 'PolicyBased'
 
-var activeGatewayPipNameVar = isActiveActiveValid ? clusterSettings.?activeGatewayPipName ?? '${name}-pip2' : null
+var isBgp = (clusterSettings.clusterMode == 'activeActiveBgp' || clusterSettings.clusterMode == 'activePassiveBgp') && !isExpressRoute
 
-var virtualGatewayPipNameVar = isActiveActiveValid
+var isActiveActive = (clusterSettings.clusterMode == 'activeActiveNoBgp' || clusterSettings.clusterMode == 'activeActiveBgp') && !isExpressRoute
+
+var activeGatewayPipNameVar = isActiveActive ? clusterSettings.?activeGatewayPipName ?? '${name}-pip2' : null
+
+var virtualGatewayPipNameVar = isActiveActive
   ? [
       gatewayPipName
       activeGatewayPipNameVar
@@ -149,11 +152,8 @@ var virtualGatewayPipNameVar = isActiveActiveValid
       gatewayPipName
     ]
 
-var vpnTypeVar = gatewayType != 'ExpressRoute' ? vpnType : 'PolicyBased'
-
-
-// Potential configurations (active-active vs active-passive)
-var bgpSettingsVar = isActiveActiveValid
+// Potential BGP configurations (active-active vs active-passive)
+var bgpSettingsVar = isActiveActive
   ? {
       asn: clusterSettings.?asn ?? 65515
       bgpPeeringAddresses: [
@@ -178,8 +178,8 @@ var bgpSettingsVar = isActiveActiveValid
     }
 
 
-// Potential configurations (active-active vs active-passive)
-var ipConfiguration = isActiveActiveValid
+// Potential IP configurations (active-active vs active-passive)
+var ipConfiguration = isActiveActive
   ? [
       {
         properties: {
@@ -200,7 +200,7 @@ var ipConfiguration = isActiveActiveValid
             id: '${vNetResourceId}/subnets/GatewaySubnet'
           }
           publicIPAddress: {
-            id: isActiveActiveValid
+            id: isActiveActive
               ? az.resourceId('Microsoft.Network/publicIPAddresses', activeGatewayPipNameVar)
               : az.resourceId('Microsoft.Network/publicIPAddresses', gatewayPipName)
           }
@@ -341,13 +341,13 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2023-04
   tags: tags
   properties: {
     ipConfigurations: ipConfiguration
-    activeActive: isActiveActiveValid
+    activeActive: isActiveActive
     allowRemoteVnetTraffic: allowRemoteVnetTraffic
     allowVirtualWanTraffic: allowVirtualWanTraffic
     enableBgp: isBgp
     bgpSettings: isBgp ? bgpSettingsVar : null
     disableIPSecReplayProtection: disableIPSecReplayProtection
-    enableDnsForwarding: gatewayType == 'ExpressRoute' ? enableDnsForwarding : null
+    enableDnsForwarding: !isExpressRoute ? enableDnsForwarding : null
     enablePrivateIpAddress: enablePrivateIpAddress
     enableBgpRouteTranslationForNat: enableBgpRouteTranslationForNat
     gatewayType: gatewayType
