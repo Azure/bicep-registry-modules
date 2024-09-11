@@ -41,7 +41,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      cognitiveServicesName: '${namePrefix}${serviceShort}cs001'
+      cognitiveServicesName: '${namePrefix}${serviceShort}cs002'
       keyVaultName: '${namePrefix}${serviceShort}kv001'
       storageAccountName: '${namePrefix}${serviceShort}sa001'
       applicationInsightsDashboardName: '${namePrefix}${serviceShort}dosh001'
@@ -49,15 +49,6 @@ module testDeployment '../../../main.bicep' = [
       logAnalyticsName: '${namePrefix}${serviceShort}log001'
       containerRegistryName: '${namePrefix}${serviceShort}cr001'
       searchServiceName: '${namePrefix}${serviceShort}ser001'
-      cognitiveServicesDeployments: [
-        {
-          model: {
-            name: 'gtp-35-turbo'
-            format: 'OpenAI'
-            version: '0613'
-          }
-        }
-      ]
     }
   }
 ]

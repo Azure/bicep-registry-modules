@@ -40,7 +40,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      cognitiveServicesName: '${namePrefix}${serviceShort}cs001'
+      cognitiveServicesName: '${namePrefix}${serviceShort}cog001'
       keyVaultName: '${namePrefix}${serviceShort}kv001'
       storageAccountName: '${namePrefix}${serviceShort}sa001'
     }

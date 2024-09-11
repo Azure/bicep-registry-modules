@@ -88,7 +88,7 @@ module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' =
   name: 'mlHubDependenciesDeployment'
   params: {
     // Required parameters
-    cognitiveServicesName: 'mhdpmincs001'
+    cognitiveServicesName: 'mhdpmincog001'
     keyVaultName: 'mhdpminkv001'
     storageAccountName: 'mhdpminsa001'
   }
@@ -109,7 +109,7 @@ module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' =
   "parameters": {
     // Required parameters
     "cognitiveServicesName": {
-      "value": "mhdpmincs001"
+      "value": "mhdpmincog001"
     },
     "keyVaultName": {
       "value": "mhdpminkv001"
@@ -138,21 +138,12 @@ module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' =
   name: 'mlHubDependenciesDeployment'
   params: {
     // Required parameters
-    cognitiveServicesName: 'mhdpmaxcs001'
+    cognitiveServicesName: 'mhdpmaxcs002'
     keyVaultName: 'mhdpmaxkv001'
     storageAccountName: 'mhdpmaxsa001'
     // Non-required parameters
     applicationInsightsDashboardName: 'mhdpmaxdosh001'
     applicationInsightsName: 'mhdpmaxappin001'
-    cognitiveServicesDeployments: [
-      {
-        model: {
-          format: 'OpenAI'
-          name: 'gtp-35-turbo'
-          version: '0613'
-        }
-      }
-    ]
     containerRegistryName: 'mhdpmaxcr001'
     logAnalyticsName: 'mhdpmaxlog001'
     searchServiceName: 'mhdpmaxser001'
@@ -174,7 +165,7 @@ module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' =
   "parameters": {
     // Required parameters
     "cognitiveServicesName": {
-      "value": "mhdpmaxcs001"
+      "value": "mhdpmaxcs002"
     },
     "keyVaultName": {
       "value": "mhdpmaxkv001"
@@ -188,17 +179,6 @@ module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' =
     },
     "applicationInsightsName": {
       "value": "mhdpmaxappin001"
-    },
-    "cognitiveServicesDeployments": {
-      "value": [
-        {
-          "model": {
-            "format": "OpenAI",
-            "name": "gtp-35-turbo",
-            "version": "0613"
-          }
-        }
-      ]
     },
     "containerRegistryName": {
       "value": "mhdpmaxcr001"
