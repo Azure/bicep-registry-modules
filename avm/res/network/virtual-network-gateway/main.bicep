@@ -140,7 +140,7 @@ var isActiveActiveValid = gatewayType != 'ExpressRoute' ? activeActive : false
 var virtualGatewayPipNameVar = isActiveActiveValid
   ? [
       gatewayPipName
-      activeActiveBgpSettings.activeGatewayPipName
+      activeActiveBgpSettings.?activeGatewayPipName ?? '${name}-pip2'
     ]
   : [
       gatewayPipName
@@ -545,8 +545,8 @@ type activeActiveNoBGPType = {
   
   activeActiveBGPMode: 'activeActiveNoBGP'
 
-  @description('Required. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip\' suffix will be appended to the gateway\'s name.')
-  activeGatewayPipName: string 
+  @description('Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip\' suffix will be appended to the gateway\'s name.')
+  activeGatewayPipName: string?
 
 }
 
@@ -567,8 +567,8 @@ type activeActiveBGPType = {
   
   activeActiveBGPMode: 'activeActiveBGP'
 
-  @description('Required. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip\' suffix will be appended to the gateway\'s name.')
-  activeGatewayPipName: string
+  @description('Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip\' suffix will be appended to the gateway\'s name.')
+  activeGatewayPipName: string?
   
   @description('Optional. The Autonomous System Number value.')
   @minValue(0)

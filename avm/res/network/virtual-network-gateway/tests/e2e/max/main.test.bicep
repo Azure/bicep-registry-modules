@@ -75,6 +75,8 @@ module testDeployment '../../../main.bicep' = [
       activeActiveBgpSettings:{
         activeActiveBGPMode: 'activeActiveBGP'
         activeGatewayPipName: '${namePrefix}${serviceShort}001-pip2'
+        customBgpIpAddresses: ['169.254.21.4','169.254.21.5']
+        secondCustomBgpIpAddresses:  ['169.254.22.4','169.254.22.5']
       }
       diagnosticSettings: [
         {
