@@ -147,7 +147,9 @@ param cognitiveServicesDisableLocalAuth bool = false
 param cognitiveServicesPublicNetworkAccess string = 'Disabled'
 
 @description('Optional. A collection of rules governing the accessibility from specific network locations.')
-param cognitiveServicesNetworkAcls object = {}
+param cognitiveServicesNetworkAcls object = {
+  defaultAction: 'Allow'
+}
 
 @description('Optional. SKU of the Cognitive Services resource.')
 param cognitiveServicesSku string = 'S0'
@@ -322,7 +324,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
 }
 
 module cognitiveServices 'br/public:avm/res/cognitive-services/account:0.7.0' = {
-  name: 'cognitiveServices'
+  name: '${uniqueString(deployment().name, location)}-cognitive'
   params: {
     name: cognitiveServicesName
     location: location
@@ -349,7 +351,7 @@ module logAnalytics 'br/public:avm/res/operational-insights/workspace:0.6.0' = i
 }
 
 module applicationInsights 'br/public:avm/ptn/azd/insights-dashboard:0.1.0' = if (!empty(applicationInsightsName) && !empty(logAnalyticsName)) {
-  name: 'applicationInsights'
+  name: '${uniqueString(deployment().name, location)}-insights'
   params: {
     location: location
     tags: tags
@@ -371,7 +373,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' =
 }
 
 module searchService 'br/public:avm/res/search/search-service:0.6.0' = if (!empty(searchServiceName)) {
-  name: '${uniqueString(deployment().name, location)}-loganalytics'
+  name: '${uniqueString(deployment().name, location)}-searchservice'
   params: {
     name: searchServiceName
     location: location

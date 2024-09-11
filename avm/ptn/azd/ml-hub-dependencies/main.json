@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "2202185889278390693"
+      "templateHash": "6125610411467047321"
     },
     "name": "Azure Machine Learning Dependencies",
     "description": "Creates all the dependencies required for a Machine Learning Service.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
@@ -268,7 +268,9 @@
     },
     "cognitiveServicesNetworkAcls": {
       "type": "object",
-      "defaultValue": {},
+      "defaultValue": {
+        "defaultAction": "Allow"
+      },
       "metadata": {
         "description": "Optional. A collection of rules governing the accessibility from specific network locations."
       }
@@ -7984,7 +7986,7 @@
     "cognitiveServices": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "cognitiveServices",
+      "name": "[format('{0}-cognitive', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -11832,7 +11834,7 @@
       "condition": "[and(not(empty(parameters('applicationInsightsName'))), not(empty(parameters('logAnalyticsName'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "applicationInsights",
+      "name": "[format('{0}-insights', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -16756,7 +16758,7 @@
       "condition": "[not(empty(parameters('searchServiceName')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-loganalytics', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-searchservice', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

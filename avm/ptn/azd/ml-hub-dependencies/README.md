@@ -72,6 +72,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/ml-hub-dependencies:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
 
 ### Example 1: _Using only defaults_
 
@@ -115,6 +116,98 @@ module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' =
     },
     "storageAccountName": {
       "value": "mhdpminsa001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
+
+This instance deploys the module using large parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' = {
+  name: 'mlHubDependenciesDeployment'
+  params: {
+    // Required parameters
+    cognitiveServicesName: 'mhdpmaxcs001'
+    keyVaultName: 'mhdpmaxkv001'
+    storageAccountName: 'mhdpmaxsa001'
+    // Non-required parameters
+    applicationInsightsDashboardName: 'mhdpmaxdosh001'
+    applicationInsightsName: 'mhdpmaxappin001'
+    cognitiveServicesDeployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gtp-35-turbo'
+          version: '0613'
+        }
+      }
+    ]
+    containerRegistryName: 'mhdpmaxcr001'
+    logAnalyticsName: 'mhdpmaxlog001'
+    searchServiceName: 'mhdpmaxser001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "cognitiveServicesName": {
+      "value": "mhdpmaxcs001"
+    },
+    "keyVaultName": {
+      "value": "mhdpmaxkv001"
+    },
+    "storageAccountName": {
+      "value": "mhdpmaxsa001"
+    },
+    // Non-required parameters
+    "applicationInsightsDashboardName": {
+      "value": "mhdpmaxdosh001"
+    },
+    "applicationInsightsName": {
+      "value": "mhdpmaxappin001"
+    },
+    "cognitiveServicesDeployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gtp-35-turbo",
+            "version": "0613"
+          }
+        }
+      ]
+    },
+    "containerRegistryName": {
+      "value": "mhdpmaxcr001"
+    },
+    "logAnalyticsName": {
+      "value": "mhdpmaxlog001"
+    },
+    "searchServiceName": {
+      "value": "mhdpmaxser001"
     }
   }
 }
@@ -371,7 +464,12 @@ A collection of rules governing the accessibility from specific network location
 
 - Required: No
 - Type: object
-- Default: `{}`
+- Default:
+  ```Bicep
+  {
+      defaultAction: 'Allow'
+  }
+  ```
 
 ### Parameter: `cognitiveServicesPublicNetworkAccess`
 
