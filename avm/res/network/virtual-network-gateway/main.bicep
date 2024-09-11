@@ -141,7 +141,7 @@ var isBgp = (clusterSettings.clusterMode == 'activeActiveBgp' || clusterSettings
 
 var isActiveActive = (clusterSettings.clusterMode == 'activeActiveNoBgp' || clusterSettings.clusterMode == 'activeActiveBgp') && !isExpressRoute
 
-var activeGatewayPipNameVar = isActiveActive ? clusterSettings.?activeGatewayPipName ?? '${name}-pip2' : null
+var activeGatewayPipNameVar = isActiveActive ? (clusterSettings.?activeGatewayPipName ?? '${name}-pip2') : null
 
 var virtualGatewayPipNameVar = isActiveActive
   ? [
