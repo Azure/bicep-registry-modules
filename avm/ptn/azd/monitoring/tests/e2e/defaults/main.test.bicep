@@ -42,6 +42,5 @@ module testDeployment '../../../main.bicep' = {
     location: resourceLocation
     logAnalyticsName: '${uniqueString(deployment().name, resourceLocation)}-test-log-analytics-${serviceShort}'
     applicationInsightsName: '${uniqueString(deployment().name, resourceLocation)}-test-appinsights-${serviceShort}'
-    applicationInsightsDashboardName: '${uniqueString(deployment().name, resourceLocation)}-test-dashboard-${serviceShort}'
   }
 }

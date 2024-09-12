@@ -60,7 +60,6 @@ module monitoring 'br/public:avm/ptn/azd/monitoring:<version>' = {
     applicationInsightsName: '<applicationInsightsName>'
     logAnalyticsName: '<logAnalyticsName>'
     // Non-required parameters
-    applicationInsightsDashboardName: '<applicationInsightsDashboardName>'
     location: '<location>'
   }
 }
@@ -86,9 +85,6 @@ module monitoring 'br/public:avm/ptn/azd/monitoring:<version>' = {
       "value": "<logAnalyticsName>"
     },
     // Non-required parameters
-    "applicationInsightsDashboardName": {
-      "value": "<applicationInsightsDashboardName>"
-    },
     "location": {
       "value": "<location>"
     }
