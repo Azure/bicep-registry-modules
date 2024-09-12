@@ -88,9 +88,9 @@ module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' =
   name: 'mlHubDependenciesDeployment'
   params: {
     // Required parameters
-    cognitiveServicesName: 'cs5hubdmin'
-    keyVaultName: 'kv5hubdmin'
-    storageAccountName: 'st5hubdmin'
+    cognitiveServicesName: 'cog07hubdmin'
+    keyVaultName: 'key07hubdmin'
+    storageAccountName: 'st07hubdmin'
   }
 }
 ```
@@ -109,13 +109,13 @@ module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' =
   "parameters": {
     // Required parameters
     "cognitiveServicesName": {
-      "value": "cs5hubdmin"
+      "value": "cog07hubdmin"
     },
     "keyVaultName": {
-      "value": "kv5hubdmin"
+      "value": "key07hubdmin"
     },
     "storageAccountName": {
-      "value": "st5hubdmin"
+      "value": "st07hubdmin"
     }
   }
 }
@@ -138,15 +138,15 @@ module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' =
   name: 'mlHubDependenciesDeployment'
   params: {
     // Required parameters
-    cognitiveServicesName: 'cs6mhdpmax'
-    keyVaultName: 'kv6mhdpmax'
-    storageAccountName: 'sa6mhdpmax'
+    cognitiveServicesName: 'cs08mhdpmax'
+    keyVaultName: 'kv08mhdpmax'
+    storageAccountName: 'sa08mhdpmax'
     // Non-required parameters
-    applicationInsightsDashboardName: 'aid6mhdpmax'
-    applicationInsightsName: 'ai6mhdpmax'
-    containerRegistryName: 'cr6mhdpmax'
-    logAnalyticsName: 'log6mhdpmax'
-    searchServiceName: 'sea6mhdpmax'
+    applicationInsightsDashboardName: 'aid08mhdpmax'
+    applicationInsightsName: 'ai08mhdpmax'
+    containerRegistryName: 'cr08mhdpmax'
+    logAnalyticsName: 'log08mhdpmax'
+    searchServiceName: 'sea08mhdpmax'
   }
 }
 ```
@@ -165,29 +165,29 @@ module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' =
   "parameters": {
     // Required parameters
     "cognitiveServicesName": {
-      "value": "cs6mhdpmax"
+      "value": "cs08mhdpmax"
     },
     "keyVaultName": {
-      "value": "kv6mhdpmax"
+      "value": "kv08mhdpmax"
     },
     "storageAccountName": {
-      "value": "sa6mhdpmax"
+      "value": "sa08mhdpmax"
     },
     // Non-required parameters
     "applicationInsightsDashboardName": {
-      "value": "aid6mhdpmax"
+      "value": "aid08mhdpmax"
     },
     "applicationInsightsName": {
-      "value": "ai6mhdpmax"
+      "value": "ai08mhdpmax"
     },
     "containerRegistryName": {
-      "value": "cr6mhdpmax"
+      "value": "cr08mhdpmax"
     },
     "logAnalyticsName": {
-      "value": "log6mhdpmax"
+      "value": "log08mhdpmax"
     },
     "searchServiceName": {
-      "value": "sea6mhdpmax"
+      "value": "sea08mhdpmax"
     }
   }
 }

@@ -20,9 +20,6 @@ param serviceShort string = 'mhdpmax'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Generated. Used as a basis for unique resource names.')
-param baseTime string = utcNow('u')
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -44,14 +41,14 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      cognitiveServicesName: '${namePrefix}cs6${serviceShort}'
-      keyVaultName: '${namePrefix}kv6${serviceShort}'
-      storageAccountName: '${namePrefix}sa6${serviceShort}'
-      applicationInsightsDashboardName: '${namePrefix}aid6${serviceShort}'
-      applicationInsightsName: '${namePrefix}ai6${serviceShort}'
-      logAnalyticsName: '${namePrefix}log6${serviceShort}'
-      containerRegistryName: '${namePrefix}cr6${serviceShort}'
-      searchServiceName: '${namePrefix}sea6${serviceShort}'
+      cognitiveServicesName: '${namePrefix}cs08${serviceShort}'
+      keyVaultName: '${namePrefix}kv08${serviceShort}'
+      storageAccountName: '${namePrefix}sa08${serviceShort}'
+      applicationInsightsDashboardName: '${namePrefix}aid08${serviceShort}'
+      applicationInsightsName: '${namePrefix}ai08${serviceShort}'
+      logAnalyticsName: '${namePrefix}log08${serviceShort}'
+      containerRegistryName: '${namePrefix}cr08${serviceShort}'
+      searchServiceName: '${namePrefix}sea08${serviceShort}'
     }
   }
 ]

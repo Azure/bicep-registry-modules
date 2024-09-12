@@ -20,9 +20,6 @@ param serviceShort string = 'hubdmin'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Generated. Used as a basis for unique resource names.')
-param baseTime string = utcNow('u')
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -38,14 +35,15 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // Test Execution //
 // ============== //
 
+@batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      cognitiveServicesName: '${namePrefix}cs5${serviceShort}'
-      keyVaultName: '${namePrefix}kv5${serviceShort}'
-      storageAccountName: '${namePrefix}st5${serviceShort}'
+      cognitiveServicesName: '${namePrefix}cog07${serviceShort}'
+      keyVaultName: '${namePrefix}key07${serviceShort}'
+      storageAccountName: '${namePrefix}st07${serviceShort}'
     }
   }
 ]
