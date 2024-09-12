@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "16125038131264690243"
+      "templateHash": "4469274513824919483"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
@@ -6831,82 +6831,58 @@
     }
   },
   "outputs": {
-    "resourceGroupName": {
+    "hubVirtualNetworks": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "object"
       },
       "metadata": {
-        "description": "The resource group the virtual network was deployed into."
+        "description": "Array of hub virtual network resources."
       },
       "copy": {
         "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]",
-        "input": "[reference(format('hubVirtualNetwork[{0}]', copyIndex())).outputs.resourceGroupName.value]"
+        "input": {
+          "resourceGroupName": "[reference(format('hubVirtualNetwork[{0}]', copyIndex())).outputs.resourceGroupName.value]",
+          "location": "[reference(format('hubVirtualNetwork[{0}]', copyIndex())).outputs.location.value]",
+          "name": "[reference(format('hubVirtualNetwork[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('hubVirtualNetwork[{0}]', copyIndex())).outputs.resourceId.value]"
+        }
       }
     },
-    "hubVirtualNetworkLocation": {
+    "hubBastions": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "object"
       },
       "metadata": {
-        "description": "The location the virtual network was deployed into."
+        "description": "Array of hub bastion resources."
       },
       "copy": {
         "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]",
-        "input": "[reference(format('hubVirtualNetwork[{0}]', copyIndex())).outputs.location.value]"
+        "input": {
+          "resourceGroupName": "[reference(format('hubBastion[{0}]', copyIndex())).outputs.resourceGroupName.value]",
+          "location": "[reference(format('hubBastion[{0}]', copyIndex())).outputs.location.value]",
+          "name": "[reference(format('hubBastion[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('hubBastion[{0}]', copyIndex())).outputs.resourceId.value]"
+        }
       }
     },
-    "hubVirtualNetworkName": {
+    "hubAzureFirewalls": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "object"
       },
       "metadata": {
-        "description": "The name of the hub virtual network."
+        "description": "Array of hub Azure Firewall resources."
       },
       "copy": {
         "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]",
-        "input": "[reference(format('hubVirtualNetwork[{0}]', copyIndex())).outputs.name.value]"
-      }
-    },
-    "hubVirtualNetworkResourceId": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "metadata": {
-        "description": "The resource ID of the hub virtual network."
-      },
-      "copy": {
-        "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]",
-        "input": "[reference(format('hubVirtualNetwork[{0}]', copyIndex())).outputs.resourceId.value]"
-      }
-    },
-    "hubBastionName": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "metadata": {
-        "description": "The name of the bastion host."
-      },
-      "copy": {
-        "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]",
-        "input": "[reference(format('hubBastion[{0}]', copyIndex())).outputs.name.value]"
-      }
-    },
-    "hubBastionResourceId": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "metadata": {
-        "description": "The resource ID of the bastion host."
-      },
-      "copy": {
-        "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]",
-        "input": "[reference(format('hubBastion[{0}]', copyIndex())).outputs.resourceId.value]"
+        "input": {
+          "resourceGroupName": "[reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceGroupName.value]",
+          "location": "[reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.location.value]",
+          "name": "[reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceId.value]"
+        }
       }
     },
     "hubVirtualNetworkSubnets": {

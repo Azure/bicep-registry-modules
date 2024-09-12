@@ -106,6 +106,28 @@ resource hubVirtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetw
   }
 ]
 
+/* module hubVirtualNetworkPeering 'br/public:avm/res/network/virtual-network:0.4.0' = [
+  for (peer, index) in (flatten(hubVirtualNetworkPeerings) ?? []): {
+    name: '${hubVirtualNetworkPeer_local[index].name}-to-${peer.remoteVirtualNetworkName}-peering'
+    params: {
+      // Required parameters
+      name: hubVirtualNetworkPeer_local[index].name
+      addressPrefixes: hubVirtualNetworkPeer_local[index].properties.addressSpace.addressPrefixes
+      peerings: [
+        {
+          name: '${hubVirtualNetworkPeer_local[index].name}-to-${peer.remoteVirtualNetworkName}-peering'
+          allowForwardedTraffic: peer.allowForwardedTraffic ?? false
+          allowGatewayTransit: peer.allowGatewayTransit ?? false
+          allowVirtualNetworkAccess: peer.allowVirtualNetworkAccess ?? true
+          useRemoteGateways: peer.useRemoteGateways ?? false
+          remoteVirtualNetworkResourceId: hubVirtualNetworkPeer_remote[index].outputs.resourceId
+        }
+      ]
+    }
+    dependsOn: hubVirtualNetwork
+  }
+] */
+
 // Create hub virtual network route tables
 module hubRouteTable 'br/public:avm/res/network/route-table:0.4.0' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): {
@@ -232,32 +254,34 @@ module hubAzureFirewallSubnetAssociation 'modules/subnets.bicep' = [
 // Outputs      //
 // ============ //
 
-@description('The resource group the virtual network was deployed into.')
-output resourceGroupName string[] = [
-  for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.resourceGroupName
+@description('Array of hub virtual network resources.')
+output hubVirtualNetworks object[] = [
+  for (hub, index) in items(hubVirtualNetworks ?? {}): {
+    resourceGroupName: hubVirtualNetwork[index].outputs.resourceGroupName
+    location: hubVirtualNetwork[index].outputs.location
+    name: hubVirtualNetwork[index].outputs.name
+    resourceId: hubVirtualNetwork[index].outputs.resourceId
+  }
 ]
 
-@description('The location the virtual network was deployed into.')
-output hubVirtualNetworkLocation string[] = [
-  for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.location
+@description('Array of hub bastion resources.')
+output hubBastions object[] = [
+  for (hub, index) in items(hubVirtualNetworks ?? {}): {
+    resourceGroupName: hubBastion[index].outputs.resourceGroupName
+    location: hubBastion[index].outputs.location
+    name: hubBastion[index].outputs.name
+    resourceId: hubBastion[index].outputs.resourceId
+  }
 ]
 
-@description('The name of the hub virtual network.')
-output hubVirtualNetworkName string[] = [
-  for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.name
-]
-
-@description('The resource ID of the hub virtual network.')
-output hubVirtualNetworkResourceId string[] = [
-  for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.resourceId
-]
-
-@description('The name of the bastion host.')
-output hubBastionName string[] = [for (hub, index) in items(hubVirtualNetworks ?? {}): hubBastion[index].outputs.name]
-
-@description('The resource ID of the bastion host.')
-output hubBastionResourceId string[] = [
-  for (hub, index) in items(hubVirtualNetworks ?? {}): hubBastion[index].outputs.resourceId
+@description('Array of hub Azure Firewall resources.')
+output hubAzureFirewalls object[] = [
+  for (hub, index) in items(hubVirtualNetworks ?? {}): {
+    resourceGroupName: hubAzureFirewall[index].outputs.resourceGroupName
+    location: hubAzureFirewall[index].outputs.location
+    name: hubAzureFirewall[index].outputs.name
+    resourceId: hubAzureFirewall[index].outputs.resourceId
+  }
 ]
 
 @description('The subnets of the hub virtual network.')

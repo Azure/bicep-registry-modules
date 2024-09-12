@@ -1659,13 +1659,10 @@ Location for all Resources.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `hubBastionName` | array | The name of the bastion host. |
-| `hubBastionResourceId` | array | The resource ID of the bastion host. |
-| `hubVirtualNetworkLocation` | array | The location the virtual network was deployed into. |
-| `hubVirtualNetworkName` | array | The name of the hub virtual network. |
-| `hubVirtualNetworkResourceId` | array | The resource ID of the hub virtual network. |
+| `hubAzureFirewalls` | array | Array of hub Azure Firewall resources. |
+| `hubBastions` | array | Array of hub bastion resources. |
+| `hubVirtualNetworks` | array | Array of hub virtual network resources. |
 | `hubVirtualNetworkSubnets` | array | The subnets of the hub virtual network. |
-| `resourceGroupName` | array | The resource group the virtual network was deployed into. |
 
 ## Cross-referenced modules
 
