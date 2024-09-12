@@ -10,7 +10,6 @@ Creates and configure an API within an API Management service instance.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -104,7 +103,6 @@ module apimApi 'br/public:avm/ptn/azd/apim-api:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -117,7 +115,7 @@ module apimApi 'br/public:avm/ptn/azd/apim-api:<version>' = {
 | [`apiName`](#parameter-apiname) | string | Resource name to uniquely identify this API within the API Management service instance. |
 | [`apiPath`](#parameter-apipath) | string | Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API. |
 | [`name`](#parameter-name) | string | Name of the API Management service instance. |
-| [`webFrontendUrl`](#parameter-webfrontendurl) | string | Absolute URL of the web frontend. |
+| [`webFrontendUrl`](#parameter-webfrontendurl) | string | Absolute URL of web frontend. |
 
 **Optional parameters**
 
@@ -171,7 +169,7 @@ Name of the API Management service instance.
 
 ### Parameter: `webFrontendUrl`
 
-Absolute URL of the web frontend.
+Absolute URL of web frontend.
 
 - Required: Yes
 - Type: string
@@ -200,17 +198,12 @@ Location for all Resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `resourceGroupName` | string | The name of the resource group. |
 | `serviceApiUri` | string | The complete URL for accessing the API. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
