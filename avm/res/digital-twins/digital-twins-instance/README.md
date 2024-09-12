@@ -478,7 +478,6 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1212,7 +1211,6 @@ Resource tags.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 

@@ -8,7 +8,6 @@ This module deploys a Container App Job.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -663,7 +662,6 @@ module job 'br/public:avm/res/app/job:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -2021,7 +2019,6 @@ The name of the workload profile to use. Leave empty to use a consumption based 
 - Required: No
 - Type: string
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -2031,10 +2028,6 @@ The name of the workload profile to use. Leave empty to use a consumption based 
 | `resourceGroupName` | string | The name of the resource group the Container App Job was deployed into. |
 | `resourceId` | string | The resource ID of the Container App Job. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

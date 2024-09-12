@@ -618,7 +618,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1511,7 +1510,6 @@ Tags to help categorize the resource in the Azure portal.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 

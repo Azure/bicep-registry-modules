@@ -188,6 +188,10 @@ module testDeployment '../../../main.bicep' = [
       managedResourceGroupResourceId: '${subscription().id}/resourceGroups/rg-${resourceGroupName}-managed'
       requireInfrastructureEncryption: true
       vnetAddressPrefix: '10.100'
+      defaultCatalog: {
+        //initialName: '' Cannot be set to anything other than an empty string. {"code":"InvalidInitialCatalogName","message":"Currently custom initial catalog name is not supported. This capability will be added in future."}
+        initialType: 'UnityCatalog' // Choose between 'HiveCatalog' OR 'UnityCatalog'
+      }
     }
     dependsOn: [
       nestedDependencies

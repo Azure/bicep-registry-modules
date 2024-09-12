@@ -720,7 +720,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1676,7 +1675,6 @@ If the zoneRedundant parameter is true, replicas will be provisioned in the avai
     3
   ]
   ```
-
 
 ## Outputs
 
