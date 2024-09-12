@@ -18,5 +18,6 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-01-01' existing = {
 
 @description('Subnet ID')
 output subnetId string = vnet::subnet.id
+
 @description('Subnet address prefix')
 output addressPrefix string = vnet::subnet.properties.addressPrefix
