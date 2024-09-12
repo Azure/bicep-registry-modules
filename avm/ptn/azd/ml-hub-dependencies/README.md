@@ -72,6 +72,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/ml-hub-dependencies:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
 
 ### Example 1: _Using only defaults_
 
@@ -87,9 +88,9 @@ module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' =
   name: 'mlHubDependenciesDeployment'
   params: {
     // Required parameters
-    cognitiveServicesName: 'cs4hubdmin'
-    keyVaultName: 'kv4hubdmin'
-    storageAccountName: 'st4hubdmin'
+    cognitiveServicesName: 'cs5hubdmin'
+    keyVaultName: 'kv5hubdmin'
+    storageAccountName: 'st5hubdmin'
   }
 }
 ```
@@ -108,13 +109,85 @@ module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' =
   "parameters": {
     // Required parameters
     "cognitiveServicesName": {
-      "value": "cs4hubdmin"
+      "value": "cs5hubdmin"
     },
     "keyVaultName": {
-      "value": "kv4hubdmin"
+      "value": "kv5hubdmin"
     },
     "storageAccountName": {
-      "value": "st4hubdmin"
+      "value": "st5hubdmin"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
+
+This instance deploys the module using large parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' = {
+  name: 'mlHubDependenciesDeployment'
+  params: {
+    // Required parameters
+    cognitiveServicesName: 'cs6mhdpmax'
+    keyVaultName: 'kv6mhdpmax'
+    storageAccountName: 'sa6mhdpmax'
+    // Non-required parameters
+    applicationInsightsDashboardName: 'aid6mhdpmax'
+    applicationInsightsName: 'ai6mhdpmax'
+    containerRegistryName: 'cr6mhdpmax'
+    logAnalyticsName: 'log6mhdpmax'
+    searchServiceName: 'sea6mhdpmax'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "cognitiveServicesName": {
+      "value": "cs6mhdpmax"
+    },
+    "keyVaultName": {
+      "value": "kv6mhdpmax"
+    },
+    "storageAccountName": {
+      "value": "sa6mhdpmax"
+    },
+    // Non-required parameters
+    "applicationInsightsDashboardName": {
+      "value": "aid6mhdpmax"
+    },
+    "applicationInsightsName": {
+      "value": "ai6mhdpmax"
+    },
+    "containerRegistryName": {
+      "value": "cr6mhdpmax"
+    },
+    "logAnalyticsName": {
+      "value": "log6mhdpmax"
+    },
+    "searchServiceName": {
+      "value": "sea6mhdpmax"
     }
   }
 }
