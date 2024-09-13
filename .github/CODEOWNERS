@@ -70,7 +70,7 @@
 /avm/res/event-grid/system-topic/ @Azure/avm-res-eventgrid-systemtopic-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/event-grid/topic/ @Azure/avm-res-eventgrid-topic-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/event-hub/namespace/ @Azure/avm-res-eventhub-namespace-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/res/fabric/capacity/ @Azure/avm-res-fabric-capapcity-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/fabric/capacity/ @Azure/avm-res-fabric-capacity-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/health-bot/health-bot/ @Azure/avm-res-healthbot-healthbot-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/healthcare-apis/workspace/ @Azure/avm-res-healthcareapis-workspace-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/hybrid-compute/machine/ @Azure/avm-res-hybridcompute-machine-module-owners-bicep @Azure/avm-module-reviewers-bicep
