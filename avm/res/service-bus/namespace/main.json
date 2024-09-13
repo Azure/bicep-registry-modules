@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "16628890374295506516"
+      "templateHash": "6397771352503979306"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -1137,15 +1137,19 @@
     },
     "skuObject": {
       "$ref": "#/definitions/skuType",
+      "defaultValue": {
+        "name": "Premium",
+        "capacity": 2
+      },
       "metadata": {
-        "description": "Required. The SKU of the Service Bus Namespace."
+        "description": "Required. The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default."
       }
     },
     "zoneRedundant": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enabling this property creates a Premium Service Bus Namespace in regions supported availability zones."
+        "description": "Optional. Enabled by default in order to align with resiliency best practices, thus requires Premium SKU."
       }
     },
     "minimumTlsVersion": {
