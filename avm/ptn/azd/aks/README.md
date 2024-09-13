@@ -167,7 +167,7 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
     ]
     aksClusterRoleAssignmentName: '<aksClusterRoleAssignmentName>'
     containerRegistryRoleName: '<containerRegistryRoleName>'
-    dnsPrefix: 'dep-dns-aidmin'
+    dnsPrefix: 'dep-dns-aidminMax'
     location: '<location>'
     principalType: 'ServicePrincipal'
     skuTier: 'Free'
@@ -228,7 +228,7 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
       "value": "<containerRegistryRoleName>"
     },
     "dnsPrefix": {
-      "value": "dep-dns-aidmin"
+      "value": "dep-dns-aidminMax"
     },
     "location": {
       "value": "<location>"
