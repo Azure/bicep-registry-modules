@@ -1039,7 +1039,7 @@ Describe 'Module tests' -Tag 'Module' {
             }
 
             # ? remove ? or update specs
-            It '[<moduleFolderName>] Resource Group output should exist for resources that are deployed into a resource group scope.' -TestCases $moduleFolderTestCases {
+            It '[<moduleFolderName>] Resource Group output should exist for resources that are deployed into a resource group scope.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
                 param(
                     [hashtable] $templateFileContent,
@@ -1059,7 +1059,7 @@ Describe 'Module tests' -Tag 'Module' {
                 }
             }
 
-            It '[<moduleFolderName>] Resource modules should have a name output.' -TestCases $moduleFolderTestCases {
+            It '[<moduleFolderName>] Resource modules should have a name output.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
                 param(
                     [hashtable] $templateFileContent,
@@ -1092,7 +1092,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $outputs | Should -Contain 'name'
             }
 
-            It '[<moduleFolderName>] Resource modules should have a Resource ID output.' -TestCases $moduleFolderTestCases {
+            It '[<moduleFolderName>] Resource modules should have a Resource ID output.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
                 param(
                     [hashtable] $templateFileContent,
@@ -1126,7 +1126,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $outputs | Should -Contain 'resourceId'
             }
 
-            It '[<moduleFolderName>] Resource modules Principal ID output should exist, if supported.' -TestCases $moduleFolderTestCases {
+            It '[<moduleFolderName>] Resource modules Principal ID output should exist, if supported.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
                 param(
                     [hashtable] $templateFileContent
