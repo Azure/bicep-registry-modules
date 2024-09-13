@@ -1,4 +1,4 @@
-name: "avm.res.fabric.capacities"
+name: "avm.res.fabric.capacity"
 
 on:
   workflow_dispatch:
@@ -28,15 +28,15 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.fabric.capacities.yml"
-      - "avm/res/fabric/capacities/topic/**"
+      - ".github/workflows/avm.res.fabric.capacity.yml"
+      - "avm/res/fabric/capacity/topic/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/fabric/capacities"
-  workflowPath: ".github/workflows/avm.res.fabric.capacities.yml"
+  modulePath: "avm/res/fabric/capacity"
+  workflowPath: ".github/workflows/avm.res.fabric.capacity.yml"
 
 concurrency:
   group: ${{ github.workflow }}
