@@ -90,6 +90,9 @@ resource fabricCapacities 'Microsoft.Fabric/capacities@2023-11-01' = {
 
 // Add your outputs here
 
+@description('The name of the resource group the module was deployed to.')
+output resourceGroupName string = resourceGroup().name
+
 @description('The resource ID of the deployed Fabric resource.')
 output resourceId string = fabricCapacities.id
 

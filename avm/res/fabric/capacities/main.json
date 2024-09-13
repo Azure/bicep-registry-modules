@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "2750009724695452536"
+      "templateHash": "10932957761601369400"
     },
     "name": "Fabric Capacities",
     "description": "<Add description>",
@@ -114,6 +114,13 @@
     }
   },
   "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the module was deployed to."
+      },
+      "value": "[resourceGroup().name]"
+    },
     "resourceId": {
       "type": "string",
       "metadata": {

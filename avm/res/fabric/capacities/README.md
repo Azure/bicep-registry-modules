@@ -228,6 +228,7 @@ Tags of the resource.
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed Fabric resource. |
+| `resourceGroupName` | string | The name of the resource group the module was deployed to. |
 | `resourceId` | string | The resource ID of the deployed Fabric resource. |
 
 ## Data Collection
