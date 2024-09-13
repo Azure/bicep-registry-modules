@@ -1663,6 +1663,7 @@ Location for all Resources.
 | `hubBastions` | array | Array of hub bastion resources. |
 | `hubVirtualNetworks` | array | Array of hub virtual network resources. |
 | `hubVirtualNetworkSubnets` | array | The subnets of the hub virtual network. |
+| `resourceGroupName` | string | The resource group the resources were deployed into. |
 
 ## Cross-referenced modules
 
