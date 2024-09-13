@@ -1,4 +1,4 @@
-# Finops-hub `[Microsoft.finopstoolkit/finopshub]`
+# Finops-hub `[FinopsToolkit/FinopsHub]`
 
 This module deploys a Finops hub from the Finops toolkit.
 
@@ -101,7 +101,6 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -213,7 +212,6 @@ Tags to apply to resources based on their resource type. Resource type specific 
 - Required: No
 - Type: object
 - Default: `{}`
-
 
 ## Outputs
 

@@ -8,14 +8,13 @@ This module deploys a Container App Job.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/jobs` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/jobs) |
+| `Microsoft.App/jobs` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-03-01/jobs) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -27,11 +26,86 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/app/job:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using a consumption plan](#example-1-using-a-consumption-plan)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using a consumption plan_
+
+This instance deploys the module to a Container Apps Environment with a consumption plan.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module job 'br/public:avm/res/app/job:<version>' = {
+  name: 'jobDeployment'
+  params: {
+    // Required parameters
+    containers: [
+      {
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        name: 'simple-hello-world-container'
+      }
+    ]
+    environmentResourceId: '<environmentResourceId>'
+    name: 'ajcon001'
+    triggerType: 'Manual'
+    // Non-required parameters
+    location: '<location>'
+    manualTriggerConfig: {}
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "containers": {
+      "value": [
+        {
+          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+          "name": "simple-hello-world-container"
+        }
+      ]
+    },
+    "environmentResourceId": {
+      "value": "<environmentResourceId>"
+    },
+    "name": {
+      "value": "ajcon001"
+    },
+    "triggerType": {
+      "value": "Manual"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "manualTriggerConfig": {
+      "value": {}
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -113,7 +187,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -232,11 +306,13 @@ module job 'br/public:avm/res/app/job:<version>' = {
     }
     roleAssignments: [
       {
+        name: 'be1bb251-6a44-49f7-8658-d836d0049fc4'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -403,11 +479,13 @@ module job 'br/public:avm/res/app/job:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "be1bb251-6a44-49f7-8658-d836d0049fc4",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -451,7 +529,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -585,7 +663,6 @@ module job 'br/public:avm/res/app/job:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -621,7 +698,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 | [`secrets`](#parameter-secrets) | array | The secrets of the Container App. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`volumes`](#parameter-volumes) | array | List of volume definitions for the Container App. |
-| [`workloadProfileName`](#parameter-workloadprofilename) | string | The name of the workload profile to use. |
+| [`workloadProfileName`](#parameter-workloadprofilename) | string | The name of the workload profile to use. Leave empty to use a consumption based profile. |
 
 ### Parameter: `containers`
 
@@ -943,6 +1020,11 @@ The CPU limit of the container in cores.
 
 - Required: Yes
 - Type: string
+- Example:
+  ```Bicep
+  '0.25'
+  '1'
+  ```
 
 ### Parameter: `containers.resources.memory`
 
@@ -950,6 +1032,12 @@ The required memory.
 
 - Required: Yes
 - Type: string
+- Example:
+  ```Bicep
+  '250Mb'
+  '1.5Gi'
+  '1500Mi'
+  ```
 
 ### Parameter: `containers.volumeMounts`
 
@@ -1084,6 +1172,24 @@ Scaling rules for the job.
 
 - Required: Yes
 - Type: array
+- Example:
+  ```Bicep
+  [
+    // for type azure-queue
+    {
+      name: 'myrule'
+      type: 'azure-queue'
+      metadata: {
+        queueName: 'default'
+        storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount'
+      }
+      auth: {
+        secretRef: 'mysecret'
+        triggerParameter: 'queueName'
+      }
+    }
+  ]
+  ```
 
 **Required parameters**
 
@@ -1140,6 +1246,16 @@ Metadata properties to describe the scale rule.
 
 - Required: Yes
 - Type: object
+- Example:
+  ```Bicep
+  {
+    "// for type azure-queue
+    {
+      queueName: 'default'
+      storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount'
+    }"
+  }
+  ```
 
 ### Parameter: `eventTriggerConfig.scale.rules.type`
 
@@ -1147,6 +1263,12 @@ The type of the rule.
 
 - Required: Yes
 - Type: string
+- Example:
+  ```Bicep
+  "azure-servicebus"
+  "azure-queue"
+  "redis"
+  ```
 
 ### Parameter: `eventTriggerConfig.parallelism`
 
@@ -1216,6 +1338,11 @@ Cron formatted repeating schedule ("* * * * *") of a Cron Job. It supports the s
 
 - Required: Yes
 - Type: string
+- Example:
+  ```Bicep
+  '* * * * *' // Every minute, every hour, every day
+  '0 0 * * *' // at 00:00 UTC every day
+  ```
 
 ### Parameter: `scheduleTriggerConfig.parallelism`
 
@@ -1302,6 +1429,11 @@ The CPU limit of the container in cores.
 
 - Required: Yes
 - Type: string
+- Example:
+  ```Bicep
+  '0.25'
+  '1'
+  ```
 
 ### Parameter: `initContainers.resources.memory`
 
@@ -1309,6 +1441,12 @@ The required memory.
 
 - Required: Yes
 - Type: string
+- Example:
+  ```Bicep
+  '250Mb'
+  '1.5Gi'
+  '1500Mi'
+  ```
 
 ### Parameter: `initContainers.args`
 
@@ -1330,6 +1468,19 @@ The environment variables to set in the container.
 
 - Required: No
 - Type: array
+- Example:
+  ```Bicep
+  [
+    {
+      name: 'AZURE_STORAGE_QUEUE_NAME'
+      value: '<storage-queue-name>'
+    }
+    {
+      name: 'AZURE_STORAGE_CONNECTION_STRING'
+      secretRef: 'connection-string'
+    }
+  ]
+  ```
 
 **Required parameters**
 
@@ -1456,6 +1607,18 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
+- Example:
+  ```Bicep
+  {
+    systemAssigned: true,
+    userAssignedResourceIds: [
+      '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'
+    ]
+  }
+  {
+    systemAssigned: true
+  }
+  ```
 
 **Optional parameters**
 
@@ -1484,6 +1647,24 @@ Collection of private container registry credentials for containers used by the 
 
 - Required: No
 - Type: array
+- Example:
+  ```Bicep
+  [
+    {
+      server: 'myregistry.azurecr.io'
+      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'
+    }
+    {
+      server: 'myregistry2.azurecr.io'
+      identity: 'system'
+    }
+    {
+      server: 'myregistry3.azurecr.io'
+      username: 'myusername'
+      passwordSecretRef: 'secret-name'
+    }
+  ]
+  ```
 
 **Required parameters**
 
@@ -1510,6 +1691,7 @@ The FQDN name of the container registry.
 
 - Required: Yes
 - Type: string
+- Example: `myregistry.azurecr.io`
 
 ### Parameter: `registries.passwordSecretRef`
 
@@ -1524,6 +1706,11 @@ The resource ID of the (user) managed identity, which is used to access the Azur
 
 - Required: No
 - Type: string
+- Example:
+  ```Bicep
+  user-assigned identity: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity
+  system-assigned identity: system
+  ```
 
 ### Parameter: `registries.username`
 
@@ -1554,6 +1741,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'ContainerApp Reader'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1570,6 +1764,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1620,6 +1815,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -1643,6 +1845,30 @@ The secrets of the Container App.
 
 - Required: No
 - Type: array
+- Example:
+  ```Bicep
+  [
+    {
+      name: 'mysecret'
+      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'
+      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'
+    }
+    {
+      name: 'mysecret'
+      identity: 'system'
+      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'
+    }
+    {
+      // You can do this, but you shouldn't. Use a secret reference instead.
+      name: 'mysecret'
+      value: 'mysecretvalue'
+    }
+    {
+      name: 'connection-string'
+      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value
+    }
+  ]
+  ```
 
 **Conditional parameters**
 
@@ -1664,6 +1890,7 @@ Azure Key Vault URL pointing to the secret referenced by the Container App Job. 
 
 - Required: No
 - Type: string
+- Example: `https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret`
 
 ### Parameter: `secrets.value`
 
@@ -1692,6 +1919,13 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Example:
+  ```Bicep
+  {
+      key1: 'value1'
+      key2: 'value2'
+  }
+  ```
 
 ### Parameter: `volumes`
 
@@ -1787,12 +2021,10 @@ Name of the Container App secret from which to pull the secret value.
 
 ### Parameter: `workloadProfileName`
 
-The name of the workload profile to use.
+The name of the workload profile to use. Leave empty to use a consumption based profile.
 
 - Required: No
 - Type: string
-- Default: `'Consumption'`
-
 
 ## Outputs
 
@@ -1803,10 +2035,6 @@ The name of the workload profile to use.
 | `resourceGroupName` | string | The name of the resource group the Container App Job was deployed into. |
 | `resourceId` | string | The resource ID of the Container App Job. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

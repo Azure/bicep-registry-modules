@@ -27,6 +27,15 @@ param expressRouteGatewayId string = ''
 @description('Optional. Resource ID of the Point-to-Site VPN Gateway to link to.')
 param p2SVpnGatewayId string = ''
 
+@description('Optional. The preferred routing preference for this virtual hub.')
+@allowed([
+  'ASPath'
+  'ExpressRoute'
+  'VpnGateway'
+  ''
+])
+param hubRoutingPreference string = ''
+
 @description('Optional. The preferred routing gateway types.')
 @allowed([
   'ExpressRoute'
@@ -67,6 +76,12 @@ param virtualWanId string
 @description('Optional. Resource ID of the VPN Gateway to link to.')
 param vpnGatewayId string = ''
 
+@description('Optional. Configures Routing Intent to forward Internet traffic (0.0.0.0/0) to Azure Firewall. Default is true.')
+param internetToFirewall bool = true
+
+@description('Optional. Configures Routing Intent to forward Private traffic (RFC 1918) to Azure Firewall. Default is true.')
+param privateToFirewall bool = true
+
 @description('Optional. Route tables to create for the virtual hub.')
 param hubRouteTables array = []
 
@@ -79,7 +94,8 @@ param lock lockType
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.res.network-virtualhub.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
@@ -100,7 +116,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2022-11-01' = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2023-11-01' = {
   name: name
   location: location
   tags: tags
@@ -122,6 +138,7 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2022-11-01' = {
           id: p2SVpnGatewayId
         }
       : null
+    hubRoutingPreference: !empty(hubRoutingPreference) ? any(hubRoutingPreference) : null
     preferredRoutingGateway: !empty(preferredRoutingGateway) ? any(preferredRoutingGateway) : null
     routeTable: !empty(routeTableRoutes)
       ? {
@@ -160,8 +177,18 @@ resource virtualHub_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty
   scope: virtualHub
 }
 
+module virtualHub_routingIntent 'hub-routing-intent/main.bicep' = if (!empty(azureFirewallResourceId) && (internetToFirewall || privateToFirewall)) {
+  name: '${uniqueString(deployment().name, location)}-routingIntent'
+  params: {
+    virtualHubName: virtualHub.name
+    azureFirewallResourceId: azureFirewallResourceId
+    internetToFirewall: internetToFirewall
+    privateToFirewall: privateToFirewall
+  }
+}
+
 module virtualHub_routeTables 'hub-route-table/main.bicep' = [
-  for (routeTable, index) in hubRouteTables: {
+  for (routeTable, index) in (hubRouteTables ?? []): {
     name: '${uniqueString(deployment().name, location)}-routeTable-${index}'
     params: {
       virtualHubName: virtualHub.name

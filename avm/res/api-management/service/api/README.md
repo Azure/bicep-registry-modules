@@ -7,15 +7,14 @@ This module deploys an API Management Service API.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ApiManagement/service/apis` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apis) |
-| `Microsoft.ApiManagement/service/apis/policies` | [2021-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2021-08-01/service/apis/policies) |
+| `Microsoft.ApiManagement/service/apis` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis) |
+| `Microsoft.ApiManagement/service/apis/diagnostics` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/diagnostics) |
+| `Microsoft.ApiManagement/service/apis/policies` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/policies) |
 
 ## Parameters
 
@@ -32,6 +31,7 @@ This module deploys an API Management Service API.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
+| [`loggerName`](#parameter-loggername) | string | The name of the API management service logger. Required if using api/diagnostics. |
 
 **Optional parameters**
 
@@ -45,6 +45,7 @@ This module deploys an API Management Service API.
 | [`apiVersionDescription`](#parameter-apiversiondescription) | string | Description of the API Version. |
 | [`apiVersionSetId`](#parameter-apiversionsetid) | string | Indicates the Version identifier of the API version set. |
 | [`authenticationSettings`](#parameter-authenticationsettings) | object | Collection of authentication settings included into this API. |
+| [`diagnostics`](#parameter-diagnostics) | array | Array of diagnostics to apply to the Service API. |
 | [`format`](#parameter-format) | string | Format of the Content in which the API is getting imported. |
 | [`isCurrent`](#parameter-iscurrent) | bool | Indicates if API revision is current API revision. |
 | [`policies`](#parameter-policies) | array | Array of Policies to apply to the Service API. |
@@ -84,6 +85,14 @@ The name of the parent API Management service. Required if the template is used 
 
 - Required: Yes
 - Type: string
+
+### Parameter: `loggerName`
+
+The name of the API management service logger. Required if using api/diagnostics.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `apiDescription`
 
@@ -150,6 +159,13 @@ Collection of authentication settings included into this API.
 
 - Required: No
 - Type: object
+
+### Parameter: `diagnostics`
+
+Array of diagnostics to apply to the Service API.
+
+- Required: No
+- Type: array
 
 ### Parameter: `format`
 
@@ -262,7 +278,6 @@ Criteria to limit import of WSDL to a subset of the document.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -270,11 +285,3 @@ Criteria to limit import of WSDL to a subset of the document.
 | `name` | string | The name of the API management service API. |
 | `resourceGroupName` | string | The resource group the API management service API was deployed to. |
 | `resourceId` | string | The resource ID of the API management service API. |
-
-## Cross-referenced modules
-
-_None_
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

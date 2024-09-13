@@ -43,6 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     applicationInsightsName: 'dep-${namePrefix}-appI-${serviceShort}'
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    secondaryStorageAccountName: 'dep${namePrefix}st${serviceShort}2'
     location: resourceLocation
   }
 }
@@ -74,6 +75,19 @@ module testDeployment '../../../main.bicep' = [
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
+      }
+      managedNetworkSettings: {
+        isolationMode: 'AllowInternetOutbound'
+        outboundRules: {
+          rule: {
+            type: 'PrivateEndpoint'
+            destination: {
+              serviceResourceId: nestedDependencies.outputs.secondaryStorageAccountResourceId
+              subresourceTarget: 'blob'
+            }
+            category: 'UserDefined'
+          }
+        }
       }
     }
     dependsOn: [

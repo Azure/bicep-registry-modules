@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "353917243244046230"
+      "version": "0.29.47.4906",
+      "templateHash": "8789192089964505787"
     },
     "name": "Eventgrid Namespace Permissions Bindings",
     "description": "This module deploys an Eventgrid Namespace Permission Binding.",

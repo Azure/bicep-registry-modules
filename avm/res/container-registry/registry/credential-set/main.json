@@ -1,0 +1,141 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.29.47.4906",
+      "templateHash": "12196074162662855376"
+    },
+    "name": "Container Registries Credential Sets",
+    "description": "This module deploys an ACR Credential Set.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "managedIdentitiesType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        }
+      }
+    },
+    "authCredentialsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the credential."
+            }
+          },
+          "usernameSecretIdentifier": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. KeyVault Secret URI for accessing the username."
+            }
+          },
+          "passwordSecretIdentifier": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. KeyVault Secret URI for accessing the password."
+            }
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "registryName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the parent registry. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the credential set."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentitiesType",
+      "metadata": {
+        "description": "Required. The managed identity definition for this resource."
+      }
+    },
+    "authCredentials": {
+      "$ref": "#/definitions/authCredentialsType",
+      "metadata": {
+        "description": "Required. List of authentication credentials stored for an upstream. Usually consists of a primary and an optional secondary credential."
+      }
+    },
+    "loginServer": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The credentials are stored for this upstream or login server."
+      }
+    }
+  },
+  "variables": {
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', null())), null())]"
+  },
+  "resources": {
+    "registry": {
+      "existing": true,
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2023-06-01-preview",
+      "name": "[parameters('registryName')]"
+    },
+    "credentialSet": {
+      "type": "Microsoft.ContainerRegistry/registries/credentialSets",
+      "apiVersion": "2023-11-01-preview",
+      "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
+      "identity": "[variables('identity')]",
+      "properties": {
+        "authCredentials": "[parameters('authCredentials')]",
+        "loginServer": "[parameters('loginServer')]"
+      },
+      "dependsOn": [
+        "registry"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The Name of the Credential Set."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Credential Set."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Credential Set."
+      },
+      "value": "[resourceId('Microsoft.ContainerRegistry/registries/credentialSets', parameters('registryName'), parameters('name'))]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[coalesce(tryGet(tryGet(reference('credentialSet', '2023-11-01-preview', 'full'), 'identity'), 'principalId'), '')]"
+    }
+  }
+}

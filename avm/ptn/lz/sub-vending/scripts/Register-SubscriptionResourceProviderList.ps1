@@ -1,6 +1,6 @@
 Param(
-  [string]$subscriptionId,
-  [string]$resourceProviders
+[string]$subscriptionId,
+[string]$resourceProviders
 )
 
 $ErrorActionPreference = 'SilentlyContinue'
