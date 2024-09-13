@@ -47,7 +47,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       adminMembers: [
-        'admin@contoso.com'
+        'mattschmitt@microsoft.com'
       ]
     }
   }

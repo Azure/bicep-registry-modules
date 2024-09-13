@@ -100,7 +100,7 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
     name: 'fcwaf001'
     // Non-required parameters
     adminMembers: [
-      'admin@contoso.com'
+      'mattschmitt@microsoft.com'
     ]
     location: '<location>'
   }
@@ -126,7 +126,7 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
     // Non-required parameters
     "adminMembers": {
       "value": [
-        "admin@contoso.com"
+        "mattschmitt@microsoft.com"
       ]
     },
     "location": {
