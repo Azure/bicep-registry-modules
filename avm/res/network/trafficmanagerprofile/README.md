@@ -277,7 +277,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
         type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
       }
     ]
-    location: 'eastus'
+    location: 'global'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -356,7 +356,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       ]
     },
     "location": {
-      "value": "eastus"
+      "value": "global"
     },
     "lock": {
       "value": {
