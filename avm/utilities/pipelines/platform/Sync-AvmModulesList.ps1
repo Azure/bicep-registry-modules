@@ -33,6 +33,7 @@ function Sync-AvmModulesList {
     # get CSV data
     $targetModules = Get-AvmCsvData -ModuleIndex 'Bicep-Resource' | Where-Object { ($_.ModuleStatus -eq 'Available :green_circle:') -or ($_.ModuleStatus -eq 'Orphaned :eyes:') } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
     $targetPatterns = Get-AvmCsvData -ModuleIndex 'Bicep-Pattern' | Where-Object { ($_.ModuleStatus -eq 'Available :green_circle:') -or ($_.ModuleStatus -eq 'Orphaned :eyes:') } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
+    $targetUtilities = Get-AvmCsvData -ModuleIndex 'Bicep-Utility' | Where-Object { ($_.ModuleStatus -eq 'Available :green_circle:') -or ($_.ModuleStatus -eq 'Orphaned :eyes:') } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
 
     $issueTemplatePath = Join-Path $RepoRoot '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
     $issueTemplateContent = Get-Content $issueTemplatePath
@@ -51,14 +52,21 @@ function Sync-AvmModulesList {
 
     $listedModules = $issueTemplateContent[$startIndex..$endIndex] | Where-Object { -not $_.Contains('#') } | ForEach-Object { $_ -replace '.*- "(avm\/.*)".*', '$1' } | Where-Object { $_ -match 'avm\/res\/.*' }
     $listedPatterns = $issueTemplateContent[$startIndex..$endIndex] | Where-Object { -not $_.Contains('#') } | ForEach-Object { $_ -replace '.*- "(avm\/.*)".*', '$1' } | Where-Object { $_ -match 'avm\/ptn\/.*' }
+    $listedUtilities = $issueTemplateContent[$startIndex..$endIndex] | Where-Object { -not $_.Contains('#') } | ForEach-Object { $_ -replace '.*- "(avm\/.*)".*', '$1' } | Where-Object { $_ -match 'avm\/utl\/.*' }
 
     $body = ''
 
     $missingModules = $targetModules | Where-Object { $listedModules -NotContains $_ }
     $unexpectedModules = $listedModules | Where-Object { $targetModules -NotContains $_ }
-    $unexpectedPatterns = $listedPatterns | Where-Object { $targetPatterns -NotContains $_ }
-    $missingPatterns = $targetPatterns | Where-Object { $listedPatterns -NotContains $_ }
 
+    $missingPatterns = $targetPatterns | Where-Object { $listedPatterns -NotContains $_ }
+    $unexpectedPatterns = $listedPatterns | Where-Object { $targetPatterns -NotContains $_ }
+
+    $missingUtilities = $targetUtilities | Where-Object { $listedUtilities -NotContains $_ }
+    $unexpectedUtilities = $listedUtilities | Where-Object { $targetUtilities -NotContains $_ }
+
+    # Resource modules
+    # ----------------
     if ($missingModules.Count -gt 0) {
         $body += @"
 **Missing resource modules:**
@@ -77,6 +85,8 @@ $([Environment]::NewLine)
 "@
     }
 
+    # Patterns
+    # --------
     if ($missingPatterns.Count -gt 0) {
         $body += @"
 **Missing pattern modules:**
@@ -95,6 +105,29 @@ $([Environment]::NewLine)
 "@
     }
 
+    # Utilities
+    # ---------
+    if ($missingUtilities.Count -gt 0) {
+        $body += @"
+**Missing utility modules:**
+
+$($missingUtilities -join ([Environment]::NewLine))
+$([Environment]::NewLine)
+"@
+    }
+
+    if ($unexpectedUtilities.Count -gt 0) {
+        $body += @"
+**Unexpected utility modules:**
+
+$($unexpectedUtilities -join ([Environment]::NewLine))
+$([Environment]::NewLine)
+"@
+    }
+
+
+    # Resource modules
+    # ----------------
     # Should be at correct location
     $incorrectModuleLines = @()
     foreach ($finding in (Compare-Object $listedModules ($listedModules | Sort-Object) -SyncWindow 0)) {
@@ -113,6 +146,8 @@ $([Environment]::NewLine)
 "@
     }
 
+    # Patterns
+    # --------
     $incorrectPatternLines = @()
     foreach ($finding in (Compare-Object $listedPatterns ($listedPatterns | Sort-Object) -SyncWindow 0)) {
         if ($finding.SideIndicator -eq '<=') {
@@ -130,6 +165,25 @@ $([Environment]::NewLine)
 "@
     }
 
+    # Utilities
+    # ---------
+    $incorrectUtilityLines = @()
+    foreach ($finding in (Compare-Object $listedUtilities ($listedUtilities | Sort-Object) -SyncWindow 0)) {
+        if ($finding.SideIndicator -eq '<=') {
+            $incorrectUtilityLines += $finding.InputObject
+        }
+    }
+    $incorrectUtilityLines = $incorrectUtilityLines | Sort-Object -Unique
+
+    if ($incorrectUtilityLines.Count -gt 0) {
+        $body += @"
+**Utility modules that are not correctly sorted:**
+
+$($incorrectUtilityLines -join ([Environment]::NewLine))
+$([Environment]::NewLine)
+"@
+    }
+
     $issuesFound = $body -ne ''
 
     $title = '[AVM core] AVM Module Issue template is not in sync with published resource modules and pattern modules list'
@@ -138,7 +192,7 @@ $([Environment]::NewLine)
 
     $body = @"
 > [!IMPORTANT]
-> The file [avm_module_issue.yml](https://github.com/Azure/bicep-registry-modules/blob/main/.github/ISSUE_TEMPLATE/avm_module_issue.yml?plain=1) which lists all modules when creating a new issue, is not in sync with the CSV files, that can be found under [resource modules](https://aka.ms/avm/index/bicep/res/csv) and [pattern modules](https://aka.ms/avm/index/bicep/ptn/csv). These CSV files are the single source of truth regarding published modules. Please update the ``avm_module_issue.yml`` accordingly. Please see the following differences that were found.
+> The file [avm_module_issue.yml](https://github.com/Azure/bicep-registry-modules/blob/main/.github/ISSUE_TEMPLATE/avm_module_issue.yml?plain=1) which lists all modules when creating a new issue, is not in sync with the CSV files, that can be found under [resource modules](https://aka.ms/avm/index/bicep/res/csv), [pattern modules](https://aka.ms/avm/index/bicep/ptn/csv) and [utility modules](https://aka.ms/avm/index/bicep/utl/csv). These CSV files are the single source of truth regarding published modules. Please update the ``avm_module_issue.yml`` accordingly. Please see the following differences that were found.
 $([Environment]::NewLine)
 "@ + $body
 
