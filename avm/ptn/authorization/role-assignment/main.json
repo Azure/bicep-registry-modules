@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "7625867886550880091"
+      "version": "0.29.47.4906",
+      "templateHash": "11572179981104603818"
     },
     "name": "Role Assignments (All scopes)",
     "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.",
@@ -164,8 +164,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "8906093264527258150"
+              "version": "0.29.47.4906",
+              "templateHash": "16307162966269052514"
             },
             "name": "Role Assignments (Management Group scope)",
             "description": "This module deploys a Role Assignment at a Management Group scope.",
@@ -244,7 +244,7 @@
               "Owner": "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "Resource Policy Contributor": "/providers/Microsoft.Authorization/roleDefinitions/36243c78-bf99-498c-9df9-86d9f8d28608",
-              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
               "Management Group Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ac63b705-f282-497d-ac71-919bf39d939d')]"
             },
@@ -328,8 +328,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "707244099707019442"
+              "version": "0.29.47.4906",
+              "templateHash": "7865292958983636483"
             },
             "name": "Role Assignments (Subscription scope)",
             "description": "This module deploys a Role Assignment at a Subscription scope.",
@@ -407,7 +407,7 @@
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
             },
             "roleDefinitionIdVar": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]"
@@ -500,8 +500,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "14591941439222880522"
+              "version": "0.29.47.4906",
+              "templateHash": "4013817963006824674"
             },
             "name": "Role Assignments (Resource Group scope)",
             "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -585,7 +585,7 @@
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
             },
             "roleDefinitionIdVar": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]"

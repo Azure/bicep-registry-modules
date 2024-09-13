@@ -28,6 +28,7 @@ This module deploys a Synapse Workspace.
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Synapse/workspaces` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces) |
 | `Microsoft.Synapse/workspaces/administrators` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/administrators) |
+| `Microsoft.Synapse/workspaces/firewallRules` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/firewallRules) |
 | `Microsoft.Synapse/workspaces/integrationRuntimes` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/integrationRuntimes) |
 | `Microsoft.Synapse/workspaces/keys` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/keys) |
 
@@ -42,9 +43,10 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
 - [Using encryption with Customer-Managed-Key](#example-3-using-encryption-with-customer-managed-key)
-- [Using managed Vnet](#example-4-using-managed-vnet)
-- [Using large parameter set](#example-5-using-large-parameter-set)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using firewall rules](#example-4-using-firewall-rules)
+- [Using managed Vnet](#example-5-using-managed-vnet)
+- [Using large parameter set](#example-6-using-large-parameter-set)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -252,7 +254,93 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using managed Vnet_
+### Example 4: _Using firewall rules_
+
+This instance deploys the module with the configuration of firewall rules.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
+  name: 'workspaceDeployment'
+  params: {
+    // Required parameters
+    defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
+    defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
+    name: 'swfwr001'
+    sqlAdministratorLogin: 'synwsadmin'
+    // Non-required parameters
+    firewallRules: [
+      {
+        endIpAddress: '87.14.134.20'
+        name: 'fwrule01'
+        startIpAddress: '87.14.134.20'
+      }
+      {
+        endIpAddress: '87.14.134.22'
+        name: 'fwrule02'
+        startIpAddress: '87.14.134.21'
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "defaultDataLakeStorageAccountResourceId": {
+      "value": "<defaultDataLakeStorageAccountResourceId>"
+    },
+    "defaultDataLakeStorageFilesystem": {
+      "value": "<defaultDataLakeStorageFilesystem>"
+    },
+    "name": {
+      "value": "swfwr001"
+    },
+    "sqlAdministratorLogin": {
+      "value": "synwsadmin"
+    },
+    // Non-required parameters
+    "firewallRules": {
+      "value": [
+        {
+          "endIpAddress": "87.14.134.20",
+          "name": "fwrule01",
+          "startIpAddress": "87.14.134.20"
+        },
+        {
+          "endIpAddress": "87.14.134.22",
+          "name": "fwrule02",
+          "startIpAddress": "87.14.134.21"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using managed Vnet_
 
 This instance deploys the module using a managed Vnet.
 
@@ -328,7 +416,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 </details>
 <p>
 
-### Example 5: _Using large parameter set_
+### Example 6: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -385,9 +473,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     managedVirtualNetwork: true
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'SQL'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -397,9 +489,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'SQL'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -409,9 +505,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'SqlOnDemand'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -421,9 +521,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'Dev'
         subnetResourceId: '<subnetResourceId>'
       }
@@ -530,9 +634,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "SQL",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -542,9 +650,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "SQL",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -554,9 +666,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "SqlOnDemand",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -566,9 +682,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "Dev",
           "subnetResourceId": "<subnetResourceId>"
         }
@@ -602,7 +722,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -648,9 +768,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     managedVirtualNetwork: true
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'SQL'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -731,9 +855,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "SQL",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -757,7 +885,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -783,6 +910,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionActivateWorkspace`](#parameter-encryptionactivateworkspace) | bool | Activate workspace by adding the system managed identity in the KeyVault containing the customer managed key and activating the workspace. |
+| [`firewallRules`](#parameter-firewallrules) | array | List of firewall rules to be created in the workspace. |
 | [`initialWorkspaceAdminObjectID`](#parameter-initialworkspaceadminobjectid) | string | AAD object ID of initial workspace admin. |
 | [`integrationRuntimes`](#parameter-integrationruntimes) | array | The Integration Runtimes to create. |
 | [`linkedAccessCheckOnTargetResource`](#parameter-linkedaccesscheckontargetresource) | bool | Linked Access Check On Target Resource. |
@@ -1078,6 +1206,42 @@ Activate workspace by adding the system managed identity in the KeyVault contain
 - Type: bool
 - Default: `False`
 
+### Parameter: `firewallRules`
+
+List of firewall rules to be created in the workspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endIpAddress`](#parameter-firewallrulesendipaddress) | string | The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. |
+| [`name`](#parameter-firewallrulesname) | string | The name of the firewall rule. |
+| [`startIpAddress`](#parameter-firewallrulesstartipaddress) | string | The start IP address of the firewall rule. Must be IPv4 format. |
+
+### Parameter: `firewallRules.endIpAddress`
+
+The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `firewallRules.name`
+
+The name of the firewall rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `firewallRules.startIpAddress`
+
+The start IP address of the firewall rule. Must be IPv4 format.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `initialWorkspaceAdminObjectID`
 
 AAD object ID of initial workspace admin.
@@ -1218,8 +1382,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
@@ -1409,19 +1572,64 @@ The name of the private endpoint.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneGroupName`
+### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
-The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.
+The private DNS zone group to configure for the private endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneResourceIds`
+### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
-The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
+The name of the Private DNS Zone Group.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -1443,6 +1651,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -1570,6 +1789,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Resource Policy Contributor'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1683,7 +1909,6 @@ Git integration settings.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1691,6 +1916,7 @@ Git integration settings.
 | `connectivityEndpoints` | object | The workspace connectivity endpoints. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed Synapse Workspace. |
+| `privateEndpoints` | array | The private endpoints of the Synapse Workspace. |
 | `resourceGroupName` | string | The resource group of the deployed Synapse Workspace. |
 | `resourceID` | string | The resource ID of the deployed Synapse Workspace. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
@@ -1701,7 +1927,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.6.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
 
 ## Data Collection
 

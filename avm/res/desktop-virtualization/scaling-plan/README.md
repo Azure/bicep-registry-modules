@@ -8,7 +8,6 @@ This module deploys an Azure Virtual Desktop Scaling Plan.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -546,7 +545,6 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -797,6 +795,26 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Owner'`
+  - `'Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+  - `'Application Group Contributor'`
+  - `'Desktop Virtualization Application Group Contributor'`
+  - `'Desktop Virtualization Application Group Reader'`
+  - `'Desktop Virtualization Contributor'`
+  - `'Desktop Virtualization Host Pool Contributor'`
+  - `'Desktop Virtualization Host Pool Reader'`
+  - `'Desktop Virtualization Power On Off Contributor'`
+  - `'Desktop Virtualization Reader'`
+  - `'Desktop Virtualization Session Host Operator'`
+  - `'Desktop Virtualization User'`
+  - `'Desktop Virtualization User Session Operator'`
+  - `'Desktop Virtualization Virtual Machine Contributor'`
+  - `'Desktop Virtualization Workspace Contributor'`
+  - `'Desktop Virtualization Workspace Reader'`
 
 **Required parameters**
 
@@ -911,7 +929,6 @@ Time zone of the Scaling Plan. Defaults to UTC.
 - Type: string
 - Default: `'UTC'`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -920,10 +937,6 @@ Time zone of the Scaling Plan. Defaults to UTC.
 | `name` | string | The name of the Scaling Plan. |
 | `resourceGroupName` | string | The name of the resource group the Scaling Plan was created in. |
 | `resourceId` | string | The resource ID of the Scaling Plan. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

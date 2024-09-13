@@ -153,13 +153,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 
 ### Example 2: _Using `AIServices` with `deployments` in parameter set_
 
-This instance deploys the module with the AI model deployment feature.'
-
-Note, this test is temporarily disabled as it needs to be enabled on the subscription.
-As we don't want other contributions from being blocked by this, we disabled the test for now / rely on a manual execution outside the CI environemnt
-You can find more information here: https://learn.microsoft.com/en-us/legal/cognitive-services/openai/limited-access
-And register here: https://aka.ms/oai/access
-
+This instance deploys the module with the AI model deployment feature.
 
 
 <details>
@@ -1115,7 +1109,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1876,6 +1869,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -2017,6 +2021,36 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Cognitive Services Contributor'`
+  - `'Cognitive Services Custom Vision Contributor'`
+  - `'Cognitive Services Custom Vision Deployment'`
+  - `'Cognitive Services Custom Vision Labeler'`
+  - `'Cognitive Services Custom Vision Reader'`
+  - `'Cognitive Services Custom Vision Trainer'`
+  - `'Cognitive Services Data Reader (Preview)'`
+  - `'Cognitive Services Face Recognizer'`
+  - `'Cognitive Services Immersive Reader User'`
+  - `'Cognitive Services Language Owner'`
+  - `'Cognitive Services Language Reader'`
+  - `'Cognitive Services Language Writer'`
+  - `'Cognitive Services LUIS Owner'`
+  - `'Cognitive Services LUIS Reader'`
+  - `'Cognitive Services LUIS Writer'`
+  - `'Cognitive Services Metrics Advisor Administrator'`
+  - `'Cognitive Services Metrics Advisor User'`
+  - `'Cognitive Services OpenAI Contributor'`
+  - `'Cognitive Services OpenAI User'`
+  - `'Cognitive Services QnA Maker Editor'`
+  - `'Cognitive Services QnA Maker Reader'`
+  - `'Cognitive Services Speech Contributor'`
+  - `'Cognitive Services Speech User'`
+  - `'Cognitive Services User'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2151,7 +2185,6 @@ The storage accounts for this resource.
 
 - Required: No
 - Type: array
-
 
 ## Outputs
 

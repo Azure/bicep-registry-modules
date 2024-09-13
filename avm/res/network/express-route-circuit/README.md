@@ -8,7 +8,6 @@ This module deploys an Express Route Circuit.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -380,7 +379,6 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -719,6 +717,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -872,7 +877,6 @@ Specifies the identifier that is used to identify the customer.
 - Type: int
 - Default: `0`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -882,10 +886,6 @@ Specifies the identifier that is used to identify the customer.
 | `resourceGroupName` | string | The resource group the express route curcuit was deployed into. |
 | `resourceId` | string | The resource ID of express route curcuit. |
 | `serviceKey` | string | The service key of the express route circuit. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

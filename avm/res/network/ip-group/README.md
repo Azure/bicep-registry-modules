@@ -8,7 +8,6 @@ This module deploys an IP Group.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -269,7 +268,6 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -362,6 +360,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'IPAM Pool Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -460,7 +465,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -469,10 +473,6 @@ Resource tags.
 | `name` | string | The name of the IP group. |
 | `resourceGroupName` | string | The resource group of the IP group was deployed into. |
 | `resourceId` | string | The resource ID of the IP group. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

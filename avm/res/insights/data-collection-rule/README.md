@@ -8,7 +8,6 @@ This module deploys a Data Collection Rule.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -17,7 +16,7 @@ This module deploys a Data Collection Rule.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/dataCollectionRules` | [2021-09-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-09-01-preview/dataCollectionRules) |
+| `Microsoft.Insights/dataCollectionRules` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRules) |
 
 ## Usage examples
 
@@ -27,16 +26,91 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/insights/data-collection-rule:<version>`.
 
-- [Collecting custom text logs with ingestion-time transformation](#example-1-collecting-custom-text-logs-with-ingestion-time-transformation)
-- [Collecting custom text logs](#example-2-collecting-custom-text-logs)
-- [Collecting IIS logs](#example-3-collecting-iis-logs)
-- [Using only defaults](#example-4-using-only-defaults)
-- [Collecting Linux-specific information](#example-5-collecting-linux-specific-information)
-- [Using large parameter set](#example-6-using-large-parameter-set)
-- [WAF-aligned](#example-7-waf-aligned)
-- [Collecting Windows-specific information](#example-8-collecting-windows-specific-information)
+- [Agent Settings](#example-1-agent-settings)
+- [Collecting custom text logs with ingestion-time transformation](#example-2-collecting-custom-text-logs-with-ingestion-time-transformation)
+- [Collecting custom text logs](#example-3-collecting-custom-text-logs)
+- [Collecting IIS logs](#example-4-collecting-iis-logs)
+- [Using only defaults](#example-5-using-only-defaults)
+- [Collecting Linux-specific information](#example-6-collecting-linux-specific-information)
+- [Using large parameter set](#example-7-using-large-parameter-set)
+- [WAF-aligned](#example-8-waf-aligned)
+- [Collecting Windows-specific information](#example-9-collecting-windows-specific-information)
 
-### Example 1: _Collecting custom text logs with ingestion-time transformation_
+### Example 1: _Agent Settings_
+
+This instance deploys the module AMA (Azure Monitor Agent) Settings DCR.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
+  name: 'dataCollectionRuleDeployment'
+  params: {
+    // Required parameters
+    dataCollectionRuleProperties: {
+      agentSettings: {
+        logs: [
+          {
+            name: 'MaxDiskQuotaInMB'
+            value: '5000'
+          }
+        ]
+      }
+      description: 'Agent Settings'
+      kind: 'AgentSettings'
+    }
+    name: 'idcrags001'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "dataCollectionRuleProperties": {
+      "value": {
+        "agentSettings": {
+          "logs": [
+            {
+              "name": "MaxDiskQuotaInMB",
+              "value": "5000"
+            }
+          ]
+        },
+        "description": "Agent Settings",
+        "kind": "AgentSettings"
+      }
+    },
+    "name": {
+      "value": "idcrags001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Collecting custom text logs with ingestion-time transformation_
 
 This instance deploys the module to setup collection of custom logs and ingestion-time transformation.
 
@@ -50,81 +124,86 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
-    dataFlows: [
-      {
-        destinations: [
-          '<logAnalyticsWorkspaceName>'
-        ]
-        outputStream: 'Custom-CustomTableAdvanced_CL'
-        streams: [
-          'Custom-CustomTableAdvanced_CL'
-        ]
-        transformKql: 'source | extend LogFields = split(RawData, \',\') | extend EventTime = todatetime(LogFields[0]) | extend EventLevel = tostring(LogFields[1]) | extend EventCode = toint(LogFields[2]) | extend Message = tostring(LogFields[3]) | project TimeGenerated, EventTime, EventLevel, EventCode, Message'
-      }
-    ]
-    dataSources: {
-      logFiles: [
+    dataCollectionRuleProperties: {
+      dataCollectionEndpointResourceId: '<dataCollectionEndpointResourceId>'
+      dataFlows: [
         {
-          filePatterns: [
-            'C:\\TestLogsAdvanced\\TestLog*.log'
+          destinations: [
+            '<logAnalyticsWorkspaceName>'
           ]
-          format: 'text'
-          name: 'CustomTableAdvanced_CL'
-          samplingFrequencyInSeconds: 60
-          settings: {
-            text: {
-              recordStartTimestampFormat: 'ISO 8601'
-            }
-          }
+          outputStream: 'Custom-CustomTableAdvanced_CL'
           streams: [
             'Custom-CustomTableAdvanced_CL'
           ]
+          transformKql: 'source | extend LogFields = split(RawData, \',\') | extend EventTime = todatetime(LogFields[0]) | extend EventLevel = tostring(LogFields[1]) | extend EventCode = toint(LogFields[2]) | extend Message = tostring(LogFields[3]) | project TimeGenerated, EventTime, EventLevel, EventCode, Message'
         }
       ]
-    }
-    destinations: {
-      logAnalytics: [
-        {
-          name: '<name>'
-          workspaceResourceId: '<workspaceResourceId>'
-        }
-      ]
-    }
-    name: 'idcrcusadv001'
-    // Non-required parameters
-    dataCollectionEndpointId: '<dataCollectionEndpointId>'
-    description: 'Collecting custom text logs with ingestion-time transformation to columns. Expected format of a log line (comma separated values): \'<DateTime>,<EventLevel>,<EventCode>,<Message>\', for example: \'2023-01-25T20:15:05Z,ERROR,404,Page not found\''
-    kind: 'Windows'
-    location: '<location>'
-    streamDeclarations: {
-      'Custom-CustomTableAdvanced_CL': {
-        columns: [
+      dataSources: {
+        logFiles: [
           {
-            name: 'TimeGenerated'
-            type: 'datetime'
-          }
-          {
-            name: 'EventTime'
-            type: 'datetime'
-          }
-          {
-            name: 'EventLevel'
-            type: 'string'
-          }
-          {
-            name: 'EventCode'
-            type: 'int'
-          }
-          {
-            name: 'Message'
-            type: 'string'
-          }
-          {
-            name: 'RawData'
-            type: 'string'
+            filePatterns: [
+              'C:\\TestLogsAdvanced\\TestLog*.log'
+            ]
+            format: 'text'
+            name: 'CustomTableAdvanced_CL'
+            samplingFrequencyInSeconds: 60
+            settings: {
+              text: {
+                recordStartTimestampFormat: 'ISO 8601'
+              }
+            }
+            streams: [
+              'Custom-CustomTableAdvanced_CL'
+            ]
           }
         ]
       }
+      description: 'Collecting custom text logs with ingestion-time transformation to columns. Expected format of a log line (comma separated values): \'<DateTime>,<EventLevel>,<EventCode>,<Message>\', for example: \'2023-01-25T20:15:05Z,ERROR,404,Page not found\''
+      destinations: {
+        logAnalytics: [
+          {
+            name: '<name>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+      }
+      kind: 'Windows'
+      streamDeclarations: {
+        'Custom-CustomTableAdvanced_CL': {
+          columns: [
+            {
+              name: 'TimeGenerated'
+              type: 'datetime'
+            }
+            {
+              name: 'EventTime'
+              type: 'datetime'
+            }
+            {
+              name: 'EventLevel'
+              type: 'string'
+            }
+            {
+              name: 'EventCode'
+              type: 'int'
+            }
+            {
+              name: 'Message'
+              type: 'string'
+            }
+            {
+              name: 'RawData'
+              type: 'string'
+            }
+          ]
+        }
+      }
+    }
+    name: 'idcrcusadv001'
+    // Non-required parameters
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
     }
     tags: {
       'hidden-title': 'This is visible in the resource name'
@@ -148,98 +227,93 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dataFlows": {
-      "value": [
-        {
-          "destinations": [
-            "<logAnalyticsWorkspaceName>"
-          ],
-          "outputStream": "Custom-CustomTableAdvanced_CL",
-          "streams": [
-            "Custom-CustomTableAdvanced_CL"
-          ],
-          "transformKql": "source | extend LogFields = split(RawData, \",\") | extend EventTime = todatetime(LogFields[0]) | extend EventLevel = tostring(LogFields[1]) | extend EventCode = toint(LogFields[2]) | extend Message = tostring(LogFields[3]) | project TimeGenerated, EventTime, EventLevel, EventCode, Message"
-        }
-      ]
-    },
-    "dataSources": {
+    "dataCollectionRuleProperties": {
       "value": {
-        "logFiles": [
+        "dataCollectionEndpointResourceId": "<dataCollectionEndpointResourceId>",
+        "dataFlows": [
           {
-            "filePatterns": [
-              "C:\\TestLogsAdvanced\\TestLog*.log"
+            "destinations": [
+              "<logAnalyticsWorkspaceName>"
             ],
-            "format": "text",
-            "name": "CustomTableAdvanced_CL",
-            "samplingFrequencyInSeconds": 60,
-            "settings": {
-              "text": {
-                "recordStartTimestampFormat": "ISO 8601"
-              }
-            },
+            "outputStream": "Custom-CustomTableAdvanced_CL",
             "streams": [
               "Custom-CustomTableAdvanced_CL"
+            ],
+            "transformKql": "source | extend LogFields = split(RawData, \",\") | extend EventTime = todatetime(LogFields[0]) | extend EventLevel = tostring(LogFields[1]) | extend EventCode = toint(LogFields[2]) | extend Message = tostring(LogFields[3]) | project TimeGenerated, EventTime, EventLevel, EventCode, Message"
+          }
+        ],
+        "dataSources": {
+          "logFiles": [
+            {
+              "filePatterns": [
+                "C:\\TestLogsAdvanced\\TestLog*.log"
+              ],
+              "format": "text",
+              "name": "CustomTableAdvanced_CL",
+              "samplingFrequencyInSeconds": 60,
+              "settings": {
+                "text": {
+                  "recordStartTimestampFormat": "ISO 8601"
+                }
+              },
+              "streams": [
+                "Custom-CustomTableAdvanced_CL"
+              ]
+            }
+          ]
+        },
+        "description": "Collecting custom text logs with ingestion-time transformation to columns. Expected format of a log line (comma separated values): \"<DateTime>,<EventLevel>,<EventCode>,<Message>\", for example: \"2023-01-25T20:15:05Z,ERROR,404,Page not found\"",
+        "destinations": {
+          "logAnalytics": [
+            {
+              "name": "<name>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ]
+        },
+        "kind": "Windows",
+        "streamDeclarations": {
+          "Custom-CustomTableAdvanced_CL": {
+            "columns": [
+              {
+                "name": "TimeGenerated",
+                "type": "datetime"
+              },
+              {
+                "name": "EventTime",
+                "type": "datetime"
+              },
+              {
+                "name": "EventLevel",
+                "type": "string"
+              },
+              {
+                "name": "EventCode",
+                "type": "int"
+              },
+              {
+                "name": "Message",
+                "type": "string"
+              },
+              {
+                "name": "RawData",
+                "type": "string"
+              }
             ]
           }
-        ]
-      }
-    },
-    "destinations": {
-      "value": {
-        "logAnalytics": [
-          {
-            "name": "<name>",
-            "workspaceResourceId": "<workspaceResourceId>"
-          }
-        ]
+        }
       }
     },
     "name": {
       "value": "idcrcusadv001"
     },
     // Non-required parameters
-    "dataCollectionEndpointId": {
-      "value": "<dataCollectionEndpointId>"
-    },
-    "description": {
-      "value": "Collecting custom text logs with ingestion-time transformation to columns. Expected format of a log line (comma separated values): \"<DateTime>,<EventLevel>,<EventCode>,<Message>\", for example: \"2023-01-25T20:15:05Z,ERROR,404,Page not found\""
-    },
-    "kind": {
-      "value": "Windows"
-    },
     "location": {
       "value": "<location>"
     },
-    "streamDeclarations": {
+    "managedIdentities": {
       "value": {
-        "Custom-CustomTableAdvanced_CL": {
-          "columns": [
-            {
-              "name": "TimeGenerated",
-              "type": "datetime"
-            },
-            {
-              "name": "EventTime",
-              "type": "datetime"
-            },
-            {
-              "name": "EventLevel",
-              "type": "string"
-            },
-            {
-              "name": "EventCode",
-              "type": "int"
-            },
-            {
-              "name": "Message",
-              "type": "string"
-            },
-            {
-              "name": "RawData",
-              "type": "string"
-            }
-          ]
-        }
+        "systemAssigned": true
       }
     },
     "tags": {
@@ -256,7 +330,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 2: _Collecting custom text logs_
+### Example 3: _Collecting custom text logs_
 
 This instance deploys the module to setup collection of custom logs.
 
@@ -270,66 +344,68 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
-    dataFlows: [
-      {
-        destinations: [
-          '<logAnalyticsWorkspaceName>'
-        ]
-        outputStream: 'Custom-CustomTableBasic_CL'
-        streams: [
-          'Custom-CustomTableBasic_CL'
-        ]
-        transformKql: 'source'
-      }
-    ]
-    dataSources: {
-      logFiles: [
+    dataCollectionRuleProperties: {
+      dataCollectionEndpointResourceId: '<dataCollectionEndpointResourceId>'
+      dataFlows: [
         {
-          filePatterns: [
-            'C:\\TestLogsBasic\\TestLog*.log'
+          destinations: [
+            '<logAnalyticsWorkspaceName>'
           ]
-          format: 'text'
-          name: 'CustomTableBasic_CL'
-          samplingFrequencyInSeconds: 60
-          settings: {
-            text: {
-              recordStartTimestampFormat: 'ISO 8601'
-            }
-          }
+          outputStream: 'Custom-CustomTableBasic_CL'
           streams: [
             'Custom-CustomTableBasic_CL'
           ]
+          transformKql: 'source'
         }
       ]
-    }
-    destinations: {
-      logAnalytics: [
-        {
-          name: '<name>'
-          workspaceResourceId: '<workspaceResourceId>'
-        }
-      ]
-    }
-    name: 'idcrcusbas001'
-    // Non-required parameters
-    dataCollectionEndpointId: '<dataCollectionEndpointId>'
-    description: 'Collecting custom text logs without ingestion-time transformation.'
-    kind: 'Windows'
-    location: '<location>'
-    streamDeclarations: {
-      'Custom-CustomTableBasic_CL': {
-        columns: [
+      dataSources: {
+        logFiles: [
           {
-            name: 'TimeGenerated'
-            type: 'datetime'
-          }
-          {
-            name: 'RawData'
-            type: 'string'
+            filePatterns: [
+              'C:\\TestLogsBasic\\TestLog*.log'
+            ]
+            format: 'text'
+            name: 'CustomTableBasic_CL'
+            samplingFrequencyInSeconds: 60
+            settings: {
+              text: {
+                recordStartTimestampFormat: 'ISO 8601'
+              }
+            }
+            streams: [
+              'Custom-CustomTableBasic_CL'
+            ]
           }
         ]
       }
+      description: 'Collecting custom text logs without ingestion-time transformation.'
+      destinations: {
+        logAnalytics: [
+          {
+            name: '<name>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+      }
+      kind: 'All'
+      streamDeclarations: {
+        'Custom-CustomTableBasic_CL': {
+          columns: [
+            {
+              name: 'TimeGenerated'
+              type: 'datetime'
+            }
+            {
+              name: 'RawData'
+              type: 'string'
+            }
+          ]
+        }
+      }
     }
+    name: 'idcrcusbas001'
+    // Non-required parameters
+    location: '<location>'
     tags: {
       'hidden-title': 'This is visible in the resource name'
       kind: 'Windows'
@@ -352,83 +428,73 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dataFlows": {
-      "value": [
-        {
-          "destinations": [
-            "<logAnalyticsWorkspaceName>"
-          ],
-          "outputStream": "Custom-CustomTableBasic_CL",
-          "streams": [
-            "Custom-CustomTableBasic_CL"
-          ],
-          "transformKql": "source"
-        }
-      ]
-    },
-    "dataSources": {
+    "dataCollectionRuleProperties": {
       "value": {
-        "logFiles": [
+        "dataCollectionEndpointResourceId": "<dataCollectionEndpointResourceId>",
+        "dataFlows": [
           {
-            "filePatterns": [
-              "C:\\TestLogsBasic\\TestLog*.log"
+            "destinations": [
+              "<logAnalyticsWorkspaceName>"
             ],
-            "format": "text",
-            "name": "CustomTableBasic_CL",
-            "samplingFrequencyInSeconds": 60,
-            "settings": {
-              "text": {
-                "recordStartTimestampFormat": "ISO 8601"
-              }
-            },
+            "outputStream": "Custom-CustomTableBasic_CL",
             "streams": [
               "Custom-CustomTableBasic_CL"
+            ],
+            "transformKql": "source"
+          }
+        ],
+        "dataSources": {
+          "logFiles": [
+            {
+              "filePatterns": [
+                "C:\\TestLogsBasic\\TestLog*.log"
+              ],
+              "format": "text",
+              "name": "CustomTableBasic_CL",
+              "samplingFrequencyInSeconds": 60,
+              "settings": {
+                "text": {
+                  "recordStartTimestampFormat": "ISO 8601"
+                }
+              },
+              "streams": [
+                "Custom-CustomTableBasic_CL"
+              ]
+            }
+          ]
+        },
+        "description": "Collecting custom text logs without ingestion-time transformation.",
+        "destinations": {
+          "logAnalytics": [
+            {
+              "name": "<name>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ]
+        },
+        "kind": "All",
+        "streamDeclarations": {
+          "Custom-CustomTableBasic_CL": {
+            "columns": [
+              {
+                "name": "TimeGenerated",
+                "type": "datetime"
+              },
+              {
+                "name": "RawData",
+                "type": "string"
+              }
             ]
           }
-        ]
-      }
-    },
-    "destinations": {
-      "value": {
-        "logAnalytics": [
-          {
-            "name": "<name>",
-            "workspaceResourceId": "<workspaceResourceId>"
-          }
-        ]
+        }
       }
     },
     "name": {
       "value": "idcrcusbas001"
     },
     // Non-required parameters
-    "dataCollectionEndpointId": {
-      "value": "<dataCollectionEndpointId>"
-    },
-    "description": {
-      "value": "Collecting custom text logs without ingestion-time transformation."
-    },
-    "kind": {
-      "value": "Windows"
-    },
     "location": {
       "value": "<location>"
-    },
-    "streamDeclarations": {
-      "value": {
-        "Custom-CustomTableBasic_CL": {
-          "columns": [
-            {
-              "name": "TimeGenerated",
-              "type": "datetime"
-            },
-            {
-              "name": "RawData",
-              "type": "string"
-            }
-          ]
-        }
-      }
     },
     "tags": {
       "value": {
@@ -444,7 +510,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 3: _Collecting IIS logs_
+### Example 4: _Collecting IIS logs_
 
 This instance deploys the module to setup the collection of IIS logs.
 
@@ -458,44 +524,46 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
-    dataFlows: [
-      {
-        destinations: [
-          '<logAnalyticsWorkspaceName>'
-        ]
-        outputStream: 'Microsoft-W3CIISLog'
-        streams: [
-          'Microsoft-W3CIISLog'
-        ]
-        transformKql: 'source'
-      }
-    ]
-    dataSources: {
-      iisLogs: [
+    dataCollectionRuleProperties: {
+      dataCollectionEndpointResourceId: '<dataCollectionEndpointResourceId>'
+      dataFlows: [
         {
-          logDirectories: [
-            'C:\\inetpub\\logs\\LogFiles\\W3SVC1'
+          destinations: [
+            '<logAnalyticsWorkspaceName>'
           ]
-          name: 'iisLogsDataSource'
+          outputStream: 'Microsoft-W3CIISLog'
           streams: [
             'Microsoft-W3CIISLog'
           ]
+          transformKql: 'source'
         }
       ]
-    }
-    destinations: {
-      logAnalytics: [
-        {
-          name: '<name>'
-          workspaceResourceId: '<workspaceResourceId>'
-        }
-      ]
+      dataSources: {
+        iisLogs: [
+          {
+            logDirectories: [
+              'C:\\inetpub\\logs\\LogFiles\\W3SVC1'
+            ]
+            name: 'iisLogsDataSource'
+            streams: [
+              'Microsoft-W3CIISLog'
+            ]
+          }
+        ]
+      }
+      description: 'Collecting IIS logs.'
+      destinations: {
+        logAnalytics: [
+          {
+            name: '<name>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+      }
+      kind: 'Windows'
     }
     name: 'idcrcusiis001'
     // Non-required parameters
-    dataCollectionEndpointId: '<dataCollectionEndpointId>'
-    description: 'Collecting IIS logs.'
-    kind: 'Windows'
     location: '<location>'
     tags: {
       'hidden-title': 'This is visible in the resource name'
@@ -519,58 +587,50 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dataFlows": {
-      "value": [
-        {
-          "destinations": [
-            "<logAnalyticsWorkspaceName>"
-          ],
-          "outputStream": "Microsoft-W3CIISLog",
-          "streams": [
-            "Microsoft-W3CIISLog"
-          ],
-          "transformKql": "source"
-        }
-      ]
-    },
-    "dataSources": {
+    "dataCollectionRuleProperties": {
       "value": {
-        "iisLogs": [
+        "dataCollectionEndpointResourceId": "<dataCollectionEndpointResourceId>",
+        "dataFlows": [
           {
-            "logDirectories": [
-              "C:\\inetpub\\logs\\LogFiles\\W3SVC1"
+            "destinations": [
+              "<logAnalyticsWorkspaceName>"
             ],
-            "name": "iisLogsDataSource",
+            "outputStream": "Microsoft-W3CIISLog",
             "streams": [
               "Microsoft-W3CIISLog"
-            ]
+            ],
+            "transformKql": "source"
           }
-        ]
-      }
-    },
-    "destinations": {
-      "value": {
-        "logAnalytics": [
-          {
-            "name": "<name>",
-            "workspaceResourceId": "<workspaceResourceId>"
-          }
-        ]
+        ],
+        "dataSources": {
+          "iisLogs": [
+            {
+              "logDirectories": [
+                "C:\\inetpub\\logs\\LogFiles\\W3SVC1"
+              ],
+              "name": "iisLogsDataSource",
+              "streams": [
+                "Microsoft-W3CIISLog"
+              ]
+            }
+          ]
+        },
+        "description": "Collecting IIS logs.",
+        "destinations": {
+          "logAnalytics": [
+            {
+              "name": "<name>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ]
+        },
+        "kind": "Windows"
       }
     },
     "name": {
       "value": "idcrcusiis001"
     },
     // Non-required parameters
-    "dataCollectionEndpointId": {
-      "value": "<dataCollectionEndpointId>"
-    },
-    "description": {
-      "value": "Collecting IIS logs."
-    },
-    "kind": {
-      "value": "Windows"
-    },
     "location": {
       "value": "<location>"
     },
@@ -588,7 +648,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 4: _Using only defaults_
+### Example 5: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -602,47 +662,49 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
-    dataFlows: [
-      {
-        destinations: [
-          'azureMonitorMetrics-default'
-        ]
-        streams: [
-          'Microsoft-InsightsMetrics'
-        ]
-      }
-    ]
-    dataSources: {
-      performanceCounters: [
+    dataCollectionRuleProperties: {
+      dataFlows: [
         {
-          counterSpecifiers: [
-            '\\Process(_Total)\\Handle Count'
-            '\\Process(_Total)\\Thread Count'
-            '\\Processor Information(_Total)\\% Privileged Time'
-            '\\Processor Information(_Total)\\% Processor Time'
-            '\\Processor Information(_Total)\\% User Time'
-            '\\Processor Information(_Total)\\Processor Frequency'
-            '\\System\\Context Switches/sec'
-            '\\System\\Processes'
-            '\\System\\Processor Queue Length'
-            '\\System\\System Up Time'
+          destinations: [
+            'azureMonitorMetrics-default'
           ]
-          name: 'perfCounterDataSource60'
-          samplingFrequencyInSeconds: 60
           streams: [
             'Microsoft-InsightsMetrics'
           ]
         }
       ]
-    }
-    destinations: {
-      azureMonitorMetrics: {
-        name: 'azureMonitorMetrics-default'
+      dataSources: {
+        performanceCounters: [
+          {
+            counterSpecifiers: [
+              '\\Process(_Total)\\Handle Count'
+              '\\Process(_Total)\\Thread Count'
+              '\\Processor Information(_Total)\\% Privileged Time'
+              '\\Processor Information(_Total)\\% Processor Time'
+              '\\Processor Information(_Total)\\% User Time'
+              '\\Processor Information(_Total)\\Processor Frequency'
+              '\\System\\Context Switches/sec'
+              '\\System\\Processes'
+              '\\System\\Processor Queue Length'
+              '\\System\\System Up Time'
+            ]
+            name: 'perfCounterDataSource60'
+            samplingFrequencyInSeconds: 60
+            streams: [
+              'Microsoft-InsightsMetrics'
+            ]
+          }
+        ]
       }
+      destinations: {
+        azureMonitorMetrics: {
+          name: 'azureMonitorMetrics-default'
+        }
+      }
+      kind: 'Windows'
     }
     name: 'idcrmin001'
     // Non-required parameters
-    kind: 'Windows'
     location: '<location>'
   }
 }
@@ -661,57 +723,53 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dataFlows": {
-      "value": [
-        {
-          "destinations": [
-            "azureMonitorMetrics-default"
-          ],
-          "streams": [
-            "Microsoft-InsightsMetrics"
-          ]
-        }
-      ]
-    },
-    "dataSources": {
+    "dataCollectionRuleProperties": {
       "value": {
-        "performanceCounters": [
+        "dataFlows": [
           {
-            "counterSpecifiers": [
-              "\\Process(_Total)\\Handle Count",
-              "\\Process(_Total)\\Thread Count",
-              "\\Processor Information(_Total)\\% Privileged Time",
-              "\\Processor Information(_Total)\\% Processor Time",
-              "\\Processor Information(_Total)\\% User Time",
-              "\\Processor Information(_Total)\\Processor Frequency",
-              "\\System\\Context Switches/sec",
-              "\\System\\Processes",
-              "\\System\\Processor Queue Length",
-              "\\System\\System Up Time"
+            "destinations": [
+              "azureMonitorMetrics-default"
             ],
-            "name": "perfCounterDataSource60",
-            "samplingFrequencyInSeconds": 60,
             "streams": [
               "Microsoft-InsightsMetrics"
             ]
           }
-        ]
-      }
-    },
-    "destinations": {
-      "value": {
-        "azureMonitorMetrics": {
-          "name": "azureMonitorMetrics-default"
-        }
+        ],
+        "dataSources": {
+          "performanceCounters": [
+            {
+              "counterSpecifiers": [
+                "\\Process(_Total)\\Handle Count",
+                "\\Process(_Total)\\Thread Count",
+                "\\Processor Information(_Total)\\% Privileged Time",
+                "\\Processor Information(_Total)\\% Processor Time",
+                "\\Processor Information(_Total)\\% User Time",
+                "\\Processor Information(_Total)\\Processor Frequency",
+                "\\System\\Context Switches/sec",
+                "\\System\\Processes",
+                "\\System\\Processor Queue Length",
+                "\\System\\System Up Time"
+              ],
+              "name": "perfCounterDataSource60",
+              "samplingFrequencyInSeconds": 60,
+              "streams": [
+                "Microsoft-InsightsMetrics"
+              ]
+            }
+          ]
+        },
+        "destinations": {
+          "azureMonitorMetrics": {
+            "name": "azureMonitorMetrics-default"
+          }
+        },
+        "kind": "Windows"
       }
     },
     "name": {
       "value": "idcrmin001"
     },
     // Non-required parameters
-    "kind": {
-      "value": "Windows"
-    },
     "location": {
       "value": "<location>"
     }
@@ -722,7 +780,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 5: _Collecting Linux-specific information_
+### Example 6: _Collecting Linux-specific information_
 
 This instance deploys the module to setup the collection of Linux-specific performance counters and Linux Syslog.
 
@@ -736,157 +794,159 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
-    dataFlows: [
-      {
-        destinations: [
-          'azureMonitorMetrics-default'
-        ]
-        streams: [
-          'Microsoft-InsightsMetrics'
-        ]
-      }
-      {
-        destinations: [
-          '<logAnalyticsWorkspaceName>'
-        ]
-        streams: [
-          'Microsoft-Syslog'
-        ]
-      }
-    ]
-    dataSources: {
-      performanceCounters: [
+    dataCollectionRuleProperties: {
+      dataFlows: [
         {
-          counterSpecifiers: [
-            'Logical Disk(*)\\% Free Inodes'
-            'Logical Disk(*)\\% Free Space'
-            'Logical Disk(*)\\% Used Inodes'
-            'Logical Disk(*)\\% Used Space'
-            'Logical Disk(*)\\Disk Read Bytes/sec'
-            'Logical Disk(*)\\Disk Reads/sec'
-            'Logical Disk(*)\\Disk Transfers/sec'
-            'Logical Disk(*)\\Disk Write Bytes/sec'
-            'Logical Disk(*)\\Disk Writes/sec'
-            'Logical Disk(*)\\Free Megabytes'
-            'Logical Disk(*)\\Logical Disk Bytes/sec'
-            'Memory(*)\\% Available Memory'
-            'Memory(*)\\% Available Swap Space'
-            'Memory(*)\\% Used Memory'
-            'Memory(*)\\% Used Swap Space'
-            'Memory(*)\\Available MBytes Memory'
-            'Memory(*)\\Available MBytes Swap'
-            'Memory(*)\\Page Reads/sec'
-            'Memory(*)\\Page Writes/sec'
-            'Memory(*)\\Pages/sec'
-            'Memory(*)\\Used MBytes Swap Space'
-            'Memory(*)\\Used Memory MBytes'
-            'Network(*)\\Total Bytes'
-            'Network(*)\\Total Bytes Received'
-            'Network(*)\\Total Bytes Transmitted'
-            'Network(*)\\Total Collisions'
-            'Network(*)\\Total Packets Received'
-            'Network(*)\\Total Packets Transmitted'
-            'Network(*)\\Total Rx Errors'
-            'Network(*)\\Total Tx Errors'
-            'Processor(*)\\% DPC Time'
-            'Processor(*)\\% Idle Time'
-            'Processor(*)\\% Interrupt Time'
-            'Processor(*)\\% IO Wait Time'
-            'Processor(*)\\% Nice Time'
-            'Processor(*)\\% Privileged Time'
-            'Processor(*)\\% Processor Time'
-            'Processor(*)\\% User Time'
+          destinations: [
+            'azureMonitorMetrics-default'
           ]
-          name: 'perfCounterDataSource60'
-          samplingFrequencyInSeconds: 60
           streams: [
             'Microsoft-InsightsMetrics'
           ]
         }
-      ]
-      syslog: [
         {
-          facilityNames: [
-            'auth'
-            'authpriv'
+          destinations: [
+            '<logAnalyticsWorkspaceName>'
           ]
-          logLevels: [
-            'Alert'
-            'Critical'
-            'Debug'
-            'Emergency'
-            'Error'
-            'Info'
-            'Notice'
-            'Warning'
-          ]
-          name: 'sysLogsDataSource-debugLevel'
-          streams: [
-            'Microsoft-Syslog'
-          ]
-        }
-        {
-          facilityNames: [
-            'cron'
-            'daemon'
-            'kern'
-            'local0'
-            'mark'
-          ]
-          logLevels: [
-            'Alert'
-            'Critical'
-            'Emergency'
-            'Error'
-            'Warning'
-          ]
-          name: 'sysLogsDataSource-warningLevel'
-          streams: [
-            'Microsoft-Syslog'
-          ]
-        }
-        {
-          facilityNames: [
-            'local1'
-            'local2'
-            'local3'
-            'local4'
-            'local5'
-            'local6'
-            'local7'
-            'lpr'
-            'mail'
-            'news'
-            'syslog'
-          ]
-          logLevels: [
-            'Alert'
-            'Critical'
-            'Emergency'
-            'Error'
-          ]
-          name: 'sysLogsDataSource-errLevel'
           streams: [
             'Microsoft-Syslog'
           ]
         }
       ]
-    }
-    destinations: {
-      azureMonitorMetrics: {
-        name: 'azureMonitorMetrics-default'
+      dataSources: {
+        performanceCounters: [
+          {
+            counterSpecifiers: [
+              'Logical Disk(*)\\% Free Inodes'
+              'Logical Disk(*)\\% Free Space'
+              'Logical Disk(*)\\% Used Inodes'
+              'Logical Disk(*)\\% Used Space'
+              'Logical Disk(*)\\Disk Read Bytes/sec'
+              'Logical Disk(*)\\Disk Reads/sec'
+              'Logical Disk(*)\\Disk Transfers/sec'
+              'Logical Disk(*)\\Disk Write Bytes/sec'
+              'Logical Disk(*)\\Disk Writes/sec'
+              'Logical Disk(*)\\Free Megabytes'
+              'Logical Disk(*)\\Logical Disk Bytes/sec'
+              'Memory(*)\\% Available Memory'
+              'Memory(*)\\% Available Swap Space'
+              'Memory(*)\\% Used Memory'
+              'Memory(*)\\% Used Swap Space'
+              'Memory(*)\\Available MBytes Memory'
+              'Memory(*)\\Available MBytes Swap'
+              'Memory(*)\\Page Reads/sec'
+              'Memory(*)\\Page Writes/sec'
+              'Memory(*)\\Pages/sec'
+              'Memory(*)\\Used MBytes Swap Space'
+              'Memory(*)\\Used Memory MBytes'
+              'Network(*)\\Total Bytes'
+              'Network(*)\\Total Bytes Received'
+              'Network(*)\\Total Bytes Transmitted'
+              'Network(*)\\Total Collisions'
+              'Network(*)\\Total Packets Received'
+              'Network(*)\\Total Packets Transmitted'
+              'Network(*)\\Total Rx Errors'
+              'Network(*)\\Total Tx Errors'
+              'Processor(*)\\% DPC Time'
+              'Processor(*)\\% Idle Time'
+              'Processor(*)\\% Interrupt Time'
+              'Processor(*)\\% IO Wait Time'
+              'Processor(*)\\% Nice Time'
+              'Processor(*)\\% Privileged Time'
+              'Processor(*)\\% Processor Time'
+              'Processor(*)\\% User Time'
+            ]
+            name: 'perfCounterDataSource60'
+            samplingFrequencyInSeconds: 60
+            streams: [
+              'Microsoft-InsightsMetrics'
+            ]
+          }
+        ]
+        syslog: [
+          {
+            facilityNames: [
+              'auth'
+              'authpriv'
+            ]
+            logLevels: [
+              'Alert'
+              'Critical'
+              'Debug'
+              'Emergency'
+              'Error'
+              'Info'
+              'Notice'
+              'Warning'
+            ]
+            name: 'sysLogsDataSource-debugLevel'
+            streams: [
+              'Microsoft-Syslog'
+            ]
+          }
+          {
+            facilityNames: [
+              'cron'
+              'daemon'
+              'kern'
+              'local0'
+              'mark'
+            ]
+            logLevels: [
+              'Alert'
+              'Critical'
+              'Emergency'
+              'Error'
+              'Warning'
+            ]
+            name: 'sysLogsDataSource-warningLevel'
+            streams: [
+              'Microsoft-Syslog'
+            ]
+          }
+          {
+            facilityNames: [
+              'local1'
+              'local2'
+              'local3'
+              'local4'
+              'local5'
+              'local6'
+              'local7'
+              'lpr'
+              'mail'
+              'news'
+              'syslog'
+            ]
+            logLevels: [
+              'Alert'
+              'Critical'
+              'Emergency'
+              'Error'
+            ]
+            name: 'sysLogsDataSource-errLevel'
+            streams: [
+              'Microsoft-Syslog'
+            ]
+          }
+        ]
       }
-      logAnalytics: [
-        {
-          name: '<name>'
-          workspaceResourceId: '<workspaceResourceId>'
+      description: 'Collecting Linux-specific performance counters and Linux Syslog'
+      destinations: {
+        azureMonitorMetrics: {
+          name: 'azureMonitorMetrics-default'
         }
-      ]
+        logAnalytics: [
+          {
+            name: '<name>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+      }
+      kind: 'Linux'
     }
     name: 'idcrlin001'
     // Non-required parameters
-    description: 'Collecting Linux-specific performance counters and Linux Syslog'
-    kind: 'Linux'
     location: '<location>'
     tags: {
       'hidden-title': 'This is visible in the resource name'
@@ -910,169 +970,163 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dataFlows": {
-      "value": [
-        {
-          "destinations": [
-            "azureMonitorMetrics-default"
-          ],
-          "streams": [
-            "Microsoft-InsightsMetrics"
-          ]
-        },
-        {
-          "destinations": [
-            "<logAnalyticsWorkspaceName>"
-          ],
-          "streams": [
-            "Microsoft-Syslog"
-          ]
-        }
-      ]
-    },
-    "dataSources": {
+    "dataCollectionRuleProperties": {
       "value": {
-        "performanceCounters": [
+        "dataFlows": [
           {
-            "counterSpecifiers": [
-              "Logical Disk(*)\\% Free Inodes",
-              "Logical Disk(*)\\% Free Space",
-              "Logical Disk(*)\\% Used Inodes",
-              "Logical Disk(*)\\% Used Space",
-              "Logical Disk(*)\\Disk Read Bytes/sec",
-              "Logical Disk(*)\\Disk Reads/sec",
-              "Logical Disk(*)\\Disk Transfers/sec",
-              "Logical Disk(*)\\Disk Write Bytes/sec",
-              "Logical Disk(*)\\Disk Writes/sec",
-              "Logical Disk(*)\\Free Megabytes",
-              "Logical Disk(*)\\Logical Disk Bytes/sec",
-              "Memory(*)\\% Available Memory",
-              "Memory(*)\\% Available Swap Space",
-              "Memory(*)\\% Used Memory",
-              "Memory(*)\\% Used Swap Space",
-              "Memory(*)\\Available MBytes Memory",
-              "Memory(*)\\Available MBytes Swap",
-              "Memory(*)\\Page Reads/sec",
-              "Memory(*)\\Page Writes/sec",
-              "Memory(*)\\Pages/sec",
-              "Memory(*)\\Used MBytes Swap Space",
-              "Memory(*)\\Used Memory MBytes",
-              "Network(*)\\Total Bytes",
-              "Network(*)\\Total Bytes Received",
-              "Network(*)\\Total Bytes Transmitted",
-              "Network(*)\\Total Collisions",
-              "Network(*)\\Total Packets Received",
-              "Network(*)\\Total Packets Transmitted",
-              "Network(*)\\Total Rx Errors",
-              "Network(*)\\Total Tx Errors",
-              "Processor(*)\\% DPC Time",
-              "Processor(*)\\% Idle Time",
-              "Processor(*)\\% Interrupt Time",
-              "Processor(*)\\% IO Wait Time",
-              "Processor(*)\\% Nice Time",
-              "Processor(*)\\% Privileged Time",
-              "Processor(*)\\% Processor Time",
-              "Processor(*)\\% User Time"
+            "destinations": [
+              "azureMonitorMetrics-default"
             ],
-            "name": "perfCounterDataSource60",
-            "samplingFrequencyInSeconds": 60,
             "streams": [
               "Microsoft-InsightsMetrics"
             ]
+          },
+          {
+            "destinations": [
+              "<logAnalyticsWorkspaceName>"
+            ],
+            "streams": [
+              "Microsoft-Syslog"
+            ]
           }
         ],
-        "syslog": [
-          {
-            "facilityNames": [
-              "auth",
-              "authpriv"
-            ],
-            "logLevels": [
-              "Alert",
-              "Critical",
-              "Debug",
-              "Emergency",
-              "Error",
-              "Info",
-              "Notice",
-              "Warning"
-            ],
-            "name": "sysLogsDataSource-debugLevel",
-            "streams": [
-              "Microsoft-Syslog"
-            ]
-          },
-          {
-            "facilityNames": [
-              "cron",
-              "daemon",
-              "kern",
-              "local0",
-              "mark"
-            ],
-            "logLevels": [
-              "Alert",
-              "Critical",
-              "Emergency",
-              "Error",
-              "Warning"
-            ],
-            "name": "sysLogsDataSource-warningLevel",
-            "streams": [
-              "Microsoft-Syslog"
-            ]
-          },
-          {
-            "facilityNames": [
-              "local1",
-              "local2",
-              "local3",
-              "local4",
-              "local5",
-              "local6",
-              "local7",
-              "lpr",
-              "mail",
-              "news",
-              "syslog"
-            ],
-            "logLevels": [
-              "Alert",
-              "Critical",
-              "Emergency",
-              "Error"
-            ],
-            "name": "sysLogsDataSource-errLevel",
-            "streams": [
-              "Microsoft-Syslog"
-            ]
-          }
-        ]
-      }
-    },
-    "destinations": {
-      "value": {
-        "azureMonitorMetrics": {
-          "name": "azureMonitorMetrics-default"
+        "dataSources": {
+          "performanceCounters": [
+            {
+              "counterSpecifiers": [
+                "Logical Disk(*)\\% Free Inodes",
+                "Logical Disk(*)\\% Free Space",
+                "Logical Disk(*)\\% Used Inodes",
+                "Logical Disk(*)\\% Used Space",
+                "Logical Disk(*)\\Disk Read Bytes/sec",
+                "Logical Disk(*)\\Disk Reads/sec",
+                "Logical Disk(*)\\Disk Transfers/sec",
+                "Logical Disk(*)\\Disk Write Bytes/sec",
+                "Logical Disk(*)\\Disk Writes/sec",
+                "Logical Disk(*)\\Free Megabytes",
+                "Logical Disk(*)\\Logical Disk Bytes/sec",
+                "Memory(*)\\% Available Memory",
+                "Memory(*)\\% Available Swap Space",
+                "Memory(*)\\% Used Memory",
+                "Memory(*)\\% Used Swap Space",
+                "Memory(*)\\Available MBytes Memory",
+                "Memory(*)\\Available MBytes Swap",
+                "Memory(*)\\Page Reads/sec",
+                "Memory(*)\\Page Writes/sec",
+                "Memory(*)\\Pages/sec",
+                "Memory(*)\\Used MBytes Swap Space",
+                "Memory(*)\\Used Memory MBytes",
+                "Network(*)\\Total Bytes",
+                "Network(*)\\Total Bytes Received",
+                "Network(*)\\Total Bytes Transmitted",
+                "Network(*)\\Total Collisions",
+                "Network(*)\\Total Packets Received",
+                "Network(*)\\Total Packets Transmitted",
+                "Network(*)\\Total Rx Errors",
+                "Network(*)\\Total Tx Errors",
+                "Processor(*)\\% DPC Time",
+                "Processor(*)\\% Idle Time",
+                "Processor(*)\\% Interrupt Time",
+                "Processor(*)\\% IO Wait Time",
+                "Processor(*)\\% Nice Time",
+                "Processor(*)\\% Privileged Time",
+                "Processor(*)\\% Processor Time",
+                "Processor(*)\\% User Time"
+              ],
+              "name": "perfCounterDataSource60",
+              "samplingFrequencyInSeconds": 60,
+              "streams": [
+                "Microsoft-InsightsMetrics"
+              ]
+            }
+          ],
+          "syslog": [
+            {
+              "facilityNames": [
+                "auth",
+                "authpriv"
+              ],
+              "logLevels": [
+                "Alert",
+                "Critical",
+                "Debug",
+                "Emergency",
+                "Error",
+                "Info",
+                "Notice",
+                "Warning"
+              ],
+              "name": "sysLogsDataSource-debugLevel",
+              "streams": [
+                "Microsoft-Syslog"
+              ]
+            },
+            {
+              "facilityNames": [
+                "cron",
+                "daemon",
+                "kern",
+                "local0",
+                "mark"
+              ],
+              "logLevels": [
+                "Alert",
+                "Critical",
+                "Emergency",
+                "Error",
+                "Warning"
+              ],
+              "name": "sysLogsDataSource-warningLevel",
+              "streams": [
+                "Microsoft-Syslog"
+              ]
+            },
+            {
+              "facilityNames": [
+                "local1",
+                "local2",
+                "local3",
+                "local4",
+                "local5",
+                "local6",
+                "local7",
+                "lpr",
+                "mail",
+                "news",
+                "syslog"
+              ],
+              "logLevels": [
+                "Alert",
+                "Critical",
+                "Emergency",
+                "Error"
+              ],
+              "name": "sysLogsDataSource-errLevel",
+              "streams": [
+                "Microsoft-Syslog"
+              ]
+            }
+          ]
         },
-        "logAnalytics": [
-          {
-            "name": "<name>",
-            "workspaceResourceId": "<workspaceResourceId>"
-          }
-        ]
+        "description": "Collecting Linux-specific performance counters and Linux Syslog",
+        "destinations": {
+          "azureMonitorMetrics": {
+            "name": "azureMonitorMetrics-default"
+          },
+          "logAnalytics": [
+            {
+              "name": "<name>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ]
+        },
+        "kind": "Linux"
       }
     },
     "name": {
       "value": "idcrlin001"
     },
     // Non-required parameters
-    "description": {
-      "value": "Collecting Linux-specific performance counters and Linux Syslog"
-    },
-    "kind": {
-      "value": "Linux"
-    },
     "location": {
       "value": "<location>"
     },
@@ -1090,7 +1144,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 6: _Using large parameter set_
+### Example 7: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1104,55 +1158,77 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
-    dataFlows: [
-      {
-        destinations: [
-          '<logAnalyticsWorkspaceName>'
-        ]
-        outputStream: 'Custom-CustomTableBasic_CL'
-        streams: [
-          'Custom-CustomTableBasic_CL'
-        ]
-        transformKql: 'source'
-      }
-    ]
-    dataSources: {
-      logFiles: [
+    dataCollectionRuleProperties: {
+      dataCollectionEndpointResourceId: '<dataCollectionEndpointResourceId>'
+      dataFlows: [
         {
-          filePatterns: [
-            'C:\\TestLogsBasic\\TestLog*.log'
+          destinations: [
+            '<logAnalyticsWorkspaceName>'
           ]
-          format: 'text'
-          name: 'CustomTableBasic_CL'
-          samplingFrequencyInSeconds: 60
-          settings: {
-            text: {
-              recordStartTimestampFormat: 'ISO 8601'
-            }
-          }
+          outputStream: 'Custom-CustomTableBasic_CL'
           streams: [
             'Custom-CustomTableBasic_CL'
           ]
+          transformKql: 'source'
         }
       ]
-    }
-    destinations: {
-      logAnalytics: [
-        {
-          name: '<name>'
-          workspaceResourceId: '<workspaceResourceId>'
+      dataSources: {
+        logFiles: [
+          {
+            filePatterns: [
+              'C:\\TestLogsBasic\\TestLog*.log'
+            ]
+            format: 'text'
+            name: 'CustomTableBasic_CL'
+            samplingFrequencyInSeconds: 60
+            settings: {
+              text: {
+                recordStartTimestampFormat: 'ISO 8601'
+              }
+            }
+            streams: [
+              'Custom-CustomTableBasic_CL'
+            ]
+          }
+        ]
+      }
+      description: 'Collecting custom text logs without ingestion-time transformation.'
+      destinations: {
+        logAnalytics: [
+          {
+            name: '<name>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+      }
+      kind: 'Windows'
+      streamDeclarations: {
+        'Custom-CustomTableBasic_CL': {
+          columns: [
+            {
+              name: 'TimeGenerated'
+              type: 'datetime'
+            }
+            {
+              name: 'RawData'
+              type: 'string'
+            }
+          ]
         }
-      ]
+      }
     }
     name: 'idcrmax001'
     // Non-required parameters
-    dataCollectionEndpointId: '<dataCollectionEndpointId>'
-    description: 'Collecting custom text logs without ingestion-time transformation.'
-    kind: 'Windows'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     roleAssignments: [
       {
@@ -1173,20 +1249,6 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    streamDeclarations: {
-      'Custom-CustomTableBasic_CL': {
-        columns: [
-          {
-            name: 'TimeGenerated'
-            type: 'datetime'
-          }
-          {
-            name: 'RawData'
-            type: 'string'
-          }
-        ]
-      }
-    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       kind: 'Windows'
@@ -1209,65 +1271,71 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dataFlows": {
-      "value": [
-        {
-          "destinations": [
-            "<logAnalyticsWorkspaceName>"
-          ],
-          "outputStream": "Custom-CustomTableBasic_CL",
-          "streams": [
-            "Custom-CustomTableBasic_CL"
-          ],
-          "transformKql": "source"
-        }
-      ]
-    },
-    "dataSources": {
+    "dataCollectionRuleProperties": {
       "value": {
-        "logFiles": [
+        "dataCollectionEndpointResourceId": "<dataCollectionEndpointResourceId>",
+        "dataFlows": [
           {
-            "filePatterns": [
-              "C:\\TestLogsBasic\\TestLog*.log"
+            "destinations": [
+              "<logAnalyticsWorkspaceName>"
             ],
-            "format": "text",
-            "name": "CustomTableBasic_CL",
-            "samplingFrequencyInSeconds": 60,
-            "settings": {
-              "text": {
-                "recordStartTimestampFormat": "ISO 8601"
-              }
-            },
+            "outputStream": "Custom-CustomTableBasic_CL",
             "streams": [
               "Custom-CustomTableBasic_CL"
+            ],
+            "transformKql": "source"
+          }
+        ],
+        "dataSources": {
+          "logFiles": [
+            {
+              "filePatterns": [
+                "C:\\TestLogsBasic\\TestLog*.log"
+              ],
+              "format": "text",
+              "name": "CustomTableBasic_CL",
+              "samplingFrequencyInSeconds": 60,
+              "settings": {
+                "text": {
+                  "recordStartTimestampFormat": "ISO 8601"
+                }
+              },
+              "streams": [
+                "Custom-CustomTableBasic_CL"
+              ]
+            }
+          ]
+        },
+        "description": "Collecting custom text logs without ingestion-time transformation.",
+        "destinations": {
+          "logAnalytics": [
+            {
+              "name": "<name>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ]
+        },
+        "kind": "Windows",
+        "streamDeclarations": {
+          "Custom-CustomTableBasic_CL": {
+            "columns": [
+              {
+                "name": "TimeGenerated",
+                "type": "datetime"
+              },
+              {
+                "name": "RawData",
+                "type": "string"
+              }
             ]
           }
-        ]
-      }
-    },
-    "destinations": {
-      "value": {
-        "logAnalytics": [
-          {
-            "name": "<name>",
-            "workspaceResourceId": "<workspaceResourceId>"
-          }
-        ]
+        }
       }
     },
     "name": {
       "value": "idcrmax001"
     },
     // Non-required parameters
-    "dataCollectionEndpointId": {
-      "value": "<dataCollectionEndpointId>"
-    },
-    "description": {
-      "value": "Collecting custom text logs without ingestion-time transformation."
-    },
-    "kind": {
-      "value": "Windows"
-    },
     "location": {
       "value": "<location>"
     },
@@ -1275,6 +1343,14 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": false,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "roleAssignments": {
@@ -1298,22 +1374,6 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
         }
       ]
     },
-    "streamDeclarations": {
-      "value": {
-        "Custom-CustomTableBasic_CL": {
-          "columns": [
-            {
-              "name": "TimeGenerated",
-              "type": "datetime"
-            },
-            {
-              "name": "RawData",
-              "type": "string"
-            }
-          ]
-        }
-      }
-    },
     "tags": {
       "value": {
         "hidden-title": "This is visible in the resource name",
@@ -1328,7 +1388,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 8: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1342,111 +1402,113 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
-    dataFlows: [
-      {
-        destinations: [
-          'azureMonitorMetrics-default'
-        ]
-        streams: [
-          'Microsoft-InsightsMetrics'
-        ]
-      }
-      {
-        destinations: [
-          '<logAnalyticsWorkspaceName>'
-        ]
-        streams: [
-          'Microsoft-Event'
-        ]
-      }
-    ]
-    dataSources: {
-      performanceCounters: [
+    dataCollectionRuleProperties: {
+      dataFlows: [
         {
-          counterSpecifiers: [
-            '\\LogicalDisk(_Total)\\% Disk Read Time'
-            '\\LogicalDisk(_Total)\\% Disk Time'
-            '\\LogicalDisk(_Total)\\% Disk Write Time'
-            '\\LogicalDisk(_Total)\\% Free Space'
-            '\\LogicalDisk(_Total)\\% Idle Time'
-            '\\LogicalDisk(_Total)\\Avg. Disk Queue Length'
-            '\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length'
-            '\\LogicalDisk(_Total)\\Avg. Disk sec/Read'
-            '\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer'
-            '\\LogicalDisk(_Total)\\Avg. Disk sec/Write'
-            '\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length'
-            '\\LogicalDisk(_Total)\\Disk Bytes/sec'
-            '\\LogicalDisk(_Total)\\Disk Read Bytes/sec'
-            '\\LogicalDisk(_Total)\\Disk Reads/sec'
-            '\\LogicalDisk(_Total)\\Disk Transfers/sec'
-            '\\LogicalDisk(_Total)\\Disk Write Bytes/sec'
-            '\\LogicalDisk(_Total)\\Disk Writes/sec'
-            '\\LogicalDisk(_Total)\\Free Megabytes'
-            '\\Memory\\% Committed Bytes In Use'
-            '\\Memory\\Available Bytes'
-            '\\Memory\\Cache Bytes'
-            '\\Memory\\Committed Bytes'
-            '\\Memory\\Page Faults/sec'
-            '\\Memory\\Pages/sec'
-            '\\Memory\\Pool Nonpaged Bytes'
-            '\\Memory\\Pool Paged Bytes'
-            '\\Network Interface(*)\\Bytes Received/sec'
-            '\\Network Interface(*)\\Bytes Sent/sec'
-            '\\Network Interface(*)\\Bytes Total/sec'
-            '\\Network Interface(*)\\Packets Outbound Errors'
-            '\\Network Interface(*)\\Packets Received Errors'
-            '\\Network Interface(*)\\Packets Received/sec'
-            '\\Network Interface(*)\\Packets Sent/sec'
-            '\\Network Interface(*)\\Packets/sec'
-            '\\Process(_Total)\\Handle Count'
-            '\\Process(_Total)\\Thread Count'
-            '\\Process(_Total)\\Working Set'
-            '\\Process(_Total)\\Working Set - Private'
-            '\\Processor Information(_Total)\\% Privileged Time'
-            '\\Processor Information(_Total)\\% Processor Time'
-            '\\Processor Information(_Total)\\% User Time'
-            '\\Processor Information(_Total)\\Processor Frequency'
-            '\\System\\Context Switches/sec'
-            '\\System\\Processes'
-            '\\System\\Processor Queue Length'
-            '\\System\\System Up Time'
+          destinations: [
+            'azureMonitorMetrics-default'
           ]
-          name: 'perfCounterDataSource60'
-          samplingFrequencyInSeconds: 60
           streams: [
             'Microsoft-InsightsMetrics'
           ]
         }
-      ]
-      windowsEventLogs: [
         {
-          name: 'eventLogsDataSource'
+          destinations: [
+            '<logAnalyticsWorkspaceName>'
+          ]
           streams: [
             'Microsoft-Event'
           ]
-          xPathQueries: [
-            'Application!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
-            'Security!*[System[(band(Keywords,13510798882111488))]]'
-            'System!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
-          ]
         }
       ]
-    }
-    destinations: {
-      azureMonitorMetrics: {
-        name: 'azureMonitorMetrics-default'
+      dataSources: {
+        performanceCounters: [
+          {
+            counterSpecifiers: [
+              '\\LogicalDisk(_Total)\\% Disk Read Time'
+              '\\LogicalDisk(_Total)\\% Disk Time'
+              '\\LogicalDisk(_Total)\\% Disk Write Time'
+              '\\LogicalDisk(_Total)\\% Free Space'
+              '\\LogicalDisk(_Total)\\% Idle Time'
+              '\\LogicalDisk(_Total)\\Avg. Disk Queue Length'
+              '\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length'
+              '\\LogicalDisk(_Total)\\Avg. Disk sec/Read'
+              '\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer'
+              '\\LogicalDisk(_Total)\\Avg. Disk sec/Write'
+              '\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length'
+              '\\LogicalDisk(_Total)\\Disk Bytes/sec'
+              '\\LogicalDisk(_Total)\\Disk Read Bytes/sec'
+              '\\LogicalDisk(_Total)\\Disk Reads/sec'
+              '\\LogicalDisk(_Total)\\Disk Transfers/sec'
+              '\\LogicalDisk(_Total)\\Disk Write Bytes/sec'
+              '\\LogicalDisk(_Total)\\Disk Writes/sec'
+              '\\LogicalDisk(_Total)\\Free Megabytes'
+              '\\Memory\\% Committed Bytes In Use'
+              '\\Memory\\Available Bytes'
+              '\\Memory\\Cache Bytes'
+              '\\Memory\\Committed Bytes'
+              '\\Memory\\Page Faults/sec'
+              '\\Memory\\Pages/sec'
+              '\\Memory\\Pool Nonpaged Bytes'
+              '\\Memory\\Pool Paged Bytes'
+              '\\Network Interface(*)\\Bytes Received/sec'
+              '\\Network Interface(*)\\Bytes Sent/sec'
+              '\\Network Interface(*)\\Bytes Total/sec'
+              '\\Network Interface(*)\\Packets Outbound Errors'
+              '\\Network Interface(*)\\Packets Received Errors'
+              '\\Network Interface(*)\\Packets Received/sec'
+              '\\Network Interface(*)\\Packets Sent/sec'
+              '\\Network Interface(*)\\Packets/sec'
+              '\\Process(_Total)\\Handle Count'
+              '\\Process(_Total)\\Thread Count'
+              '\\Process(_Total)\\Working Set'
+              '\\Process(_Total)\\Working Set - Private'
+              '\\Processor Information(_Total)\\% Privileged Time'
+              '\\Processor Information(_Total)\\% Processor Time'
+              '\\Processor Information(_Total)\\% User Time'
+              '\\Processor Information(_Total)\\Processor Frequency'
+              '\\System\\Context Switches/sec'
+              '\\System\\Processes'
+              '\\System\\Processor Queue Length'
+              '\\System\\System Up Time'
+            ]
+            name: 'perfCounterDataSource60'
+            samplingFrequencyInSeconds: 60
+            streams: [
+              'Microsoft-InsightsMetrics'
+            ]
+          }
+        ]
+        windowsEventLogs: [
+          {
+            name: 'eventLogsDataSource'
+            streams: [
+              'Microsoft-Event'
+            ]
+            xPathQueries: [
+              'Application!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
+              'Security!*[System[(band(Keywords,13510798882111488))]]'
+              'System!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
+            ]
+          }
+        ]
       }
-      logAnalytics: [
-        {
-          name: '<name>'
-          workspaceResourceId: '<workspaceResourceId>'
+      description: 'Collecting Windows-specific performance counters and Windows Event Logs'
+      destinations: {
+        azureMonitorMetrics: {
+          name: 'azureMonitorMetrics-default'
         }
-      ]
+        logAnalytics: [
+          {
+            name: '<name>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+      }
+      kind: 'Windows'
     }
     name: 'idcrwaf001'
     // Non-required parameters
-    description: 'Collecting Windows-specific performance counters and Windows Event Logs'
-    kind: 'Windows'
     location: '<location>'
     tags: {
       'hidden-title': 'This is visible in the resource name'
@@ -1470,123 +1532,117 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dataFlows": {
-      "value": [
-        {
-          "destinations": [
-            "azureMonitorMetrics-default"
-          ],
-          "streams": [
-            "Microsoft-InsightsMetrics"
-          ]
-        },
-        {
-          "destinations": [
-            "<logAnalyticsWorkspaceName>"
-          ],
-          "streams": [
-            "Microsoft-Event"
-          ]
-        }
-      ]
-    },
-    "dataSources": {
+    "dataCollectionRuleProperties": {
       "value": {
-        "performanceCounters": [
+        "dataFlows": [
           {
-            "counterSpecifiers": [
-              "\\LogicalDisk(_Total)\\% Disk Read Time",
-              "\\LogicalDisk(_Total)\\% Disk Time",
-              "\\LogicalDisk(_Total)\\% Disk Write Time",
-              "\\LogicalDisk(_Total)\\% Free Space",
-              "\\LogicalDisk(_Total)\\% Idle Time",
-              "\\LogicalDisk(_Total)\\Avg. Disk Queue Length",
-              "\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length",
-              "\\LogicalDisk(_Total)\\Avg. Disk sec/Read",
-              "\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer",
-              "\\LogicalDisk(_Total)\\Avg. Disk sec/Write",
-              "\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length",
-              "\\LogicalDisk(_Total)\\Disk Bytes/sec",
-              "\\LogicalDisk(_Total)\\Disk Read Bytes/sec",
-              "\\LogicalDisk(_Total)\\Disk Reads/sec",
-              "\\LogicalDisk(_Total)\\Disk Transfers/sec",
-              "\\LogicalDisk(_Total)\\Disk Write Bytes/sec",
-              "\\LogicalDisk(_Total)\\Disk Writes/sec",
-              "\\LogicalDisk(_Total)\\Free Megabytes",
-              "\\Memory\\% Committed Bytes In Use",
-              "\\Memory\\Available Bytes",
-              "\\Memory\\Cache Bytes",
-              "\\Memory\\Committed Bytes",
-              "\\Memory\\Page Faults/sec",
-              "\\Memory\\Pages/sec",
-              "\\Memory\\Pool Nonpaged Bytes",
-              "\\Memory\\Pool Paged Bytes",
-              "\\Network Interface(*)\\Bytes Received/sec",
-              "\\Network Interface(*)\\Bytes Sent/sec",
-              "\\Network Interface(*)\\Bytes Total/sec",
-              "\\Network Interface(*)\\Packets Outbound Errors",
-              "\\Network Interface(*)\\Packets Received Errors",
-              "\\Network Interface(*)\\Packets Received/sec",
-              "\\Network Interface(*)\\Packets Sent/sec",
-              "\\Network Interface(*)\\Packets/sec",
-              "\\Process(_Total)\\Handle Count",
-              "\\Process(_Total)\\Thread Count",
-              "\\Process(_Total)\\Working Set",
-              "\\Process(_Total)\\Working Set - Private",
-              "\\Processor Information(_Total)\\% Privileged Time",
-              "\\Processor Information(_Total)\\% Processor Time",
-              "\\Processor Information(_Total)\\% User Time",
-              "\\Processor Information(_Total)\\Processor Frequency",
-              "\\System\\Context Switches/sec",
-              "\\System\\Processes",
-              "\\System\\Processor Queue Length",
-              "\\System\\System Up Time"
+            "destinations": [
+              "azureMonitorMetrics-default"
             ],
-            "name": "perfCounterDataSource60",
-            "samplingFrequencyInSeconds": 60,
             "streams": [
               "Microsoft-InsightsMetrics"
             ]
-          }
-        ],
-        "windowsEventLogs": [
+          },
           {
-            "name": "eventLogsDataSource",
+            "destinations": [
+              "<logAnalyticsWorkspaceName>"
+            ],
             "streams": [
               "Microsoft-Event"
-            ],
-            "xPathQueries": [
-              "Application!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]",
-              "Security!*[System[(band(Keywords,13510798882111488))]]",
-              "System!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]"
             ]
           }
-        ]
-      }
-    },
-    "destinations": {
-      "value": {
-        "azureMonitorMetrics": {
-          "name": "azureMonitorMetrics-default"
+        ],
+        "dataSources": {
+          "performanceCounters": [
+            {
+              "counterSpecifiers": [
+                "\\LogicalDisk(_Total)\\% Disk Read Time",
+                "\\LogicalDisk(_Total)\\% Disk Time",
+                "\\LogicalDisk(_Total)\\% Disk Write Time",
+                "\\LogicalDisk(_Total)\\% Free Space",
+                "\\LogicalDisk(_Total)\\% Idle Time",
+                "\\LogicalDisk(_Total)\\Avg. Disk Queue Length",
+                "\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length",
+                "\\LogicalDisk(_Total)\\Avg. Disk sec/Read",
+                "\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer",
+                "\\LogicalDisk(_Total)\\Avg. Disk sec/Write",
+                "\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length",
+                "\\LogicalDisk(_Total)\\Disk Bytes/sec",
+                "\\LogicalDisk(_Total)\\Disk Read Bytes/sec",
+                "\\LogicalDisk(_Total)\\Disk Reads/sec",
+                "\\LogicalDisk(_Total)\\Disk Transfers/sec",
+                "\\LogicalDisk(_Total)\\Disk Write Bytes/sec",
+                "\\LogicalDisk(_Total)\\Disk Writes/sec",
+                "\\LogicalDisk(_Total)\\Free Megabytes",
+                "\\Memory\\% Committed Bytes In Use",
+                "\\Memory\\Available Bytes",
+                "\\Memory\\Cache Bytes",
+                "\\Memory\\Committed Bytes",
+                "\\Memory\\Page Faults/sec",
+                "\\Memory\\Pages/sec",
+                "\\Memory\\Pool Nonpaged Bytes",
+                "\\Memory\\Pool Paged Bytes",
+                "\\Network Interface(*)\\Bytes Received/sec",
+                "\\Network Interface(*)\\Bytes Sent/sec",
+                "\\Network Interface(*)\\Bytes Total/sec",
+                "\\Network Interface(*)\\Packets Outbound Errors",
+                "\\Network Interface(*)\\Packets Received Errors",
+                "\\Network Interface(*)\\Packets Received/sec",
+                "\\Network Interface(*)\\Packets Sent/sec",
+                "\\Network Interface(*)\\Packets/sec",
+                "\\Process(_Total)\\Handle Count",
+                "\\Process(_Total)\\Thread Count",
+                "\\Process(_Total)\\Working Set",
+                "\\Process(_Total)\\Working Set - Private",
+                "\\Processor Information(_Total)\\% Privileged Time",
+                "\\Processor Information(_Total)\\% Processor Time",
+                "\\Processor Information(_Total)\\% User Time",
+                "\\Processor Information(_Total)\\Processor Frequency",
+                "\\System\\Context Switches/sec",
+                "\\System\\Processes",
+                "\\System\\Processor Queue Length",
+                "\\System\\System Up Time"
+              ],
+              "name": "perfCounterDataSource60",
+              "samplingFrequencyInSeconds": 60,
+              "streams": [
+                "Microsoft-InsightsMetrics"
+              ]
+            }
+          ],
+          "windowsEventLogs": [
+            {
+              "name": "eventLogsDataSource",
+              "streams": [
+                "Microsoft-Event"
+              ],
+              "xPathQueries": [
+                "Application!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]",
+                "Security!*[System[(band(Keywords,13510798882111488))]]",
+                "System!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]"
+              ]
+            }
+          ]
         },
-        "logAnalytics": [
-          {
-            "name": "<name>",
-            "workspaceResourceId": "<workspaceResourceId>"
-          }
-        ]
+        "description": "Collecting Windows-specific performance counters and Windows Event Logs",
+        "destinations": {
+          "azureMonitorMetrics": {
+            "name": "azureMonitorMetrics-default"
+          },
+          "logAnalytics": [
+            {
+              "name": "<name>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ]
+        },
+        "kind": "Windows"
       }
     },
     "name": {
       "value": "idcrwaf001"
     },
     // Non-required parameters
-    "description": {
-      "value": "Collecting Windows-specific performance counters and Windows Event Logs"
-    },
-    "kind": {
-      "value": "Windows"
-    },
     "location": {
       "value": "<location>"
     },
@@ -1604,7 +1660,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 8: _Collecting Windows-specific information_
+### Example 9: _Collecting Windows-specific information_
 
 This instance deploys the module to setup the connection of Windows-specific performance counters and Windows Event Logs.
 
@@ -1618,111 +1674,113 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
-    dataFlows: [
-      {
-        destinations: [
-          'azureMonitorMetrics-default'
-        ]
-        streams: [
-          'Microsoft-InsightsMetrics'
-        ]
-      }
-      {
-        destinations: [
-          '<logAnalyticsWorkspaceName>'
-        ]
-        streams: [
-          'Microsoft-Event'
-        ]
-      }
-    ]
-    dataSources: {
-      performanceCounters: [
+    dataCollectionRuleProperties: {
+      dataFlows: [
         {
-          counterSpecifiers: [
-            '\\LogicalDisk(_Total)\\% Disk Read Time'
-            '\\LogicalDisk(_Total)\\% Disk Time'
-            '\\LogicalDisk(_Total)\\% Disk Write Time'
-            '\\LogicalDisk(_Total)\\% Free Space'
-            '\\LogicalDisk(_Total)\\% Idle Time'
-            '\\LogicalDisk(_Total)\\Avg. Disk Queue Length'
-            '\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length'
-            '\\LogicalDisk(_Total)\\Avg. Disk sec/Read'
-            '\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer'
-            '\\LogicalDisk(_Total)\\Avg. Disk sec/Write'
-            '\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length'
-            '\\LogicalDisk(_Total)\\Disk Bytes/sec'
-            '\\LogicalDisk(_Total)\\Disk Read Bytes/sec'
-            '\\LogicalDisk(_Total)\\Disk Reads/sec'
-            '\\LogicalDisk(_Total)\\Disk Transfers/sec'
-            '\\LogicalDisk(_Total)\\Disk Write Bytes/sec'
-            '\\LogicalDisk(_Total)\\Disk Writes/sec'
-            '\\LogicalDisk(_Total)\\Free Megabytes'
-            '\\Memory\\% Committed Bytes In Use'
-            '\\Memory\\Available Bytes'
-            '\\Memory\\Cache Bytes'
-            '\\Memory\\Committed Bytes'
-            '\\Memory\\Page Faults/sec'
-            '\\Memory\\Pages/sec'
-            '\\Memory\\Pool Nonpaged Bytes'
-            '\\Memory\\Pool Paged Bytes'
-            '\\Network Interface(*)\\Bytes Received/sec'
-            '\\Network Interface(*)\\Bytes Sent/sec'
-            '\\Network Interface(*)\\Bytes Total/sec'
-            '\\Network Interface(*)\\Packets Outbound Errors'
-            '\\Network Interface(*)\\Packets Received Errors'
-            '\\Network Interface(*)\\Packets Received/sec'
-            '\\Network Interface(*)\\Packets Sent/sec'
-            '\\Network Interface(*)\\Packets/sec'
-            '\\Process(_Total)\\Handle Count'
-            '\\Process(_Total)\\Thread Count'
-            '\\Process(_Total)\\Working Set'
-            '\\Process(_Total)\\Working Set - Private'
-            '\\Processor Information(_Total)\\% Privileged Time'
-            '\\Processor Information(_Total)\\% Processor Time'
-            '\\Processor Information(_Total)\\% User Time'
-            '\\Processor Information(_Total)\\Processor Frequency'
-            '\\System\\Context Switches/sec'
-            '\\System\\Processes'
-            '\\System\\Processor Queue Length'
-            '\\System\\System Up Time'
+          destinations: [
+            'azureMonitorMetrics-default'
           ]
-          name: 'perfCounterDataSource60'
-          samplingFrequencyInSeconds: 60
           streams: [
             'Microsoft-InsightsMetrics'
           ]
         }
-      ]
-      windowsEventLogs: [
         {
-          name: 'eventLogsDataSource'
+          destinations: [
+            '<logAnalyticsWorkspaceName>'
+          ]
           streams: [
             'Microsoft-Event'
           ]
-          xPathQueries: [
-            'Application!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
-            'Security!*[System[(band(Keywords,13510798882111488))]]'
-            'System!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
-          ]
         }
       ]
-    }
-    destinations: {
-      azureMonitorMetrics: {
-        name: 'azureMonitorMetrics-default'
+      dataSources: {
+        performanceCounters: [
+          {
+            counterSpecifiers: [
+              '\\LogicalDisk(_Total)\\% Disk Read Time'
+              '\\LogicalDisk(_Total)\\% Disk Time'
+              '\\LogicalDisk(_Total)\\% Disk Write Time'
+              '\\LogicalDisk(_Total)\\% Free Space'
+              '\\LogicalDisk(_Total)\\% Idle Time'
+              '\\LogicalDisk(_Total)\\Avg. Disk Queue Length'
+              '\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length'
+              '\\LogicalDisk(_Total)\\Avg. Disk sec/Read'
+              '\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer'
+              '\\LogicalDisk(_Total)\\Avg. Disk sec/Write'
+              '\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length'
+              '\\LogicalDisk(_Total)\\Disk Bytes/sec'
+              '\\LogicalDisk(_Total)\\Disk Read Bytes/sec'
+              '\\LogicalDisk(_Total)\\Disk Reads/sec'
+              '\\LogicalDisk(_Total)\\Disk Transfers/sec'
+              '\\LogicalDisk(_Total)\\Disk Write Bytes/sec'
+              '\\LogicalDisk(_Total)\\Disk Writes/sec'
+              '\\LogicalDisk(_Total)\\Free Megabytes'
+              '\\Memory\\% Committed Bytes In Use'
+              '\\Memory\\Available Bytes'
+              '\\Memory\\Cache Bytes'
+              '\\Memory\\Committed Bytes'
+              '\\Memory\\Page Faults/sec'
+              '\\Memory\\Pages/sec'
+              '\\Memory\\Pool Nonpaged Bytes'
+              '\\Memory\\Pool Paged Bytes'
+              '\\Network Interface(*)\\Bytes Received/sec'
+              '\\Network Interface(*)\\Bytes Sent/sec'
+              '\\Network Interface(*)\\Bytes Total/sec'
+              '\\Network Interface(*)\\Packets Outbound Errors'
+              '\\Network Interface(*)\\Packets Received Errors'
+              '\\Network Interface(*)\\Packets Received/sec'
+              '\\Network Interface(*)\\Packets Sent/sec'
+              '\\Network Interface(*)\\Packets/sec'
+              '\\Process(_Total)\\Handle Count'
+              '\\Process(_Total)\\Thread Count'
+              '\\Process(_Total)\\Working Set'
+              '\\Process(_Total)\\Working Set - Private'
+              '\\Processor Information(_Total)\\% Privileged Time'
+              '\\Processor Information(_Total)\\% Processor Time'
+              '\\Processor Information(_Total)\\% User Time'
+              '\\Processor Information(_Total)\\Processor Frequency'
+              '\\System\\Context Switches/sec'
+              '\\System\\Processes'
+              '\\System\\Processor Queue Length'
+              '\\System\\System Up Time'
+            ]
+            name: 'perfCounterDataSource60'
+            samplingFrequencyInSeconds: 60
+            streams: [
+              'Microsoft-InsightsMetrics'
+            ]
+          }
+        ]
+        windowsEventLogs: [
+          {
+            name: 'eventLogsDataSource'
+            streams: [
+              'Microsoft-Event'
+            ]
+            xPathQueries: [
+              'Application!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
+              'Security!*[System[(band(Keywords,13510798882111488))]]'
+              'System!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
+            ]
+          }
+        ]
       }
-      logAnalytics: [
-        {
-          name: '<name>'
-          workspaceResourceId: '<workspaceResourceId>'
+      description: 'Collecting Windows-specific performance counters and Windows Event Logs'
+      destinations: {
+        azureMonitorMetrics: {
+          name: 'azureMonitorMetrics-default'
         }
-      ]
+        logAnalytics: [
+          {
+            name: '<name>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+      }
+      kind: 'Windows'
     }
     name: 'idcrwin001'
     // Non-required parameters
-    description: 'Collecting Windows-specific performance counters and Windows Event Logs'
-    kind: 'Windows'
     location: '<location>'
     tags: {
       'hidden-title': 'This is visible in the resource name'
@@ -1746,123 +1804,117 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dataFlows": {
-      "value": [
-        {
-          "destinations": [
-            "azureMonitorMetrics-default"
-          ],
-          "streams": [
-            "Microsoft-InsightsMetrics"
-          ]
-        },
-        {
-          "destinations": [
-            "<logAnalyticsWorkspaceName>"
-          ],
-          "streams": [
-            "Microsoft-Event"
-          ]
-        }
-      ]
-    },
-    "dataSources": {
+    "dataCollectionRuleProperties": {
       "value": {
-        "performanceCounters": [
+        "dataFlows": [
           {
-            "counterSpecifiers": [
-              "\\LogicalDisk(_Total)\\% Disk Read Time",
-              "\\LogicalDisk(_Total)\\% Disk Time",
-              "\\LogicalDisk(_Total)\\% Disk Write Time",
-              "\\LogicalDisk(_Total)\\% Free Space",
-              "\\LogicalDisk(_Total)\\% Idle Time",
-              "\\LogicalDisk(_Total)\\Avg. Disk Queue Length",
-              "\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length",
-              "\\LogicalDisk(_Total)\\Avg. Disk sec/Read",
-              "\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer",
-              "\\LogicalDisk(_Total)\\Avg. Disk sec/Write",
-              "\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length",
-              "\\LogicalDisk(_Total)\\Disk Bytes/sec",
-              "\\LogicalDisk(_Total)\\Disk Read Bytes/sec",
-              "\\LogicalDisk(_Total)\\Disk Reads/sec",
-              "\\LogicalDisk(_Total)\\Disk Transfers/sec",
-              "\\LogicalDisk(_Total)\\Disk Write Bytes/sec",
-              "\\LogicalDisk(_Total)\\Disk Writes/sec",
-              "\\LogicalDisk(_Total)\\Free Megabytes",
-              "\\Memory\\% Committed Bytes In Use",
-              "\\Memory\\Available Bytes",
-              "\\Memory\\Cache Bytes",
-              "\\Memory\\Committed Bytes",
-              "\\Memory\\Page Faults/sec",
-              "\\Memory\\Pages/sec",
-              "\\Memory\\Pool Nonpaged Bytes",
-              "\\Memory\\Pool Paged Bytes",
-              "\\Network Interface(*)\\Bytes Received/sec",
-              "\\Network Interface(*)\\Bytes Sent/sec",
-              "\\Network Interface(*)\\Bytes Total/sec",
-              "\\Network Interface(*)\\Packets Outbound Errors",
-              "\\Network Interface(*)\\Packets Received Errors",
-              "\\Network Interface(*)\\Packets Received/sec",
-              "\\Network Interface(*)\\Packets Sent/sec",
-              "\\Network Interface(*)\\Packets/sec",
-              "\\Process(_Total)\\Handle Count",
-              "\\Process(_Total)\\Thread Count",
-              "\\Process(_Total)\\Working Set",
-              "\\Process(_Total)\\Working Set - Private",
-              "\\Processor Information(_Total)\\% Privileged Time",
-              "\\Processor Information(_Total)\\% Processor Time",
-              "\\Processor Information(_Total)\\% User Time",
-              "\\Processor Information(_Total)\\Processor Frequency",
-              "\\System\\Context Switches/sec",
-              "\\System\\Processes",
-              "\\System\\Processor Queue Length",
-              "\\System\\System Up Time"
+            "destinations": [
+              "azureMonitorMetrics-default"
             ],
-            "name": "perfCounterDataSource60",
-            "samplingFrequencyInSeconds": 60,
             "streams": [
               "Microsoft-InsightsMetrics"
             ]
-          }
-        ],
-        "windowsEventLogs": [
+          },
           {
-            "name": "eventLogsDataSource",
+            "destinations": [
+              "<logAnalyticsWorkspaceName>"
+            ],
             "streams": [
               "Microsoft-Event"
-            ],
-            "xPathQueries": [
-              "Application!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]",
-              "Security!*[System[(band(Keywords,13510798882111488))]]",
-              "System!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]"
             ]
           }
-        ]
-      }
-    },
-    "destinations": {
-      "value": {
-        "azureMonitorMetrics": {
-          "name": "azureMonitorMetrics-default"
+        ],
+        "dataSources": {
+          "performanceCounters": [
+            {
+              "counterSpecifiers": [
+                "\\LogicalDisk(_Total)\\% Disk Read Time",
+                "\\LogicalDisk(_Total)\\% Disk Time",
+                "\\LogicalDisk(_Total)\\% Disk Write Time",
+                "\\LogicalDisk(_Total)\\% Free Space",
+                "\\LogicalDisk(_Total)\\% Idle Time",
+                "\\LogicalDisk(_Total)\\Avg. Disk Queue Length",
+                "\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length",
+                "\\LogicalDisk(_Total)\\Avg. Disk sec/Read",
+                "\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer",
+                "\\LogicalDisk(_Total)\\Avg. Disk sec/Write",
+                "\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length",
+                "\\LogicalDisk(_Total)\\Disk Bytes/sec",
+                "\\LogicalDisk(_Total)\\Disk Read Bytes/sec",
+                "\\LogicalDisk(_Total)\\Disk Reads/sec",
+                "\\LogicalDisk(_Total)\\Disk Transfers/sec",
+                "\\LogicalDisk(_Total)\\Disk Write Bytes/sec",
+                "\\LogicalDisk(_Total)\\Disk Writes/sec",
+                "\\LogicalDisk(_Total)\\Free Megabytes",
+                "\\Memory\\% Committed Bytes In Use",
+                "\\Memory\\Available Bytes",
+                "\\Memory\\Cache Bytes",
+                "\\Memory\\Committed Bytes",
+                "\\Memory\\Page Faults/sec",
+                "\\Memory\\Pages/sec",
+                "\\Memory\\Pool Nonpaged Bytes",
+                "\\Memory\\Pool Paged Bytes",
+                "\\Network Interface(*)\\Bytes Received/sec",
+                "\\Network Interface(*)\\Bytes Sent/sec",
+                "\\Network Interface(*)\\Bytes Total/sec",
+                "\\Network Interface(*)\\Packets Outbound Errors",
+                "\\Network Interface(*)\\Packets Received Errors",
+                "\\Network Interface(*)\\Packets Received/sec",
+                "\\Network Interface(*)\\Packets Sent/sec",
+                "\\Network Interface(*)\\Packets/sec",
+                "\\Process(_Total)\\Handle Count",
+                "\\Process(_Total)\\Thread Count",
+                "\\Process(_Total)\\Working Set",
+                "\\Process(_Total)\\Working Set - Private",
+                "\\Processor Information(_Total)\\% Privileged Time",
+                "\\Processor Information(_Total)\\% Processor Time",
+                "\\Processor Information(_Total)\\% User Time",
+                "\\Processor Information(_Total)\\Processor Frequency",
+                "\\System\\Context Switches/sec",
+                "\\System\\Processes",
+                "\\System\\Processor Queue Length",
+                "\\System\\System Up Time"
+              ],
+              "name": "perfCounterDataSource60",
+              "samplingFrequencyInSeconds": 60,
+              "streams": [
+                "Microsoft-InsightsMetrics"
+              ]
+            }
+          ],
+          "windowsEventLogs": [
+            {
+              "name": "eventLogsDataSource",
+              "streams": [
+                "Microsoft-Event"
+              ],
+              "xPathQueries": [
+                "Application!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]",
+                "Security!*[System[(band(Keywords,13510798882111488))]]",
+                "System!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]"
+              ]
+            }
+          ]
         },
-        "logAnalytics": [
-          {
-            "name": "<name>",
-            "workspaceResourceId": "<workspaceResourceId>"
-          }
-        ]
+        "description": "Collecting Windows-specific performance counters and Windows Event Logs",
+        "destinations": {
+          "azureMonitorMetrics": {
+            "name": "azureMonitorMetrics-default"
+          },
+          "logAnalytics": [
+            {
+              "name": "<name>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ]
+        },
+        "kind": "Windows"
       }
     },
     "name": {
       "value": "idcrwin001"
     },
     // Non-required parameters
-    "description": {
-      "value": "Collecting Windows-specific performance counters and Windows Event Logs"
-    },
-    "kind": {
-      "value": "Windows"
-    },
     "location": {
       "value": "<location>"
     },
@@ -1880,49 +1932,29 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataFlows`](#parameter-dataflows) | array | The specification of data flows. |
-| [`dataSources`](#parameter-datasources) | object | Specification of data sources that will be collected. |
-| [`destinations`](#parameter-destinations) | object | Specification of destinations that can be used in data flows. |
+| [`dataCollectionRuleProperties`](#parameter-datacollectionruleproperties) | object | The kind of data collection rule. |
 | [`name`](#parameter-name) | string | The name of the data collection rule. The name is case insensitive. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataCollectionEndpointId`](#parameter-datacollectionendpointid) | string | The resource ID of the data collection endpoint that this rule can be used with. |
-| [`description`](#parameter-description) | string | Description of the data collection rule. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`kind`](#parameter-kind) | string | The kind of the resource. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of, and up to one managed identity is supported. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`streamDeclarations`](#parameter-streamdeclarations) | object | Declaration of custom streams used in this rule. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 
-### Parameter: `dataFlows`
+### Parameter: `dataCollectionRuleProperties`
 
-The specification of data flows.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `dataSources`
-
-Specification of data sources that will be collected.
-
-- Required: Yes
-- Type: object
-
-### Parameter: `destinations`
-
-Specification of destinations that can be used in data flows.
+The kind of data collection rule.
 
 - Required: Yes
 - Type: object
@@ -1934,20 +1966,6 @@ The name of the data collection rule. The name is case insensitive.
 - Required: Yes
 - Type: string
 
-### Parameter: `dataCollectionEndpointId`
-
-The resource ID of the data collection endpoint that this rule can be used with.
-
-- Required: No
-- Type: string
-
-### Parameter: `description`
-
-Description of the data collection rule.
-
-- Required: No
-- Type: string
-
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -1955,21 +1973,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `kind`
-
-The kind of the resource.
-
-- Required: No
-- Type: string
-- Default: `'Linux'`
-- Allowed:
-  ```Bicep
-  [
-    'Linux'
-    'Windows'
-  ]
-  ```
 
 ### Parameter: `location`
 
@@ -2015,12 +2018,46 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource. Only one type of, and up to one managed identity is supported.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2112,20 +2149,12 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `streamDeclarations`
-
-Declaration of custom streams used in this rule.
-
-- Required: No
-- Type: object
-
 ### Parameter: `tags`
 
 Resource tags.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 
@@ -2135,10 +2164,7 @@ Resource tags.
 | `name` | string | The name of the dataCollectionRule. |
 | `resourceGroupName` | string | The name of the resource group the dataCollectionRule was created in. |
 | `resourceId` | string | The resource ID of the dataCollectionRule. |
-
-## Cross-referenced modules
-
-_None_
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Data Collection
 

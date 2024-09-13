@@ -8,7 +8,6 @@ This module deploys a Portal Dashboard.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -697,7 +696,6 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -798,6 +796,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -896,7 +900,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -905,10 +908,6 @@ Tags of the resource.
 | `name` | string | The name of the dashboard. |
 | `resourceGroupName` | string | The name of the resource group the dashboard was created in. |
 | `resourceId` | string | The resource ID of the dashboard. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

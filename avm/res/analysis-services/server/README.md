@@ -13,7 +13,6 @@ This module deploys an Analysis Services Server.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -417,7 +416,6 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -671,6 +669,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -785,7 +789,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -794,10 +797,6 @@ Tags of the resource.
 | `name` | string | The name of the analysis service. |
 | `resourceGroupName` | string | The resource group the analysis service was deployed into. |
 | `resourceId` | string | The resource ID of the analysis service. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

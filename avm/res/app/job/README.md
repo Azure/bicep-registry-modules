@@ -8,14 +8,13 @@ This module deploys a Container App Job.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/jobs` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/jobs) |
+| `Microsoft.App/jobs` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-03-01/jobs) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -663,7 +662,6 @@ module job 'br/public:avm/res/app/job:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -1743,6 +1741,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'ContainerApp Reader'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2021,7 +2026,6 @@ The name of the workload profile to use. Leave empty to use a consumption based 
 - Required: No
 - Type: string
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -2031,10 +2035,6 @@ The name of the workload profile to use. Leave empty to use a consumption based 
 | `resourceGroupName` | string | The name of the resource group the Container App Job was deployed into. |
 | `resourceId` | string | The resource ID of the Container App Job. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

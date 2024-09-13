@@ -25,7 +25,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -53,66 +53,74 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      dataCollectionEndpointId: nestedDependencies.outputs.dataCollectionEndpointResourceId
-      description: 'Collecting custom text logs without ingestion-time transformation.'
-      dataFlows: [
-        {
-          streams: [
-            'Custom-CustomTableBasic_CL'
-          ]
-          destinations: [
-            nestedDependencies.outputs.logAnalyticsWorkspaceName
-          ]
-          transformKql: 'source'
-          outputStream: 'Custom-CustomTableBasic_CL'
-        }
-      ]
-      dataSources: {
-        logFiles: [
+      dataCollectionRuleProperties: {
+        kind: 'Windows'
+        dataCollectionEndpointResourceId: nestedDependencies.outputs.dataCollectionEndpointResourceId
+        description: 'Collecting custom text logs without ingestion-time transformation.'
+        dataFlows: [
           {
-            name: 'CustomTableBasic_CL'
-            samplingFrequencyInSeconds: 60
             streams: [
               'Custom-CustomTableBasic_CL'
             ]
-            filePatterns: [
-              'C:\\TestLogsBasic\\TestLog*.log'
+            destinations: [
+              nestedDependencies.outputs.logAnalyticsWorkspaceName
             ]
-            format: 'text'
-            settings: {
-              text: {
-                recordStartTimestampFormat: 'ISO 8601'
+            transformKql: 'source'
+            outputStream: 'Custom-CustomTableBasic_CL'
+          }
+        ]
+        dataSources: {
+          logFiles: [
+            {
+              name: 'CustomTableBasic_CL'
+              samplingFrequencyInSeconds: 60
+              streams: [
+                'Custom-CustomTableBasic_CL'
+              ]
+              filePatterns: [
+                'C:\\TestLogsBasic\\TestLog*.log'
+              ]
+              format: 'text'
+              settings: {
+                text: {
+                  recordStartTimestampFormat: 'ISO 8601'
+                }
               }
-            }
-          }
-        ]
-      }
-      destinations: {
-        logAnalytics: [
-          {
-            workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
-            name: nestedDependencies.outputs.logAnalyticsWorkspaceName
-          }
-        ]
-      }
-      streamDeclarations: {
-        'Custom-CustomTableBasic_CL': {
-          columns: [
-            {
-              name: 'TimeGenerated'
-              type: 'datetime'
-            }
-            {
-              name: 'RawData'
-              type: 'string'
             }
           ]
         }
+        destinations: {
+          logAnalytics: [
+            {
+              workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+              name: nestedDependencies.outputs.logAnalyticsWorkspaceName
+            }
+          ]
+        }
+        streamDeclarations: {
+          'Custom-CustomTableBasic_CL': {
+            columns: [
+              {
+                name: 'TimeGenerated'
+                type: 'datetime'
+              }
+              {
+                name: 'RawData'
+                type: 'string'
+              }
+            ]
+          }
+        }
       }
-      kind: 'Windows'
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
+      }
+      managedIdentities: {
+        systemAssigned: false
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
       }
       roleAssignments: [
         {

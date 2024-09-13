@@ -58,88 +58,91 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    sku: 'standard3'
-    cmkEnforcement: 'Enabled'
-    disableLocalAuth: false
-    authOptions: {
-      aadOrApiKey: {
-        aadAuthFailureMode: 'http401WithBearerChallenge'
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      sku: 'standard3'
+      cmkEnforcement: 'Enabled'
+      disableLocalAuth: false
+      authOptions: {
+        aadOrApiKey: {
+          aadAuthFailureMode: 'http401WithBearerChallenge'
+        }
       }
-    }
-    hostingMode: 'highDensity'
-    partitionCount: 2
-    replicaCount: 3
-    semanticSearch: 'standard'
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    roleAssignments: [
-      {
-        name: '73ec30e0-2e25-475f-beec-d90cab332eb7'
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+      hostingMode: 'highDensity'
+      partitionCount: 2
+      replicaCount: 3
+      semanticSearch: 'standard'
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
       }
-      {
-        name: guid('Custom seed ${namePrefix}${serviceShort}')
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId(
-          'Microsoft.Authorization/roleDefinitions',
-          'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-        )
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    networkRuleSet: {
-      ipRules: [
+      roleAssignments: [
         {
-          value: '40.74.28.0/23'
+          name: '73ec30e0-2e25-475f-beec-d90cab332eb7'
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
         }
         {
-          value: '87.147.204.13'
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
         }
       ]
-    }
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
+      networkRuleSet: {
+        ipRules: [
           {
-            category: 'AllMetrics'
+            value: '40.74.28.0/23'
+          }
+          {
+            value: '87.147.204.13'
           }
         ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
+    ]
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
-}
+]

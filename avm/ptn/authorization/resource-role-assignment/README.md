@@ -8,13 +8,11 @@ This module deploys a Role Assignment for a specific resource.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
+_None_
 
 ## Usage examples
 
@@ -147,7 +145,6 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -240,7 +237,6 @@ The name for the role, used for logging.
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -249,10 +245,6 @@ The name for the role, used for logging.
 | `resourceGroupName` | string | The name of the resource group the role assignment was applied at. |
 | `resourceId` | string | The resource ID of the Role Assignment. |
 | `roleName` | string | The name for the role, used for logging. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
