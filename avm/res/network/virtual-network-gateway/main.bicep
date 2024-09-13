@@ -563,7 +563,7 @@ type activeActiveNoBgpType = {
   
   clusterMode: 'activeActiveNoBgp'
 
-  @description('Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip\' suffix will be appended to the gateway\'s name.')
+  @description('Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip2\' suffix will be appended to the gateway\'s name.')
   activeGatewayPipName: string?
 
 }
@@ -572,7 +572,7 @@ type activePassiveBgpType = {
   
   clusterMode: 'activePassiveBgp'
 
-  @description('Optional. The Autonomous System Number value.')
+  @description('Optional. The Autonomous System Number value. If it\'s not provided, a default \'65515\' value will be assigned to the ASN.')
   @minValue(0)
   @maxValue(4294967295)
   asn: int? 
@@ -585,7 +585,7 @@ type activeActiveBgpType = {
   
   clusterMode: 'activeActiveBgp'
 
-  @description('Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip\' suffix will be appended to the gateway\'s name.')
+  @description('Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip2\' suffix will be appended to the gateway\'s name.')
   activeGatewayPipName: string?
   
   @description('Optional. The Autonomous System Number value.')
