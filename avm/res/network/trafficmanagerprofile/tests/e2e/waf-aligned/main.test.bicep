@@ -18,7 +18,7 @@ param serviceShort string = 'ntmpwaf'
 param namePrefix string = '#_namePrefix_#'
 
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-var enforcedLocation = 'centralus'
+var enforcedLocation = 'eastus'
 
 // ============ //
 // Dependencies //
@@ -70,7 +70,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: 'global'
+      location: 'eastus'
       monitorConfig: {
         protocol: 'https'
         port: '443'
