@@ -3134,6 +3134,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -3270,6 +3281,31 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Reader and Data Access'`
+  - `'Role Based Access Control Administrator'`
+  - `'Storage Account Backup Contributor'`
+  - `'Storage Account Contributor'`
+  - `'Storage Account Key Operator Service Role'`
+  - `'Storage Blob Data Contributor'`
+  - `'Storage Blob Data Owner'`
+  - `'Storage Blob Data Reader'`
+  - `'Storage Blob Delegator'`
+  - `'Storage File Data Privileged Contributor'`
+  - `'Storage File Data Privileged Reader'`
+  - `'Storage File Data SMB Share Contributor'`
+  - `'Storage File Data SMB Share Elevated Contributor'`
+  - `'Storage File Data SMB Share Reader'`
+  - `'Storage Queue Data Contributor'`
+  - `'Storage Queue Data Message Processor'`
+  - `'Storage Queue Data Message Sender'`
+  - `'Storage Queue Data Reader'`
+  - `'Storage Table Data Contributor'`
+  - `'Storage Table Data Reader'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
