@@ -1869,6 +1869,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -2010,6 +2021,36 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Cognitive Services Contributor'`
+  - `'Cognitive Services Custom Vision Contributor'`
+  - `'Cognitive Services Custom Vision Deployment'`
+  - `'Cognitive Services Custom Vision Labeler'`
+  - `'Cognitive Services Custom Vision Reader'`
+  - `'Cognitive Services Custom Vision Trainer'`
+  - `'Cognitive Services Data Reader (Preview)'`
+  - `'Cognitive Services Face Recognizer'`
+  - `'Cognitive Services Immersive Reader User'`
+  - `'Cognitive Services Language Owner'`
+  - `'Cognitive Services Language Reader'`
+  - `'Cognitive Services Language Writer'`
+  - `'Cognitive Services LUIS Owner'`
+  - `'Cognitive Services LUIS Reader'`
+  - `'Cognitive Services LUIS Writer'`
+  - `'Cognitive Services Metrics Advisor Administrator'`
+  - `'Cognitive Services Metrics Advisor User'`
+  - `'Cognitive Services OpenAI Contributor'`
+  - `'Cognitive Services OpenAI User'`
+  - `'Cognitive Services QnA Maker Editor'`
+  - `'Cognitive Services QnA Maker Reader'`
+  - `'Cognitive Services Speech Contributor'`
+  - `'Cognitive Services Speech User'`
+  - `'Cognitive Services User'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

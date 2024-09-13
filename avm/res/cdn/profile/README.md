@@ -740,6 +740,16 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'CDN Endpoint Contributor'`
+  - `'CDN Endpoint Reader'`
+  - `'CDN Profile Contributor'`
+  - `'CDN Profile Reader'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

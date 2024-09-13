@@ -8,4 +8,4 @@ resource tags 'Microsoft.Resources/tags@2019-10-01' existing = {
 }
 
 @description('Tags currently applied to the subscription level')
-output existingTags object = contains(tags.properties, 'tags') ? tags.properties.tags : {}
+output existingTags object = tags.properties.?tags ?? {}
