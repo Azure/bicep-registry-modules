@@ -18,6 +18,10 @@ param skuName string = 'Basic'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
+import { credentialType } from 'credential/main.bicep'
+@description('Optional. List of credentials to be created in the automation account.')
+param credentials credentialType = []
+
 @description('Optional. List of modules to be created in the automation account.')
 param modules array = []
 
@@ -109,7 +113,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -119,47 +123,55 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.automation-automationaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.automation-automationaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
-  if (!empty(customerManagedKey.?keyVaultResourceId)) {
-    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-    )
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
 
-    resource cMKKey 'keys@2023-02-01' existing =
-      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-        name: customerManagedKey.?keyName ?? 'dummyKey'
-      }
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
   }
+}
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing =
-  if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-    name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
-    )
-  }
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+  )
+}
 
 resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' = {
   name: name
@@ -191,6 +203,14 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' 
       ? (publicNetworkAccess == 'Disabled' ? false : true)
       : (!empty(privateEndpoints) ? false : null)
     disableLocalAuth: disableLocalAuth
+  }
+}
+
+module automationAccount_credentials 'credential/main.bicep' = if (!empty(credentials)) {
+  name: '${uniqueString(deployment().name, location)}-AutomationAccount-Credentials'
+  params: {
+    automationAccountName: automationAccount.name
+    credentials: credentials
   }
 }
 
@@ -273,26 +293,25 @@ module automationAccount_variables 'variable/main.bicep' = [
   }
 ]
 
-module automationAccount_linkedService '../../operational-insights/workspace/linked-service/main.bicep' =
-  if (!empty(linkedWorkspaceResourceId)) {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-LinkedService'
-    params: {
-      name: 'automation'
-      logAnalyticsWorkspaceName: last(split(linkedWorkspaceResourceId, '/'))!
-      resourceId: automationAccount.id
-      tags: tags
-    }
-    // This is to support linked services to law in different subscription and resource group than the automation account.
-    // The current scope is used by default if no linked service is intended to be created.
-    scope: resourceGroup(
-      (!empty(linkedWorkspaceResourceId)
-        ? (split((!empty(linkedWorkspaceResourceId) ? linkedWorkspaceResourceId : '//'), '/')[2])
-        : subscription().subscriptionId),
-      !empty(linkedWorkspaceResourceId)
-        ? (split((!empty(linkedWorkspaceResourceId) ? linkedWorkspaceResourceId : '////'), '/')[4])
-        : resourceGroup().name
-    )
+module automationAccount_linkedService 'modules/linked-service.bicep' = if (!empty(linkedWorkspaceResourceId)) {
+  name: '${uniqueString(deployment().name, location)}-AutoAccount-LinkedService'
+  params: {
+    name: 'automation'
+    logAnalyticsWorkspaceName: last(split(linkedWorkspaceResourceId, '/'))!
+    resourceId: automationAccount.id
+    tags: tags
   }
+  // This is to support linked services to law in different subscription and resource group than the automation account.
+  // The current scope is used by default if no linked service is intended to be created.
+  scope: resourceGroup(
+    (!empty(linkedWorkspaceResourceId)
+      ? (split((!empty(linkedWorkspaceResourceId) ? linkedWorkspaceResourceId : '//'), '/')[2])
+      : subscription().subscriptionId),
+    !empty(linkedWorkspaceResourceId)
+      ? (split((!empty(linkedWorkspaceResourceId) ? linkedWorkspaceResourceId : '////'), '/')[4])
+      : resourceGroup().name
+  )
+}
 
 module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.1.0' = [
   for (gallerySolution, index) in gallerySolutions: if (!empty(linkedWorkspaceResourceId)) {
@@ -405,17 +424,16 @@ module automationAccount_softwareUpdateConfigurations 'software-update-configura
   }
 ]
 
-resource automationAccount_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: automationAccount
+resource automationAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: automationAccount
+}
 
 resource automationAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -446,7 +464,7 @@ resource automationAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSett
   }
 ]
 
-module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-automationAccount-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -487,8 +505,7 @@ module automationAccount_privateEndpoints 'br/public:avm/res/network/private-end
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -500,14 +517,14 @@ module automationAccount_privateEndpoints 'br/public:avm/res/network/private-end
 ]
 
 resource automationAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(automationAccount.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(
+      automationAccount.id,
+      roleAssignment.principalId,
+      roleAssignment.roleDefinitionId
+    )
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -534,6 +551,17 @@ output systemAssignedMIPrincipalId string = automationAccount.?identity.?princip
 @description('The location the resource was deployed into.')
 output location string = automationAccount.location
 
+@description('The private endpoints of the automation account.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: automationAccount_privateEndpoints[i].outputs.name
+    resourceId: automationAccount_privateEndpoints[i].outputs.resourceId
+    groupId: automationAccount_privateEndpoints[i].outputs.groupId
+    customDnsConfig: automationAccount_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: automationAccount_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -555,6 +583,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -593,11 +624,20 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
@@ -608,10 +648,10 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint ip address.')
+    @description('Required. Fqdn that resolves to private endpoint IP address.')
     fqdn: string?
 
-    @description('Required. A list of private ip addresses of the private endpoint.')
+    @description('Required. A list of private IP addresses of the private endpoint.')
     ipAddresses: string[]
   }[]?
 
@@ -628,7 +668,7 @@ type privateEndpointType = {
       @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
       memberName: string
 
-      @description('Required. A private ip address obtained from the private endpoint\'s subnet.')
+      @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
       privateIPAddress: string
     }
   }[]?

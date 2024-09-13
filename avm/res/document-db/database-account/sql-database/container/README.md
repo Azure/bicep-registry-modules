@@ -7,9 +7,7 @@ This module deploys a SQL Database Container in a CosmosDB Account.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -46,6 +44,7 @@ This module deploys a SQL Database Container in a CosmosDB Account.
 | [`tags`](#parameter-tags) | object | Tags of the SQL Database resource. |
 | [`throughput`](#parameter-throughput) | int | Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
 | [`uniqueKeyPolicyKeys`](#parameter-uniquekeypolicykeys) | array | The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
+| [`version`](#parameter-version) | int | Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition. |
 
 ### Parameter: `name`
 
@@ -126,7 +125,6 @@ Default to Hash. Indicates the kind of algorithm used for partitioning.
   [
     'Hash'
     'MultiHash'
-    'Range'
   ]
   ```
 
@@ -153,6 +151,20 @@ The unique key policy configuration containing a list of unique keys that enforc
 - Type: array
 - Default: `[]`
 
+### Parameter: `version`
+
+Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition.
+
+- Required: No
+- Type: int
+- Default: `1`
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+  ]
+  ```
 
 ## Outputs
 
@@ -161,10 +173,6 @@ The unique key policy configuration containing a list of unique keys that enforc
 | `name` | string | The name of the container. |
 | `resourceGroupName` | string | The name of the resource group the container was created in. |
 | `resourceId` | string | The resource ID of the container. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 
@@ -209,7 +217,3 @@ indexingPolicy: {
 
 </details>
 <p>
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

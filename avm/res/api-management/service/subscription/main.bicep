@@ -26,11 +26,11 @@ param state string?
 @description('Required. Subscription name.')
 param name string
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
   name: apiManagementServiceName
 }
 
-resource subscription 'Microsoft.ApiManagement/service/subscriptions@2021-08-01' = {
+resource subscription 'Microsoft.ApiManagement/service/subscriptions@2022-08-01' = {
   name: name
   parent: service
   properties: {

@@ -91,14 +91,14 @@ function Get-ReferenceObject {
     foreach ($involvedFilePath in (@($ModuleTemplateFilePath) + @($involvedFilePaths))) {
         $moduleContent = $TemplateMap[$involvedFilePath]
 
-        $resultSet.resourceReferences += @() + $moduleContent | Where-Object { $_ -match "^resource .+ '(.+)' .+$" } | ForEach-Object { $matches[1] }
-        $resultSet.remoteReferences += @() + $moduleContent | Where-Object { $_ -match "^module .+ '(.+:.+)' .+$" } | ForEach-Object { $matches[1] }
+        $resultSet.resourceReferences += @() + $moduleContent | Where-Object { $_ -match "^resource .+ '(.+?)' .+$" } | ForEach-Object { $matches[1] }
+        $resultSet.remoteReferences += @() + $moduleContent | Where-Object { $_ -match "^module .+ '(.+:.+?)' .+$" } | ForEach-Object { $matches[1] }
     }
 
     return @{
-        resourceReferences  = $resultSet.resourceReferences | Sort-Object -Unique
-        remoteReferences    = $resultSet.remoteReferences | Sort-Object -Unique
-        localPathReferences = $resultSet.localPathReferences | Sort-Object -Unique
+        resourceReferences  = $resultSet.resourceReferences | Sort-Object -Culture 'en-US' -Unique
+        remoteReferences    = $resultSet.remoteReferences | Sort-Object -Culture 'en-US' -Unique
+        localPathReferences = $resultSet.localPathReferences | Sort-Object -Culture 'en-US' -Unique
     }
 }
 #endregion
@@ -110,7 +110,7 @@ Get a list of all resource/module references in a given module path
 .DESCRIPTION
 As an output you will receive a hashtable that (for each provider namespace) lists the
 - Directly deployed resources (e.g. via "resource myDeployment 'Microsoft.(..)/(..)@(..)'")
-- Linked remote module tempaltes (e.g. via "module rg 'br/modules:(..):(..)'")
+- Linked remote module templates (e.g. via "module rg 'br/modules:(..):(..)'")
 
 .PARAMETER Path
 Optional. The path to search in. Defaults to the 'res' folder.
@@ -148,14 +148,14 @@ function Get-CrossReferencedModuleList {
         [string] $Path = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent
     )
 
-    $repoRoot = ($Path -split '[\/|\\]{1}avm[\/|\\]{1}')[0]
+    $repoRoot = ($Path -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[0]
     $resultSet = [ordered]@{}
 
     # Collect data
     $moduleTemplatePaths = (Get-ChildItem -Path $path -Recurse -File -Filter '*.bicep').FullName | Where-Object {
         # No files inthe [/utilities/tools/] folder and none in the [/tests/] folder
         $_ -notmatch '.*[\\|\/]tools[\\|\/].*|.*[\\|\/]tests[\\|\/].*'
-    } | Sort-Object
+    } | Sort-Object -Culture 'en-US'
     $templateMap = @{}
     foreach ($moduleTemplatePath in $moduleTemplatePaths) {
         $templateMap[$moduleTemplatePath] = Get-Content -Path $moduleTemplatePath
@@ -176,7 +176,7 @@ function Get-CrossReferencedModuleList {
 
         $moduleFolderPath = Split-Path $moduleTemplatePath -Parent
         ## avm/res/<provider>/<resourceType>
-        $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/'
+        $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/'
 
         $providerNamespace = ($resourceTypeIdentifier -split '[\/|\\]')[0]
         $resourceType = $resourceTypeIdentifier -replace "$providerNamespace[\/|\\]", ''

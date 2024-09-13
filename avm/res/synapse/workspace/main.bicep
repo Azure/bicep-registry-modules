@@ -31,6 +31,9 @@ param defaultDataLakeStorageFilesystem string
 @description('Optional. Create managed private endpoint to the default storage account or not. If Yes is selected, a managed private endpoint connection request is sent to the workspace\'s primary Data Lake Storage Gen2 account for Spark pools to access data. This must be approved by an owner of the storage account.')
 param defaultDataLakeStorageCreateManagedPrivateEndpoint bool = false
 
+@description('Optional. The Entra ID administrator for the synapse workspace.')
+param administrator adminType
+
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
@@ -62,6 +65,9 @@ param preventDataExfiltration bool = false
 ])
 @description('Optional. Enable or Disable public network access to workspace.')
 param publicNetworkAccess string = 'Enabled'
+
+@description('Optional. List of firewall rules to be created in the workspace.')
+param firewallRules firewallRuleType[]?
 
 @description('Optional. Purview Resource ID.')
 param purviewResourceID string = ''
@@ -123,7 +129,7 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     '36243c78-bf99-498c-9df9-86d9f8d28608'
   )
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -133,47 +139,55 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.synapse-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.synapse-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
-  if (!empty(customerManagedKey.?keyVaultResourceId)) {
-    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-    )
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
 
-    resource cMKKey 'keys@2023-02-01' existing =
-      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-        name: customerManagedKey.?keyName ?? 'dummyKey'
-      }
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
   }
+}
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing =
-  if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-    name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
-    )
-  }
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+  )
+}
 
 resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
   name: name
@@ -246,62 +260,67 @@ module synapse_integrationRuntimes 'integration-runtime/main.bicep' = [
 
 // Workspace encryption with customer managed keys
 // - Assign Synapse Workspace MSI access to encryption key
-module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' =
-  if (encryptionActivateWorkspace) {
-    name: '${workspace.name}-cmk-rbac'
-    params: {
-      workspaceIndentityPrincipalId: workspace.identity.principalId
-      keyvaultName: !empty(customerManagedKey.?keyVaultResourceId) ? cMKKeyVault.name : ''
-      usesRbacAuthorization: !empty(customerManagedKey.?keyVaultResourceId)
-        ? cMKKeyVault.properties.enableRbacAuthorization
-        : true
-    }
-    scope: encryptionActivateWorkspace
-      ? resourceGroup(
-          split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-          split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-        )
-      : resourceGroup()
+module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (encryptionActivateWorkspace) {
+  name: '${workspace.name}-cmk-rbac'
+  params: {
+    workspaceIndentityPrincipalId: workspace.identity.principalId
+    keyvaultName: !empty(customerManagedKey.?keyVaultResourceId) ? cMKKeyVault.name : ''
+    usesRbacAuthorization: !empty(customerManagedKey.?keyVaultResourceId)
+      ? cMKKeyVault.properties.enableRbacAuthorization
+      : true
   }
+  scope: encryptionActivateWorkspace
+    ? resourceGroup(
+        split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+        split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+      )
+    : resourceGroup()
+}
 
 // - Workspace encryption - Activate Workspace
-module workspace_key 'key/main.bicep' =
-  if (encryptionActivateWorkspace) {
-    name: '${workspace.name}-cmk-activation'
-    params: {
-      name: customerManagedKey!.keyName
-      isActiveCMK: true
-      keyVaultResourceId: cMKKeyVault.id
-      workspaceName: workspace.name
-    }
-    dependsOn: [
-      workspace_cmk_rbac
-    ]
+module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace) {
+  name: '${workspace.name}-cmk-activation'
+  params: {
+    name: customerManagedKey!.keyName
+    isActiveCMK: true
+    keyVaultResourceId: cMKKeyVault.id
+    workspaceName: workspace.name
   }
+  dependsOn: [
+    workspace_cmk_rbac
+  ]
+}
+
+// - Workspace Entra ID Administrator
+module workspace_administrator 'administrators/main.bicep' = if (!empty(administrator)) {
+  name: '${workspace.name}-administrator'
+  params: {
+    workspaceName: workspace.name
+    administratorType: administrator!.administratorType
+    login: administrator!.login
+    sid: administrator!.sid
+    tenantId: administrator.?tenantId
+  }
+}
 
 // Resource Lock
-resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: workspace
+resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: workspace
+}
 
 // RBAC
 resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -313,8 +332,21 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
   }
 ]
 
+// Firewall Rules
+module workspace_firewallRules 'firewall-rules/main.bicep' = [
+  for (rule, index) in (firewallRules ?? []): {
+    name: '${uniqueString(deployment().name, location)}-workspace-FirewallRule-${index}'
+    params: {
+      name: rule.name
+      endIpAddress: rule.endIpAddress
+      startIpAddress: rule.startIpAddress
+      workspaceName: workspace.name
+    }
+  }
+]
+
 // Endpoints
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -355,8 +387,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -407,6 +438,17 @@ output systemAssignedMIPrincipalId string = workspace.?identity.?principalId ?? 
 @description('The location the resource was deployed into.')
 output location string = workspace.location
 
+@description('The private endpoints of the Synapse Workspace.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: workspace_privateEndpoints[i].outputs.name
+    resourceId: workspace_privateEndpoints[i].outputs.resourceId
+    groupId: workspace_privateEndpoints[i].outputs.groupId
+    customDnsConfig: workspace_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: workspace_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -425,6 +467,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -463,11 +508,20 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
@@ -570,3 +624,31 @@ type customerManagedKeyType = {
   @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
 }?
+
+type adminType = {
+  @description('Required. Workspace active directory administrator type.')
+  administratorType: string
+
+  @description('Required. Login of the workspace active directory administrator.')
+  @secure()
+  login: string
+
+  @description('Required. Object ID of the workspace active directory administrator.')
+  @secure()
+  sid: string
+
+  @description('Optional. Tenant ID of the workspace active directory administrator.')
+  @secure()
+  tenantId: string?
+}?
+
+type firewallRuleType = {
+  @description('Required. The name of the firewall rule.')
+  name: string
+
+  @description('Required. The start IP address of the firewall rule. Must be IPv4 format.')
+  startIpAddress: string
+
+  @description('Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress.')
+  endIpAddress: string
+}

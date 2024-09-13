@@ -13,7 +13,6 @@ This module deploys an Azure API Connection.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -123,11 +122,13 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
     }
     roleAssignments: [
       {
+        name: '396667c8-de54-4dcb-916a-72af71359f34'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -184,11 +185,13 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "396667c8-de54-4dcb-916a-72af71359f34",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -286,15 +289,14 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`displayName`](#parameter-displayname) | string | Display name connection. Example: 'blobconnection' when using blobs. It can change depending on the resource. |
-| [`name`](#parameter-name) | string | Connection name for connection. Example: 'azureblob' when using blobs. It can change depending on the resource. |
+| [`displayName`](#parameter-displayname) | string | Display name connection. Example: `blobconnection` when using blobs. It can change depending on the resource. |
+| [`name`](#parameter-name) | string | Connection name for connection. It can change depending on the resource. |
 
 **Optional parameters**
 
@@ -306,22 +308,23 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 | [`location`](#parameter-location) | string | Location of the deployment. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`nonSecretParameterValues`](#parameter-nonsecretparametervalues) | object | Dictionary of nonsecret parameter values. |
-| [`parameterValues`](#parameter-parametervalues) | secureObject | Connection strings or access keys for connection. Example: 'accountName' and 'accessKey' when using blobs.  It can change depending on the resource. |
+| [`parameterValues`](#parameter-parametervalues) | secureObject | Connection strings or access keys for connection. Example: `accountName` and `accessKey` when using blobs. It can change depending on the resource. |
+| [`parameterValueSet`](#parameter-parametervalueset) | object | Additional parameter value set used for authentication settings. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`statuses`](#parameter-statuses) | array | Status of the connection. |
+| [`statuses`](#parameter-statuses) | array | The status of the connection. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`testLinks`](#parameter-testlinks) | array | Links to test the API connection. |
 
 ### Parameter: `displayName`
 
-Display name connection. Example: 'blobconnection' when using blobs. It can change depending on the resource.
+Display name connection. Example: `blobconnection` when using blobs. It can change depending on the resource.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `name`
 
-Connection name for connection. Example: 'azureblob' when using blobs. It can change depending on the resource.
+Connection name for connection. It can change depending on the resource.
 
 - Required: Yes
 - Type: string
@@ -332,6 +335,14 @@ Specific values for some API connections.
 
 - Required: No
 - Type: object
+- Example:
+  ```Bicep
+  // for a Service Bus connection
+  {
+    type: 'Microsoft.Web/locations/managedApis'
+    id: subscriptionResourceId('Microsoft.Web/locations/managedApis', '${resourceLocation}', 'servicebus')
+  }
+  ```
 
 ### Parameter: `customParameterValues`
 
@@ -401,10 +412,47 @@ Dictionary of nonsecret parameter values.
 
 ### Parameter: `parameterValues`
 
-Connection strings or access keys for connection. Example: 'accountName' and 'accessKey' when using blobs.  It can change depending on the resource.
+Connection strings or access keys for connection. Example: `accountName` and `accessKey` when using blobs. It can change depending on the resource.
 
 - Required: No
 - Type: secureObject
+- Example:
+  ```Bicep
+  {
+    connectionString: 'listKeys('/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/Microsoft.ServiceBus/namespaces/AuthorizationRules/<serviceBusName>/RootManagedSharedAccessKey', '2023-01-01').primaryConnectionString'
+  }
+  {
+    rootfolder: fileshareConnection.rootfolder
+    authType: fileshareConnection.authType
+    // to add an object, use the any() function
+    gateway: any({
+      name: fileshareConnection.odgw.name
+      id: resourceId(fileshareConnection.odgw.resourceGroup, 'Microsoft.Web/connectionGateways', fileshareConnection.odgw.name)
+      type: 'Microsoft.Web/connectionGateways'
+    })
+    username: username
+    password: password
+  }
+  ```
+
+### Parameter: `parameterValueSet`
+
+Additional parameter value set used for authentication settings.
+
+- Required: No
+- Type: object
+- Example:
+  ```Bicep
+  // for a Service Bus connection
+  {
+    name: 'managedIdentityAuth'
+    values: {
+      namespaceEndpoint: {
+        value: 'sb://${dependency.outputs.serviceBusEndpoint}'
+      }
+    }
+  }
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -428,6 +476,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -478,6 +527,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -497,7 +553,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `statuses`
 
-Status of the connection.
+The status of the connection.
 
 - Required: No
 - Type: array
@@ -508,6 +564,13 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Example:
+  ```Bicep
+  {
+      key1: 'value1'
+      key2: 'value2'
+  }
+  ```
 
 ### Parameter: `testLinks`
 
@@ -515,7 +578,6 @@ Links to test the API connection.
 
 - Required: No
 - Type: array
-
 
 ## Outputs
 
@@ -525,10 +587,6 @@ Links to test the API connection.
 | `name` | string | The name of the connection. |
 | `resourceGroupName` | string | The resource group the connection was deployed into. |
 | `resourceId` | string | The resource ID of the connection. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

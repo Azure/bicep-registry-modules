@@ -102,6 +102,9 @@ param encryptionProtectorObj object = {}
 @description('Optional. The vulnerability assessment configuration.')
 param vulnerabilityAssessmentsObj object = {}
 
+@description('Optional. The audit settings configuration.')
+param auditSettings auditSettingsType?
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -110,7 +113,7 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     'f7b75c60-3036-4b75-91c3-6b41c27c1689'
   )
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -144,26 +147,37 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.sql-server.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.sql-server.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource server 'Microsoft.Sql/servers@2022-05-01-preview' = {
+resource server 'Microsoft.Sql/servers@2023-08-01-preview' = {
   location: location
   name: name
   tags: tags
@@ -191,27 +205,22 @@ resource server 'Microsoft.Sql/servers@2022-05-01-preview' = {
   }
 }
 
-resource server_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: server
+resource server_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: server
+}
 
 resource server_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(server.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(server.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -254,7 +263,7 @@ module server_databases 'database/main.bicep' = [
         : ''
       sampleName: contains(database, 'sampleName') ? database.sampleName : ''
       tags: database.?tags ?? tags
-      zoneRedundant: contains(database, 'zoneRedundant') ? database.zoneRedundant : false
+      zoneRedundant: contains(database, 'zoneRedundant') ? database.zoneRedundant : true
       elasticPoolId: contains(database, 'elasticPoolId') ? database.elasticPoolId : ''
       backupShortTermRetentionPolicy: contains(database, 'backupShortTermRetentionPolicy')
         ? database.backupShortTermRetentionPolicy
@@ -296,14 +305,14 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
       skuCapacity: contains(elasticPool, 'skuCapacity') ? elasticPool.skuCapacity : 2
       skuName: contains(elasticPool, 'skuName') ? elasticPool.skuName : 'GP_Gen5'
       skuTier: contains(elasticPool, 'skuTier') ? elasticPool.skuTier : 'GeneralPurpose'
-      zoneRedundant: contains(elasticPool, 'zoneRedundant') ? elasticPool.zoneRedundant : false
+      zoneRedundant: contains(elasticPool, 'zoneRedundant') ? elasticPool.zoneRedundant : true
       location: location
       tags: elasticPool.?tags ?? tags
     }
   }
 ]
 
-module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-server-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -344,8 +353,7 @@ module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -403,36 +411,35 @@ module server_securityAlertPolicies 'security-alert-policy/main.bicep' = [
   }
 ]
 
-module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' =
-  if (!empty(vulnerabilityAssessmentsObj)) {
-    name: '${uniqueString(deployment().name, location)}-Sql-VulnAssessm'
-    params: {
-      serverName: server.name
-      name: vulnerabilityAssessmentsObj.name
-      recurringScansEmails: contains(vulnerabilityAssessmentsObj, 'recurringScansEmails')
-        ? vulnerabilityAssessmentsObj.recurringScansEmails
-        : []
-      recurringScansEmailSubscriptionAdmins: contains(
-          vulnerabilityAssessmentsObj,
-          'recurringScansEmailSubscriptionAdmins'
-        )
-        ? vulnerabilityAssessmentsObj.recurringScansEmailSubscriptionAdmins
-        : false
-      recurringScansIsEnabled: contains(vulnerabilityAssessmentsObj, 'recurringScansIsEnabled')
-        ? vulnerabilityAssessmentsObj.recurringScansIsEnabled
-        : false
-      storageAccountResourceId: vulnerabilityAssessmentsObj.storageAccountResourceId
-      useStorageAccountAccessKey: contains(vulnerabilityAssessmentsObj, 'useStorageAccountAccessKey')
-        ? vulnerabilityAssessmentsObj.useStorageAccountAccessKey
-        : false
-      createStorageRoleAssignment: contains(vulnerabilityAssessmentsObj, 'createStorageRoleAssignment')
-        ? vulnerabilityAssessmentsObj.createStorageRoleAssignment
-        : true
-    }
-    dependsOn: [
-      server_securityAlertPolicies
-    ]
+module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if (!empty(vulnerabilityAssessmentsObj)) {
+  name: '${uniqueString(deployment().name, location)}-Sql-VulnAssessm'
+  params: {
+    serverName: server.name
+    name: vulnerabilityAssessmentsObj.name
+    recurringScansEmails: contains(vulnerabilityAssessmentsObj, 'recurringScansEmails')
+      ? vulnerabilityAssessmentsObj.recurringScansEmails
+      : []
+    recurringScansEmailSubscriptionAdmins: contains(
+        vulnerabilityAssessmentsObj,
+        'recurringScansEmailSubscriptionAdmins'
+      )
+      ? vulnerabilityAssessmentsObj.recurringScansEmailSubscriptionAdmins
+      : false
+    recurringScansIsEnabled: contains(vulnerabilityAssessmentsObj, 'recurringScansIsEnabled')
+      ? vulnerabilityAssessmentsObj.recurringScansIsEnabled
+      : false
+    storageAccountResourceId: vulnerabilityAssessmentsObj.storageAccountResourceId
+    useStorageAccountAccessKey: contains(vulnerabilityAssessmentsObj, 'useStorageAccountAccessKey')
+      ? vulnerabilityAssessmentsObj.useStorageAccountAccessKey
+      : false
+    createStorageRoleAssignment: contains(vulnerabilityAssessmentsObj, 'createStorageRoleAssignment')
+      ? vulnerabilityAssessmentsObj.createStorageRoleAssignment
+      : true
   }
+  dependsOn: [
+    server_securityAlertPolicies
+  ]
+}
 
 module server_keys 'key/main.bicep' = [
   for (key, index) in keys: {
@@ -446,23 +453,43 @@ module server_keys 'key/main.bicep' = [
   }
 ]
 
-module server_encryptionProtector 'encryption-protector/main.bicep' =
-  if (!empty(encryptionProtectorObj)) {
-    name: '${uniqueString(deployment().name, location)}-Sql-EncryProtector'
-    params: {
-      sqlServerName: server.name
-      serverKeyName: encryptionProtectorObj.serverKeyName
-      serverKeyType: contains(encryptionProtectorObj, 'serverKeyType')
-        ? encryptionProtectorObj.serverKeyType
-        : 'ServiceManaged'
-      autoRotationEnabled: contains(encryptionProtectorObj, 'autoRotationEnabled')
-        ? encryptionProtectorObj.autoRotationEnabled
-        : true
-    }
-    dependsOn: [
-      server_keys
-    ]
+module server_encryptionProtector 'encryption-protector/main.bicep' = if (!empty(encryptionProtectorObj)) {
+  name: '${uniqueString(deployment().name, location)}-Sql-EncryProtector'
+  params: {
+    sqlServerName: server.name
+    serverKeyName: encryptionProtectorObj.serverKeyName
+    serverKeyType: contains(encryptionProtectorObj, 'serverKeyType')
+      ? encryptionProtectorObj.serverKeyType
+      : 'ServiceManaged'
+    autoRotationEnabled: contains(encryptionProtectorObj, 'autoRotationEnabled')
+      ? encryptionProtectorObj.autoRotationEnabled
+      : true
   }
+  dependsOn: [
+    server_keys
+  ]
+}
+
+module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSettings)) {
+  name: '${uniqueString(deployment().name, location)}-Sql-AuditSettings'
+  params: {
+    serverName: server.name
+    name: auditSettings.?name ?? 'default'
+    state: auditSettings.?state ?? 'Disabled'
+    auditActionsAndGroups: auditSettings.?auditActionsAndGroups ?? [
+      'BATCH_COMPLETED_GROUP'
+      'SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP'
+      'FAILED_DATABASE_AUTHENTICATION_GROUP'
+    ]
+    isAzureMonitorTargetEnabled: auditSettings.?isAzureMonitorTargetEnabled ?? false
+    isDevopsAuditEnabled: auditSettings.?isDevopsAuditEnabled ?? false
+    isManagedIdentityInUse: auditSettings.?isManagedIdentityInUse ?? false
+    isStorageSecondaryKeyInUse: auditSettings.?isStorageSecondaryKeyInUse ?? false
+    queueDelayMs: auditSettings.?queueDelayMs ?? 1000
+    retentionDays: auditSettings.?retentionDays ?? 90
+    storageAccountResourceId: auditSettings.?storageAccountResourceId
+  }
+}
 
 @description('The name of the deployed SQL server.')
 output name string = server.name
@@ -478,6 +505,17 @@ output systemAssignedMIPrincipalId string = server.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = server.location
+
+@description('The private endpoints of the SQL server.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: server_privateEndpoints[i].outputs.name
+    resourceId: server_privateEndpoints[i].outputs.resourceId
+    groupId: server_privateEndpoints[i].outputs.groupId
+    customDnsConfig: server_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: server_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
 
 // =============== //
 //   Definitions   //
@@ -500,6 +538,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -538,11 +579,20 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
@@ -599,3 +649,35 @@ type privateEndpointType = {
   @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
   resourceGroupName: string?
 }[]?
+
+type auditSettingsType = {
+  @description('Optional. Specifies the name of the audit settings.')
+  name: string?
+
+  @description('Optional. Specifies the Actions-Groups and Actions to audit.')
+  auditActionsAndGroups: string[]?
+
+  @description('Optional. Specifies whether audit events are sent to Azure Monitor.')
+  isAzureMonitorTargetEnabled: bool?
+
+  @description('Optional. Specifies the state of devops audit. If state is Enabled, devops logs will be sent to Azure Monitor.')
+  isDevopsAuditEnabled: bool?
+
+  @description('Optional. Specifies whether Managed Identity is used to access blob storage.')
+  isManagedIdentityInUse: bool?
+
+  @description('Optional. Specifies whether storageAccountAccessKey value is the storage\'s secondary key.')
+  isStorageSecondaryKeyInUse: bool?
+
+  @description('Optional. Specifies the amount of time in milliseconds that can elapse before audit actions are forced to be processed.')
+  queueDelayMs: int?
+
+  @description('Optional. Specifies the number of days to keep in the audit logs in the storage account.')
+  retentionDays: int?
+
+  @description('Required. Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required.')
+  state: 'Enabled' | 'Disabled'
+
+  @description('Optional. Specifies the identifier key of the auditing storage account.')
+  storageAccountResourceId: string?
+}

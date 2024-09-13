@@ -8,7 +8,6 @@ This module deploys an Express Route Gateway.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -109,11 +108,13 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     }
     roleAssignments: [
       {
+        name: '78ad6c3f-7f77-4d26-9576-dbd947241ef0'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -170,11 +171,13 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     "roleAssignments": {
       "value": [
         {
+          "name": "78ad6c3f-7f77-4d26-9576-dbd947241ef0",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -278,7 +281,6 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -423,6 +425,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -473,6 +476,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -497,7 +507,6 @@ Tags of the Firewall policy resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -506,10 +515,6 @@ Tags of the Firewall policy resource.
 | `name` | string | The name of the ExpressRoute Gateway. |
 | `resourceGroupName` | string | The resource group of the ExpressRoute Gateway was deployed into. |
 | `resourceId` | string | The resource ID of the ExpressRoute Gateway. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

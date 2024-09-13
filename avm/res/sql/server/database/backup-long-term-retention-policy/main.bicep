@@ -20,15 +20,15 @@ param weekOfYear int = 1
 @description('Optional. Yearly retention in ISO 8601 duration format.')
 param yearlyRetention string = ''
 
-resource server 'Microsoft.Sql/servers@2022-05-01-preview' existing = {
+resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
   name: serverName
 
-  resource database 'databases@2022-05-01-preview' existing = {
+  resource database 'databases@2023-08-01-preview' existing = {
     name: databaseName
   }
 }
 
-resource backupLongTermRetentionPolicy 'Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies@2022-05-01-preview' = {
+resource backupLongTermRetentionPolicy 'Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies@2023-08-01-preview' = {
   name: 'default'
   parent: server::database
   properties: {

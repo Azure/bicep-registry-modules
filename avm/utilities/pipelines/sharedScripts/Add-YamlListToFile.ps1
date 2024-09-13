@@ -69,7 +69,7 @@ function Add-YamlListToFile {
             throw "No key-value pairs found in List: $ListName"
         }
         # Process key value pairs in the list
-        foreach ($Key in ($KeyValuePair.Keys.split(' ') | Sort-Object)) {
+        foreach ($Key in ($KeyValuePair.Keys.split(' ') | Sort-Object -Culture 'en-US')) {
             Write-Verbose ('Setting environment variable [{0}] with value [{1}]' -f $Key, $KeyValuePair[$Key]) -Verbose
             Write-Output "$Key=$($KeyValuePair[$Key])" | Out-File -FilePath $OutputFilePath -Encoding 'utf-8' -Append
         }

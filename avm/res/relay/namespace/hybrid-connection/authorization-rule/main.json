@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "5255934595416171239"
+      "version": "0.29.47.4906",
+      "templateHash": "11780139902470137859"
     },
     "name": "Hybrid Connection Authorization Rules",
     "description": "This module deploys a Hybrid Connection Authorization Rule.",

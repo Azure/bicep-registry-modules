@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "16936228680401372562"
+      "version": "0.28.1.47646",
+      "templateHash": "8196709990027528828"
     },
     "name": "SQL Managed Instance Security Alert Policies",
     "description": "This module deploys a SQL Managed Instance Security Alert Policy.",

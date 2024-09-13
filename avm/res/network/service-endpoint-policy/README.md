@@ -8,7 +8,6 @@ This module deploys a Service Endpoint Policy.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -148,7 +147,6 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -258,6 +256,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -308,6 +307,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -346,7 +352,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -355,10 +360,6 @@ Tags of the resource.
 | `name` | string | The name of the Service Endpoint Policy. |
 | `resourceGroupName` | string | The resource group the Service Endpoint Policy was deployed into. |
 | `resourceId` | string | The resource ID of the Service Endpoint Policy. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

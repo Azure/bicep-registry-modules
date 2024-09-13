@@ -14,13 +14,22 @@ param location string = resourceGroup().location
   'functionapp,linux' // function app linux os
   'functionapp,workflowapp' // logic app workflow
   'functionapp,workflowapp,linux' // logic app docker container
+  'functionapp,linux,container' // function app linux container
+  'functionapp,linux,container,azurecontainerapps' // function app linux container azure container apps
   'app,linux' // linux web app
-  'app' // normal web app
+  'app' // windows web app
+  'linux,api' // linux api app
+  'api' // windows api app
+  'app,linux,container' // linux container app
+  'app,container,windows' // windows container app
 ])
 param kind string
 
 @description('Required. The resource ID of the app service plan to use for the site.')
 param serverFarmResourceId string
+
+@description('Optional. Azure Resource Manager ID of the customers selected Managed Environment on which to host this app.')
+param managedEnvironmentId string?
 
 @description('Optional. Configures a site to accept only HTTPS requests. Issues redirect for HTTP requests.')
 param httpsOnly bool = true
@@ -66,6 +75,12 @@ param storageAccountResourceId string?
 @description('Optional. If the provided storage account requires Identity based authentication (\'allowSharedKeyAccess\' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is \'Storage Blob Data Owner\'.')
 param storageAccountUseIdentityAuthentication bool = false
 
+@description('Optional. The web settings api management configuration.')
+param apiManagementConfiguration object?
+
+@description('Optional. The extension MSDeployment configuration.')
+param msDeployConfiguration object?
+
 @description('Optional. Resource ID of the app insight to leverage for this resource.')
 param appInsightResourceId string?
 
@@ -77,6 +92,9 @@ param authSettingV2Configuration object?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
+
+@description('Optional. The logs settings configuration.')
+param logsConfiguration object?
 
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType
@@ -120,9 +138,6 @@ param cloningInfo object?
 
 @description('Optional. Size of the function container.')
 param containerSize int?
-
-@description('Optional. Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.')
-param customDomainVerificationId string?
 
 @description('Optional. Maximum allowed daily memory-time quota (applicable on dynamic apps only).')
 param dailyMemoryTimeQuota int?
@@ -182,7 +197,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -200,24 +215,35 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.web-site.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.web-site.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource app 'Microsoft.Web/sites@2022-09-01' = {
   name: name
@@ -226,6 +252,7 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
   tags: tags
   identity: identity
   properties: {
+    managedEnvironmentId: !empty(managedEnvironmentId) ? managedEnvironmentId : null
     serverFarmId: serverFarmResourceId
     clientAffinityEnabled: clientAffinityEnabled
     httpsOnly: httpsOnly
@@ -243,7 +270,6 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
     clientCertMode: clientCertMode
     cloningInfo: cloningInfo
     containerSize: containerSize
-    customDomainVerificationId: customDomainVerificationId
     dailyMemoryTimeQuota: dailyMemoryTimeQuota
     enabled: enabled
     hostNameSslStates: hostNameSslStates
@@ -259,28 +285,53 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
   }
 }
 
-module app_appsettings 'config--appsettings/main.bicep' =
-  if (!empty(appSettingsKeyValuePairs)) {
-    name: '${uniqueString(deployment().name, location)}-Site-Config-AppSettings'
-    params: {
-      appName: app.name
-      kind: kind
-      storageAccountResourceId: storageAccountResourceId
-      storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
-      appInsightResourceId: appInsightResourceId
-      appSettingsKeyValuePairs: appSettingsKeyValuePairs
-    }
+module app_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettingsKeyValuePairs) || !empty(appInsightResourceId) || !empty(storageAccountResourceId)) {
+  name: '${uniqueString(deployment().name, location)}-Site-Config-AppSettings'
+  params: {
+    appName: app.name
+    kind: kind
+    storageAccountResourceId: storageAccountResourceId
+    storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
+    appInsightResourceId: appInsightResourceId
+    appSettingsKeyValuePairs: appSettingsKeyValuePairs
   }
+}
 
-module app_authsettingsv2 'config--authsettingsv2/main.bicep' =
-  if (!empty(authSettingV2Configuration)) {
-    name: '${uniqueString(deployment().name, location)}-Site-Config-AuthSettingsV2'
-    params: {
-      appName: app.name
-      kind: kind
-      authSettingV2Configuration: authSettingV2Configuration ?? {}
-    }
+module app_authsettingsv2 'config--authsettingsv2/main.bicep' = if (!empty(authSettingV2Configuration)) {
+  name: '${uniqueString(deployment().name, location)}-Site-Config-AuthSettingsV2'
+  params: {
+    appName: app.name
+    kind: kind
+    authSettingV2Configuration: authSettingV2Configuration ?? {}
   }
+}
+
+module app_logssettings 'config--logs/main.bicep' = if (!empty(logsConfiguration ?? {})) {
+  name: '${uniqueString(deployment().name, location)}-Site-Config-Logs'
+  params: {
+    appName: app.name
+    logsConfiguration: logsConfiguration
+  }
+  dependsOn: [
+    app_appsettings
+  ]
+}
+
+module app_websettings 'config--web/main.bicep' = if (!empty(apiManagementConfiguration ?? {})) {
+  name: '${uniqueString(deployment().name, location)}-Site-Config-Web'
+  params: {
+    appName: app.name
+    apiManagementConfiguration: apiManagementConfiguration
+  }
+}
+
+module extension_msdeploy 'extensions--msdeploy/main.bicep' = if (!empty(msDeployConfiguration)) {
+  name: '${uniqueString(deployment().name, location)}-Site-Extension-MSDeploy'
+  params: {
+    appName: app.name
+    msDeployConfiguration: msDeployConfiguration ?? {}
+  }
+}
 
 @batchSize(1)
 module app_slots 'slot/main.bicep' = [
@@ -304,8 +355,9 @@ module app_slots 'slot/main.bicep' = [
       storageAccountUseIdentityAuthentication: slot.?storageAccountUseIdentityAuthentication ?? storageAccountUseIdentityAuthentication
       appInsightResourceId: slot.?appInsightResourceId ?? appInsightResourceId
       authSettingV2Configuration: slot.?authSettingV2Configuration ?? authSettingV2Configuration
+      msDeployConfiguration: slot.?msDeployConfiguration ?? msDeployConfiguration
       diagnosticSettings: slot.?diagnosticSettings
-      roleAssignments: slot.?roleAssignments ?? roleAssignments
+      roleAssignments: slot.?roleAssignments
       appSettingsKeyValuePairs: slot.?appSettingsKeyValuePairs ?? appSettingsKeyValuePairs
       basicPublishingCredentialsPolicies: slot.?basicPublishingCredentialsPolicies ?? basicPublishingCredentialsPolicies
       lock: slot.?lock ?? lock
@@ -357,17 +409,16 @@ module app_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep'
   }
 ]
 
-resource app_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: app
+resource app_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: app
+}
 
 resource app_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -399,14 +450,10 @@ resource app_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-0
 ]
 
 resource app_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(app.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(app.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -418,7 +465,7 @@ resource app_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01
   }
 ]
 
-module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-app-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -459,8 +506,7 @@ module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' =
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -500,6 +546,23 @@ output location string = app.location
 @description('Default hostname of the app.')
 output defaultHostname string = app.properties.defaultHostName
 
+@description('Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.')
+output customDomainVerificationId string = app.properties.customDomainVerificationId
+
+@description('The private endpoints of the site.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: app_privateEndpoints[i].outputs.name
+    resourceId: app_privateEndpoints[i].outputs.resourceId
+    groupId: app_privateEndpoints[i].outputs.groupId
+    customDnsConfig: app_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: app_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
+
+@description('The private endpoints of the slots.')
+output slotPrivateEndpoints array = [for (slot, index) in (slots ?? []): app_slots[index].outputs.privateEndpoints]
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -521,6 +584,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -559,11 +625,20 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?

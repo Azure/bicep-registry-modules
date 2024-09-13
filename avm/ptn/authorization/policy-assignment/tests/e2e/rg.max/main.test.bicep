@@ -28,7 +28,7 @@ param subscriptionId string = '#_subscriptionId_#'
 
 // General resources
 // =================
-module resourceGroupDeploy 'br/public:avm/res/resources/resource-group:0.2.3' ={
+module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
   scope: subscription('${subscriptionId}')
   name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
   params: {
@@ -38,13 +38,16 @@ module resourceGroupDeploy 'br/public:avm/res/resources/resource-group:0.2.3' ={
 }
 
 module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup(subscriptionId, resourceGroupName)
+  scope: az.resourceGroup(subscriptionId, resourceGroupName)
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     location: resourceLocation
   }
+  dependsOn: [
+    resourceGroup
+  ]
 }
 
 // ============== //
@@ -83,7 +86,7 @@ module testDeployment '../../../main.bicep' = {
         value: 'Disabled'
       }
     }
-    resourceGroupName: resourceGroupDeploy.outputs.name
+    resourceGroupName: resourceGroup.outputs.name
     roleDefinitionIds: [
       '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
     ]

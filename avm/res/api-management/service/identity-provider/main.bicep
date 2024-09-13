@@ -14,6 +14,13 @@ param authority string = ''
 @description('Conditional. Client ID of the Application in the external Identity Provider. Required if identity provider is used.')
 param clientId string = ''
 
+@description('Optional. The client library to be used in the developer portal. Only applies to AAD and AAD B2C Identity Provider.')
+@allowed([
+  'ADAL'
+  'MSAL-2'
+])
+param clientLibrary string?
+
 @description('Conditional. Client secret of the Application in external Identity Provider, used to authenticate login request. Required if identity provider is used.')
 @secure()
 param clientSecret string = ''
@@ -50,11 +57,11 @@ param name string
 
 var isAadB2C = (type == 'aadB2C')
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
   name: apiManagementServiceName
 }
 
-resource identityProvider 'Microsoft.ApiManagement/service/identityProviders@2021-08-01' = {
+resource identityProvider 'Microsoft.ApiManagement/service/identityProviders@2022-08-01' = {
   name: name
   parent: service
   properties: {
@@ -67,6 +74,7 @@ resource identityProvider 'Microsoft.ApiManagement/service/identityProviders@202
     profileEditingPolicyName: isAadB2C ? profileEditingPolicyName : null
     passwordResetPolicyName: isAadB2C ? passwordResetPolicyName : null
     clientId: clientId
+    clientLibrary: clientLibrary
     clientSecret: clientSecret
   }
 }

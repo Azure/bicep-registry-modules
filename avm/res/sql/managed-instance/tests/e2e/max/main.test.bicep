@@ -71,119 +71,124 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}-${serviceShort}'
-    administratorLogin: 'adminUserName'
-    administratorLoginPassword: password
-    subnetResourceId: nestedDependencies.outputs.subnetResourceId
-    collation: 'SQL_Latin1_General_CP1_CI_AS'
-    databases: [
-      {
-        backupLongTermRetentionPolicies: {
-          name: 'default'
-        }
-        backupShortTermRetentionPolicies: {
-          name: 'default'
-        }
-        name: '${namePrefix}-${serviceShort}-db-001'
-        diagnosticSettings: [
-          {
-            name: 'customSetting'
-            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}-${serviceShort}'
+      administratorLogin: 'adminUserName'
+      administratorLoginPassword: password
+      subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      collation: 'SQL_Latin1_General_CP1_CI_AS'
+      databases: [
+        {
+          backupLongTermRetentionPolicies: {
+            name: 'default'
           }
-        ]
-      }
-    ]
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        logCategoriesAndGroups:[
-          {
-            categoryGroup: 'allLogs'
+          backupShortTermRetentionPolicies: {
+            name: 'default'
           }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    dnsZonePartner: ''
-    encryptionProtectorObj: {
-      serverKeyName: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
-      serverKeyType: 'AzureKeyVault'
-    }
-    hardwareFamily: 'Gen5'
-    keys: [
-      {
-        name: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
+          name: '${namePrefix}-${serviceShort}-db-001'
+          diagnosticSettings: [
+            {
+              name: 'customSetting'
+              eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+              eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+              storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+              workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            }
+          ]
+        }
+      ]
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          logCategoriesAndGroups: [
+            {
+              categoryGroup: 'allLogs'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      dnsZonePartner: ''
+      encryptionProtectorObj: {
+        serverKeyName: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
         serverKeyType: 'AzureKeyVault'
-        uri: nestedDependencies.outputs.keyVaultEncryptionKeyUrl
       }
-    ]
-    licenseType: 'LicenseIncluded'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    primaryUserAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
-    proxyOverride: 'Proxy'
-    publicDataEndpointEnabled: false
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    securityAlertPoliciesObj: {
-      emailAccountAdmins: true
-      name: 'default'
-      state: 'Enabled'
-    }
-    servicePrincipal: 'SystemAssigned'
-    skuName: 'GP_Gen5'
-    skuTier: 'GeneralPurpose'
-    storageSizeInGB: 32
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
+      hardwareFamily: 'Gen5'
+      keys: [
+        {
+          name: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
+          serverKeyType: 'AzureKeyVault'
+          uri: nestedDependencies.outputs.keyVaultEncryptionKeyUrl
+        }
       ]
-    }
-    timezoneId: 'UTC'
-    vCores: 4
-    vulnerabilityAssessmentsObj: {
-      emailSubscriptionAdmins: true
-      name: 'default'
-      recurringScansEmails: [
-        'test1@contoso.com'
-        'test2@contoso.com'
+      licenseType: 'LicenseIncluded'
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      primaryUserAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
+      proxyOverride: 'Proxy'
+      publicDataEndpointEnabled: false
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
       ]
-      recurringScansIsEnabled: true
-      storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
+      securityAlertPoliciesObj: {
+        emailAccountAdmins: true
+        name: 'default'
+        state: 'Enabled'
+      }
+      servicePrincipal: 'SystemAssigned'
+      skuName: 'GP_Gen5'
+      skuTier: 'GeneralPurpose'
+      storageSizeInGB: 32
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      timezoneId: 'UTC'
+      vCores: 4
+      vulnerabilityAssessmentsObj: {
+        emailSubscriptionAdmins: true
+        name: 'default'
+        recurringScansEmails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        recurringScansIsEnabled: true
+        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
       }
     }
   }
-}]
+]

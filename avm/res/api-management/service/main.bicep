@@ -1,8 +1,8 @@
 metadata name = 'API Management Services'
-metadata description = 'This module deploys an API Management Service.'
+metadata description = 'This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Optional. Additional datacenter locations of the API Management service.')
+@description('Optional. Additional datacenter locations of the API Management service. Not supported with V2 SKUs.')
 param additionalLocations array = []
 
 @description('Required. The name of the API Management service.')
@@ -15,8 +15,17 @@ param certificates array = []
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Custom properties of the API Management service.')
-param customProperties object = {}
+@description('Optional. Custom properties of the API Management service. Not supported if SKU is Consumption.')
+param customProperties object = {
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA256': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA256': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256': 'False'
+}
 
 @description('Optional. Property only valid for an API Management service deployed in multiple locations. This can be used to disable the gateway in master region.')
 param disableGateway bool = false
@@ -37,7 +46,7 @@ param location string = resourceGroup().location
 param lock lockType
 
 @description('Optional. Limit control plane API calls to API Management service with version equal to or newer than this value.')
-param minApiVersion string = ''
+param minApiVersion string?
 
 @description('Optional. The notification sender email address for the service.')
 param notificationSenderEmail string = 'apimgmt-noreply@mail.windowsazure.com'
@@ -64,18 +73,13 @@ param roleAssignments roleAssignmentType
   'StandardV2'
   'BasicV2'
 ])
-param sku string = 'Developer'
+param sku string = 'Premium'
 
-@description('Optional. The instance size of this API Management service.')
-@allowed([
-  0
-  1
-  2
-])
-param skuCount int = 1
+@description('Conditional. The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/.')
+param skuCapacity int = 2
 
 @description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in.')
-param subnetResourceId string = ''
+param subnetResourceId string?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -91,8 +95,8 @@ param virtualNetworkType string = 'None'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
-@description('Optional. A list of availability zones denoting where the resource needs to come from.')
-param zones array = []
+@description('Optional. A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku.')
+param zones array = [1, 2]
 
 @description('Optional. Necessary to create a new GUID.')
 param newGuidValue string = newGuid()
@@ -113,8 +117,14 @@ param backends array = []
 @description('Optional. Caches.')
 param caches array = []
 
+@description('Optional. API Diagnostics.')
+param apiDiagnostics array = []
+
 @description('Optional. Identity providers.')
 param identityProviders array = []
+
+@description('Optional. Loggers.')
+param loggers array = []
 
 @description('Optional. Named values.')
 param namedValues array = []
@@ -130,6 +140,9 @@ param products array = []
 
 @description('Optional. Subscriptions.')
 param subscriptions array = []
+
+@description('Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.')
+param publicIpAddressResourceId string?
 
 var authorizationServerList = !empty(authorizationServers) ? authorizationServers.secureList : []
 
@@ -168,7 +181,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -178,42 +191,53 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.apimanagement-service.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.apimanagement-service.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   name: name
   location: location
   tags: tags
   sku: {
     name: sku
-    capacity: skuCount
+    capacity: contains(sku, 'Consumption') ? 0 : contains(sku, 'Developer') ? 1 : skuCapacity
   }
-  zones: zones
+  zones: contains(sku, 'Premium') ? zones : []
   identity: identity
   properties: {
     publisherEmail: publisherEmail
     publisherName: publisherName
     notificationSenderEmail: notificationSenderEmail
     hostnameConfigurations: hostnameConfigurations
-    additionalLocations: additionalLocations
-    customProperties: customProperties
+    additionalLocations: contains(sku, 'Premium') ? additionalLocations : []
+    customProperties: contains(sku, 'Consumption') ? null : customProperties
     certificates: certificates
     enableClientCertificate: enableClientCertificate ? true : null
     disableGateway: disableGateway
@@ -223,11 +247,14 @@ resource service 'Microsoft.ApiManagement/service@2021-08-01' = {
           subnetResourceId: subnetResourceId
         }
       : null
+    publicIpAddressId: !empty(publicIpAddressResourceId) ? publicIpAddressResourceId : null
     apiVersionConstraint: !empty(minApiVersion)
       ? {
           minApiVersion: minApiVersion
         }
-      : null
+      : {
+          minApiVersion: '2021-08-01'
+        }
     restore: restore
   }
 }
@@ -272,7 +299,7 @@ module service_apiVersionSets 'api-version-set/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       name: apiVersionSet.name
-      properties: contains(apiVersionSet, 'properties') ? apiVersionSet.properties : {}
+      properties: apiVersionSet.?properties ?? {}
     }
   }
 ]
@@ -284,40 +311,20 @@ module service_authorizationServers 'authorization-server/main.bicep' = [
       apiManagementServiceName: service.name
       name: authorizationServer.name
       authorizationEndpoint: authorizationServer.authorizationEndpoint
-      authorizationMethods: contains(authorizationServer, 'authorizationMethods')
-        ? authorizationServer.authorizationMethods
-        : [
-            'GET'
-          ]
-      bearerTokenSendingMethods: contains(authorizationServer, 'bearerTokenSendingMethods')
-        ? authorizationServer.bearerTokenSendingMethods
-        : [
-            'authorizationHeader'
-          ]
-      clientAuthenticationMethod: contains(authorizationServer, 'clientAuthenticationMethod')
-        ? authorizationServer.clientAuthenticationMethod
-        : [
-            'Basic'
-          ]
+      authorizationMethods: authorizationServer.?authorizationMethods ?? ['GET']
+      bearerTokenSendingMethods: authorizationServer.?bearerTokenSendingMethods ?? ['authorizationHeader']
+      clientAuthenticationMethod: authorizationServer.?clientAuthenticationMethod ?? ['Basic']
       clientId: authorizationServer.clientId
       clientSecret: authorizationServer.clientSecret
-      clientRegistrationEndpoint: contains(authorizationServer, 'clientRegistrationEndpoint')
-        ? authorizationServer.clientRegistrationEndpoint
-        : ''
-      defaultScope: contains(authorizationServer, 'defaultScope') ? authorizationServer.defaultScope : ''
+      clientRegistrationEndpoint: authorizationServer.?clientRegistrationEndpoint ?? ''
+      defaultScope: authorizationServer.?defaultScope ?? ''
       grantTypes: authorizationServer.grantTypes
-      resourceOwnerPassword: contains(authorizationServer, 'resourceOwnerPassword')
-        ? authorizationServer.resourceOwnerPassword
-        : ''
-      resourceOwnerUsername: contains(authorizationServer, 'resourceOwnerUsername')
-        ? authorizationServer.resourceOwnerUsername
-        : ''
-      serverDescription: contains(authorizationServer, 'serverDescription') ? authorizationServer.serverDescription : ''
-      supportState: contains(authorizationServer, 'supportState') ? authorizationServer.supportState : false
-      tokenBodyParameters: contains(authorizationServer, 'tokenBodyParameters')
-        ? authorizationServer.tokenBodyParameters
-        : []
-      tokenEndpoint: contains(authorizationServer, 'tokenEndpoint') ? authorizationServer.tokenEndpoint : ''
+      resourceOwnerPassword: authorizationServer.?resourceOwnerPassword ?? ''
+      resourceOwnerUsername: authorizationServer.?resourceOwnerUsername ?? ''
+      serverDescription: authorizationServer.?serverDescription ?? ''
+      supportState: authorizationServer.?supportState ?? false
+      tokenBodyParameters: authorizationServer.?tokenBodyParameters ?? []
+      tokenEndpoint: authorizationServer.?tokenEndpoint ?? ''
     }
   }
 ]
@@ -355,27 +362,67 @@ module service_caches 'cache/main.bicep' = [
   }
 ]
 
+module service_apiDiagnostics 'api/diagnostics/main.bicep' = [
+  for (apidiagnostic, index) in apiDiagnostics: {
+    name: '${uniqueString(deployment().name, location)}-Apim-Api-Diagnostic-${index}'
+    params: {
+      apiManagementServiceName: service.name
+      apiName: apidiagnostic.apiName
+      loggerName: apidiagnostic.?loggerName
+      name: apidiagnostic.?name
+      alwaysLog: apidiagnostic.?alwaysLog
+      backend: apidiagnostic.?backend
+      frontend: apidiagnostic.?frontend
+      httpCorrelationProtocol: apidiagnostic.?httpCorrelationProtocol
+      logClientIp: apidiagnostic.?logClientIp
+      metrics: apidiagnostic.?metrics
+      operationNameFormat: apidiagnostic.?operationNameFormat
+      samplingPercentage: apidiagnostic.?samplingPercentage
+      verbosity: apidiagnostic.?verbosity
+    }
+    dependsOn: [
+      service_apis
+      service_loggers
+    ]
+  }
+]
+
 module service_identityProviders 'identity-provider/main.bicep' = [
   for (identityProvider, index) in identityProviders: {
     name: '${uniqueString(deployment().name, location)}-Apim-IdentityProvider-${index}'
     params: {
       apiManagementServiceName: service.name
       name: identityProvider.name
-      allowedTenants: contains(identityProvider, 'allowedTenants') ? identityProvider.allowedTenants : []
-      authority: contains(identityProvider, 'authority') ? identityProvider.authority : ''
-      clientId: contains(identityProvider, 'clientId') ? identityProvider.clientId : ''
-      clientSecret: contains(identityProvider, 'clientSecret') ? identityProvider.clientSecret : ''
-      passwordResetPolicyName: contains(identityProvider, 'passwordResetPolicyName')
-        ? identityProvider.passwordResetPolicyName
-        : ''
-      profileEditingPolicyName: contains(identityProvider, 'profileEditingPolicyName')
-        ? identityProvider.profileEditingPolicyName
-        : ''
-      signInPolicyName: contains(identityProvider, 'signInPolicyName') ? identityProvider.signInPolicyName : ''
-      signInTenant: contains(identityProvider, 'signInTenant') ? identityProvider.signInTenant : ''
-      signUpPolicyName: contains(identityProvider, 'signUpPolicyName') ? identityProvider.signUpPolicyName : ''
-      type: contains(identityProvider, 'type') ? identityProvider.type : 'aad'
+      allowedTenants: identityProvider.?allowedTenants ?? []
+      authority: identityProvider.?authority ?? ''
+      clientId: identityProvider.?clientId ?? ''
+      clientLibrary: identityProvider.?clientLibrary ?? ''
+      clientSecret: identityProvider.?clientSecret ?? ''
+      passwordResetPolicyName: identityProvider.?passwordResetPolicyName ?? ''
+      profileEditingPolicyName: identityProvider.?profileEditingPolicyName ?? ''
+      signInPolicyName: identityProvider.?signInPolicyName ?? ''
+      signInTenant: identityProvider.?signInTenant ?? ''
+      signUpPolicyName: identityProvider.?signUpPolicyName ?? ''
+      type: identityProvider.?type ?? 'aad'
     }
+  }
+]
+
+module service_loggers 'loggers/main.bicep' = [
+  for (logger, index) in loggers: {
+    name: '${uniqueString(deployment().name, location)}-Apim-Logger-${index}'
+    params: {
+      name: logger.name
+      apiManagementServiceName: service.name
+      credentials: logger.?credentials ?? {}
+      isBuffered: logger.?isBuffered ?? true
+      loggerDescription: logger.?loggerDescription ?? ''
+      loggerType: logger.?loggerType ?? 'azureMonitor'
+      targetResourceId: logger.?targetResourceId ?? ''
+    }
+    dependsOn: [
+      service_namedValues
+    ]
   }
 ]
 
@@ -385,11 +432,11 @@ module service_namedValues 'named-value/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       displayName: namedValue.displayName
-      keyVault: contains(namedValue, 'keyVault') ? namedValue.keyVault : {}
+      keyVault: namedValue.?keyVault ?? {}
       name: namedValue.name
       tags: namedValue.?tags // Note: these are not resource tags
-      secret: contains(namedValue, 'secret') ? namedValue.secret : false
-      value: contains(namedValue, 'value') ? namedValue.value : newGuidValue
+      secret: namedValue.?secret ?? false
+      value: namedValue.?value ?? newGuidValue
     }
   }
 ]
@@ -411,7 +458,7 @@ module service_policies 'policy/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       value: policy.value
-      format: contains(policy, 'format') ? policy.format : 'xml'
+      format: policy.?format ?? 'xml'
     }
   }
 ]
@@ -421,15 +468,15 @@ module service_products 'product/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Apim-Product-${index}'
     params: {
       apiManagementServiceName: service.name
-      apis: contains(product, 'apis') ? product.apis : []
-      approvalRequired: contains(product, 'approvalRequired') ? product.approvalRequired : false
-      groups: contains(product, 'groups') ? product.groups : []
+      apis: product.?apis ?? []
+      approvalRequired: product.?approvalRequired ?? false
+      groups: product.?groups ?? []
       name: product.name
-      description: contains(product, 'description') ? product.description : ''
-      state: contains(product, 'state') ? product.state : 'published'
-      subscriptionRequired: contains(product, 'subscriptionRequired') ? product.subscriptionRequired : false
-      subscriptionsLimit: contains(product, 'subscriptionsLimit') ? product.subscriptionsLimit : 1
-      terms: contains(product, 'terms') ? product.terms : ''
+      description: product.?description ?? ''
+      state: product.?state ?? 'published'
+      subscriptionRequired: product.?subscriptionRequired ?? false
+      subscriptionsLimit: product.?subscriptionsLimit ?? 1
+      terms: product.?terms ?? ''
     }
     dependsOn: [
       service_apis
@@ -453,17 +500,16 @@ module service_subscriptions 'subscription/main.bicep' = [
   }
 ]
 
-resource service_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: service
+resource service_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: service
+}
 
 resource service_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -495,14 +541,10 @@ resource service_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-
 ]
 
 resource service_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(service.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(service.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -550,6 +592,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 

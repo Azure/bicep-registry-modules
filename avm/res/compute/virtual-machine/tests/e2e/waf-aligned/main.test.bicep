@@ -24,6 +24,10 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Required. The object id of the Backup Management Service Enterprise Application. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-BackupManagementServiceEnterpriseApplicationObjectId\'.')
+@secure()
+param backupManagementServiceEnterpriseApplicationObjectId string = ''
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -41,6 +45,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
@@ -49,6 +54,9 @@ module nestedDependencies 'dependencies.bicep' = {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
     storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
     proximityPlacementGroupName: 'dep-${namePrefix}-ppg-${serviceShort}'
+    backupManagementServiceApplicationObjectId: backupManagementServiceEnterpriseApplicationObjectId
+    dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
+    logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
   }
 }
 
@@ -196,6 +204,8 @@ module testDeployment '../../../main.bicep' = [
       ]
       enableAutomaticUpdates: true
       patchMode: 'AutomaticByPlatform'
+      bypassPlatformSafetyChecksOnUserSchedule: true
+      maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
       encryptionAtHost: false
       extensionAntiMalwareConfig: {
         enabled: true
@@ -282,6 +292,12 @@ module testDeployment '../../../main.bicep' = [
       }
       extensionMonitoringAgentConfig: {
         enabled: true
+        dataCollectionRuleAssociations: [
+          {
+            name: 'SendMetricsToLAW'
+            dataCollectionRuleResourceId: nestedDependencies.outputs.dataCollectionRuleResourceId
+          }
+        ]
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'

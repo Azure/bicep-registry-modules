@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework. Note - whilst this test is WAF aligned, zoneRedundant is set to false to avoid temporary AVM environment challenges. It is highly recommended that users of this module set the property value to true.'
 
 // ========== //
 // Parameters //
@@ -56,8 +56,8 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
       skuName: 'P1v3'
-      skuCapacity: 3
-      zoneRedundant: true
+      skuCapacity: 2
+      zoneRedundant: false
       kind: 'App'
       lock: {
         name: 'lock'

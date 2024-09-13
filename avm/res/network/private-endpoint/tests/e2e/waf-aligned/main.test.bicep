@@ -63,9 +63,13 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
-      privateDnsZoneResourceIds: [
-        nestedDependencies.outputs.privateDNSZoneResourceId
-      ]
+      privateDnsZoneGroup: {
+        privateDnsZoneGroupConfigs: [
+          {
+            privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+          }
+        ]
+      }
       ipConfigurations: [
         {
           name: 'myIPconfig'
@@ -85,10 +89,6 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
-      // Workaround for PSRule
-      privateDnsZoneGroupName: 'default'
-      customDnsConfigs: []
-      manualPrivateLinkServiceConnections: []
       privateLinkServiceConnections: [
         {
           name: '${namePrefix}${serviceShort}001'

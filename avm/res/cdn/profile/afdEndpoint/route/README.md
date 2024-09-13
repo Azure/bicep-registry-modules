@@ -7,8 +7,6 @@ This module deploys a CDN Profile AFD Endpoint route.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -32,7 +30,7 @@ This module deploys a CDN Profile AFD Endpoint route.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`cacheConfiguration`](#parameter-cacheconfiguration) | object | The caching configuration for this route. To disable caching, do not provide a cacheConfiguration object. |
-| [`customDomainName`](#parameter-customdomainname) | string | The name of the custom domain. The custom domain must be defined in the profile customDomains. |
+| [`customDomainNames`](#parameter-customdomainnames) | array | The names of the custom domains. The custom domains must be defined in the profile customDomains array. |
 | [`enabledState`](#parameter-enabledstate) | string | Whether this route is enabled. |
 | [`forwardingProtocol`](#parameter-forwardingprotocol) | string | The protocol this rule will use when forwarding traffic to backends. |
 | [`httpsRedirect`](#parameter-httpsredirect) | string | Whether to automatically redirect HTTP traffic to HTTPS traffic. |
@@ -77,12 +75,12 @@ The caching configuration for this route. To disable caching, do not provide a c
 - Required: No
 - Type: object
 
-### Parameter: `customDomainName`
+### Parameter: `customDomainNames`
 
-The name of the custom domain. The custom domain must be defined in the profile customDomains.
+The names of the custom domains. The custom domains must be defined in the profile customDomains array.
 
 - Required: No
-- Type: string
+- Type: array
 
 ### Parameter: `enabledState`
 
@@ -181,7 +179,6 @@ The supported protocols of the rule.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -189,11 +186,3 @@ The supported protocols of the rule.
 | `name` | string | The name of the route. |
 | `resourceGroupName` | string | The name of the resource group the route was created in. |
 | `resourceId` | string | The ID of the route. |
-
-## Cross-referenced modules
-
-_None_
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

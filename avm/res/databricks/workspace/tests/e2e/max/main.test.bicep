@@ -23,6 +23,10 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Required. The object id of the AzureDatabricks Enterprise Application. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureDatabricksEnterpriseApplicationObjectId\'.')
+@secure()
+param azureDatabricksEnterpriseApplicationObjectId string = ''
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -47,9 +51,10 @@ module nestedDependencies 'dependencies.bicep' = {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
+    databricksApplicationObjectId: azureDatabricksEnterpriseApplicationObjectId
+    keyVaultDiskName: 'dep-${namePrefix}-kve-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-    keyVaultDiskName: 'dep-${namePrefix}-kve-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
   }
 }
 
@@ -60,7 +65,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
     location: resourceLocation
@@ -77,7 +82,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}002'
       location: resourceLocation
       diagnosticSettings: [
         {
@@ -102,11 +107,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
+          name: '2754e64b-b96e-44bc-9cb2-6e39b057f515'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -151,9 +158,13 @@ module testDeployment '../../../main.bicep' = [
       customVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
       privateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'databricks_ui_api'
           subnetResourceId: nestedDependencies.outputs.primarySubnetResourceId
           tags: {
@@ -162,16 +173,25 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           subnetResourceId: nestedDependencies.outputs.secondarySubnetResourceId
           service: 'browser_authentication'
         }
       ]
+      // Please do not change the name of the managed resource group as the CI's removal logic relies on it
       managedResourceGroupResourceId: '${subscription().id}/resourceGroups/rg-${resourceGroupName}-managed'
       requireInfrastructureEncryption: true
       vnetAddressPrefix: '10.100'
+      defaultCatalog: {
+        //initialName: '' Cannot be set to anything other than an empty string. {"code":"InvalidInitialCatalogName","message":"Currently custom initial catalog name is not supported. This capability will be added in future."}
+        initialType: 'UnityCatalog' // Choose between 'HiveCatalog' OR 'UnityCatalog'
+      }
     }
     dependsOn: [
       nestedDependencies

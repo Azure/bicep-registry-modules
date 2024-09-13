@@ -105,7 +105,7 @@ resource triggerImageDeploymentScript 'Microsoft.Resources/deploymentScripts@202
     }
   }
   properties: {
-    azPowerShellVersion: '8.0'
+    azPowerShellVersion: '11.5'
     retentionInterval: 'P1D'
     arguments: '-ImageTemplateName \\"${imageTemplate.name}\\" -ImageTemplateResourceGroup \\"${resourceGroup().name}\\"'
     scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Start-ImageTemplate.ps1')
@@ -129,7 +129,7 @@ resource copyVhdDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-
     }
   }
   properties: {
-    azPowerShellVersion: '8.0'
+    azPowerShellVersion: '11.5'
     retentionInterval: 'P1D'
     arguments: '-ImageTemplateName \\"${imageTemplate.name}\\" -ImageTemplateResourceGroup \\"${resourceGroup().name}\\" -DestinationStorageAccountName \\"${storageAccount.name}\\" -VhdName \\"${imageTemplateName}\\" -WaitForComplete'
     scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Copy-VhdToStorageAccount.ps1')
