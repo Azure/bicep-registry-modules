@@ -31,6 +31,7 @@ module dependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     acrName: 'dep${namePrefix}acr${serviceShort}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}'
+    keyVaultName: 'dep${namePrefix}kv${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
   }
 }
@@ -46,6 +47,11 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // Test Execution //
 // ============== //
 
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+  name: last(split(dependencies.outputs.keyVaultResourceId, '/'))
+  scope: resourceGroup
+}
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -59,7 +65,10 @@ module testDeployment '../../../main.bicep' = [
       }
       acrName: dependencies.outputs.acrName
       location: resourceLocation
-      image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+      image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest' // e.g. for docker images, that will be authenticated with the below properties 'docker.io/hello-world:latest'
+      // commented out, as the user is not available in the test environment
+      // sourceRegistryUsername: 'username'
+      // sourceRegistryPassword: keyVault.getSecret(dependencies.outputs.keyVaultSecretName)
       newImageName: 'your-image-name:tag'
       cleanupPreference: 'OnExpiration'
       assignRbacRole: true

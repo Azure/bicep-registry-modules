@@ -1742,6 +1742,16 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'API Management Developer Portal Content Editor'`
+  - `'API Management Service Contributor'`
+  - `'API Management Service Operator Role'`
+  - `'API Management Service Reader Role'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

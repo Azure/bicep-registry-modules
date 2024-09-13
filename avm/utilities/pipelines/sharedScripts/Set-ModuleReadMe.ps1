@@ -390,7 +390,7 @@ function Set-DefinitionSection {
                     )
                 }
             } else {
-                $formattedDefaultValue = $null
+                $formattedDefaultValue = $null # Reset value for future iterations
             }
 
             # Format allowed values
@@ -420,7 +420,31 @@ function Set-DefinitionSection {
                     )
                 }
             } else {
-                $formattedAllowedValues = $null
+                $formattedAllowedValues = $null # Reset value for future iterations
+            }
+
+            # Special case for 'roleAssignments' parameter
+            if (($parameter.name -eq 'roleAssignments') -and ($TemplateFileContent.variables.keys -contains 'builtInRoleNames')) {
+                if ([String]::IsNullOrEmpty($ParentName)) {
+                    # Top-level invocation
+                    $roles = $TemplateFileContent.variables.builtInRoleNames.Keys
+                } else {
+                    # Nested-invocation (requires e.g., roles for of nested private endpoint template)
+                    $flattendResources = Get-NestedResourceList -TemplateFileContent $TemplateFileContent
+                    if ($resourceIdentifier = $flattendResources.identifier | Where-Object { $_ -match "^.*_$ParentName`$" }) {
+                        $roles = ($flattendResources | Where-Object {
+                                $_.identifier -eq $resourceIdentifier
+                            }).properties.template.variables.builtInRoleNames.Keys
+                    } else {
+                        Write-Warning ('Failed to identify roles for parameter [{0}] of type [{1}] as resource with identifier [{2}] was not found in the corresponding linked template.' -f $parameter.name, $ParentName, "*_$ParentName")
+                    }
+                }
+                $formattedRoleNames = $roles.count -gt 0 ? @(
+                    '- Roles configurable by name:',
+                    ($roles | ForEach-Object { "  - ``'$_'``" } | Out-String).TrimEnd()
+                ) : $null
+            } else {
+                $formattedRoleNames = $null # Reset value for future iterations
             }
 
             # Format example
@@ -457,7 +481,8 @@ function Set-DefinitionSection {
             ('- Type: {0}' -f $type),
             ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
             ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null),
-            ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null)
+            ((-not [String]::IsNullOrEmpty($formattedRoleNames)) ? $formattedRoleNames : $null),
+            ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null),
                 ''
             ) | Where-Object { $null -ne $_ }
 
