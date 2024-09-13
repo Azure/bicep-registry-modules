@@ -8,7 +8,6 @@ This module deploys a SQL Managed Instance.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -805,7 +804,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1288,6 +1286,19 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Reservation Purchaser'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'SQL DB Contributor'`
+  - `'SQL Managed Instance Contributor'`
+  - `'SQL Security Manager'`
+  - `'SQL Server Contributor'`
+  - `'SqlDb Migration Role'`
+  - `'SqlMI Migration Role'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1465,7 +1476,6 @@ Whether or not multi-az is enabled.
 - Type: bool
 - Default: `False`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1475,10 +1485,6 @@ Whether or not multi-az is enabled.
 | `resourceGroupName` | string | The resource group of the deployed managed instance. |
 | `resourceId` | string | The resource ID of the deployed managed instance. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -64,3 +64,6 @@ output location string = endpoint.location
 
 @description('The properties of the endpoint.')
 output endpointProperties object = endpoint.properties
+
+@description('The uri of the endpoint.')
+output uri string = 'https://${endpoint.properties.hostName}'

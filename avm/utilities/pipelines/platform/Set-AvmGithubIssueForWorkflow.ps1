@@ -88,6 +88,7 @@ function Set-AvmGithubIssueForWorkflow {
         if ($workflowRun.conclusion -eq 'failure') {
             $issueName = "[Failed pipeline] $($workflowRun.workflowName)"
             $failedrun = "Failed run: $($workflowRun.url)"
+            $moduleName = $workflowRun.workflowName.Replace('.', '/')
 
             if ($issues.title -notcontains $issueName) {
                 if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Create')) {
@@ -99,8 +100,7 @@ function Set-AvmGithubIssueForWorkflow {
 > @Azure/avm-core-team-technical-bicep, the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run.
 "@
 
-                    if ($workflowRun.workflowName -match 'avm.(?:res|ptn)') {
-                        $moduleName = $workflowRun.workflowName.Replace('.', '/')
+                    if ($workflowRun.workflowName -match 'avm.(?:res|ptn|utl)') {
                         $moduleIndex = $moduleName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
                         # get CSV data
                         $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName

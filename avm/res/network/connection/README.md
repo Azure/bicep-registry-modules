@@ -8,7 +8,6 @@ This module deploys a Virtual Network Gateway Connection.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -303,7 +302,6 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -333,6 +331,7 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
 | [`peer`](#parameter-peer) | object | The remote peer. Used for connection connectionType [ExpressRoute]. |
 | [`routingWeight`](#parameter-routingweight) | int | The weight added to routes learned from this BGP speaker. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`trafficSelectorPolicies`](#parameter-trafficselectorpolicies) | array | The traffic selector policies to be considered by this connection. |
 | [`useLocalAzureIpAddress`](#parameter-uselocalazureipaddress) | bool | Use private local Azure IP for the connection. Only available for IPSec Virtual Network Gateways that use the Azure Private IP Property. |
 | [`usePolicyBasedTrafficSelectors`](#parameter-usepolicybasedtrafficselectors) | bool | Enable policy-based traffic selectors. |
 | [`virtualNetworkGateway2`](#parameter-virtualnetworkgateway2) | object | The remote Virtual Network Gateway. Used for connection connectionType [Vnet2Vnet]. |
@@ -542,6 +541,14 @@ Tags of the resource.
 - Required: No
 - Type: object
 
+### Parameter: `trafficSelectorPolicies`
+
+The traffic selector policies to be considered by this connection.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
 ### Parameter: `useLocalAzureIpAddress`
 
 Use private local Azure IP for the connection. Only available for IPSec Virtual Network Gateways that use the Azure Private IP Property.
@@ -574,7 +581,6 @@ Specifies a VPN shared key. The same value has to be specified on both Virtual N
 - Type: securestring
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -583,10 +589,6 @@ Specifies a VPN shared key. The same value has to be specified on both Virtual N
 | `name` | string | The name of the remote connection. |
 | `resourceGroupName` | string | The resource group the remote connection was deployed into. |
 | `resourceId` | string | The resource ID of the remote connection. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 

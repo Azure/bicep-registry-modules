@@ -116,7 +116,7 @@ function Get-SpecsAlignedResourceName {
         $resourceType = $innerResourceTypes | Where-Object { $_ -match $fallbackResourceTypeRegex }
         if (-not $resourceType) {
             # if we still don't find anything (because the resource type straight up does not exist, we fall back to itself as the default)
-            Write-Warning "Resource type [$rawResourceType] does not exist in the API / is custom. Falling back to it as default."
+            Write-Warning "Resource type [$rawResourceType] cannot be found or does not exist in the API specs / is custom. Falling back to it as default."
             $resourceType = $rawResourceType
         } else {
             Write-Warning ('Failed to find exact match between core matched resource types and [{0}]. Fallback on [{1}].' -f $rawResourceType, (Split-Path $rawResourceType -Parent))

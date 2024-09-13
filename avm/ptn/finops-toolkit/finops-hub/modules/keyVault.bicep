@@ -41,10 +41,10 @@ var keyVaultName = replace('${take(keyVaultPrefix, 24 - length(keyVaultSuffix))}
 
 var formattedAccessPolicies = [
   for accessPolicy in accessPolicies: {
-    applicationId: contains(accessPolicy, 'applicationId') ? accessPolicy.applicationId : ''
-    objectId: contains(accessPolicy, 'objectId') ? accessPolicy.objectId : ''
+    applicationId: accessPolicy.?applicationId ?? ''
+    objectId: accessPolicy.?objectId ?? ''
     permissions: accessPolicy.permissions
-    tenantId: contains(accessPolicy, 'tenantId') ? accessPolicy.tenantId : tenant().tenantId
+    tenantId: accessPolicy.?tenantId ?? tenant().tenantId
   }
 ]
 
@@ -57,10 +57,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.5.1' = {
   params: {
     name: keyVaultName
     location: location
-    tags: union(
-      tags ?? {},
-      contains(tagsByResource, 'Microsoft.KeyVault/vaults') ? tagsByResource['Microsoft.KeyVault/vaults'] : {}
-    )
+    tags: union(tags ?? {}, tagsByResource[?'Microsoft.KeyVault/vaults'] ?? {})
     enableVaultForDeployment: true
     enableVaultForTemplateDeployment: true
     enableVaultForDiskEncryption: true
