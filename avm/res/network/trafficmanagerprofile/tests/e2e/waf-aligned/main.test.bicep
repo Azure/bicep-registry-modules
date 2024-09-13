@@ -18,7 +18,7 @@ param serviceShort string = 'ntmpwaf'
 param namePrefix string = '#_namePrefix_#'
 
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-var enforcedLocation = 'eastus'
+var enforcedLocation = 'centralus'
 
 // ============ //
 // Dependencies //
