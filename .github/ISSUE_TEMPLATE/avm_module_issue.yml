@@ -103,7 +103,7 @@ body:
         - "avm/res/event-grid/system-topic"
         - "avm/res/event-grid/topic"
         - "avm/res/event-hub/namespace"
-        - "avm/res/fabric/capacities"
+        - "avm/res/fabric/capacity"
         - "avm/res/health-bot/health-bot"
         - "avm/res/healthcare-apis/workspace"
         - "avm/res/hybrid-compute/machine"
