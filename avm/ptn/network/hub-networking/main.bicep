@@ -106,28 +106,6 @@ resource hubVirtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetw
   }
 ]
 
-/* module hubVirtualNetworkPeering 'br/public:avm/res/network/virtual-network:0.4.0' = [
-  for (peer, index) in (flatten(hubVirtualNetworkPeerings) ?? []): {
-    name: '${hubVirtualNetworkPeer_local[index].name}-to-${peer.remoteVirtualNetworkName}-peering'
-    params: {
-      // Required parameters
-      name: hubVirtualNetworkPeer_local[index].name
-      addressPrefixes: hubVirtualNetworkPeer_local[index].properties.addressSpace.addressPrefixes
-      peerings: [
-        {
-          name: '${hubVirtualNetworkPeer_local[index].name}-to-${peer.remoteVirtualNetworkName}-peering'
-          allowForwardedTraffic: peer.allowForwardedTraffic ?? false
-          allowGatewayTransit: peer.allowGatewayTransit ?? false
-          allowVirtualNetworkAccess: peer.allowVirtualNetworkAccess ?? true
-          useRemoteGateways: peer.useRemoteGateways ?? false
-          remoteVirtualNetworkResourceId: hubVirtualNetworkPeer_remote[index].outputs.resourceId
-        }
-      ]
-    }
-    dependsOn: hubVirtualNetwork
-  }
-] */
-
 // Create hub virtual network route tables
 module hubRouteTable 'br/public:avm/res/network/route-table:0.4.0' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): {
