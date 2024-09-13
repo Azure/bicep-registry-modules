@@ -1681,6 +1681,18 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Key Vault Administrator'`
+  - `'Key Vault Contributor'`
+  - `'Key Vault Crypto Officer'`
+  - `'Key Vault Crypto Service Encryption User'`
+  - `'Key Vault Crypto User'`
+  - `'Key Vault Reader'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2365,6 +2377,7 @@ Array of role assignments to create.
   - `'Contributor'`
   - `'Key Vault Administrator'`
   - `'Key Vault Certificates Officer'`
+  - `'Key Vault Certificate User'`
   - `'Key Vault Contributor'`
   - `'Key Vault Crypto Officer'`
   - `'Key Vault Crypto Service Encryption User'`
@@ -2374,7 +2387,7 @@ Array of role assignments to create.
   - `'Key Vault Secrets User'`
   - `'Owner'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
 
 **Required parameters**
@@ -2553,6 +2566,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Key Vault Administrator'`
+  - `'Key Vault Contributor'`
+  - `'Key Vault Reader'`
+  - `'Key Vault Secrets Officer'`
+  - `'Key Vault Secrets User'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

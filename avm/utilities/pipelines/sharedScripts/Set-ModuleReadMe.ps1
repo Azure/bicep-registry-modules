@@ -481,11 +481,8 @@ function Set-DefinitionSection {
             ('- Type: {0}' -f $type),
             ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
             ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null),
-<<<<<<< users/alsehr/readme_Roles
             ((-not [String]::IsNullOrEmpty($formattedRoleNames)) ? $formattedRoleNames : $null),
-=======
-            ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null)
->>>>>>> main
+            ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null),
                 ''
             ) | Where-Object { $null -ne $_ }
 
