@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'aidmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = '#_namePrefixMax_#'
 
 @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
 param containerRegistryRoleName string = newGuid()
