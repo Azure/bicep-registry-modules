@@ -112,6 +112,9 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     customPrivateSubnetName: '<customPrivateSubnetName>'
     customPublicSubnetName: '<customPublicSubnetName>'
     customVirtualNetworkResourceId: '<customVirtualNetworkResourceId>'
+    defaultCatalog: {
+      initialType: 'UnityCatalog'
+    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -142,9 +145,13 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     prepareEncryption: true
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'databricks_ui_api'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -153,9 +160,13 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'browser_authentication'
         subnetResourceId: '<subnetResourceId>'
       }
@@ -238,6 +249,11 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     "customVirtualNetworkResourceId": {
       "value": "<customVirtualNetworkResourceId>"
     },
+    "defaultCatalog": {
+      "value": {
+        "initialType": "UnityCatalog"
+      }
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -287,9 +303,13 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "databricks_ui_api",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -298,9 +318,13 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "browser_authentication",
           "subnetResourceId": "<subnetResourceId>"
         }
@@ -445,9 +469,13 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     storageAccountName: 'sadwwaf001'
     storageAccountPrivateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<blobStoragePrivateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'blob'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -597,9 +625,13 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     "storageAccountPrivateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<blobStoragePrivateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "blob",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -629,7 +661,6 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -654,6 +685,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 | [`customPrivateSubnetName`](#parameter-customprivatesubnetname) | string | The name of the Private Subnet within the Virtual Network. |
 | [`customPublicSubnetName`](#parameter-custompublicsubnetname) | string | The name of a Public Subnet within the Virtual Network. |
 | [`customVirtualNetworkResourceId`](#parameter-customvirtualnetworkresourceid) | string | The resource ID of a Virtual Network where this Databricks Cluster should be created. |
+| [`defaultCatalog`](#parameter-defaultcatalog) | object | The default catalog configuration for the Databricks workspace. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disablePublicIp`](#parameter-disablepublicip) | bool | Disable Public IP. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -830,6 +862,33 @@ The resource ID of a Virtual Network where this Databricks Cluster should be cre
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `defaultCatalog`
+
+The default catalog configuration for the Databricks workspace.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`initialType`](#parameter-defaultcataloginitialtype) | string | Choose between HiveMetastore or UnityCatalog. |
+
+### Parameter: `defaultCatalog.initialType`
+
+Choose between HiveMetastore or UnityCatalog.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'HiveMetastore'
+    'UnityCatalog'
+  ]
+  ```
 
 ### Parameter: `diagnosticSettings`
 
@@ -1071,8 +1130,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
@@ -1262,19 +1320,64 @@ The name of the private endpoint.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneGroupName`
+### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
-The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
+The private DNS zone group to configure for the private endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneResourceIds`
+### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
-The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
+The name of the Private DNS Zone Group.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -1462,6 +1565,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1605,8 +1714,7 @@ Configuration details for private endpoints for the managed workspace storage ac
 | [`lock`](#parameter-storageaccountprivateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-storageaccountprivateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-storageaccountprivateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-storageaccountprivateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-storageaccountprivateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroup`](#parameter-storageaccountprivateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-storageaccountprivateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-storageaccountprivateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-storageaccountprivateendpointsroleassignments) | array | Array of role assignments to create. |
@@ -1796,19 +1904,64 @@ The name of the private endpoint.
 - Required: No
 - Type: string
 
-### Parameter: `storageAccountPrivateEndpoints.privateDnsZoneGroupName`
+### Parameter: `storageAccountPrivateEndpoints.privateDnsZoneGroup`
 
-The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
+The private DNS zone group to configure for the private endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-storageaccountprivateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-storageaccountprivateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `storageAccountPrivateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-storageaccountprivateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-storageaccountprivateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+
+### Parameter: `storageAccountPrivateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `storageAccountPrivateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
 
-### Parameter: `storageAccountPrivateEndpoints.privateDnsZoneResourceIds`
+### Parameter: `storageAccountPrivateEndpoints.privateDnsZoneGroup.name`
 
-The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
+The name of the Private DNS Zone Group.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `storageAccountPrivateEndpoints.privateLinkServiceConnectionName`
 
@@ -1830,6 +1983,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1951,7 +2110,6 @@ Address prefix for Managed virtual network.
 - Type: string
 - Default: `'10.139'`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1960,11 +2118,12 @@ Address prefix for Managed virtual network.
 | `managedResourceGroupId` | string | The resource ID of the managed resource group. |
 | `managedResourceGroupName` | string | The name of the managed resource group. |
 | `name` | string | The name of the deployed databricks workspace. |
-| `privateEndpoints` | array | The private endpoints for the Databricks Workspace. |
+| `privateEndpoints` | array | The private endpoints of the Databricks Workspace. |
 | `resourceGroupName` | string | The resource group of the deployed databricks workspace. |
 | `resourceId` | string | The resource ID of the deployed databricks workspace. |
 | `storageAccountId` | string | The resource ID of the DBFS storage account. |
 | `storageAccountName` | string | The name of the DBFS storage account. |
+| `storagePrivateEndpoints` | array | The private endpoints of the Databricks Workspace Storage. |
 | `workspaceId` | string | The unique identifier of the databricks workspace in databricks control plane. |
 | `workspaceUrl` | string | The workspace URL which is of the format 'adb-{workspaceId}.{random}.azuredatabricks.net'. |
 
@@ -1974,7 +2133,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.6.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
 
 ## Notes
 

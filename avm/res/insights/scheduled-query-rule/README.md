@@ -8,7 +8,6 @@ This module deploys a Scheduled Query Rule.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -500,7 +499,6 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -660,6 +658,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -807,7 +811,6 @@ List of resource type of the target resource(s) on which the alert is created/up
 - Type: array
 - Default: `[]`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -816,10 +819,6 @@ List of resource type of the target resource(s) on which the alert is created/up
 | `name` | string | The Name of the created scheduled query rule. |
 | `resourceGroupName` | string | The Resource Group of the created scheduled query rule. |
 | `resourceId` | string | The resource ID of the created scheduled query rule. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

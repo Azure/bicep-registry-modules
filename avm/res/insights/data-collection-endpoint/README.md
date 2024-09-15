@@ -8,7 +8,6 @@ This module deploys a Data Collection Endpoint.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -17,7 +16,7 @@ This module deploys a Data Collection Endpoint.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/dataCollectionEndpoints` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/dataCollectionEndpoints) |
+| `Microsoft.Insights/dataCollectionEndpoints` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionEndpoints) |
 
 ## Usage examples
 
@@ -269,7 +268,6 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -393,6 +391,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -491,7 +495,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -500,10 +503,6 @@ Resource tags.
 | `name` | string | The name of the dataCollectionEndpoint. |
 | `resourceGroupName` | string | The name of the resource group the dataCollectionEndpoint was created in. |
 | `resourceId` | string | The resource ID of the dataCollectionEndpoint. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -8,7 +8,6 @@ This module deploys a Container App.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -440,6 +439,13 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     environmentResourceId: '<environmentResourceId>'
     name: 'acavnet001'
     // Non-required parameters
+    additionalPortMappings: [
+      {
+        exposedPort: 8080
+        external: false
+        targetPort: 8080
+      }
+    ]
     ingressAllowInsecure: false
     ingressExternal: false
     ingressTargetPort: 80
@@ -481,6 +487,15 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": "acavnet001"
     },
     // Non-required parameters
+    "additionalPortMappings": {
+      "value": [
+        {
+          "exposedPort": 8080,
+          "external": false,
+          "targetPort": 8080
+        }
+      ]
+    },
     "ingressAllowInsecure": {
       "value": false
     },
@@ -651,7 +666,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -667,6 +681,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`activeRevisionsMode`](#parameter-activerevisionsmode) | string | Controls how active revisions are handled for the Container app. |
+| [`additionalPortMappings`](#parameter-additionalportmappings) | array | Settings to expose additional ports on container app. |
 | [`clientCertificateMode`](#parameter-clientcertificatemode) | string | Client certificate mode for mTLS. |
 | [`corsPolicy`](#parameter-corspolicy) | object | Object userd to configure CORS policy. |
 | [`customDomains`](#parameter-customdomains) | array | Custom domain bindings for Container App hostnames. |
@@ -1070,6 +1085,47 @@ Controls how active revisions are handled for the Container app.
   ]
   ```
 
+### Parameter: `additionalPortMappings`
+
+Settings to expose additional ports on container app.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`external`](#parameter-additionalportmappingsexternal) | bool | Specifies whether the app port is accessible outside of the environment. |
+| [`targetPort`](#parameter-additionalportmappingstargetport) | int | Specifies the port the container listens on. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`exposedPort`](#parameter-additionalportmappingsexposedport) | int | Specifies the exposed port for the target port. If not specified, it defaults to target port. |
+
+### Parameter: `additionalPortMappings.external`
+
+Specifies whether the app port is accessible outside of the environment.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `additionalPortMappings.targetPort`
+
+Specifies the port the container listens on.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `additionalPortMappings.exposedPort`
+
+Specifies the exposed port for the target port. If not specified, it defaults to target port.
+
+- Required: No
+- Type: int
+
 ### Parameter: `clientCertificateMode`
 
 Client certificate mode for mTLS.
@@ -1353,6 +1409,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'ContainerApp Reader'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1582,7 +1645,6 @@ Workload profile name to pin for container app execution.
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1593,10 +1655,6 @@ Workload profile name to pin for container app execution.
 | `resourceGroupName` | string | The name of the resource group the Container App was deployed into. |
 | `resourceId` | string | The resource ID of the Container App. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -25,7 +25,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -52,42 +52,44 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      dataCollectionEndpointId: nestedDependencies.outputs.dataCollectionEndpointResourceId
-      description: 'Collecting IIS logs.'
-      dataFlows: [
-        {
-          streams: [
-            'Microsoft-W3CIISLog'
-          ]
-          destinations: [
-            nestedDependencies.outputs.logAnalyticsWorkspaceName
-          ]
-          transformKql: 'source'
-          outputStream: 'Microsoft-W3CIISLog'
-        }
-      ]
-      dataSources: {
-        iisLogs: [
+      dataCollectionRuleProperties: {
+        kind: 'Windows'
+        dataCollectionEndpointResourceId: nestedDependencies.outputs.dataCollectionEndpointResourceId
+        description: 'Collecting IIS logs.'
+        dataFlows: [
           {
-            name: 'iisLogsDataSource'
             streams: [
               'Microsoft-W3CIISLog'
             ]
-            logDirectories: [
-              'C:\\inetpub\\logs\\LogFiles\\W3SVC1'
+            destinations: [
+              nestedDependencies.outputs.logAnalyticsWorkspaceName
             ]
+            transformKql: 'source'
+            outputStream: 'Microsoft-W3CIISLog'
           }
         ]
+        dataSources: {
+          iisLogs: [
+            {
+              name: 'iisLogsDataSource'
+              streams: [
+                'Microsoft-W3CIISLog'
+              ]
+              logDirectories: [
+                'C:\\inetpub\\logs\\LogFiles\\W3SVC1'
+              ]
+            }
+          ]
+        }
+        destinations: {
+          logAnalytics: [
+            {
+              workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+              name: nestedDependencies.outputs.logAnalyticsWorkspaceName
+            }
+          ]
+        }
       }
-      destinations: {
-        logAnalytics: [
-          {
-            workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
-            name: nestedDependencies.outputs.logAnalyticsWorkspaceName
-          }
-        ]
-      }
-      kind: 'Windows'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         resourceType: 'Data Collection Rules'

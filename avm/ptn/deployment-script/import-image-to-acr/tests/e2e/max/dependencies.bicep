@@ -13,6 +13,9 @@ param acrName string
 @description('Required. The name of the Storage Account to create.')
 param storageAccountName string
 
+@description('Required. The name of the Key Vault to create.')
+param keyVaultName string
+
 var ipRange = '10.0.0.0'
 
 module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
@@ -105,6 +108,52 @@ module storage 'br/public:avm/res/storage/storage-account:0.9.0' = {
   }
 }
 
+// KeyVault stores the password to login to the source container registry
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
+  name: keyVaultName
+  location: location
+  properties: {
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+    tenantId: tenant().tenantId
+    enablePurgeProtection: null
+    enabledForTemplateDeployment: true
+    enabledForDiskEncryption: true
+    enabledForDeployment: true
+    enableRbacAuthorization: true
+    accessPolicies: []
+  }
+  dependsOn: [identity]
+
+  resource containerRegistrySecret 'secrets@2023-07-01' = {
+    name: 'ContainerRegistryPassword'
+    properties: {
+      // put the password of the source container registry here
+      value: '<password>'
+    }
+  }
+
+  resource rbac 'accessPolicies@2023-07-01' = {
+    name: 'add'
+    properties: {
+      accessPolicies: [
+        {
+          tenantId: tenant().tenantId
+          objectId: identity.outputs.principalId
+          permissions: {
+            keys: []
+            secrets: ['get', 'list', 'set']
+            certificates: []
+            storage: []
+          }
+        }
+      ]
+    }
+  }
+}
+
 // the container registry to upload the image into
 module acr 'br/public:avm/res/container-registry/registry:0.2.0' = {
   name: '${uniqueString(resourceGroup().name, location)}-acr'
@@ -145,3 +194,9 @@ output storageAccountResourceId string = storage.outputs.resourceId
 
 @description('The resource ID of the created subnet designated for the Deployment Script.')
 output deploymentScriptSubnetResourceId string = vnet::subnet_deploymentscript.id
+
+@description('The resource ID of the created Key Vault.')
+output keyVaultResourceId string = keyVault.id
+
+@description('The name of the created Key Vault secret.')
+output keyVaultSecretName string = keyVault::containerRegistrySecret.name
