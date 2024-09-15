@@ -955,7 +955,6 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -968,7 +967,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`advancedOptions`](#parameter-advancedoptions) | object | Additional options that can affect some parts of the solution and how they are configured. |
+| [`advancedOptions`](#parameter-advancedoptions) | object | Additional options that can affect some components of the solution and how they are configured. |
 | [`enableDatabricks`](#parameter-enabledatabricks) | bool | Enable/Disable Azure Databricks service in the solution. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`keyVaultResourceId`](#parameter-keyvaultresourceid) | string | If you already have a Key Vault that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Key Vault for you. |
@@ -988,7 +987,7 @@ Name of the private analytical workspace solution and its components. Used to en
 
 ### Parameter: `advancedOptions`
 
-Additional options that can affect some parts of the solution and how they are configured.
+Additional options that can affect some components of the solution and how they are configured.
 
 - Required: No
 - Type: object
@@ -1273,7 +1272,6 @@ This option allows the solution to be connected to a VNET that the customer prov
 
 - Required: No
 - Type: string
-
 
 ## Outputs
 

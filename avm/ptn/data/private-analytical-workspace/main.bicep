@@ -32,7 +32,7 @@ param keyVaultResourceId string?
 @description('Optional. Array of users or groups who are in charge of the solution.')
 param solutionAdministrators userGroupRoleAssignmentType?
 
-@description('Optional. Additional options that can affect some parts of the solution and how they are configured.')
+@description('Optional. Additional options that can affect some components of the solution and how they are configured.')
 param advancedOptions advancedOptionsType?
 
 // ============== //
@@ -663,7 +663,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.6.0' = if (enableDatabricks
     ]
     privateStorageAccount: 'Enabled'
     // Allow Public Network Access
-    // Enabled means You can connect to your Databricks workspace either publicly, via public IP addresses, or privately, using a private endpoint.
+    // Enabled means You can connect to your Databricks workspace either publicly, via the public IP addresses, or privately, using a private endpoint.
     publicNetworkAccess: empty(dbwIpRules) ? 'Disabled' : 'Enabled'
     // Select No Azure Databricks Rules if you are using back-end Private Link,
     // which means that your workspace data plane does not need network security group rules
