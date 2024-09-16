@@ -8,7 +8,6 @@ This module deploys a Compute Image.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -326,7 +325,6 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -478,6 +476,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -600,7 +604,6 @@ Default is false. Specifies whether an image is zone resilient or not. Zone resi
 - Type: bool
 - Default: `False`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -609,10 +612,6 @@ Default is false. Specifies whether an image is zone resilient or not. Zone resi
 | `name` | string | The name of the image. |
 | `resourceGroupName` | string | The resource group the image was deployed into. |
 | `resourceId` | string | The resource ID of the image. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

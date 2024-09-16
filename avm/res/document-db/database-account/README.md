@@ -2307,7 +2307,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -3190,6 +3189,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -3294,6 +3304,17 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Cosmos DB Account Reader Role'`
+  - `'Cosmos DB Operator'`
+  - `'CosmosBackupOperator'`
+  - `'CosmosRestoreOperator'`
+  - `'DocumentDB Account Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -3777,7 +3798,6 @@ Tags of the Database Account resource.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 

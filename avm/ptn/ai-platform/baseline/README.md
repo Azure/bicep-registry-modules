@@ -630,7 +630,6 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1125,7 +1124,6 @@ The name of the AI Studio workspace project.
 
 - Required: No
 - Type: string
-
 
 ## Outputs
 

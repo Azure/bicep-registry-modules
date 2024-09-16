@@ -986,7 +986,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1583,6 +1582,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1727,7 +1733,6 @@ Specifies the VPN type.
     'RouteBased'
   ]
   ```
-
 
 ## Outputs
 

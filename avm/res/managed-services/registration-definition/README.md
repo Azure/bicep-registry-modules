@@ -15,7 +15,6 @@ The templates are run towards the tenant where the Azure resources you want to d
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -384,7 +383,6 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -512,7 +510,6 @@ Specify the name of the Resource Group to delegate access to. If not provided, d
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -521,10 +518,6 @@ Specify the name of the Resource Group to delegate access to. If not provided, d
 | `name` | string | The name of the registration definition. |
 | `resourceId` | string | The resource ID of the registration definition. |
 | `subscriptionName` | string | The subscription the registration definition was deployed into. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

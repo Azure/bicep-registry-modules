@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "12260759626550899248"
+      "templateHash": "6735651687082765200"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -243,21 +243,44 @@
               "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
             }
           },
-          "privateDnsZoneGroupName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided."
-            }
-          },
-          "privateDnsZoneResourceIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
+          "privateDnsZoneGroup": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The name of the Private DNS Zone Group."
+                }
+              },
+              "privateDnsZoneGroupConfigs": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The name of the private DNS zone group config."
+                      }
+                    },
+                    "privateDnsZoneResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource id of the private DNS zone."
+                      }
+                    }
+                  }
+                },
+                "metadata": {
+                  "description": "Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
+                }
+              }
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones."
+              "description": "Optional. The private DNS zone group to configure for the private endpoint."
             }
           },
           "isManualConnection": {
@@ -942,7 +965,7 @@
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "Storage Account Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
       "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
       "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
@@ -1156,11 +1179,8 @@
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
-          "privateDnsZoneGroupName": {
-            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName')]"
-          },
-          "privateDnsZoneResourceIds": {
-            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneResourceIds')]"
+          "privateDnsZoneGroup": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroup')]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'roleAssignments')]"
@@ -1189,13 +1209,34 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "13720311665093076615"
+              "templateHash": "1277254088602407590"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
+            "privateDnsZoneGroupType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the Private DNS Zone Group."
+                  }
+                },
+                "privateDnsZoneGroupConfigs": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/privateDnsZoneGroupConfigType"
+                  },
+                  "metadata": {
+                    "description": "Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
+                  }
+                }
+              }
+            },
             "roleAssignmentType": {
               "type": "array",
               "items": {
@@ -1447,6 +1488,29 @@
                 }
               },
               "nullable": true
+            },
+            "privateDnsZoneGroupConfigType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the private DNS zone group config."
+                  }
+                },
+                "privateDnsZoneResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource id of the private DNS zone."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "private-dns-zone-group/main.bicep"
+                }
+              }
             }
           },
           "parameters": {
@@ -1482,18 +1546,11 @@
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
               }
             },
-            "privateDnsZoneGroupName": {
-              "type": "string",
+            "privateDnsZoneGroup": {
+              "$ref": "#/definitions/privateDnsZoneGroupType",
               "nullable": true,
               "metadata": {
-                "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
-              }
-            },
-            "privateDnsZoneResourceIds": {
-              "type": "array",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
+                "description": "Optional. The private DNS zone group to configure for the private endpoint."
               }
             },
             "location": {
@@ -1574,7 +1631,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.6.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.7.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1653,7 +1710,7 @@
               ]
             },
             "privateEndpoint_privateDnsZoneGroup": {
-              "condition": "[not(empty(parameters('privateDnsZoneResourceIds')))]",
+              "condition": "[not(empty(parameters('privateDnsZoneGroup')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-PrivateEndpoint-PrivateDnsZoneGroup', uniqueString(deployment().name))]",
@@ -1664,27 +1721,51 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[coalesce(parameters('privateDnsZoneGroupName'), 'default')]"
-                  },
-                  "privateDNSResourceIds": {
-                    "value": "[coalesce(parameters('privateDnsZoneResourceIds'), createArray())]"
+                    "value": "[tryGet(parameters('privateDnsZoneGroup'), 'name')]"
                   },
                   "privateEndpointName": {
                     "value": "[parameters('name')]"
+                  },
+                  "privateDnsZoneConfigs": {
+                    "value": "[parameters('privateDnsZoneGroup').privateDnsZoneGroupConfigs]"
                   }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "15263454436186512874"
+                      "templateHash": "5805178546717255803"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
                     "owner": "Azure/module-maintainers"
+                  },
+                  "definitions": {
+                    "privateDnsZoneGroupConfigType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of the private DNS zone group config."
+                          }
+                        },
+                        "privateDnsZoneResourceId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The resource id of the private DNS zone."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true
+                      }
+                    }
                   },
                   "parameters": {
                     "privateEndpointName": {
@@ -1693,12 +1774,15 @@
                         "description": "Conditional. The name of the parent private endpoint. Required if the template is used in a standalone deployment."
                       }
                     },
-                    "privateDNSResourceIds": {
+                    "privateDnsZoneConfigs": {
                       "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/privateDnsZoneGroupConfigType"
+                      },
                       "minLength": 1,
                       "maxLength": 5,
                       "metadata": {
-                        "description": "Required. Array of private DNS zone resource IDs. A DNS zone group can support up to 5 DNS zones."
+                        "description": "Required. Array of private DNS zone configurations of the private DNS zone group. A DNS zone group can support up to 5 DNS zones."
                       }
                     },
                     "name": {
@@ -1712,27 +1796,36 @@
                   "variables": {
                     "copy": [
                       {
-                        "name": "privateDnsZoneConfigs",
-                        "count": "[length(parameters('privateDNSResourceIds'))]",
+                        "name": "privateDnsZoneConfigsVar",
+                        "count": "[length(parameters('privateDnsZoneConfigs'))]",
                         "input": {
-                          "name": "[last(split(parameters('privateDNSResourceIds')[copyIndex('privateDnsZoneConfigs')], '/'))]",
+                          "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId, '/')))]",
                           "properties": {
-                            "privateDnsZoneId": "[parameters('privateDNSResourceIds')[copyIndex('privateDnsZoneConfigs')]]"
+                            "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId]"
                           }
                         }
                       }
                     ]
                   },
-                  "resources": [
-                    {
+                  "resources": {
+                    "privateEndpoint": {
+                      "existing": true,
+                      "type": "Microsoft.Network/privateEndpoints",
+                      "apiVersion": "2023-11-01",
+                      "name": "[parameters('privateEndpointName')]"
+                    },
+                    "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
                       "apiVersion": "2023-11-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
-                        "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigs')]"
-                      }
+                        "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
+                      },
+                      "dependsOn": [
+                        "privateEndpoint"
+                      ]
                     }
-                  ],
+                  },
                   "outputs": {
                     "name": {
                       "type": "string",
@@ -1798,6 +1891,13 @@
                 "description": "The custom DNS configurations of the private endpoint."
               },
               "value": "[reference('privateEndpoint').customDnsConfigs]"
+            },
+            "networkInterfaceIds": {
+              "type": "array",
+              "metadata": {
+                "description": "The IDs of the network interfaces associated with the private endpoint."
+              },
+              "value": "[reference('privateEndpoint').networkInterfaces]"
             },
             "groupId": {
               "type": "string",
@@ -2166,7 +2266,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "6152214765227449988"
+              "templateHash": "17077763197163073998"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service.",
@@ -2564,7 +2664,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "2376441074312126168"
+                      "templateHash": "1020003258393866601"
                     },
                     "name": "Storage Account Blob Containers",
                     "description": "This module deploys a Storage Account Blob Container.",
@@ -2747,7 +2847,7 @@
                       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
                       "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
-                      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
                       "Storage Account Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
                       "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
                       "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
@@ -3026,7 +3126,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "11112322068652007329"
+              "templateHash": "1933197013743223154"
             },
             "name": "Storage Account File Share Services",
             "description": "This module deploys a Storage Account File Share Service.",
@@ -3307,7 +3407,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "7774942141784896900"
+                      "templateHash": "13477688809575027800"
                     },
                     "name": "Storage Account File Shares",
                     "description": "This module deploys a Storage Account File Share.",
@@ -3514,7 +3614,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.29.47.4906",
-                              "templateHash": "17818484349715313082"
+                              "templateHash": "10820882302387746924"
                             }
                           },
                           "parameters": {
@@ -3637,7 +3737,7 @@
                               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
                               "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
-                              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
                               "Storage Account Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
                               "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
                               "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
@@ -3790,7 +3890,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "11962188257977966881"
+              "templateHash": "9552908737955027812"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service.",
@@ -4035,7 +4135,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "18160215842105253661"
+                      "templateHash": "1992900679572007532"
                     },
                     "name": "Storage Account Queues",
                     "description": "This module deploys a Storage Account Queue.",
@@ -4157,7 +4257,7 @@
                       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
                       "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
-                      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
                       "Storage Account Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
                       "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
                       "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
@@ -4306,7 +4406,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "11825608650296439803"
+              "templateHash": "15143318143658591417"
             },
             "name": "Storage Account Table Services",
             "description": "This module deploys a Storage Account Table Service.",
@@ -4548,7 +4648,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "16189309416113928106"
+                      "templateHash": "16017327978473583176"
                     },
                     "name": "Storage Account Table",
                     "description": "This module deploys a Storage Account Table.",
@@ -4663,7 +4763,7 @@
                       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
                       "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
-                      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
                       "Storage Account Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
                       "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
                       "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
@@ -4795,7 +4895,7 @@
             "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1'), createArray(createObject('name', parameters('secretsExportConfiguration').accessKey1, 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2022-09-01').keys[0].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString1'), createArray(createObject('name', parameters('secretsExportConfiguration').connectionString1, 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2022-09-01').keys[0]))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2'), createArray(createObject('name', parameters('secretsExportConfiguration').accessKey2, 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2022-09-01').keys[1].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString2'), createArray(createObject('name', parameters('secretsExportConfiguration').connectionString2, 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2022-09-01').keys[1]))), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1'), createArray(createObject('name', parameters('secretsExportConfiguration').accessKey1, 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2022-09-01').keys[0].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString1'), createArray(createObject('name', parameters('secretsExportConfiguration').connectionString1, 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2022-09-01').keys[0].value))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2'), createArray(createObject('name', parameters('secretsExportConfiguration').accessKey2, 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2022-09-01').keys[1].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString2'), createArray(createObject('name', parameters('secretsExportConfiguration').connectionString2, 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2022-09-01').keys[1].value))), createArray()))]"
           }
         },
         "template": {
@@ -4962,6 +5062,22 @@
         "description": "All service endpoints of the deployed storage account, Note Standard_LRS and Standard_ZRS accounts only have a blob service endpoint."
       },
       "value": "[reference('storageAccount').primaryEndpoints]"
+    },
+    "privateEndpoints": {
+      "type": "array",
+      "metadata": {
+        "description": "The private endpoints of the Storage Account."
+      },
+      "copy": {
+        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "input": {
+          "name": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
+          "groupId": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
+          "customDnsConfig": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
+          "networkInterfaceIds": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
+        }
+      }
     },
     "exportedSecrets": {
       "$ref": "#/definitions/secretsOutputType",

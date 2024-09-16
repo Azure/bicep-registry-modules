@@ -8,7 +8,6 @@ This module deploys an Azure Virtual Desktop Application Group.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -363,7 +362,6 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -610,6 +608,29 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Owner'`
+  - `'Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+  - `'Application Group Contributor'`
+  - `'Desktop Virtualization Application Group Contributor'`
+  - `'Desktop Virtualization Application Group Reader'`
+  - `'Desktop Virtualization Contributor'`
+  - `'Desktop Virtualization Host Pool Contributor'`
+  - `'Desktop Virtualization Host Pool Reader'`
+  - `'Desktop Virtualization Power On Off Contributor'`
+  - `'Desktop Virtualization Reader'`
+  - `'Desktop Virtualization Session Host Operator'`
+  - `'Desktop Virtualization User'`
+  - `'Desktop Virtualization User Session Operator'`
+  - `'Desktop Virtualization Virtual Machine Contributor'`
+  - `'Desktop Virtualization Workspace Contributor'`
+  - `'Desktop Virtualization Workspace Reader'`
+  - `'Managed Application Contributor Role'`
+  - `'Managed Application Operator Role'`
+  - `'Managed Applications Reader'`
 
 **Required parameters**
 
@@ -708,7 +729,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -717,10 +737,6 @@ Tags of the resource.
 | `name` | string | The name of the scaling plan. |
 | `resourceGroupName` | string | The name of the resource group the scaling plan was created in. |
 | `resourceId` | string | The resource ID of the scaling plan. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -76,7 +76,6 @@ module testDeployment '../../../main.bicep' = [
         capacity: 16
       }
       premiumMessagingPartitions: 1
-      zoneRedundant: true
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
@@ -256,9 +255,13 @@ module testDeployment '../../../main.bicep' = [
           name: 'myPrivateEndpoint'
           privateLinkServiceConnectionName: 'customLinkName'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           tags: {
             'hidden-title': 'This is visible in the resource name'
             Environment: 'Non-Prod'
@@ -285,9 +288,13 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
         }
       ]
       managedIdentities: {

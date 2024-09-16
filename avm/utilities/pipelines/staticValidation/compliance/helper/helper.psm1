@@ -221,7 +221,10 @@ function Resolve-ReadMeParameterList {
 
     $parameterSet = @{}
 
-    if (-not $Properties) {
+    if (-not $Properties -and -not $TemplateFileContent.parameters) {
+        # no Parameters / properties on this level or in the template
+        return $parameterSet
+    } elseif (-not $Properties) {
         # Top-level invocation
         # Add name as property for later reference
         $TemplateFileContent.parameters.Keys | ForEach-Object { $TemplateFileContent.parameters[$_]['name'] = $_ }

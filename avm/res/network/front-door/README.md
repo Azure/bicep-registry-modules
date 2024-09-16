@@ -13,7 +13,6 @@ This module deploys an Azure Front Door.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -861,7 +860,6 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1159,6 +1157,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1265,7 +1270,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1273,10 +1277,6 @@ Resource tags.
 | `name` | string | The name of the front door. |
 | `resourceGroupName` | string | The resource group the front door was deployed into. |
 | `resourceId` | string | The resource ID of the front door. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
