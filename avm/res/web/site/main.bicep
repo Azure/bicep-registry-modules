@@ -364,6 +364,7 @@ module app_slots 'slot/main.bicep' = [
       diagnosticSettings: slot.?diagnosticSettings
       roleAssignments: slot.?roleAssignments
       appSettingsKeyValuePairs: slot.?appSettingsKeyValuePairs ?? appSettingsKeyValuePairs
+      retainExistingSettings: slot.?retainExistingSettings ?? retainExistingSettings
       basicPublishingCredentialsPolicies: slot.?basicPublishingCredentialsPolicies ?? basicPublishingCredentialsPolicies
       lock: slot.?lock ?? lock
       privateEndpoints: slot.?privateEndpoints ?? []
