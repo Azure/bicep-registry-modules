@@ -101,7 +101,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource frontDoor 'Microsoft.Network/frontDoors@2020-05-01' = {
+resource frontDoor 'Microsoft.Network/frontDoors@2021-06-01' = {
   name: name
   location: 'global'
   tags: tags
@@ -184,6 +184,11 @@ output resourceId string = frontDoor.id
 
 @description('The resource group the front door was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The host name of the front door endpoint.')
+output endpointHostNames array = [
+  for (endpoint, index) in (frontendEndpoints ?? []): frontDoor.properties.frontendEndpoints[index].properties.hostName
+]
 
 // =============== //
 //   Definitions   //
