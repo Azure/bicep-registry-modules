@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "11010234208010675398"
+      "version": "0.29.47.4906",
+      "templateHash": "2409780926109914899"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -445,8 +445,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "3306118610933947345"
+              "version": "0.29.47.4906",
+              "templateHash": "3759867594724381121"
             }
           },
           "parameters": {
@@ -652,8 +652,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "15097801658394168144"
+              "version": "0.29.47.4906",
+              "templateHash": "10394721304346895394"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -992,7 +992,7 @@
             "virtualWanHubName": "[if(not(empty(variables('virtualHubResourceIdChecked'))), split(variables('virtualHubResourceIdChecked'), '/')[8], '')]",
             "virtualWanHubSubscriptionId": "[if(not(empty(variables('virtualHubResourceIdChecked'))), split(variables('virtualHubResourceIdChecked'), '/')[2], '')]",
             "virtualWanHubResourceGroupName": "[if(not(empty(variables('virtualHubResourceIdChecked'))), split(variables('virtualHubResourceIdChecked'), '/')[4], '')]",
-            "virtualWanHubConnectionName": "[format('vhc-{0}', guid(variables('virtualHubResourceIdChecked'), parameters('virtualNetworkName'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), parameters('subscriptionId')))]",
+            "virtualWanHubConnectionName": "[format('vhc-{0}-{1}', parameters('virtualNetworkName'), substring(guid(variables('virtualHubResourceIdChecked'), parameters('virtualNetworkName'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), parameters('subscriptionId')), 0, 5))]",
             "virtualWanHubConnectionAssociatedRouteTable": "[if(not(empty(parameters('virtualNetworkVwanAssociatedRouteTableResourceId'))), parameters('virtualNetworkVwanAssociatedRouteTableResourceId'), format('{0}/hubRouteTables/defaultRouteTable', variables('virtualHubResourceIdChecked')))]",
             "virutalWanHubDefaultRouteTableId": {
               "id": "[format('{0}/hubRouteTables/defaultRouteTable', variables('virtualHubResourceIdChecked'))]"
@@ -1028,8 +1028,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "9313475896614087193"
+                      "version": "0.29.47.4906",
+                      "templateHash": "13961984943235030681"
                     }
                   },
                   "parameters": {
@@ -1086,8 +1086,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "15181721731905574940"
+                      "version": "0.29.47.4906",
+                      "templateHash": "6592820624705341105"
                     }
                   },
                   "parameters": {
@@ -1146,8 +1146,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.28.1.47646",
-                              "templateHash": "2065450289597496523"
+                              "version": "0.29.47.4906",
+                              "templateHash": "3589833223987550845"
                             }
                           },
                           "parameters": {
@@ -1202,8 +1202,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "4876221897054252048"
+                                      "version": "0.29.47.4906",
+                                      "templateHash": "15687156082548283745"
                                     }
                                   },
                                   "parameters": {
@@ -1222,7 +1222,7 @@
                                       "metadata": {
                                         "description": "Tags currently applied to the subscription level"
                                       },
-                                      "value": "[if(contains(reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]"
+                                      "value": "[coalesce(tryGet(reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), createObject())]"
                                     }
                                   }
                                 }
@@ -1280,8 +1280,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.28.1.47646",
-                              "templateHash": "10772346649778391302"
+                              "version": "0.29.47.4906",
+                              "templateHash": "2885361202003966670"
                             }
                           },
                           "parameters": {
@@ -1335,8 +1335,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "943757300004366392"
+                                      "version": "0.29.47.4906",
+                                      "templateHash": "4327209924100539632"
                                     }
                                   },
                                   "parameters": {
@@ -1355,7 +1355,7 @@
                                       "metadata": {
                                         "description": "Tags currently applied to the subscription level"
                                       },
-                                      "value": "[if(contains(reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]"
+                                      "value": "[coalesce(tryGet(reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), createObject())]"
                                     }
                                   }
                                 }
@@ -1915,8 +1915,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "15181721731905574940"
+                      "version": "0.29.47.4906",
+                      "templateHash": "6592820624705341105"
                     }
                   },
                   "parameters": {
@@ -1975,8 +1975,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.28.1.47646",
-                              "templateHash": "2065450289597496523"
+                              "version": "0.29.47.4906",
+                              "templateHash": "3589833223987550845"
                             }
                           },
                           "parameters": {
@@ -2031,8 +2031,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "4876221897054252048"
+                                      "version": "0.29.47.4906",
+                                      "templateHash": "15687156082548283745"
                                     }
                                   },
                                   "parameters": {
@@ -2051,7 +2051,7 @@
                                       "metadata": {
                                         "description": "Tags currently applied to the subscription level"
                                       },
-                                      "value": "[if(contains(reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]"
+                                      "value": "[coalesce(tryGet(reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), createObject())]"
                                     }
                                   }
                                 }
@@ -2109,8 +2109,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.28.1.47646",
-                              "templateHash": "10772346649778391302"
+                              "version": "0.29.47.4906",
+                              "templateHash": "2885361202003966670"
                             }
                           },
                           "parameters": {
@@ -2164,8 +2164,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.28.1.47646",
-                                      "templateHash": "943757300004366392"
+                                      "version": "0.29.47.4906",
+                                      "templateHash": "4327209924100539632"
                                     }
                                   },
                                   "parameters": {
@@ -2184,7 +2184,7 @@
                                       "metadata": {
                                         "description": "Tags currently applied to the subscription level"
                                       },
-                                      "value": "[if(contains(reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]"
+                                      "value": "[coalesce(tryGet(reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), createObject())]"
                                     }
                                   }
                                 }
@@ -3487,8 +3487,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "15855049387961116888"
+                      "version": "0.29.47.4906",
+                      "templateHash": "3320668363507906643"
                     }
                   },
                   "parameters": {

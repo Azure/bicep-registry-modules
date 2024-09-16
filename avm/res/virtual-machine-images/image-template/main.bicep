@@ -25,11 +25,11 @@ param subnetResourceId string?
 @description('Required. Image source definition in object format.')
 param imageSource object
 
-@description('Required. Customization steps to be run when building the VM image.')
-param customizationSteps array
+@description('Optional. Customization steps to be run when building the VM image.')
+param customizationSteps array?
 
 @description('Optional. Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.</p>If this field is empty, a resource group with a random name will be created.</p>If the resource group specified in this field doesn\'t exist, it will be created with the same name.</p>If the resource group specified exists, it must be empty and in the same region as the image template.</p>The resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn\'t exist,</p>but if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain.')
-param stagingResourceGroup string?
+param stagingResourceGroupResourceId string?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -78,7 +78,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -138,7 +138,7 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2023-07-01
     }
     source: imageSource
     customize: customizationSteps
-    stagingResourceGroup: stagingResourceGroup
+    stagingResourceGroup: stagingResourceGroupResourceId
     distribute: [
       for distribution in distributions: union(
         {

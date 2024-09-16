@@ -149,6 +149,8 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
       target: 450
       thresholdValue100DisplayOnChart: 'Enabled'
       thresholdValue100SendNotificationWhenExceeded: 'Enabled'
+      thresholdValue125DisplayOnChart: 'Disabled'
+      thresholdValue75DisplayOnChart: 'Enabled'
     }
     disableAutoUpgradeCseMinorVersion: true
     encryptionDiskEncryptionSetId: '<encryptionDiskEncryptionSetId>'
@@ -320,6 +322,11 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
             labSubnetName: '<labSubnetName>'
             resourceId: '<resourceId>'
           }
+          {
+            allowPublicIp: 'Deny'
+            labSubnetName: '<labSubnetName>'
+            resourceId: '<resourceId>'
+          }
         ]
         description: 'lab virtual network description'
         externalProviderResourceId: '<externalProviderResourceId>'
@@ -342,6 +349,12 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
             }
             useInVmCreationPermission: 'Allow'
             usePublicIpAddressPermission: 'Allow'
+          }
+          {
+            labSubnetName: '<labSubnetName>'
+            resourceId: '<resourceId>'
+            useInVmCreationPermission: 'Deny'
+            usePublicIpAddressPermission: 'Deny'
           }
         ]
       }
@@ -425,7 +438,9 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
         "status": "Enabled",
         "target": 450,
         "thresholdValue100DisplayOnChart": "Enabled",
-        "thresholdValue100SendNotificationWhenExceeded": "Enabled"
+        "thresholdValue100SendNotificationWhenExceeded": "Enabled",
+        "thresholdValue125DisplayOnChart": "Disabled",
+        "thresholdValue75DisplayOnChart": "Enabled"
       }
     },
     "disableAutoUpgradeCseMinorVersion": {
@@ -634,6 +649,11 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
               "allowPublicIp": "Allow",
               "labSubnetName": "<labSubnetName>",
               "resourceId": "<resourceId>"
+            },
+            {
+              "allowPublicIp": "Deny",
+              "labSubnetName": "<labSubnetName>",
+              "resourceId": "<resourceId>"
             }
           ],
           "description": "lab virtual network description",
@@ -657,6 +677,12 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
               },
               "useInVmCreationPermission": "Allow",
               "usePublicIpAddressPermission": "Allow"
+            },
+            {
+              "labSubnetName": "<labSubnetName>",
+              "resourceId": "<resourceId>",
+              "useInVmCreationPermission": "Deny",
+              "usePublicIpAddressPermission": "Deny"
             }
           ]
         }
@@ -1564,6 +1590,15 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DevTest Labs User'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Resource Policy Contributor'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+  - `'Virtual Machine Contributor'`
 
 **Required parameters**
 
@@ -2026,7 +2061,7 @@ The resource ID of the subnet.
 
 The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny)).
 
-- Required: Yes
+- Required: No
 - Type: object
 
 **Required parameters**

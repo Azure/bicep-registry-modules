@@ -818,6 +818,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Data Operator for Managed Disks'`
+  - `'Disk Backup Reader'`
+  - `'Disk Pool Operator'`
+  - `'Disk Restore Operator'`
+  - `'Disk Snapshot Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

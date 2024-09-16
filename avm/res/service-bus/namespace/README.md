@@ -59,11 +59,12 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   params: {
     // Required parameters
     name: 'sbnmin001'
-    skuObject: {
-      name: 'Basic'
-    }
     // Non-required parameters
     location: '<location>'
+    skuObject: {
+      capacity: 2
+      name: 'Premium'
+    }
   }
 }
 ```
@@ -84,14 +85,15 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     "name": {
       "value": "sbnmin001"
     },
-    "skuObject": {
-      "value": {
-        "name": "Basic"
-      }
-    },
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "skuObject": {
+      "value": {
+        "capacity": 2,
+        "name": "Premium"
+      }
     }
   }
 }
@@ -115,10 +117,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   params: {
     // Required parameters
     name: 'sbnencr001'
-    skuObject: {
-      capacity: 1
-      name: 'Premium'
-    }
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -131,6 +129,10 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
       ]
+    }
+    skuObject: {
+      capacity: 1
+      name: 'Premium'
     }
   }
 }
@@ -152,12 +154,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     "name": {
       "value": "sbnencr001"
     },
-    "skuObject": {
-      "value": {
-        "capacity": 1,
-        "name": "Premium"
-      }
-    },
     // Non-required parameters
     "customerManagedKey": {
       "value": {
@@ -175,6 +171,12 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         "userAssignedResourcesIds": [
           "<managedIdentityResourceId>"
         ]
+      }
+    },
+    "skuObject": {
+      "value": {
+        "capacity": 1,
+        "name": "Premium"
       }
     }
   }
@@ -199,10 +201,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   params: {
     // Required parameters
     name: 'sbnmax001'
-    skuObject: {
-      capacity: 16
-      name: 'Premium'
-    }
     // Non-required parameters
     authorizationRules: [
       {
@@ -382,6 +380,10 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    skuObject: {
+      capacity: 16
+      name: 'Premium'
+    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -431,7 +433,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         ]
       }
     ]
-    zoneRedundant: true
   }
 }
 ```
@@ -451,12 +452,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     // Required parameters
     "name": {
       "value": "sbnmax001"
-    },
-    "skuObject": {
-      "value": {
-        "capacity": 16,
-        "name": "Premium"
-      }
     },
     // Non-required parameters
     "authorizationRules": {
@@ -663,6 +658,12 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         }
       ]
     },
+    "skuObject": {
+      "value": {
+        "capacity": 16,
+        "name": "Premium"
+      }
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -715,9 +716,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           ]
         }
       ]
-    },
-    "zoneRedundant": {
-      "value": true
     }
   }
 }
@@ -741,10 +739,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   params: {
     // Required parameters
     name: 'sbnwaf001'
-    skuObject: {
-      capacity: 2
-      name: 'Premium'
-    }
     // Non-required parameters
     authorizationRules: [
       {
@@ -850,6 +844,10 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       }
     ]
     roleAssignments: []
+    skuObject: {
+      capacity: 2
+      name: 'Premium'
+    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -878,7 +876,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         roleAssignments: []
       }
     ]
-    zoneRedundant: true
   }
 }
 ```
@@ -898,12 +895,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     // Required parameters
     "name": {
       "value": "sbnwaf001"
-    },
-    "skuObject": {
-      "value": {
-        "capacity": 2,
-        "name": "Premium"
-      }
     },
     // Non-required parameters
     "authorizationRules": {
@@ -1036,6 +1027,12 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     "roleAssignments": {
       "value": []
     },
+    "skuObject": {
+      "value": {
+        "capacity": 2,
+        "name": "Premium"
+      }
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -1067,9 +1064,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           "roleAssignments": []
         }
       ]
-    },
-    "zoneRedundant": {
-      "value": true
     }
   }
 }
@@ -1085,7 +1079,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Service Bus Namespace. |
-| [`skuObject`](#parameter-skuobject) | object | The SKU of the Service Bus Namespace. |
+| [`skuObject`](#parameter-skuobject) | object | The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default. |
 
 **Optional parameters**
 
@@ -1112,7 +1106,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`topics`](#parameter-topics) | array | The topics to create in the service bus namespace. |
-| [`zoneRedundant`](#parameter-zoneredundant) | bool | Enabling this property creates a Premium Service Bus Namespace in regions supported availability zones. |
+| [`zoneRedundant`](#parameter-zoneredundant) | bool | Enabled by default in order to align with resiliency best practices, thus requires Premium SKU. |
 
 ### Parameter: `name`
 
@@ -1123,10 +1117,17 @@ Name of the Service Bus Namespace.
 
 ### Parameter: `skuObject`
 
-The SKU of the Service Bus Namespace.
+The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default.
 
-- Required: Yes
+- Required: No
 - Type: object
+- Default:
+  ```Bicep
+  {
+      capacity: 2
+      name: 'Premium'
+  }
+  ```
 
 **Required parameters**
 
@@ -1999,6 +2000,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -2353,6 +2365,15 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Azure Service Bus Data Owner'`
+  - `'Azure Service Bus Data Receiver'`
+  - `'Azure Service Bus Data Sender'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2479,6 +2500,15 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Azure Service Bus Data Owner'`
+  - `'Azure Service Bus Data Receiver'`
+  - `'Azure Service Bus Data Sender'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2763,6 +2793,15 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Azure Service Bus Data Owner'`
+  - `'Azure Service Bus Data Receiver'`
+  - `'Azure Service Bus Data Sender'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -3069,11 +3108,11 @@ Value that indicates whether the topic supports ordering.
 
 ### Parameter: `zoneRedundant`
 
-Enabling this property creates a Premium Service Bus Namespace in regions supported availability zones.
+Enabled by default in order to align with resiliency best practices, thus requires Premium SKU.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ## Outputs
 

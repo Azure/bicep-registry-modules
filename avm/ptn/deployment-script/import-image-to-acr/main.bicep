@@ -28,9 +28,20 @@ param managedIdentityName string?
 
 @description('Required. A fully qualified image name to import.')
 @metadata({
-  example: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+  example: [
+    'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+    'docker.io/library/image:latest'
+    'docker.io/hello-world:latest'
+  ]
 })
 param image string
+
+@description('Optional. The username for the source registry. Required if the source registry is private, or to logon to the public docker registry.')
+param sourceRegistryUsername string = ''
+
+@description('Optional. The password for the source registry. Required if the source registry is private, or to logon to the public docker registry.')
+@secure()
+param sourceRegistryPassword string = ''
 
 @description('Optional. The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline.')
 @metadata({
@@ -147,7 +158,7 @@ resource acrRoleAssignmentNewManagedIdentity 'Microsoft.Authorization/roleAssign
   }
 }
 
-module imageImport 'br/public:avm/res/resources/deployment-script:0.2.3' = {
+module imageImport 'br/public:avm/res/resources/deployment-script:0.4.0' = {
   name: name ?? 'ACR-Import-${last(split(replace(image,':','-'),'/'))}'
   scope: resourceGroup()
   params: {
@@ -159,41 +170,20 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.2.3' = {
       : { userAssignedResourcesIds: [newManagedIdentity.id] }
     kind: 'AzureCLI'
     runOnce: runOnce
-    azCliVersion: '2.61.0' // available tags are listed here: https://mcr.microsoft.com/v2/azure-cli/tags/list
+    azCliVersion: '2.63.0' // available tags are listed here: https://mcr.microsoft.com/v2/azure-cli/tags/list
     timeout: 'PT30M' // set timeout to 30m
     retentionInterval: 'PT1H' // cleanup after 1h
-    environmentVariables: {
-      secureList: [
-        {
-          name: 'acrName'
-          value: acrName
-        }
-        {
-          name: 'imageName'
-          value: image
-        }
-        {
-          name: 'newImageName'
-          value: newImageName
-        }
-        {
-          name: 'overwriteExistingImage'
-          value: toLower(string(overwriteExistingImage))
-        }
-        {
-          name: 'initialDelay'
-          value: '${string(initialScriptDelay)}s'
-        }
-        {
-          name: 'retryMax'
-          value: string(retryMax)
-        }
-        {
-          name: 'retrySleep'
-          value: '5s'
-        }
-      ]
-    }
+    environmentVariables: [
+      { name: 'acrName', value: acrName }
+      { name: 'imageName', value: image }
+      { name: 'newImageName', value: newImageName }
+      { name: 'overwriteExistingImage', value: toLower(string(overwriteExistingImage)) }
+      { name: 'initialDelay', value: '${string(initialScriptDelay)}s' }
+      { name: 'retryMax', value: string(retryMax) }
+      { name: 'retrySleep', value: '5s' }
+      { name: 'sourceRegistryUsername', value: sourceRegistryUsername }
+      { name: 'sourceRegistryPassword', secureValue: sourceRegistryPassword }
+    ]
     cleanupPreference: cleanupPreference
     storageAccountResourceId: storageAccountResourceId
     containerGroupName: '${resourceGroup().name}-infrastructure'
@@ -210,9 +200,17 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.2.3' = {
     do
       echo "Importing Image ($retryLoopCount): $imageName into ACR: $acrName\n"
       if [ $overwriteExistingImage = 'true' ]; then
-        az acr import -n $acrName --source $imageName --image $newImageName --force
+        if [ -n "$sourceRegistryUsername" ] && [ -n "$sourceRegistryPassword" ]; then
+          az acr import -n $acrName --source $imageName --image $newImageName --force --username $sourceRegistryUsername --password $sourceRegistryPassword
+        else
+          az acr import -n $acrName --source $imageName --image $newImageName --force
+        fi
       else
-        az acr import -n $acrName --source $imageName --image $newImageName
+        if [ -n "$sourceRegistryUsername" ] && [ -n "$sourceRegistryPassword" ]; then
+          az acr import -n $acrName --source $imageName --image $newImageName --username $sourceRegistryUsername --password $sourceRegistryPassword
+        else
+          az acr import -n $acrName --source $imageName --image $newImageName
+        fi
       fi
 
       sleep $retrySleep

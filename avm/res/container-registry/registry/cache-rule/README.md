@@ -28,7 +28,7 @@ Cache for Azure Container Registry (Preview) feature allows users to cache conta
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the cache rule. Will be dereived from the source repository name if not defined. |
+| [`name`](#parameter-name) | string | The name of the cache rule. Will be derived from the source repository name if not defined. |
 | [`targetRepository`](#parameter-targetrepository) | string | Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}. |
 
 ### Parameter: `credentialSetResourceId`
@@ -54,7 +54,7 @@ Source repository pulled from upstream.
 
 ### Parameter: `name`
 
-The name of the cache rule. Will be dereived from the source repository name if not defined.
+The name of the cache rule. Will be derived from the source repository name if not defined.
 
 - Required: No
 - Type: string
