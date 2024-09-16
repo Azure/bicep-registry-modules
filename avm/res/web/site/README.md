@@ -541,6 +541,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
       FUNCTIONS_WORKER_RUNTIME: 'dotnet'
     }
     location: '<location>'
+    retainExistingSettings: true
   }
 }
 ```
@@ -577,6 +578,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
     },
     "location": {
       "value": "<location>"
+    },
+    "retainExistingSettings": {
+      "value": true
     }
   }
 }
@@ -2193,6 +2197,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`redundancyMode`](#parameter-redundancymode) | string | Site redundancy mode. |
+| [`retainExistingSettings`](#parameter-retainexistingsettings) | bool | Retain existing app settings. If set to true, existing app settings which are NOT defined in the Bicep file will be retained. Settings which are defined in the Bicep file will be updated irrespective of this parameter. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scmSiteAlsoStopped`](#parameter-scmsitealsostopped) | bool | Stop SCM (KUDU) site when the app is stopped. |
 | [`siteConfig`](#parameter-siteconfig) | object | The site config object. |
@@ -3064,6 +3069,14 @@ Site redundancy mode.
     'None'
   ]
   ```
+
+### Parameter: `retainExistingSettings`
+
+Retain existing app settings. If set to true, existing app settings which are NOT defined in the Bicep file will be retained. Settings which are defined in the Bicep file will be updated irrespective of this parameter.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `roleAssignments`
 
