@@ -245,7 +245,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource app 'Microsoft.Web/sites@2022-09-01' = {
+resource app 'Microsoft.Web/sites@2023-12-01' = {
   name: name
   location: location
   kind: kind
