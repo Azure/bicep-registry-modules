@@ -38,7 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     localNetworkGatewayName: 'dep-${namePrefix}-lng-${serviceShort}'
-    existingPublicIPName: 'dep-${namePrefix}-existPip1-${serviceShort}'
+    existingPublicIPName: 'dep-${namePrefix}-pip-exist1'
   }
 }
 

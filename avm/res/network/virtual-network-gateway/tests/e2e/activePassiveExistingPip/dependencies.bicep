@@ -71,3 +71,4 @@ output localNetworkGatewayResourceId string = localNetworkGateway.id
 
 @description('The resource ID of the existing Public IP.')
 output existingPublicIpResourceId string = existingPublicIp.id
+
