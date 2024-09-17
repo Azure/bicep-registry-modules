@@ -100,6 +100,9 @@ param privateEndpoints privateEndpointType
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
+@description('Optional. Allow Azure services and resources to access this workspace.')
+param trustedServiceBypassEnabled bool = false
+
 // Variables
 
 var cmkUserAssignedIdentityAsArray = !empty(customerManagedKey.?userAssignedIdentityResourceId ?? [])
@@ -242,6 +245,7 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
     sqlAdministratorLogin: sqlAdministratorLogin
     sqlAdministratorLoginPassword: !empty(sqlAdministratorLoginPassword) ? sqlAdministratorLoginPassword : null
     workspaceRepositoryConfiguration: workspaceRepositoryConfiguration
+    trustedServiceBypassEnabled: trustedServiceBypassEnabled
   }
 }
 
