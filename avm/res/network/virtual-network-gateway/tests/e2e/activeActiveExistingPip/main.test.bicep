@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'VPN Active Active without BGP settings'
+metadata name = 'VPN Active Active without BGP settings using two existent Public IPs'
 metadata description = 'This instance deploys the module with the VPN Active Active without BGP settings.'
 
 // ========== //
