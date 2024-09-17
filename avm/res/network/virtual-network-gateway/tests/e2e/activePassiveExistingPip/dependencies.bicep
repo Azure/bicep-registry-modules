@@ -7,6 +7,9 @@ param virtualNetworkName string
 @description('Required. The name of the Local Network Gateway to create.')
 param localNetworkGatewayName string
 
+@description('Required. The name of the Public IP to create.')
+param existingPublicIPName string
+
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
@@ -42,12 +45,22 @@ resource localNetworkGateway 'Microsoft.Network/localNetworkGateways@2023-04-01'
   }
 }
 
-resource existingPublicIp 'Microsoft.Network/publicIPAddresses@2024-01-01' = {
-  name: 'existing-pip1'
+
+resource existingPublicIp 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
+  name: existingPublicIPName
   location: location
+  sku: {
+    name: 'Standard'
+    tier: 'Regional'
+  }
   properties: {
     publicIPAllocationMethod: 'Static'
   }
+  zones: [
+    '1'
+    '2'
+    '3'
+  ]
 }
 
 @description('The resource ID of the created Virtual Network.')
