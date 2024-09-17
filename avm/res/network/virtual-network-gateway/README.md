@@ -673,14 +673,14 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       ]
     }
     gatewayType: 'Vpn'
-    name: 'nvgapb001'
+    name: 'nvgapep001'
     skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
     disableIPSecReplayProtection: true
     domainNameLabel: [
-      'dm-nvgapb'
+      'dm-nvgapep'
     ]
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
@@ -725,7 +725,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "Vpn"
     },
     "name": {
-      "value": "nvgapb001"
+      "value": "nvgapep001"
     },
     "skuName": {
       "value": "VpnGw2AZ"
@@ -742,7 +742,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "domainNameLabel": {
       "value": [
-        "dm-nvgapb"
+        "dm-nvgapep"
       ]
     },
     "enableBgpRouteTranslationForNat": {
