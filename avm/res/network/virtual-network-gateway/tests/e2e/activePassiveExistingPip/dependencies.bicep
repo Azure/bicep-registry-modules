@@ -49,18 +49,12 @@ resource localNetworkGateway 'Microsoft.Network/localNetworkGateways@2023-04-01'
 resource existingPublicIp 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   name: existingPublicIPName
   location: location
-  sku: {
-    name: 'Standard'
-    tier: 'Regional'
-  }
   properties: {
     publicIPAllocationMethod: 'Static'
-  }
-  zones: [
-    '1'
-    '2'
-    '3'
-  ]
+  }  
+  sku: {
+    name: 'Standard'
+  }  
 }
 
 @description('The resource ID of the created Virtual Network.')
