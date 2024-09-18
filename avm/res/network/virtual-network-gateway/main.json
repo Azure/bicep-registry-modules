@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.3.12046",
-      "templateHash": "4820588632880875791"
+      "templateHash": "349675567299213902"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -251,18 +251,18 @@
             "activeActiveNoBgp"
           ]
         },
-        "existingActivePipResourceId": {
+        "existingSecondPipResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the active-active configuration. If empty, then the secondary Public IP that is created as part of this module will be applied to the Virtual Network Gateway."
+            "description": "Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then the secondary Public IP that is created as part of this module will be applied to the Virtual Network Gateway."
           }
         },
         "secondPipName": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the active-active configuration. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix."
+            "description": "Optional. Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix."
           }
         }
       }
@@ -306,18 +306,18 @@
             "activeActiveBgp"
           ]
         },
-        "existingActivePipResourceId": {
+        "existingSecondPipResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the active-active configuration. If empty, then the secondary Public IP that is created as part of this module will be applied to the Virtual Network Gateway."
+            "description": "Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then the secondary Public IP that is created as part of this module will be applied to the Virtual Network Gateway."
           }
         },
         "secondPipName": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the active-active configuration. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix."
+            "description": "Optional. Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix."
           }
         },
         "asn": {
@@ -418,7 +418,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. DNS name(s) of the Public IP resource(s). If you enabled active-active configuration, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com."
+        "description": "Optional. DNS name(s) of the Public IP resource(s). If you enabled Active-Active mode, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com."
       }
     },
     "gatewayType": {
@@ -627,9 +627,9 @@
     "vpnTypeVar": "[if(not(variables('isExpressRoute')), parameters('vpnType'), 'PolicyBased')]",
     "isBgp": "[and(or(equals(parameters('clusterSettings').clusterMode, 'activeActiveBgp'), equals(parameters('clusterSettings').clusterMode, 'activePassiveBgp')), not(variables('isExpressRoute')))]",
     "isActiveActive": "[and(or(equals(parameters('clusterSettings').clusterMode, 'activeActiveNoBgp'), equals(parameters('clusterSettings').clusterMode, 'activeActiveBgp')), not(variables('isExpressRoute')))]",
-    "existingSecondPipResourceIdVar": "[if(variables('isActiveActive'), tryGet(parameters('clusterSettings'), 'existingActivePipResourceId'), null())]",
+    "existingSecondPipResourceIdVar": "[if(variables('isActiveActive'), tryGet(parameters('clusterSettings'), 'existingSecondPipResourceId'), null())]",
     "secondPipNameVar": "[if(variables('isActiveActive'), coalesce(tryGet(parameters('clusterSettings'), 'secondPipName'), format('{0}-pip2', parameters('name'))), null())]",
-    "arrayPipNameVar": "[if(variables('isActiveActive'), createArray(if(not(empty(parameters('existingFirstPipResourceId'))), parameters('existingFirstPipResourceId'), parameters('firstPipName')), if(not(empty(variables('existingSecondPipResourceIdVar'))), variables('existingSecondPipResourceIdVar'), variables('secondPipNameVar'))), createArray(if(not(empty(parameters('existingFirstPipResourceId'))), parameters('existingFirstPipResourceId'), parameters('firstPipName'))))]",
+    "arrayPipNameVar": "[if(variables('isActiveActive'), concat(if(not(empty(parameters('existingFirstPipResourceId'))), createArray(), createArray(parameters('firstPipName'))), if(not(empty(variables('existingSecondPipResourceIdVar'))), createArray(), createArray(variables('secondPipNameVar')))), concat(if(not(empty(parameters('existingFirstPipResourceId'))), createArray(), createArray(parameters('firstPipName')))))]",
     "bgpSettingsVar": "[if(variables('isActiveActive'), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))), createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'secondCustomBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig2', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))))]",
     "ipConfiguration": "[if(variables('isActiveActive'), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('existingFirstPipResourceId'))), parameters('existingFirstPipResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('firstPipName'))))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', if(variables('isActiveActive'), if(not(empty(variables('existingSecondPipResourceIdVar'))), variables('existingSecondPipResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('secondPipNameVar'))), if(not(empty(parameters('existingFirstPipResourceId'))), parameters('existingFirstPipResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('firstPipName')))))), 'name', 'vNetGatewayConfig2')), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('existingFirstPipResourceId'))), parameters('existingFirstPipResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('firstPipName'))))), 'name', 'vNetGatewayConfig1')))]",
     "vpnClientConfiguration": "[if(not(empty(parameters('clientRootCertData'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'vpnClientRootCertificates', createArray(createObject('name', 'RootCert1', 'properties', createObject('publicCertData', parameters('clientRootCertData')))), 'vpnClientRevokedCertificates', if(not(empty(parameters('clientRevokedCertThumbprint'))), createArray(createObject('name', 'RevokedCert1', 'properties', createObject('thumbprint', parameters('clientRevokedCertThumbprint')))), null())), if(not(empty(parameters('vpnClientAadConfiguration'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'aadTenant', parameters('vpnClientAadConfiguration').aadTenant, 'aadAudience', parameters('vpnClientAadConfiguration').aadAudience, 'aadIssuer', parameters('vpnClientAadConfiguration').aadIssuer, 'vpnAuthenticationTypes', parameters('vpnClientAadConfiguration').vpnAuthenticationTypes, 'vpnClientProtocols', parameters('vpnClientAadConfiguration').vpnClientProtocols), null()))]",
@@ -1612,7 +1612,7 @@
     "activeActive": {
       "type": "bool",
       "metadata": {
-        "description": "Shows if the virtual network gateway is configured in active-active mode."
+        "description": "Shows if the virtual network gateway is configured in Active-Active mode."
       },
       "value": "[reference('virtualNetworkGateway').activeActive]"
     },

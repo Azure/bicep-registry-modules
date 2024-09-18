@@ -30,12 +30,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/virtual-network-gateway:<version>`.
 
-- [AAD-VPN](#example-1-aad-vpn)
+- [VPN Active Active with BGP settings](#example-1-vpn-active-active-with-bgp-settings)
 - [VPN Active Active with BGP settings](#example-2-vpn-active-active-with-bgp-settings)
-- [VPN Active Active with BGP settings](#example-3-vpn-active-active-with-bgp-settings)
+- [VPN Active Active without BGP settings using two existent Public IPs](#example-3-vpn-active-active-without-bgp-settings-using-two-existent-public-ips)
 - [VPN Active Active without BGP settings](#example-4-vpn-active-active-without-bgp-settings)
 - [VPN Active Passive with BGP settings](#example-5-vpn-active-passive-with-bgp-settings)
-- [VPN Active Passive with BGP settings](#example-6-vpn-active-passive-with-bgp-settings)
+- [VPN Active Passive with BGP settings using existing Public IP](#example-6-vpn-active-passive-with-bgp-settings-using-existing-public-ip)
 - [VPN Active Passive without BGP settings](#example-7-vpn-active-passive-without-bgp-settings)
 - [Using only defaults](#example-8-using-only-defaults)
 - [ExpressRoute](#example-9-expressroute)
@@ -44,123 +44,7 @@ The following section provides usage examples for the module, which were used to
 - [VPN](#example-12-vpn)
 - [WAF-aligned](#example-13-waf-aligned)
 
-### Example 1: _AAD-VPN_
-
-This instance deploys the module with the AAD set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
-  params: {
-    // Required parameters
-    clusterSettings: {
-      clusterMode: 'activePassiveNoBgp'
-    }
-    gatewayType: 'Vpn'
-    name: 'nvgavpn001'
-    skuName: 'VpnGw2AZ'
-    vNetResourceId: '<vNetResourceId>'
-    // Non-required parameters
-    domainNameLabel: [
-      'dm-nvgavpn'
-    ]
-    location: '<location>'
-    publicIpZones: [
-      1
-      2
-      3
-    ]
-    vpnClientAadConfiguration: {
-      aadAudience: '41b23e61-6c1e-4545-b367-cd054e0ed4b4'
-      aadIssuer: '<aadIssuer>'
-      aadTenant: '<aadTenant>'
-      vpnAuthenticationTypes: [
-        'AAD'
-      ]
-      vpnClientProtocols: [
-        'OpenVPN'
-      ]
-    }
-    vpnType: 'RouteBased'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "clusterSettings": {
-      "value": {
-        "clusterMode": "activePassiveNoBgp"
-      }
-    },
-    "gatewayType": {
-      "value": "Vpn"
-    },
-    "name": {
-      "value": "nvgavpn001"
-    },
-    "skuName": {
-      "value": "VpnGw2AZ"
-    },
-    "vNetResourceId": {
-      "value": "<vNetResourceId>"
-    },
-    // Non-required parameters
-    "domainNameLabel": {
-      "value": [
-        "dm-nvgavpn"
-      ]
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "publicIpZones": {
-      "value": [
-        1,
-        2,
-        3
-      ]
-    },
-    "vpnClientAadConfiguration": {
-      "value": {
-        "aadAudience": "41b23e61-6c1e-4545-b367-cd054e0ed4b4",
-        "aadIssuer": "<aadIssuer>",
-        "aadTenant": "<aadTenant>",
-        "vpnAuthenticationTypes": [
-          "AAD"
-        ],
-        "vpnClientProtocols": [
-          "OpenVPN"
-        ]
-      }
-    },
-    "vpnType": {
-      "value": "RouteBased"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 2: _VPN Active Active with BGP settings_
+### Example 1: _VPN Active Active with BGP settings_
 
 This instance deploys the module with the VPN Active Active with BGP settings.
 
@@ -276,7 +160,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 3: _VPN Active Active with BGP settings_
+### Example 2: _VPN Active Active with BGP settings_
 
 This instance deploys the module with the VPN Active Active with APIPA BGP settings.
 
@@ -381,6 +265,128 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "enablePrivateIpAddress": {
       "value": true
+    },
+    "gatewayDefaultSiteLocalNetworkGatewayId": {
+      "value": "<gatewayDefaultSiteLocalNetworkGatewayId>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "publicIpZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
+    "vpnGatewayGeneration": {
+      "value": "Generation2"
+    },
+    "vpnType": {
+      "value": "RouteBased"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _VPN Active Active without BGP settings using two existent Public IPs_
+
+This instance deploys the module with the VPN Active Active without BGP settings.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
+  name: 'virtualNetworkGatewayDeployment'
+  params: {
+    // Required parameters
+    clusterSettings: {
+      clusterMode: 'activeActiveNoBgp'
+      existingSecondPipResourceId: '<existingSecondPipResourceId>'
+    }
+    gatewayType: 'Vpn'
+    name: 'nvgaaep001'
+    skuName: 'VpnGw2AZ'
+    vNetResourceId: '<vNetResourceId>'
+    // Non-required parameters
+    allowRemoteVnetTraffic: true
+    disableIPSecReplayProtection: true
+    domainNameLabel: [
+      'dm-nvgaaep'
+    ]
+    enableBgpRouteTranslationForNat: true
+    enablePrivateIpAddress: true
+    existingFirstPipResourceId: '<existingFirstPipResourceId>'
+    gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
+    location: '<location>'
+    publicIpZones: [
+      1
+      2
+      3
+    ]
+    vpnGatewayGeneration: 'Generation2'
+    vpnType: 'RouteBased'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "clusterSettings": {
+      "value": {
+        "clusterMode": "activeActiveNoBgp",
+        "existingSecondPipResourceId": "<existingSecondPipResourceId>"
+      }
+    },
+    "gatewayType": {
+      "value": "Vpn"
+    },
+    "name": {
+      "value": "nvgaaep001"
+    },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
+    "vNetResourceId": {
+      "value": "<vNetResourceId>"
+    },
+    // Non-required parameters
+    "allowRemoteVnetTraffic": {
+      "value": true
+    },
+    "disableIPSecReplayProtection": {
+      "value": true
+    },
+    "domainNameLabel": {
+      "value": [
+        "dm-nvgaaep"
+      ]
+    },
+    "enableBgpRouteTranslationForNat": {
+      "value": true
+    },
+    "enablePrivateIpAddress": {
+      "value": true
+    },
+    "existingFirstPipResourceId": {
+      "value": "<existingFirstPipResourceId>"
     },
     "gatewayDefaultSiteLocalNetworkGatewayId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayId>"
@@ -650,7 +656,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 6: _VPN Active Passive with BGP settings_
+### Example 6: _VPN Active Passive with BGP settings using existing Public IP_
 
 This instance deploys the module with the VPN Active Passive with APIPA BGP settings.
 
@@ -1083,7 +1089,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   params: {
     // Required parameters
     clusterSettings: {
-      secondPipName: 'nvgmax001-pip2'
       clusterMode: 'activeActiveBgp'
       customBgpIpAddresses: [
         '169.254.21.4'
@@ -1093,6 +1098,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         '169.254.22.4'
         '169.254.22.5'
       ]
+      secondPipName: 'nvgmax001-pip2'
     }
     gatewayType: 'Vpn'
     name: 'nvgmax001'
@@ -1210,7 +1216,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     // Required parameters
     "clusterSettings": {
       "value": {
-        "secondPipName": "nvgmax001-pip2",
         "clusterMode": "activeActiveBgp",
         "customBgpIpAddresses": [
           "169.254.21.4",
@@ -1219,7 +1224,8 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         "secondCustomBgpIpAddresses": [
           "169.254.22.4",
           "169.254.22.5"
-        ]
+        ],
+        "secondPipName": "nvgmax001-pip2"
       }
     },
     "gatewayType": {
@@ -1826,14 +1832,14 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 | [`clientRootCertData`](#parameter-clientrootcertdata) | string | Client root certificate data used to authenticate VPN clients. Cannot be configured if vpnClientAadConfiguration is provided. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableIPSecReplayProtection`](#parameter-disableipsecreplayprotection) | bool | disableIPSecReplayProtection flag. Used for VPN Gateways. |
-| [`domainNameLabel`](#parameter-domainnamelabel) | array | DNS name(s) of the Public IP resource(s). If you enabled active-active configuration, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com. |
+| [`domainNameLabel`](#parameter-domainnamelabel) | array | DNS name(s) of the Public IP resource(s). If you enabled Active-Active mode, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com. |
 | [`enableBgpRouteTranslationForNat`](#parameter-enablebgproutetranslationfornat) | bool | EnableBgpRouteTranslationForNat flag. Can only be used when "natRules" are enabled on the Virtual Network Gateway. |
 | [`enableDnsForwarding`](#parameter-enablednsforwarding) | bool | Whether DNS forwarding is enabled or not and is only supported for Express Route Gateways. The DNS forwarding feature flag must be enabled on the current subscription. |
 | [`enablePrivateIpAddress`](#parameter-enableprivateipaddress) | bool | Whether private IP needs to be enabled on this gateway for connections or not. Used for configuring a Site-to-Site VPN connection over ExpressRoute private peering. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`existingFirstPipResourceId`](#parameter-existingFirstPipResourceId) | string | The Public IP resource ID to associate to the Virtual Network Gateway. If empty, then the Public IP that is created as part of this module will be applied to the Virtual Network Gateway. |
+| [`existingFirstPipResourceId`](#parameter-existingfirstpipresourceid) | string | The Public IP resource ID to associate to the Virtual Network Gateway. If empty, then the Public IP that is created as part of this module will be applied to the Virtual Network Gateway. |
+| [`firstPipName`](#parameter-firstpipname) | string | Specifies the name of the Public IP to be created for the Virtual Network Gateway. This will only take effect if no existing Public IP is provided. If neither an existing Public IP nor this parameter is specified, a new Public IP will be created with a default name, using the gateway's name with the '-pip1' suffix. |
 | [`gatewayDefaultSiteLocalNetworkGatewayId`](#parameter-gatewaydefaultsitelocalnetworkgatewayid) | string | The reference to the LocalNetworkGateway resource which represents local network site having default routes. Assign Null value in case of removing existing default site setting. |
-| [`firstPipName`](#parameter-firstPipName) | string | Specifies the name of the Public IP to be created for the Virtual Network Gateway. This will only take effect if no existing Public IP is provided. If neither an existing Public IP nor this parameter is specified, a new Public IP will be created with a default name, using the gateway's name with the '-pip1' suffix. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`natRules`](#parameter-natrules) | array | NatRules for virtual network gateway. NAT is supported on the the following SKUs: VpnGw2~5, VpnGw2AZ~5AZ and is supported for IPsec/IKE cross-premises connections only. |
@@ -2099,7 +2105,7 @@ disableIPSecReplayProtection flag. Used for VPN Gateways.
 
 ### Parameter: `domainNameLabel`
 
-DNS name(s) of the Public IP resource(s). If you enabled active-active configuration, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com.
+DNS name(s) of the Public IP resource(s). If you enabled Active-Active mode, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com.
 
 - Required: No
 - Type: array
@@ -2145,14 +2151,6 @@ The Public IP resource ID to associate to the Virtual Network Gateway. If empty,
 - Type: string
 - Default: `''`
 
-### Parameter: `gatewayDefaultSiteLocalNetworkGatewayId`
-
-The reference to the LocalNetworkGateway resource which represents local network site having default routes. Assign Null value in case of removing existing default site setting.
-
-- Required: No
-- Type: string
-- Default: `''`
-
 ### Parameter: `firstPipName`
 
 Specifies the name of the Public IP to be created for the Virtual Network Gateway. This will only take effect if no existing Public IP is provided. If neither an existing Public IP nor this parameter is specified, a new Public IP will be created with a default name, using the gateway's name with the '-pip1' suffix.
@@ -2160,6 +2158,14 @@ Specifies the name of the Public IP to be created for the Virtual Network Gatewa
 - Required: No
 - Type: string
 - Default: `[format('{0}-pip1', parameters('name'))]`
+
+### Parameter: `gatewayDefaultSiteLocalNetworkGatewayId`
+
+The reference to the LocalNetworkGateway resource which represents local network site having default routes. Assign Null value in case of removing existing default site setting.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `location`
 
@@ -2537,7 +2543,7 @@ Specifies the VPN type.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `activeActive` | bool | Shows if the virtual network gateway is configured in active-active mode. |
+| `activeActive` | bool | Shows if the virtual network gateway is configured in Active-Active mode. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the virtual network gateway. |
 | `resourceGroupName` | string | The resource group the virtual network gateway was deployed. |
