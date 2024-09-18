@@ -78,7 +78,7 @@ var secrets = [
 
 // Networking resources
 // -----------------
-module nsg 'br/public:avm/res/network/network-security-group:0.3.1' = if (deployInVnet) {
+module nsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-nsg'
   params: {
     name: 'nsg-${name}'
@@ -88,7 +88,7 @@ module nsg 'br/public:avm/res/network/network-security-group:0.3.1' = if (deploy
   }
 }
 
-module vnet 'br/public:avm/res/network/virtual-network:0.1.8' = if (deployInVnet) {
+module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-vnet'
   params: {
     name: 'vnet-${name}'
@@ -105,32 +105,30 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.8' = if (deployInVnet
         name: 'deploymentscript-subnet'
         addressPrefix: serviceEndpointSubnetAddressPrefix
         networkSecurityGroupResourceId: nsg.outputs.resourceId
-        serviceEndpoints: [
-          {
-            service: 'Microsoft.Storage'
-          }
-        ]
-        delegations: [
-          {
-            name: 'Microsoft.ContainerInstance.containerGroups'
-            properties: {
-              serviceName: 'Microsoft.ContainerInstance/containerGroups'
-            }
-          }
-        ]
+        serviceEndpoints: ['Microsoft.Storage']
+        delegation: 'Microsoft.ContainerInstance/containerGroups'
+        // delegations: [
+        //   {
+        //     name: 'Microsoft.ContainerInstance.containerGroups'
+        //     properties: {
+        //       serviceName: 'Microsoft.ContainerInstance/containerGroups'
+        //     }
+        //   }
+        // ]
       }
       {
         name: 'workload-subnet'
         addressPrefix: workloadSubnetAddressPrefix
         networkSecurityGroupResourceId: nsg.outputs.resourceId
-        delegations: [
-          {
-            name: 'Microsoft.App.environements'
-            properties: {
-              serviceName: 'Microsoft.App/environments'
-            }
-          }
-        ]
+        delegation: 'Microsoft.App/environments'
+        // delegations: [
+        //   {
+        //     name: 'Microsoft.App.environements'
+        //     properties: {
+        //       serviceName: 'Microsoft.App/environments'
+        //     }
+        //   }
+        // ]
       }
     ]
     location: resourceLocation
@@ -139,7 +137,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.8' = if (deployInVnet
   }
 }
 
-module dnsZoneKeyVault_new 'br/public:avm/res/network/private-dns-zone:0.3.1' = if (deployInVnet && deployDnsZoneKeyVault) {
+module dnsZoneKeyVault_new 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (deployInVnet && deployDnsZoneKeyVault) {
   name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-dnsZoneKeyVault'
   params: {
     name: 'privatelink.vaultcore.azure.net'
@@ -169,7 +167,7 @@ resource dnsZoneKeyVault_vnetLink 'Microsoft.Network/privateDnsZones/virtualNetw
   }
 }
 
-module dnsZoneContainerRegistry_new 'br/public:avm/res/network/private-dns-zone:0.3.1' = if (deployInVnet && deployDnsZoneContainerRegistry) {
+module dnsZoneContainerRegistry_new 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (deployInVnet && deployDnsZoneContainerRegistry) {
   name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-dnsZoneContainerRegistry'
   params: {
     name: 'privatelink.azurecr.io'
@@ -199,7 +197,7 @@ resource dnsZoneContainerRegistry_vnetLink 'Microsoft.Network/privateDnsZones/vi
   }
 }
 
-module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.4.2' = if (deployInVnet) {
+module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.8.0' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-privateEndpoint_KeyVault'
   params: {
     name: 'pe-KeyVault-${name}'
@@ -208,10 +206,20 @@ module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.4.
     location: resourceLocation
     tags: tags
     lock: lock
-    privateDnsZoneGroupName: 'default'
-    privateDnsZoneResourceIds: [
-      deployDnsZoneKeyVault ? dnsZoneKeyVault_new.outputs.resourceId : dnsZoneKeyVault_existing.id
-    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          name: 'default'
+          privateDnsZoneResourceId: deployDnsZoneKeyVault
+            ? dnsZoneKeyVault_new.outputs.resourceId
+            : dnsZoneKeyVault_existing.id
+        }
+      ]
+    }
+    // privateDnsZoneGroupName: 'default'
+    // privateDnsZoneResourceIds: [
+    //   deployDnsZoneKeyVault ? dnsZoneKeyVault_new.outputs.resourceId : dnsZoneKeyVault_existing.id
+    // ]
     privateLinkServiceConnections: [
       {
         name: 'pe-KeyVault-connection-${name}'
@@ -225,7 +233,7 @@ module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.4.
     ]
   }
 }
-module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endpoint:0.4.2' = if (deployInVnet) {
+module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endpoint:0.8.0' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-privateEndpoint_ContainerRegistry'
   params: {
     name: 'pe-ContainerRegistry-${name}'
@@ -234,12 +242,22 @@ module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endp
     location: resourceLocation
     tags: tags
     lock: lock
-    privateDnsZoneGroupName: 'default'
-    privateDnsZoneResourceIds: [
-      deployDnsZoneContainerRegistry
-        ? dnsZoneContainerRegistry_new.outputs.resourceId
-        : dnsZoneContainerRegistry_existing.id
-    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          name: 'default'
+          privateDnsZoneResourceId: deployDnsZoneContainerRegistry
+            ? dnsZoneContainerRegistry_new.outputs.resourceId
+            : dnsZoneContainerRegistry_existing.id
+        }
+      ]
+    }
+    // privateDnsZoneGroupName: 'default'
+    // privateDnsZoneResourceIds: [
+    //   deployDnsZoneContainerRegistry
+    //     ? dnsZoneContainerRegistry_new.outputs.resourceId
+    //     : dnsZoneContainerRegistry_existing.id
+    // ]
     privateLinkServiceConnections: [
       {
         name: 'pe-ContainerRegistry-connection-${name}'
@@ -256,7 +274,7 @@ module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endp
 
 // Identity resources
 // -----------------
-module userIdentity_new 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' = if (managedIdentityName == null) {
+module userIdentity_new 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = if (managedIdentityName == null) {
   name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-userIdentity'
   params: {
     name: 'jobsUserIdentity-${name}'
@@ -271,7 +289,7 @@ resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities
 
 // supporting resources
 // -----------------
-module vault 'br/public:avm/res/key-vault/vault:0.6.2' = {
+module vault 'br/public:avm/res/key-vault/vault:0.9.0' = {
   name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-vault'
   params: {
     name: keyVaultName
@@ -305,7 +323,7 @@ module vault 'br/public:avm/res/key-vault/vault:0.6.2' = {
   }
 }
 
-module registry 'br/public:avm/res/container-registry/registry:0.3.1' = {
+module registry 'br/public:avm/res/container-registry/registry:0.5.1' = {
   name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-registry'
   params: {
     #disable-next-line BCP334
@@ -333,7 +351,7 @@ module registry 'br/public:avm/res/container-registry/registry:0.3.1' = {
   }
 }
 
-module storage 'br/public:avm/res/storage/storage-account:0.11.0' = if (deployInVnet) {
+module storage 'br/public:avm/res/storage/storage-account:0.9.1' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-storage'
   params: {
     name: uniqueString('sa', name, resourceLocation, resourceGroupName)
@@ -370,7 +388,7 @@ module storage 'br/public:avm/res/storage/storage-account:0.11.0' = if (deployIn
 
 // Managed Environment
 // -------------------
-module managedEnvironment 'br/public:avm/res/app/managed-environment:0.5.2' = {
+module managedEnvironment 'br/public:avm/res/app/managed-environment:0.8.0' = {
   name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-managedEnvironment'
   params: {
     name: 'container-apps-environment-${name}'

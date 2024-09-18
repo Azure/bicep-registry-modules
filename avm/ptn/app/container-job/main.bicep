@@ -18,13 +18,13 @@ param enableTelemetry bool = true
 @description('Optional. Use an existing managed identity to import the container image and run the job. If not provided, a new managed identity will be created.')
 param managedIdentityName string?
 
-@sys.description('Optional. The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created.')
+@description('Optional. The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created.')
 @metadata({
   example: '/subscriptions/<00000000-0000-0000-0000-000000000000>/resourceGroups/<rg-name>/providers/Microsoft.OperationalInsights/workspaces/<workspace-name>'
 })
 param logAnalyticsWorkspaceResourceId string
 
-@sys.description('Optional. The connection string for the Application Insights instance that will be added to Key Vault as `applicationinsights-connection-string` and can be used by the Job.')
+@description('Optional. The connection string for the Application Insights instance that will be added to Key Vault as `applicationinsights-connection-string` and can be used by the Job.')
 @metadata({
   example: 'InstrumentationKey=<00000000-0000-0000-0000-000000000000>;IngestionEndpoint=https://germanywestcentral-1.in.applicationinsights.azure.com/;LiveEndpoint=https://germanywestcentral.livediagnostics.monitor.azure.com/;ApplicationId=<00000000-0000-0000-0000-000000000000>'
 })
@@ -32,7 +32,7 @@ param appInsightsConnectionString string?
 
 @description('Optional. The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets.')
 @metadata({ example: '''kv${uniqueString(name, location, resourceGroup().name)})''' })
-param keyVaultName string = 'kv${uniqueString(name, location, resourceGroup().name)})'
+param keyVaultName string = 'kv${uniqueString(name, location, resourceGroup().name)}'
 
 // network related parameters
 // -------------------------
@@ -51,16 +51,18 @@ param deployDnsZoneContainerRegistry bool = true
 
 // container related parameters
 // -------------------------
-@sys.description('Required. The container image source that will be copied to the Container Registry and used to provision the job.')
+@description('Required. The container image source that will be copied to the Container Registry and used to provision the job.')
 @metadata({ example: 'mcr.microsoft.com/k8se/quickstart-jobs:latest' })
 param containerImageSource string
 
-param newContainerImageName string
+@description('Optional. The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline. You should skip the registry name, as it is added automatically.')
+@metadata({ example: 'application/frontend:latest' })
+param newContainerImageName string?
 
-@sys.description('Optional. The flag that indicates whether the existing image in the Container Registry should be overwritten.')
+@description('Optional. The flag that indicates whether the existing image in the Container Registry should be overwritten.')
 param overwriteExistingImage bool = false
 
-@sys.description('Optional. The cron expression that will be used to schedule the job.')
+@description('Optional. The cron expression that will be used to schedule the job.')
 @metadata({ default: '0 0 * * * // every day at midnight' })
 param cronExpression string = '0 0 * * *'
 
@@ -70,7 +72,7 @@ param cpu string = '1'
 @description('Optional. The memory resources that will be allocated to the Container Apps Job.')
 param memory string = '2Gi'
 
-@sys.description('Optional. The environment variables that will be added to the Container Apps Job.')
+@description('Optional. The environment variables that will be added to the Container Apps Job.')
 @metadata({
   example: '''[
   {
@@ -135,8 +137,8 @@ param workloadProfileName string?
 @metadata({
   example: '''
   {
-      "key1": "value1"
-      "key2": "value2"
+      key1: 'value1'
+      key2: 'value2'
   }
   '''
 })
@@ -191,26 +193,27 @@ module services 'modules/deploy_services.bicep' = {
 }
 
 // import the image to the ACR that will be used to run the job
-module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.2.0' = {
-  name: '${name}-import-image'
+module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.3.0' = {
+  name: '${uniqueString(deployment().name, location)}-import-image'
   params: {
     name: '${name}-import-image'
     location: location
     acrName: services.outputs.registryName
     image: containerImageSource
-    newImageName: newContainerImageName
+    newImageName: replace(newContainerImageName ?? '', '{registry}', services.outputs.registryLoginServer)
     managedIdentities: { userAssignedResourcesIds: [services.outputs.userManagedIdentityResourceId] }
     overwriteExistingImage: overwriteExistingImage
-    initialScriptDelay: 1
-    retryMax: 1
+    initialScriptDelay: 10
+    retryMax: 3
     runOnce: false
+    cleanupPreference: 'OnExpiration'
     storageAccountResourceId: (deployInVnet) ? services.outputs.storageAccountResourceId : null
     subnetResourceIds: (deployInVnet) ? [services.outputs.subnetResourceId_deploymentScript] : []
     tags: tags
   }
 }
 
-module job 'br/public:avm/res/app/job:0.3.0' = {
+module job 'br/public:avm/res/app/job:0.5.0' = {
   name: '${uniqueString(deployment().name, location)}-${resourceGroup().name}-appjob'
   params: {
     name: '${name}-container-job'

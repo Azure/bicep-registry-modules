@@ -54,6 +54,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+      newContainerImageName: 'application/frontend:latest'
       logAnalyticsWorkspaceResourceId: dependencies.outputs.logAnalyticsResourceId
       // needed for idempotency testing
       overwriteExistingImage: true

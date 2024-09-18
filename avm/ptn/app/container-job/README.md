@@ -16,13 +16,16 @@ This module deploys a container to run as a job.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/jobs` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/jobs) |
-| `Microsoft.App/managedEnvironments` | [2023-11-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-11-02-preview/managedEnvironments) |
+| `Microsoft.App/jobs` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-03-01/jobs) |
+| `Microsoft.App/managedEnvironments` | [2024-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-02-02-preview/managedEnvironments) |
+| `Microsoft.App/managedEnvironments/storages` | [2024-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-02-02-preview/managedEnvironments/storages) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries) |
 | `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
+| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/credentialSets) |
 | `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
+| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/scopeMaps) |
 | `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults) |
@@ -43,10 +46,12 @@ This module deploys a container to run as a job.
 | `Microsoft.Network/privateDnsZones/TXT` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT) |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/virtualNetworkLinks) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Network/virtualNetworks` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/virtualNetworkPeerings) |
+| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 | `Microsoft.Storage/storageAccounts` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts) |
 | `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
@@ -88,7 +93,6 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
   params: {
     // Required parameters
     containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
-    keyVaultName: '<keyVaultName>'
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'acjmin001'
     // Non-required parameters
@@ -113,9 +117,6 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
     // Required parameters
     "containerImageSource": {
       "value": "mcr.microsoft.com/k8se/quickstart-jobs:latest"
-    },
-    "keyVaultName": {
-      "value": "<keyVaultName>"
     },
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
@@ -152,7 +153,6 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
   params: {
     // Required parameters
     containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
-    keyVaultName: '<keyVaultName>'
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'acjmax001'
     // Non-required parameters
@@ -173,6 +173,7 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
         secretRef: 'secretkey1'
       }
     ]
+    keyVaultName: '<keyVaultName>'
     location: '<location>'
     lock: {
       kind: 'None'
@@ -180,7 +181,7 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
     }
     managedIdentityName: '<managedIdentityName>'
     memory: '8Gi'
-    nameSuffix: 'cjob'
+    newContainerImageName: 'application/frontend:latest'
     overwriteExistingImage: true
     secrets: [
       {
@@ -220,9 +221,6 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
     // Required parameters
     "containerImageSource": {
       "value": "mcr.microsoft.com/k8se/quickstart-jobs:latest"
-    },
-    "keyVaultName": {
-      "value": "<keyVaultName>"
     },
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
@@ -264,6 +262,9 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
         }
       ]
     },
+    "keyVaultName": {
+      "value": "<keyVaultName>"
+    },
     "location": {
       "value": "<location>"
     },
@@ -279,8 +280,8 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
     "memory": {
       "value": "8Gi"
     },
-    "nameSuffix": {
-      "value": "cjob"
+    "newContainerImageName": {
+      "value": "application/frontend:latest"
     },
     "overwriteExistingImage": {
       "value": true
@@ -334,7 +335,6 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
   params: {
     // Required parameters
     containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
-    keyVaultName: '<keyVaultName>'
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'acjwaf001'
     // Non-required parameters
@@ -371,9 +371,6 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
     // Required parameters
     "containerImageSource": {
       "value": "mcr.microsoft.com/k8se/quickstart-jobs:latest"
-    },
-    "keyVaultName": {
-      "value": "<keyVaultName>"
     },
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
@@ -417,7 +414,6 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -425,8 +421,7 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`containerImageSource`](#parameter-containerimagesource) | string | The container image source that will be copied to the Container Registry and used to provision the job. |
-| [`keyVaultName`](#parameter-keyvaultname) | string | The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets. |
-| [`name`](#parameter-name) | string | Name of the resource to create. |
+| [`name`](#parameter-name) | string | Name of the resource to create. Will be used for naming the job and other resources. |
 
 **Conditional parameters**
 
@@ -446,12 +441,13 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
 | [`deployInVnet`](#parameter-deployinvnet) | bool | Deploy resources in a virtual network and use it for private endpoints. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`environmentVariables`](#parameter-environmentvariables) | array | The environment variables that will be added to the Container Apps Job. |
+| [`keyVaultName`](#parameter-keyvaultname) | string | The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created. |
 | [`managedIdentityName`](#parameter-managedidentityname) | string | Use an existing managed identity to import the container image and run the job. If not provided, a new managed identity will be created. |
 | [`memory`](#parameter-memory) | string | The memory resources that will be allocated to the Container Apps Job. |
-| [`nameSuffix`](#parameter-namesuffix) | string | The suffix will be used for newly created resources. |
+| [`newContainerImageName`](#parameter-newcontainerimagename) | string | The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline. You should skip the registry name, as it is added automatically. |
 | [`overwriteExistingImage`](#parameter-overwriteexistingimage) | bool | The flag that indicates whether the existing image in the Container Registry should be overwritten. |
 | [`secrets`](#parameter-secrets) | array | The secrets of the Container App. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -466,17 +462,9 @@ The container image source that will be copied to the Container Registry and use
 - Type: string
 - Example: `mcr.microsoft.com/k8se/quickstart-jobs:latest`
 
-### Parameter: `keyVaultName`
-
-The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets.
-
-- Required: Yes
-- Type: string
-- Example: `kv${uniqueString(nameSuffix, location, resourceGroup().name)`
-
 ### Parameter: `name`
 
-Name of the resource to create.
+Name of the resource to create. Will be used for naming the job and other resources.
 
 - Required: Yes
 - Type: string
@@ -598,6 +586,15 @@ The environment variable value. Required if `secretRef` is null.
 - Required: No
 - Type: string
 
+### Parameter: `keyVaultName`
+
+The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets.
+
+- Required: No
+- Type: string
+- Default: `[format('kv{0}', uniqueString(parameters('name'), parameters('location'), resourceGroup().name))]`
+- Example: `kv${uniqueString(name, location, resourceGroup().name)})`
+
 ### Parameter: `location`
 
 Location for all Resources.
@@ -665,13 +662,13 @@ The memory resources that will be allocated to the Container Apps Job.
 - Type: string
 - Default: `'2Gi'`
 
-### Parameter: `nameSuffix`
+### Parameter: `newContainerImageName`
 
-The suffix will be used for newly created resources.
+The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline. You should skip the registry name, as it is added automatically.
 
 - Required: No
 - Type: string
-- Default: `'cjob'`
+- Example: `application/frontend:latest`
 
 ### Parameter: `overwriteExistingImage`
 
@@ -764,8 +761,8 @@ Tags of the resource.
 - Example:
   ```Bicep
   {
-      "key1": "value1"
-      "key2": "value2"
+      key1: 'value1'
+      key2: 'value2'
   }
   ```
 
@@ -795,7 +792,6 @@ Workload profiles for the managed environment.
     ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -811,17 +807,17 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/ptn/deployment-script/import-image-to-acr:0.1.0` | Remote reference |
-| `br/public:avm/res/app/job:0.3.0` | Remote reference |
-| `br/public:avm/res/app/managed-environment:0.5.2` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.3.1` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.6.2` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.2.2` | Remote reference |
-| `br/public:avm/res/network/network-security-group:0.3.1` | Remote reference |
-| `br/public:avm/res/network/private-dns-zone:0.3.1` | Remote reference |
-| `br/public:avm/res/network/private-endpoint:0.4.2` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.1.8` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.11.0` | Remote reference |
+| `br/public:avm/ptn/deployment-script/import-image-to-acr:0.3.0` | Remote reference |
+| `br/public:avm/res/app/job:0.5.0` | Remote reference |
+| `br/public:avm/res/app/managed-environment:0.8.0` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.5.1` | Remote reference |
+| `br/public:avm/res/key-vault/vault:0.9.0` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
+| `br/public:avm/res/network/network-security-group:0.5.0` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.6.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.8.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.4.0` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.9.1` | Remote reference |
 
 ## Notes
 
