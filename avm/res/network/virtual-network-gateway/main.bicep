@@ -147,19 +147,19 @@ var exisitingActivePipResourceIdVar = isActiveActive ? clusterSettings.?existing
 var activeGatewayPipNameVar = isActiveActive ? (clusterSettings.?activeGatewayPipName ?? '${name}-pip2') : null
 
 var virtualGatewayPipNameVar = isActiveActive
-  ? [
+  ? concat(
       !empty(existingPublicIpResourceId)
-        ? null
-        : gatewayPipName
+        ? []
+        : [gatewayPipName],
       !empty(exisitingActivePipResourceIdVar)
-        ? null
-        : activeGatewayPipNameVar
-    ]
-  : [
+        ? []
+        : [activeGatewayPipNameVar]
+    )
+  : concat(
       !empty(existingPublicIpResourceId)
-        ? null
-        : gatewayPipName
-    ]
+        ? []
+        : [gatewayPipName]
+    )
 
 // Potential BGP configurations (active-active vs active-passive)
 var bgpSettingsVar = isActiveActive
