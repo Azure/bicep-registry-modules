@@ -55,7 +55,7 @@ param deployDnsZoneContainerRegistry bool = true
 @metadata({ example: 'mcr.microsoft.com/k8se/quickstart-jobs:latest' })
 param containerImageSource string
 
-@description('Optional. The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline. You should skip the registry name, as it is added automatically.')
+@description('Optional. The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline. You should skip the registry name when specifying a custom value, as it is added automatically. If you leave this empty, the original name will be used (with the new registry name).')
 @metadata({ example: 'application/frontend:latest' })
 param newContainerImageName string?
 
@@ -200,7 +200,7 @@ module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.3
     location: location
     acrName: services.outputs.registryName
     image: containerImageSource
-    newImageName: replace(newContainerImageName ?? '', '{registry}', services.outputs.registryLoginServer)
+    newImageName: newContainerImageName
     managedIdentities: { userAssignedResourcesIds: [services.outputs.userManagedIdentityResourceId] }
     overwriteExistingImage: overwriteExistingImage
     initialScriptDelay: 10

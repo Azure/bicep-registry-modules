@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "18420371912875723850"
+      "templateHash": "15952878281324787755"
     },
     "name": "container-job",
     "description": "This module deploys a container to run as a job.",
@@ -194,7 +194,7 @@
       "nullable": true,
       "metadata": {
         "example": "application/frontend:latest",
-        "description": "Optional. The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline. You should skip the registry name, as it is added automatically."
+        "description": "Optional. The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline. You should skip the registry name when specifying a custom value, as it is added automatically. If you leave this empty, the original name will be used (with the new registry name)."
       }
     },
     "overwriteExistingImage": {
