@@ -92,6 +92,12 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     managedIdentities: {
       systemAssigned: true
     }
+    nodeProvisioningProfile: {
+      mode: 'Auto'
+    }
+    nodeResourceGroupProfile: {
+      restrictionLevel: 'ReadOnly'
+    }
     outboundType: 'managedNATGateway'
     publicNetworkAccess: 'Enabled'
     skuName: 'Automatic'
@@ -170,6 +176,16 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "managedIdentities": {
       "value": {
         "systemAssigned": true
+      }
+    },
+    "nodeProvisioningProfile": {
+      "value": {
+        "mode": "Auto"
+      }
+    },
+    "nodeResourceGroupProfile": {
+      "value": {
+        "restrictionLevel": "ReadOnly"
       }
     },
     "outboundType": {
@@ -1683,7 +1699,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`networkPlugin`](#parameter-networkplugin) | string | Specifies the network plugin used for building Kubernetes network. |
 | [`networkPluginMode`](#parameter-networkpluginmode) | string | Network plugin mode used for building the Kubernetes network. Not compatible with kubenet network plugin. |
 | [`networkPolicy`](#parameter-networkpolicy) | string | Specifies the network policy used for building Kubernetes network. - calico or azure. |
+| [`nodeProvisioningProfile`](#parameter-nodeprovisioningprofile) | object | Node provisioning settings that apply to the whole cluster. |
 | [`nodeResourceGroup`](#parameter-noderesourcegroup) | string | Name of the resource group containing agent pool nodes. |
+| [`nodeResourceGroupProfile`](#parameter-noderesourcegroupprofile) | object | The node resource group configuration profile. |
 | [`omsAgentEnabled`](#parameter-omsagentenabled) | bool | Specifies whether the OMS agent is enabled. |
 | [`openServiceMeshEnabled`](#parameter-openservicemeshenabled) | bool | Specifies whether the openServiceMesh add-on is enabled or not. |
 | [`outboundType`](#parameter-outboundtype) | string | Specifies outbound (egress) routing method. |
@@ -3130,6 +3148,13 @@ Specifies the network policy used for building Kubernetes network. - calico or a
   ]
   ```
 
+### Parameter: `nodeProvisioningProfile`
+
+Node provisioning settings that apply to the whole cluster.
+
+- Required: No
+- Type: object
+
 ### Parameter: `nodeResourceGroup`
 
 Name of the resource group containing agent pool nodes.
@@ -3137,6 +3162,13 @@ Name of the resource group containing agent pool nodes.
 - Required: No
 - Type: string
 - Default: `[format('{0}_aks_{1}_nodes', resourceGroup().name, parameters('name'))]`
+
+### Parameter: `nodeResourceGroupProfile`
+
+The node resource group configuration profile.
+
+- Required: No
+- Type: object
 
 ### Parameter: `omsAgentEnabled`
 

@@ -64,6 +64,12 @@ module testDeployment '../../../main.bicep' = [
       managedIdentities: {
         systemAssigned: true
       }
+      nodeProvisioningProfile: {
+        mode: 'Auto'
+      }
+      nodeResourceGroupProfile: {
+        restrictionLevel: 'ReadOnly'
+      }
       outboundType: 'managedNATGateway'
       primaryAgentPoolProfile: [
         {
