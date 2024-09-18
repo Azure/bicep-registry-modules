@@ -8,7 +8,7 @@ This module deploys the Managed DevOps Pool resource.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -19,10 +19,6 @@ This module deploys the Managed DevOps Pool resource.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.DevOpsInfrastructure/pools` | [2024-04-04-preview](https://learn.microsoft.com/en-us/azure/templates) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-
-## Notes
-
-The Managed DevOps Pool resource requires external permissions in Azure DevOps. Make sure that the deployment principal has permission in Azure DevOps: [Managed DevOps Pools - Verify Azure DevOps Permissions](https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/prerequisites?view=azure-devops&tabs=azure-portal#verify-azure-devops-permissions)
 
 ## Usage examples
 
@@ -544,7 +540,6 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -758,7 +753,7 @@ Group email addresses.
 
 Determines who has admin permissions to the Azure DevOps pool.
 
-- Required: No
+- Required: Yes
 - Type: string
 - Allowed:
   ```Bicep
@@ -1104,6 +1099,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1300,7 +1301,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1311,9 +1311,9 @@ Tags of the resource.
 | `resourceId` | string | The resource ID of the Managed DevOps Pool. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
-## Cross-referenced modules
+## Notes
 
-_None_
+The Managed DevOps Pool resource requires external permissions in Azure DevOps. Make sure that the deployment principal has permission in Azure DevOps: [Managed DevOps Pools - Verify Azure DevOps Permissions](https://learn.microsoft.com/en-us/azure/devops/managed-devops-pools/prerequisites?view=azure-devops&tabs=azure-portal#verify-azure-devops-permissions)
 
 ## Data Collection
 
