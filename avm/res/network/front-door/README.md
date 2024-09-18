@@ -1,10 +1,5 @@
 # Azure Front Doors `[Microsoft.Network/frontDoors]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an Azure Front Door.
 
 ## Navigation
@@ -1274,7 +1269,6 @@ Resource tags.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `endpointHostNames` | array | The host name of the front door endpoint. |
 | `name` | string | The name of the front door. |
 | `resourceGroupName` | string | The resource group the front door was deployed into. |
 | `resourceId` | string | The resource ID of the front door. |

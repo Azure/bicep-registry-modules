@@ -185,11 +185,6 @@ output resourceId string = frontDoor.id
 @description('The resource group the front door was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The host name of the front door endpoint.')
-output endpointHostNames array = [
-  for (endpoint, index) in (frontendEndpoints ?? []): frontDoor.properties.frontendEndpoints[index].properties.hostName
-]
-
 // =============== //
 //   Definitions   //
 // =============== //

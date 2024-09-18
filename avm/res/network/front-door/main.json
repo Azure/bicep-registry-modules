@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "17174892593399603843"
+      "templateHash": "3109919695748867092"
     },
     "name": "Azure Front Doors",
     "description": "This module deploys an Azure Front Door.",
@@ -497,16 +497,6 @@
         "description": "The resource group the front door was deployed into."
       },
       "value": "[resourceGroup().name]"
-    },
-    "endpointHostNames": {
-      "type": "array",
-      "metadata": {
-        "description": "The host name of the front door endpoint."
-      },
-      "copy": {
-        "count": "[length(coalesce(parameters('frontendEndpoints'), createArray()))]",
-        "input": "[reference('frontDoor').frontendEndpoints[copyIndex()].properties.hostName]"
-      }
     }
   }
 }
