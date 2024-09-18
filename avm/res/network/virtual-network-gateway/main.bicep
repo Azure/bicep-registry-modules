@@ -149,15 +149,15 @@ var activeGatewayPipNameVar = isActiveActive ? (clusterSettings.?activeGatewayPi
 var virtualGatewayPipNameVar = isActiveActive
   ? [
       !empty(existingPublicIpResourceId)
-        ? existingPublicIpResourceId
+        ? null
         : gatewayPipName
       !empty(exisitingActivePipResourceIdVar)
-        ? exisitingActivePipResourceIdVar
+        ? null
         : activeGatewayPipNameVar
     ]
   : [
       !empty(existingPublicIpResourceId)
-        ? existingPublicIpResourceId
+        ? null
         : gatewayPipName
     ]
 
