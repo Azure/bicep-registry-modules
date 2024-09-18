@@ -63,7 +63,7 @@ module testDeployment '../../../main.bicep' = [
       
       clusterSettings: {
         clusterMode: 'activeActiveNoBgp'
-        existingSecondPipResourceId: nestedDependencies.outputs.existingActivePipResourceId
+        existingSecondPipResourceId: nestedDependencies.outputs.existingSecondPipResourceId
       }
 
       domainNameLabel: [

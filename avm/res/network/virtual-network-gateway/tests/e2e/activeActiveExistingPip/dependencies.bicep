@@ -93,4 +93,4 @@ output localNetworkGatewayResourceId string = localNetworkGateway.id
 output existingFirstPipResourceId string = existingPublicIp.id
 
 @description('The resource ID of the existing secondary Public IP.')
-output existingActivePipResourceId string = existingActivePublicIp.id
+output existingSecondPipResourceId string = existingActivePublicIp.id
