@@ -1286,6 +1286,19 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Reservation Purchaser'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'SQL DB Contributor'`
+  - `'SQL Managed Instance Contributor'`
+  - `'SQL Security Manager'`
+  - `'SQL Server Contributor'`
+  - `'SqlDb Migration Role'`
+  - `'SqlMI Migration Role'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
