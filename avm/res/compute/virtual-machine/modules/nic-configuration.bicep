@@ -27,45 +27,29 @@ param diagnosticSettings diagnosticSettingType
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.4.1' = [
+module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.6.0' = [
   for (ipConfiguration, index) in ipConfigurations: if (contains(ipConfiguration, 'pipConfiguration')) {
     name: '${deployment().name}-publicIP-${index}'
     params: {
-      name: contains(ipConfiguration.pipConfiguration, 'name')
-        ? ipConfiguration.pipConfiguration.name
-        : '${virtualMachineName}${ipConfiguration.pipConfiguration.publicIpNameSuffix}'
+      name: ipConfiguration.pipConfiguration.?name ?? '${virtualMachineName}${ipConfiguration.pipConfiguration.publicIpNameSuffix}'
       diagnosticSettings: ipConfiguration.?diagnosticSettings
       location: location
       lock: lock
       idleTimeoutInMinutes: ipConfiguration.pipConfiguration.?idleTimeoutInMinutes
       ddosSettings: ipConfiguration.pipConfiguration.?ddosSettings
       dnsSettings: ipConfiguration.pipConfiguration.?dnsSettings
-      publicIPAddressVersion: contains(ipConfiguration.pipConfiguration, 'publicIPAddressVersion')
-        ? ipConfiguration.pipConfiguration.publicIPAddressVersion
-        : 'IPv4'
-      publicIPAllocationMethod: contains(ipConfiguration.pipConfiguration, 'publicIPAllocationMethod')
-        ? ipConfiguration.pipConfiguration.publicIPAllocationMethod
-        : 'Static'
-      publicIpPrefixResourceId: contains(ipConfiguration.pipConfiguration, 'publicIPPrefixResourceId')
-        ? ipConfiguration.pipConfiguration.publicIPPrefixResourceId
-        : ''
-      roleAssignments: contains(ipConfiguration.pipConfiguration, 'roleAssignments')
-        ? ipConfiguration.pipConfiguration.roleAssignments
-        : []
-      skuName: contains(ipConfiguration.pipConfiguration, 'skuName')
-        ? ipConfiguration.pipConfiguration.skuName
-        : 'Standard'
-      skuTier: contains(ipConfiguration.pipConfiguration, 'skuTier')
-        ? ipConfiguration.pipConfiguration.skuTier
-        : 'Regional'
+      publicIPAddressVersion: ipConfiguration.pipConfiguration.?publicIPAddressVersion ?? 'IPv4'
+      publicIPAllocationMethod: ipConfiguration.pipConfiguration.?publicIPAllocationMethod ?? 'Static'
+      publicIpPrefixResourceId: ipConfiguration.pipConfiguration.?publicIPPrefixResourceId ?? ''
+      roleAssignments: ipConfiguration.pipConfiguration.?roleAssignments ?? []
+      skuName: ipConfiguration.pipConfiguration.?skuName ?? 'Standard'
+      skuTier: ipConfiguration.pipConfiguration.?skuTier ?? 'Regional'
       tags: ipConfiguration.?tags ?? tags
-      zones: contains(ipConfiguration.pipConfiguration, 'zones')
-        ? ipConfiguration.pipConfiguration.zones
-        : [
-            1
-            2
-            3
-          ]
+      zones: ipConfiguration.pipConfiguration.?zones ?? [
+        1
+        2
+        3
+      ]
       enableTelemetry: ipConfiguration.?enableTelemetry ?? enableTelemetry
     }
   }
