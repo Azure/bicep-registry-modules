@@ -59,11 +59,11 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'VpnGw2AZ'
       gatewayType: 'Vpn'
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
-      existingPublicIpResourceId: nestedDependencies.outputs.existingPublicIpResourceId
+      existingFirstPipResourceId: nestedDependencies.outputs.existingFirstPipResourceId
       
       clusterSettings: {
         clusterMode: 'activeActiveNoBgp'
-        existingActivePipResourceId: nestedDependencies.outputs.existingActivePipResourceId
+        existingSecondPipResourceId: nestedDependencies.outputs.existingActivePipResourceId
       }
 
       domainNameLabel: [

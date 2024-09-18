@@ -90,7 +90,7 @@ output vnetResourceId string = virtualNetwork.id
 output localNetworkGatewayResourceId string = localNetworkGateway.id
 
 @description('The resource ID of the existing Public IP.')
-output existingPublicIpResourceId string = existingPublicIp.id
+output existingFirstPipResourceId string = existingPublicIp.id
 
 @description('The resource ID of the existing secondary Public IP.')
 output existingActivePipResourceId string = existingActivePublicIp.id

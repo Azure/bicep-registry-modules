@@ -684,7 +684,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     ]
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
-    existingPublicIpResourceId: '<existingPublicIpResourceId>'
+    existingFirstPipResourceId: '<existingFirstPipResourceId>'
     gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
     location: '<location>'
     publicIpZones: [
@@ -751,8 +751,8 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "enablePrivateIpAddress": {
       "value": true
     },
-    "existingPublicIpResourceId": {
-      "value": "<existingPublicIpResourceId>"
+    "existingFirstPipResourceId": {
+      "value": "<existingFirstPipResourceId>"
     },
     "gatewayDefaultSiteLocalNetworkGatewayId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayId>"
@@ -1001,7 +1001,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     domainNameLabel: [
       'dm-nvger'
     ]
-    gatewayPipName: 'pip-nvger'
+    firstPipName: 'pip-nvger'
     location: '<location>'
     publicIpZones: [
       1
@@ -1048,7 +1048,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         "dm-nvger"
       ]
     },
-    "gatewayPipName": {
+    "firstPipName": {
       "value": "pip-nvger"
     },
     "location": {
@@ -1083,7 +1083,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   params: {
     // Required parameters
     clusterSettings: {
-      activeGatewayPipName: 'nvgmax001-pip2'
+      secondPipName: 'nvgmax001-pip2'
       clusterMode: 'activeActiveBgp'
       customBgpIpAddresses: [
         '169.254.21.4'
@@ -1210,7 +1210,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     // Required parameters
     "clusterSettings": {
       "value": {
-        "activeGatewayPipName": "nvgmax001-pip2",
+        "secondPipName": "nvgmax001-pip2",
         "clusterMode": "activeActiveBgp",
         "customBgpIpAddresses": [
           "169.254.21.4",
@@ -1831,9 +1831,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 | [`enableDnsForwarding`](#parameter-enablednsforwarding) | bool | Whether DNS forwarding is enabled or not and is only supported for Express Route Gateways. The DNS forwarding feature flag must be enabled on the current subscription. |
 | [`enablePrivateIpAddress`](#parameter-enableprivateipaddress) | bool | Whether private IP needs to be enabled on this gateway for connections or not. Used for configuring a Site-to-Site VPN connection over ExpressRoute private peering. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`existingPublicIpResourceId`](#parameter-existingpublicipresourceid) | string | The Public IP resource ID to associate to the Virtual Network Gateway. If empty, then the Public IP that is created as part of this module will be applied to the Virtual Network Gateway. |
+| [`existingFirstPipResourceId`](#parameter-existingFirstPipResourceId) | string | The Public IP resource ID to associate to the Virtual Network Gateway. If empty, then the Public IP that is created as part of this module will be applied to the Virtual Network Gateway. |
 | [`gatewayDefaultSiteLocalNetworkGatewayId`](#parameter-gatewaydefaultsitelocalnetworkgatewayid) | string | The reference to the LocalNetworkGateway resource which represents local network site having default routes. Assign Null value in case of removing existing default site setting. |
-| [`gatewayPipName`](#parameter-gatewaypipname) | string | Specifies the name of the Public IP to be created for the Virtual Network Gateway. This will only take effect if no existing Public IP is provided. If neither an existing Public IP nor this parameter is specified, a new Public IP will be created with a default name, using the gateway's name with the '-pip1' suffix. |
+| [`firstPipName`](#parameter-firstPipName) | string | Specifies the name of the Public IP to be created for the Virtual Network Gateway. This will only take effect if no existing Public IP is provided. If neither an existing Public IP nor this parameter is specified, a new Public IP will be created with a default name, using the gateway's name with the '-pip1' suffix. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`natRules`](#parameter-natrules) | array | NatRules for virtual network gateway. NAT is supported on the the following SKUs: VpnGw2~5, VpnGw2AZ~5AZ and is supported for IPsec/IKE cross-premises connections only. |
@@ -2137,7 +2137,7 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `existingPublicIpResourceId`
+### Parameter: `existingFirstPipResourceId`
 
 The Public IP resource ID to associate to the Virtual Network Gateway. If empty, then the Public IP that is created as part of this module will be applied to the Virtual Network Gateway.
 
@@ -2153,7 +2153,7 @@ The reference to the LocalNetworkGateway resource which represents local network
 - Type: string
 - Default: `''`
 
-### Parameter: `gatewayPipName`
+### Parameter: `firstPipName`
 
 Specifies the name of the Public IP to be created for the Virtual Network Gateway. This will only take effect if no existing Public IP is provided. If neither an existing Public IP nor this parameter is specified, a new Public IP will be created with a default name, using the gateway's name with the '-pip1' suffix.
 
