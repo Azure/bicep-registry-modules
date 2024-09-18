@@ -8,7 +8,7 @@ param virtualNetworkName string
 param localNetworkGatewayName string
 
 @description('Required. The name of the Public IP to create.')
-param existingPublicIPName string
+param existingFirstPipName string
 
 var addressPrefix = '10.0.0.0/16'
 
@@ -46,8 +46,8 @@ resource localNetworkGateway 'Microsoft.Network/localNetworkGateways@2023-04-01'
 }
 
 
-resource existingPublicIp 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
-  name: existingPublicIPName
+resource existingFirstPip 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
+  name: existingFirstPipName
   location: location
   sku: {
     name: 'Standard'
@@ -70,5 +70,5 @@ output vnetResourceId string = virtualNetwork.id
 output localNetworkGatewayResourceId string = localNetworkGateway.id
 
 @description('The resource ID of the existing Public IP.')
-output existingFirstPipResourceId string = existingPublicIp.id
+output existingFirstPipResourceId string = existingFirstPip.id
 

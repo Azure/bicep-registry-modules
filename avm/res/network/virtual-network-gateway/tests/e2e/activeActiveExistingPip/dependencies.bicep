@@ -8,10 +8,10 @@ param virtualNetworkName string
 param localNetworkGatewayName string
 
 @description('Required. The name of the Public IP to create.')
-param existingPublicIPName string
+param existingFirstPipName string
 
 @description('Required. The name of the secondary Public IP to create in the active-active configuration.')
-param existingActivePublicIPName string
+param existingSecondPipName string
 
 var addressPrefix = '10.0.0.0/16'
 
@@ -48,8 +48,8 @@ resource localNetworkGateway 'Microsoft.Network/localNetworkGateways@2023-04-01'
   }
 }
 
-resource existingPublicIp 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
-  name: existingPublicIPName
+resource existingFirstPip 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
+  name: existingFirstPipName
   location: location
   sku: {
     name: 'Standard'
@@ -65,8 +65,8 @@ resource existingPublicIp 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   ]
 }
 
-resource existingActivePublicIp 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
-  name: existingActivePublicIPName
+resource existingSecondPip 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
+  name: existingSecondPipName
   location: location
   sku: {
     name: 'Standard'
@@ -90,7 +90,7 @@ output vnetResourceId string = virtualNetwork.id
 output localNetworkGatewayResourceId string = localNetworkGateway.id
 
 @description('The resource ID of the existing Public IP.')
-output existingFirstPipResourceId string = existingPublicIp.id
+output existingFirstPipResourceId string = existingFirstPip.id
 
 @description('The resource ID of the existing secondary Public IP.')
-output existingSecondPipResourceId string = existingActivePublicIp.id
+output existingSecondPipResourceId string = existingSecondPip.id
