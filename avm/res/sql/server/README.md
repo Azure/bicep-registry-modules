@@ -1680,6 +1680,7 @@ param vulnerabilityAssessmentsObj = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionProtectorObj`](#parameter-encryptionprotectorobj) | object | The encryption protection configuration. |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the server. |
+| [`isIPv6Enabled`](#parameter-isipv6enabled) | string | Whether or not to enable IPv6 support for this server. |
 | [`keys`](#parameter-keys) | array | The keys to configure. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1878,6 +1879,21 @@ The firewall rules to create in the server.
 - Type: array
 - Default: `[]`
 
+### Parameter: `isIPv6Enabled`
+
+Whether or not to enable IPv6 support for this server.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `keys`
 
 The keys to configure.
@@ -1971,6 +1987,7 @@ Minimal TLS version allowed.
     '1.0'
     '1.1'
     '1.2'
+    '1.3'
   ]
   ```
 
@@ -2393,6 +2410,7 @@ Whether or not public network access is allowed for this resource. For security 
     ''
     'Disabled'
     'Enabled'
+    'SecuredByPerimeter'
   ]
   ```
 
