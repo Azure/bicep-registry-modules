@@ -107,28 +107,12 @@ module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (deployInVnet
         networkSecurityGroupResourceId: nsg.outputs.resourceId
         serviceEndpoints: ['Microsoft.Storage']
         delegation: 'Microsoft.ContainerInstance/containerGroups'
-        // delegations: [
-        //   {
-        //     name: 'Microsoft.ContainerInstance.containerGroups'
-        //     properties: {
-        //       serviceName: 'Microsoft.ContainerInstance/containerGroups'
-        //     }
-        //   }
-        // ]
       }
       {
         name: 'workload-subnet'
         addressPrefix: workloadSubnetAddressPrefix
         networkSecurityGroupResourceId: nsg.outputs.resourceId
         delegation: 'Microsoft.App/environments'
-        // delegations: [
-        //   {
-        //     name: 'Microsoft.App.environements'
-        //     properties: {
-        //       serviceName: 'Microsoft.App/environments'
-        //     }
-        //   }
-        // ]
       }
     ]
     location: resourceLocation
@@ -216,10 +200,6 @@ module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.8.
         }
       ]
     }
-    // privateDnsZoneGroupName: 'default'
-    // privateDnsZoneResourceIds: [
-    //   deployDnsZoneKeyVault ? dnsZoneKeyVault_new.outputs.resourceId : dnsZoneKeyVault_existing.id
-    // ]
     privateLinkServiceConnections: [
       {
         name: 'pe-KeyVault-connection-${name}'
@@ -252,12 +232,6 @@ module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endp
         }
       ]
     }
-    // privateDnsZoneGroupName: 'default'
-    // privateDnsZoneResourceIds: [
-    //   deployDnsZoneContainerRegistry
-    //     ? dnsZoneContainerRegistry_new.outputs.resourceId
-    //     : dnsZoneContainerRegistry_existing.id
-    // ]
     privateLinkServiceConnections: [
       {
         name: 'pe-ContainerRegistry-connection-${name}'

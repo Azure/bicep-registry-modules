@@ -87,7 +87,7 @@ param memory string = '2Gi'
 })
 param environmentVariables environmentVariablesType[]?
 
-@description('Optional. The secrets of the Container App. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set.')
+@description('Optional. The secrets of the Container App. They will be added to Key Vault and configured as secrets in the Container App Job. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set.')
 @metadata({
   example: '''
   [

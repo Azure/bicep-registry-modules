@@ -449,7 +449,7 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
 | [`memory`](#parameter-memory) | string | The memory resources that will be allocated to the Container Apps Job. |
 | [`newContainerImageName`](#parameter-newcontainerimagename) | string | The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline. You should skip the registry name when specifying a custom value, as it is added automatically. If you leave this empty, the original name will be used (with the new registry name). |
 | [`overwriteExistingImage`](#parameter-overwriteexistingimage) | bool | The flag that indicates whether the existing image in the Container Registry should be overwritten. |
-| [`secrets`](#parameter-secrets) | array | The secrets of the Container App. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set. |
+| [`secrets`](#parameter-secrets) | array | The secrets of the Container App. They will be added to Key Vault and configured as secrets in the Container App Job. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`workloadProfileName`](#parameter-workloadprofilename) | string |  The name of the workload profile to use. Leave empty to use a consumption based profile. |
 | [`workloadProfiles`](#parameter-workloadprofiles) | array | Workload profiles for the managed environment. |
@@ -680,7 +680,7 @@ The flag that indicates whether the existing image in the Container Registry sho
 
 ### Parameter: `secrets`
 
-The secrets of the Container App. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set.
+The secrets of the Container App. They will be added to Key Vault and configured as secrets in the Container App Job. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set.
 
 - Required: No
 - Type: array

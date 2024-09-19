@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "15952878281324787755"
+      "version": "0.30.3.12046",
+      "templateHash": "8686436321054497385"
     },
     "name": "container-job",
     "description": "This module deploys a container to run as a job.",
@@ -245,7 +245,7 @@
       "nullable": true,
       "metadata": {
         "example": "  [\n    {\n      name: 'mysecret'\n      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      name: 'mysecret'\n      identity: 'system'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      // You can do this, but you shouldn't. Use a secret reference instead.\n      name: 'mysecret'\n      value: 'mysecretvalue'\n    }\n    {\n      name: 'connection-string'\n      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value\n    }\n  ]\n  ",
-        "description": "Optional. The secrets of the Container App. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set."
+        "description": "Optional. The secrets of the Container App. They will be added to Key Vault and configured as secrets in the Container App Job. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set."
       }
     },
     "workloadProfiles": {
@@ -362,8 +362,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "163492396384376343"
+              "version": "0.30.3.12046",
+              "templateHash": "10479361718381835758"
             }
           },
           "definitions": {
@@ -21927,7 +21927,7 @@
             "value": "[parameters('containerImageSource')]"
           },
           "newImageName": {
-            "value": "[replace(coalesce(parameters('newContainerImageName'), ''), '{registry}', reference('services').outputs.registryLoginServer.value)]"
+            "value": "[parameters('newContainerImageName')]"
           },
           "managedIdentities": {
             "value": {
