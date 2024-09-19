@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "1188225161775362575"
+      "templateHash": "3109919695748867092"
     },
     "name": "Azure Front Doors",
     "description": "This module deploys an Azure Front Door.",
@@ -380,7 +380,7 @@
     },
     "frontDoor": {
       "type": "Microsoft.Network/frontDoors",
-      "apiVersion": "2020-05-01",
+      "apiVersion": "2021-06-01",
       "name": "[parameters('name')]",
       "location": "global",
       "tags": "[parameters('tags')]",
