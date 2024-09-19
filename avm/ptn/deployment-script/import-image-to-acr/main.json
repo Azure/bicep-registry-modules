@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "15179702678978782456"
+      "templateHash": "13166673091432959100"
     },
     "name": "import-image-to-acr",
     "description": "This modules deployes an image to an Azure Container Registry.",
@@ -127,7 +127,7 @@
     },
     "newImageName": {
       "type": "string",
-      "defaultValue": "[last(split(parameters('image'), '/'))]",
+      "defaultValue": "[string(skip(parameters('image'), add(indexOf(parameters('image'), '/'), 1)))]",
       "metadata": {
         "example": "your-image-name:tag",
         "description": "Optional. The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline."
@@ -910,7 +910,7 @@
       },
       "value": {
         "originalImage": "[parameters('image')]",
-        "acrHostedImage": "[format('{0}{1}', reference('acr').loginServer, string(skip(parameters('image'), indexOf(parameters('image'), '/'))))]"
+        "acrHostedImage": "[if(empty(parameters('newImageName')), format('{0}{1}', reference('acr').loginServer, string(skip(parameters('image'), indexOf(parameters('image'), '/')))), format('{0}/{1}', reference('acr').loginServer, parameters('newImageName')))]"
       }
     }
   }
