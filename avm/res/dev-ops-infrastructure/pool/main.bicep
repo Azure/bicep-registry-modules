@@ -292,7 +292,7 @@ type organizationProfileType = {
 
   @description('Optional. The type of permission which determines which accounts are admins on the Azure DevOps pool.')
   permissionProfile: {
-    @description('Optional. Determines who has admin permissions to the Azure DevOps pool.')
+    @description('Required. Determines who has admin permissions to the Azure DevOps pool.')
     kind: 'CreatorOnly' | 'Inherit' | 'SpecificAccounts'
 
     @description('Optional. Group email addresses.')
