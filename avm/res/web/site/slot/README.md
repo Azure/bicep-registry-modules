@@ -73,7 +73,6 @@ This module deploys a Web or Function App Deployment Slot.
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Allow or block all public traffic. |
 | [`redundancyMode`](#parameter-redundancymode) | string | Site redundancy mode. |
-| [`retainExistingSettings`](#parameter-retainexistingsettings) | bool | Retain existing app settings. If set to true, existing app settings which are NOT defined in the Bicep file will be retained. Settings which are defined in the Bicep file will be updated irrespective of this parameter. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serverFarmResourceId`](#parameter-serverfarmresourceid) | string | The resource ID of the app service plan to use for the slot. |
 | [`siteConfig`](#parameter-siteconfig) | object | The site config object. |
@@ -941,14 +940,6 @@ Site redundancy mode.
     'None'
   ]
   ```
-
-### Parameter: `retainExistingSettings`
-
-Retain existing app settings. If set to true, existing app settings which are NOT defined in the Bicep file will be retained. Settings which are defined in the Bicep file will be updated irrespective of this parameter.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `roleAssignments`
 

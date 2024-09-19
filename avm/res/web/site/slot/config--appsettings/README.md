@@ -37,7 +37,6 @@ This module deploys a Site Slot App Setting.
 | [`appInsightResourceId`](#parameter-appinsightresourceid) | string | Resource ID of the app insight to leverage for this resource. |
 | [`appSettingsKeyValuePairs`](#parameter-appsettingskeyvaluepairs) | object | The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING. |
 | [`currentAppSettings`](#parameter-currentappsettings) | object | The current app settings. |
-| [`retainExistingSettings`](#parameter-retainexistingsettings) | bool | Retain existing app settings. If set to true, existing app settings which are NOT defined in the Bicep file will be retained. Settings which are defined in the Bicep file will be updated irrespective of this parameter. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions. |
 | [`storageAccountUseIdentityAuthentication`](#parameter-storageaccountuseidentityauthentication) | bool | If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'. |
 
@@ -100,14 +99,6 @@ The current app settings.
 - Required: No
 - Type: object
 - Default: `{}`
-
-### Parameter: `retainExistingSettings`
-
-Retain existing app settings. If set to true, existing app settings which are NOT defined in the Bicep file will be retained. Settings which are defined in the Bicep file will be updated irrespective of this parameter.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `storageAccountResourceId`
 

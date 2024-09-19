@@ -174,9 +174,6 @@ param hybridConnectionRelays array?
 ])
 param publicNetworkAccess string?
 
-@description('Optional. Retain existing app settings. If set to true, existing app settings which are NOT defined in the Bicep file will be retained. Settings which are defined in the Bicep file will be updated irrespective of this parameter.')
-param retainExistingSettings bool = false
-
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -297,7 +294,6 @@ module app_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettings
     storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
     appInsightResourceId: appInsightResourceId
     appSettingsKeyValuePairs: appSettingsKeyValuePairs
-    retainExistingSettings: retainExistingSettings
     currentAppSettings: !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
   }
 }
@@ -364,7 +360,6 @@ module app_slots 'slot/main.bicep' = [
       diagnosticSettings: slot.?diagnosticSettings
       roleAssignments: slot.?roleAssignments
       appSettingsKeyValuePairs: slot.?appSettingsKeyValuePairs ?? appSettingsKeyValuePairs
-      retainExistingSettings: slot.?retainExistingSettings ?? retainExistingSettings
       basicPublishingCredentialsPolicies: slot.?basicPublishingCredentialsPolicies ?? basicPublishingCredentialsPolicies
       lock: slot.?lock ?? lock
       privateEndpoints: slot.?privateEndpoints ?? []

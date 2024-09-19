@@ -34,9 +34,6 @@ param appInsightResourceId string?
 @description('Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.')
 param appSettingsKeyValuePairs object?
 
-@description('Optional. Retain existing app settings. If set to true, existing app settings which are NOT defined in the Bicep file will be retained. Settings which are defined in the Bicep file will be updated irrespective of this parameter.')
-param retainExistingSettings bool = false
-
 @description('Optional. The current app settings.')
 param currentAppSettings object = {}
 
@@ -58,7 +55,7 @@ var appInsightsValues = !empty(appInsightResourceId)
   : {}
 
 var expandedAppSettings = union(
-  retainExistingSettings ? currentAppSettings : {},
+  currentAppSettings ?? {},
   appSettingsKeyValuePairs ?? {},
   azureWebJobsValues,
   appInsightsValues
@@ -87,16 +84,6 @@ resource appSettings 'Microsoft.Web/sites/config@2023-12-01' = {
   parent: app
   properties: expandedAppSettings
 }
-
-// module appSettings 'modules/mergeSettings.bicep' = {
-//   name: 'mergeSettings'
-//   kind: kind
-//   parent: app
-//   params: {
-//     currentAppSettings: retainExistingSettings ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
-//     appSettings: expandedAppSettings
-//   }
-// }
 
 @description('The name of the site config.')
 output name string = appSettings.name

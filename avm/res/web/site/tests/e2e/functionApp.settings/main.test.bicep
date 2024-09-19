@@ -54,7 +54,6 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       kind: 'functionapp'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
-      retainExistingSettings: true
       appSettingsKeyValuePairs: {
         AzureFunctionsJobHost__logging__logLevel__default: 'Trace'
         FUNCTIONS_EXTENSION_VERSION: '~4'
