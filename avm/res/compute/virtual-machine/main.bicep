@@ -497,7 +497,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
   }
 ]
 
-resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
+resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   name: name
   location: location
   identity: identity

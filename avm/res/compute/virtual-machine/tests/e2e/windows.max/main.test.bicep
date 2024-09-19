@@ -47,6 +47,7 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    publicIPAddressName: 'dep-${namePrefix}-pip-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     loadBalancerName: 'dep-${namePrefix}-lb-${serviceShort}'
     recoveryServicesVaultName: 'dep-${namePrefix}-rsv-${serviceShort}'
@@ -110,12 +111,7 @@ module testDeployment '../../../main.bicep' = [
               ]
               name: 'ipconfig01'
               pipConfiguration: {
-                publicIpNameSuffix: '-pip-01'
-                zones: [
-                  1
-                  2
-                  3
-                ]
+                publicIPAddressResourceId: nestedDependencies.outputs.publicIPAddressResourceId
                 roleAssignments: [
                   {
                     name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'

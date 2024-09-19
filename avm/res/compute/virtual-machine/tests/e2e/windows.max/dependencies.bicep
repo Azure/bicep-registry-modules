@@ -10,6 +10,9 @@ param managedIdentityName string
 @description('Required. The name of the Load Balancer to create.')
 param loadBalancerName string
 
+@description('Required. The name of the Public IP address to create.')
+param publicIPAddressName string
+
 @description('Required. The name of the Recovery Services Vault to create.')
 param recoveryServicesVaultName string
 
@@ -106,6 +109,12 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
       }
     ]
   }
+}
+
+resource pip 'Microsoft.Network/publicIPAddresses@2024-01-01' = {
+  name: publicIPAddressName
+  location: location
+  properties: {}
 }
 
 resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2022-04-01' = {
@@ -403,6 +412,9 @@ output recoveryServicesVaultResourceGroupName string = resourceGroup().name
 
 @description('The name of the Backup Policy created in the Backup Recovery Vault.')
 output recoveryServicesVaultBackupPolicyName string = recoveryServicesVault::backupPolicy.name
+
+@description('The resource ID of the created PIP.')
+output publicIPAddressResourceId string = pip.id
 
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
