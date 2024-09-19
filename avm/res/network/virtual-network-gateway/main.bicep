@@ -11,9 +11,6 @@ param location string = resourceGroup().location
 @description('Optional. Specifies the name of the Public IP used by the Virtual Network Gateway. If it\'s not provided, a \'-pip\' suffix will be appended to the gateway\'s name.')
 param gatewayPipName string = '${name}-pip1'
 
-@description('Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip\' suffix will be appended to the gateway\'s name.')
-param activeGatewayPipName string = '${name}-pip2'
-
 @description('Optional. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix.')
 param publicIPPrefixResourceId string = ''
 
@@ -70,14 +67,8 @@ param vpnType string = 'RouteBased'
 @description('Required. Virtual Network resource ID.')
 param vNetResourceId string
 
-@description('Optional. Value to specify if the Gateway should be deployed in active-active or active-passive configuration.')
-param activeActive bool = true
-
-@description('Optional. Value to specify if BGP is enabled or not.')
-param enableBgp bool = true
-
-@description('Optional. ASN value.')
-param asn int = 65815
+@description('Required. Specifies one of the following four configurations: Active-Active with (clusterMode = activeActiveBgp) or without (clusterMode = activeActiveNoBgp) BGP, Active-Passive with (clusterMode = activePassiveBgp) or without (clusterMode = activePassiveNoBgp) BGP.')
+param clusterSettings clusterSettingType
 
 @description('Optional. The IP address range from which VPN clients will receive an IP address when connected. Range specified must not overlap with on-premise network.')
 param vpnClientAddressPoolPrefix string = ''
@@ -140,25 +131,53 @@ param vpnClientAadConfiguration object = {}
 // Other Variables
 var gatewayPipAllocationMethod = skuName == 'Basic' ? 'Dynamic' : 'Static'
 
-var isActiveActiveValid = gatewayType != 'ExpressRoute' ? activeActive : false
-var virtualGatewayPipNameVar = isActiveActiveValid
+var isExpressRoute = gatewayType == 'ExpressRoute'
+
+var vpnTypeVar = !isExpressRoute ? vpnType : 'PolicyBased'
+
+var isBgp = (clusterSettings.clusterMode == 'activeActiveBgp' || clusterSettings.clusterMode == 'activePassiveBgp') && !isExpressRoute
+
+var isActiveActive = (clusterSettings.clusterMode == 'activeActiveNoBgp' || clusterSettings.clusterMode == 'activeActiveBgp') && !isExpressRoute
+
+var activeGatewayPipNameVar = isActiveActive ? (clusterSettings.?activeGatewayPipName ?? '${name}-pip2') : null
+
+var virtualGatewayPipNameVar = isActiveActive
   ? [
       gatewayPipName
-      activeGatewayPipName
+      activeGatewayPipNameVar
     ]
   : [
       gatewayPipName
     ]
 
-var vpnTypeVar = gatewayType != 'ExpressRoute' ? vpnType : 'PolicyBased'
+// Potential BGP configurations (active-active vs active-passive)
+var bgpSettingsVar = isActiveActive
+  ? {
+      asn: clusterSettings.?asn ?? 65515
+      bgpPeeringAddresses: [
+        {
+          customBgpIpAddresses: clusterSettings.?customBgpIpAddresses
+          ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
+        }
+        {
+          customBgpIpAddresses: clusterSettings.?secondCustomBgpIpAddresses
+          ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig2'
+        }
+      ]
+    }
+  : {
+      asn: clusterSettings.?asn ?? 65515
+      bgpPeeringAddresses: [
+        {
+          customBgpIpAddresses: clusterSettings.?customBgpIpAddresses
+          ipconfigurationId: '${az.resourceId('Microsoft.Network/virtualNetworkGateways', name)}/ipConfigurations/vNetGatewayConfig1'
+        }
+      ]
+    }
 
-var isBgpValid = gatewayType != 'ExpressRoute' ? enableBgp : false
-var bgpSettings = {
-  asn: asn
-}
 
-// Potential configurations (active-active vs active-passive)
-var ipConfiguration = isActiveActiveValid
+// Potential IP configurations (active-active vs active-passive)
+var ipConfiguration = isActiveActive
   ? [
       {
         properties: {
@@ -179,8 +198,8 @@ var ipConfiguration = isActiveActiveValid
             id: '${vNetResourceId}/subnets/GatewaySubnet'
           }
           publicIPAddress: {
-            id: isActiveActiveValid
-              ? az.resourceId('Microsoft.Network/publicIPAddresses', activeGatewayPipName)
+            id: isActiveActive
+              ? az.resourceId('Microsoft.Network/publicIPAddresses', activeGatewayPipNameVar)
               : az.resourceId('Microsoft.Network/publicIPAddresses', gatewayPipName)
           }
         }
@@ -331,13 +350,13 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2023-04
   tags: tags
   properties: {
     ipConfigurations: ipConfiguration
-    activeActive: isActiveActiveValid
+    activeActive: isActiveActive
     allowRemoteVnetTraffic: allowRemoteVnetTraffic
     allowVirtualWanTraffic: allowVirtualWanTraffic
-    enableBgp: isBgpValid
-    bgpSettings: isBgpValid ? bgpSettings : null
+    enableBgp: isBgp
+    bgpSettings: isBgp ? bgpSettingsVar : null
     disableIPSecReplayProtection: disableIPSecReplayProtection
-    enableDnsForwarding: gatewayType == 'ExpressRoute' ? enableDnsForwarding : null
+    enableDnsForwarding: !isExpressRoute ? enableDnsForwarding : null
     enablePrivateIpAddress: enablePrivateIpAddress
     enableBgpRouteTranslationForNat: enableBgpRouteTranslationForNat
     gatewayType: gatewayType
@@ -365,11 +384,11 @@ module virtualNetworkGateway_natRules 'nat-rule/main.bicep' = [
     params: {
       name: natRule.name
       virtualNetworkGatewayName: virtualNetworkGateway.name
-      externalMappings: contains(natRule, 'externalMappings') ? natRule.externalMappings : []
-      internalMappings: contains(natRule, 'internalMappings') ? natRule.internalMappings : []
-      ipConfigurationId: contains(natRule, 'ipConfigurationId') ? natRule.ipConfigurationId : ''
-      mode: contains(natRule, 'mode') ? natRule.mode : ''
-      type: contains(natRule, 'type') ? natRule.type : ''
+      externalMappings: natRule.?externalMappings ?? []
+      internalMappings: natRule.?internalMappings ?? []
+      ipConfigurationId: natRule.?ipConfigurationId ?? ''
+      mode: natRule.?mode ?? ''
+      type: natRule.?type ?? ''
     }
   }
 ]
@@ -533,3 +552,55 @@ type diagnosticSettingType = {
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?
+
+type activePassiveNoBgpType = {
+  
+  clusterMode: 'activePassiveNoBgp'
+
+}
+
+type activeActiveNoBgpType = {
+  
+  clusterMode: 'activeActiveNoBgp'
+
+  @description('Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip2\' suffix will be appended to the gateway\'s name.')
+  activeGatewayPipName: string?
+
+}
+
+type activePassiveBgpType = {
+  
+  clusterMode: 'activePassiveBgp'
+
+  @description('Optional. The Autonomous System Number value. If it\'s not provided, a default \'65515\' value will be assigned to the ASN.')
+  @minValue(0)
+  @maxValue(4294967295)
+  asn: int? 
+
+  @description('Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
+  customBgpIpAddresses: string[]?
+}
+
+type activeActiveBgpType = {
+  
+  clusterMode: 'activeActiveBgp'
+
+  @description('Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip2\' suffix will be appended to the gateway\'s name.')
+  activeGatewayPipName: string?
+  
+  @description('Optional. The Autonomous System Number value. If it\'s not provided, a default \'65515\' value will be assigned to the ASN.')
+  @minValue(0)
+  @maxValue(4294967295)
+  asn: int? 
+
+  @description('Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
+  customBgpIpAddresses: string[]?
+  
+  @description('Optional. The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
+  secondCustomBgpIpAddresses: string[]?
+}
+
+@discriminator('clusterMode')
+type clusterSettingType = activeActiveNoBgpType | activeActiveBgpType | activePassiveBgpType | activePassiveNoBgpType
+
+
