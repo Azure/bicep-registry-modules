@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.3.12046",
-      "templateHash": "1491249419213111171"
+      "templateHash": "15191897376801297199"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource.",
@@ -190,7 +190,7 @@
                 "SpecificAccounts"
               ],
               "metadata": {
-                "description": "Optional. Determines who has admin permissions to the Azure DevOps pool."
+                "description": "Required. Determines who has admin permissions to the Azure DevOps pool."
               }
             },
             "groups": {

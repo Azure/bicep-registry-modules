@@ -734,20 +734,18 @@ The type of permission which determines which accounts are admins on the Azure D
 - Required: No
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-organizationprofilepermissionprofilekind) | string | Determines who has admin permissions to the Azure DevOps pool. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`groups`](#parameter-organizationprofilepermissionprofilegroups) | array | Group email addresses. |
-| [`kind`](#parameter-organizationprofilepermissionprofilekind) | string | Determines who has admin permissions to the Azure DevOps pool. |
 | [`users`](#parameter-organizationprofilepermissionprofileusers) | array | User email addresses. |
-
-### Parameter: `organizationProfile.permissionProfile.groups`
-
-Group email addresses.
-
-- Required: No
-- Type: array
 
 ### Parameter: `organizationProfile.permissionProfile.kind`
 
@@ -763,6 +761,13 @@ Determines who has admin permissions to the Azure DevOps pool.
     'SpecificAccounts'
   ]
   ```
+
+### Parameter: `organizationProfile.permissionProfile.groups`
+
+Group email addresses.
+
+- Required: No
+- Type: array
 
 ### Parameter: `organizationProfile.permissionProfile.users`
 
