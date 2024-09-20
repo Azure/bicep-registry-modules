@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "17557675644366875046"
+      "templateHash": "16807472230650895258"
     },
     "name": "Bastion Hosts",
     "description": "This module deploys a Bastion Host.",
@@ -231,7 +231,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The Public IP resource ID to associate to the azureBastionSubnet. If empty, then the Public IP that is created as part of this module will be applied to the azureBastionSubnet."
+        "description": "Optional. The Public IP resource ID to associate to the azureBastionSubnet. If empty, then the Public IP that is created as part of this module will be applied to the azureBastionSubnet. This parameter is ignored when enablePrivateOnlyBastion is true."
       }
     },
     "publicIPAddressObject": {
@@ -240,7 +240,7 @@
         "name": "[format('{0}-pip', parameters('name'))]"
       },
       "metadata": {
-        "description": "Optional. Specifies the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided."
+        "description": "Optional. Specifies the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided. This parameter is ignored when enablePrivateOnlyBastion is true."
       }
     },
     "diagnosticSettings": {
@@ -260,6 +260,8 @@
       "defaultValue": "Basic",
       "allowedValues": [
         "Basic",
+        "Developer",
+        "Premium",
         "Standard"
       ],
       "metadata": {
@@ -270,42 +272,56 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Choose to disable or enable Copy Paste."
+        "description": "Optional. Choose to disable or enable Copy Paste. For Basic and Developer SKU Copy/Paste is always enabled."
       }
     },
     "enableFileCopy": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Choose to disable or enable File Copy."
+        "description": "Optional. Choose to disable or enable File Copy. Not supported for Basic and Developer SKU."
       }
     },
     "enableIpConnect": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Choose to disable or enable IP Connect."
+        "description": "Optional. Choose to disable or enable IP Connect. Not supported for Basic and Developer SKU."
       }
     },
     "enableKerberos": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Choose to disable or enable Kerberos authentication."
+        "description": "Optional. Choose to disable or enable Kerberos authentication. Not supported for Developer SKU."
       }
     },
     "enableShareableLink": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Choose to disable or enable Shareable Link."
+        "description": "Optional. Choose to disable or enable Shareable Link. Not supported for Basic and Developer SKU."
+      }
+    },
+    "enableSessionRecording": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Choose to disable or enable Session Recording feature. The Premium SKU is required for this feature. If Session Recording is enabled, the Native client support will be disabled."
+      }
+    },
+    "enablePrivateOnlyBastion": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Choose to disable or enable Private-only Bastion deployment. The Premium SKU is required for this feature."
       }
     },
     "scaleUnits": {
       "type": "int",
       "defaultValue": 2,
       "metadata": {
-        "description": "Optional. The scale units for the Bastion Host resource."
+        "description": "Optional. The scale units for the Bastion Host resource. The Basic and Developer SKU only support 2 scale units."
       }
     },
     "roleAssignments": {
@@ -326,6 +342,25 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "zones": {
+      "type": "array",
+      "items": {
+        "type": "int"
+      },
+      "defaultValue": [
+        1,
+        2,
+        3
+      ],
+      "allowedValues": [
+        1,
+        2,
+        3
+      ],
+      "metadata": {
+        "description": "Optional. A list of availability zones denoting where the Bastion Host resource needs to come from. This is not supported for the Developer SKU."
       }
     }
   },
@@ -368,14 +403,15 @@
     },
     "azureBastion": {
       "type": "Microsoft.Network/bastionHosts",
-      "apiVersion": "2022-11-01",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "sku": {
         "name": "[parameters('skuName')]"
       },
-      "properties": "[union(createObject('scaleUnits', if(equals(parameters('skuName'), 'Basic'), 2, parameters('scaleUnits')), 'ipConfigurations', createArray(createObject('name', 'IpConfAzureBastionSubnet', 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureBastionSubnet', parameters('virtualNetworkResourceId')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('bastionSubnetPublicIpResourceId'))), parameters('bastionSubnetPublicIpResourceId'), reference('publicIPAddress').outputs.resourceId.value)))))), 'enableKerberos', parameters('enableKerberos')), if(equals(parameters('skuName'), 'Standard'), createObject('enableTunneling', equals(parameters('skuName'), 'Standard'), 'disableCopyPaste', parameters('disableCopyPaste'), 'enableFileCopy', parameters('enableFileCopy'), 'enableIpConnect', parameters('enableIpConnect'), 'enableShareableLink', parameters('enableShareableLink')), createObject()))]",
+      "zones": "[if(equals(parameters('skuName'), 'Developer'), createArray(), map(parameters('zones'), lambda('zone', string(lambdaVariables('zone')))))]",
+      "properties": "[union(createObject('scaleUnits', if(or(equals(parameters('skuName'), 'Basic'), equals(parameters('skuName'), 'Developer')), 2, parameters('scaleUnits')), 'ipConfigurations', if(equals(parameters('skuName'), 'Developer'), createArray(), createArray(createObject('name', 'IpConfAzureBastionSubnet', 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureBastionSubnet', parameters('virtualNetworkResourceId')))), if(not(parameters('enablePrivateOnlyBastion')), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('bastionSubnetPublicIpResourceId'))), parameters('bastionSubnetPublicIpResourceId'), reference('publicIPAddress').outputs.resourceId.value))), createObject())))))), if(equals(parameters('skuName'), 'Developer'), createObject('virtualNetwork', createObject('id', parameters('virtualNetworkResourceId'))), createObject()), if(or(or(equals(parameters('skuName'), 'Basic'), equals(parameters('skuName'), 'Standard')), equals(parameters('skuName'), 'Premium')), createObject('enableKerberos', parameters('enableKerberos')), createObject()), if(or(equals(parameters('skuName'), 'Standard'), equals(parameters('skuName'), 'Premium')), createObject('enableTunneling', if(equals(parameters('skuName'), 'Standard'), true(), if(parameters('enableSessionRecording'), false(), true())), 'disableCopyPaste', parameters('disableCopyPaste'), 'enableFileCopy', parameters('enableFileCopy'), 'enableIpConnect', parameters('enableIpConnect'), 'enableShareableLink', parameters('enableShareableLink')), createObject()), if(equals(parameters('skuName'), 'Premium'), createObject('enableSessionRecording', parameters('enableSessionRecording'), 'enablePrivateOnlyBastion', parameters('enablePrivateOnlyBastion')), createObject()))]",
       "dependsOn": [
         "publicIPAddress"
       ]
@@ -449,7 +485,7 @@
       ]
     },
     "publicIPAddress": {
-      "condition": "[empty(parameters('bastionSubnetPublicIpResourceId'))]",
+      "condition": "[and(and(empty(parameters('bastionSubnetPublicIpResourceId')), not(equals(parameters('skuName'), 'Developer'))), not(parameters('enablePrivateOnlyBastion')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Bastion-PIP', uniqueString(deployment().name, parameters('location')))]",
@@ -507,7 +543,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "14450344965065009842"
+              "templateHash": "16693645977675862540"
             },
             "name": "Public IP Addresses",
             "description": "This module deploys a Public IP Address.",
@@ -956,7 +992,7 @@
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
             }
           },
           "resources": {
@@ -964,7 +1000,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.6.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1147,7 +1183,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('azureBastion', '2022-11-01', 'full').location]"
+      "value": "[reference('azureBastion', '2024-01-01', 'full').location]"
     },
     "ipConfAzureBastionSubnet": {
       "type": "object",

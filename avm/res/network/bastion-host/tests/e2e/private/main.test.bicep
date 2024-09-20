@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Private-only deployment'
+metadata description = 'This instance deploys the module as private-only Bastion deployment.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.bastionhosts-${servi
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nbhmin'
+param serviceShort string = 'nbhprv'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -53,6 +53,9 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
+      skuName: 'Premium'
+      enableSessionRecording: true
+      enablePrivateOnlyBastion: true
     }
     dependsOn: [
       nestedDependencies
