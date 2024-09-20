@@ -37,12 +37,44 @@ param virtualMachinesSubPlan string?
 ])
 param virtualMachinesPricingTier string = 'Free'
 
+@description('Optional. If set to "False", it allows the descendants of this scope to override the pricing configuration set on this scope (allows setting inherited="False"). If set to "True", it prevents overrides and forces this pricing configuration on all the descendants of this scope. This field is only available for subscription-level pricing.')
+@allowed([
+  'True'
+  'False'
+])
+param virtualMachinesPricingEnforce string?
+
+@description('Optional. Property values associated with the VirtualMachine extension.')
+param virtualMachinesPricingAdditionalExtensionProperties array?
+
+@description('Conditional. Required if using extensions. Property values associated with the VirtualMachine extension.')
+param virtualMachinesPricingIsEnabled string?
+
+@description('Conditional. Property values associated with the VirtualMachine extension.')
+param virtualMachinesPricingName string?
+
 @description('Optional. The pricing tier value for SqlServers. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
 param sqlServersPricingTier string = 'Free'
+
+@description('Optional. If set to "False", it allows the descendants of this scope to override the pricing configuration set on this scope (allows setting inherited="False"). If set to "True", it prevents overrides and forces this pricing configuration on all the descendants of this scope. This field is only available for subscription-level pricing.')
+@allowed([
+  'True'
+  'False'
+])
+param sqlServersPricingEnforce string?
+
+@description('Optional. Property values associated with the SqlServers extension.')
+param sqlServersPricingAdditionalExtensionProperties array?
+
+@description('Conditional. Required if using extensions. Property values associated with the SqlServers extension.')
+param sqlServersPricingIsEnabled string?
+
+@description('Conditional. Property values associated with the SqlServers extension.')
+param sqlServersPricingName string?
 
 @description('Optional. The pricing tier value for AppServices. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
@@ -51,12 +83,44 @@ param sqlServersPricingTier string = 'Free'
 ])
 param appServicesPricingTier string = 'Free'
 
+@description('Optional. If set to "False", it allows the descendants of this scope to override the pricing configuration set on this scope (allows setting inherited="False"). If set to "True", it prevents overrides and forces this pricing configuration on all the descendants of this scope. This field is only available for subscription-level pricing.')
+@allowed([
+  'True'
+  'False'
+])
+param appServicesPricingEnforce string?
+
+@description('Optional. Property values associated with the AppServices extension.')
+param appServicesPricingAdditionalExtensionProperties array?
+
+@description('Conditional. Required if using extensions. Property values associated with the AppServices extension.')
+param appServicesPricingIsEnabled string?
+
+@description('Conditional. Property values associated with the AppServices extension.')
+param appServicesPricingName string?
+
 @description('Optional. The pricing tier value for StorageAccounts. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
 param storageAccountsPricingTier string = 'Free'
+
+@description('Optional. If set to "False", it allows the descendants of this scope to override the pricing configuration set on this scope (allows setting inherited="False"). If set to "True", it prevents overrides and forces this pricing configuration on all the descendants of this scope. This field is only available for subscription-level pricing.')
+@allowed([
+  'True'
+  'False'
+])
+param storageAccountsPricingEnforce string?
+
+@description('Optional. Property values associated with the StorageAccounts extension.')
+param storageAccountsPricingAdditionalExtensionProperties array?
+
+@description('Conditional. Required if using extensions. Property values associated with the StorageAccounts extension.')
+param storageAccountsPricingIsEnabled string?
+
+@description('Conditional. Property values associated with the StorageAccounts extension.')
+param storageAccountsPricingName string?
 
 @description('Optional. The pricing tier value for SqlServerVirtualMachines. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
@@ -65,12 +129,44 @@ param storageAccountsPricingTier string = 'Free'
 ])
 param sqlServerVirtualMachinesPricingTier string = 'Free'
 
+@description('Optional. If set to "False", it allows the descendants of this scope to override the pricing configuration set on this scope (allows setting inherited="False"). If set to "True", it prevents overrides and forces this pricing configuration on all the descendants of this scope. This field is only available for subscription-level pricing.')
+@allowed([
+  'True'
+  'False'
+])
+param sqlServerVirtualMachinesPricingEnforce string?
+
+@description('Optional. Property values associated with the SqlServerVirtualMachines extension.')
+param sqlServerVirtualMachinesPricingAdditionalExtensionProperties array?
+
+@description('Conditional. Required if using extensions. Property values associated with the SqlServerVirtualMachines extension.')
+param sqlServerVirtualMachinesPricingIsEnabled string?
+
+@description('Conditional. Property values associated with the SqlServerVirtualMachines extension.')
+param sqlServerVirtualMachinesPricingName string?
+
 @description('Optional. The pricing tier value for KubernetesService. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
 param kubernetesServicePricingTier string = 'Free'
+
+@description('Optional. If set to "False", it allows the descendants of this scope to override the pricing configuration set on this scope (allows setting inherited="False"). If set to "True", it prevents overrides and forces this pricing configuration on all the descendants of this scope. This field is only available for subscription-level pricing.')
+@allowed([
+  'True'
+  'False'
+])
+param kubernetesServicePricingEnforce string?
+
+@description('Optional. Property values associated with the KubernetesService extension.')
+param kubernetesServicePricingAdditionalExtensionProperties array?
+
+@description('Conditional. Required if using extensions. Property values associated with the KubernetesService extension.')
+param kubernetesServicePricingIsEnabled string?
+
+@description('Conditional. Property values associated with the KubernetesService extension.')
+param kubernetesServicePricingName string?
 
 @description('Optional. The pricing tier value for ContainerRegistry. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
@@ -79,12 +175,44 @@ param kubernetesServicePricingTier string = 'Free'
 ])
 param containerRegistryPricingTier string = 'Free'
 
+@description('Optional. If set to "False", it allows the descendants of this scope to override the pricing configuration set on this scope (allows setting inherited="False"). If set to "True", it prevents overrides and forces this pricing configuration on all the descendants of this scope. This field is only available for subscription-level pricing.')
+@allowed([
+  'True'
+  'False'
+])
+param containerRegistryPricingEnforce string?
+
+@description('Optional. Property values associated with the ContainerRegistry extension.')
+param containerRegistryPricingAdditionalExtensionProperties array?
+
+@description('Conditional. Required if using extensions. Property values associated with the ContainerRegistry extension.')
+param containerRegistryPricingIsEnabled string?
+
+@description('Conditional. Property values associated with the ContainerRegistry extension.')
+param containerRegistryPricingName string?
+
 @description('Optional. The pricing tier value for KeyVaults. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
 param keyVaultsPricingTier string = 'Free'
+
+@description('Optional. If set to "False", it allows the descendants of this scope to override the pricing configuration set on this scope (allows setting inherited="False"). If set to "True", it prevents overrides and forces this pricing configuration on all the descendants of this scope. This field is only available for subscription-level pricing.')
+@allowed([
+  'True'
+  'False'
+])
+param keyVaultsPricingEnforce string?
+
+@description('Optional. Property values associated with the KeyVaults extension.')
+param keyVaultsPricingAdditionalExtensionProperties array?
+
+@description('Conditional. Required if using extensions. Property values associated with the KeyVaults extension.')
+param keyVaultsPricingIsEnabled string?
+
+@description('Conditional. Property values associated with the KeyVaults extension.')
+param keyVaultsPricingName string?
 
 @description('Optional. The pricing tier value for DNS. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
@@ -93,6 +221,22 @@ param keyVaultsPricingTier string = 'Free'
 ])
 param dnsPricingTier string = 'Free'
 
+@description('Optional. If set to "False", it allows the descendants of this scope to override the pricing configuration set on this scope (allows setting inherited="False"). If set to "True", it prevents overrides and forces this pricing configuration on all the descendants of this scope. This field is only available for subscription-level pricing.')
+@allowed([
+  'True'
+  'False'
+])
+param dnsPricingEnforce string?
+
+@description('Optional. Property values associated with the DNS extension.')
+param dnsPricingAdditionalExtensionProperties array?
+
+@description('Conditional. Required if using extensions. Property values associated with the DNS extension.')
+param dnsPricingIsEnabled string?
+
+@description('Conditional. Property values associated with the DNS extension.')
+param dnsPricingName string?
+
 @description('Optional. The pricing tier value for ARM. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
@@ -100,19 +244,67 @@ param dnsPricingTier string = 'Free'
 ])
 param armPricingTier string = 'Free'
 
+@description('Optional. If set to "False", it allows the descendants of this scope to override the pricing configuration set on this scope (allows setting inherited="False"). If set to "True", it prevents overrides and forces this pricing configuration on all the descendants of this scope. This field is only available for subscription-level pricing.')
+@allowed([
+  'True'
+  'False'
+])
+param armPricingEnforce string?
+
+@description('Optional. Property values associated with the ARM extension.')
+param armPricingAdditionalExtensionProperties array?
+
+@description('Conditional. Required if using extensions. Property values associated with the ARM extension.')
+param armPricingIsEnabled string?
+
+@description('Conditional. Property values associated with the ARM extension.')
+param armPricingName string?
+
 @description('Optional. The pricing tier value for OpenSourceRelationalDatabases. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
-param openSourceRelationalDatabasesTier string = 'Free'
+param openSourceRelationalDatabasesPricingTier string = 'Free'
+
+@description('Optional. If set to "False", it allows the descendants of this scope to override the pricing configuration set on this scope (allows setting inherited="False"). If set to "True", it prevents overrides and forces this pricing configuration on all the descendants of this scope. This field is only available for subscription-level pricing.')
+@allowed([
+  'True'
+  'False'
+])
+param openSourceRelationalDatabasesPricingEnforce string?
+
+@description('Optional. Property values associated with the OpenSourceRelationalDatabases extension.')
+param openSourceRelationalDatabasesPricingAdditionalExtensionProperties array?
+
+@description('Conditional. Required if using extensions. Property values associated with the OpenSourceRelationalDatabases extension.')
+param openSourceRelationalDatabasesPricingIsEnabled string?
+
+@description('Conditional. Property values associated with the OpenSourceRelationalDatabases extension.')
+param openSourceRelationalDatabasesPricingName string?
 
 @description('Optional. The pricing tier value for containers. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
-param containersTier string = 'Free'
+param containersPricingTier string = 'Free'
+
+@description('Optional. If set to "False", it allows the descendants of this scope to override the pricing configuration set on this scope (allows setting inherited="False"). If set to "True", it prevents overrides and forces this pricing configuration on all the descendants of this scope. This field is only available for subscription-level pricing.')
+@allowed([
+  'True'
+  'False'
+])
+param containersPricingEnforce string?
+
+@description('Optional. Property values associated with the containers extension.')
+param containersPricingAdditionalExtensionProperties array?
+
+@description('Conditional. Required if using extensions. Property values associated with the containers extension.')
+param containersPricingIsEnabled string?
+
+@description('Conditional. Property values associated with the containers extension.')
+param containersPricingName string?
 
 @description('Optional. The pricing tier value for CosmosDbs. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
@@ -120,6 +312,22 @@ param containersTier string = 'Free'
   'Standard'
 ])
 param cosmosDbsTier string = 'Free'
+
+@description('Optional. If set to "False", it allows the descendants of this scope to override the pricing configuration set on this scope (allows setting inherited="False"). If set to "True", it prevents overrides and forces this pricing configuration on all the descendants of this scope. This field is only available for subscription-level pricing.')
+@allowed([
+  'True'
+  'False'
+])
+param cosmosDbsPricingEnforce string?
+
+@description('Optional. Property values associated with the CosmosDbs extension.')
+param cosmosDbsPricingAdditionalExtensionProperties array?
+
+@description('Conditional. Required if using extensions. Property values associated with the CosmosDbs extension.')
+param cosmosDbsPricingIsEnabled string?
+
+@description('Conditional. Property values associated with the CosmosDbs extension.')
+param cosmosDbsPricingName string?
 
 @description('Optional. Security contact data.')
 param securityContactsProperties securityContactsType
@@ -135,66 +343,144 @@ var pricings = [
     name: 'VirtualMachines'
     pricingTier: virtualMachinesPricingTier
     subPlan: (virtualMachinesPricingTier == 'Standard' ? virtualMachinesSubPlan : null)
+    enforce: virtualMachinesPricingEnforce
+    extensions: {
+      additionalExtensionProperties: virtualMachinesPricingAdditionalExtensionProperties
+      isEnabled: virtualMachinesPricingIsEnabled
+      name: virtualMachinesPricingName
+    }
   }
   {
     name: 'SqlServers'
     pricingTier: sqlServersPricingTier
     subPlan: null
+    enforce: sqlServersPricingEnforce
+    extensions: {
+      additionalExtensionProperties: sqlServersPricingAdditionalExtensionProperties
+      isEnabled: sqlServersPricingIsEnabled
+      name: sqlServersPricingName
+    }
   }
   {
     name: 'AppServices'
     pricingTier: appServicesPricingTier
     subPlan: null
+    enforce: appServicesPricingEnforce
+    extensions: {
+      additionalExtensionProperties: appServicesPricingAdditionalExtensionProperties
+      isEnabled: appServicesPricingIsEnabled
+      name: appServicesPricingName
+    }
   }
   {
     name: 'StorageAccounts'
     pricingTier: storageAccountsPricingTier
     subPlan: null
+    enforce: storageAccountsPricingEnforce
+    extensions: {
+      additionalExtensionProperties: storageAccountsPricingAdditionalExtensionProperties
+      isEnabled: storageAccountsPricingIsEnabled
+      name: storageAccountsPricingName
+    }
   }
   {
     name: 'SqlServerVirtualMachines'
     pricingTier: sqlServerVirtualMachinesPricingTier
     subPlan: null
+    enforce: sqlServerVirtualMachinesPricingEnforce
+    extensions: {
+      additionalExtensionProperties: sqlServerVirtualMachinesPricingAdditionalExtensionProperties
+      isEnabled: sqlServerVirtualMachinesPricingIsEnabled
+      name: sqlServerVirtualMachinesPricingName
+    }
   }
   {
     name: 'KubernetesService'
     pricingTier: kubernetesServicePricingTier
     subPlan: null
+    enforce: kubernetesServicePricingEnforce
+    extensions: {
+      additionalExtensionProperties: kubernetesServicePricingAdditionalExtensionProperties
+      isEnabled: kubernetesServicePricingIsEnabled
+      name: kubernetesServicePricingName
+    }
   }
   {
     name: 'ContainerRegistry'
     pricingTier: containerRegistryPricingTier
     subPlan: null
+    enforce: containerRegistryPricingEnforce
+    extensions: {
+      additionalExtensionProperties: containerRegistryPricingAdditionalExtensionProperties
+      isEnabled: containerRegistryPricingIsEnabled
+      name: containerRegistryPricingName
+    }
   }
   {
     name: 'KeyVaults'
     pricingTier: keyVaultsPricingTier
     subPlan: null
+    enforce: keyVaultsPricingEnforce
+    extensions: {
+      additionalExtensionProperties: keyVaultsPricingAdditionalExtensionProperties
+      isEnabled: keyVaultsPricingIsEnabled
+      name: keyVaultsPricingName
+    }
   }
   {
     name: 'Dns'
     pricingTier: dnsPricingTier
     subPlan: null
+    enforce: dnsPricingEnforce
+    extensions: {
+      additionalExtensionProperties: dnsPricingAdditionalExtensionProperties
+      isEnabled: dnsPricingIsEnabled
+      name: dnsPricingName
+    }
   }
   {
     name: 'Arm'
     pricingTier: armPricingTier
     subPlan: null
+    enforce: armPricingEnforce
+    extensions: {
+      additionalExtensionProperties: armPricingAdditionalExtensionProperties
+      isEnabled: armPricingIsEnabled
+      name: armPricingName
+    }
   }
   {
     name: 'OpenSourceRelationalDatabases'
-    pricingTier: openSourceRelationalDatabasesTier
+    pricingTier: openSourceRelationalDatabasesPricingTier
     subPlan: null
+    enforce: openSourceRelationalDatabasesPricingEnforce
+    extensions: {
+      additionalExtensionProperties: openSourceRelationalDatabasesPricingAdditionalExtensionProperties
+      isEnabled: openSourceRelationalDatabasesPricingIsEnabled
+      name: openSourceRelationalDatabasesPricingName
+    }
   }
   {
     name: 'Containers'
-    pricingTier: containersTier
+    pricingTier: containersPricingTier
     subPlan: null
+    enforce: containersPricingEnforce
+    extensions: {
+      additionalExtensionProperties: containersPricingAdditionalExtensionProperties
+      isEnabled: containersPricingIsEnabled
+      name: containersPricingName
+    }
   }
   {
     name: 'CosmosDbs'
     pricingTier: cosmosDbsTier
     subPlan: null
+    enforce: cosmosDbsPricingEnforce
+    extensions: {
+      additionalExtensionProperties: cosmosDbsPricingAdditionalExtensionProperties
+      isEnabled: cosmosDbsPricingIsEnabled
+      name: cosmosDbsPricingName
+    }
   }
 ]
 
@@ -226,6 +512,14 @@ resource pricingTiers 'Microsoft.Security/pricings@2024-01-01' = [
   for (pricing, index) in pricings: {
     name: pricing.name
     properties: {
+      enforce: pricing.enforce
+      extensions: [
+        {
+          additionalExtensionProperties: pricing.extension.additionalExtensionProperties
+          isEnabled: pricing.extension.isEnabled
+          name: pricing.extension.name
+        }
+      ]
       pricingTier: pricing.pricingTier
       subPlan: pricing.subPlan
     }
