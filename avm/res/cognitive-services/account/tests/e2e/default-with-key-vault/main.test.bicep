@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Storing keys of service in key vault'
+metadata description = 'This instance deploys the module and stores its keys in a key vault.'
 
 // ========== //
 // Parameters //
@@ -9,37 +9,35 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-network.virtualnetworkgateways-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-cognitiveservices.accounts-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nvgmin'
+param serviceShort string = 'csakv'
 
-@description('Optional. A token to inject into the name of each resource.')
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
 // ============ //
 
-// General resources
-// =================
-
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: resourceLocation
-}
-
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     location: resourceLocation
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    localNetworkGatewayName: 'dep-${namePrefix}-lng-${serviceShort}'
   }
+}
+
+// General resources
+// =================
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+  name: resourceGroupName
+  location: resourceLocation
 }
 
 // ============== //
@@ -52,22 +50,14 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      skuName: 'VpnGw2AZ'
-      gatewayType: 'Vpn'
-      vNetResourceId: nestedDependencies.outputs.vnetResourceId
-      publicIpZones: [
-        1
-        2
-        3
-      ]
-      clusterSettings: {
-        clusterMode:'activeActiveNoBgp'
+      kind: 'SpeechServices'
+      location: resourceLocation
+      secretsExportConfiguration: {
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        accessKey1Name: '${namePrefix}${serviceShort}001-accessKey1'
+        accessKey2Name: '${namePrefix}${serviceShort}001-accessKey2'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

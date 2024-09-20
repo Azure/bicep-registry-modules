@@ -57,6 +57,9 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'VpnGw1'
       gatewayType: 'Vpn'
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
+      clusterSettings:{
+        clusterMode: 'activePassiveNoBgp'
+      }
     }
     dependsOn: [
       nestedDependencies

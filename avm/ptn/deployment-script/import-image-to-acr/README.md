@@ -115,7 +115,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     cleanupPreference: 'OnExpiration'
     location: '<location>'
     managedIdentities: '<managedIdentities>'
-    newImageName: 'your-image-name:tag'
+    newImageName: 'application/your-image-name:tag'
     overwriteExistingImage: true
     storageAccountResourceId: '<storageAccountResourceId>'
     subnetResourceIds: '<subnetResourceIds>'
@@ -163,7 +163,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
       "value": "<managedIdentities>"
     },
     "newImageName": {
-      "value": "your-image-name:tag"
+      "value": "application/your-image-name:tag"
     },
     "overwriteExistingImage": {
       "value": true
@@ -395,7 +395,7 @@ The new image name in the ACR. You can use this to import a publically available
 
 - Required: No
 - Type: string
-- Default: `[last(split(parameters('image'), '/'))]`
+- Default: `[string(skip(parameters('image'), add(indexOf(parameters('image'), '/'), 1)))]`
 - Example: `your-image-name:tag`
 
 ### Parameter: `overwriteExistingImage`
