@@ -399,14 +399,18 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           ]
         }
         {
-          allowProtectedAppendWrites: false
-          enableWORM: true
+          name: 'archivecontainer'
+          publicAccess: 'None'
           metadata: {
             testKey: 'testValue'
           }
-          name: 'archivecontainer'
-          publicAccess: 'None'
-          WORMRetention: 666
+          immutableStorageWithVersioningEnabled: true
+          immutabilityPolicyName: 'default'
+          immutabilityPolicyProperties: {
+            immutabilityPeriodSinceCreationInDays: 666
+            allowProtectedAppendWrites: true
+            allowProtectedAppendWritesAll: false
+            }
         }
       ]
       deleteRetentionPolicyDays: 9
