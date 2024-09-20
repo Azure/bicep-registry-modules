@@ -325,7 +325,7 @@ module registry 'br/public:avm/res/container-registry/registry:0.5.1' = {
   }
 }
 
-module storage 'br/public:avm/res/storage/storage-account:0.9.1' = if (deployInVnet) {
+module storage 'br/public:avm/res/storage/storage-account:0.13.2' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-storage'
   params: {
     name: uniqueString('sa', name, resourceLocation, resourceGroupName)
