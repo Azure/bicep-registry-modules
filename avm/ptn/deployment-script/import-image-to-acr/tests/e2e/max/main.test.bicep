@@ -69,7 +69,7 @@ module testDeployment '../../../main.bicep' = [
       // commented out, as the user is not available in the test environment
       // sourceRegistryUsername: 'username'
       // sourceRegistryPassword: keyVault.getSecret(dependencies.outputs.keyVaultSecretName)
-      newImageName: 'your-image-name:tag'
+      newImageName: 'application/your-image-name:tag'
       cleanupPreference: 'OnExpiration'
       assignRbacRole: true
       managedIdentities: { userAssignedResourcesIds: [dependencies.outputs.managedIdentityResourceId] }
