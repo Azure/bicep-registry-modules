@@ -73,11 +73,7 @@ param enableTelemetry bool = true
   2
   3
 ])
-param zones int[] = [
-  1
-  2
-  3
-]
+param zones int[] = []
 
 // ----------------------------------------------------------------------------
 // Prep ipConfigurations object AzureBastionSubnet for different uses cases:
@@ -170,7 +166,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.6.0' = if 
     skuName: publicIPAddressObject.?skuName
     skuTier: publicIPAddressObject.?skuTier
     tags: publicIPAddressObject.?tags ?? tags
-    zones: publicIPAddressObject.?zones
+    zones: publicIPAddressObject.?zones ?? zones
   }
 }
 

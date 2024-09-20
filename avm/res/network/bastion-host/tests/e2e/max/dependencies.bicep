@@ -39,6 +39,11 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2024-01-01' = {
     name: 'Standard'
     tier: 'Regional'
   }
+  zones: [
+    '1'
+    '2'
+    '3'
+  ]
   properties: {
     publicIPAllocationMethod: 'Static'
   }

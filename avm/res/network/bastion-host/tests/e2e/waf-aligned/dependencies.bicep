@@ -39,6 +39,11 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   properties: {
     publicIPAllocationMethod: 'Static'
   }
+  zones: [
+    '1'
+    '2'
+    '3'
+  ]
 }
 
 @description('The resource ID of the created Virtual Network.')

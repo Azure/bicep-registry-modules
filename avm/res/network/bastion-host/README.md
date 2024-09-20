@@ -31,10 +31,9 @@ The following section provides usage examples for the module, which were used to
 
 - [With a custom public IP address deployed by the module](#example-1-with-a-custom-public-ip-address-deployed-by-the-module)
 - [Using only defaults](#example-2-using-only-defaults)
-- [Using Developer SKU](#example-3-using-developer-sku)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [Private-only deployment](#example-5-private-only-deployment)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Private-only deployment](#example-4-private-only-deployment)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _With a custom public IP address deployed by the module_
 
@@ -218,63 +217,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using Developer SKU_
-
-This instance deploys the module with the Developer SKU.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
-  name: 'bastionHostDeployment'
-  params: {
-    // Required parameters
-    name: 'nbhdev001'
-    virtualNetworkResourceId: '<virtualNetworkResourceId>'
-    // Non-required parameters
-    location: '<location>'
-    skuName: 'Developer'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "nbhdev001"
-    },
-    "virtualNetworkResourceId": {
-      "value": "<virtualNetworkResourceId>"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "skuName": {
-      "value": "Developer"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -336,6 +279,11 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    zones: [
+      1
+      2
+      3
+    ]
   }
 }
 ```
@@ -428,6 +376,13 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "zones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
     }
   }
 }
@@ -436,7 +391,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 </details>
 <p>
 
-### Example 5: _Private-only deployment_
+### Example 4: _Private-only deployment_
 
 This instance deploys the module as private-only Bastion deployment.
 
@@ -500,7 +455,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -539,6 +494,11 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    zones: [
+      1
+      2
+      3
+    ]
   }
 }
 ```
@@ -604,6 +564,13 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "zones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
     }
   }
 }
@@ -1040,14 +1007,7 @@ A list of availability zones denoting where the Bastion Host resource needs to c
 
 - Required: No
 - Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
+- Default: `[]`
 - Allowed:
   ```Bicep
   [

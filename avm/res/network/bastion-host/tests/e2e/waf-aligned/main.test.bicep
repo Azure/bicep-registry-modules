@@ -89,6 +89,11 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
+      zones: [
+        1
+        2
+        3
+      ]
     }
     dependsOn: [
       nestedDependencies
