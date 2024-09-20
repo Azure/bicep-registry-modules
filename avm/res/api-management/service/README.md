@@ -290,6 +290,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           clientId: 'apimclientid'
           clientRegistrationEndpoint: 'http://localhost'
           clientSecret: '<clientSecret>'
+          displayName: 'AuthServer1'
           grantTypes: [
             'authorizationCode'
           ]
@@ -404,6 +405,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           }
         ]
         approvalRequired: false
+        displayName: 'Starter'
         groups: [
           {
             name: 'developers'
@@ -436,6 +438,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     subnetResourceId: '<subnetResourceId>'
     subscriptions: [
       {
+        displayName: 'testArmSubscriptionAllApis'
         name: 'testArmSubscriptionAllApis'
         scope: '/apis'
       }
@@ -525,6 +528,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             "clientId": "apimclientid",
             "clientRegistrationEndpoint": "http://localhost",
             "clientSecret": "<clientSecret>",
+            "displayName": "AuthServer1",
             "grantTypes": [
               "authorizationCode"
             ],
@@ -663,6 +667,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             }
           ],
           "approvalRequired": false,
+          "displayName": "Starter",
           "groups": [
             {
               "name": "developers"
@@ -703,6 +708,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "subscriptions": {
       "value": [
         {
+          "displayName": "testArmSubscriptionAllApis",
           "name": "testArmSubscriptionAllApis",
           "scope": "/apis"
         }
@@ -837,6 +843,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           clientId: 'apimClientid'
           clientRegistrationEndpoint: 'https://localhost'
           clientSecret: '<clientSecret>'
+          displayName: 'AuthServer1'
           grantTypes: [
             'authorizationCode'
           ]
@@ -973,6 +980,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     subscriptions: [
       {
+        displayName: 'testArmSubscriptionAllApis'
         name: 'testArmSubscriptionAllApis'
         scope: '/apis'
       }
@@ -1048,6 +1056,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             "clientId": "apimClientid",
             "clientRegistrationEndpoint": "https://localhost",
             "clientSecret": "<clientSecret>",
+            "displayName": "AuthServer1",
             "grantTypes": [
               "authorizationCode"
             ],
@@ -1212,6 +1221,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "subscriptions": {
       "value": [
         {
+          "displayName": "testArmSubscriptionAllApis",
           "name": "testArmSubscriptionAllApis",
           "scope": "/apis"
         }
