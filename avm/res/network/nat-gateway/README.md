@@ -31,7 +31,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/nat-gateway:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
+- [Using an existing Public IP](#example-2-using-an-existing-public-ip)
 - [Using large parameter set](#example-3-using-large-parameter-set)
 - [Combine a generated and provided Public IP Prefix](#example-4-combine-a-generated-and-provided-public-ip-prefix)
 - [WAF-aligned](#example-5-waf-aligned)
@@ -88,7 +88,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using an existing Public IP_
 
 This instance deploys the module with most of its features enabled.
 
