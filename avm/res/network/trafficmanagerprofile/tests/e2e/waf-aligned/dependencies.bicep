@@ -19,10 +19,10 @@ resource serverFarm01 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: serverFarmName01
   location: location01
   sku: {
-    name: 'S1'
+    name: 'B1'
     tier: 'Standard'
-    size: 'S1'
-    family: 'S'
+    size: 'B1'
+    family: 'B'
     capacity: 1
   }
   properties: {}
@@ -32,10 +32,10 @@ resource serverFarm02 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: serverFarmName02
   location: location02
   sku: {
-    name: 'S1'
+    name: 'B1'
     tier: 'Standard'
-    size: 'S1'
-    family: 'S'
+    size: 'B1'
+    family: 'B'
     capacity: 1
   }
   properties: {}
