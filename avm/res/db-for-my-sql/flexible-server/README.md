@@ -8,7 +8,6 @@ This module deploys a DBforMySQL Flexible Server.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -178,7 +177,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       }
     ]
     geoRedundantBackup: 'Enabled'
-    highAvailability: 'SameZone'
+    highAvailability: 'ZoneRedundant'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -323,7 +322,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": "Enabled"
     },
     "highAvailability": {
-      "value": "SameZone"
+      "value": "ZoneRedundant"
     },
     "location": {
       "value": "<location>"
@@ -629,7 +628,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -1225,6 +1223,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'MySQL Backup And Export Operator'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1385,7 +1390,6 @@ MySQL Server version.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1395,10 +1399,6 @@ MySQL Server version.
 | `name` | string | The name of the deployed MySQL Flexible server. |
 | `resourceGroupName` | string | The resource group of the deployed MySQL Flexible server. |
 | `resourceId` | string | The resource ID of the deployed MySQL Flexible server. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

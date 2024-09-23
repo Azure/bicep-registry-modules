@@ -59,11 +59,12 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   params: {
     // Required parameters
     name: 'sbnmin001'
-    skuObject: {
-      name: 'Basic'
-    }
     // Non-required parameters
     location: '<location>'
+    skuObject: {
+      capacity: 2
+      name: 'Premium'
+    }
   }
 }
 ```
@@ -84,14 +85,15 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     "name": {
       "value": "sbnmin001"
     },
-    "skuObject": {
-      "value": {
-        "name": "Basic"
-      }
-    },
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "skuObject": {
+      "value": {
+        "capacity": 2,
+        "name": "Premium"
+      }
     }
   }
 }
@@ -115,10 +117,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   params: {
     // Required parameters
     name: 'sbnencr001'
-    skuObject: {
-      capacity: 1
-      name: 'Premium'
-    }
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -131,6 +129,10 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
       ]
+    }
+    skuObject: {
+      capacity: 1
+      name: 'Premium'
     }
   }
 }
@@ -152,12 +154,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     "name": {
       "value": "sbnencr001"
     },
-    "skuObject": {
-      "value": {
-        "capacity": 1,
-        "name": "Premium"
-      }
-    },
     // Non-required parameters
     "customerManagedKey": {
       "value": {
@@ -175,6 +171,12 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         "userAssignedResourcesIds": [
           "<managedIdentityResourceId>"
         ]
+      }
+    },
+    "skuObject": {
+      "value": {
+        "capacity": 1,
+        "name": "Premium"
       }
     }
   }
@@ -199,10 +201,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   params: {
     // Required parameters
     name: 'sbnmax001'
-    skuObject: {
-      capacity: 16
-      name: 'Premium'
-    }
     // Non-required parameters
     authorizationRules: [
       {
@@ -295,9 +293,13 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           }
         ]
         name: 'myPrivateEndpoint'
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         privateLinkServiceConnectionName: 'customLinkName'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -307,9 +309,13 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -374,6 +380,10 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    skuObject: {
+      capacity: 16
+      name: 'Premium'
+    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -423,7 +433,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         ]
       }
     ]
-    zoneRedundant: true
   }
 }
 ```
@@ -443,12 +452,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     // Required parameters
     "name": {
       "value": "sbnmax001"
-    },
-    "skuObject": {
-      "value": {
-        "capacity": 16,
-        "name": "Premium"
-      }
     },
     // Non-required parameters
     "authorizationRules": {
@@ -561,9 +564,13 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
             }
           ],
           "name": "myPrivateEndpoint",
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "privateLinkServiceConnectionName": "customLinkName",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -573,9 +580,13 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -647,6 +658,12 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         }
       ]
     },
+    "skuObject": {
+      "value": {
+        "capacity": 16,
+        "name": "Premium"
+      }
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -699,9 +716,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           ]
         }
       ]
-    },
-    "zoneRedundant": {
-      "value": true
     }
   }
 }
@@ -725,10 +739,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   params: {
     // Required parameters
     name: 'sbnwaf001'
-    skuObject: {
-      capacity: 2
-      name: 'Premium'
-    }
     // Non-required parameters
     authorizationRules: [
       {
@@ -791,9 +801,13 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     premiumMessagingPartitions: 1
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'namespace'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -830,6 +844,10 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       }
     ]
     roleAssignments: []
+    skuObject: {
+      capacity: 2
+      name: 'Premium'
+    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -858,7 +876,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         roleAssignments: []
       }
     ]
-    zoneRedundant: true
   }
 }
 ```
@@ -878,12 +895,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     // Required parameters
     "name": {
       "value": "sbnwaf001"
-    },
-    "skuObject": {
-      "value": {
-        "capacity": 2,
-        "name": "Premium"
-      }
     },
     // Non-required parameters
     "authorizationRules": {
@@ -966,9 +977,13 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "namespace",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -1012,6 +1027,12 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     "roleAssignments": {
       "value": []
     },
+    "skuObject": {
+      "value": {
+        "capacity": 2,
+        "name": "Premium"
+      }
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -1043,9 +1064,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           "roleAssignments": []
         }
       ]
-    },
-    "zoneRedundant": {
-      "value": true
     }
   }
 }
@@ -1054,7 +1072,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1062,7 +1079,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Service Bus Namespace. |
-| [`skuObject`](#parameter-skuobject) | object | The SKU of the Service Bus Namespace. |
+| [`skuObject`](#parameter-skuobject) | object | The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default. |
 
 **Optional parameters**
 
@@ -1089,7 +1106,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`topics`](#parameter-topics) | array | The topics to create in the service bus namespace. |
-| [`zoneRedundant`](#parameter-zoneredundant) | bool | Enabling this property creates a Premium Service Bus Namespace in regions supported availability zones. |
+| [`zoneRedundant`](#parameter-zoneredundant) | bool | Enabled by default in order to align with resiliency best practices, thus requires Premium SKU. |
 
 ### Parameter: `name`
 
@@ -1100,10 +1117,17 @@ Name of the Service Bus Namespace.
 
 ### Parameter: `skuObject`
 
-The SKU of the Service Bus Namespace.
+The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default.
 
-- Required: Yes
+- Required: No
 - Type: object
+- Default:
+  ```Bicep
+  {
+      capacity: 2
+      name: 'Premium'
+  }
+  ```
 
 **Required parameters**
 
@@ -1713,8 +1737,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
@@ -1898,19 +1921,64 @@ The name of the private endpoint.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneGroupName`
+### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
-The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
+The private DNS zone group to configure for the private endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneResourceIds`
+### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
-The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
+The name of the Private DNS Zone Group.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -1932,6 +2000,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -2286,6 +2365,15 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Azure Service Bus Data Owner'`
+  - `'Azure Service Bus Data Receiver'`
+  - `'Azure Service Bus Data Sender'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2412,6 +2500,15 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Azure Service Bus Data Owner'`
+  - `'Azure Service Bus Data Receiver'`
+  - `'Azure Service Bus Data Sender'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2696,6 +2793,15 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Azure Service Bus Data Owner'`
+  - `'Azure Service Bus Data Receiver'`
+  - `'Azure Service Bus Data Sender'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -3002,12 +3108,11 @@ Value that indicates whether the topic supports ordering.
 
 ### Parameter: `zoneRedundant`
 
-Enabling this property creates a Premium Service Bus Namespace in regions supported availability zones.
+Enabled by default in order to align with resiliency best practices, thus requires Premium SKU.
 
 - Required: No
 - Type: bool
-- Default: `False`
-
+- Default: `True`
 
 ## Outputs
 
@@ -3015,6 +3120,7 @@ Enabling this property creates a Premium Service Bus Namespace in regions suppor
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed service bus namespace. |
+| `privateEndpoints` | array | The private endpoints of the service bus namespace. |
 | `resourceGroupName` | string | The resource group of the deployed service bus namespace. |
 | `resourceId` | string | The resource ID of the deployed service bus namespace. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
@@ -3025,7 +3131,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.6.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
 
 ## Data Collection
 

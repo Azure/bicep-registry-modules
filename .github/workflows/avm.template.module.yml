@@ -25,6 +25,7 @@ env:
   ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
   ARM_TENANT_ID: "${{ secrets.ARM_TENANT_ID }}"
   TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
+  CI_KEY_VAULT_NAME: "${{ vars.CI_KEY_VAULT_NAME }}"
 
 jobs:
   #########################
@@ -139,7 +140,7 @@ jobs:
   job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Publishing"
     runs-on: ubuntu-latest
-    # Note: Below always() required in condition due to psrule jobs being skipped for ptn modules not having defaults or waf-aligned folders
+    # Note: Below always() required in condition due to psrule jobs being skipped for ptn & utl modules not having defaults or waf-aligned folders
     if: github.ref == 'refs/heads/main' &&
       github.repository	 == 'Azure/bicep-registry-modules' &&
       always() &&

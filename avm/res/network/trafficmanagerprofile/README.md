@@ -8,7 +8,6 @@ This module deploys a Traffic Manager Profile.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -386,7 +385,6 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -677,6 +675,14 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Traffic Manager Contributor'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -817,7 +823,6 @@ The DNS Time-To-Live (TTL), in seconds. This informs the local DNS resolvers and
 - Type: int
 - Default: `60`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -825,10 +830,6 @@ The DNS Time-To-Live (TTL), in seconds. This informs the local DNS resolvers and
 | `name` | string | The name of the traffic manager was deployed into. |
 | `resourceGroupName` | string | The resource group the traffic manager was deployed into. |
 | `resourceId` | string | The resource ID of the traffic manager. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
