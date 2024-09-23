@@ -494,11 +494,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zones: [
-      1
-      2
-      3
-    ]
   }
 }
 ```
@@ -564,13 +559,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "zones": {
-      "value": [
-        1,
-        2,
-        3
-      ]
     }
   }
 }
