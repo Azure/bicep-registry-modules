@@ -1120,7 +1120,6 @@ The name of the AI Studio workspace project.
 | `location` | string | The location the module was deployed to. |
 | `logAnalyticsWorkspaceName` | string | The name of the log analytics workspace. |
 | `logAnalyticsWorkspaceResourceId` | string | The resource ID of the log analytics workspace. |
-| `managedIdentityHubResourceId` | string | The principal ID of the workspace hub system assigned identity. |
 | `resourceGroupName` | string | The name of the resource group the module was deployed to. |
 | `storageAccountName` | string | The name of the storage account. |
 | `storageAccountResourceId` | string | The resource ID of the storage account. |
@@ -1130,8 +1129,10 @@ The name of the AI Studio workspace project.
 | `virtualNetworkResourceId` | string | The resource ID of the virtual network. |
 | `virtualNetworkSubnetName` | string | The name of the subnet in the virtual network. |
 | `virtualNetworkSubnetResourceId` | string | The resource ID of the subnet in the virtual network. |
+| `workspaceHubManagedIdentityPrincipalId` | string | The principal ID of the workspace hub system assigned identity, if applicable. |
 | `workspaceHubName` | string | The name of the workspace hub. |
 | `workspaceHubResourceId` | string | The resource ID of the workspace hub. |
+| `workspaceProjectManagedIdentityPrincipalId` | string | The principal ID of the workspace project system assigned identity. |
 | `workspaceProjectName` | string | The name of the workspace project. |
 | `workspaceProjectResourceId` | string | The resource ID of the workspace project. |
 

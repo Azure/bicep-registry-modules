@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.3.12046",
-      "templateHash": "15552193910337626455"
+      "templateHash": "12442663604053803236"
     },
     "name": "AI Platform Baseline",
     "description": "This module provides a secure and scalable environment for deploying AI applications on Azure.\nThe module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.\nBy integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access.",
@@ -28972,12 +28972,19 @@
       },
       "value": "[reference('workspaceHub').outputs.name.value]"
     },
-    "managedIdentityHubResourceId": {
+    "workspaceHubManagedIdentityPrincipalId": {
       "type": "string",
       "metadata": {
-        "description": "The principal ID of the workspace hub system assigned identity."
+        "description": "The principal ID of the workspace hub system assigned identity, if applicable."
       },
       "value": "[reference('workspaceHub').outputs.systemAssignedMIPrincipalId.value]"
+    },
+    "workspaceProjectManagedIdentityPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the workspace project system assigned identity."
+      },
+      "value": "[reference('workspaceProject').outputs.systemAssignedMIPrincipalId.value]"
     },
     "workspaceProjectResourceId": {
       "type": "string",
