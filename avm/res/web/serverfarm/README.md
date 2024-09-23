@@ -49,7 +49,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     // Non-required parameters
     location: '<location>'
     skuCapacity: 3
-    skuName: 'P1V3'
+    skuName: 'P1v3'
     zoneRedundant: true
   }
 }
@@ -79,7 +79,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": 3
     },
     "skuName": {
-      "value": "P1V3"
+      "value": "P1v3"
     },
     "zoneRedundant": {
       "value": true
@@ -284,7 +284,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       name: 'lock'
     }
     skuCapacity: 3
-    skuName: 'P1V3'
+    skuName: 'P1v3'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -344,7 +344,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": 3
     },
     "skuName": {
-      "value": "P1V3"
+      "value": "P1v3"
     },
     "tags": {
       "value": {
@@ -420,7 +420,7 @@ The name of the SKU will Determine the tier, size, family of the App Service Pla
 
 - Required: No
 - Type: string
-- Default: `'P1V3'`
+- Default: `'P1v3'`
 - Example:
   ```Bicep
   'F1'
