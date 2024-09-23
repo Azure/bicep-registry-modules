@@ -90,7 +90,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 
 ### Example 2: _Using an existing Public IP_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module using an existing Public IP address.
 
 
 <details>

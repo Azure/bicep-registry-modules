@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using an existing Public IP'
-metadata description = 'This instance deploys the module with most of its features enabled.'
+metadata description = 'This instance deploys the module using an existing Public IP address.'
 
 // ========== //
 // Parameters //
