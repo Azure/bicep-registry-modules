@@ -47,7 +47,7 @@ param sourceRegistryPassword string = ''
 @metadata({
   example: 'your-image-name:tag'
 })
-param newImageName string = last(split(image, '/'))
+param newImageName string = string(skip(image, indexOf(image, '/') + 1))
 
 @description('Optional. The image will be overwritten if it already exists in the ACR with the same tag. Default is false.')
 param overwriteExistingImage bool = false
@@ -234,7 +234,9 @@ output deploymentScriptOutput string[] = imageImport.outputs.deploymentScriptLog
 @description('An array of the imported images.')
 output importedImage importedImageType = {
   originalImage: image
-  acrHostedImage: '${acr.properties.loginServer}${string(skip(image, indexOf(image,'/')))}'
+  acrHostedImage: empty(newImageName)
+    ? '${acr.properties.loginServer}${string(skip(image, indexOf(image,'/')))}'
+    : '${acr.properties.loginServer}/${newImageName}'
 }
 
 // ================ //
