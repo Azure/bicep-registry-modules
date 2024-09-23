@@ -924,7 +924,7 @@ Switch to make the App Service Environment zone redundant. If enabled, the minim
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 
 ## Outputs
