@@ -21,7 +21,10 @@ param serviceShort string = 'ntmpwaf'
 param namePrefix string = '#_namePrefix_#'
 
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-var enforcedLocation = 'ukwest'
+var enforcedLocation01 = 'ukwest'
+
+#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
+var enforcedLocation02 = 'westus3'
 
 // ============ //
 // Dependencies //
@@ -31,7 +34,7 @@ var enforcedLocation = 'ukwest'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: enforcedLocation01
 }
 
 module nestedDependencies 'dependencies.bicep' = {
@@ -39,13 +42,13 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: enforcedLocation
+    location: enforcedLocation01
     serverFarmName01: 'dep-${namePrefix}-sf-${serviceShort}01'
     serverFarmName02: 'dep-${namePrefix}-sf-${serviceShort}02'
     webApp01Name: 'dep-${namePrefix}-wa-${serviceShort}01'
     webApp02Name: 'dep-${namePrefix}-wa-${serviceShort}02'
-    location01: 'eastus'
-    location02: 'westus'
+    location01: enforcedLocation01
+    location02: enforcedLocation02
   }
 }
 
@@ -59,7 +62,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: enforcedLocation
+    location: enforcedLocation01
   }
 }
 
