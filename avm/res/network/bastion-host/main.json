@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "8505010148342282976"
+      "version": "0.30.3.12046",
+      "templateHash": "5049621611756899833"
     },
     "name": "Bastion Hosts",
     "description": "This module deploys a Bastion Host.",
@@ -528,7 +528,7 @@
             "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'tags'), parameters('tags'))]"
           },
           "zones": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'zones'), parameters('zones'))]"
+            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'zones'), if(greater(length(parameters('zones')), 0), parameters('zones'), null()))]"
           }
         },
         "template": {

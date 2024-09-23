@@ -73,7 +73,7 @@ param enableTelemetry bool = true
   2
   3
 ])
-param zones int[] = []
+param zones int[] = [] // Availability Zones are currently in preview and only available in certain regions, therefore the default is an empty array.
 
 // ----------------------------------------------------------------------------
 // Prep ipConfigurations object AzureBastionSubnet for different uses cases:
@@ -166,7 +166,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.6.0' = if 
     skuName: publicIPAddressObject.?skuName
     skuTier: publicIPAddressObject.?skuTier
     tags: publicIPAddressObject.?tags ?? tags
-    zones: publicIPAddressObject.?zones ?? zones
+    zones: publicIPAddressObject.?zones ?? (length(zones) > 0 ? zones : null) // if zones of the Public IP is empty, use the zones from the bastion host only if not empty (if empty, the default of the public IP will be used)
   }
 }
 
