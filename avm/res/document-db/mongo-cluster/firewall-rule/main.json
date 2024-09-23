@@ -5,17 +5,17 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "17488832106654361029"
+      "templateHash": "11076682219298980277"
     },
-    "name": "DocumentDB Mongo Clusters Config FireWall Rules",
-    "description": "This module config firewall rules for DocumentDB Mongo Cluster.",
+    "name": "Azure Cosmos DB MongoDB vCore Cluster Config FireWall Rules",
+    "description": "This module config firewall rules for the Azure Cosmos DB MongoDB vCore cluster.",
     "owner": "Azure/module-maintainers"
   },
   "parameters": {
     "mongoClusterName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent mongo cluster. Required if the template is used in a standalone deployment."
+        "description": "Conditional. The name of the parent Azure Cosmos DB MongoDB vCore cluster. Required if the template is used in a standalone deployment."
       }
     },
     "name": {
@@ -27,13 +27,13 @@
     "startIpAddress": {
       "type": "string",
       "metadata": {
-        "description": "Required. The start IP address of the mongo cluster firewall rule. Must be IPv4 format."
+        "description": "Required. The start IP address of the Azure Cosmos DB MongoDB vCore cluster firewall rule. Must be IPv4 format."
       }
     },
     "endIpAddress": {
       "type": "string",
       "metadata": {
-        "description": "Required. The end IP address of the mongo cluster firewall rule. Must be IPv4 format."
+        "description": "Required. The end IP address of the Azure Cosmos DB MongoDB vCore cluster firewall rule. Must be IPv4 format."
       }
     }
   },
@@ -52,7 +52,7 @@
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the resource group the mongo cluster was created in."
+        "description": "The name of the resource group the Azure Cosmos DB MongoDB vCore cluster was created in."
       },
       "value": "[resourceGroup().name]"
     },

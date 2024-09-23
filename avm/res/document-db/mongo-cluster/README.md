@@ -1,6 +1,6 @@
-# DocumentDB Mongo Clusters `[Microsoft.DocumentDB/mongoClusters]`
+# Azure Cosmos DB MongoDB vCore cluster `[Microsoft.DocumentDB/mongoClusters]`
 
-This module deploys a DocumentDB Mongo Cluster.
+This module deploys a Azure Cosmos DB MongoDB vCore cluster.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.
 
@@ -491,7 +491,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
 | :-- | :-- | :-- |
 | [`administratorLogin`](#parameter-administratorlogin) | string | Username for admin user. |
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | Password for admin user. |
-| [`name`](#parameter-name) | string | Name of the Mongo Cluster. |
+| [`name`](#parameter-name) | string | Name of the Azure Cosmos DB MongoDB vCore cluster. |
 | [`nodeCount`](#parameter-nodecount) | int | Number of nodes in the node group. |
 | [`sku`](#parameter-sku) | string | SKU defines the CPU and memory that is provisioned for each node. |
 | [`storage`](#parameter-storage) | int | Disk storage size for the node group in GB. |
@@ -500,7 +500,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`createMode`](#parameter-createmode) | string | Mode to create the mongo cluster. |
+| [`createMode`](#parameter-createmode) | string | Mode to create the azure cosmos db mongodb vCore cluster. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`highAvailabilityMode`](#parameter-highavailabilitymode) | bool | Whether high availability is enabled on the node group. |
@@ -529,7 +529,7 @@ Password for admin user.
 
 ### Parameter: `name`
 
-Name of the Mongo Cluster.
+Name of the Azure Cosmos DB MongoDB vCore cluster.
 
 - Required: Yes
 - Type: string
@@ -557,7 +557,7 @@ Disk storage size for the node group in GB.
 
 ### Parameter: `createMode`
 
-Mode to create the mongo cluster.
+Mode to create the azure cosmos db mongodb vCore cluster.
 
 - Required: No
 - Type: string
@@ -1108,6 +1108,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -1219,6 +1230,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1357,8 +1374,8 @@ Tags of the Database Account resource.
 | `connectionStringKey` | string | The connection string key of the mongo cluster. |
 | `exportedSecrets` |  | The references to the secrets exported to the provided Key Vault. |
 | `firewallRules` | array | The name and resource ID of firewall rule. |
-| `mongoClusterResourceId` | string | The resource ID of the mongo cluster. |
-| `name` | string | The name of the mongo cluster. |
+| `mongoClusterResourceId` | string | The resource ID of the Azure Cosmos DB MongoDB vCore cluster. |
+| `name` | string | The name of the Azure Cosmos DB MongoDB vCore cluster. |
 | `privateEndpoints` | array | The private endpoints of the database account. |
 | `resourceGroupName` | string | The name of the resource group the firewall rule was created in. |
 | `resourceId` | string | The resource ID of the resource group the firewall rule was created in. |

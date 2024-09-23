@@ -1,10 +1,10 @@
-metadata name = 'DocumentDB Mongo Clusters'
-metadata description = '''This module deploys a DocumentDB Mongo Cluster.
+metadata name = 'Azure Cosmos DB MongoDB vCore cluster'
+metadata description = '''This module deploys a Azure Cosmos DB MongoDB vCore cluster.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.'''
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. Name of the Mongo Cluster.')
+@description('Required. Name of the Azure Cosmos DB MongoDB vCore cluster.')
 param name string
 
 @description('Optional. Default to current resource group scope location. Location for all resources.')
@@ -22,7 +22,7 @@ param administratorLogin string
 @maxLength(128)
 param administratorLoginPassword string
 
-@description('Optional. Mode to create the mongo cluster.')
+@description('Optional. Mode to create the azure cosmos db mongodb vCore cluster.')
 param createMode string = 'Default'
 
 @description('Optional. The diagnostic settings of the service.')
@@ -282,10 +282,10 @@ module mongoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint
   }
 ]
 
-@description('The name of the mongo cluster.')
+@description('The name of the Azure Cosmos DB MongoDB vCore cluster.')
 output name string = mongoCluster.name
 
-@description('The resource ID of the mongo cluster.')
+@description('The resource ID of the Azure Cosmos DB MongoDB vCore cluster.')
 output mongoClusterResourceId string = mongoCluster.id
 
 @description('The resource ID of the resource group the firewall rule was created in.')

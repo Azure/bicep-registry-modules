@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "16039670595397968634"
+      "templateHash": "289094531739005234"
     },
-    "name": "DocumentDB Mongo Clusters",
-    "description": "This module deploys a DocumentDB Mongo Cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
+    "name": "Azure Cosmos DB MongoDB vCore cluster",
+    "description": "This module deploys a Azure Cosmos DB MongoDB vCore cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -574,7 +574,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the Mongo Cluster."
+        "description": "Required. Name of the Azure Cosmos DB MongoDB vCore cluster."
       }
     },
     "location": {
@@ -609,7 +609,7 @@
       "type": "string",
       "defaultValue": "Default",
       "metadata": {
-        "description": "Optional. Mode to create the mongo cluster."
+        "description": "Optional. Mode to create the azure cosmos db mongodb vCore cluster."
       }
     },
     "diagnosticSettings": {
@@ -846,17 +846,17 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "17488832106654361029"
+              "templateHash": "11076682219298980277"
             },
-            "name": "DocumentDB Mongo Clusters Config FireWall Rules",
-            "description": "This module config firewall rules for DocumentDB Mongo Cluster.",
+            "name": "Azure Cosmos DB MongoDB vCore Cluster Config FireWall Rules",
+            "description": "This module config firewall rules for the Azure Cosmos DB MongoDB vCore cluster.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
             "mongoClusterName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent mongo cluster. Required if the template is used in a standalone deployment."
+                "description": "Conditional. The name of the parent Azure Cosmos DB MongoDB vCore cluster. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
@@ -868,13 +868,13 @@
             "startIpAddress": {
               "type": "string",
               "metadata": {
-                "description": "Required. The start IP address of the mongo cluster firewall rule. Must be IPv4 format."
+                "description": "Required. The start IP address of the Azure Cosmos DB MongoDB vCore cluster firewall rule. Must be IPv4 format."
               }
             },
             "endIpAddress": {
               "type": "string",
               "metadata": {
-                "description": "Required. The end IP address of the mongo cluster firewall rule. Must be IPv4 format."
+                "description": "Required. The end IP address of the Azure Cosmos DB MongoDB vCore cluster firewall rule. Must be IPv4 format."
               }
             }
           },
@@ -893,7 +893,7 @@
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The name of the resource group the mongo cluster was created in."
+                "description": "The name of the resource group the Azure Cosmos DB MongoDB vCore cluster was created in."
               },
               "value": "[resourceGroup().name]"
             },
@@ -946,7 +946,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "956281147068451461"
+              "templateHash": "4835482779180953345"
             }
           },
           "definitions": {
@@ -992,7 +992,7 @@
             "keyVaultName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the Key Vault to set the ecrets in."
+                "description": "Required. The name of the Key Vault to set the secrets in."
               }
             },
             "secretsToSet": {
@@ -1823,14 +1823,14 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the mongo cluster."
+        "description": "The name of the Azure Cosmos DB MongoDB vCore cluster."
       },
       "value": "[parameters('name')]"
     },
     "mongoClusterResourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the mongo cluster."
+        "description": "The resource ID of the Azure Cosmos DB MongoDB vCore cluster."
       },
       "value": "[resourceId('Microsoft.DocumentDB/mongoClusters', parameters('name'))]"
     },

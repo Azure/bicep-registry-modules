@@ -1,4 +1,4 @@
-@description('Required. The name of the Key Vault to set the ecrets in.')
+@description('Required. The name of the Key Vault to set the secrets in.')
 param keyVaultName string
 
 @description('Required. The secrets to set in the Key Vault.')
