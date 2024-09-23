@@ -34,6 +34,9 @@ param appInsightsConnectionString string?
 @metadata({ example: '''kv${uniqueString(name, location, resourceGroup().name)})''' })
 param keyVaultName string = 'kv${uniqueString(name, location, resourceGroup().name)}'
 
+@description('Optional. The permissions that will be assigned to the Key Vault. The managed Identity will be assigned the permissions to get and list secrets.')
+param keyVaultRoleAssignments roleAssignmentType
+
 // network related parameters
 // -------------------------
 @description('Optional. Deploy resources in a virtual network and use it for private endpoints.')
@@ -182,6 +185,7 @@ module services 'modules/deploy_services.bicep' = {
     appInsightsConnectionString: appInsightsConnectionString
     keyVaultName: keyVaultName
     keyVaultSecrets: secrets
+    keyVaultRoleAssignments: keyVaultRoleAssignments
     deployInVnet: deployInVnet
     addressPrefix: addressPrefix
     deployDnsZoneKeyVault: deployDnsZoneKeyVault
@@ -223,10 +227,13 @@ module job 'br/public:avm/res/app/job:0.5.0' = {
     workloadProfileName: workloadProfileName
     location: location
     managedIdentities: {
-      systemAssigned: true
+      // if managedIdentityName is not provided, the job will use a system assigned identity
+      systemAssigned: managedIdentityName == null ? true : false
+      // this is either the provided managed identity or the system assigned identity
       userAssignedResourceIds: [services.outputs.userManagedIdentityResourceId]
     }
     secrets: union(
+      // add Application Insights connection string as secret if provided
       !empty(services.outputs.keyVaultAppInsightsConnectionStringUrl)
         ? [
             {
@@ -236,6 +243,7 @@ module job 'br/public:avm/res/app/job:0.5.0' = {
             }
           ]
         : [],
+      // add passed secrets to the job. It uses the Managed Identity to access the secrets.
       secrets ?? []
     )
     triggerType: 'Schedule'
@@ -272,9 +280,6 @@ output resourceId string = job.outputs.resourceId
 @description('The name of the container job.')
 output name string = job.name
 
-// @description('The location the resource was deployed into.')
-// output location string = <Resource>.location
-
 @description('The name of the Resource Group the resource was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
@@ -304,4 +309,4 @@ type lockType = {
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }
 
-import { secretType } from 'modules/deploy_services.bicep'
+import { secretType, roleAssignmentType } from 'modules/deploy_services.bicep'

@@ -41,19 +41,22 @@ resource dnsZoneContainerRegistry_existing 'Microsoft.Network/privateDnsZones@20
   location: 'global'
 }
 
-@description('The name of the created Azure Container Registry.')
+@description('The ResourceId of the created Log Analytics Workspace.')
 output logAnalyticsResourceId string = law.id
 
-@description('The name of the created Application Insights instance.')
+@description('The Connection String of the created Application Insights.')
 output appInsightsConnectionString string = appInsights.properties.ConnectionString
 
 @description('The name of the created User Assigned Identity.')
 output userIdentityName string = userAssignedIdentity.name
 
-@description('The name of the created User Assigned Identity.')
+@description('The ResourceId of the created User Assigned Identity.')
 output userIdentityResourceId string = userAssignedIdentity.id
 
-@description('The name of the created DNS Zone for Key Vault.')
+@description('The PrincipalId of the created User Assigned Identity.')
+output userIdentityPrincipalId string = userAssignedIdentity.properties.principalId
+
+@description('The Id of the created DNS Zone for Key Vault.')
 output dnsZoneKeyVaultId string = dnsZoneKeyVault.id
 
 @description('The name of the created DNS Zone for Container Registry.')

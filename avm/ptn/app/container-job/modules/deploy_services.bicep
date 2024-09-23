@@ -38,6 +38,9 @@ param keyVaultName string
 @description('Optional. Secrets that will be added to Key Vault for later reference in the Container App Job.')
 param keyVaultSecrets secretType[]?
 
+@description('Optional. Role assignments that will be added to the Key Vault. The managed Identity will be assigned the `Key Vault Secrets User` role by default.')
+param keyVaultRoleAssignments roleAssignmentType
+
 // workload parameters
 // -------------------------
 
@@ -55,10 +58,72 @@ param lock lockType?
 // -----------------
 
 // Rbac roles that will be granted to the user-assigned identity
-var vaultRbacRoles = ['4633458b-17de-408a-b874-0445c86b69e6'] // Key Vault Secrets User
+var vaultBuiltInRoleNames = {
+  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+  'Key Vault Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '00482a5a-887f-4fb3-b363-3b7fe8e74483'
+  )
+  'Key Vault Certificates Officer': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'a4417e6f-fecd-4de8-b567-7b0420556985'
+  )
+  'Key Vault Certificate User': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'db79e9a7-68ee-4b58-9aeb-b90e7c24fcba'
+  )
+  'Key Vault Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f25e0fa2-a7c8-4377-a976-54943a77a395'
+  )
+  'Key Vault Crypto Officer': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '14b46e9e-c2b7-41b4-b07b-48a6ebf60603'
+  )
+  'Key Vault Crypto Service Encryption User': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'e147488a-f6f5-4113-8e2d-b22465e65bf6'
+  )
+  'Key Vault Crypto User': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '12338af0-0e69-4776-bea7-57ae8d297424'
+  )
+  'Key Vault Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '21090545-7ca7-4776-b22c-e363652d74d2'
+  )
+  'Key Vault Secrets Officer': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
+  )
+  'Key Vault Secrets User': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '4633458b-17de-408a-b874-0445c86b69e6'
+  )
+  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'Role Based Access Control Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
+}
 var registryRbacRoles = ['7f951dda-4ed3-4680-a7ca-43fe172d538d', '8311e382-0749-4cb8-b61a-304f252e45ec'] // ArcPull, AcrPush
 var storageAccountRbacRoles = [
   '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
+]
+var formattedVaultRoleAssignments = [
+  for (roleAssignment, index) in (keyVaultRoleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: vaultBuiltInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
 ]
 // network related variables
 var privateEndpointSubnetAddressPrefix = cidrSubnet(addressPrefix, 24, 0) // the first /24 subnet in the address space
@@ -284,15 +349,20 @@ module vault 'br/public:avm/res/key-vault/vault:0.9.0' = {
         : [],
       secrets
     )
-    roleAssignments: [
-      for vaultRole in vaultRbacRoles: {
-        principalId: managedIdentityName != null
-          ? userIdentity_existing.properties.principalId
-          : userIdentity_new.outputs.principalId
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: vaultRole
-      }
-    ]
+    roleAssignments: union(
+      // role assignement for the managed identity
+      [
+        {
+          principalId: managedIdentityName != null
+            ? userIdentity_existing.properties.principalId
+            : userIdentity_new.outputs.principalId
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: '4633458b-17de-408a-b874-0445c86b69e6' // Key Vault Secrets User
+        }
+      ],
+      // passed in role assignments
+      formattedVaultRoleAssignments
+    )
     publicNetworkAccess: deployInVnet ? 'Disabled' : null
   }
 }
@@ -426,3 +496,30 @@ type lockType = {
   @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }
+
+@export()
+type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
+  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+  roleDefinitionIdOrName: string
+
+  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
+  principalId: string
+
+  @description('Optional. The principal type of the assigned principal ID.')
+  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
+
+  @description('Optional. The description of the role assignment.')
+  description: string?
+
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
+  condition: string?
+
+  @description('Optional. Version of the condition.')
+  conditionVersion: '2.0'?
+
+  @description('Optional. The Resource Id of the delegated managed identity resource.')
+  delegatedManagedIdentityResourceId: string?
+}[]?

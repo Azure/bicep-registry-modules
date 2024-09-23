@@ -61,6 +61,13 @@ module testDeployment '../../../main.bicep' = [
       appInsightsConnectionString: dependencies.outputs.appInsightsConnectionString
       // with 'kv' in the uniqueString the name can start with a number, which is an invalid name for Key Vault
       keyVaultName: 'kv${uniqueString('${namePrefix}${serviceShort}001', resourceLocation, resourceGroupName)}'
+      keyVaultRoleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Key Vault Secrets Officer'
+          principalId: dependencies.outputs.userIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
       deployInVnet: true
       workloadProfiles: [
         {
