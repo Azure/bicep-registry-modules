@@ -19,11 +19,13 @@ This module deploys a Web or Function App.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Web/sites` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/sites) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Web/sites` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
 | `Microsoft.Web/sites/basicPublishingCredentialsPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
+| `Microsoft.Web/sites/config` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
 | `Microsoft.Web/sites/config` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
+| `Microsoft.Web/sites/extensions` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites/extensions) |
 | `Microsoft.Web/sites/hybridConnectionNamespaces/relays` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/sites/hybridConnectionNamespaces/relays) |
 | `Microsoft.Web/sites/slots` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/sites/slots) |
 | `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
@@ -40,15 +42,16 @@ The following section provides usage examples for the module, which were used to
 
 - [Function App, using only defaults](#example-1-function-app-using-only-defaults)
 - [Function App, using large parameter set](#example-2-function-app-using-large-parameter-set)
-- [Web App, using only defaults](#example-3-web-app-using-only-defaults)
-- [Web App](#example-4-web-app)
-- [WAF-aligned](#example-5-waf-aligned)
-- [Web App, using only defaults](#example-6-web-app-using-only-defaults)
-- [Web App, using large parameter set](#example-7-web-app-using-large-parameter-set)
-- [Web App, using only defaults](#example-8-web-app-using-only-defaults)
-- [Web App, using large parameter set](#example-9-web-app-using-large-parameter-set)
-- [Web App](#example-10-web-app)
-- [Windows Web App for Containers, using only defaults](#example-11-windows-web-app-for-containers-using-only-defaults)
+- [Function App, using only defaults](#example-3-function-app-using-only-defaults)
+- [Web App, using only defaults](#example-4-web-app-using-only-defaults)
+- [Web App](#example-5-web-app)
+- [WAF-aligned](#example-6-waf-aligned)
+- [Web App, using only defaults](#example-7-web-app-using-only-defaults)
+- [Web App, using large parameter set](#example-8-web-app-using-large-parameter-set)
+- [Web App, using only defaults](#example-9-web-app-using-only-defaults)
+- [Web App, using large parameter set](#example-10-web-app-using-large-parameter-set)
+- [Web App](#example-11-web-app)
+- [Windows Web App for Containers, using only defaults](#example-12-windows-web-app-for-containers-using-only-defaults)
 
 ### Example 1: _Function App, using only defaults_
 
@@ -237,9 +240,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
     }
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -248,19 +255,25 @@ module site 'br/public:avm/res/web/site:<version>' = {
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         subnetResourceId: '<subnetResourceId>'
       }
     ]
     roleAssignments: [
       {
+        name: '9efc9c10-f482-4af0-9acb-03b5a16f947e'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -438,9 +451,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -449,9 +466,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -459,11 +480,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "9efc9c10-f482-4af0-9acb-03b5a16f947e",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -494,7 +517,75 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 3: _Web App, using only defaults_
+### Example 3: _Function App, using only defaults_
+
+This instance deploys the module as Function App with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: 'siteDeployment'
+  params: {
+    // Required parameters
+    kind: 'functionapp'
+    name: 'wsfaset001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    appSettingsKeyValuePairs: {
+      AzureFunctionsJobHost__logging__logLevel__default: 'Trace'
+      FUNCTIONS_EXTENSION_VERSION: '~4'
+      FUNCTIONS_WORKER_RUNTIME: 'dotnet'
+    }
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "functionapp"
+    },
+    "name": {
+      "value": "wsfaset001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    // Non-required parameters
+    "appSettingsKeyValuePairs": {
+      "value": {
+        "AzureFunctionsJobHost__logging__logLevel__default": "Trace",
+        "FUNCTIONS_EXTENSION_VERSION": "~4",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Web App, using only defaults_
 
 This instance deploys the module as a Linux Web App with the minimum set of required parameters.
 
@@ -570,7 +661,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 4: _Web App_
+### Example 5: _Web App_
 
 This instance deploys the module as Web App with the set of logs configuration.
 
@@ -702,7 +793,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -844,7 +935,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 6: _Web App, using only defaults_
+### Example 7: _Web App, using only defaults_
 
 This instance deploys the module as Web App with the minimum set of required parameters.
 
@@ -900,7 +991,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 7: _Web App, using large parameter set_
+### Example 8: _Web App, using large parameter set_
 
 This instance deploys the module as Web App with most of its features enabled.
 
@@ -962,9 +1053,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
     }
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -973,15 +1068,20 @@ module site 'br/public:avm/res/web/site:<version>' = {
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         subnetResourceId: '<subnetResourceId>'
       }
     ]
     publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
+        name: '0c2c82ef-069c-4085-b1bc-01614e0aa5ff'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -1051,11 +1151,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
         ]
         roleAssignments: [
           {
+            name: '845ed19c-78e7-4422-aa3d-b78b67cd78a2'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Owner'
           }
           {
+            name: '<name>'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -1183,9 +1285,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -1194,9 +1300,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -1207,6 +1317,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "0c2c82ef-069c-4085-b1bc-01614e0aa5ff",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1282,11 +1393,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
           ],
           "roleAssignments": [
             {
+              "name": "845ed19c-78e7-4422-aa3d-b78b67cd78a2",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Owner"
             },
             {
+              "name": "<name>",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -1346,7 +1459,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 8: _Web App, using only defaults_
+### Example 9: _Web App, using only defaults_
 
 This instance deploys the module as a Linux Web App with the minimum set of required parameters.
 
@@ -1402,7 +1515,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 9: _Web App, using large parameter set_
+### Example 10: _Web App, using large parameter set_
 
 This instance deploys the module asa Linux Web App with most of its features enabled.
 
@@ -1464,9 +1577,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
     }
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -1475,9 +1592,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -1685,9 +1806,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -1696,9 +1821,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -1848,7 +1977,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 10: _Web App_
+### Example 11: _Web App_
 
 This instance deploys the module as Web App with the set of api management configuration.
 
@@ -1944,7 +2073,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 11: _Windows Web App for Containers, using only defaults_
+### Example 12: _Windows Web App for Containers, using only defaults_
 
 This instance deploys the module as a Windows based Container Web App with the minimum set of required parameters.
 
@@ -2020,7 +2149,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -2059,7 +2187,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`logsConfiguration`](#parameter-logsconfiguration) | object | The logs settings configuration. |
+| [`managedEnvironmentId`](#parameter-managedenvironmentid) | string | Azure Resource Manager ID of the customers selected Managed Environment on which to host this app. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`msDeployConfiguration`](#parameter-msdeployconfiguration) | object | The extension MSDeployment configuration. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`redundancyMode`](#parameter-redundancymode) | string | Site redundancy mode. |
@@ -2093,6 +2223,7 @@ Type of site to deploy.
     'functionapp'
     'functionapp,linux'
     'functionapp,linux,container'
+    'functionapp,linux,container,azurecontainerapps'
     'functionapp,workflowapp'
     'functionapp,workflowapp,linux'
     'linux,api'
@@ -2465,6 +2596,13 @@ The logs settings configuration.
 - Required: No
 - Type: object
 
+### Parameter: `managedEnvironmentId`
+
+Azure Resource Manager ID of the customers selected Managed Environment on which to host this app.
+
+- Required: No
+- Type: string
+
 ### Parameter: `managedIdentities`
 
 The managed identity definition for this resource.
@@ -2493,6 +2631,13 @@ The resource ID(s) to assign to the resource.
 - Required: No
 - Type: array
 
+### Parameter: `msDeployConfiguration`
+
+The extension MSDeployment configuration.
+
+- Required: No
+- Type: object
+
 ### Parameter: `privateEndpoints`
 
 Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
@@ -2520,8 +2665,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
@@ -2705,19 +2849,64 @@ The name of the private endpoint.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneGroupName`
+### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
-The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
+The private DNS zone group to configure for the private endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneResourceIds`
+### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
-The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
+The name of the Private DNS Zone Group.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -2755,6 +2944,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-privateendpointsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-privateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `privateEndpoints.roleAssignments.principalId`
@@ -2801,6 +2991,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -2874,6 +3071,15 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'App Compliance Automation Administrator'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+  - `'Web Plan Contributor'`
+  - `'Website Contributor'`
 
 **Required parameters**
 
@@ -2890,6 +3096,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -2936,6 +3143,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -3046,7 +3260,6 @@ Virtual Network Route All enabled. This causes all outbound traffic to have Virt
 - Type: bool
 - Default: `False`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -3055,8 +3268,10 @@ Virtual Network Route All enabled. This causes all outbound traffic to have Virt
 | `defaultHostname` | string | Default hostname of the app. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the site. |
+| `privateEndpoints` | array | The private endpoints of the site. |
 | `resourceGroupName` | string | The resource group the site was deployed into. |
 | `resourceId` | string | The resource ID of the site. |
+| `slotPrivateEndpoints` | array | The private endpoints of the slots. |
 | `slotResourceIds` | array | The list of the slot resource ids. |
 | `slots` | array | The list of the slots. |
 | `slotSystemAssignedMIPrincipalIds` | array | The principal ID of the system assigned identity of slots. |
@@ -3068,7 +3283,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
 
 ## Notes
 

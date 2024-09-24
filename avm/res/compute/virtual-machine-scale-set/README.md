@@ -8,7 +8,6 @@ This module deploys a Virtual Machine Scale Set.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -323,9 +322,21 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     ]
     roleAssignments: [
       {
+        name: '8abf72f9-e918-4adc-b20b-c783b8799065'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     scaleSetFaultDomain: 1
@@ -527,9 +538,21 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "roleAssignments": {
       "value": [
         {
+          "name": "8abf72f9-e918-4adc-b20b-c783b8799065",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -1024,9 +1047,21 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     }
     roleAssignments: [
       {
+        name: '1910de8c-4dab-4189-96bb-2feb68350fb8'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     skuCapacity: 1
@@ -1226,9 +1261,21 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "roleAssignments": {
       "value": [
         {
+          "name": "1910de8c-4dab-4189-96bb-2feb68350fb8",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -1323,7 +1370,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    encryptionAtHost: '<encryptionAtHost>'
+    encryptionAtHost: false
     extensionAntiMalwareConfig: {
       enabled: true
       settings: {
@@ -1482,7 +1529,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       ]
     },
     "encryptionAtHost": {
-      "value": "<encryptionAtHost>"
+      "value": false
     },
     "extensionAntiMalwareConfig": {
       "value": {
@@ -1589,7 +1636,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -2404,6 +2450,25 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Data Operator for Managed Disks'`
+  - `'Desktop Virtualization Power On Contributor'`
+  - `'Desktop Virtualization Power On Off Contributor'`
+  - `'Desktop Virtualization Virtual Machine Contributor'`
+  - `'DevTest Labs User'`
+  - `'Disk Backup Reader'`
+  - `'Disk Pool Operator'`
+  - `'Disk Restore Operator'`
+  - `'Disk Snapshot Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+  - `'Virtual Machine Administrator Login'`
+  - `'Virtual Machine Contributor'`
+  - `'Virtual Machine User Login'`
+  - `'VM Scanner Operator'`
 
 **Required parameters**
 
@@ -2420,6 +2485,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -2466,6 +2532,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -2669,7 +2742,6 @@ Do not provide a value! This date value is used to generate a registration token
 - Type: string
 - Default: `[utcNow('u')]`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -2679,10 +2751,6 @@ Do not provide a value! This date value is used to generate a registration token
 | `resourceGroupName` | string | The resource group of the virtual machine scale set. |
 | `resourceId` | string | The resource ID of the virtual machine scale set. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

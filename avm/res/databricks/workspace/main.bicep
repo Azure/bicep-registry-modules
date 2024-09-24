@@ -113,11 +113,14 @@ param storageAccountPrivateEndpoints privateEndpointType
 @description('Conditional. The resource ID of the associated access connector for private access to the managed workspace storage account. Required if privateStorageAccount is enabled.')
 param accessConnectorResourceId string = ''
 
+@description('Optional. The default catalog configuration for the Databricks workspace.')
+param defaultCatalog defaultCatalogType?
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -126,6 +129,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -317,6 +331,14 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
             identityType: 'SystemAssigned'
           }
         }
+      : {},
+    !empty(defaultCatalog)
+      ? {
+          defaultCatalog: {
+            initialName: ''
+            initialType: defaultCatalog.?initialType
+          }
+        }
       : {}
   )
 }
@@ -356,14 +378,10 @@ resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
 ]
 
 resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -376,7 +394,7 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
 ]
 
 @batchSize(1)
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.3' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -417,8 +435,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -438,7 +455,7 @@ var _storageAccountId = resourceId(
 )
 
 @batchSize(1)
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.3' = [
+module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (storageAccountPrivateEndpoints ?? []): if (privateStorageAccount == 'Enabled') {
     name: '${uniqueString(deployment().name, location)}-workspacestorage-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -479,8 +496,7 @@ module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoi
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -521,11 +537,27 @@ output workspaceUrl string = workspace.properties.workspaceUrl
 @description('The unique identifier of the databricks workspace in databricks control plane.')
 output workspaceId string = workspace.properties.workspaceId
 
-@description('The private endpoints for the Databricks Workspace.')
+@description('The private endpoints of the Databricks Workspace.')
 output privateEndpoints array = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
     name: workspace_privateEndpoints[i].outputs.name
     resourceId: workspace_privateEndpoints[i].outputs.resourceId
+    groupId: workspace_privateEndpoints[i].outputs.groupId
+    customDnsConfig: workspace_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: workspace_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
+
+@description('The private endpoints of the Databricks Workspace Storage.')
+output storagePrivateEndpoints array = [
+  for (pe, i) in ((!empty(storageAccountPrivateEndpoints) && privateStorageAccount == 'Enabled')
+    ? array(storageAccountPrivateEndpoints)
+    : []): {
+    name: storageAccount_privateEndpoints[i].outputs.name
+    resourceId: storageAccount_privateEndpoints[i].outputs.resourceId
+    groupId: storageAccount_privateEndpoints[i].outputs.groupId
+    customDnsConfig: storageAccount_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: storageAccount_privateEndpoints[i].outputs.networkInterfaceIds
   }
 ]
 
@@ -557,11 +589,20 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
@@ -651,6 +692,9 @@ type customerManagedKeyManagedDiskType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -707,3 +751,12 @@ type diagnosticSettingType = {
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?
+
+type defaultCatalogType = {
+  //This value cannot be set to a custom value. Reason --> 'InvalidInitialCatalogName' message: 'Currently custom initial catalog name is not supported. This capability will be added in future.'
+  //@description('Optional. Set the name of the Catalog.')
+  //initialName: ''
+
+  @description('Required. Choose between HiveMetastore or UnityCatalog.')
+  initialType: 'HiveMetastore' | 'UnityCatalog'
+}

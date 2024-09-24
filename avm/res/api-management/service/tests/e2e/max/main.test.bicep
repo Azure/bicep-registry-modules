@@ -171,6 +171,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'aad'
           clientId: 'apimClientid'
+          clientLibrary: 'MSAL-2'
           clientSecret: 'apimSlientSecret'
           authority: split(environment().authentication.loginEndpoint, '/')[2]
           signinTenant: 'mytenant.onmicrosoft.com'
@@ -245,11 +246,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
+          name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

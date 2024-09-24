@@ -60,7 +60,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    stagingResourceGroup: '${subscription().id}/resourcegroups/${resourceGroupName}-staging'
+    stagingResourceGroupResourceId: '${subscription().id}/resourcegroups/${resourceGroupName}-staging'
     customizationSteps: [
       {
         type: 'Shell'
@@ -138,11 +138,13 @@ module testDeployment '../../../main.bicep' = {
     }
     roleAssignments: [
       {
+        name: 'bb257a92-dc06-4831-9b74-ee5442d8ce0f'
         roleDefinitionIdOrName: 'Owner'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
       {
+        name: guid('Custom seed ${namePrefix}${serviceShort}')
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'

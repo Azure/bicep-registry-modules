@@ -20,6 +20,10 @@ param serviceShort string = 'acamax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. Container app stored secret to pass into environment variables. The value is a GUID.')
+@secure()
+param myCustomContainerAppSecret string = newGuid()
+
 // =========== //
 // Deployments //
 // =========== //
@@ -37,6 +41,8 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     managedEnvironmentName: 'dep-${namePrefix}-menv-${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    keyVaultSecretName: 'dep-${namePrefix}-kv-secret-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
@@ -58,11 +64,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
+          name: 'e9bac1ee-aebe-4513-9337-49e87a7be05e'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -76,7 +84,7 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
-      environmentId: nestedDependencies.outputs.managedEnvironmentResourceId
+      environmentResourceId: nestedDependencies.outputs.managedEnvironmentResourceId
       location: resourceLocation
       lock: {
         kind: 'CanNotDelete'
@@ -90,8 +98,13 @@ module testDeployment '../../../main.bicep' = [
       secrets: {
         secureList: [
           {
-            name: 'customtest'
-            value: guid(deployment().name)
+            name: 'containerappstoredsecret'
+            value: myCustomContainerAppSecret
+          }
+          {
+            name: 'keyvaultstoredsecret'
+            keyVaultUrl: nestedDependencies.outputs.keyVaultSecretURI
+            identity: nestedDependencies.outputs.managedIdentityResourceId
           }
         ]
       }
@@ -104,6 +117,16 @@ module testDeployment '../../../main.bicep' = [
             cpu: json('0.25')
             memory: '0.5Gi'
           }
+          env: [
+            {
+              name: 'ContainerAppStoredSecretName'
+              secretRef: 'containerappstoredsecret'
+            }
+            {
+              name: 'ContainerAppKeyVaultStoredSecretName'
+              secretRef: 'keyvaultstoredsecret'
+            }
+          ]
           probes: [
             {
               type: 'Liveness'

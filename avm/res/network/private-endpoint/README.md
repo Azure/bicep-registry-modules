@@ -8,7 +8,6 @@ This module deploys a Private Endpoint.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -153,10 +152,15 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    privateDnsZoneGroupName: 'default'
-    privateDnsZoneResourceIds: [
-      '<privateDNSZoneResourceId>'
-    ]
+    privateDnsZoneGroup: {
+      name: 'default'
+      privateDnsZoneGroupConfigs: [
+        {
+          name: 'config'
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
     privateLinkServiceConnections: [
       {
         name: 'npemax001'
@@ -171,11 +175,13 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     ]
     roleAssignments: [
       {
+        name: '6804f270-b4e9-455f-a11b-7f2a64e38f7c'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -254,13 +260,16 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "name": "myCustomLockName"
       }
     },
-    "privateDnsZoneGroupName": {
-      "value": "default"
-    },
-    "privateDnsZoneResourceIds": {
-      "value": [
-        "<privateDNSZoneResourceId>"
-      ]
+    "privateDnsZoneGroup": {
+      "value": {
+        "name": "default",
+        "privateDnsZoneGroupConfigs": [
+          {
+            "name": "config",
+            "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+          }
+        ]
+      }
     },
     "privateLinkServiceConnections": {
       "value": [
@@ -279,11 +288,13 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     "roleAssignments": {
       "value": [
         {
+          "name": "6804f270-b4e9-455f-a11b-7f2a64e38f7c",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -439,9 +450,13 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    privateDnsZoneResourceIds: [
-      '<privateDNSZoneResourceId>'
-    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
     privateLinkServiceConnections: [
       {
         name: 'npewaf001'
@@ -511,10 +526,14 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "name": "myCustomLockName"
       }
     },
-    "privateDnsZoneResourceIds": {
-      "value": [
-        "<privateDNSZoneResourceId>"
-      ]
+    "privateDnsZoneGroup": {
+      "value": {
+        "privateDnsZoneGroupConfigs": [
+          {
+            "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+          }
+        ]
+      }
     },
     "privateLinkServiceConnections": {
       "value": [
@@ -543,7 +562,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -565,8 +583,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`manualPrivateLinkServiceConnections`](#parameter-manualprivatelinkserviceconnections) | array | A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. |
-| [`privateDnsZoneGroupName`](#parameter-privatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroup`](#parameter-privatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnections`](#parameter-privatelinkserviceconnections) | array | A grouping of information about the connection to the remote resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags to be applied on all resources/resource groups in this deployment. |
@@ -798,19 +815,64 @@ A message passed to the owner of the remote resource with this connection reques
 - Required: Yes
 - Type: string
 
-### Parameter: `privateDnsZoneGroupName`
+### Parameter: `privateDnsZoneGroup`
 
-The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
+The private DNS zone group to configure for the private endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-privatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+
+### Parameter: `privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
 
-### Parameter: `privateDnsZoneResourceIds`
+### Parameter: `privateDnsZoneGroup.name`
 
-The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+The name of the Private DNS Zone Group.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateLinkServiceConnections`
 
@@ -880,6 +942,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -896,6 +969,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -946,6 +1020,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -970,7 +1051,6 @@ Tags to be applied on all resources/resource groups in this deployment.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -979,12 +1059,9 @@ Tags to be applied on all resources/resource groups in this deployment.
 | `groupId` | string | The group Id for the private endpoint Group. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the private endpoint. |
+| `networkInterfaceIds` | array | The IDs of the network interfaces associated with the private endpoint. |
 | `resourceGroupName` | string | The resource group the private endpoint was deployed into. |
 | `resourceId` | string | The resource ID of the private endpoint. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
