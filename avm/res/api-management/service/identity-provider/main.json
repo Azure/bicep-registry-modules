@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "13129392765749462635"
+      "templateHash": "12757169124799431378"
     },
     "name": "API Management Service Identity Providers",
     "description": "This module deploys an API Management Service Identity Provider.",
@@ -37,6 +38,17 @@
       "defaultValue": "",
       "metadata": {
         "description": "Conditional. Client ID of the Application in the external Identity Provider. Required if identity provider is used."
+      }
+    },
+    "clientLibrary": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "ADAL",
+        "MSAL-2"
+      ],
+      "metadata": {
+        "description": "Optional. The client library to be used in the developer portal. Only applies to AAD and AAD B2C Identity Provider."
       }
     },
     "clientSecret": {
@@ -106,8 +118,14 @@
   "variables": {
     "isAadB2C": "[equals(parameters('type'), 'aadB2C')]"
   },
-  "resources": [
-    {
+  "resources": {
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2023-05-01-preview",
+      "name": "[parameters('apiManagementServiceName')]"
+    },
+    "identityProvider": {
       "type": "Microsoft.ApiManagement/service/identityProviders",
       "apiVersion": "2022-08-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
@@ -121,10 +139,14 @@
         "profileEditingPolicyName": "[if(variables('isAadB2C'), parameters('profileEditingPolicyName'), null())]",
         "passwordResetPolicyName": "[if(variables('isAadB2C'), parameters('passwordResetPolicyName'), null())]",
         "clientId": "[parameters('clientId')]",
+        "clientLibrary": "[parameters('clientLibrary')]",
         "clientSecret": "[parameters('clientSecret')]"
-      }
+      },
+      "dependsOn": [
+        "service"
+      ]
     }
-  ],
+  },
   "outputs": {
     "resourceId": {
       "type": "string",

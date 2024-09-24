@@ -87,45 +87,65 @@ module testDeployment '../../../main.bicep' = [
       ]
       accountPrivateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.purviewAccountPrivateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.purviewAccountPrivateDNSResourceId
+              }
+            ]
+          }
           service: 'account'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
       portalPrivateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.purviewPortalPrivateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.purviewPortalPrivateDNSResourceId
+              }
+            ]
+          }
           service: 'portal'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
       storageBlobPrivateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.storageBlobPrivateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.storageBlobPrivateDNSResourceId
+              }
+            ]
+          }
           service: 'blob'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
       storageQueuePrivateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.storageQueuePrivateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.storageQueuePrivateDNSResourceId
+              }
+            ]
+          }
           service: 'queue'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
       eventHubPrivateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.eventHubPrivateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.eventHubPrivateDNSResourceId
+              }
+            ]
+          }
           service: 'namespace'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }

@@ -13,6 +13,9 @@ param storageAccountName string
 @description('Required. The name of the additional Storage Account to create.')
 param secondaryStorageAccountName string
 
+@description('Required. The name of the AI Services to create.')
+param aiServicesName string
+
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: keyVaultName
   location: location
@@ -56,6 +59,15 @@ resource secondaryStorageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' 
   kind: 'StorageV2'
 }
 
+resource aiServices 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
+  name: aiServicesName
+  location: location
+  sku: {
+    name: 'S0'
+  }
+  kind: 'AIServices'
+}
+
 @description('The resource ID of the created Application Insights instance.')
 output applicationInsightsResourceId string = applicationInsights.id
 
@@ -67,3 +79,12 @@ output secondaryStorageAccountResourceId string = secondaryStorageAccount.id
 
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
+
+@description('The resource ID of the created AI Services.')
+output aiServicesResourceId string = aiServices.id
+
+@description('The main endpoint of the created AI Services.')
+output aiServicesEndpoint string = aiServices.properties.endpoint
+
+@description('The endpoints of the created AI Services.')
+output aiServicesEndpoints object = aiServices.properties.endpoints
