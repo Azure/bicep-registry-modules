@@ -3,10 +3,8 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 targetScope = 'managementGroup'
 
-#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-var enforcedLocation = 'eastus'
-//@description('Optional. The location to deploy resources to.')
-//param resourceLocation string = deployment().location
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
 
 // This parameter needs to be updated with the billing account and the enrollment account of your enviornment.
 @description('Optional. The subscription billing scope.')
@@ -22,7 +20,7 @@ param serviceShort string = 'ssamin'
 param subscriptionGuid string = toLower(substring(newGuid(), 0, 3))
 
 module testDeployment '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${subscriptionGuid}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${subscriptionGuid}'
   params: {
     subscriptionAliasEnabled: true
     subscriptionBillingScope: subscriptionBillingScope
@@ -42,4 +40,4 @@ module testDeployment '../../../main.bicep' = {
 output createdSubId string = testDeployment.outputs.subscriptionId
 output namePrefix string = namePrefix
 output serviceShort string = serviceShort
-output resourceLocation string = enforcedLocation
+output resourceLocation string = resourceLocation
