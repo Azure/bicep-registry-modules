@@ -257,7 +257,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       {
         name: 'webApp01Endpoint'
         properties: {
-          endpointLocation: 'uksouth'
+          endpointLocation: '<endpointLocation>'
           endpointStatus: 'Enabled'
           priority: 1
           targetResourceId: '<targetResourceId>'
@@ -268,7 +268,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       {
         name: 'webApp02Endpoint'
         properties: {
-          endpointLocation: 'ukwest'
+          endpointLocation: '<endpointLocation>'
           endpointStatus: 'Enabled'
           priority: 2
           targetResourceId: '<targetResourceId>'
@@ -334,7 +334,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
         {
           "name": "webApp01Endpoint",
           "properties": {
-            "endpointLocation": "uksouth",
+            "endpointLocation": "<endpointLocation>",
             "endpointStatus": "Enabled",
             "priority": 1,
             "targetResourceId": "<targetResourceId>",
@@ -345,7 +345,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
         {
           "name": "webApp02Endpoint",
           "properties": {
-            "endpointLocation": "ukwest",
+            "endpointLocation": "<endpointLocation>",
             "endpointStatus": "Enabled",
             "priority": 2,
             "targetResourceId": "<targetResourceId>",

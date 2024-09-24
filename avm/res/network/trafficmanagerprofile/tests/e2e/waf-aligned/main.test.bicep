@@ -14,6 +14,12 @@ param resourceGroupName string = 'dep-${namePrefix}-network.trafficmanagerprofil
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
+#disable-next-line no-hardcoded-location
+var enforcedLocation01 = 'uksouth'
+
+#disable-next-line no-hardcoded-location
+var enforcedLocation02 = 'ukwest'
+
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ntmpwaf'
 
@@ -41,8 +47,8 @@ module nestedDependencies 'dependencies.bicep' = {
     serverFarmName02: 'dep-${namePrefix}-sf-${serviceShort}02'
     webApp01Name: 'dep-${namePrefix}-wa-${serviceShort}01'
     webApp02Name: 'dep-${namePrefix}-wa-${serviceShort}02'
-    location01: 'uksouth'
-    location02: 'ukwest'
+    location01: enforcedLocation01
+    location02: enforcedLocation02
   }
 }
 
@@ -107,7 +113,7 @@ module testDeployment '../../../main.bicep' = [
             targetResourceId: nestedDependencies.outputs.webApp01ResourceId
             weight: 1
             priority: 1
-            endpointLocation: 'uksouth'
+            endpointLocation: nestedDependencies.outputs.webApp01Location
             endpointStatus: 'Enabled'
           }
         }
@@ -118,7 +124,7 @@ module testDeployment '../../../main.bicep' = [
             targetResourceId: nestedDependencies.outputs.webApp02ResourceId
             weight: 1
             priority: 2
-            endpointLocation: 'ukwest'
+            endpointLocation: nestedDependencies.outputs.webApp02Location
             endpointStatus: 'Enabled'
           }
         }

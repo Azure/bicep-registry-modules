@@ -79,3 +79,9 @@ output webApp01ResourceId string = webApp01.id
 
 @description('The resource ID of the second created Web Application')
 output webApp02ResourceId string = webApp02.id
+
+@description('The location of the first created Web Application')
+output webApp01Location string = webApp01.location
+
+@description('The location of the second created Web Application')
+output webApp02Location string = webApp02.location
