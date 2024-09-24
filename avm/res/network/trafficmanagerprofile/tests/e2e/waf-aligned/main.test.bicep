@@ -107,7 +107,7 @@ module testDeployment '../../../main.bicep' = [
             targetResourceId: nestedDependencies.outputs.webApp01ResourceId
             weight: 1
             priority: 1
-            endpointLocation: 'eastus'
+            endpointLocation: 'uksouth'
             endpointStatus: 'Enabled'
           }
         }
@@ -118,7 +118,7 @@ module testDeployment '../../../main.bicep' = [
             targetResourceId: nestedDependencies.outputs.webApp02ResourceId
             weight: 1
             priority: 2
-            endpointLocation: 'westus'
+            endpointLocation: 'ukwest'
             endpointStatus: 'Enabled'
           }
         }
