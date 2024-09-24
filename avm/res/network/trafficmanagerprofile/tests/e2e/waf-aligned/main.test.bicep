@@ -41,8 +41,8 @@ module nestedDependencies 'dependencies.bicep' = {
     serverFarmName02: 'dep-${namePrefix}-sf-${serviceShort}02'
     webApp01Name: 'dep-${namePrefix}-wa-${serviceShort}01'
     webApp02Name: 'dep-${namePrefix}-wa-${serviceShort}02'
-    location01: 'eastus'
-    location02: 'westus'
+    location01: 'uksouth'
+    location02: 'ukwest'
   }
 }
 
