@@ -8,7 +8,6 @@ This module deploys a Virtual WAN.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -281,7 +280,6 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -393,6 +391,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -506,7 +511,6 @@ The type of the Virtual WAN.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -515,10 +519,6 @@ The type of the Virtual WAN.
 | `name` | string | The name of the virtual WAN. |
 | `resourceGroupName` | string | The resource group the virtual WAN was deployed into. |
 | `resourceId` | string | The resource ID of the virtual WAN. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

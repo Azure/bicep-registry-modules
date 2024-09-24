@@ -496,7 +496,6 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -984,6 +983,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -1130,6 +1140,20 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'SignalR AccessKey Reader'`
+  - `'SignalR App Server'`
+  - `'SignalR REST API Owner'`
+  - `'SignalR REST API Reader'`
+  - `'SignalR Service Owner'`
+  - `'SignalR/Web PubSub Contributor'`
+  - `'User Access Administrator'`
+  - `'Web PubSub Service Owner (Preview)'`
+  - `'Web PubSub Service Reader (Preview)'`
 
 **Required parameters**
 
@@ -1270,7 +1294,6 @@ Upstream templates to enable. For more information, see https://learn.microsoft.
 
 - Required: No
 - Type: array
-
 
 ## Outputs
 

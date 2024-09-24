@@ -54,7 +54,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     // Required parameters
     name: 'accmin001'
     // Non-required parameters
-    enablePurgeProtection: '<enablePurgeProtection>'
+    enablePurgeProtection: false
     location: '<location>'
   }
 }
@@ -78,7 +78,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     },
     // Non-required parameters
     "enablePurgeProtection": {
-      "value": "<enablePurgeProtection>"
+      "value": false
     },
     "location": {
       "value": "<location>"
@@ -113,7 +113,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     disableLocalAuth: '<disableLocalAuth>'
-    enablePurgeProtection: '<enablePurgeProtection>'
+    enablePurgeProtection: false
     keyValues: [
       {
         contentType: 'contentType'
@@ -170,7 +170,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       "value": "<disableLocalAuth>"
     },
     "enablePurgeProtection": {
-      "value": "<enablePurgeProtection>"
+      "value": false
     },
     "keyValues": {
       "value": [
@@ -240,7 +240,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       }
     ]
     disableLocalAuth: '<disableLocalAuth>'
-    enablePurgeProtection: '<enablePurgeProtection>'
+    enablePurgeProtection: false
     keyValues: [
       {
         contentType: 'contentType'
@@ -354,7 +354,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       "value": "<disableLocalAuth>"
     },
     "enablePurgeProtection": {
-      "value": "<enablePurgeProtection>"
+      "value": false
     },
     "keyValues": {
       "value": [
@@ -465,7 +465,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     name: 'accpe001'
     // Non-required parameters
     createMode: 'Default'
-    enablePurgeProtection: '<enablePurgeProtection>'
+    enablePurgeProtection: false
     location: '<location>'
     privateEndpoints: [
       {
@@ -520,7 +520,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       "value": "Default"
     },
     "enablePurgeProtection": {
-      "value": "<enablePurgeProtection>"
+      "value": false
     },
     "location": {
       "value": "<location>"
@@ -590,7 +590,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       }
     ]
     disableLocalAuth: '<disableLocalAuth>'
-    enablePurgeProtection: '<enablePurgeProtection>'
+    enablePurgeProtection: false
     keyValues: [
       {
         contentType: 'contentType'
@@ -647,7 +647,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       "value": "<disableLocalAuth>"
     },
     "enablePurgeProtection": {
-      "value": "<enablePurgeProtection>"
+      "value": false
     },
     "keyValues": {
       "value": [
@@ -683,7 +683,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -1304,6 +1303,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -1436,6 +1446,16 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'App Compliance Automation Administrator'`
+  - `'App Compliance Automation Reader'`
+  - `'App Configuration Data Owner'`
+  - `'App Configuration Data Reader'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1556,7 +1576,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 

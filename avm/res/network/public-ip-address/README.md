@@ -8,7 +8,6 @@ This module deploys a Public IP Address.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -416,7 +415,6 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -812,6 +810,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -963,7 +972,6 @@ A list of availability zones denoting the IP allocated for the resource needs to
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -973,10 +981,6 @@ A list of availability zones denoting the IP allocated for the resource needs to
 | `name` | string | The name of the public IP address. |
 | `resourceGroupName` | string | The resource group the public IP address was deployed into. |
 | `resourceId` | string | The resource ID of the public IP address. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
