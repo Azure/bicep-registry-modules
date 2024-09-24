@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "15596993518588024968"
+      "templateHash": "973776533492793692"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -230,6 +230,132 @@
         }
       },
       "nullable": true
+    },
+    "activePassiveNoBgpType": {
+      "type": "object",
+      "properties": {
+        "clusterMode": {
+          "type": "string",
+          "allowedValues": [
+            "activePassiveNoBgp"
+          ]
+        }
+      }
+    },
+    "activeActiveNoBgpType": {
+      "type": "object",
+      "properties": {
+        "clusterMode": {
+          "type": "string",
+          "allowedValues": [
+            "activeActiveNoBgp"
+          ]
+        },
+        "activeGatewayPipName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it's not provided, a '-pip2' suffix will be appended to the gateway's name."
+          }
+        }
+      }
+    },
+    "activePassiveBgpType": {
+      "type": "object",
+      "properties": {
+        "clusterMode": {
+          "type": "string",
+          "allowedValues": [
+            "activePassiveBgp"
+          ]
+        },
+        "asn": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 0,
+          "maxValue": 4294967295,
+          "metadata": {
+            "description": "Optional. The Autonomous System Number value. If it's not provided, a default '65515' value will be assigned to the ASN."
+          }
+        },
+        "customBgpIpAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration."
+          }
+        }
+      }
+    },
+    "activeActiveBgpType": {
+      "type": "object",
+      "properties": {
+        "clusterMode": {
+          "type": "string",
+          "allowedValues": [
+            "activeActiveBgp"
+          ]
+        },
+        "activeGatewayPipName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it's not provided, a '-pip2' suffix will be appended to the gateway's name."
+          }
+        },
+        "asn": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 0,
+          "maxValue": 4294967295,
+          "metadata": {
+            "description": "Optional. The Autonomous System Number value. If it's not provided, a default '65515' value will be assigned to the ASN."
+          }
+        },
+        "customBgpIpAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration."
+          }
+        },
+        "secondCustomBgpIpAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration."
+          }
+        }
+      }
+    },
+    "clusterSettingType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "clusterMode",
+        "mapping": {
+          "activeActiveNoBgp": {
+            "$ref": "#/definitions/activeActiveNoBgpType"
+          },
+          "activeActiveBgp": {
+            "$ref": "#/definitions/activeActiveBgpType"
+          },
+          "activePassiveBgp": {
+            "$ref": "#/definitions/activePassiveBgpType"
+          },
+          "activePassiveNoBgp": {
+            "$ref": "#/definitions/activePassiveNoBgpType"
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -251,13 +377,6 @@
       "defaultValue": "[format('{0}-pip1', parameters('name'))]",
       "metadata": {
         "description": "Optional. Specifies the name of the Public IP used by the Virtual Network Gateway. If it's not provided, a '-pip' suffix will be appended to the gateway's name."
-      }
-    },
-    "activeGatewayPipName": {
-      "type": "string",
-      "defaultValue": "[format('{0}-pip2', parameters('name'))]",
-      "metadata": {
-        "description": "Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it's not provided, a '-pip' suffix will be appended to the gateway's name."
       }
     },
     "publicIPPrefixResourceId": {
@@ -345,25 +464,10 @@
         "description": "Required. Virtual Network resource ID."
       }
     },
-    "activeActive": {
-      "type": "bool",
-      "defaultValue": true,
+    "clusterSettings": {
+      "$ref": "#/definitions/clusterSettingType",
       "metadata": {
-        "description": "Optional. Value to specify if the Gateway should be deployed in active-active or active-passive configuration."
-      }
-    },
-    "enableBgp": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Value to specify if BGP is enabled or not."
-      }
-    },
-    "asn": {
-      "type": "int",
-      "defaultValue": 65815,
-      "metadata": {
-        "description": "Optional. ASN value."
+        "description": "Required. Specifies one of the following four configurations: Active-Active with (clusterMode = activeActiveBgp) or without (clusterMode = activeActiveNoBgp) BGP, Active-Passive with (clusterMode = activePassiveBgp) or without (clusterMode = activePassiveNoBgp) BGP."
       }
     },
     "vpnClientAddressPoolPrefix": {
@@ -498,14 +602,14 @@
       }
     ],
     "gatewayPipAllocationMethod": "[if(equals(parameters('skuName'), 'Basic'), 'Dynamic', 'Static')]",
-    "isActiveActiveValid": "[if(not(equals(parameters('gatewayType'), 'ExpressRoute')), parameters('activeActive'), false())]",
-    "virtualGatewayPipNameVar": "[if(variables('isActiveActiveValid'), createArray(parameters('gatewayPipName'), parameters('activeGatewayPipName')), createArray(parameters('gatewayPipName')))]",
-    "vpnTypeVar": "[if(not(equals(parameters('gatewayType'), 'ExpressRoute')), parameters('vpnType'), 'PolicyBased')]",
-    "isBgpValid": "[if(not(equals(parameters('gatewayType'), 'ExpressRoute')), parameters('enableBgp'), false())]",
-    "bgpSettings": {
-      "asn": "[parameters('asn')]"
-    },
-    "ipConfiguration": "[if(variables('isActiveActiveValid'), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName')))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', if(variables('isActiveActiveValid'), resourceId('Microsoft.Network/publicIPAddresses', parameters('activeGatewayPipName')), resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName'))))), 'name', 'vNetGatewayConfig2')), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName')))), 'name', 'vNetGatewayConfig1')))]",
+    "isExpressRoute": "[equals(parameters('gatewayType'), 'ExpressRoute')]",
+    "vpnTypeVar": "[if(not(variables('isExpressRoute')), parameters('vpnType'), 'PolicyBased')]",
+    "isBgp": "[and(or(equals(parameters('clusterSettings').clusterMode, 'activeActiveBgp'), equals(parameters('clusterSettings').clusterMode, 'activePassiveBgp')), not(variables('isExpressRoute')))]",
+    "isActiveActive": "[and(or(equals(parameters('clusterSettings').clusterMode, 'activeActiveNoBgp'), equals(parameters('clusterSettings').clusterMode, 'activeActiveBgp')), not(variables('isExpressRoute')))]",
+    "activeGatewayPipNameVar": "[if(variables('isActiveActive'), coalesce(tryGet(parameters('clusterSettings'), 'activeGatewayPipName'), format('{0}-pip2', parameters('name'))), null())]",
+    "virtualGatewayPipNameVar": "[if(variables('isActiveActive'), createArray(parameters('gatewayPipName'), variables('activeGatewayPipNameVar')), createArray(parameters('gatewayPipName')))]",
+    "bgpSettingsVar": "[if(variables('isActiveActive'), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))), createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'secondCustomBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig2', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))))]",
+    "ipConfiguration": "[if(variables('isActiveActive'), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName')))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', if(variables('isActiveActive'), resourceId('Microsoft.Network/publicIPAddresses', variables('activeGatewayPipNameVar')), resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName'))))), 'name', 'vNetGatewayConfig2')), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName')))), 'name', 'vNetGatewayConfig1')))]",
     "vpnClientConfiguration": "[if(not(empty(parameters('clientRootCertData'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'vpnClientRootCertificates', createArray(createObject('name', 'RootCert1', 'properties', createObject('publicCertData', parameters('clientRootCertData')))), 'vpnClientRevokedCertificates', if(not(empty(parameters('clientRevokedCertThumbprint'))), createArray(createObject('name', 'RevokedCert1', 'properties', createObject('thumbprint', parameters('clientRevokedCertThumbprint')))), null())), if(not(empty(parameters('vpnClientAadConfiguration'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'aadTenant', parameters('vpnClientAadConfiguration').aadTenant, 'aadAudience', parameters('vpnClientAadConfiguration').aadAudience, 'aadIssuer', parameters('vpnClientAadConfiguration').aadIssuer, 'vpnAuthenticationTypes', parameters('vpnClientAadConfiguration').vpnAuthenticationTypes, 'vpnClientProtocols', parameters('vpnClientAadConfiguration').vpnClientProtocols), null()))]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -545,13 +649,13 @@
       "tags": "[parameters('tags')]",
       "properties": {
         "ipConfigurations": "[variables('ipConfiguration')]",
-        "activeActive": "[variables('isActiveActiveValid')]",
+        "activeActive": "[variables('isActiveActive')]",
         "allowRemoteVnetTraffic": "[parameters('allowRemoteVnetTraffic')]",
         "allowVirtualWanTraffic": "[parameters('allowVirtualWanTraffic')]",
-        "enableBgp": "[variables('isBgpValid')]",
-        "bgpSettings": "[if(variables('isBgpValid'), variables('bgpSettings'), null())]",
+        "enableBgp": "[variables('isBgp')]",
+        "bgpSettings": "[if(variables('isBgp'), variables('bgpSettingsVar'), null())]",
         "disableIPSecReplayProtection": "[parameters('disableIPSecReplayProtection')]",
-        "enableDnsForwarding": "[if(equals(parameters('gatewayType'), 'ExpressRoute'), parameters('enableDnsForwarding'), null())]",
+        "enableDnsForwarding": "[if(not(variables('isExpressRoute')), parameters('enableDnsForwarding'), null())]",
         "enablePrivateIpAddress": "[parameters('enablePrivateIpAddress')]",
         "enableBgpRouteTranslationForNat": "[parameters('enableBgpRouteTranslationForNat')]",
         "gatewayType": "[parameters('gatewayType')]",
@@ -1329,11 +1433,21 @@
           "virtualNetworkGatewayName": {
             "value": "[parameters('name')]"
           },
-          "externalMappings": "[if(contains(parameters('natRules')[copyIndex()], 'externalMappings'), createObject('value', parameters('natRules')[copyIndex()].externalMappings), createObject('value', createArray()))]",
-          "internalMappings": "[if(contains(parameters('natRules')[copyIndex()], 'internalMappings'), createObject('value', parameters('natRules')[copyIndex()].internalMappings), createObject('value', createArray()))]",
-          "ipConfigurationId": "[if(contains(parameters('natRules')[copyIndex()], 'ipConfigurationId'), createObject('value', parameters('natRules')[copyIndex()].ipConfigurationId), createObject('value', ''))]",
-          "mode": "[if(contains(parameters('natRules')[copyIndex()], 'mode'), createObject('value', parameters('natRules')[copyIndex()].mode), createObject('value', ''))]",
-          "type": "[if(contains(parameters('natRules')[copyIndex()], 'type'), createObject('value', parameters('natRules')[copyIndex()].type), createObject('value', ''))]"
+          "externalMappings": {
+            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'externalMappings'), createArray())]"
+          },
+          "internalMappings": {
+            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'internalMappings'), createArray())]"
+          },
+          "ipConfigurationId": {
+            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'ipConfigurationId'), '')]"
+          },
+          "mode": {
+            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'mode'), '')]"
+          },
+          "type": {
+            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'type'), '')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
