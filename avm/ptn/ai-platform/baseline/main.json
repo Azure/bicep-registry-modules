@@ -5,34 +5,14 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "2263138345896714301"
+      "version": "0.30.3.12046",
+      "templateHash": "12442663604053803236"
     },
     "name": "AI Platform Baseline",
     "description": "This module provides a secure and scalable environment for deploying AI applications on Azure.\nThe module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.\nBy integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "managedIdentityConfigurationType": {
-      "type": "object",
-      "properties": {
-        "hubName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the workspace hub user-assigned managed identity."
-          }
-        },
-        "projectName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the workspace project user-assigned managed identity."
-          }
-        }
-      },
-      "nullable": true
-    },
     "logAnalyticsConfigurationType": {
       "type": "object",
       "properties": {
@@ -776,10 +756,11 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "managedIdentityConfiguration": {
-      "$ref": "#/definitions/managedIdentityConfigurationType",
+    "managedIdentityName": {
+      "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Configuration for the user-assigned managed identities."
+        "description": "Optional. The name of the user assigned identity for the AI Studio hub. If not provided, the hub will use a system assigned identity."
       }
     },
     "logAnalyticsConfiguration": {
@@ -919,19 +900,12 @@
         }
       }
     },
-    "managedIdentityHub": {
+    "userAssignedIdentity": {
+      "condition": "[not(equals(parameters('managedIdentityName'), null()))]",
+      "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2023-01-31",
-      "name": "[coalesce(tryGet(parameters('managedIdentityConfiguration'), 'hubName'), format('id-hub-{0}', parameters('name')))]",
-      "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]"
-    },
-    "managedIdentityProject": {
-      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2023-01-31",
-      "name": "[coalesce(tryGet(parameters('managedIdentityConfiguration'), 'projectName'), format('id-project-{0}', parameters('name')))]",
-      "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]"
+      "name": "[coalesce(parameters('managedIdentityName'), 'null')]"
     },
     "logAnalyticsWorkspace": {
       "type": "Microsoft.OperationalInsights/workspaces",
@@ -941,16 +915,17 @@
       "tags": "[parameters('tags')]"
     },
     "resourceGroup_roleAssignment": {
+      "condition": "[not(equals(parameters('managedIdentityName'), null()))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "name": "[guid(resourceGroup().id, parameters('name'))]",
       "properties": {
         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-        "principalId": "[reference('managedIdentityHub').principalId]",
+        "principalId": "[reference('userAssignedIdentity').principalId]",
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
-        "managedIdentityHub"
+        "userAssignedIdentity"
       ]
     },
     "storageAccount_privateDnsZones": {
@@ -3860,15 +3835,7 @@
               }
             ]
           },
-          "roleAssignments": {
-            "value": [
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              }
-            ]
-          }
+          "roleAssignments": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', createArray(createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Contributor', 'principalType', 'ServicePrincipal'))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -6723,7 +6690,7 @@
         }
       },
       "dependsOn": [
-        "managedIdentityHub",
+        "userAssignedIdentity",
         "virtualNetwork"
       ]
     },
@@ -14047,30 +14014,7 @@
           "enablePurgeProtection": {
             "value": "[coalesce(tryGet(parameters('keyVaultConfiguration'), 'enablePurgeProtection'), true())]"
           },
-          "roleAssignments": {
-            "value": [
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Key Vault Administrator",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Key Vault Administrator",
-                "principalType": "ServicePrincipal"
-              }
-            ]
-          },
+          "roleAssignments": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', createArray(createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Contributor', 'principalType', 'ServicePrincipal'), createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Key Vault Administrator', 'principalType', 'ServicePrincipal'))), createObject('value', null()))]",
           "diagnosticSettings": {
             "value": [
               {
@@ -16818,8 +16762,7 @@
       },
       "dependsOn": [
         "logAnalyticsWorkspace",
-        "managedIdentityHub",
-        "managedIdentityProject"
+        "userAssignedIdentity"
       ]
     },
     "storageAccount": {
@@ -16863,50 +16806,7 @@
             }
           },
           "privateEndpoints": "[if(not(equals(variables('subnetResourceId'), null())), createObject('value', map(items(variables('storagePrivateDnsZones')), lambda('zone', createObject('name', format('pep-{0}-{1}', lambdaVariables('zone').value, parameters('name')), 'customNetworkInterfaceName', format('nic-{0}-{1}', lambdaVariables('zone').value, parameters('name')), 'service', lambdaVariables('zone').value, 'subnetResourceId', coalesce(variables('subnetResourceId'), ''), 'privateDnsZoneResourceIds', createArray(resourceId('Microsoft.Network/privateDnsZones', lambdaVariables('zone').key)))))), createObject('value', null()))]",
-          "roleAssignments": {
-            "value": [
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Reader",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Storage Account Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Storage Table Data Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Storage Blob Data Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Storage Blob Data Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "69566ab7-960f-475b-8e7c-b3118f30c6bd",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "69566ab7-960f-475b-8e7c-b3118f30c6bd",
-                "principalType": "ServicePrincipal"
-              }
-            ]
-          },
+          "roleAssignments": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', createArray(createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Contributor', 'principalType', 'ServicePrincipal'), createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Storage Blob Data Contributor', 'principalType', 'ServicePrincipal'), createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', '69566ab7-960f-475b-8e7c-b3118f30c6bd', 'principalType', 'ServicePrincipal'))), createObject('value', null()))]",
           "tags": {
             "value": "[parameters('tags')]"
           }
@@ -21570,9 +21470,8 @@
       },
       "dependsOn": [
         "virtualNetwork::defaultSubnet",
-        "managedIdentityHub",
-        "managedIdentityProject",
-        "storageAccount_privateDnsZones"
+        "storageAccount_privateDnsZones",
+        "userAssignedIdentity"
       ]
     },
     "containerRegistry": {
@@ -21609,30 +21508,7 @@
           "trustPolicyStatus": {
             "value": "[coalesce(tryGet(parameters('containerRegistryConfiguration'), 'trustPolicyStatus'), 'enabled')]"
           },
-          "roleAssignments": {
-            "value": [
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "AcrPull",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "AcrPull",
-                "principalType": "ServicePrincipal"
-              }
-            ]
-          },
+          "roleAssignments": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', createArray(createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Contributor', 'principalType', 'ServicePrincipal'), createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'AcrPull', 'principalType', 'ServicePrincipal'))), createObject('value', null()))]",
           "tags": {
             "value": "[parameters('tags')]"
           }
@@ -23754,8 +23630,7 @@
         }
       },
       "dependsOn": [
-        "managedIdentityHub",
-        "managedIdentityProject"
+        "userAssignedIdentity"
       ]
     },
     "applicationInsights": {
@@ -23783,20 +23658,7 @@
           "workspaceResourceId": {
             "value": "[resourceId('Microsoft.OperationalInsights/workspaces', coalesce(tryGet(parameters('logAnalyticsConfiguration'), 'name'), format('log-{0}', parameters('name'))))]"
           },
-          "roleAssignments": {
-            "value": [
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              }
-            ]
-          },
+          "roleAssignments": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', createArray(createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Contributor', 'principalType', 'ServicePrincipal'))), createObject('value', null()))]",
           "tags": {
             "value": "[parameters('tags')]"
           }
@@ -24397,8 +24259,7 @@
       },
       "dependsOn": [
         "logAnalyticsWorkspace",
-        "managedIdentityHub",
-        "managedIdentityProject"
+        "userAssignedIdentity"
       ]
     },
     "workspaceHub": {
@@ -24443,16 +24304,8 @@
               "defaultWorkspaceResourceGroup": "[resourceGroup().id]"
             }
           },
-          "managedIdentities": {
-            "value": {
-              "userAssignedResourceIds": [
-                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentityConfiguration'), 'hubName'), format('id-hub-{0}', parameters('name'))))]"
-              ]
-            }
-          },
-          "primaryUserAssignedIdentity": {
-            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentityConfiguration'), 'hubName'), format('id-hub-{0}', parameters('name'))))]"
-          },
+          "managedIdentities": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', createObject('userAssignedResourceIds', createArray(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), 'null'))))), createObject('value', null()))]",
+          "primaryUserAssignedIdentity": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), 'null'))), createObject('value', null()))]",
           "computes": {
             "value": "[tryGet(parameters('workspaceConfiguration'), 'computes')]"
           },
@@ -24466,15 +24319,7 @@
           "systemDatastoresAuthMode": {
             "value": "identity"
           },
-          "roleAssignments": {
-            "value": [
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              }
-            ]
-          },
+          "roleAssignments": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', createArray(createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Contributor', 'principalType', 'ServicePrincipal'))), createObject('value', null()))]",
           "tags": {
             "value": "[parameters('tags')]"
           }
@@ -26720,8 +26565,8 @@
         "containerRegistry",
         "virtualNetwork::defaultSubnet",
         "keyVault",
-        "managedIdentityHub",
         "storageAccount",
+        "userAssignedIdentity",
         "workspaceHub_privateDnsZones"
       ]
     },
@@ -26753,30 +26598,7 @@
           "hubResourceId": {
             "value": "[reference('workspaceHub').outputs.resourceId.value]"
           },
-          "managedIdentities": {
-            "value": {
-              "userAssignedResourceIds": [
-                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentityConfiguration'), 'projectName'), format('id-project-{0}', parameters('name'))))]"
-              ]
-            }
-          },
-          "primaryUserAssignedIdentity": {
-            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentityConfiguration'), 'projectName'), format('id-project-{0}', parameters('name'))))]"
-          },
-          "roleAssignments": {
-            "value": [
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              }
-            ]
-          },
+          "roleAssignments": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', createArray(createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Contributor', 'principalType', 'ServicePrincipal'))), createObject('value', null()))]",
           "tags": {
             "value": "[parameters('tags')]"
           }
@@ -29018,8 +28840,7 @@
         }
       },
       "dependsOn": [
-        "managedIdentityHub",
-        "managedIdentityProject",
+        "userAssignedIdentity",
         "workspaceHub"
       ]
     }
@@ -29088,62 +28909,6 @@
       },
       "value": "[coalesce(tryGet(parameters('logAnalyticsConfiguration'), 'name'), format('log-{0}', parameters('name')))]"
     },
-    "managedIdentityHubResourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "The resource ID of the workspace hub user assigned managed identity."
-      },
-      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentityConfiguration'), 'hubName'), format('id-hub-{0}', parameters('name'))))]"
-    },
-    "managedIdentityHubName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the workspace hub user assigned managed identity."
-      },
-      "value": "[coalesce(tryGet(parameters('managedIdentityConfiguration'), 'hubName'), format('id-hub-{0}', parameters('name')))]"
-    },
-    "managedIdentityHubPrincipalId": {
-      "type": "string",
-      "metadata": {
-        "description": "The principal ID of the workspace hub user assigned managed identity."
-      },
-      "value": "[reference('managedIdentityHub').principalId]"
-    },
-    "managedIdentityHubClientId": {
-      "type": "string",
-      "metadata": {
-        "description": "The client ID of the workspace hub user assigned managed identity."
-      },
-      "value": "[reference('managedIdentityHub').clientId]"
-    },
-    "managedIdentityProjectResourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "The resource ID of the workspace project user assigned managed identity."
-      },
-      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentityConfiguration'), 'projectName'), format('id-project-{0}', parameters('name'))))]"
-    },
-    "managedIdentityProjectName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the workspace project user assigned managed identity."
-      },
-      "value": "[coalesce(tryGet(parameters('managedIdentityConfiguration'), 'projectName'), format('id-project-{0}', parameters('name')))]"
-    },
-    "managedIdentityProjectPrincipalId": {
-      "type": "string",
-      "metadata": {
-        "description": "The principal ID of the workspace project user assigned managed identity."
-      },
-      "value": "[reference('managedIdentityProject').principalId]"
-    },
-    "managedIdentityProjectClientId": {
-      "type": "string",
-      "metadata": {
-        "description": "The client ID of the workspace project user assigned managed identity."
-      },
-      "value": "[reference('managedIdentityProject').clientId]"
-    },
     "keyVaultResourceId": {
       "type": "string",
       "metadata": {
@@ -29206,6 +28971,20 @@
         "description": "The name of the workspace hub."
       },
       "value": "[reference('workspaceHub').outputs.name.value]"
+    },
+    "workspaceHubManagedIdentityPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the workspace hub system assigned identity, if applicable."
+      },
+      "value": "[reference('workspaceHub').outputs.systemAssignedMIPrincipalId.value]"
+    },
+    "workspaceProjectManagedIdentityPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the workspace project system assigned identity."
+      },
+      "value": "[reference('workspaceProject').outputs.systemAssignedMIPrincipalId.value]"
     },
     "workspaceProjectResourceId": {
       "type": "string",
