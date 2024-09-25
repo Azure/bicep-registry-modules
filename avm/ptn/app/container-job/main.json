@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.3.12046",
-      "templateHash": "2766548941541588094"
+      "templateHash": "832562879292640669"
     },
     "name": "container-job",
     "description": "This module deploys a container to run as a job.",
@@ -450,7 +450,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.3.12046",
-              "templateHash": "7117547607904306228"
+              "templateHash": "6290400267919870274"
             }
           },
           "definitions": {
@@ -16773,9 +16773,6 @@
                   "minimumTlsVersion": {
                     "value": "TLS1_2"
                   },
-                  "skuName": {
-                    "value": "Standard_LRS"
-                  },
                   "accessTier": {
                     "value": "Hot"
                   },
@@ -21930,7 +21927,7 @@
                     "value": "[parameters('lock')]"
                   },
                   "workloadProfiles": "[if(not(empty(parameters('workloadProfiles'))), createObject('value', parameters('workloadProfiles')), createObject('value', null()))]",
-                  "zoneRedundant": "[if(parameters('deployInVnet'), createObject('value', true()), createObject('value', false()))]",
+                  "zoneRedundant": "[if(empty(parameters('workloadProfiles')), createObject('value', false()), createObject('value', true()))]",
                   "infrastructureResourceGroupName": {
                     "value": "[format('{0}-infrastructure', parameters('resourceGroupName'))]"
                   },

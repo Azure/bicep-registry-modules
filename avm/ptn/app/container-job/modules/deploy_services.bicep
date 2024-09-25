@@ -404,7 +404,6 @@ module storage 'br/public:avm/res/storage/storage-account:0.13.2' = if (deployIn
     lock: lock
     kind: 'StorageV2'
     minimumTlsVersion: 'TLS1_2'
-    skuName: 'Standard_LRS'
     accessTier: 'Hot'
     allowSharedKeyAccess: true
     allowBlobPublicAccess: false
@@ -441,7 +440,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.8.0' = {
     tags: tags
     lock: lock
     workloadProfiles: !empty(workloadProfiles) ? workloadProfiles : null
-    zoneRedundant: deployInVnet ? true : false
+    zoneRedundant: empty(workloadProfiles) ? false : true // zone redundant is not available for consumption plans
     infrastructureResourceGroupName: '${resourceGroupName}-infrastructure'
     // vnet configuration
     internal: deployInVnet ? true : false
