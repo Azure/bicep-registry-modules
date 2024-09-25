@@ -38,6 +38,7 @@ param networkPluginMode string?
 @allowed([
   'azure'
   'calico'
+  'cilium'
 ])
 param networkPolicy string?
 
