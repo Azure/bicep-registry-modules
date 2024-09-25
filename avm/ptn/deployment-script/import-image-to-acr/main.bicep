@@ -189,8 +189,6 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.4.0' = {
     containerGroupName: '${resourceGroup().name}-infrastructure'
     subnetResourceIds: subnetResourceIds
     scriptContent: '''#!/bin/bash
-    set -e
-
     echo "Waiting on RBAC replication ($initialDelay)\n"
     sleep $initialDelay
 
