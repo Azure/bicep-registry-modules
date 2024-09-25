@@ -7,7 +7,7 @@ metadata owner = 'Azure/module-maintainers'
 @maxLength(60)
 param name string
 
-@description('Required. The name of the SKU will Determine the tier, size, family of the App Service Plan.')
+@description('Optional. The name of the SKU will Determine the tier, size, family of the App Service Plan. This defaults to P1v3 to leverage availability zones.')
 @metadata({
   example: '''
   'F1'
@@ -18,7 +18,7 @@ param name string
 })
 param skuName string = 'P1v3'
 
-@description('Required. Number of workers associated with the App Service Plan.')
+@description('Optional. Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones..')
 param skuCapacity int = 3
 
 @description('Optional. Location for all resources.')

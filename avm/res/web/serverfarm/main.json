@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.3.12046",
-      "templateHash": "4138321175154579538"
+      "templateHash": "3697571063875560034"
     },
     "name": "App Service Plan",
     "description": "This module deploys an App Service Plan.",
@@ -206,14 +206,14 @@
       "defaultValue": "P1v3",
       "metadata": {
         "example": "  'F1'\n  'B1'\n  'P1v3'\n  'I1v2'\n  ",
-        "description": "Required. The name of the SKU will Determine the tier, size, family of the App Service Plan."
+        "description": "Optional. The name of the SKU will Determine the tier, size, family of the App Service Plan. This defaults to P1v3 to leverage availability zones."
       }
     },
     "skuCapacity": {
       "type": "int",
       "defaultValue": 3,
       "metadata": {
-        "description": "Required. Number of workers associated with the App Service Plan."
+        "description": "Optional. Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones.."
       }
     },
     "location": {

@@ -48,9 +48,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     name: 'wsfmin001'
     // Non-required parameters
     location: '<location>'
-    skuCapacity: 3
-    skuName: 'P1v3'
-    zoneRedundant: true
   }
 }
 ```
@@ -74,15 +71,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "skuCapacity": {
-      "value": 3
-    },
-    "skuName": {
-      "value": "P1v3"
-    },
-    "zoneRedundant": {
-      "value": true
     }
   }
 }
@@ -370,8 +358,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the app service plan. |
-| [`skuCapacity`](#parameter-skucapacity) | int | Number of workers associated with the App Service Plan. |
-| [`skuName`](#parameter-skuname) | string | The name of the SKU will Determine the tier, size, family of the App Service Plan. |
 
 **Conditional parameters**
 
@@ -393,6 +379,8 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 | [`maximumElasticWorkerCount`](#parameter-maximumelasticworkercount) | int | Maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan. |
 | [`perSiteScaling`](#parameter-persitescaling) | bool | If true, apps assigned to this App Service plan can be scaled independently. If false, apps assigned to this App Service plan will scale to all instances of the plan. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`skuCapacity`](#parameter-skucapacity) | int | Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones.. |
+| [`skuName`](#parameter-skuname) | string | The name of the SKU will Determine the tier, size, family of the App Service Plan. This defaults to P1v3 to leverage availability zones. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`targetWorkerCount`](#parameter-targetworkercount) | int | Scaling worker count. |
 | [`targetWorkerSize`](#parameter-targetworkersize) | int | The instance size of the hosting plan (small, medium, or large). |
@@ -405,29 +393,6 @@ Name of the app service plan.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `skuCapacity`
-
-Number of workers associated with the App Service Plan.
-
-- Required: No
-- Type: int
-- Default: `3`
-
-### Parameter: `skuName`
-
-The name of the SKU will Determine the tier, size, family of the App Service Plan.
-
-- Required: No
-- Type: string
-- Default: `'P1v3'`
-- Example:
-  ```Bicep
-  'F1'
-  'B1'
-  'P1v3'
-  'I1v2'
-  ```
 
 ### Parameter: `reserved`
 
@@ -743,6 +708,29 @@ The principal type of the assigned principal ID.
     'ServicePrincipal'
     'User'
   ]
+  ```
+
+### Parameter: `skuCapacity`
+
+Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones..
+
+- Required: No
+- Type: int
+- Default: `3`
+
+### Parameter: `skuName`
+
+The name of the SKU will Determine the tier, size, family of the App Service Plan. This defaults to P1v3 to leverage availability zones.
+
+- Required: No
+- Type: string
+- Default: `'P1v3'`
+- Example:
+  ```Bicep
+  'F1'
+  'B1'
+  'P1v3'
+  'I1v2'
   ```
 
 ### Parameter: `tags`
