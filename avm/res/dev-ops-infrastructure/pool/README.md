@@ -559,7 +559,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable or disable telemetry for the module. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | The geo-location where the resource lives. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed service identities assigned to this resource. |
@@ -924,7 +924,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 ### Parameter: `enableTelemetry`
 
-Enable or disable telemetry for the module.
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool

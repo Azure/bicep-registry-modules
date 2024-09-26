@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "8115317134790802314"
+      "templateHash": "3502193398932835678"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource.",
@@ -813,7 +813,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable or disable telemetry for the module."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "diagnosticSettings": {
