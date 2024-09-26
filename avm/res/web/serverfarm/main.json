@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.3.12046",
-      "templateHash": "3697571063875560034"
+      "templateHash": "12599229174633311842"
     },
     "name": "App Service Plan",
     "description": "This module deploys an App Service Plan.",
@@ -213,7 +213,7 @@
       "type": "int",
       "defaultValue": 3,
       "metadata": {
-        "description": "Optional. Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones.."
+        "description": "Optional. Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones."
       }
     },
     "location": {

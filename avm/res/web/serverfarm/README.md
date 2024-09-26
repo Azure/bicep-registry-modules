@@ -379,7 +379,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 | [`maximumElasticWorkerCount`](#parameter-maximumelasticworkercount) | int | Maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan. |
 | [`perSiteScaling`](#parameter-persitescaling) | bool | If true, apps assigned to this App Service plan can be scaled independently. If false, apps assigned to this App Service plan will scale to all instances of the plan. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`skuCapacity`](#parameter-skucapacity) | int | Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones.. |
+| [`skuCapacity`](#parameter-skucapacity) | int | Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones. |
 | [`skuName`](#parameter-skuname) | string | The name of the SKU will Determine the tier, size, family of the App Service Plan. This defaults to P1v3 to leverage availability zones. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`targetWorkerCount`](#parameter-targetworkercount) | int | Scaling worker count. |
@@ -712,7 +712,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `skuCapacity`
 
-Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones..
+Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones.
 
 - Required: No
 - Type: int
