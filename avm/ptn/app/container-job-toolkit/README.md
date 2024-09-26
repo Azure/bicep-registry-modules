@@ -1,4 +1,4 @@
-# container-job `[App/ContainerJob]`
+# container-job-toolkit `[App/ContainerJobToolkit]`
 
 This module deploys a container to run as a job.
 
@@ -34,7 +34,6 @@ This module deploys a container to run as a job.
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
 | `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
 | `Microsoft.Network/privateDnsZones` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones) |
 | `Microsoft.Network/privateDnsZones/A` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/A) |
@@ -71,7 +70,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/app/container-job:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/app/container-job-toolkit:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Pass in existing resources](#example-2-pass-in-existing-resources)
@@ -87,8 +86,8 @@ This instance deploys the module with the minimum set of required parameters in 
 <summary>via Bicep module</summary>
 
 ```bicep
-module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
-  name: 'containerJobDeployment'
+module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version>' = {
+  name: 'containerJobToolkitDeployment'
   params: {
     // Required parameters
     containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
@@ -147,8 +146,8 @@ This instance deploys the module with existing resources.
 <summary>via Bicep module</summary>
 
 ```bicep
-module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
-  name: 'containerJobDeployment'
+module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version>' = {
+  name: 'containerJobToolkitDeployment'
   params: {
     // Required parameters
     containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
@@ -185,10 +184,17 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
       kind: 'None'
       name: 'No lock for testing'
     }
-    managedIdentityName: '<managedIdentityName>'
+    managedIdentityResourceId: '<managedIdentityResourceId>'
     memory: '8Gi'
     newContainerImageName: 'application/frontend:latest'
     overwriteExistingImage: true
+    registryRoleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'AcrImageSigner'
+      }
+    ]
     secrets: [
       {
         identity: '<identity>'
@@ -289,8 +295,8 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
         "name": "No lock for testing"
       }
     },
-    "managedIdentityName": {
-      "value": "<managedIdentityName>"
+    "managedIdentityResourceId": {
+      "value": "<managedIdentityResourceId>"
     },
     "memory": {
       "value": "8Gi"
@@ -300,6 +306,15 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
     },
     "overwriteExistingImage": {
       "value": true
+    },
+    "registryRoleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "AcrImageSigner"
+        }
+      ]
     },
     "secrets": {
       "value": [
@@ -345,8 +360,8 @@ This instance deploys the module with private networking and a workload plan.
 <summary>via Bicep module</summary>
 
 ```bicep
-module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
-  name: 'containerJobDeployment'
+module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version>' = {
+  name: 'containerJobToolkitDeployment'
   params: {
     // Required parameters
     containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
@@ -356,7 +371,7 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
     appInsightsConnectionString: '<appInsightsConnectionString>'
     deployInVnet: true
     location: '<location>'
-    managedIdentityName: '<managedIdentityName>'
+    managedIdentityResourceId: '<managedIdentityResourceId>'
     overwriteExistingImage: true
     workloadProfileName: 'CAW01'
     workloadProfiles: [
@@ -403,8 +418,8 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "managedIdentityName": {
-      "value": "<managedIdentityName>"
+    "managedIdentityResourceId": {
+      "value": "<managedIdentityResourceId>"
     },
     "overwriteExistingImage": {
       "value": true
@@ -461,10 +476,11 @@ module containerJob 'br/public:avm/ptn/app/container-job:<version>' = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created. |
-| [`managedIdentityName`](#parameter-managedidentityname) | string | Use an existing managed identity to import the container image and run the job. If not provided, a new managed identity will be created. |
+| [`managedIdentityResourceId`](#parameter-managedidentityresourceid) | string | Use an existing managed identity to import the container image and run the job. If not provided, a new managed identity will be created. |
 | [`memory`](#parameter-memory) | string | The memory resources that will be allocated to the Container Apps Job. |
 | [`newContainerImageName`](#parameter-newcontainerimagename) | string | The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline. You should skip the registry name when specifying a custom value, as it is added automatically. If you leave this empty, the original name will be used (with the new registry name). |
 | [`overwriteExistingImage`](#parameter-overwriteexistingimage) | bool | The flag that indicates whether the existing image in the Container Registry should be overwritten. |
+| [`registryRoleAssignments`](#parameter-registryroleassignments) | array | The permissions that will be assigned to the Container Registry. The managed Identity will be assigned the permissions to get and list images. |
 | [`secrets`](#parameter-secrets) | array | The secrets of the Container App. They will be added to Key Vault and configured as secrets in the Container App Job. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`workloadProfileName`](#parameter-workloadprofilename) | string |  The name of the workload profile to use. Leave empty to use a consumption based profile. |
@@ -760,12 +776,13 @@ The Log Analytics Resource ID for the Container Apps Environment to use for the 
 - Type: string
 - Example: `/subscriptions/<00000000-0000-0000-0000-000000000000>/resourceGroups/<rg-name>/providers/Microsoft.OperationalInsights/workspaces/<workspace-name>`
 
-### Parameter: `managedIdentityName`
+### Parameter: `managedIdentityResourceId`
 
 Use an existing managed identity to import the container image and run the job. If not provided, a new managed identity will be created.
 
 - Required: No
 - Type: string
+- Example: `/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity`
 
 ### Parameter: `memory`
 
@@ -790,6 +807,103 @@ The flag that indicates whether the existing image in the Container Registry sho
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `registryRoleAssignments`
+
+The permissions that will be assigned to the Container Registry. The managed Identity will be assigned the permissions to get and list images.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-registryroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-registryroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-registryroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-registryroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-registryroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-registryroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-registryroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-registryroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `registryRoleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `registryRoleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `registryRoleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `registryRoleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `registryRoleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `registryRoleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `registryRoleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `registryRoleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `secrets`
 
@@ -920,12 +1034,12 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.1` | Remote reference |
 | `br/public:avm/ptn/deployment-script/import-image-to-acr:0.3.1` | Remote reference |
 | `br/public:avm/res/app/job:0.5.0` | Remote reference |
 | `br/public:avm/res/app/managed-environment:0.8.0` | Remote reference |
 | `br/public:avm/res/container-registry/registry:0.5.1` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.9.0` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.6.0` | Remote reference |
 | `br/public:avm/res/network/private-endpoint:0.8.0` | Remote reference |
@@ -933,6 +1047,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/storage/storage-account:0.13.2` | Remote reference |
 
 ## Notes
+
+The use of Private Endpoints can be activated by setting the `deployInVnet` parameter to `true`. In order to have Private Endpoints enabled, the Azure Container Registry requires the 'Premium' tier, which will be set automatically.
 
 ### Configuration
 

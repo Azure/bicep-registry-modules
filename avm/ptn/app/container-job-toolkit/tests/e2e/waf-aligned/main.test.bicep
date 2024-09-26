@@ -68,7 +68,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       workloadProfileName: 'CAW01'
-      managedIdentityName: dependencies.outputs.userIdentityName
+      managedIdentityResourceId: dependencies.outputs.userIdentityResourceId
     }
   }
 ]

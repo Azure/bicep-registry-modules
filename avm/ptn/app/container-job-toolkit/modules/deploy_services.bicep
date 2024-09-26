@@ -22,7 +22,7 @@ param deployDnsZoneKeyVault bool = true
 param deployDnsZoneContainerRegistry bool = true
 
 @description('Optional. Pass the name to use an existing managed identity for importing the container image and run the job. If not provided, a new managed identity will be created.')
-param managedIdentityName string?
+param managedIdentityResourceId string?
 
 // infrastructure parameters
 // -------------------------
@@ -41,6 +41,9 @@ param keyVaultSecrets secretType[]?
 @description('Optional. Role assignments that will be added to the Key Vault. The managed Identity will be assigned the `Key Vault Secrets User` role by default.')
 param keyVaultRoleAssignments roleAssignmentType
 
+@description('Optional. The permissions that will be assigned to the Container Registry. The managed Identity will be assigned the permissions to get and list images.')
+param registryRoleAssignments roleAssignmentType
+
 // workload parameters
 // -------------------------
 
@@ -53,9 +56,9 @@ param tags object = {}
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-// -----------------
-// variables
-// -----------------
+// ============= //
+//   Variables   //
+// ============= //
 
 // Rbac roles that will be granted to the user-assigned identity
 var vaultBuiltInRoleNames = {
@@ -117,6 +120,16 @@ var storageAccountRbacRoles = [
 ]
 var formattedVaultRoleAssignments = [
   for (roleAssignment, index) in (keyVaultRoleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: vaultBuiltInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+var formattedRegistryRoleAssignments = [
+  for (roleAssignment, index) in (registryRoleAssignments ?? []): union(roleAssignment, {
     roleDefinitionId: vaultBuiltInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
         roleAssignment.roleDefinitionIdOrName,
         '/providers/Microsoft.Authorization/roleDefinitions/'
@@ -313,17 +326,12 @@ module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endp
 
 // Identity resources
 // -----------------
-module userIdentity_new 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = if (managedIdentityName == null) {
-  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-userIdentity'
-  params: {
-    name: 'jobsUserIdentity-${name}'
-    location: resourceLocation
-    tags: union(tags, { 'used-by': 'container-job, deployment-script, container-registry, storage-account' })
-    lock: lock
-  }
+resource userIdentity_new 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (managedIdentityResourceId == null) {
+  name: 'jobsUserIdentity-${name}'
 }
-resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (managedIdentityName != null) {
-  name: managedIdentityName ?? 'dummy'
+resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (managedIdentityResourceId != null) {
+  name: last(split(managedIdentityResourceId!, '/'))
+  scope: resourceGroup(split(managedIdentityResourceId!, '/')[2], split(managedIdentityResourceId!, '/')[4]) // get the resource group from the managed identity, as it could be in another resource group
 }
 
 // supporting resources
@@ -353,9 +361,9 @@ module vault 'br/public:avm/res/key-vault/vault:0.9.0' = {
       // role assignement for the managed identity
       [
         {
-          principalId: managedIdentityName != null
+          principalId: managedIdentityResourceId != null
             ? userIdentity_existing.properties.principalId
-            : userIdentity_new.outputs.principalId
+            : userIdentity_new.properties.principalId
           principalType: 'ServicePrincipal'
           roleDefinitionIdOrName: '4633458b-17de-408a-b874-0445c86b69e6' // Key Vault Secrets User
         }
@@ -381,19 +389,24 @@ module registry 'br/public:avm/res/container-registry/registry:0.5.1' = {
     tags: union(tags, { 'used-by': 'container-job' })
     lock: lock
     acrAdminUserEnabled: false
-    roleAssignments: [
-      for registryRole in registryRbacRoles: {
-        principalId: managedIdentityName != null
-          ? userIdentity_existing.properties.principalId
-          : userIdentity_new.outputs.principalId
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: registryRole
-      }
-    ]
+    roleAssignments: formattedRegistryRoleAssignments
     networkRuleBypassOptions: deployInVnet ? 'AzureServices' : null
     publicNetworkAccess: deployInVnet ? 'Disabled' : null
   }
 }
+module registry_rbac 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.1' = [
+  for registryRole in registryRbacRoles: {
+    name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-registry-rbac-${registryRole}'
+    params: {
+      principalId: managedIdentityResourceId != null
+        ? userIdentity_existing.properties.principalId
+        : userIdentity_new.properties.principalId
+      principalType: 'ServicePrincipal'
+      roleDefinitionId: registryRole
+      resourceId: registry.outputs.resourceId
+    }
+  }
+]
 
 module storage 'br/public:avm/res/storage/storage-account:0.13.2' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-storage'
@@ -419,9 +432,9 @@ module storage 'br/public:avm/res/storage/storage-account:0.13.2' = if (deployIn
     }
     roleAssignments: [
       for storageRole in storageAccountRbacRoles: {
-        principalId: managedIdentityName != null
+        principalId: managedIdentityResourceId != null
           ? userIdentity_existing.properties.principalId
-          : userIdentity_new.outputs.principalId
+          : userIdentity_new.properties.principalId
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: storageRole
       }
@@ -458,8 +471,8 @@ output keyVaultAppInsightsConnectionStringUrl string = !empty(appInsightsConnect
 output registryName string = registry.outputs.name
 output registryLoginServer string = registry.outputs.loginServer
 output managedEnvironmentId string = managedEnvironment.outputs.resourceId
-output userManagedIdentityResourceId string = managedIdentityName == null
-  ? userIdentity_new.outputs.resourceId
+output userManagedIdentityResourceId string = managedIdentityResourceId == null
+  ? userIdentity_new.id
   : userIdentity_existing.id
 output vnetResourceId string = deployInVnet ? vnet.outputs.resourceId : ''
 output subnetResourceId_deploymentScript string = deployInVnet ? vnet.outputs.subnetResourceIds[1] : ''

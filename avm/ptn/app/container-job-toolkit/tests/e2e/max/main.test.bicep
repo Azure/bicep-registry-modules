@@ -68,6 +68,13 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
+      registryRoleAssignments: [
+        {
+          roleDefinitionIdOrName: 'AcrImageSigner'
+          principalId: dependencies.outputs.userIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
       deployInVnet: true
       workloadProfiles: [
         {
@@ -78,7 +85,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       workloadProfileName: 'CAW01'
-      managedIdentityName: dependencies.outputs.userIdentityName
+      managedIdentityResourceId: dependencies.outputs.userIdentityResourceId
       cpu: '2'
       memory: '8Gi'
       addressPrefix: '192.168.0.0/16'

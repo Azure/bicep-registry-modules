@@ -1,4 +1,4 @@
-metadata name = 'container-job'
+metadata name = 'container-job-toolkit'
 metadata description = 'This module deploys a container to run as a job.'
 metadata owner = 'Azure/module-maintainers'
 
@@ -16,7 +16,10 @@ param location string = resourceGroup().location
 param enableTelemetry bool = true
 
 @description('Optional. Use an existing managed identity to import the container image and run the job. If not provided, a new managed identity will be created.')
-param managedIdentityName string?
+@metadata({
+  example: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'
+})
+param managedIdentityResourceId string?
 
 @description('Optional. The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created.')
 @metadata({
@@ -36,6 +39,9 @@ param keyVaultName string = 'kv${uniqueString(name, location, resourceGroup().na
 
 @description('Optional. The permissions that will be assigned to the Key Vault. The managed Identity will be assigned the permissions to get and list secrets.')
 param keyVaultRoleAssignments roleAssignmentType
+
+@description('Optional. The permissions that will be assigned to the Container Registry. The managed Identity will be assigned the permissions to get and list images.')
+param registryRoleAssignments roleAssignmentType
 
 // network related parameters
 // -------------------------
@@ -180,12 +186,13 @@ module services 'modules/deploy_services.bicep' = {
     name: name
     resourceLocation: location
     resourceGroupName: resourceGroup().name
-    managedIdentityName: managedIdentityName
+    managedIdentityResourceId: managedIdentityResourceId
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
     appInsightsConnectionString: appInsightsConnectionString
     keyVaultName: keyVaultName
     keyVaultSecrets: secrets
     keyVaultRoleAssignments: keyVaultRoleAssignments
+    registryRoleAssignments: registryRoleAssignments
     deployInVnet: deployInVnet
     addressPrefix: addressPrefix
     deployDnsZoneKeyVault: deployDnsZoneKeyVault
@@ -228,7 +235,7 @@ module job 'br/public:avm/res/app/job:0.5.0' = {
     location: location
     managedIdentities: {
       // if managedIdentityName is not provided, the job will use a system assigned identity
-      systemAssigned: managedIdentityName == null ? true : false
+      systemAssigned: managedIdentityResourceId == null ? true : false
       // this is either the provided managed identity or the system assigned identity
       userAssignedResourceIds: [services.outputs.userManagedIdentityResourceId]
     }

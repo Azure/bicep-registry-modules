@@ -1,4 +1,4 @@
-name: "avm.ptn.app.container-job.yml"
+name: "avm.ptn.app.container-job-toolkit.yml"
 
 on:
   schedule:
@@ -30,7 +30,7 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.ptn.app.container-job.yml"
+      - ".github/workflows/avm.ptn.app.container-job-toolkit.yml"
       - "avm/ptn/app/container-job/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
@@ -38,7 +38,7 @@ on:
 
 env:
   modulePath: "avm/ptn/app/container-job"
-  workflowPath: ".github/workflows/avm.ptn.app.container-job.yml"
+  workflowPath: ".github/workflows/avm.ptn.app.container-job-toolkit.yml"
 
 concurrency:
   group: ${{ github.workflow }}
