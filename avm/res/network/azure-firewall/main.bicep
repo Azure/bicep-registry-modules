@@ -66,6 +66,9 @@ param zones array = [
   3
 ]
 
+@description('Optional. Enable/Disable forced tunneling.')
+param enableForcedTunneling bool = false
+
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
@@ -85,7 +88,7 @@ param tags object?
 param enableTelemetry bool = true
 
 var azureSkuName = empty(virtualNetworkResourceId) ? 'AZFW_Hub' : 'AZFW_VNet'
-var requiresManagementIp = azureSkuTier == 'Basic' ? true : false
+var requiresManagementIp = (azureSkuTier == 'Basic' || enableForcedTunneling) ? true : false
 var isCreateDefaultManagementIP = empty(managementIPResourceID) && requiresManagementIp
 
 // ----------------------------------------------------------------------------

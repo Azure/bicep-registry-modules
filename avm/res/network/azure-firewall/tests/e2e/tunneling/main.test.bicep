@@ -61,7 +61,8 @@ module testDeployment '../../../main.bicep' = [
           publicIPAddressResourceId: nestedDependencies.outputs.publicIPResourceId
         }
       ]
-      azureSkuTier: 'Basic'
+      azureSkuTier: 'Standard'
+      enableForcedTunneling: true
       managementIPAddressObject: {
         publicIPAllocationMethod: 'Static'
         roleAssignments: [
