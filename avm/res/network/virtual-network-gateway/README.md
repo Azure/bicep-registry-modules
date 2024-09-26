@@ -2237,9 +2237,9 @@ Specifies the zones of the Public IP address. Basic IP SKU does not support Avai
 - Default:
   ```Bicep
   [
-    '1'
-    '2'
-    '3'
+    1
+    2
+    3
   ]
   ```
 
