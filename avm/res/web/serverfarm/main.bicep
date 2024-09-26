@@ -18,7 +18,7 @@ param name string
 })
 param skuName string = 'P1v3'
 
-@description('Optional. Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones..')
+@description('Optional. Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones.')
 param skuCapacity int = 3
 
 @description('Optional. Location for all resources.')
