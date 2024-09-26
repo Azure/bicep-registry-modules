@@ -20,6 +20,9 @@ param tags object?
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
+@description('Optional. Disable authentication via access keys.')
+param disableAccessKeyAuthentication bool = false
+
 @description('Optional. Specifies whether the non-ssl Redis server port (6379) is enabled.')
 param enableNonSslPort bool = false
 
@@ -135,7 +138,7 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     'e0f68234-74aa-48ed-b826-c38b57376e17'
   )
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -181,6 +184,7 @@ resource redis 'Microsoft.Cache/redis@2024-03-01' = {
   tags: tags
   identity: identity
   properties: {
+    disableAccessKeyAuthentication: disableAccessKeyAuthentication
     enableNonSslPort: enableNonSslPort
     minimumTlsVersion: minimumTlsVersion
     publicNetworkAccess: !empty(publicNetworkAccess)

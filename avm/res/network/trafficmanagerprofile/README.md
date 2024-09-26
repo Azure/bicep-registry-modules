@@ -675,6 +675,14 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Traffic Manager Contributor'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
