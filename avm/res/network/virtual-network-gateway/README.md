@@ -1255,6 +1255,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     location: '<location>'
+    publicIpZones: []
     skuName: 'VpnGw1'
   }
 }
@@ -1290,6 +1291,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "publicIpZones": {
+      "value": []
     },
     "skuName": {
       "value": "VpnGw1"
