@@ -59,7 +59,7 @@ param vpnGatewayGeneration string = 'None'
   'ErGw2AZ'
   'ErGw3AZ'
 ])
-param skuName string
+param skuName string = (gatewayType == 'VPN') ? 'VpnGw1AZ' : 'ErGw1AZ'
 
 @description('Optional. Specifies the VPN type.')
 @allowed([
