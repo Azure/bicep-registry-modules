@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "7320044434284742277"
+      "templateHash": "4626438010490721609"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -860,7 +860,7 @@
     },
     "app": {
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2023-12-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "kind": "[parameters('kind')]",
@@ -998,7 +998,8 @@
           },
           "appSettingsKeyValuePairs": {
             "value": "[parameters('appSettingsKeyValuePairs')]"
-          }
+          },
+          "currentAppSettings": "[if(not(empty(resourceId('Microsoft.Web/sites', parameters('name')))), createObject('value', list(format('{0}/config/appsettings', resourceId('Microsoft.Web/sites', parameters('name'))), '2023-12-01').properties), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1008,7 +1009,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "8777070640548664577"
+              "templateHash": "3998275265127709875"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting.",
@@ -1068,13 +1069,20 @@
               "metadata": {
                 "description": "Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING."
               }
+            },
+            "currentAppSettings": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. The current app settings."
+              }
             }
           },
           "resources": {
             "app": {
               "existing": true,
               "type": "Microsoft.Web/sites",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2023-12-01",
               "name": "[parameters('appName')]"
             },
             "appInsight": {
@@ -1090,17 +1098,17 @@
               "condition": "[not(empty(parameters('storageAccountResourceId')))]",
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2023-01-01",
+              "apiVersion": "2023-05-01",
               "subscriptionId": "[split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2]]",
               "resourceGroup": "[split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]]",
               "name": "[last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))]"
             },
             "appSettings": {
               "type": "Microsoft.Web/sites/config",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2023-12-01",
               "name": "[format('{0}/{1}', parameters('appName'), 'appsettings')]",
               "kind": "[parameters('kind')]",
-              "properties": "[union(coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), union(createObject('AzureWebJobsStorage__accountName', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), createObject('AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob)), createObject())), if(not(empty(parameters('appInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
+              "properties": "[union(coalesce(parameters('currentAppSettings'), createObject()), coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-05-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), union(createObject('AzureWebJobsStorage__accountName', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), createObject('AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob)), createObject())), if(not(empty(parameters('appInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
               "dependsOn": [
                 "app",
                 "appInsight",
@@ -1677,7 +1685,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "15729572124587777376"
+              "templateHash": "13282951347078727812"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -2639,7 +2647,8 @@
                   },
                   "appSettingsKeyValuePairs": {
                     "value": "[parameters('appSettingsKeyValuePairs')]"
-                  }
+                  },
+                  "currentAppSettings": "[if(not(empty(resourceId('Microsoft.Web/sites/slots', parameters('appName'), parameters('name')))), createObject('value', list(format('{0}/config/appsettings', resourceId('Microsoft.Web/sites/slots', parameters('appName'), parameters('name'))), '2023-12-01').properties), createObject('value', createObject()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2649,7 +2658,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "7111332561212908044"
+                      "templateHash": "9363357518124041583"
                     },
                     "name": "Site Slot App Settings",
                     "description": "This module deploys a Site Slot App Setting.",
@@ -2715,6 +2724,13 @@
                       "metadata": {
                         "description": "Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING."
                       }
+                    },
+                    "currentAppSettings": {
+                      "type": "object",
+                      "defaultValue": {},
+                      "metadata": {
+                        "description": "Optional. The current app settings."
+                      }
                     }
                   },
                   "resources": {
@@ -2756,7 +2772,7 @@
                       "apiVersion": "2022-09-01",
                       "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), 'appsettings')]",
                       "kind": "[parameters('kind')]",
-                      "properties": "[union(coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), union(createObject('AzureWebJobsStorage__accountName', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), createObject('AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob)), createObject())), if(not(empty(parameters('appInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
+                      "properties": "[union(coalesce(parameters('currentAppSettings'), createObject()), coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), union(createObject('AzureWebJobsStorage__accountName', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), createObject('AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob)), createObject())), if(not(empty(parameters('appInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
                       "dependsOn": [
                         "appInsight",
                         "app::slot",
@@ -5111,7 +5127,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('app', '2022-09-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('app', '2023-12-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "slotSystemAssignedMIPrincipalIds": {
       "type": "array",
@@ -5128,7 +5144,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('app', '2022-09-01', 'full').location]"
+      "value": "[reference('app', '2023-12-01', 'full').location]"
     },
     "defaultHostname": {
       "type": "string",

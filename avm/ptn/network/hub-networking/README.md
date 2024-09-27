@@ -38,7 +38,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [No Addons](#example-3-no-addons)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -448,7 +449,175 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _No Addons_
+
+This instance deploys the module with no add-ons (Firewall / Bastion) enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
+  name: 'hubNetworkingDeployment'
+  params: {
+    hubVirtualNetworks: {
+      hub1: {
+        addressPrefixes: '<addressPrefixes>'
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        dnsServers: [
+          '10.0.1.6'
+          '10.0.1.7'
+        ]
+        enableAzureFirewall: false
+        enableBastion: false
+        enablePeering: false
+        enableTelemetry: true
+        flowTimeoutInMinutes: 30
+        location: '<location>'
+        lock: {
+          kind: 'CanNotDelete'
+          name: 'hub1Lock'
+        }
+        routes: [
+          {
+            name: 'defaultRoute'
+            properties: {
+              addressPrefix: '0.0.0.0/0'
+              nextHopType: 'Internet'
+            }
+          }
+        ]
+        subnets: [
+          {
+            addressPrefix: '<addressPrefix>'
+            name: 'GatewaySubnet'
+          }
+          {
+            addressPrefix: '<addressPrefix>'
+            name: 'AzureFirewallSubnet'
+          }
+          {
+            addressPrefix: '<addressPrefix>'
+            name: 'AzureBastionSubnet'
+          }
+        ]
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+        vnetEncryption: false
+        vnetEncryptionEnforcement: 'AllowUnencrypted'
+      }
+    }
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hubVirtualNetworks": {
+      "value": {
+        "hub1": {
+          "addressPrefixes": "<addressPrefixes>",
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "metricCategories": [
+                {
+                  "category": "AllMetrics"
+                }
+              ],
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
+          "dnsServers": [
+            "10.0.1.6",
+            "10.0.1.7"
+          ],
+          "enableAzureFirewall": false,
+          "enableBastion": false,
+          "enablePeering": false,
+          "enableTelemetry": true,
+          "flowTimeoutInMinutes": 30,
+          "location": "<location>",
+          "lock": {
+            "kind": "CanNotDelete",
+            "name": "hub1Lock"
+          },
+          "routes": [
+            {
+              "name": "defaultRoute",
+              "properties": {
+                "addressPrefix": "0.0.0.0/0",
+                "nextHopType": "Internet"
+              }
+            }
+          ],
+          "subnets": [
+            {
+              "addressPrefix": "<addressPrefix>",
+              "name": "GatewaySubnet"
+            },
+            {
+              "addressPrefix": "<addressPrefix>",
+              "name": "AzureFirewallSubnet"
+            },
+            {
+              "addressPrefix": "<addressPrefix>",
+              "name": "AzureBastionSubnet"
+            }
+          ],
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          },
+          "vnetEncryption": false,
+          "vnetEncryptionEnforcement": "AllowUnencrypted"
+        }
+      }
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 

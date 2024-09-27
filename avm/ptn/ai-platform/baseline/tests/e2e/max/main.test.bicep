@@ -44,6 +44,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     networkSecurityGroupName: 'dep${namePrefix}nsg${serviceShort}'
     networkSecurityGroupBastionName: 'dep-${namePrefix}-nsg-bastion-${serviceShort}'
@@ -61,10 +62,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}'
-      managedIdentityConfiguration: {
-        hubName: '${namePrefix}-id-hub-${serviceShort}'
-        projectName: '${namePrefix}-id-project-${serviceShort}'
-      }
+      managedIdentityName: nestedDependencies.outputs.managedIdentityName
       logAnalyticsConfiguration: {
         name: '${namePrefix}-log-${serviceShort}'
       }
