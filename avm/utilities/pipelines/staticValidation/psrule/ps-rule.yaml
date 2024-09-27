@@ -16,7 +16,7 @@ binding:
 # Require minimum versions of modules.
 requires:
   PSRule: "@pre >=2.9.0"
-  PSRule.Rules.Azure: "@pre >=1.29.0"
+  PSRule.Rules.Azure: "@pre >=1.38.0"
 
 # Use PSRule for Azure.
 include:
@@ -81,3 +81,4 @@ rule:
     - Azure.VM.UseHybridUseBenefit
     - Azure.AppConfig.PurgeProtect
     - Azure.MySQL.MaintenanceWindow # Must be excluded until https://msdata.visualstudio.com/Database%20Systems/_workitems/edit/2788114 is fixed
+    - Azure.AppService.AvailabilityZone # Must disable as the serverfarm premium skus are not available in the AVM subscription. The module is WAF-aligned, just the tests don't validate it

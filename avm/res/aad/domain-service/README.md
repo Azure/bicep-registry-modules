@@ -8,7 +8,6 @@ This module deploys an Azure Active Directory Domain Services (AADDS) instance.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -186,7 +185,6 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -647,6 +645,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -813,7 +817,6 @@ The value is to enable clients making request using TLSv1.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -822,10 +825,6 @@ The value is to enable clients making request using TLSv1.
 | `name` | string | The domain name of the Azure Active Directory Domain Services(Azure ADDS). |
 | `resourceGroupName` | string | The name of the resource group the Azure Active Directory Domain Services(Azure ADDS) was created in. |
 | `resourceId` | string | The resource ID of the Azure Active Directory Domain Services(Azure ADDS). |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 
