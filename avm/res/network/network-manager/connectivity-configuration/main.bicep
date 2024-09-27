@@ -21,7 +21,7 @@ param appliesToGroups appliesToGroupsType
   'HubAndSpoke'
   'Mesh'
 ])
-@sys.description('Required. Connectivity topology type. "Mesh" IS CURRENTLY A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION.')
+@sys.description('Required. Connectivity topology type.')
 param connectivityTopology string
 
 @sys.description('Conditional. List of hub items. This will create peerings between the specified hub and the virtual networks in the network group specified. Required if connectivityTopology is of type "HubAndSpoke".')
@@ -33,11 +33,11 @@ param deleteExistingPeering bool = false
 @sys.description('Optional. Flag if global mesh is supported. By default, mesh connectivity is applied to virtual networks within the same region. If set to "True", a global mesh enables connectivity across regions.')
 param isGlobal bool = false
 
-resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2023-11-01' existing = {
   name: networkManagerName
 }
 
-resource connectivityConfiguration 'Microsoft.Network/networkManagers/connectivityConfigurations@2023-04-01' = {
+resource connectivityConfiguration 'Microsoft.Network/networkManagers/connectivityConfigurations@2023-11-01' = {
   name: name
   parent: networkManager
   properties: {

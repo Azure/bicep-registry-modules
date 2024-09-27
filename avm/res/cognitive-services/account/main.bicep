@@ -64,11 +64,10 @@ param diagnosticSettings diagnosticSettingType
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.')
 @allowed([
-  ''
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 @description('Conditional. Subdomain name used for token-based authentication. Required if \'networkAcls\' or \'privateEndpoints\' are set.')
 param customSubDomainName string?
@@ -123,6 +122,9 @@ param enableTelemetry bool = true
 
 @description('Optional. Array of deployments about cognitive service accounts to create.')
 param deployments deploymentsType
+
+@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
+param secretsExportConfiguration secretsExportConfigurationType?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -248,47 +250,55 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.cognitiveservices-account.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.cognitiveservices-account.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
-  if (!empty(customerManagedKey.?keyVaultResourceId)) {
-    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-    )
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+  )
 
-    resource cMKKey 'keys@2023-02-01' existing =
-      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-        name: customerManagedKey.?keyName ?? 'dummyKey'
-      }
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
   }
+}
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing =
-  if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-    name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
-    )
-  }
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  scope: resourceGroup(
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+  )
+}
 
 resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   name: name
@@ -308,7 +318,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
           ipRules: networkAcls.?ipRules ?? []
         }
       : null
-    publicNetworkAccess: !empty(publicNetworkAccess)
+    publicNetworkAccess: publicNetworkAccess != null
       ? publicNetworkAccess
       : (!empty(networkAcls) ? 'Enabled' : 'Disabled')
     allowedFqdnList: allowedFqdnList
@@ -352,17 +362,16 @@ resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/depl
   }
 ]
 
-resource cognitiveService_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: cognitiveService
+resource cognitiveService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: cognitiveService
+}
 
 resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -393,7 +402,7 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
   }
 ]
 
-module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -447,14 +456,10 @@ module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endp
 ]
 
 resource cognitiveService_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(cognitiveService.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(cognitiveService.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -465,6 +470,36 @@ resource cognitiveService_roleAssignments 'Microsoft.Authorization/roleAssignmen
     scope: cognitiveService
   }
 ]
+
+module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
+  name: '${uniqueString(deployment().name, location)}-secrets-kv'
+  scope: resourceGroup(
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+  )
+  params: {
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    secretsToSet: union(
+      [],
+      contains(secretsExportConfiguration!, 'accessKey1Name')
+        ? [
+            {
+              name: secretsExportConfiguration!.accessKey1Name
+              value: cognitiveService.listKeys().key1
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'accessKey2Name')
+        ? [
+            {
+              name: secretsExportConfiguration!.accessKey2Name
+              value: cognitiveService.listKeys().key2
+            }
+          ]
+        : []
+    )
+  }
+}
 
 @description('The name of the cognitive services account.')
 output name string = cognitiveService.name
@@ -478,11 +513,19 @@ output resourceGroupName string = resourceGroup().name
 @description('The service endpoint of the cognitive services account.')
 output endpoint string = cognitiveService.properties.endpoint
 
+@description('All endpoints available for the cognitive services account, types depends on the cognitive service kind.')
+output endpoints endpointsType = cognitiveService.properties.endpoints
+
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string = cognitiveService.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = cognitiveService.location
+
+@description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
+output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
+  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  : {}
 
 // ================ //
 // Definitions      //
@@ -533,6 +576,9 @@ type diagnosticSettingType = {
 }[]?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -691,3 +737,27 @@ type deploymentsType = {
   @description('Optional. The name of RAI policy.')
   raiPolicyName: string?
 }[]?
+
+type endpointsType = {
+  @description('Type of the endpoint.')
+  name: string?
+  @description('The endpoint URI.')
+  endpoint: string?
+}?
+
+type secretsExportConfigurationType = {
+  @description('Required. The key vault name where to store the keys and connection strings generated by the modules.')
+  keyVaultResourceId: string
+
+  @description('Optional. The name for the accessKey1 secret to create.')
+  accessKey1Name: string?
+
+  @description('Optional. The name for the accessKey2 secret to create.')
+  accessKey2Name: string?
+}
+
+import { secretSetType } from 'modules/keyVaultExport.bicep'
+type secretsOutputType = {
+  @description('An exported secret\'s references.')
+  *: secretSetType
+}

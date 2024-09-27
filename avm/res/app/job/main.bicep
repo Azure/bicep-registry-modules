@@ -86,8 +86,8 @@ param manualTriggerConfig manualTriggerConfigType?
 @description('Optional. The maximum number of times a replica can be retried.')
 param replicaRetryLimit int = 0
 
-@description('Optional. The name of the workload profile to use.')
-param workloadProfileName string = 'Consumption'
+@description('Optional. The name of the workload profile to use. Leave empty to use a consumption based profile.')
+param workloadProfileName string?
 
 @description('Optional. The secrets of the Container App.')
 @metadata({
@@ -104,6 +104,7 @@ param workloadProfileName string = 'Consumption'
       keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'
     }
     {
+      // You can do this, but you shouldn't. Use a secret reference instead.
       name: 'mysecret'
       value: 'mysecretvalue'
     }
@@ -114,6 +115,7 @@ param workloadProfileName string = 'Consumption'
   ]
   '''
 })
+#disable-next-line secure-secrets-in-params // @secure() is specified in UDT
 param secrets secretType[]?
 
 @description('Optional. List of volume definitions for the Container App.')
@@ -153,7 +155,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -163,7 +165,19 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.app-job.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -218,15 +232,11 @@ resource job_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?
   scope: job
 }
 
-resource automationAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(job.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+resource job_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(job.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -293,6 +303,9 @@ type lockType = {
 }
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 

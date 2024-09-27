@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "14490799655987897540"
+      "version": "0.29.47.4906",
+      "templateHash": "5150103142771299599"
     },
     "name": "API Management Services",
-    "description": "This module deploys an API Management Service.",
+    "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -66,6 +66,13 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            }
+          },
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
@@ -290,7 +297,7 @@
         "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256": "False"
       },
       "metadata": {
-        "description": "Optional. Custom properties of the API Management service."
+        "description": "Optional. Custom properties of the API Management service. Not supported if SKU is Consumption."
       }
     },
     "disableGateway": {
@@ -388,17 +395,11 @@
         "description": "Optional. The pricing tier of this API Management service."
       }
     },
-    "skuCount": {
+    "skuCapacity": {
       "type": "int",
       "defaultValue": 2,
-      "allowedValues": [
-        0,
-        1,
-        2,
-        3
-      ],
       "metadata": {
-        "description": "Optional. The instance size of this API Management service. Not supported with V2 SKUs. If using Consumption, sku should = 0."
+        "description": "Conditional. The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/."
       }
     },
     "subnetResourceId": {
@@ -440,7 +441,7 @@
         2
       ],
       "metadata": {
-        "description": "Optional. A list of availability zones denoting where the resource needs to come from. Not supported with V2 SKUs."
+        "description": "Optional. A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku."
       }
     },
     "newGuidValue": {
@@ -550,6 +551,13 @@
     }
   },
   "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
     "authorizationServerList": "[if(not(empty(parameters('authorizationServers'))), parameters('authorizationServers').secureList, createArray())]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
@@ -561,7 +569,7 @@
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
@@ -569,7 +577,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.apimanagement-service.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -594,17 +602,17 @@
       "tags": "[parameters('tags')]",
       "sku": {
         "name": "[parameters('sku')]",
-        "capacity": "[if(contains(parameters('sku'), 'V2'), 1, if(contains(parameters('sku'), 'Consumption'), 0, parameters('skuCount')))]"
+        "capacity": "[if(contains(parameters('sku'), 'Consumption'), 0, if(contains(parameters('sku'), 'Developer'), 1, parameters('skuCapacity')))]"
       },
-      "zones": "[if(contains(parameters('sku'), 'V2'), null(), parameters('zones'))]",
+      "zones": "[if(contains(parameters('sku'), 'Premium'), parameters('zones'), createArray())]",
       "identity": "[variables('identity')]",
       "properties": {
         "publisherEmail": "[parameters('publisherEmail')]",
         "publisherName": "[parameters('publisherName')]",
         "notificationSenderEmail": "[parameters('notificationSenderEmail')]",
         "hostnameConfigurations": "[parameters('hostnameConfigurations')]",
-        "additionalLocations": "[if(contains(parameters('sku'), 'V2'), null(), parameters('additionalLocations'))]",
-        "customProperties": "[parameters('customProperties')]",
+        "additionalLocations": "[if(contains(parameters('sku'), 'Premium'), parameters('additionalLocations'), createArray())]",
+        "customProperties": "[if(contains(parameters('sku'), 'Consumption'), null(), parameters('customProperties'))]",
         "certificates": "[parameters('certificates')]",
         "enableClientCertificate": "[if(parameters('enableClientCertificate'), true(), null())]",
         "disableGateway": "[parameters('disableGateway')]",
@@ -673,20 +681,20 @@
     "service_roleAssignments": {
       "copy": {
         "name": "service_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.ApiManagement/service/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.ApiManagement/service', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ApiManagement/service', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "service"
@@ -783,8 +791,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "4127687153063244658"
+              "version": "0.29.47.4906",
+              "templateHash": "17160750790361326516"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API.",
@@ -1048,7 +1056,9 @@
                   "apiName": {
                     "value": "[parameters('name')]"
                   },
-                  "format": "[if(contains(coalesce(parameters('policies'), createArray())[copyIndex()], 'format'), createObject('value', coalesce(parameters('policies'), createArray())[copyIndex()].format), createObject('value', 'xml'))]",
+                  "format": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format'), 'xml')]"
+                  },
                   "value": {
                     "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
                   }
@@ -1059,8 +1069,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "5034167782203178970"
+                      "version": "0.29.47.4906",
+                      "templateHash": "2474188503939052987"
                     },
                     "name": "API Management Service APIs Policies",
                     "description": "This module deploys an API Management Service API Policy.",
@@ -1206,8 +1216,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "15990218139655805007"
+                      "version": "0.29.47.4906",
+                      "templateHash": "15630166564208731013"
                     },
                     "name": "API Management Service APIs Diagnostics.",
                     "description": "This module deploys an API Management Service API Diagnostics.",
@@ -1424,7 +1434,9 @@
           "name": {
             "value": "[parameters('apiVersionSets')[copyIndex()].name]"
           },
-          "properties": "[if(contains(parameters('apiVersionSets')[copyIndex()], 'properties'), createObject('value', parameters('apiVersionSets')[copyIndex()].properties), createObject('value', createObject()))]"
+          "properties": {
+            "value": "[coalesce(tryGet(parameters('apiVersionSets')[copyIndex()], 'properties'), createObject())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1432,8 +1444,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "2869637630248924190"
+              "version": "0.29.47.4906",
+              "templateHash": "17159723717884761443"
             },
             "name": "API Management Service API Version Sets",
             "description": "This module deploys an API Management Service API Version Set.",
@@ -1521,26 +1533,48 @@
           "authorizationEndpoint": {
             "value": "[variables('authorizationServerList')[copyIndex()].authorizationEndpoint]"
           },
-          "authorizationMethods": "[if(contains(variables('authorizationServerList')[copyIndex()], 'authorizationMethods'), createObject('value', variables('authorizationServerList')[copyIndex()].authorizationMethods), createObject('value', createArray('GET')))]",
-          "bearerTokenSendingMethods": "[if(contains(variables('authorizationServerList')[copyIndex()], 'bearerTokenSendingMethods'), createObject('value', variables('authorizationServerList')[copyIndex()].bearerTokenSendingMethods), createObject('value', createArray('authorizationHeader')))]",
-          "clientAuthenticationMethod": "[if(contains(variables('authorizationServerList')[copyIndex()], 'clientAuthenticationMethod'), createObject('value', variables('authorizationServerList')[copyIndex()].clientAuthenticationMethod), createObject('value', createArray('Basic')))]",
+          "authorizationMethods": {
+            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'authorizationMethods'), createArray('GET'))]"
+          },
+          "bearerTokenSendingMethods": {
+            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'bearerTokenSendingMethods'), createArray('authorizationHeader'))]"
+          },
+          "clientAuthenticationMethod": {
+            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'clientAuthenticationMethod'), createArray('Basic'))]"
+          },
           "clientId": {
             "value": "[variables('authorizationServerList')[copyIndex()].clientId]"
           },
           "clientSecret": {
             "value": "[variables('authorizationServerList')[copyIndex()].clientSecret]"
           },
-          "clientRegistrationEndpoint": "[if(contains(variables('authorizationServerList')[copyIndex()], 'clientRegistrationEndpoint'), createObject('value', variables('authorizationServerList')[copyIndex()].clientRegistrationEndpoint), createObject('value', ''))]",
-          "defaultScope": "[if(contains(variables('authorizationServerList')[copyIndex()], 'defaultScope'), createObject('value', variables('authorizationServerList')[copyIndex()].defaultScope), createObject('value', ''))]",
+          "clientRegistrationEndpoint": {
+            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'clientRegistrationEndpoint'), '')]"
+          },
+          "defaultScope": {
+            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'defaultScope'), '')]"
+          },
           "grantTypes": {
             "value": "[variables('authorizationServerList')[copyIndex()].grantTypes]"
           },
-          "resourceOwnerPassword": "[if(contains(variables('authorizationServerList')[copyIndex()], 'resourceOwnerPassword'), createObject('value', variables('authorizationServerList')[copyIndex()].resourceOwnerPassword), createObject('value', ''))]",
-          "resourceOwnerUsername": "[if(contains(variables('authorizationServerList')[copyIndex()], 'resourceOwnerUsername'), createObject('value', variables('authorizationServerList')[copyIndex()].resourceOwnerUsername), createObject('value', ''))]",
-          "serverDescription": "[if(contains(variables('authorizationServerList')[copyIndex()], 'serverDescription'), createObject('value', variables('authorizationServerList')[copyIndex()].serverDescription), createObject('value', ''))]",
-          "supportState": "[if(contains(variables('authorizationServerList')[copyIndex()], 'supportState'), createObject('value', variables('authorizationServerList')[copyIndex()].supportState), createObject('value', false()))]",
-          "tokenBodyParameters": "[if(contains(variables('authorizationServerList')[copyIndex()], 'tokenBodyParameters'), createObject('value', variables('authorizationServerList')[copyIndex()].tokenBodyParameters), createObject('value', createArray()))]",
-          "tokenEndpoint": "[if(contains(variables('authorizationServerList')[copyIndex()], 'tokenEndpoint'), createObject('value', variables('authorizationServerList')[copyIndex()].tokenEndpoint), createObject('value', ''))]"
+          "resourceOwnerPassword": {
+            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'resourceOwnerPassword'), '')]"
+          },
+          "resourceOwnerUsername": {
+            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'resourceOwnerUsername'), '')]"
+          },
+          "serverDescription": {
+            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'serverDescription'), '')]"
+          },
+          "supportState": {
+            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'supportState'), false())]"
+          },
+          "tokenBodyParameters": {
+            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'tokenBodyParameters'), createArray())]"
+          },
+          "tokenEndpoint": {
+            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'tokenEndpoint'), '')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1548,8 +1582,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "17095671534556603009"
+              "version": "0.29.47.4906",
+              "templateHash": "4256977187793378377"
             },
             "name": "API Management Service Authorization Servers",
             "description": "This module deploys an API Management Service Authorization Server.",
@@ -1791,8 +1825,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "1411324864869146839"
+              "version": "0.29.47.4906",
+              "templateHash": "2365531440872951056"
             },
             "name": "API Management Service Backends",
             "description": "This module deploys an API Management Service Backend.",
@@ -1975,8 +2009,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "8223409608484938303"
+              "version": "0.29.47.4906",
+              "templateHash": "3234729148013684780"
             },
             "name": "API Management Service Caches",
             "description": "This module deploys an API Management Service Cache.",
@@ -2133,8 +2167,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "15990218139655805007"
+              "version": "0.29.47.4906",
+              "templateHash": "15630166564208731013"
             },
             "name": "API Management Service APIs Diagnostics.",
             "description": "This module deploys an API Management Service API Diagnostics.",
@@ -2322,25 +2356,49 @@
           "name": {
             "value": "[parameters('identityProviders')[copyIndex()].name]"
           },
-          "allowedTenants": "[if(contains(parameters('identityProviders')[copyIndex()], 'allowedTenants'), createObject('value', parameters('identityProviders')[copyIndex()].allowedTenants), createObject('value', createArray()))]",
-          "authority": "[if(contains(parameters('identityProviders')[copyIndex()], 'authority'), createObject('value', parameters('identityProviders')[copyIndex()].authority), createObject('value', ''))]",
-          "clientId": "[if(contains(parameters('identityProviders')[copyIndex()], 'clientId'), createObject('value', parameters('identityProviders')[copyIndex()].clientId), createObject('value', ''))]",
-          "clientSecret": "[if(contains(parameters('identityProviders')[copyIndex()], 'clientSecret'), createObject('value', parameters('identityProviders')[copyIndex()].clientSecret), createObject('value', ''))]",
-          "passwordResetPolicyName": "[if(contains(parameters('identityProviders')[copyIndex()], 'passwordResetPolicyName'), createObject('value', parameters('identityProviders')[copyIndex()].passwordResetPolicyName), createObject('value', ''))]",
-          "profileEditingPolicyName": "[if(contains(parameters('identityProviders')[copyIndex()], 'profileEditingPolicyName'), createObject('value', parameters('identityProviders')[copyIndex()].profileEditingPolicyName), createObject('value', ''))]",
-          "signInPolicyName": "[if(contains(parameters('identityProviders')[copyIndex()], 'signInPolicyName'), createObject('value', parameters('identityProviders')[copyIndex()].signInPolicyName), createObject('value', ''))]",
-          "signInTenant": "[if(contains(parameters('identityProviders')[copyIndex()], 'signInTenant'), createObject('value', parameters('identityProviders')[copyIndex()].signInTenant), createObject('value', ''))]",
-          "signUpPolicyName": "[if(contains(parameters('identityProviders')[copyIndex()], 'signUpPolicyName'), createObject('value', parameters('identityProviders')[copyIndex()].signUpPolicyName), createObject('value', ''))]",
-          "type": "[if(contains(parameters('identityProviders')[copyIndex()], 'type'), createObject('value', parameters('identityProviders')[copyIndex()].type), createObject('value', 'aad'))]"
+          "allowedTenants": {
+            "value": "[coalesce(tryGet(parameters('identityProviders')[copyIndex()], 'allowedTenants'), createArray())]"
+          },
+          "authority": {
+            "value": "[coalesce(tryGet(parameters('identityProviders')[copyIndex()], 'authority'), '')]"
+          },
+          "clientId": {
+            "value": "[coalesce(tryGet(parameters('identityProviders')[copyIndex()], 'clientId'), '')]"
+          },
+          "clientLibrary": {
+            "value": "[coalesce(tryGet(parameters('identityProviders')[copyIndex()], 'clientLibrary'), '')]"
+          },
+          "clientSecret": {
+            "value": "[coalesce(tryGet(parameters('identityProviders')[copyIndex()], 'clientSecret'), '')]"
+          },
+          "passwordResetPolicyName": {
+            "value": "[coalesce(tryGet(parameters('identityProviders')[copyIndex()], 'passwordResetPolicyName'), '')]"
+          },
+          "profileEditingPolicyName": {
+            "value": "[coalesce(tryGet(parameters('identityProviders')[copyIndex()], 'profileEditingPolicyName'), '')]"
+          },
+          "signInPolicyName": {
+            "value": "[coalesce(tryGet(parameters('identityProviders')[copyIndex()], 'signInPolicyName'), '')]"
+          },
+          "signInTenant": {
+            "value": "[coalesce(tryGet(parameters('identityProviders')[copyIndex()], 'signInTenant'), '')]"
+          },
+          "signUpPolicyName": {
+            "value": "[coalesce(tryGet(parameters('identityProviders')[copyIndex()], 'signUpPolicyName'), '')]"
+          },
+          "type": {
+            "value": "[coalesce(tryGet(parameters('identityProviders')[copyIndex()], 'type'), 'aad')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "834622836195899034"
+              "version": "0.29.47.4906",
+              "templateHash": "12757169124799431378"
             },
             "name": "API Management Service Identity Providers",
             "description": "This module deploys an API Management Service Identity Provider.",
@@ -2372,6 +2430,17 @@
               "defaultValue": "",
               "metadata": {
                 "description": "Conditional. Client ID of the Application in the external Identity Provider. Required if identity provider is used."
+              }
+            },
+            "clientLibrary": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "ADAL",
+                "MSAL-2"
+              ],
+              "metadata": {
+                "description": "Optional. The client library to be used in the developer portal. Only applies to AAD and AAD B2C Identity Provider."
               }
             },
             "clientSecret": {
@@ -2441,8 +2510,14 @@
           "variables": {
             "isAadB2C": "[equals(parameters('type'), 'aadB2C')]"
           },
-          "resources": [
-            {
+          "resources": {
+            "service": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/service",
+              "apiVersion": "2023-05-01-preview",
+              "name": "[parameters('apiManagementServiceName')]"
+            },
+            "identityProvider": {
               "type": "Microsoft.ApiManagement/service/identityProviders",
               "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
@@ -2456,10 +2531,14 @@
                 "profileEditingPolicyName": "[if(variables('isAadB2C'), parameters('profileEditingPolicyName'), null())]",
                 "passwordResetPolicyName": "[if(variables('isAadB2C'), parameters('passwordResetPolicyName'), null())]",
                 "clientId": "[parameters('clientId')]",
+                "clientLibrary": "[parameters('clientLibrary')]",
                 "clientSecret": "[parameters('clientSecret')]"
-              }
+              },
+              "dependsOn": [
+                "service"
+              ]
             }
-          ],
+          },
           "outputs": {
             "resourceId": {
               "type": "string",
@@ -2509,11 +2588,21 @@
           "apiManagementServiceName": {
             "value": "[parameters('name')]"
           },
-          "credentials": "[if(contains(parameters('loggers')[copyIndex()], 'credentials'), createObject('value', parameters('loggers')[copyIndex()].credentials), createObject('value', createObject()))]",
-          "isBuffered": "[if(contains(parameters('loggers')[copyIndex()], 'isBuffered'), createObject('value', parameters('loggers')[copyIndex()].isBuffered), createObject('value', true()))]",
-          "loggerDescription": "[if(contains(parameters('loggers')[copyIndex()], 'loggerDescription'), createObject('value', parameters('loggers')[copyIndex()].loggerDescription), createObject('value', ''))]",
-          "loggerType": "[if(contains(parameters('loggers')[copyIndex()], 'loggerType'), createObject('value', parameters('loggers')[copyIndex()].loggerType), createObject('value', 'azureMonitor'))]",
-          "targetResourceId": "[if(contains(parameters('loggers')[copyIndex()], 'targetResourceId'), createObject('value', parameters('loggers')[copyIndex()].targetResourceId), createObject('value', ''))]"
+          "credentials": {
+            "value": "[coalesce(tryGet(parameters('loggers')[copyIndex()], 'credentials'), createObject())]"
+          },
+          "isBuffered": {
+            "value": "[coalesce(tryGet(parameters('loggers')[copyIndex()], 'isBuffered'), true())]"
+          },
+          "loggerDescription": {
+            "value": "[coalesce(tryGet(parameters('loggers')[copyIndex()], 'loggerDescription'), '')]"
+          },
+          "loggerType": {
+            "value": "[coalesce(tryGet(parameters('loggers')[copyIndex()], 'loggerType'), 'azureMonitor')]"
+          },
+          "targetResourceId": {
+            "value": "[coalesce(tryGet(parameters('loggers')[copyIndex()], 'targetResourceId'), '')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2521,8 +2610,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "11123719171758533120"
+              "version": "0.29.47.4906",
+              "templateHash": "12986610229102962453"
             },
             "name": "API Management Service Loggers",
             "description": "This module deploys an API Management Service Logger.",
@@ -2618,7 +2707,8 @@
         }
       },
       "dependsOn": [
-        "service"
+        "service",
+        "service_namedValues"
       ]
     },
     "service_namedValues": {
@@ -2641,15 +2731,21 @@
           "displayName": {
             "value": "[parameters('namedValues')[copyIndex()].displayName]"
           },
-          "keyVault": "[if(contains(parameters('namedValues')[copyIndex()], 'keyVault'), createObject('value', parameters('namedValues')[copyIndex()].keyVault), createObject('value', createObject()))]",
+          "keyVault": {
+            "value": "[coalesce(tryGet(parameters('namedValues')[copyIndex()], 'keyVault'), createObject())]"
+          },
           "name": {
             "value": "[parameters('namedValues')[copyIndex()].name]"
           },
           "tags": {
             "value": "[tryGet(parameters('namedValues')[copyIndex()], 'tags')]"
           },
-          "secret": "[if(contains(parameters('namedValues')[copyIndex()], 'secret'), createObject('value', parameters('namedValues')[copyIndex()].secret), createObject('value', false()))]",
-          "value": "[if(contains(parameters('namedValues')[copyIndex()], 'value'), createObject('value', parameters('namedValues')[copyIndex()].value), createObject('value', parameters('newGuidValue')))]"
+          "secret": {
+            "value": "[coalesce(tryGet(parameters('namedValues')[copyIndex()], 'secret'), false())]"
+          },
+          "value": {
+            "value": "[coalesce(tryGet(parameters('namedValues')[copyIndex()], 'value'), parameters('newGuidValue'))]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2658,8 +2754,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "14618669791216532904"
+              "version": "0.29.47.4906",
+              "templateHash": "3479776319506170502"
             },
             "name": "API Management Service Named Values",
             "description": "This module deploys an API Management Service Named Value.",
@@ -2799,8 +2895,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "535385624688793699"
+              "version": "0.29.47.4906",
+              "templateHash": "10271256088614129674"
             },
             "name": "API Management Service Portal Settings",
             "description": "This module deploys an API Management Service Portal Setting.",
@@ -2888,7 +2984,9 @@
           "value": {
             "value": "[parameters('policies')[copyIndex()].value]"
           },
-          "format": "[if(contains(parameters('policies')[copyIndex()], 'format'), createObject('value', parameters('policies')[copyIndex()].format), createObject('value', 'xml'))]"
+          "format": {
+            "value": "[coalesce(tryGet(parameters('policies')[copyIndex()], 'format'), 'xml')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2896,8 +2994,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "5324506884411715219"
+              "version": "0.29.47.4906",
+              "templateHash": "11443463088593763324"
             },
             "name": "API Management Service Policies",
             "description": "This module deploys an API Management Service Policy.",
@@ -2994,17 +3092,33 @@
           "apiManagementServiceName": {
             "value": "[parameters('name')]"
           },
-          "apis": "[if(contains(parameters('products')[copyIndex()], 'apis'), createObject('value', parameters('products')[copyIndex()].apis), createObject('value', createArray()))]",
-          "approvalRequired": "[if(contains(parameters('products')[copyIndex()], 'approvalRequired'), createObject('value', parameters('products')[copyIndex()].approvalRequired), createObject('value', false()))]",
-          "groups": "[if(contains(parameters('products')[copyIndex()], 'groups'), createObject('value', parameters('products')[copyIndex()].groups), createObject('value', createArray()))]",
+          "apis": {
+            "value": "[coalesce(tryGet(parameters('products')[copyIndex()], 'apis'), createArray())]"
+          },
+          "approvalRequired": {
+            "value": "[coalesce(tryGet(parameters('products')[copyIndex()], 'approvalRequired'), false())]"
+          },
+          "groups": {
+            "value": "[coalesce(tryGet(parameters('products')[copyIndex()], 'groups'), createArray())]"
+          },
           "name": {
             "value": "[parameters('products')[copyIndex()].name]"
           },
-          "description": "[if(contains(parameters('products')[copyIndex()], 'description'), createObject('value', parameters('products')[copyIndex()].description), createObject('value', ''))]",
-          "state": "[if(contains(parameters('products')[copyIndex()], 'state'), createObject('value', parameters('products')[copyIndex()].state), createObject('value', 'published'))]",
-          "subscriptionRequired": "[if(contains(parameters('products')[copyIndex()], 'subscriptionRequired'), createObject('value', parameters('products')[copyIndex()].subscriptionRequired), createObject('value', false()))]",
-          "subscriptionsLimit": "[if(contains(parameters('products')[copyIndex()], 'subscriptionsLimit'), createObject('value', parameters('products')[copyIndex()].subscriptionsLimit), createObject('value', 1))]",
-          "terms": "[if(contains(parameters('products')[copyIndex()], 'terms'), createObject('value', parameters('products')[copyIndex()].terms), createObject('value', ''))]"
+          "description": {
+            "value": "[coalesce(tryGet(parameters('products')[copyIndex()], 'description'), '')]"
+          },
+          "state": {
+            "value": "[coalesce(tryGet(parameters('products')[copyIndex()], 'state'), 'published')]"
+          },
+          "subscriptionRequired": {
+            "value": "[coalesce(tryGet(parameters('products')[copyIndex()], 'subscriptionRequired'), false())]"
+          },
+          "subscriptionsLimit": {
+            "value": "[coalesce(tryGet(parameters('products')[copyIndex()], 'subscriptionsLimit'), 1)]"
+          },
+          "terms": {
+            "value": "[coalesce(tryGet(parameters('products')[copyIndex()], 'terms'), '')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -3012,8 +3126,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "13125454306061578309"
+              "version": "0.29.47.4906",
+              "templateHash": "6230115773857876317"
             },
             "name": "API Management Service Products",
             "description": "This module deploys an API Management Service Product.",
@@ -3134,8 +3248,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "4018261656720912671"
+                      "version": "0.29.47.4906",
+                      "templateHash": "1052981479169082206"
                     },
                     "name": "API Management Service Products APIs",
                     "description": "This module deploys an API Management Service Product API.",
@@ -3224,8 +3338,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "6078964374640716249"
+                      "version": "0.29.47.4906",
+                      "templateHash": "5748451278124986706"
                     },
                     "name": "API Management Service Products Groups",
                     "description": "This module deploys an API Management Service Product Group.",
@@ -3381,8 +3495,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "4461001441551159036"
+              "version": "0.29.47.4906",
+              "templateHash": "9499976066778278010"
             },
             "name": "API Management Service Subscriptions",
             "description": "This module deploys an API Management Service Subscription.",

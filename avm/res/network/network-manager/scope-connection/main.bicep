@@ -20,11 +20,11 @@ param resourceId string
 @sys.description('Required. Tenant ID of the subscription or management group that you want to manage.')
 param tenantId string
 
-resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2023-11-01' existing = {
   name: networkManagerName
 }
 
-resource scopeConnection 'Microsoft.Network/networkManagers/scopeConnections@2023-04-01' = {
+resource scopeConnection 'Microsoft.Network/networkManagers/scopeConnections@2023-11-01' = {
   name: name
   parent: networkManager
   properties: {

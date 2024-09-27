@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "3443173491807200896"
+      "version": "0.29.47.4906",
+      "templateHash": "5247980225087680814"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File.",
@@ -58,6 +58,13 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            }
+          },
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
@@ -159,6 +166,13 @@
         "description": "Required. The name of the NetApp account."
       }
     },
+    "adName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Name of the active directory host as part of Kerberos Realm used for Kerberos authentication."
+      }
+    },
     "aesEncryption": {
       "type": "bool",
       "defaultValue": false,
@@ -207,6 +221,13 @@
         "description": "Optional. Required if domainName is specified. Comma separated list of DNS server IP addresses (IPv4 only) required for the Active Directory (AD) domain join and SMB authentication operations to succeed."
       }
     },
+    "encryptDCConnections": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether encryption should be used for communication between SMB server and domain controller (DC). SMB3 only."
+      }
+    },
     "smbServerNamePrefix": {
       "type": "string",
       "defaultValue": "",
@@ -233,6 +254,20 @@
         "description": "Optional. Array of role assignments to create."
       }
     },
+    "kdcIP": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Kerberos Key Distribution Center (KDC) as part of Kerberos Realm used for Kerberos authentication."
+      }
+    },
+    "ldapOverTLS": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether to use TLS when NFS (with/without Kerberos) and SMB volumes communicate with an LDAP server. A server root CA certificate must be uploaded if enabled (serverRootCACertificate)."
+      }
+    },
     "ldapSigning": {
       "type": "bool",
       "defaultValue": false,
@@ -253,6 +288,13 @@
         "description": "Optional. The lock settings of the service."
       }
     },
+    "serverRootCACertificate": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. A server Root certificate is required of ldapOverTLS is enabled."
+      }
+    },
     "tags": {
       "type": "object",
       "nullable": true,
@@ -269,14 +311,26 @@
     }
   },
   "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
     "activeDirectoryConnectionProperties": [
       {
+        "adName": "[if(not(empty(parameters('domainName'))), parameters('adName'), null())]",
         "aesEncryption": "[if(not(empty(parameters('domainName'))), parameters('aesEncryption'), false())]",
         "username": "[if(not(empty(parameters('domainName'))), parameters('domainJoinUser'), null())]",
         "password": "[if(not(empty(parameters('domainName'))), parameters('domainJoinPassword'), null())]",
         "domain": "[if(not(empty(parameters('domainName'))), parameters('domainName'), null())]",
         "dns": "[if(not(empty(parameters('domainName'))), parameters('dnsServers'), null())]",
+        "encryptDCConnections": "[if(not(empty(parameters('domainName'))), parameters('encryptDCConnections'), false())]",
+        "kdcIP": "[if(not(empty(parameters('domainName'))), parameters('kdcIP'), null())]",
+        "ldapOverTLS": "[if(not(empty(parameters('domainName'))), parameters('ldapOverTLS'), false())]",
         "ldapSigning": "[if(not(empty(parameters('domainName'))), parameters('ldapSigning'), false())]",
+        "serverRootCACertificate": "[if(not(empty(parameters('domainName'))), parameters('serverRootCACertificate'), null())]",
         "smbServerName": "[if(not(empty(parameters('domainName'))), parameters('smbServerNamePrefix'), null())]",
         "organizationalUnit": "[if(not(empty(parameters('domainJoinOU'))), parameters('domainJoinOU'), null())]"
       }
@@ -287,7 +341,7 @@
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
@@ -307,7 +361,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2023-07-01",
       "name": "[format('46d3xbcp.res.netapp-netappaccount.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -344,7 +398,7 @@
     },
     "netAppAccount": {
       "type": "Microsoft.NetApp/netAppAccounts",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-03-01",
       "name": "[parameters('name')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
@@ -375,20 +429,20 @@
     "netAppAccount_roleAssignments": {
       "copy": {
         "name": "netAppAccount_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.NetApp/netAppAccounts/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.NetApp/netAppAccounts', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.NetApp/netAppAccounts', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "netAppAccount"
@@ -420,12 +474,24 @@
           "size": {
             "value": "[parameters('capacityPools')[copyIndex()].size]"
           },
-          "serviceLevel": "[if(contains(parameters('capacityPools')[copyIndex()], 'serviceLevel'), createObject('value', parameters('capacityPools')[copyIndex()].serviceLevel), createObject('value', 'Standard'))]",
-          "qosType": "[if(contains(parameters('capacityPools')[copyIndex()], 'qosType'), createObject('value', parameters('capacityPools')[copyIndex()].qosType), createObject('value', 'Auto'))]",
-          "volumes": "[if(contains(parameters('capacityPools')[copyIndex()], 'volumes'), createObject('value', parameters('capacityPools')[copyIndex()].volumes), createObject('value', createArray()))]",
-          "coolAccess": "[if(contains(parameters('capacityPools')[copyIndex()], 'coolAccess'), createObject('value', parameters('capacityPools')[copyIndex()].coolAccess), createObject('value', false()))]",
-          "roleAssignments": "[if(contains(parameters('capacityPools')[copyIndex()], 'roleAssignments'), createObject('value', parameters('capacityPools')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "encryptionType": "[if(contains(parameters('capacityPools')[copyIndex()], 'encryptionType'), createObject('value', parameters('capacityPools')[copyIndex()].encryptionType), createObject('value', 'Single'))]",
+          "serviceLevel": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'serviceLevel'), 'Standard')]"
+          },
+          "qosType": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'qosType'), 'Auto')]"
+          },
+          "volumes": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'volumes'), createArray())]"
+          },
+          "coolAccess": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'coolAccess'), false())]"
+          },
+          "roleAssignments": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'roleAssignments'), createArray())]"
+          },
+          "encryptionType": {
+            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'encryptionType'), 'Single')]"
+          },
           "tags": {
             "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'tags'), parameters('tags'))]"
           }
@@ -437,8 +503,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "13254524547530770866"
+              "version": "0.29.47.4906",
+              "templateHash": "8361786183534097212"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool.",
@@ -450,6 +516,13 @@
               "items": {
                 "type": "object",
                 "properties": {
+                  "name": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                    }
+                  },
                   "roleDefinitionIdOrName": {
                     "type": "string",
                     "metadata": {
@@ -552,6 +625,13 @@
                 "description": "Optional. The pool service level."
               }
             },
+            "networkFeatures": {
+              "type": "string",
+              "defaultValue": "Standard",
+              "metadata": {
+                "description": "Required. Network features available to the volume, or current state of update (Basic/Standard)."
+              }
+            },
             "size": {
               "type": "int",
               "metadata": {
@@ -602,11 +682,18 @@
             }
           },
           "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
             }
           },
@@ -614,12 +701,12 @@
             "netAppAccount": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-03-01",
               "name": "[parameters('netAppAccountName')]"
             },
             "capacityPool": {
               "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-03-01",
               "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -637,20 +724,20 @@
             "capacityPool_roleAssignments": {
               "copy": {
                 "name": "capacityPool_roleAssignments",
-                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.NetApp/netAppAccounts/{0}/capacityPools/{1}', parameters('netAppAccountName'), parameters('name'))]",
-              "name": "[guid(resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netAppAccountName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netAppAccountName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               },
               "dependsOn": [
                 "capacityPool"
@@ -687,16 +774,162 @@
                   "serviceLevel": {
                     "value": "[parameters('serviceLevel')]"
                   },
-                  "creationToken": "[if(contains(parameters('volumes')[copyIndex()], 'creationToken'), createObject('value', parameters('volumes')[copyIndex()].creationToken), createObject('value', parameters('volumes')[copyIndex()].name))]",
+                  "creationToken": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'creationToken'), parameters('volumes')[copyIndex()].name)]"
+                  },
                   "usageThreshold": {
                     "value": "[parameters('volumes')[copyIndex()].usageThreshold]"
                   },
-                  "protocolTypes": "[if(contains(parameters('volumes')[copyIndex()], 'protocolTypes'), createObject('value', parameters('volumes')[copyIndex()].protocolTypes), createObject('value', createArray()))]",
+                  "protocolTypes": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'protocolTypes'), createArray())]"
+                  },
                   "subnetResourceId": {
                     "value": "[parameters('volumes')[copyIndex()].subnetResourceId]"
                   },
-                  "exportPolicyRules": "[if(contains(parameters('volumes')[copyIndex()], 'exportPolicyRules'), createObject('value', parameters('volumes')[copyIndex()].exportPolicyRules), createObject('value', createArray()))]",
-                  "roleAssignments": "[if(contains(parameters('volumes')[copyIndex()], 'roleAssignments'), createObject('value', parameters('volumes')[copyIndex()].roleAssignments), createObject('value', createArray()))]"
+                  "exportPolicyRules": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'exportPolicyRules'), createArray())]"
+                  },
+                  "roleAssignments": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'roleAssignments'), createArray())]"
+                  },
+                  "networkFeatures": {
+                    "value": "[tryGet(parameters('volumes')[copyIndex()], 'networkFeatures')]"
+                  },
+                  "zones": {
+                    "value": "[tryGet(parameters('volumes')[copyIndex()], 'zones')]"
+                  },
+                  "coolAccess": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'coolAccess'), false())]"
+                  },
+                  "coolAccessRetrievalPolicy": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'coolAccessRetrievalPolicy'), 'Default')]"
+                  },
+                  "coolnessPeriod": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'coolnessPeriod'), 0)]"
+                  },
+                  "encryptionKeySource": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'encryptionKeySource'), 'Microsoft.NetApp')]"
+                  },
+                  "keyVaultPrivateEndpointResourceId": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'keyVaultPrivateEndpointResourceId'), '')]"
+                  },
+                  "endpointType": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'endpointType'), '')]"
+                  },
+                  "remoteVolumeRegion": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'remoteVolumeRegion'), '')]"
+                  },
+                  "remoteVolumeResourceId": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'remoteVolumeResourceId'), '')]"
+                  },
+                  "replicationSchedule": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'replicationSchedule'), '')]"
+                  },
+                  "snapshotPolicyId": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'snapshotPolicyId'), '')]"
+                  },
+                  "snapshotPolicyName": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'snapshotPolicyName'), 'snapshotPolicy')]"
+                  },
+                  "snapshotPolicyLocation": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'snapshotPolicyLocation'), '')]"
+                  },
+                  "snapEnabled": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'snapEnabled'), false())]"
+                  },
+                  "dailyHour": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'dailyHour'), 0)]"
+                  },
+                  "dailyMinute": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'dailyMinute'), 0)]"
+                  },
+                  "dailySnapshotsToKeep": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'dailySnapshotsToKeep'), 0)]"
+                  },
+                  "dailyUsedBytes": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'dailyUsedBytes'), 0)]"
+                  },
+                  "hourlyMinute": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'hourlyMinute'), 0)]"
+                  },
+                  "hourlySnapshotsToKeep": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'hourlySnapshotsToKeep'), 0)]"
+                  },
+                  "hourlyUsedBytes": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'hourlyUsedBytes'), 0)]"
+                  },
+                  "daysOfMonth": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'daysOfMonth'), '')]"
+                  },
+                  "monthlyHour": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'monthlyHour'), 0)]"
+                  },
+                  "monthlyMinute": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'monthlyMinute'), 0)]"
+                  },
+                  "monthlySnapshotsToKeep": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'monthlySnapshotsToKeep'), 0)]"
+                  },
+                  "monthlyUsedBytes": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'monthlyUsedBytes'), 0)]"
+                  },
+                  "weeklyDay": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklyDay'), '')]"
+                  },
+                  "weeklyHour": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklyHour'), 0)]"
+                  },
+                  "weeklyMinute": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklyMinute'), 0)]"
+                  },
+                  "weeklySnapshotsToKeep": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklySnapshotsToKeep'), 0)]"
+                  },
+                  "weeklyUsedBytes": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklyUsedBytes'), 0)]"
+                  },
+                  "backupPolicyName": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupPolicyName'), 'backupPolicy')]"
+                  },
+                  "backupPolicyLocation": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupPolicyLocation'), '')]"
+                  },
+                  "dailyBackupsToKeep": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'dailyBackupsToKeep'), 0)]"
+                  },
+                  "backupEnabled": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupEnabled'), false())]"
+                  },
+                  "monthlyBackupsToKeep": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'monthlyBackupsToKeep'), 0)]"
+                  },
+                  "weeklyBackupsToKeep": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklyBackupsToKeep'), 0)]"
+                  },
+                  "backupVaultName": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupVaultName'), 'vault')]"
+                  },
+                  "backupVaultLocation": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupVaultLocation'), '')]"
+                  },
+                  "backupName": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupName'), 'backup')]"
+                  },
+                  "backupLabel": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupLabel'), '')]"
+                  },
+                  "snapshotName": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'snapshotName'), 'snapshot')]"
+                  },
+                  "useExistingSnapshot": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'useExistingSnapshot'), false())]"
+                  },
+                  "volumeResourceId": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'volumeResourceId'), '')]"
+                  },
+                  "volumeType": {
+                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'volumeType'), '')]"
+                  }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -705,8 +938,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "308407733537316660"
+                      "version": "0.29.47.4906",
+                      "templateHash": "18098024822158530053"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -718,6 +951,13 @@
                       "items": {
                         "type": "object",
                         "properties": {
+                          "name": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                            }
+                          },
                           "roleDefinitionIdOrName": {
                             "type": "string",
                             "metadata": {
@@ -793,6 +1033,278 @@
                         "description": "Conditional. The name of the parent capacity pool. Required if the template is used in a standalone deployment."
                       }
                     },
+                    "coolAccess": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Optional. If enabled (true) the pool can contain cool Access enabled volumes."
+                      }
+                    },
+                    "coolnessPeriod": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. Specifies the number of days after which data that is not accessed by clients will be tiered."
+                      }
+                    },
+                    "coolAccessRetrievalPolicy": {
+                      "type": "string",
+                      "defaultValue": "Default",
+                      "metadata": {
+                        "description": "Optional. determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)."
+                      }
+                    },
+                    "encryptionKeySource": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The source of the encryption key."
+                      }
+                    },
+                    "keyVaultPrivateEndpointResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The resource ID of the key vault private endpoint."
+                      }
+                    },
+                    "endpointType": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. Indicates whether the local volume is the source or destination for the Volume Replication (src/dst)."
+                      }
+                    },
+                    "remoteVolumeRegion": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The remote region for the other end of the Volume Replication."
+                      }
+                    },
+                    "remoteVolumeResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The resource ID of the remote volume."
+                      }
+                    },
+                    "replicationSchedule": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The replication schedule for the volume."
+                      }
+                    },
+                    "backupEnabled": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. Indicates whether the backup policy is enabled."
+                      }
+                    },
+                    "backupPolicyName": {
+                      "type": "string",
+                      "defaultValue": "backupPolicy",
+                      "metadata": {
+                        "description": "Optional. The name of the backup policy."
+                      }
+                    },
+                    "backupPolicyLocation": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]",
+                      "metadata": {
+                        "description": "Optional. The location of the backup policy."
+                      }
+                    },
+                    "dailyBackupsToKeep": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. The daily backups to keep."
+                      }
+                    },
+                    "monthlyBackupsToKeep": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. The monthly backups to keep."
+                      }
+                    },
+                    "weeklyBackupsToKeep": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. The weekly backups to keep."
+                      }
+                    },
+                    "backupVaultName": {
+                      "type": "string",
+                      "defaultValue": "vault",
+                      "metadata": {
+                        "description": "Optional. The name of the backup vault."
+                      }
+                    },
+                    "backupVaultLocation": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]",
+                      "metadata": {
+                        "description": "Optional. The location of the backup vault."
+                      }
+                    },
+                    "backupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The name of the backup."
+                      }
+                    },
+                    "backupLabel": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The label of the backup."
+                      }
+                    },
+                    "useExistingSnapshot": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Optional. Indicates whether to use an existing snapshot."
+                      }
+                    },
+                    "snapshotName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The name of the snapshot."
+                      }
+                    },
+                    "snapshotPolicyId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. Snapshot Policy ResourceId."
+                      }
+                    },
+                    "snapshotPolicyName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The name of the snapshot policy."
+                      }
+                    },
+                    "snapshotPolicyLocation": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]",
+                      "metadata": {
+                        "description": "Optional. The location of the snapshot policy."
+                      }
+                    },
+                    "dailyHour": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. The daily snapshot hour."
+                      }
+                    },
+                    "dailyMinute": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. The daily snapshot minute."
+                      }
+                    },
+                    "dailySnapshotsToKeep": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. Daily snapshot count to keep."
+                      }
+                    },
+                    "dailyUsedBytes": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. Daily snapshot used bytes."
+                      }
+                    },
+                    "hourlyMinute": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. The hourly snapshot minute."
+                      }
+                    },
+                    "hourlySnapshotsToKeep": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. Hourly snapshot count to keep."
+                      }
+                    },
+                    "hourlyUsedBytes": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. Hourly snapshot used bytes."
+                      }
+                    },
+                    "daysOfMonth": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The monthly snapshot day."
+                      }
+                    },
+                    "monthlyHour": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. The monthly snapshot hour."
+                      }
+                    },
+                    "monthlyMinute": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. The monthly snapshot minute."
+                      }
+                    },
+                    "monthlySnapshotsToKeep": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. Monthly snapshot count to keep."
+                      }
+                    },
+                    "monthlyUsedBytes": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. Monthly snapshot used bytes."
+                      }
+                    },
+                    "weeklyDay": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The weekly snapshot day."
+                      }
+                    },
+                    "weeklyHour": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. The weekly snapshot hour."
+                      }
+                    },
+                    "weeklyMinute": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. The weekly snapshot minute."
+                      }
+                    },
+                    "weeklySnapshotsToKeep": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. Weekly snapshot count to keep."
+                      }
+                    },
+                    "weeklyUsedBytes": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Optional. Weekly snapshot used bytes."
+                      }
+                    },
+                    "snapEnabled": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. Indicates whether the snapshot policy is enabled."
+                      }
+                    },
+                    "volumeResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The resource ID of the volume."
+                      }
+                    },
+                    "volumeType": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. The type of the volume. DataProtection volumes are used for replication."
+                      }
+                    },
                     "name": {
                       "type": "string",
                       "metadata": {
@@ -806,6 +1318,15 @@
                         "description": "Optional. Location of the pool volume."
                       }
                     },
+                    "zones": {
+                      "type": "array",
+                      "defaultValue": [
+                        "1"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Zone where the volume will be placed."
+                      }
+                    },
                     "serviceLevel": {
                       "type": "string",
                       "defaultValue": "Standard",
@@ -817,6 +1338,19 @@
                       ],
                       "metadata": {
                         "description": "Optional. The pool service level. Must match the one of the parent capacity pool."
+                      }
+                    },
+                    "networkFeatures": {
+                      "type": "string",
+                      "defaultValue": "Standard",
+                      "allowedValues": [
+                        "Basic",
+                        "Basic_Standard",
+                        "Standard",
+                        "Standard_Basic"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Network feature for the volume."
                       }
                     },
                     "creationToken": {
@@ -860,11 +1394,18 @@
                     }
                   },
                   "variables": {
+                    "copy": [
+                      {
+                        "name": "formattedRoleAssignments",
+                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                      }
+                    ],
                     "builtInRoleNames": {
                       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
                       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
                     }
                   },
@@ -872,7 +1413,7 @@
                     "netAppAccount::capacityPool": {
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-03-01",
                       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]",
                       "dependsOn": [
                         "netAppAccount"
@@ -881,43 +1422,112 @@
                     "netAppAccount": {
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-03-01",
                       "name": "[parameters('netAppAccountName')]"
                     },
                     "volume": {
                       "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-03-01",
                       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
                       "location": "[parameters('location')]",
-                      "properties": {
-                        "serviceLevel": "[parameters('serviceLevel')]",
-                        "creationToken": "[parameters('creationToken')]",
-                        "usageThreshold": "[parameters('usageThreshold')]",
-                        "protocolTypes": "[parameters('protocolTypes')]",
-                        "subnetId": "[parameters('subnetResourceId')]",
-                        "exportPolicy": "[if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null())]"
-                      },
+                      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', parameters('keyVaultPrivateEndpointResourceId')), createObject()), if(not(equals(parameters('volumeType'), '')), createObject('volumeType', parameters('volumeType'), 'dataProtection', createObject('replication', createObject('endpointType', parameters('endpointType'), 'remoteVolumeRegion', parameters('remoteVolumeRegion'), 'remoteVolumeResourceId', parameters('remoteVolumeResourceId'), 'replicationSchedule', parameters('replicationSchedule')), 'snapshot', createObject('snapshotPolicyId', parameters('snapshotPolicyId')))), createObject()), createObject('networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', parameters('subnetResourceId'), 'exportPolicy', if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null()))))]",
+                      "zones": "[parameters('zones')]",
                       "dependsOn": [
                         "netAppAccount::capacityPool"
+                      ]
+                    },
+                    "snapshotPolicies": {
+                      "condition": "[parameters('snapEnabled')]",
+                      "type": "Microsoft.NetApp/netAppAccounts/snapshotPolicies",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('snapshotPolicyName'))]",
+                      "location": "[parameters('snapshotPolicyLocation')]",
+                      "properties": {
+                        "enabled": "[parameters('snapEnabled')]",
+                        "dailySchedule": {
+                          "hour": "[parameters('dailyHour')]",
+                          "minute": "[parameters('dailyMinute')]",
+                          "snapshotsToKeep": "[parameters('dailySnapshotsToKeep')]",
+                          "usedBytes": "[parameters('dailyUsedBytes')]"
+                        },
+                        "hourlySchedule": {
+                          "minute": "[parameters('hourlyMinute')]",
+                          "snapshotsToKeep": "[parameters('hourlySnapshotsToKeep')]",
+                          "usedBytes": "[parameters('hourlyUsedBytes')]"
+                        },
+                        "monthlySchedule": {
+                          "daysOfMonth": "[parameters('daysOfMonth')]",
+                          "hour": "[parameters('monthlyHour')]",
+                          "minute": "[parameters('monthlyMinute')]",
+                          "snapshotsToKeep": "[parameters('monthlySnapshotsToKeep')]",
+                          "usedBytes": "[parameters('monthlyUsedBytes')]"
+                        },
+                        "weeklySchedule": {
+                          "day": "[parameters('weeklyDay')]",
+                          "hour": "[parameters('weeklyHour')]",
+                          "minute": "[parameters('weeklyMinute')]",
+                          "snapshotsToKeep": "[parameters('weeklySnapshotsToKeep')]",
+                          "usedBytes": "[parameters('weeklyUsedBytes')]"
+                        }
+                      },
+                      "dependsOn": [
+                        "netAppAccount"
+                      ]
+                    },
+                    "backupPolicies": {
+                      "condition": "[parameters('backupEnabled')]",
+                      "type": "Microsoft.NetApp/netAppAccounts/backupPolicies",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupPolicyName'))]",
+                      "location": "[parameters('backupPolicyLocation')]",
+                      "properties": {
+                        "dailyBackupsToKeep": "[parameters('dailyBackupsToKeep')]",
+                        "enabled": "[parameters('backupEnabled')]",
+                        "monthlyBackupsToKeep": "[parameters('monthlyBackupsToKeep')]",
+                        "weeklyBackupsToKeep": "[parameters('weeklyBackupsToKeep')]"
+                      },
+                      "dependsOn": [
+                        "netAppAccount"
+                      ]
+                    },
+                    "backupVaults": {
+                      "condition": "[parameters('backupEnabled')]",
+                      "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]",
+                      "location": "[parameters('backupVaultLocation')]",
+                      "properties": {},
+                      "dependsOn": [
+                        "netAppAccount"
+                      ]
+                    },
+                    "backups": {
+                      "condition": "[parameters('backupEnabled')]",
+                      "type": "Microsoft.NetApp/netAppAccounts/backupVaults/backups",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('backupVaultName'), parameters('backupName'))]",
+                      "properties": "[if(parameters('backupEnabled'), createObject('label', parameters('backupLabel'), 'snapshotName', parameters('snapshotName'), 'useExistingSnapshot', parameters('useExistingSnapshot'), 'volumeResourceId', parameters('volumeResourceId')), createObject())]",
+                      "dependsOn": [
+                        "backupVaults"
                       ]
                     },
                     "volume_roleAssignments": {
                       "copy": {
                         "name": "volume_roleAssignments",
-                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
                       },
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
                       "scope": "[format('Microsoft.NetApp/netAppAccounts/{0}/capacityPools/{1}/volumes/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
-                      "name": "[guid(resourceId('Microsoft.NetApp/netAppAccounts/capacityPools/volumes', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.NetApp/netAppAccounts/capacityPools/volumes', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                       "properties": {
-                        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-                        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-                        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-                        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
                       },
                       "dependsOn": [
                         "volume"
@@ -951,7 +1561,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('volume', '2023-11-01', 'full').location]"
+                      "value": "[reference('volume', '2024-03-01', 'full').location]"
                     }
                   }
                 }
@@ -989,7 +1599,14 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('capacityPool', '2023-11-01', 'full').location]"
+              "value": "[reference('capacityPool', '2024-03-01', 'full').location]"
+            },
+            "volumeResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource IDs of the volume created in the capacity pool."
+              },
+              "value": "[if(not(equals(parameters('volumes'), createArray())), reference(format('capacityPool_volumes[{0}]', 0)).outputs.resourceId.value, '')]"
             }
           }
         }
@@ -1026,7 +1643,14 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('netAppAccount', '2023-11-01', 'full').location]"
+      "value": "[reference('netAppAccount', '2024-03-01', 'full').location]"
+    },
+    "volumeResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource IDs of the volume created in the capacity pool."
+      },
+      "value": "[if(not(equals(parameters('capacityPools'), createArray())), reference(format('netAppAccount_capacityPools[{0}]', 0)).outputs.volumeResourceId.value, '')]"
     }
   }
 }

@@ -76,24 +76,7 @@ param hubVirtualNetworkConnections array = []
 @description('Optional. Specify the type of lock.')
 param lock string = ''
 
-//@description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
-//param enableDefaultTelemetry bool = true
-
-//var enableReferencedModulesTelemetry = false
-
-/*resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}*/
-
-resource virtualHub 'Microsoft.Network/virtualHubs@2021-05-01' = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2023-11-01' = {
   name: name
   location: location
   tags: tags
@@ -142,7 +125,7 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2021-05-01' = {
   }
 }
 
-resource virtualHub_lock 'Microsoft.Authorization/locks@2017-04-01' = if (!empty(lock)) {
+resource virtualHub_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock)) {
   name: '${virtualHub.name}-${lock}-lock'
   properties: {
     level: any(lock)

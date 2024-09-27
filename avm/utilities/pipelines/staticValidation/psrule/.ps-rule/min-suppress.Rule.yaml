@@ -43,6 +43,9 @@ spec:
     - Azure.FrontDoor.Probe # Supressed as the probe is being provided as parameter and we are not able to enforce as default value
     - Azure.FrontDoor.ProbeMethod # Supressed as the probe method is being provided as parameter and we are not able to enforce as default value
     - Azure.FrontDoor.ProbePath # Supressed as the probe path is being provided as parameter and we are not able to enforce as default value
+    # Azure API Management
+    - Azure.APIM.MultiRegion # Team agreed this is too expensive for most use cases and is safe to ignore. Would require dependencies for a min deployment.
+    - Azure.APIM.ManagedIdentity
   if:
     name: "."
     contains:

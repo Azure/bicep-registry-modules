@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "17450996171898926905"
+      "version": "0.29.47.4906",
+      "templateHash": "16789354290120442948"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -43,6 +43,13 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            }
+          },
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
@@ -223,6 +230,13 @@
     }
   },
   "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
     "builtInRoleNames": {
       "CDN Endpoint Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '426e0c7f-0c7e-4658-b36f-ff54d6c29b45')]",
       "CDN Endpoint Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '871e35f6-b5c1-49cc-a043-bde969a0f2cd')]",
@@ -231,7 +245,7 @@
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
@@ -239,7 +253,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.cdn-profile.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -286,20 +300,20 @@
     "profile_roleAssignments": {
       "copy": {
         "name": "profile_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.Cdn/profiles/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.Cdn/profiles', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Cdn/profiles', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "profile"
@@ -336,8 +350,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "2906172435071993445"
+              "version": "0.29.47.4906",
+              "templateHash": "6371656015674390162"
             },
             "name": "CDN Profiles Endpoints",
             "description": "This module deploys a CDN Profile Endpoint.",
@@ -456,8 +470,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "3665403791951260301"
+                      "version": "0.29.47.4906",
+                      "templateHash": "11976988406992266750"
                     },
                     "name": "CDN Profiles Endpoints Origins",
                     "description": "This module deploys a CDN Profile Endpoint Origin.",
@@ -652,6 +666,13 @@
                 "description": "The properties of the endpoint."
               },
               "value": "[reference('endpoint')]"
+            },
+            "uri": {
+              "type": "string",
+              "metadata": {
+                "description": "The uri of the endpoint."
+              },
+              "value": "[format('https://{0}', reference('endpoint').hostName)]"
             }
           }
         }
@@ -702,8 +723,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "364931243138434002"
+              "version": "0.29.47.4906",
+              "templateHash": "533126228291817357"
             },
             "name": "CDN Profiles Secret",
             "description": "This module deploys a CDN Profile Secret.",
@@ -851,8 +872,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "15721665305636481516"
+              "version": "0.29.47.4906",
+              "templateHash": "15211066835326278081"
             },
             "name": "CDN Profiles Custom Domains",
             "description": "This module deploys a CDN Profile Custom Domains.",
@@ -1018,8 +1039,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "12438540618132459307"
+              "version": "0.29.47.4906",
+              "templateHash": "1182415535491789973"
             },
             "name": "CDN Profiles Origin Group",
             "description": "This module deploys a CDN Profile Origin Group.",
@@ -1155,8 +1176,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "8566106020570825253"
+                      "version": "0.29.47.4906",
+                      "templateHash": "14493731512795008787"
                     },
                     "name": "CDN Profiles Origin",
                     "description": "This module deploys a CDN Profile Origin.",
@@ -1381,8 +1402,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "5891069247146856543"
+              "version": "0.29.47.4906",
+              "templateHash": "9792708426765797662"
             },
             "name": "CDN Profiles Rule Sets",
             "description": "This module deploys a CDN Profile rule set.",
@@ -1467,8 +1488,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "4690708071413750601"
+                      "version": "0.29.47.4906",
+                      "templateHash": "12904222825428666192"
                     },
                     "name": "CDN Profiles Rules",
                     "description": "This module deploys a CDN Profile rule.",
@@ -1655,8 +1676,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "1139997023996590437"
+              "version": "0.29.47.4906",
+              "templateHash": "3384292547879688658"
             },
             "name": "CDN Profiles AFD Endpoints",
             "description": "This module deploys a CDN Profile AFD Endpoint.",
@@ -1806,8 +1827,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "5770374289363120600"
+                      "version": "0.29.47.4906",
+                      "templateHash": "18002678880456924020"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
                     "description": "This module deploys a CDN Profile AFD Endpoint route.",
@@ -2081,6 +2102,13 @@
                 "description": "The location the resource was deployed into."
               },
               "value": "[reference('afdEndpoint', '2023-05-01', 'full').location]"
+            },
+            "routes": {
+              "type": "array",
+              "metadata": {
+                "description": "The list of routes assigned to the AFD endpoint."
+              },
+              "value": "[coalesce(parameters('routes'), createArray())]"
             }
           }
         }
@@ -2128,6 +2156,27 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('profile', '2023-05-01', 'full').location]"
+    },
+    "endpointName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the CDN profile endpoint."
+      },
+      "value": "[if(not(empty(parameters('endpointProperties'))), reference('profile_endpoint').outputs.name.value, '')]"
+    },
+    "endpointId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the CDN profile endpoint."
+      },
+      "value": "[if(not(empty(parameters('endpointProperties'))), reference('profile_endpoint').outputs.resourceId.value, '')]"
+    },
+    "uri": {
+      "type": "string",
+      "metadata": {
+        "description": "The uri of the CDN profile endpoint."
+      },
+      "value": "[if(not(empty(parameters('endpointProperties'))), reference('profile_endpoint').outputs.uri.value, '')]"
     }
   }
 }

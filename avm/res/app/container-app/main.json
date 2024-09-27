@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "9180046963184653073"
+      "version": "0.29.47.4906",
+      "templateHash": "9460964061339169930"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -66,6 +66,13 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            }
+          },
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
@@ -201,6 +208,47 @@
         }
       }
     },
+    "ingressPortMapping": {
+      "type": "object",
+      "properties": {
+        "exposedPort": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the exposed port for the target port. If not specified, it defaults to target port."
+          }
+        },
+        "external": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Specifies whether the app port is accessible outside of the environment."
+          }
+        },
+        "targetPort": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Specifies the port the container listens on."
+          }
+        }
+      }
+    },
+    "serviceBind": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the service."
+          }
+        },
+        "serviceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The service ID."
+          }
+        }
+      }
+    },
     "environmentVar": {
       "type": "object",
       "properties": {
@@ -308,6 +356,66 @@
           }
         }
       }
+    },
+    "corsPolicyType": {
+      "type": "object",
+      "properties": {
+        "allowCredentials": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Switch to determine whether the resource allows credentials."
+          }
+        },
+        "allowedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-allow-headers header."
+          }
+        },
+        "allowedMethods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-allow-methods header."
+          }
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-allow-origins header."
+          }
+        },
+        "exposeHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-expose-headers header."
+          }
+        },
+        "maxAge": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the content for the access-control-max-age header."
+          }
+        }
+      },
+      "nullable": true
     },
     "containerAppProbeHttpGet": {
       "type": "object",
@@ -430,11 +538,36 @@
         "description": "Optional. Location for all Resources."
       }
     },
+    "disableIngress": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Bool to disable all ingress traffic for the container app."
+      }
+    },
     "ingressExternal": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Bool indicating if the App exposes an external HTTP endpoint."
+      }
+    },
+    "clientCertificateMode": {
+      "type": "string",
+      "defaultValue": "ignore",
+      "allowedValues": [
+        "accept",
+        "ignore",
+        "require"
+      ],
+      "metadata": {
+        "description": "Optional. Client certificate mode for mTLS."
+      }
+    },
+    "corsPolicy": {
+      "$ref": "#/definitions/corsPolicyType",
+      "metadata": {
+        "description": "Optional. Object userd to configure CORS policy."
       }
     },
     "stickySessionsAffinity": {
@@ -459,6 +592,30 @@
       ],
       "metadata": {
         "description": "Optional. Ingress transport protocol."
+      }
+    },
+    "service": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Dev ContainerApp service type."
+      }
+    },
+    "includeAddOns": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Toggle to include the service configuration."
+      }
+    },
+    "additionalPortMappings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ingressPortMapping"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Settings to expose additional ports on container app."
       }
     },
     "ingressAllowInsecure": {
@@ -496,6 +653,16 @@
         "description": "Optional. Scaling rules."
       }
     },
+    "serviceBinds": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/serviceBind"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of container app services bound to the app."
+      }
+    },
     "activeRevisionsMode": {
       "type": "string",
       "defaultValue": "Single",
@@ -507,7 +674,7 @@
         "description": "Optional. Controls how active revisions are handled for the Container app."
       }
     },
-    "environmentId": {
+    "environmentResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. Resource ID of environment."
@@ -661,6 +828,13 @@
     }
   },
   "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
     "secretList": "[if(not(empty(parameters('secrets'))), parameters('secrets').secureList, createArray())]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
@@ -669,7 +843,7 @@
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
@@ -677,7 +851,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.app-containerapp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -696,36 +870,18 @@
     },
     "containerApp": {
       "type": "Microsoft.App/containerApps",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2024-03-01",
       "name": "[parameters('name')]",
       "tags": "[parameters('tags')]",
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "environmentId": "[parameters('environmentId')]",
+        "environmentId": "[parameters('environmentResourceId')]",
         "configuration": {
           "activeRevisionsMode": "[parameters('activeRevisionsMode')]",
           "dapr": "[if(not(empty(parameters('dapr'))), parameters('dapr'), null())]",
-          "ingress": {
-            "allowInsecure": "[parameters('ingressAllowInsecure')]",
-            "customDomains": "[if(not(empty(parameters('customDomains'))), parameters('customDomains'), null())]",
-            "exposedPort": "[parameters('exposedPort')]",
-            "external": "[parameters('ingressExternal')]",
-            "ipSecurityRestrictions": "[if(not(empty(parameters('ipSecurityRestrictions'))), parameters('ipSecurityRestrictions'), null())]",
-            "targetPort": "[parameters('ingressTargetPort')]",
-            "stickySessions": {
-              "affinity": "[parameters('stickySessionsAffinity')]"
-            },
-            "traffic": [
-              {
-                "label": "[parameters('trafficLabel')]",
-                "latestRevision": "[parameters('trafficLatestRevision')]",
-                "revisionName": "[parameters('trafficRevisionName')]",
-                "weight": "[parameters('trafficWeight')]"
-              }
-            ],
-            "transport": "[parameters('ingressTransport')]"
-          },
+          "ingress": "[if(parameters('disableIngress'), null(), createObject('additionalPortMappings', parameters('additionalPortMappings'), 'allowInsecure', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('ingressAllowInsecure'), false()), 'customDomains', if(not(empty(parameters('customDomains'))), parameters('customDomains'), null()), 'corsPolicy', if(and(not(equals(parameters('corsPolicy'), null())), not(equals(parameters('ingressTransport'), 'tcp'))), createObject('allowCredentials', coalesce(tryGet(parameters('corsPolicy'), 'allowCredentials'), false()), 'allowedHeaders', coalesce(tryGet(parameters('corsPolicy'), 'allowedHeaders'), createArray()), 'allowedMethods', coalesce(tryGet(parameters('corsPolicy'), 'allowedMethods'), createArray()), 'allowedOrigins', coalesce(tryGet(parameters('corsPolicy'), 'allowedOrigins'), createArray()), 'exposeHeaders', coalesce(tryGet(parameters('corsPolicy'), 'exposeHeaders'), createArray()), 'maxAge', tryGet(parameters('corsPolicy'), 'maxAge')), null()), 'clientCertificateMode', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('clientCertificateMode'), null()), 'exposedPort', parameters('exposedPort'), 'external', parameters('ingressExternal'), 'ipSecurityRestrictions', if(not(empty(parameters('ipSecurityRestrictions'))), parameters('ipSecurityRestrictions'), null()), 'targetPort', parameters('ingressTargetPort'), 'stickySessions', createObject('affinity', parameters('stickySessionsAffinity')), 'traffic', if(not(equals(parameters('ingressTransport'), 'tcp')), createArray(createObject('label', parameters('trafficLabel'), 'latestRevision', parameters('trafficLatestRevision'), 'revisionName', parameters('trafficRevisionName'), 'weight', parameters('trafficWeight'))), null()), 'transport', parameters('ingressTransport')))]",
+          "service": "[if(and(parameters('includeAddOns'), not(empty(parameters('service')))), parameters('service'), null())]",
           "maxInactiveRevisions": "[parameters('maxInactiveRevisions')]",
           "registries": "[if(not(empty(parameters('registries'))), parameters('registries'), null())]",
           "secrets": "[variables('secretList')]"
@@ -739,6 +895,7 @@
             "minReplicas": "[parameters('scaleMinReplicas')]",
             "rules": "[if(not(empty(parameters('scaleRules'))), parameters('scaleRules'), null())]"
           },
+          "serviceBinds": "[if(and(parameters('includeAddOns'), not(empty(parameters('serviceBinds')))), parameters('serviceBinds'), null())]",
           "volumes": "[if(not(empty(parameters('volumes'))), parameters('volumes'), null())]"
         },
         "workloadProfileName": "[parameters('workloadProfileName')]"
@@ -761,20 +918,20 @@
     "containerApp_roleAssignments": {
       "copy": {
         "name": "containerApp_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.App/containerApps/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.App/containerApps', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.App/containerApps', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "containerApp"
@@ -794,7 +951,7 @@
       "metadata": {
         "description": "The configuration of ingress fqdn."
       },
-      "value": "[reference('containerApp').configuration.ingress.fqdn]"
+      "value": "[if(parameters('disableIngress'), 'IngressDisabled', reference('containerApp').configuration.ingress.fqdn)]"
     },
     "resourceGroupName": {
       "type": "string",
@@ -815,14 +972,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('containerApp', '2023-05-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('containerApp', '2024-03-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('containerApp', '2023-05-01', 'full').location]"
+      "value": "[reference('containerApp', '2024-03-01', 'full').location]"
     }
   }
 }
