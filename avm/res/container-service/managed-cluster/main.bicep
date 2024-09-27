@@ -637,8 +637,8 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
     networkProfile: {
       networkDataplane: networkDataplane
       networkPlugin: networkPlugin
-      networkPluginMode: networkPluginMode
-      networkPolicy: networkPolicy
+      networkPluginMode: networkDataplane == 'cilium' ? 'overlay' : networkPluginMode
+      networkPolicy: networkDataplane == 'cilium' ? 'cilium' : networkPolicy
       podCidr: podCidr
       serviceCidr: serviceCidr
       dnsServiceIP: dnsServiceIP
