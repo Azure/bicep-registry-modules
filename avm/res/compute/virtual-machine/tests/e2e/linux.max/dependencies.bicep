@@ -34,7 +34,7 @@ param dcrName string
 @description('Optional. The location to deploy to.')
 param location string = resourceGroup().location
 
-@description('Required. The object ID of the Backup Management Service Enterprise Application. Required for Customer-Managed-Keys.')
+@description('Required. The object ID of the Backup Management Service Enterprise Application.')
 param backupManagementServiceApplicationObjectId string
 
 @description('Required. Resource ID of the log analytics worspace to stream logs from Azure monitoring agent.')
