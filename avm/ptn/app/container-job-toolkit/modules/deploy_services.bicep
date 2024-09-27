@@ -24,6 +24,9 @@ param deployDnsZoneContainerRegistry bool = true
 @description('Optional. Pass the name to use an existing managed identity for importing the container image and run the job. If not provided, a new managed identity will be created.')
 param managedIdentityResourceId string?
 
+@description('Optional. The name of the managed identity to create. If not provided, a name will be generated automatically as `jobsUserIdentity-$\\{name\\}`.')
+param managedIdentityName string?
+
 // infrastructure parameters
 // -------------------------
 @sys.description('Optional. The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created.')
@@ -326,8 +329,9 @@ module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endp
 
 // Identity resources
 // -----------------
-resource userIdentity_new 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (managedIdentityResourceId == null) {
-  name: 'jobsUserIdentity-${name}'
+resource userIdentity_new 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = if (managedIdentityResourceId == null) {
+  name: managedIdentityName ?? 'jobsUserIdentity-${name}'
+  location: resourceLocation
 }
 resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (managedIdentityResourceId != null) {
   name: last(split(managedIdentityResourceId!, '/'))

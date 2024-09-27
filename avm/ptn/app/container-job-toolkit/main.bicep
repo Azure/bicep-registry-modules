@@ -21,6 +21,9 @@ param enableTelemetry bool = true
 })
 param managedIdentityResourceId string?
 
+@description('Optional. The name of the managed identity to create. If not provided, a name will be generated automatically as `jobsUserIdentity-$\\{name\\}`.')
+param managedIdentityName string?
+
 @description('Optional. The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created.')
 @metadata({
   example: '/subscriptions/<00000000-0000-0000-0000-000000000000>/resourceGroups/<rg-name>/providers/Microsoft.OperationalInsights/workspaces/<workspace-name>'
@@ -187,6 +190,7 @@ module services 'modules/deploy_services.bicep' = {
     resourceLocation: location
     resourceGroupName: resourceGroup().name
     managedIdentityResourceId: managedIdentityResourceId
+    managedIdentityName: managedIdentityName
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
     appInsightsConnectionString: appInsightsConnectionString
     keyVaultName: keyVaultName

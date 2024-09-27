@@ -34,6 +34,7 @@ This module deploys a container to run as a job.
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
 | `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
 | `Microsoft.Network/privateDnsZones` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones) |
 | `Microsoft.Network/privateDnsZones/A` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/A) |
@@ -476,6 +477,7 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created. |
+| [`managedIdentityName`](#parameter-managedidentityname) | string | The name of the managed identity to create. If not provided, a name will be generated automatically as `jobsUserIdentity-$\{name\}`. |
 | [`managedIdentityResourceId`](#parameter-managedidentityresourceid) | string | Use an existing managed identity to import the container image and run the job. If not provided, a new managed identity will be created. |
 | [`memory`](#parameter-memory) | string | The memory resources that will be allocated to the Container Apps Job. |
 | [`newContainerImageName`](#parameter-newcontainerimagename) | string | The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline. You should skip the registry name when specifying a custom value, as it is added automatically. If you leave this empty, the original name will be used (with the new registry name). |
@@ -776,6 +778,13 @@ The Log Analytics Resource ID for the Container Apps Environment to use for the 
 - Type: string
 - Example: `/subscriptions/<00000000-0000-0000-0000-000000000000>/resourceGroups/<rg-name>/providers/Microsoft.OperationalInsights/workspaces/<workspace-name>`
 
+### Parameter: `managedIdentityName`
+
+The name of the managed identity to create. If not provided, a name will be generated automatically as `jobsUserIdentity-$\{name\}`.
+
+- Required: No
+- Type: string
+
 ### Parameter: `managedIdentityResourceId`
 
 Use an existing managed identity to import the container image and run the job. If not provided, a new managed identity will be created.
@@ -1040,6 +1049,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/app/managed-environment:0.8.0` | Remote reference |
 | `br/public:avm/res/container-registry/registry:0.5.1` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.9.0` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.6.0` | Remote reference |
 | `br/public:avm/res/network/private-endpoint:0.8.0` | Remote reference |
