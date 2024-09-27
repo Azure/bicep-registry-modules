@@ -8,7 +8,6 @@ This module deploys a VPN Site.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -456,7 +455,6 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -608,6 +606,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -714,7 +719,6 @@ List of all VPN site links.
 - Type: array
 - Default: `[]`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -723,10 +727,6 @@ List of all VPN site links.
 | `name` | string | The name of the VPN site. |
 | `resourceGroupName` | string | The resource group the VPN site was deployed into. |
 | `resourceId` | string | The resource ID of the VPN site. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 

@@ -8,7 +8,6 @@ This module deploys a Network Manager.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -713,7 +712,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1077,6 +1075,16 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'IPAM Pool Contributor'`
+  - `'LocalNGFirewallAdministrator role'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Resource Policy Contributor'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1508,7 +1516,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1517,10 +1524,6 @@ Tags of the resource.
 | `name` | string | The name of the network manager. |
 | `resourceGroupName` | string | The resource group the network manager was deployed into. |
 | `resourceId` | string | The resource ID of the network manager. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 
