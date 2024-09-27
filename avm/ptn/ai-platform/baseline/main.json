@@ -5,34 +5,14 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "2263138345896714301"
+      "version": "0.30.23.60470",
+      "templateHash": "14190804454906731332"
     },
     "name": "AI Platform Baseline",
     "description": "This module provides a secure and scalable environment for deploying AI applications on Azure.\nThe module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.\nBy integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "managedIdentityConfigurationType": {
-      "type": "object",
-      "properties": {
-        "hubName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the workspace hub user-assigned managed identity."
-          }
-        },
-        "projectName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the workspace project user-assigned managed identity."
-          }
-        }
-      },
-      "nullable": true
-    },
     "logAnalyticsConfigurationType": {
       "type": "object",
       "properties": {
@@ -776,10 +756,11 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "managedIdentityConfiguration": {
-      "$ref": "#/definitions/managedIdentityConfigurationType",
+    "managedIdentityName": {
+      "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Configuration for the user-assigned managed identities."
+        "description": "Optional. The name of the user assigned identity for the AI Studio hub. If not provided, the hub will use a system assigned identity."
       }
     },
     "logAnalyticsConfiguration": {
@@ -842,7 +823,6 @@
     "createBastion": "[and(variables('createVirtualNetwork'), not(equals(tryGet(parameters('bastionConfiguration'), 'enabled'), false())))]",
     "createVirtualMachine": "[and(variables('createVirtualNetwork'), not(equals(tryGet(parameters('virtualMachineConfiguration'), 'enabled'), false())))]",
     "createDefaultNsg": "[equals(tryGet(parameters('virtualNetworkConfiguration'), 'subnet', 'networkSecurityGroupResourceId'), null())]",
-    "subnetResourceId": "[if(variables('createVirtualNetwork'), resourceId('Microsoft.Network/virtualNetworks/subnets', coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'name'), format('vnet-{0}', parameters('name'))), coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'subnet', 'name'), 'default')), null())]",
     "mlTargetSubResource": "amlworkspace",
     "mlPrivateDnsZones": {
       "privatelink.api.azureml.ms": "[variables('mlTargetSubResource')]",
@@ -854,36 +834,6 @@
     }
   },
   "resources": {
-    "virtualNetwork::defaultSubnet": {
-      "condition": "[variables('createVirtualNetwork')]",
-      "type": "Microsoft.Network/virtualNetworks/subnets",
-      "apiVersion": "2024-01-01",
-      "name": "[format('{0}/{1}', coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'name'), format('vnet-{0}', parameters('name'))), coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'subnet', 'name'), 'default'))]",
-      "properties": {
-        "addressPrefix": "[coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'subnet', 'addressPrefix'), '10.0.0.0/24')]",
-        "networkSecurityGroup": {
-          "id": "[if(variables('createDefaultNsg'), reference('defaultNetworkSecurityGroup').outputs.resourceId.value, tryGet(parameters('virtualNetworkConfiguration'), 'subnet', 'networkSecurityGroupResourceId'))]"
-        }
-      },
-      "dependsOn": [
-        "defaultNetworkSecurityGroup",
-        "virtualNetwork"
-      ]
-    },
-    "virtualNetwork::bastionSubnet": {
-      "condition": "[and(variables('createVirtualNetwork'), variables('createBastion'))]",
-      "type": "Microsoft.Network/virtualNetworks/subnets",
-      "apiVersion": "2024-01-01",
-      "name": "[format('{0}/{1}', coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'name'), format('vnet-{0}', parameters('name'))), 'AzureBastionSubnet')]",
-      "properties": {
-        "addressPrefix": "[coalesce(tryGet(parameters('bastionConfiguration'), 'subnetAddressPrefix'), '10.0.1.0/26')]",
-        "networkSecurityGroup": "[if(not(equals(tryGet(parameters('bastionConfiguration'), 'networkSecurityGroupResourceId'), null())), createObject('id', tryGet(parameters('bastionConfiguration'), 'networkSecurityGroupResourceId')), null())]"
-      },
-      "dependsOn": [
-        "virtualNetwork::defaultSubnet",
-        "virtualNetwork"
-      ]
-    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -904,34 +854,12 @@
         }
       }
     },
-    "virtualNetwork": {
-      "condition": "[variables('createVirtualNetwork')]",
-      "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2024-01-01",
-      "name": "[coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'name'), format('vnet-{0}', parameters('name')))]",
-      "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]",
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'addressPrefix'), '10.0.0.0/16')]"
-          ]
-        }
-      }
-    },
-    "managedIdentityHub": {
+    "userAssignedIdentity": {
+      "condition": "[not(equals(parameters('managedIdentityName'), null()))]",
+      "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2023-01-31",
-      "name": "[coalesce(tryGet(parameters('managedIdentityConfiguration'), 'hubName'), format('id-hub-{0}', parameters('name')))]",
-      "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]"
-    },
-    "managedIdentityProject": {
-      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2023-01-31",
-      "name": "[coalesce(tryGet(parameters('managedIdentityConfiguration'), 'projectName'), format('id-project-{0}', parameters('name')))]",
-      "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]"
+      "name": "[coalesce(parameters('managedIdentityName'), 'null')]"
     },
     "logAnalyticsWorkspace": {
       "type": "Microsoft.OperationalInsights/workspaces",
@@ -941,16 +869,17 @@
       "tags": "[parameters('tags')]"
     },
     "resourceGroup_roleAssignment": {
+      "condition": "[not(equals(parameters('managedIdentityName'), null()))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "name": "[guid(resourceGroup().id, parameters('name'))]",
       "properties": {
         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-        "principalId": "[reference('managedIdentityHub').principalId]",
+        "principalId": "[reference('userAssignedIdentity').principalId]",
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
-        "managedIdentityHub"
+        "userAssignedIdentity"
       ]
     },
     "storageAccount_privateDnsZones": {
@@ -974,7 +903,7 @@
           "virtualNetworkLinks": {
             "value": [
               {
-                "virtualNetworkResourceId": "[resourceId('Microsoft.Network/virtualNetworks', coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'name'), format('vnet-{0}', parameters('name'))))]"
+                "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]"
               }
             ]
           }
@@ -3856,19 +3785,11 @@
           "virtualNetworkLinks": {
             "value": [
               {
-                "virtualNetworkResourceId": "[resourceId('Microsoft.Network/virtualNetworks', coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'name'), format('vnet-{0}', parameters('name'))))]"
+                "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]"
               }
             ]
           },
-          "roleAssignments": {
-            "value": [
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              }
-            ]
-          }
+          "roleAssignments": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', createArray(createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Contributor', 'principalType', 'ServicePrincipal'))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -6723,7 +6644,7 @@
         }
       },
       "dependsOn": [
-        "managedIdentityHub",
+        "userAssignedIdentity",
         "virtualNetwork"
       ]
     },
@@ -7359,6 +7280,1546 @@
         }
       }
     },
+    "virtualNetwork": {
+      "condition": "[variables('createVirtualNetwork')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-virtual-network', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'name'), format('vnet-{0}', parameters('name')))]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
+          "addressPrefixes": {
+            "value": [
+              "[coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'addressPrefix'), '10.0.0.0/16')]"
+            ]
+          },
+          "subnets": {
+            "value": "[union(createArray(createObject('addressPrefix', coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'subnet', 'addressPrefix'), '10.0.0.0/24'), 'name', coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'subnet', 'name'), 'default'), 'networkSecurityGroupResourceId', if(variables('createDefaultNsg'), reference('defaultNetworkSecurityGroup').outputs.resourceId.value, tryGet(parameters('virtualNetworkConfiguration'), 'subnet', 'networkSecurityGroupResourceId')))), if(variables('createBastion'), createArray(createObject('addressPrefix', coalesce(tryGet(parameters('bastionConfiguration'), 'subnetAddressPrefix'), '10.0.1.0/26'), 'name', 'AzureBastionSubnet', 'networkSecurityGroupResourceId', tryGet(parameters('bastionConfiguration'), 'networkSecurityGroupResourceId'))), createArray()))]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "15949466154563447171"
+            },
+            "name": "Virtual Networks",
+            "description": "This module deploys a Virtual Network (vNet).",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "roleAssignmentType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                    }
+                  },
+                  "roleDefinitionIdOrName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                    }
+                  },
+                  "principalId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                    }
+                  },
+                  "principalType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Device",
+                      "ForeignGroup",
+                      "Group",
+                      "ServicePrincipal",
+                      "User"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The principal type of the assigned principal ID."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The description of the role assignment."
+                    }
+                  },
+                  "condition": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                    }
+                  },
+                  "conditionVersion": {
+                    "type": "string",
+                    "allowedValues": [
+                      "2.0"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Version of the condition."
+                    }
+                  },
+                  "delegatedManagedIdentityResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The Resource Id of the delegated managed identity resource."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "diagnosticSettingType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name of diagnostic setting."
+                    }
+                  },
+                  "logCategoriesAndGroups": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "category": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                          }
+                        },
+                        "categoryGroup": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                          }
+                        }
+                      }
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                    }
+                  },
+                  "metricCategories": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "category": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                          }
+                        }
+                      }
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+                    }
+                  },
+                  "logAnalyticsDestinationType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "AzureDiagnostics",
+                      "Dedicated"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                    }
+                  },
+                  "workspaceResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                    }
+                  },
+                  "storageAccountResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                    }
+                  },
+                  "eventHubAuthorizationRuleResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                    }
+                  },
+                  "eventHubName": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                    }
+                  },
+                  "marketplacePartnerResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "peeringType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Name of VNET Peering resource. If not provided, default value will be peer-localVnetName-remoteVnetName."
+                  }
+                },
+                "remoteVirtualNetworkResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The Resource ID of the VNet that is this Local VNet is being peered to. Should be in the format of a Resource ID."
+                  }
+                },
+                "allowForwardedTraffic": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Whether the forwarded traffic from the VMs in the local virtual network will be allowed/disallowed in remote virtual network. Default is true."
+                  }
+                },
+                "allowGatewayTransit": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. If gateway links can be used in remote virtual networking to link to this virtual network. Default is false."
+                  }
+                },
+                "allowVirtualNetworkAccess": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Whether the VMs in the local virtual network space would be able to access the VMs in remote virtual network space. Default is true."
+                  }
+                },
+                "doNotVerifyRemoteGateways": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Do not verify the provisioning state of the remote gateway. Default is true."
+                  }
+                },
+                "useRemoteGateways": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false."
+                  }
+                },
+                "remotePeeringEnabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Deploy the outbound and the inbound peering."
+                  }
+                },
+                "remotePeeringName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the VNET Peering resource in the remove Virtual Network. If not provided, default value will be peer-remoteVnetName-localVnetName."
+                  }
+                },
+                "remotePeeringAllowForwardedTraffic": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Whether the forwarded traffic from the VMs in the local virtual network will be allowed/disallowed in remote virtual network. Default is true."
+                  }
+                },
+                "remotePeeringAllowGatewayTransit": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. If gateway links can be used in remote virtual networking to link to this virtual network. Default is false."
+                  }
+                },
+                "remotePeeringAllowVirtualNetworkAccess": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Whether the VMs in the local virtual network space would be able to access the VMs in remote virtual network space. Default is true."
+                  }
+                },
+                "remotePeeringDoNotVerifyRemoteGateways": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Do not verify the provisioning state of the remote gateway. Default is true."
+                  }
+                },
+                "remotePeeringUseRemoteGateways": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false."
+                  }
+                }
+              }
+            },
+            "subnetType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The Name of the subnet resource."
+                  }
+                },
+                "addressPrefix": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty."
+                  }
+                },
+                "addressPrefixes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty."
+                  }
+                },
+                "applicationGatewayIPConfigurations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Application gateway IP configurations of virtual network resource."
+                  }
+                },
+                "delegation": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The delegation to enable on the subnet."
+                  }
+                },
+                "natGatewayResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID of the NAT Gateway to use for the subnet."
+                  }
+                },
+                "networkSecurityGroupResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID of the network security group to assign to the subnet."
+                  }
+                },
+                "privateEndpointNetworkPolicies": {
+                  "type": "string",
+                  "allowedValues": [
+                    "",
+                    "Disabled",
+                    "Enabled"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. enable or disable apply network policies on private endpoint in the subnet."
+                  }
+                },
+                "privateLinkServiceNetworkPolicies": {
+                  "type": "string",
+                  "allowedValues": [
+                    "",
+                    "Disabled",
+                    "Enabled"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. enable or disable apply network policies on private link service in the subnet."
+                  }
+                },
+                "roleAssignments": {
+                  "$ref": "#/definitions/roleAssignmentType",
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                },
+                "routeTableResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID of the route table to assign to the subnet."
+                  }
+                },
+                "serviceEndpointPolicies": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. An array of service endpoint policies."
+                  }
+                },
+                "serviceEndpoints": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The service endpoints to enable on the subnet."
+                  }
+                },
+                "defaultOutboundAccess": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet."
+                  }
+                },
+                "sharingScope": {
+                  "type": "string",
+                  "allowedValues": [
+                    "DelegatedServices",
+                    "Tenant"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
+                  }
+                }
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Virtual Network (vNet)."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "addressPrefixes": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. An Array of 1 or more IP Address Prefixes for the Virtual Network."
+              }
+            },
+            "virtualNetworkBgpCommunity": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The BGP community associated with the virtual network."
+              }
+            },
+            "subnets": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/subnetType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. An Array of subnets to deploy to the Virtual Network."
+              }
+            },
+            "dnsServers": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. DNS Servers associated to the Virtual Network."
+              }
+            },
+            "ddosProtectionPlanResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Resource ID of the DDoS protection plan to assign the VNET to. If it's left blank, DDoS protection will not be configured. If it's provided, the VNET created by this template will be attached to the referenced DDoS protection plan. The DDoS protection plan can exist in the same or in a different subscription."
+              }
+            },
+            "peerings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/peeringType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Virtual Network Peering configurations."
+              }
+            },
+            "vnetEncryption": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Indicates if encryption is enabled on virtual network and if VM without encryption is allowed in encrypted VNet. Requires the EnableVNetEncryption feature to be registered for the subscription and a supported region to use this property."
+              }
+            },
+            "vnetEncryptionEnforcement": {
+              "type": "string",
+              "defaultValue": "AllowUnencrypted",
+              "allowedValues": [
+                "AllowUnencrypted",
+                "DropUnencrypted"
+              ],
+              "metadata": {
+                "description": "Optional. If the encrypted VNet allows VM that does not support encryption. Can only be used when vnetEncryption is enabled."
+              }
+            },
+            "flowTimeoutInMinutes": {
+              "type": "int",
+              "defaultValue": 0,
+              "maxValue": 30,
+              "metadata": {
+                "description": "Optional. The flow timeout in minutes for the Virtual Network, which is used to enable connection tracking for intra-VM flows. Possible values are between 4 and 30 minutes. Default value 0 will set the property to null."
+              }
+            },
+            "diagnosticSettings": {
+              "$ref": "#/definitions/diagnosticSettingType",
+              "metadata": {
+                "description": "Optional. The diagnostic settings of the service."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "$ref": "#/definitions/roleAssignmentType",
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
+            "enableVmProtection": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Indicates if VM protection is enabled for all the subnets in the virtual network."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "virtualNetwork": {
+              "type": "Microsoft.Network/virtualNetworks",
+              "apiVersion": "2024-01-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "addressSpace": {
+                  "addressPrefixes": "[parameters('addressPrefixes')]"
+                },
+                "bgpCommunities": "[if(not(empty(parameters('virtualNetworkBgpCommunity'))), createObject('virtualNetworkCommunity', parameters('virtualNetworkBgpCommunity')), null())]",
+                "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanResourceId'))), createObject('id', parameters('ddosProtectionPlanResourceId')), null())]",
+                "dhcpOptions": "[if(not(empty(parameters('dnsServers'))), createObject('dnsServers', array(parameters('dnsServers'))), null())]",
+                "enableDdosProtection": "[not(empty(parameters('ddosProtectionPlanResourceId')))]",
+                "encryption": "[if(equals(parameters('vnetEncryption'), true()), createObject('enabled', parameters('vnetEncryption'), 'enforcement', parameters('vnetEncryptionEnforcement')), null())]",
+                "flowTimeoutInMinutes": "[if(not(equals(parameters('flowTimeoutInMinutes'), 0)), parameters('flowTimeoutInMinutes'), null())]",
+                "enableVmProtection": "[parameters('enableVmProtection')]"
+              }
+            },
+            "virtualNetwork_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.Network/virtualNetworks/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "virtualNetwork"
+              ]
+            },
+            "virtualNetwork_diagnosticSettings": {
+              "copy": {
+                "name": "virtualNetwork_diagnosticSettings",
+                "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+              },
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Network/virtualNetworks/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "metrics",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                    "input": {
+                      "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                      "timeGrain": null
+                    }
+                  },
+                  {
+                    "name": "logs",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                    "input": {
+                      "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                      "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                    }
+                  }
+                ],
+                "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+                "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+                "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+                "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+                "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+                "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+              },
+              "dependsOn": [
+                "virtualNetwork"
+              ]
+            },
+            "virtualNetwork_roleAssignments": {
+              "copy": {
+                "name": "virtualNetwork_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Network/virtualNetworks/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/virtualNetworks', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "virtualNetwork"
+              ]
+            },
+            "virtualNetwork_subnets": {
+              "copy": {
+                "name": "virtualNetwork_subnets",
+                "count": "[length(coalesce(parameters('subnets'), createArray()))]",
+                "mode": "serial",
+                "batchSize": 1
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-subnet-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "virtualNetworkName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "name": {
+                    "value": "[coalesce(parameters('subnets'), createArray())[copyIndex()].name]"
+                  },
+                  "addressPrefix": {
+                    "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'addressPrefix')]"
+                  },
+                  "addressPrefixes": {
+                    "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'addressPrefixes')]"
+                  },
+                  "applicationGatewayIPConfigurations": {
+                    "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'applicationGatewayIPConfigurations')]"
+                  },
+                  "delegation": {
+                    "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'delegation')]"
+                  },
+                  "natGatewayResourceId": {
+                    "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'natGatewayResourceId')]"
+                  },
+                  "networkSecurityGroupResourceId": {
+                    "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'networkSecurityGroupResourceId')]"
+                  },
+                  "privateEndpointNetworkPolicies": {
+                    "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'privateEndpointNetworkPolicies')]"
+                  },
+                  "privateLinkServiceNetworkPolicies": {
+                    "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'privateLinkServiceNetworkPolicies')]"
+                  },
+                  "roleAssignments": {
+                    "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "routeTableResourceId": {
+                    "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'routeTableResourceId')]"
+                  },
+                  "serviceEndpointPolicies": {
+                    "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'serviceEndpointPolicies')]"
+                  },
+                  "serviceEndpoints": {
+                    "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'serviceEndpoints')]"
+                  },
+                  "defaultOutboundAccess": {
+                    "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'defaultOutboundAccess')]"
+                  },
+                  "sharingScope": {
+                    "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'sharingScope')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.29.47.4906",
+                      "templateHash": "5699372618313647761"
+                    },
+                    "name": "Virtual Network Subnets",
+                    "description": "This module deploys a Virtual Network Subnet.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "definitions": {
+                    "roleAssignmentType": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                            }
+                          },
+                          "roleDefinitionIdOrName": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                            }
+                          },
+                          "principalId": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                            }
+                          },
+                          "principalType": {
+                            "type": "string",
+                            "allowedValues": [
+                              "Device",
+                              "ForeignGroup",
+                              "Group",
+                              "ServicePrincipal",
+                              "User"
+                            ],
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The principal type of the assigned principal ID."
+                            }
+                          },
+                          "description": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The description of the role assignment."
+                            }
+                          },
+                          "condition": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                            }
+                          },
+                          "conditionVersion": {
+                            "type": "string",
+                            "allowedValues": [
+                              "2.0"
+                            ],
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Version of the condition."
+                            }
+                          },
+                          "delegatedManagedIdentityResourceId": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The Resource Id of the delegated managed identity resource."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Requird. The Name of the subnet resource."
+                      }
+                    },
+                    "virtualNetworkName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent virtual network. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "addressPrefix": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty."
+                      }
+                    },
+                    "networkSecurityGroupResourceId": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The resource ID of the network security group to assign to the subnet."
+                      }
+                    },
+                    "routeTableResourceId": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The resource ID of the route table to assign to the subnet."
+                      }
+                    },
+                    "serviceEndpoints": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. The service endpoints to enable on the subnet."
+                      }
+                    },
+                    "delegation": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The delegation to enable on the subnet."
+                      }
+                    },
+                    "natGatewayResourceId": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The resource ID of the NAT Gateway to use for the subnet."
+                      }
+                    },
+                    "privateEndpointNetworkPolicies": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "allowedValues": [
+                        "Disabled",
+                        "Enabled",
+                        ""
+                      ],
+                      "metadata": {
+                        "description": "Optional. Enable or disable apply network policies on private endpoint in the subnet."
+                      }
+                    },
+                    "privateLinkServiceNetworkPolicies": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "allowedValues": [
+                        "Disabled",
+                        "Enabled",
+                        ""
+                      ],
+                      "metadata": {
+                        "description": "Optional. Enable or disable apply network policies on private link service in the subnet."
+                      }
+                    },
+                    "addressPrefixes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty."
+                      }
+                    },
+                    "defaultOutboundAccess": {
+                      "type": "bool",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet."
+                      }
+                    },
+                    "sharingScope": {
+                      "type": "string",
+                      "allowedValues": [
+                        "DelegatedServices",
+                        "Tenant"
+                      ],
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
+                      }
+                    },
+                    "applicationGatewayIPConfigurations": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. Application gateway IP configurations of virtual network resource."
+                      }
+                    },
+                    "serviceEndpointPolicies": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. An array of service endpoint policies."
+                      }
+                    },
+                    "roleAssignments": {
+                      "$ref": "#/definitions/roleAssignmentType",
+                      "metadata": {
+                        "description": "Optional. Array of role assignments to create."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "copy": [
+                      {
+                        "name": "formattedRoleAssignments",
+                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                      }
+                    ],
+                    "builtInRoleNames": {
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                    }
+                  },
+                  "resources": {
+                    "virtualNetwork": {
+                      "existing": true,
+                      "type": "Microsoft.Network/virtualNetworks",
+                      "apiVersion": "2024-01-01",
+                      "name": "[parameters('virtualNetworkName')]"
+                    },
+                    "subnet": {
+                      "type": "Microsoft.Network/virtualNetworks/subnets",
+                      "apiVersion": "2024-01-01",
+                      "name": "[format('{0}/{1}', parameters('virtualNetworkName'), parameters('name'))]",
+                      "properties": {
+                        "copy": [
+                          {
+                            "name": "serviceEndpoints",
+                            "count": "[length(parameters('serviceEndpoints'))]",
+                            "input": {
+                              "service": "[parameters('serviceEndpoints')[copyIndex('serviceEndpoints')]]"
+                            }
+                          }
+                        ],
+                        "addressPrefix": "[parameters('addressPrefix')]",
+                        "addressPrefixes": "[parameters('addressPrefixes')]",
+                        "networkSecurityGroup": "[if(not(empty(parameters('networkSecurityGroupResourceId'))), createObject('id', parameters('networkSecurityGroupResourceId')), null())]",
+                        "routeTable": "[if(not(empty(parameters('routeTableResourceId'))), createObject('id', parameters('routeTableResourceId')), null())]",
+                        "natGateway": "[if(not(empty(parameters('natGatewayResourceId'))), createObject('id', parameters('natGatewayResourceId')), null())]",
+                        "delegations": "[if(not(empty(parameters('delegation'))), createArray(createObject('name', parameters('delegation'), 'properties', createObject('serviceName', parameters('delegation')))), createArray())]",
+                        "privateEndpointNetworkPolicies": "[if(not(empty(parameters('privateEndpointNetworkPolicies'))), parameters('privateEndpointNetworkPolicies'), null())]",
+                        "privateLinkServiceNetworkPolicies": "[if(not(empty(parameters('privateLinkServiceNetworkPolicies'))), parameters('privateLinkServiceNetworkPolicies'), null())]",
+                        "applicationGatewayIPConfigurations": "[parameters('applicationGatewayIPConfigurations')]",
+                        "serviceEndpointPolicies": "[parameters('serviceEndpointPolicies')]",
+                        "defaultOutboundAccess": "[parameters('defaultOutboundAccess')]",
+                        "sharingScope": "[parameters('sharingScope')]"
+                      },
+                      "dependsOn": [
+                        "virtualNetwork"
+                      ]
+                    },
+                    "subnet_roleAssignments": {
+                      "copy": {
+                        "name": "subnet_roleAssignments",
+                        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[format('Microsoft.Network/virtualNetworks/{0}/subnets/{1}', parameters('virtualNetworkName'), parameters('name'))]",
+                      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+                      "properties": {
+                        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                      },
+                      "dependsOn": [
+                        "subnet"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the virtual network peering was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the virtual network peering."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the virtual network peering."
+                      },
+                      "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name'))]"
+                    },
+                    "addressPrefix": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The address prefix for the subnet."
+                      },
+                      "value": "[coalesce(tryGet(reference('subnet'), 'addressPrefix'), '')]"
+                    },
+                    "addressPrefixes": {
+                      "type": "array",
+                      "metadata": {
+                        "description": "List of address prefixes for the subnet."
+                      },
+                      "value": "[coalesce(tryGet(reference('subnet'), 'addressPrefixes'), createArray())]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "virtualNetwork"
+              ]
+            },
+            "virtualNetwork_peering_local": {
+              "copy": {
+                "name": "virtualNetwork_peering_local",
+                "count": "[length(coalesce(parameters('peerings'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "localVnetName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "remoteVirtualNetworkResourceId": {
+                    "value": "[coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId]"
+                  },
+                  "name": {
+                    "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'name')]"
+                  },
+                  "allowForwardedTraffic": {
+                    "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'allowForwardedTraffic')]"
+                  },
+                  "allowGatewayTransit": {
+                    "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'allowGatewayTransit')]"
+                  },
+                  "allowVirtualNetworkAccess": {
+                    "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'allowVirtualNetworkAccess')]"
+                  },
+                  "doNotVerifyRemoteGateways": {
+                    "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'doNotVerifyRemoteGateways')]"
+                  },
+                  "useRemoteGateways": {
+                    "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'useRemoteGateways')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.29.47.4906",
+                      "templateHash": "5206620163504251868"
+                    },
+                    "name": "Virtual Network Peerings",
+                    "description": "This module deploys a Virtual Network Peering.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "[format('peer-{0}-{1}', parameters('localVnetName'), last(split(parameters('remoteVirtualNetworkResourceId'), '/')))]",
+                      "metadata": {
+                        "description": "Optional. The Name of VNET Peering resource. If not provided, default value will be localVnetName-remoteVnetName."
+                      }
+                    },
+                    "localVnetName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Virtual Network to add the peering to. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "remoteVirtualNetworkResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Resource ID of the VNet that is this Local VNet is being peered to. Should be in the format of a Resource ID."
+                      }
+                    },
+                    "allowForwardedTraffic": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Whether the forwarded traffic from the VMs in the local virtual network will be allowed/disallowed in remote virtual network. Default is true."
+                      }
+                    },
+                    "allowGatewayTransit": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. If gateway links can be used in remote virtual networking to link to this virtual network. Default is false."
+                      }
+                    },
+                    "allowVirtualNetworkAccess": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Whether the VMs in the local virtual network space would be able to access the VMs in remote virtual network space. Default is true."
+                      }
+                    },
+                    "doNotVerifyRemoteGateways": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. If we need to verify the provisioning state of the remote gateway. Default is true."
+                      }
+                    },
+                    "useRemoteGateways": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+                      "apiVersion": "2024-01-01",
+                      "name": "[format('{0}/{1}', parameters('localVnetName'), parameters('name'))]",
+                      "properties": {
+                        "allowForwardedTraffic": "[parameters('allowForwardedTraffic')]",
+                        "allowGatewayTransit": "[parameters('allowGatewayTransit')]",
+                        "allowVirtualNetworkAccess": "[parameters('allowVirtualNetworkAccess')]",
+                        "doNotVerifyRemoteGateways": "[parameters('doNotVerifyRemoteGateways')]",
+                        "useRemoteGateways": "[parameters('useRemoteGateways')]",
+                        "remoteVirtualNetwork": {
+                          "id": "[parameters('remoteVirtualNetworkResourceId')]"
+                        }
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the virtual network peering was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the virtual network peering."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the virtual network peering."
+                      },
+                      "value": "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('localVnetName'), parameters('name'))]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "virtualNetwork"
+              ]
+            },
+            "virtualNetwork_peering_remote": {
+              "copy": {
+                "name": "virtualNetwork_peering_remote",
+                "count": "[length(coalesce(parameters('peerings'), createArray()))]"
+              },
+              "condition": "[coalesce(tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringEnabled'), false())]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "subscriptionId": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[2]]",
+              "resourceGroup": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[4]]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "localVnetName": {
+                    "value": "[last(split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/'))]"
+                  },
+                  "remoteVirtualNetworkResourceId": {
+                    "value": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]"
+                  },
+                  "name": {
+                    "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringName')]"
+                  },
+                  "allowForwardedTraffic": {
+                    "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringAllowForwardedTraffic')]"
+                  },
+                  "allowGatewayTransit": {
+                    "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringAllowGatewayTransit')]"
+                  },
+                  "allowVirtualNetworkAccess": {
+                    "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringAllowVirtualNetworkAccess')]"
+                  },
+                  "doNotVerifyRemoteGateways": {
+                    "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringDoNotVerifyRemoteGateways')]"
+                  },
+                  "useRemoteGateways": {
+                    "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringUseRemoteGateways')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.29.47.4906",
+                      "templateHash": "5206620163504251868"
+                    },
+                    "name": "Virtual Network Peerings",
+                    "description": "This module deploys a Virtual Network Peering.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "[format('peer-{0}-{1}', parameters('localVnetName'), last(split(parameters('remoteVirtualNetworkResourceId'), '/')))]",
+                      "metadata": {
+                        "description": "Optional. The Name of VNET Peering resource. If not provided, default value will be localVnetName-remoteVnetName."
+                      }
+                    },
+                    "localVnetName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Virtual Network to add the peering to. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "remoteVirtualNetworkResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Resource ID of the VNet that is this Local VNet is being peered to. Should be in the format of a Resource ID."
+                      }
+                    },
+                    "allowForwardedTraffic": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Whether the forwarded traffic from the VMs in the local virtual network will be allowed/disallowed in remote virtual network. Default is true."
+                      }
+                    },
+                    "allowGatewayTransit": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. If gateway links can be used in remote virtual networking to link to this virtual network. Default is false."
+                      }
+                    },
+                    "allowVirtualNetworkAccess": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Whether the VMs in the local virtual network space would be able to access the VMs in remote virtual network space. Default is true."
+                      }
+                    },
+                    "doNotVerifyRemoteGateways": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. If we need to verify the provisioning state of the remote gateway. Default is true."
+                      }
+                    },
+                    "useRemoteGateways": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+                      "apiVersion": "2024-01-01",
+                      "name": "[format('{0}/{1}', parameters('localVnetName'), parameters('name'))]",
+                      "properties": {
+                        "allowForwardedTraffic": "[parameters('allowForwardedTraffic')]",
+                        "allowGatewayTransit": "[parameters('allowGatewayTransit')]",
+                        "allowVirtualNetworkAccess": "[parameters('allowVirtualNetworkAccess')]",
+                        "doNotVerifyRemoteGateways": "[parameters('doNotVerifyRemoteGateways')]",
+                        "useRemoteGateways": "[parameters('useRemoteGateways')]",
+                        "remoteVirtualNetwork": {
+                          "id": "[parameters('remoteVirtualNetworkResourceId')]"
+                        }
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the virtual network peering was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the virtual network peering."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the virtual network peering."
+                      },
+                      "value": "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('localVnetName'), parameters('name'))]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "virtualNetwork"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the virtual network was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the virtual network."
+              },
+              "value": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the virtual network."
+              },
+              "value": "[parameters('name')]"
+            },
+            "subnetNames": {
+              "type": "array",
+              "metadata": {
+                "description": "The names of the deployed subnets."
+              },
+              "copy": {
+                "count": "[length(coalesce(parameters('subnets'), createArray()))]",
+                "input": "[reference(format('virtualNetwork_subnets[{0}]', copyIndex())).outputs.name.value]"
+              }
+            },
+            "subnetResourceIds": {
+              "type": "array",
+              "metadata": {
+                "description": "The resource IDs of the deployed subnets."
+              },
+              "copy": {
+                "count": "[length(coalesce(parameters('subnets'), createArray()))]",
+                "input": "[reference(format('virtualNetwork_subnets[{0}]', copyIndex())).outputs.resourceId.value]"
+              }
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('virtualNetwork', '2024-01-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "defaultNetworkSecurityGroup"
+      ]
+    },
     "bastion": {
       "condition": "[variables('createBastion')]",
       "type": "Microsoft.Resources/deployments",
@@ -7383,7 +8844,7 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "virtualNetworkResourceId": {
-            "value": "[resourceId('Microsoft.Network/virtualNetworks', coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'name'), format('vnet-{0}', parameters('name'))))]"
+            "value": "[reference('virtualNetwork').outputs.resourceId.value]"
           },
           "disableCopyPaste": {
             "value": "[tryGet(parameters('bastionConfiguration'), 'disableCopyPaste')]"
@@ -8582,7 +10043,7 @@
                   {
                     "name": "[coalesce(tryGet(parameters('virtualMachineConfiguration'), 'nicConfigurationConfiguration', 'ipConfigName'), format('nic-vm-{0}-ipconfig', parameters('name')))]",
                     "privateIPAllocationMethod": "[coalesce(tryGet(parameters('virtualMachineConfiguration'), 'nicConfigurationConfiguration', 'privateIPAllocationMethod'), 'Dynamic')]",
-                    "subnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'name'), format('vnet-{0}', parameters('name'))), coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'subnet', 'name'), 'default'))]"
+                    "subnetResourceId": "[reference('virtualNetwork').outputs.subnetResourceIds.value[0]]"
                   }
                 ]
               }
@@ -14001,7 +15462,7 @@
         }
       },
       "dependsOn": [
-        "virtualNetwork::defaultSubnet"
+        "virtualNetwork"
       ]
     },
     "keyVault": {
@@ -14047,30 +15508,7 @@
           "enablePurgeProtection": {
             "value": "[coalesce(tryGet(parameters('keyVaultConfiguration'), 'enablePurgeProtection'), true())]"
           },
-          "roleAssignments": {
-            "value": [
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Key Vault Administrator",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Key Vault Administrator",
-                "principalType": "ServicePrincipal"
-              }
-            ]
-          },
+          "roleAssignments": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', createArray(createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Contributor', 'principalType', 'ServicePrincipal'), createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Key Vault Administrator', 'principalType', 'ServicePrincipal'))), createObject('value', null()))]",
           "diagnosticSettings": {
             "value": [
               {
@@ -16818,8 +18256,7 @@
       },
       "dependsOn": [
         "logAnalyticsWorkspace",
-        "managedIdentityHub",
-        "managedIdentityProject"
+        "userAssignedIdentity"
       ]
     },
     "storageAccount": {
@@ -16862,51 +18299,8 @@
               "bypass": "AzureServices"
             }
           },
-          "privateEndpoints": "[if(not(equals(variables('subnetResourceId'), null())), createObject('value', map(items(variables('storagePrivateDnsZones')), lambda('zone', createObject('name', format('pep-{0}-{1}', lambdaVariables('zone').value, parameters('name')), 'customNetworkInterfaceName', format('nic-{0}-{1}', lambdaVariables('zone').value, parameters('name')), 'service', lambdaVariables('zone').value, 'subnetResourceId', coalesce(variables('subnetResourceId'), ''), 'privateDnsZoneResourceIds', createArray(resourceId('Microsoft.Network/privateDnsZones', lambdaVariables('zone').key)))))), createObject('value', null()))]",
-          "roleAssignments": {
-            "value": [
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Reader",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Storage Account Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Storage Table Data Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Storage Blob Data Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Storage Blob Data Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "69566ab7-960f-475b-8e7c-b3118f30c6bd",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "69566ab7-960f-475b-8e7c-b3118f30c6bd",
-                "principalType": "ServicePrincipal"
-              }
-            ]
-          },
+          "privateEndpoints": "[if(not(equals(if(variables('createVirtualNetwork'), reference('virtualNetwork').outputs.subnetResourceIds.value[0], null()), null())), createObject('value', map(items(variables('storagePrivateDnsZones')), lambda('zone', createObject('name', format('pep-{0}-{1}', lambdaVariables('zone').value, parameters('name')), 'customNetworkInterfaceName', format('nic-{0}-{1}', lambdaVariables('zone').value, parameters('name')), 'service', lambdaVariables('zone').value, 'subnetResourceId', coalesce(if(variables('createVirtualNetwork'), reference('virtualNetwork').outputs.subnetResourceIds.value[0], null()), ''), 'privateDnsZoneResourceIds', createArray(resourceId('Microsoft.Network/privateDnsZones', lambdaVariables('zone').key)))))), createObject('value', null()))]",
+          "roleAssignments": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', createArray(createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Contributor', 'principalType', 'ServicePrincipal'), createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Storage Blob Data Contributor', 'principalType', 'ServicePrincipal'), createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', '69566ab7-960f-475b-8e7c-b3118f30c6bd', 'principalType', 'ServicePrincipal'))), createObject('value', null()))]",
           "tags": {
             "value": "[parameters('tags')]"
           }
@@ -21569,10 +22963,9 @@
         }
       },
       "dependsOn": [
-        "virtualNetwork::defaultSubnet",
-        "managedIdentityHub",
-        "managedIdentityProject",
-        "storageAccount_privateDnsZones"
+        "storageAccount_privateDnsZones",
+        "userAssignedIdentity",
+        "virtualNetwork"
       ]
     },
     "containerRegistry": {
@@ -21609,30 +23002,7 @@
           "trustPolicyStatus": {
             "value": "[coalesce(tryGet(parameters('containerRegistryConfiguration'), 'trustPolicyStatus'), 'enabled')]"
           },
-          "roleAssignments": {
-            "value": [
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "AcrPull",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "AcrPull",
-                "principalType": "ServicePrincipal"
-              }
-            ]
-          },
+          "roleAssignments": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', createArray(createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Contributor', 'principalType', 'ServicePrincipal'), createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'AcrPull', 'principalType', 'ServicePrincipal'))), createObject('value', null()))]",
           "tags": {
             "value": "[parameters('tags')]"
           }
@@ -23754,8 +25124,7 @@
         }
       },
       "dependsOn": [
-        "managedIdentityHub",
-        "managedIdentityProject"
+        "userAssignedIdentity"
       ]
     },
     "applicationInsights": {
@@ -23783,20 +25152,7 @@
           "workspaceResourceId": {
             "value": "[resourceId('Microsoft.OperationalInsights/workspaces', coalesce(tryGet(parameters('logAnalyticsConfiguration'), 'name'), format('log-{0}', parameters('name'))))]"
           },
-          "roleAssignments": {
-            "value": [
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              }
-            ]
-          },
+          "roleAssignments": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', createArray(createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Contributor', 'principalType', 'ServicePrincipal'))), createObject('value', null()))]",
           "tags": {
             "value": "[parameters('tags')]"
           }
@@ -24397,8 +25753,7 @@
       },
       "dependsOn": [
         "logAnalyticsWorkspace",
-        "managedIdentityHub",
-        "managedIdentityProject"
+        "userAssignedIdentity"
       ]
     },
     "workspaceHub": {
@@ -24443,16 +25798,8 @@
               "defaultWorkspaceResourceGroup": "[resourceGroup().id]"
             }
           },
-          "managedIdentities": {
-            "value": {
-              "userAssignedResourceIds": [
-                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentityConfiguration'), 'hubName'), format('id-hub-{0}', parameters('name'))))]"
-              ]
-            }
-          },
-          "primaryUserAssignedIdentity": {
-            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentityConfiguration'), 'hubName'), format('id-hub-{0}', parameters('name'))))]"
-          },
+          "managedIdentities": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', createObject('userAssignedResourceIds', createArray(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), 'null'))))), createObject('value', null()))]",
+          "primaryUserAssignedIdentity": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), 'null'))), createObject('value', null()))]",
           "computes": {
             "value": "[tryGet(parameters('workspaceConfiguration'), 'computes')]"
           },
@@ -24462,19 +25809,11 @@
               "outboundRules": "[tryGet(parameters('workspaceConfiguration'), 'networkOutboundRules')]"
             }
           },
-          "privateEndpoints": "[if(not(equals(variables('subnetResourceId'), null())), createObject('value', createArray(createObject('name', format('pep-{0}-{1}', variables('mlTargetSubResource'), parameters('name')), 'customNetworkInterfaceName', format('nic-{0}-{1}', variables('mlTargetSubResource'), parameters('name')), 'service', variables('mlTargetSubResource'), 'subnetResourceId', coalesce(variables('subnetResourceId'), ''), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', map(objectKeys(variables('mlPrivateDnsZones')), lambda('zone', createObject('name', replace(lambdaVariables('zone'), '.', '-'), 'privateDnsZoneResourceId', resourceId('Microsoft.Network/privateDnsZones', lambdaVariables('zone'))))))))), createObject('value', null()))]",
+          "privateEndpoints": "[if(not(equals(if(variables('createVirtualNetwork'), reference('virtualNetwork').outputs.subnetResourceIds.value[0], null()), null())), createObject('value', createArray(createObject('name', format('pep-{0}-{1}', variables('mlTargetSubResource'), parameters('name')), 'customNetworkInterfaceName', format('nic-{0}-{1}', variables('mlTargetSubResource'), parameters('name')), 'service', variables('mlTargetSubResource'), 'subnetResourceId', coalesce(if(variables('createVirtualNetwork'), reference('virtualNetwork').outputs.subnetResourceIds.value[0], null()), ''), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', map(objectKeys(variables('mlPrivateDnsZones')), lambda('zone', createObject('name', replace(lambdaVariables('zone'), '.', '-'), 'privateDnsZoneResourceId', resourceId('Microsoft.Network/privateDnsZones', lambdaVariables('zone'))))))))), createObject('value', null()))]",
           "systemDatastoresAuthMode": {
             "value": "identity"
           },
-          "roleAssignments": {
-            "value": [
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              }
-            ]
-          },
+          "roleAssignments": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', createArray(createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Contributor', 'principalType', 'ServicePrincipal'))), createObject('value', null()))]",
           "tags": {
             "value": "[parameters('tags')]"
           }
@@ -26718,10 +28057,10 @@
       "dependsOn": [
         "applicationInsights",
         "containerRegistry",
-        "virtualNetwork::defaultSubnet",
         "keyVault",
-        "managedIdentityHub",
         "storageAccount",
+        "userAssignedIdentity",
+        "virtualNetwork",
         "workspaceHub_privateDnsZones"
       ]
     },
@@ -26753,30 +28092,7 @@
           "hubResourceId": {
             "value": "[reference('workspaceHub').outputs.resourceId.value]"
           },
-          "managedIdentities": {
-            "value": {
-              "userAssignedResourceIds": [
-                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentityConfiguration'), 'projectName'), format('id-project-{0}', parameters('name'))))]"
-              ]
-            }
-          },
-          "primaryUserAssignedIdentity": {
-            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentityConfiguration'), 'projectName'), format('id-project-{0}', parameters('name'))))]"
-          },
-          "roleAssignments": {
-            "value": [
-              {
-                "principalId": "[reference('managedIdentityHub').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('managedIdentityProject').principalId]",
-                "roleDefinitionIdOrName": "Contributor",
-                "principalType": "ServicePrincipal"
-              }
-            ]
-          },
+          "roleAssignments": "[if(not(equals(parameters('managedIdentityName'), null())), createObject('value', createArray(createObject('principalId', reference('userAssignedIdentity').principalId, 'roleDefinitionIdOrName', 'Contributor', 'principalType', 'ServicePrincipal'))), createObject('value', null()))]",
           "tags": {
             "value": "[parameters('tags')]"
           }
@@ -29018,8 +30334,7 @@
         }
       },
       "dependsOn": [
-        "managedIdentityHub",
-        "managedIdentityProject",
+        "userAssignedIdentity",
         "workspaceHub"
       ]
     }
@@ -29088,62 +30403,6 @@
       },
       "value": "[coalesce(tryGet(parameters('logAnalyticsConfiguration'), 'name'), format('log-{0}', parameters('name')))]"
     },
-    "managedIdentityHubResourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "The resource ID of the workspace hub user assigned managed identity."
-      },
-      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentityConfiguration'), 'hubName'), format('id-hub-{0}', parameters('name'))))]"
-    },
-    "managedIdentityHubName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the workspace hub user assigned managed identity."
-      },
-      "value": "[coalesce(tryGet(parameters('managedIdentityConfiguration'), 'hubName'), format('id-hub-{0}', parameters('name')))]"
-    },
-    "managedIdentityHubPrincipalId": {
-      "type": "string",
-      "metadata": {
-        "description": "The principal ID of the workspace hub user assigned managed identity."
-      },
-      "value": "[reference('managedIdentityHub').principalId]"
-    },
-    "managedIdentityHubClientId": {
-      "type": "string",
-      "metadata": {
-        "description": "The client ID of the workspace hub user assigned managed identity."
-      },
-      "value": "[reference('managedIdentityHub').clientId]"
-    },
-    "managedIdentityProjectResourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "The resource ID of the workspace project user assigned managed identity."
-      },
-      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(tryGet(parameters('managedIdentityConfiguration'), 'projectName'), format('id-project-{0}', parameters('name'))))]"
-    },
-    "managedIdentityProjectName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the workspace project user assigned managed identity."
-      },
-      "value": "[coalesce(tryGet(parameters('managedIdentityConfiguration'), 'projectName'), format('id-project-{0}', parameters('name')))]"
-    },
-    "managedIdentityProjectPrincipalId": {
-      "type": "string",
-      "metadata": {
-        "description": "The principal ID of the workspace project user assigned managed identity."
-      },
-      "value": "[reference('managedIdentityProject').principalId]"
-    },
-    "managedIdentityProjectClientId": {
-      "type": "string",
-      "metadata": {
-        "description": "The client ID of the workspace project user assigned managed identity."
-      },
-      "value": "[reference('managedIdentityProject').clientId]"
-    },
     "keyVaultResourceId": {
       "type": "string",
       "metadata": {
@@ -29207,6 +30466,20 @@
       },
       "value": "[reference('workspaceHub').outputs.name.value]"
     },
+    "workspaceHubManagedIdentityPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the workspace hub system assigned identity, if applicable."
+      },
+      "value": "[reference('workspaceHub').outputs.systemAssignedMIPrincipalId.value]"
+    },
+    "workspaceProjectManagedIdentityPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the workspace project system assigned identity."
+      },
+      "value": "[reference('workspaceProject').outputs.systemAssignedMIPrincipalId.value]"
+    },
     "workspaceProjectResourceId": {
       "type": "string",
       "metadata": {
@@ -29226,28 +30499,28 @@
       "metadata": {
         "description": "The resource ID of the virtual network."
       },
-      "value": "[if(variables('createVirtualNetwork'), resourceId('Microsoft.Network/virtualNetworks', coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'name'), format('vnet-{0}', parameters('name')))), '')]"
+      "value": "[if(variables('createVirtualNetwork'), reference('virtualNetwork').outputs.resourceId.value, '')]"
     },
     "virtualNetworkName": {
       "type": "string",
       "metadata": {
         "description": "The name of the virtual network."
       },
-      "value": "[if(variables('createVirtualNetwork'), coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'name'), format('vnet-{0}', parameters('name'))), '')]"
+      "value": "[if(variables('createVirtualNetwork'), reference('virtualNetwork').outputs.name.value, '')]"
     },
     "virtualNetworkSubnetResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the subnet in the virtual network."
       },
-      "value": "[if(variables('createVirtualNetwork'), resourceId('Microsoft.Network/virtualNetworks/subnets', coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'name'), format('vnet-{0}', parameters('name'))), coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'subnet', 'name'), 'default')), '')]"
+      "value": "[if(variables('createVirtualNetwork'), reference('virtualNetwork').outputs.subnetResourceIds.value[0], '')]"
     },
     "virtualNetworkSubnetName": {
       "type": "string",
       "metadata": {
         "description": "The name of the subnet in the virtual network."
       },
-      "value": "[if(variables('createVirtualNetwork'), coalesce(tryGet(parameters('virtualNetworkConfiguration'), 'subnet', 'name'), 'default'), '')]"
+      "value": "[if(variables('createVirtualNetwork'), reference('virtualNetwork').outputs.subnetNames.value[0], '')]"
     },
     "bastionResourceId": {
       "type": "string",

@@ -1699,7 +1699,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -2082,6 +2081,18 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Log Analytics Contributor'`
+  - `'Log Analytics Reader'`
+  - `'Monitoring Contributor'`
+  - `'Monitoring Reader'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'Security Admin'`
+  - `'Security Reader'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2240,7 +2251,6 @@ Set to 'true' to use resource or workspace permissions and 'false' (or leave emp
 - Required: No
 - Type: bool
 - Default: `False`
-
 
 ## Outputs
 

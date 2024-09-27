@@ -8,7 +8,6 @@ This module deploys an Express Route Gateway.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -283,7 +282,6 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -411,6 +409,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -509,7 +514,6 @@ Tags of the Firewall policy resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -518,10 +522,6 @@ Tags of the Firewall policy resource.
 | `name` | string | The name of the ExpressRoute Gateway. |
 | `resourceGroupName` | string | The resource group of the ExpressRoute Gateway was deployed into. |
 | `resourceId` | string | The resource ID of the ExpressRoute Gateway. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -15,7 +15,7 @@ on:
         type: string
         description: "RegEx which workflows are included"
         required: false
-        default: "avm\\.(?:res|ptn)"
+        default: "avm\\.(?:res|ptn|utl)"
       excludePattern:
         type: string
         description: "RegEx which workflows are excluded"

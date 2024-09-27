@@ -8,7 +8,6 @@ This module deploys an App Managed Environment (also known as a Container App En
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -508,7 +507,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -780,6 +778,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -944,7 +948,6 @@ Whether or not this Managed Environment is zone-redundant.
 - Type: bool
 - Default: `True`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -956,10 +959,6 @@ Whether or not this Managed Environment is zone-redundant.
 | `resourceId` | string | The resource ID of the Managed Environment. |
 | `staticIp` | string | The IP address of the Managed Environment. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
