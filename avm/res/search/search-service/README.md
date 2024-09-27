@@ -392,7 +392,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   name: 'searchServiceDeployment'
   params: {
     // Required parameters
-    name: 'ssspe2001'
+    name: 'ssspr001'
     // Non-required parameters
     location: '<location>'
     privateEndpoints: [
@@ -461,7 +461,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssspe2001"
+      "value": "ssspr001"
     },
     // Non-required parameters
     "location": {
