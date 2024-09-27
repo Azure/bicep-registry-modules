@@ -8,7 +8,6 @@ This module deploys a DBforPostgreSQL Flexible Server.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -832,7 +831,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1383,6 +1381,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1531,7 +1535,6 @@ PostgreSQL Server version.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1541,10 +1544,6 @@ PostgreSQL Server version.
 | `name` | string | The name of the deployed PostgreSQL Flexible server. |
 | `resourceGroupName` | string | The resource group of the deployed PostgreSQL Flexible server. |
 | `resourceId` | string | The resource ID of the deployed PostgreSQL Flexible server. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

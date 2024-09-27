@@ -1,0 +1,214 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.29.47.4906",
+      "templateHash": "1542387667896789833"
+    },
+    "name": "avm/ptn/azd/apim-api",
+    "description": "Creates and configure an API within an API Management service instance.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the API Management service instance."
+      }
+    },
+    "apiName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Required. Resource name to uniquely identify this API within the API Management service instance."
+      }
+    },
+    "apiDisplayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300,
+      "metadata": {
+        "description": "Required. The Display Name of the API."
+      }
+    },
+    "apiDescription": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Required. Description of the API. May include HTML formatting tags."
+      }
+    },
+    "apiPath": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Required. Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API."
+      }
+    },
+    "webFrontendUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Absolute URL of web frontend."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all Resources."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "apiBackendUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Absolute URL of the backend service implementing this API."
+      }
+    },
+    "apiAppName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Resource name for backend Web App or Function App."
+      }
+    }
+  },
+  "variables": {
+    "$fxv#0": "<!-- Policy configuration for the API. Explore other sample policies at https://learn.microsoft.com/en-us/azure/api-management/policies/ -->\n<policies>\n    <inbound>\n        <base />\n        <!-- This policy is needed to handle preflight requests using the OPTIONS method. Learn more at https://learn.microsoft.com/en-us/azure/api-management/api-management-cross-domain-policies  -->\n        <cors allow-credentials=\"false\">\n            <allowed-origins>\n                <origin>{origin}</origin>\n            </allowed-origins>\n            <allowed-methods>\n                <method>PUT</method>\n                <method>GET</method>\n                <method>POST</method>\n                <method>DELETE</method>\n                <method>PATCH</method>\n            </allowed-methods>\n            <allowed-headers>\n                <header>*</header>\n            </allowed-headers>\n            <expose-headers>\n                <header>*</header>\n            </expose-headers>\n        </cors>\n        <!-- Optional policy to validate the request content. Learn more at https://learn.microsoft.com/en-us/azure/api-management/validation-policies#validate-content -->\n        <validate-content unspecified-content-type-action=\"ignore\" max-size=\"1024\" size-exceeded-action=\"detect\" errors-variable-name=\"requestBodyValidation\">\n            <content type=\"application/json\" validate-as=\"json\" action=\"detect\" />\n        </validate-content>\n        <!-- Optional policy to send custom trace telemetry to Application Insights. Learn more at https://learn.microsoft.com/en-us/azure/api-management/api-management-advanced-policies#Trace -->\n        <trace source=\"@(context.Api.Name)\" severity=\"verbose\">\n            <message>Call to the @(context.Api.Name)</message>\n            <metadata name=\"User-Agent\" value=\"@(context.Request.Headers.GetValueOrDefault(\"User-Agent\",\"\"))\" />\n            <metadata name=\"Operation Method\" value=\"@(context.Request.Method)\" />\n            <metadata name=\"Host\" value=\"@(context.Request.Url.Host)\" />\n            <metadata name=\"Path\" value=\"@(context.Request.Url.Path)\" />\n        </trace>\n    </inbound>\n    <backend>\n        <limit-concurrency key=\"@(context.Request.IpAddress)\" max-count=\"3\">\n            <forward-request timeout=\"120\" />\n        </limit-concurrency>\n    </backend>\n    <outbound>\n        <base />\n        <!-- Optional policy to validate the response headers. Learn more at https://learn.microsoft.com/en-us/azure/api-management/validation-policies#validate-headers -->\n        <validate-headers specified-header-action=\"ignore\" unspecified-header-action=\"ignore\" errors-variable-name=\"responseHeadersValidation\" />\n        <!-- Optional policy to to send custom metrics to Application Insights. Learn more at https://learn.microsoft.com/en-us/azure/api-management/api-management-advanced-policies#emit-metrics -->\n        <choose>\n            <when condition=\"@(context.Response.StatusCode >= 200 && context.Response.StatusCode < 300)\">\n                <emit-metric name=\"Successful requests\" value=\"1\" namespace=\"apim-metrics\">\n                    <dimension name=\"API\" value=\"@(context.Api.Name)\" />\n                    <dimension name=\"Client IP\" value=\"@(context.Request.IpAddress)\" />\n                    <dimension name=\"Status Code\" value=\"@((String)context.Response.StatusCode.ToString())\" />\n                    <dimension name=\"Status Reason\" value=\"@(context.Response.StatusReason)\" />\n                </emit-metric>\n            </when>\n            <when condition=\"@(context.Response.StatusCode >= 400 && context.Response.StatusCode < 600)\">\n                <emit-metric name=\"Failed requests\" value=\"1\" namespace=\"apim-metrics\">\n                    <dimension name=\"API\" value=\"@(context.Api.Name)\" />\n                    <dimension name=\"Client IP\" value=\"@(context.Request.IpAddress)\" />\n                    <dimension name=\"Status Code\" value=\"@(context.Response.StatusCode.ToString())\" />\n                    <dimension name=\"Status Reason\" value=\"@(context.Response.StatusReason)\" />\n                    <dimension name=\"Error Source\" value=\"backend\" />\n                </emit-metric>\n            </when>\n        </choose>\n    </outbound>\n    <on-error>\n        <base />\n        <!-- Optional policy to handle errors. Learn more at https://learn.microsoft.com/en-us/azure/api-management/api-management-error-handling-policies -->\n        <trace source=\"@(context.Api.Name)\" severity=\"error\">\n            <message>Failed to process the @(context.Api.Name)</message>\n            <metadata name=\"User-Agent\" value=\"@(context.Request.Headers.GetValueOrDefault(\"User-Agent\",\"\"))\" />\n            <metadata name=\"Operation Method\" value=\"@(context.Request.Method)\" />\n            <metadata name=\"Host\" value=\"@(context.Request.Url.Host)\" />\n            <metadata name=\"Path\" value=\"@(context.Request.Url.Path)\" />\n            <metadata name=\"Error Reason\" value=\"@(context.LastError.Reason)\" />\n            <metadata name=\"Error Message\" value=\"@(context.LastError.Message)\" />\n        </trace>\n        <emit-metric name=\"Failed requests\" value=\"1\" namespace=\"apim-metrics\">\n            <dimension name=\"API\" value=\"@(context.Api.Name)\" />\n            <dimension name=\"Client IP\" value=\"@(context.Request.IpAddress)\" />\n            <dimension name=\"Status Code\" value=\"500\" />\n            <dimension name=\"Status Reason\" value=\"@(context.LastError.Reason)\" />\n            <dimension name=\"Error Source\" value=\"gateway\" />\n        </emit-metric>\n        <!-- Optional policy to hide error details and provide a custom generic message. Learn more at https://learn.microsoft.com/en-us/azure/api-management/api-management-advanced-policies#ReturnResponse -->\n        <return-response>\n            <set-status code=\"500\" reason=\"Internal Server Error\" />\n            <set-body>An unexpected error has occurred.</set-body>\n        </return-response>\n    </on-error>\n</policies>",
+    "$fxv#1": "openapi: 3.0.0\ninfo:\n  description: Simple Todo API\n  version: 3.0.0\n  title: Simple Todo API\n  contact:\n    email: azdevteam@microsoft.com\n\ncomponents:\n  schemas:\n    TodoItem:\n      type: object\n      required:\n        - listId\n        - name\n        - description\n      description: A task that needs to be completed\n      properties:\n        id:\n          type: string\n        listId:\n          type: string\n        name:\n          type: string\n        description:\n          type: string\n        state:\n          $ref: \"#/components/schemas/TodoState\"\n        dueDate:\n          type: string\n          format: date-time\n        completedDate:\n          type: string\n          format: date-time\n    TodoList:\n      type: object\n      required:\n        - name\n      properties:\n        id:\n          type: string\n        name:\n          type: string\n        description:\n          type: string\n      description: \" A list of related Todo items\"\n    TodoState:\n      type: string\n      enum:\n        - todo\n        - inprogress\n        - done\n  parameters:\n    listId:\n      in: path\n      required: true\n      name: listId\n      description: The Todo list unique identifier\n      schema:\n        type: string\n    itemId:\n      in: path\n      required: true\n      name: itemId\n      description: The Todo item unique identifier\n      schema:\n        type: string\n    state:\n      in: path\n      required: true\n      name: state\n      description: The Todo item state\n      schema:\n        $ref: \"#/components/schemas/TodoState\"\n    top:\n      in: query\n      required: false\n      name: top\n      description: The max number of items to returns in a result\n      schema:\n        type: number\n        default: 20\n    skip:\n      in: query\n      required: false\n      name: skip\n      description: The number of items to skip within the results\n      schema:\n        type: number\n        default: 0\n\n  requestBodies:\n    TodoList:\n      description: The Todo List\n      content:\n        application/json:\n          schema:\n            $ref: \"#/components/schemas/TodoList\"\n    TodoItem:\n      description: The Todo Item\n      content:\n        application/json:\n          schema:\n            $ref: \"#/components/schemas/TodoItem\"\n\n  responses:\n    TodoList:\n      description: A Todo list result\n      content:\n        application/json:\n          schema:\n            $ref: \"#/components/schemas/TodoList\"\n    TodoListArray:\n      description: An array of Todo lists\n      content:\n        application/json:\n          schema:\n            type: array\n            items:\n              $ref: \"#/components/schemas/TodoList\"\n    TodoItem:\n      description: A Todo item result\n      content:\n        application/json:\n          schema:\n            $ref: \"#/components/schemas/TodoItem\"\n    TodoItemArray:\n      description: An array of Todo items\n      content:\n        application/json:\n          schema:\n            type: array\n            items:\n              $ref: \"#/components/schemas/TodoItem\"\n\npaths:\n  /lists:\n    get:\n      operationId: GetLists\n      summary: Gets an array of Todo lists\n      tags:\n        - Lists\n      parameters:\n        - $ref: \"#/components/parameters/top\"\n        - $ref: \"#/components/parameters/skip\"\n      responses:\n        200:\n          $ref: \"#/components/responses/TodoListArray\"\n    post:\n      operationId: CreateList\n      summary: Creates a new Todo list\n      tags:\n        - Lists\n      requestBody:\n        $ref: \"#/components/requestBodies/TodoList\"\n      responses:\n        201:\n          $ref: \"#/components/responses/TodoList\"\n        400:\n          description: Invalid request schema\n  /lists/{listId}:\n    get:\n      operationId: GetListById\n      summary: Gets a Todo list by unique identifier\n      tags:\n        - Lists\n      parameters:\n        - $ref: \"#/components/parameters/listId\"\n      responses:\n        200:\n          $ref: \"#/components/responses/TodoList\"\n        404:\n          description: Todo list not found\n    put:\n      operationId: UpdateListById\n      summary: Updates a Todo list by unique identifier\n      tags:\n        - Lists\n      requestBody:\n        $ref: \"#/components/requestBodies/TodoList\"\n      parameters:\n        - $ref: \"#/components/parameters/listId\"\n      responses:\n        200:\n          $ref: \"#/components/responses/TodoList\"\n        404:\n          description: Todo list not found\n        400:\n          description: Todo list is invalid\n    delete:\n      operationId: DeleteListById\n      summary: Deletes a Todo list by unique identifier\n      tags:\n        - Lists\n      parameters:\n        - $ref: \"#/components/parameters/listId\"\n      responses:\n        204:\n          description: Todo list deleted successfully\n        404:\n          description: Todo list not found\n  /lists/{listId}/items:\n    post:\n      operationId: CreateItem\n      summary: Creates a new Todo item within a list\n      tags:\n        - Items\n      requestBody:\n        $ref: \"#/components/requestBodies/TodoItem\"\n      parameters:\n        - $ref: \"#/components/parameters/listId\"\n      responses:\n        201:\n          $ref: \"#/components/responses/TodoItem\"\n        404:\n          description: Todo list not found\n    get:\n      operationId: GetItemsByListId\n      summary: Gets Todo items within the specified list\n      tags:\n        - Items\n      parameters:\n        - $ref: \"#/components/parameters/listId\"\n        - $ref: \"#/components/parameters/top\"\n        - $ref: \"#/components/parameters/skip\"\n      responses:\n        200:\n          $ref: \"#/components/responses/TodoItemArray\"\n        404:\n          description: Todo list not found\n  /lists/{listId}/items/{itemId}:\n    get:\n      operationId: GetItemById\n      summary: Gets a Todo item by unique identifier\n      tags:\n        - Items\n      parameters:\n        - $ref: \"#/components/parameters/listId\"\n        - $ref: \"#/components/parameters/itemId\"\n      responses:\n        200:\n          $ref: \"#/components/responses/TodoItem\"\n        404:\n          description: Todo list or item not found\n    put:\n      operationId: UpdateItemById\n      summary: Updates a Todo item by unique identifier\n      tags:\n        - Items\n      requestBody:\n        $ref: \"#/components/requestBodies/TodoItem\"\n      parameters:\n        - $ref: \"#/components/parameters/listId\"\n        - $ref: \"#/components/parameters/itemId\"\n      responses:\n        200:\n          $ref: \"#/components/responses/TodoItem\"\n        400:\n          description: Todo item is invalid\n        404:\n          description: Todo list or item not found\n    delete:\n      operationId: DeleteItemById\n      summary: Deletes a Todo item by unique identifier\n      tags:\n        - Items\n      parameters:\n        - $ref: \"#/components/parameters/listId\"\n        - $ref: \"#/components/parameters/itemId\"\n      responses:\n        204:\n          description: Todo item deleted successfully\n        404:\n          description: Todo list or item not found\n  /lists/{listId}/items/state/{state}:\n    get:\n      operationId: GetItemsByListIdAndState\n      summary: Gets a list of Todo items of a specific state\n      tags:\n        - Items\n      parameters:\n        - $ref: \"#/components/parameters/listId\"\n        - $ref: \"#/components/parameters/state\"\n        - $ref: \"#/components/parameters/top\"\n        - $ref: \"#/components/parameters/skip\"\n      responses:\n        200:\n          $ref: \"#/components/responses/TodoItemArray\"\n        404:\n          description: Todo list or item not found\n    put:\n      operationId: UpdateItemsStateByListId\n      summary: Changes the state of the specified list items\n      tags:\n        - Items\n      requestBody:\n        description: unique identifiers of the Todo items to update\n        content:\n          application/json:\n            schema:\n              type: array\n              items:\n                description: The Todo item unique identifier\n                type: string\n      parameters:\n        - $ref: \"#/components/parameters/listId\"\n        - $ref: \"#/components/parameters/state\"\n      responses:\n        204:\n          description: Todo items updated\n        400:\n          description: Update request is invalid",
+    "apiPolicyContent": "[replace(variables('$fxv#0'), '{origin}', parameters('webFrontendUrl'))]",
+    "appNameForBicep": "[if(not(empty(parameters('apiAppName'))), parameters('apiAppName'), 'placeholderName')]"
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.ptn.azd-apimapi.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/apis",
+      "apiVersion": "2022-08-01",
+      "name": "[format('{0}/{1}', parameters('name'), parameters('apiName'))]",
+      "properties": {
+        "description": "[parameters('apiDescription')]",
+        "displayName": "[parameters('apiDisplayName')]",
+        "path": "[parameters('apiPath')]",
+        "protocols": [
+          "https"
+        ],
+        "subscriptionRequired": false,
+        "type": "http",
+        "format": "openapi",
+        "serviceUrl": "[parameters('apiBackendUrl')]",
+        "value": "[variables('$fxv#1')]"
+      }
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/apis/policies",
+      "apiVersion": "2022-08-01",
+      "name": "[format('{0}/{1}/{2}', parameters('name'), parameters('apiName'), 'policy')]",
+      "properties": {
+        "format": "rawxml",
+        "value": "[variables('apiPolicyContent')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service/apis', parameters('name'), parameters('apiName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/apis/diagnostics",
+      "apiVersion": "2022-08-01",
+      "name": "[format('{0}/{1}/{2}', parameters('name'), parameters('apiName'), 'applicationinsights')]",
+      "properties": {
+        "alwaysLog": "allErrors",
+        "backend": {
+          "request": {
+            "body": {
+              "bytes": 1024
+            }
+          },
+          "response": {
+            "body": {
+              "bytes": 1024
+            }
+          }
+        },
+        "frontend": {
+          "request": {
+            "body": {
+              "bytes": 1024
+            }
+          },
+          "response": {
+            "body": {
+              "bytes": 1024
+            }
+          }
+        },
+        "httpCorrelationProtocol": "W3C",
+        "logClientIp": true,
+        "loggerId": "[resourceId('Microsoft.ApiManagement/service/loggers', parameters('name'), 'app-insights-logger')]",
+        "metrics": true,
+        "sampling": {
+          "percentage": 100,
+          "samplingType": "fixed"
+        },
+        "verbosity": "verbose"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service/apis', parameters('name'), parameters('apiName'))]"
+      ]
+    },
+    {
+      "condition": "[not(empty(parameters('apiAppName')))]",
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/web', variables('appNameForBicep'))]",
+      "kind": "string",
+      "properties": {
+        "apiManagementConfig": {
+          "id": "[format('{0}/apis/{1}', resourceId('Microsoft.ApiManagement/service', parameters('name')), parameters('apiName'))]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "serviceApiUri": {
+      "type": "string",
+      "metadata": {
+        "description": "The complete URL for accessing the API."
+      },
+      "value": "[format('{0}/{1}', reference(resourceId('Microsoft.ApiManagement/service', parameters('name')), '2022-08-01').gatewayUrl, parameters('apiPath'))]"
+    }
+  }
+}

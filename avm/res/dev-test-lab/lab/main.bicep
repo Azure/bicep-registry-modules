@@ -57,7 +57,7 @@ param premiumDataDisks string = 'Disabled'
 @description('Optional. The properties of any lab support message associated with this lab.')
 param support object = {}
 
-@description('Optional. The managed identity definition for this resource. DevTest Labs creates a system-assigned identity by default the first time it creates the lab environment.')
+@description('Optional. The managed identity definition for this resource. For new labs created after 8/10/2020, the lab\'s system assigned identity is set to On by default and lab owner will not be able to turn this off for the lifecycle of the lab.')
 param managedIdentities managedIdentitiesType
 
 @description('Optional. The resource ID(s) to assign to the virtual machines associated with this lab.')
@@ -94,22 +94,22 @@ param encryptionType string = 'EncryptionAtRestWithPlatformKey'
 param encryptionDiskEncryptionSetId string = ''
 
 @description('Optional. Virtual networks to create for the lab.')
-param virtualnetworks array = []
+param virtualnetworks virtualNetworkType
 
 @description('Optional. Policies to create for the lab.')
-param policies array = []
+param policies policiesType
 
 @description('Optional. Schedules to create for the lab.')
-param schedules array = []
+param schedules scheduleType
 
 @description('Conditional. Notification Channels to create for the lab. Required if the schedules property "notificationSettingsStatus" is set to "Enabled.')
-param notificationchannels array = []
+param notificationchannels notificationChannelType
 
 @description('Optional. Artifact sources to create for the lab.')
-param artifactsources array = []
+param artifactsources artifactsourcesType
 
 @description('Optional. Costs to create for the lab.')
-param costs object = {}
+param costs costsType
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -125,7 +125,9 @@ var identity = !empty(managedIdentities)
       type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned'
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
-  : any(null)
+  : {
+      type: 'SystemAssigned'
+    }
 
 var formattedManagementIdentities = !empty(managementIdentitiesResourceIds)
   ? reduce(map((managementIdentitiesResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next))
@@ -226,95 +228,86 @@ resource lab_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?
 }
 
 module lab_virtualNetworks 'virtualnetwork/main.bicep' = [
-  for (virtualNetwork, index) in virtualnetworks: {
+  for (virtualNetwork, index) in (virtualnetworks ?? []): {
     name: '${uniqueString(deployment().name, location)}-Lab-VirtualNetwork-${index}'
     params: {
       labName: lab.name
       name: virtualNetwork.name
       tags: virtualNetwork.?tags ?? tags
       externalProviderResourceId: virtualNetwork.externalProviderResourceId
-      description: contains(virtualNetwork, 'description') ? virtualNetwork.description : ''
-      allowedSubnets: contains(virtualNetwork, 'allowedSubnets') ? virtualNetwork.allowedSubnets : []
-      subnetOverrides: contains(virtualNetwork, 'subnetOverrides') ? virtualNetwork.subnetOverrides : []
+      description: virtualNetwork.?description
+      allowedSubnets: virtualNetwork.?allowedSubnets
+      subnetOverrides: virtualNetwork.?subnetOverrides
     }
   }
 ]
 
 module lab_policies 'policyset/policy/main.bicep' = [
-  for (policy, index) in policies: {
+  for (policy, index) in (policies ?? []): {
     name: '${uniqueString(deployment().name, location)}-Lab-PolicySets-Policy-${index}'
     params: {
       labName: lab.name
       name: policy.name
-
-      description: contains(policy, 'description') ? policy.description : ''
+      description: policy.?description
       evaluatorType: policy.evaluatorType
-      factData: contains(policy, 'factData') ? policy.factData : ''
+      factData: policy.?factData
       factName: policy.factName
-      status: contains(policy, 'status') ? policy.status : 'Enabled'
+      status: policy.?status ?? 'Enabled'
       threshold: policy.threshold
     }
   }
 ]
 
 module lab_schedules 'schedule/main.bicep' = [
-  for (schedule, index) in schedules: {
+  for (schedule, index) in (schedules ?? []): {
     name: '${uniqueString(deployment().name, location)}-Lab-Schedules-${index}'
     params: {
       labName: lab.name
       name: schedule.name
       tags: schedule.?tags ?? tags
       taskType: schedule.taskType
-      dailyRecurrence: contains(schedule, 'dailyRecurrence') ? schedule.dailyRecurrence : {}
-      hourlyRecurrence: contains(schedule, 'hourlyRecurrence') ? schedule.hourlyRecurrence : {}
-      weeklyRecurrence: contains(schedule, 'weeklyRecurrence') ? schedule.weeklyRecurrence : {}
-      status: contains(schedule, 'status') ? schedule.status : 'Enabled'
-      targetResourceId: contains(schedule, 'targetResourceId') ? schedule.targetResourceId : ''
-      timeZoneId: contains(schedule, 'timeZoneId') ? schedule.timeZoneId : 'Pacific Standard time'
-      notificationSettingsStatus: contains(schedule, 'notificationSettingsStatus')
-        ? schedule.notificationSettingsStatus
-        : 'Disabled'
-      notificationSettingsTimeInMinutes: contains(schedule, 'notificationSettingsTimeInMinutes')
-        ? schedule.notificationSettingsTimeInMinutes
-        : 30
+      dailyRecurrence: schedule.?dailyRecurrence
+      hourlyRecurrence: schedule.?hourlyRecurrence
+      weeklyRecurrence: schedule.?weeklyRecurrence
+      status: schedule.?status ?? 'Enabled'
+      targetResourceId: schedule.?targetResourceId
+      timeZoneId: schedule.?timeZoneId ?? 'Pacific Standard time'
+      notificationSettings: schedule.?notificationSettings
     }
   }
 ]
 
 module lab_notificationChannels 'notificationchannel/main.bicep' = [
-  for (notificationChannel, index) in notificationchannels: {
+  for (notificationChannel, index) in (notificationchannels ?? []): {
     name: '${uniqueString(deployment().name, location)}-Lab-NotificationChannels-${index}'
     params: {
       labName: lab.name
       name: notificationChannel.name
       tags: notificationChannel.?tags ?? tags
-      description: contains(notificationChannel, 'description') ? notificationChannel.description : ''
+      description: notificationChannel.?description
       events: notificationChannel.events
-      emailRecipient: contains(notificationChannel, 'emailRecipient') ? notificationChannel.emailRecipient : ''
-      webHookUrl: contains(notificationChannel, 'webhookUrl') ? notificationChannel.webhookUrl : ''
-      notificationLocale: contains(notificationChannel, 'notificationLocale')
-        ? notificationChannel.notificationLocale
-        : 'en'
+      emailRecipient: notificationChannel.?emailRecipient
+      webHookUrl: notificationChannel.?webHookUrl
+      notificationLocale: notificationChannel.?notificationLocale ?? 'en'
     }
   }
 ]
 
 module lab_artifactSources 'artifactsource/main.bicep' = [
-  for (artifactSource, index) in artifactsources: {
+  for (artifactSource, index) in (artifactsources ?? []): {
     name: '${uniqueString(deployment().name, location)}-Lab-ArtifactSources-${index}'
     params: {
       labName: lab.name
       name: artifactSource.name
       tags: artifactSource.?tags ?? tags
-      displayName: contains(artifactSource, 'displayName') ? artifactSource.displayName : artifactSource.name
-      branchRef: contains(artifactSource, 'branchRef') ? artifactSource.branchRef : ''
-      folderPath: contains(artifactSource, 'folderPath') ? artifactSource.folderPath : ''
-      armTemplateFolderPath: contains(artifactSource, 'armTemplateFolderPath')
-        ? artifactSource.armTemplateFolderPath
-        : ''
-      sourceType: contains(artifactSource, 'sourceType') ? artifactSource.sourceType : ''
-      status: contains(artifactSource, 'status') ? artifactSource.status : 'Enabled'
+      displayName: artifactSource.?displayName ?? artifactSource.name
+      branchRef: artifactSource.?branchRef
+      folderPath: artifactSource.?folderPath
+      armTemplateFolderPath: artifactSource.?armTemplateFolderPath
+      sourceType: artifactSource.?sourceType
+      status: artifactSource.?status ?? 'Enabled'
       uri: artifactSource.uri
+      securityToken: artifactSource.?securityToken
     }
   }
 ]
@@ -324,42 +317,22 @@ module lab_costs 'cost/main.bicep' = if (!empty(costs)) {
   params: {
     labName: lab.name
     tags: costs.?tags ?? tags
-    currencyCode: contains(costs, 'currencyCode') ? costs.currencyCode : 'USD'
-    cycleType: costs.cycleType
-    cycleStartDateTime: contains(costs, 'cycleStartDateTime') ? costs.cycleStartDateTime : ''
-    cycleEndDateTime: contains(costs, 'cycleEndDateTime') ? costs.cycleEndDateTime : ''
-    status: contains(costs, 'status') ? costs.status : 'Enabled'
-    target: contains(costs, 'target') ? costs.target : 0
-    thresholdValue25DisplayOnChart: contains(costs, 'thresholdValue25DisplayOnChart')
-      ? costs.thresholdValue25DisplayOnChart
-      : 'Disabled'
-    thresholdValue25SendNotificationWhenExceeded: contains(costs, 'thresholdValue25SendNotificationWhenExceeded')
-      ? costs.thresholdValue25SendNotificationWhenExceeded
-      : 'Disabled'
-    thresholdValue50DisplayOnChart: contains(costs, 'thresholdValue50DisplayOnChart')
-      ? costs.thresholdValue50DisplayOnChart
-      : 'Disabled'
-    thresholdValue50SendNotificationWhenExceeded: contains(costs, 'thresholdValue50SendNotificationWhenExceeded')
-      ? costs.thresholdValue50SendNotificationWhenExceeded
-      : 'Disabled'
-    thresholdValue75DisplayOnChart: contains(costs, 'thresholdValue75DisplayOnChart')
-      ? costs.thresholdValue75DisplayOnChart
-      : 'Disabled'
-    thresholdValue75SendNotificationWhenExceeded: contains(costs, 'thresholdValue75SendNotificationWhenExceeded')
-      ? costs.thresholdValue75SendNotificationWhenExceeded
-      : 'Disabled'
-    thresholdValue100DisplayOnChart: contains(costs, 'thresholdValue100DisplayOnChart')
-      ? costs.thresholdValue100DisplayOnChart
-      : 'Disabled'
-    thresholdValue100SendNotificationWhenExceeded: contains(costs, 'thresholdValue100SendNotificationWhenExceeded')
-      ? costs.thresholdValue100SendNotificationWhenExceeded
-      : 'Disabled'
-    thresholdValue125DisplayOnChart: contains(costs, 'thresholdValue125DisplayOnChart')
-      ? costs.thresholdValue125DisplayOnChart
-      : 'Disabled'
-    thresholdValue125SendNotificationWhenExceeded: contains(costs, 'thresholdValue125SendNotificationWhenExceeded')
-      ? costs.thresholdValue125SendNotificationWhenExceeded
-      : 'Disabled'
+    currencyCode: costs.?currencyCode ?? 'USD'
+    cycleType: costs!.cycleType
+    cycleStartDateTime: costs.?cycleStartDateTime
+    cycleEndDateTime: costs.?cycleEndDateTime
+    status: costs.?status ?? 'Enabled'
+    target: costs.?target ?? 0
+    thresholdValue25DisplayOnChart: costs.?thresholdValue25DisplayOnChart ?? 'Disabled'
+    thresholdValue25SendNotificationWhenExceeded: costs.?thresholdValue25SendNotificationWhenExceeded ?? 'Disabled'
+    thresholdValue50DisplayOnChart: costs.?thresholdValue50DisplayOnChart ?? 'Disabled'
+    thresholdValue50SendNotificationWhenExceeded: costs.?thresholdValue50SendNotificationWhenExceeded ?? 'Disabled'
+    thresholdValue75DisplayOnChart: costs.?thresholdValue75DisplayOnChart ?? 'Disabled'
+    thresholdValue75SendNotificationWhenExceeded: costs.?thresholdValue75SendNotificationWhenExceeded ?? 'Disabled'
+    thresholdValue100DisplayOnChart: costs.?thresholdValue100DisplayOnChart ?? 'Disabled'
+    thresholdValue100SendNotificationWhenExceeded: costs.?thresholdValue100SendNotificationWhenExceeded ?? 'Disabled'
+    thresholdValue125DisplayOnChart: costs.?thresholdValue125DisplayOnChart ?? 'Disabled'
+    thresholdValue125SendNotificationWhenExceeded: costs.?thresholdValue125SendNotificationWhenExceeded ?? 'Disabled'
   }
 }
 
@@ -438,4 +411,200 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
+}[]?
+
+type artifactsourcesType = {
+  @description('Required. The name of the artifact source.')
+  name: string
+
+  @description('Optional. The tags of the artifact source.')
+  tags: object?
+
+  @description('Optional. The display name of the artifact source. Default is the name of the artifact source.')
+  displayName: string?
+
+  @description('Optional. The artifact source\'s branch reference (e.g. main or master).')
+  branchRef: string?
+
+  @description('Conditional. The folder containing artifacts. At least one folder path is required. Required if "armTemplateFolderPath" is empty.')
+  folderPath: string?
+
+  @description('Conditional. The folder containing Azure Resource Manager templates. Required if "folderPath" is empty.')
+  armTemplateFolderPath: string?
+
+  @description('Optional. The artifact source\'s type.')
+  sourceType: 'GitHub' | 'StorageAccount' | 'VsoGit'?
+
+  @description('Optional. Indicates if the artifact source is enabled (values: Enabled, Disabled). Default is "Enabled".')
+  status: 'Enabled' | 'Disabled'?
+
+  @description('Required. The artifact source\'s URI.')
+  uri: string
+
+  @description('Optional. The security token to authenticate to the artifact source. Private artifacts use the system-identity of the lab to store the security token for the artifact source in the lab\'s managed Azure Key Vault. Access to the Azure Key Vault is granted automatically only when the lab is created with a system-assigned identity.')
+  @secure()
+  securityToken: string?
+}[]?
+
+import { allowedSubnetType, subnetOverrideType } from 'virtualnetwork/main.bicep'
+type virtualNetworkType = {
+  @description('Required. The name of the virtual network.')
+  name: string
+
+  @description('Optional. The tags of the virtual network.')
+  tags: object?
+
+  @description('Required. The external provider resource ID of the virtual network.')
+  externalProviderResourceId: string
+
+  @description('Optional. The description of the virtual network.')
+  description: string?
+
+  @description('Optional. The allowed subnets of the virtual network.')
+  allowedSubnets: allowedSubnetType?
+
+  @description('Optional. The subnet overrides of the virtual network.')
+  subnetOverrides: subnetOverrideType?
+}[]?
+
+type costsType = {
+  @description('Optional. The tags of the resource.')
+  tags: object?
+
+  @description('Required. Reporting cycle type.')
+  cycleType: 'Custom' | 'CalendarMonth'
+
+  @description('Conditional. Reporting cycle start date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z). Required if cycleType is set to "Custom".')
+  cycleStartDateTime: string?
+
+  @description('Conditional. Reporting cycle end date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z). Required if cycleType is set to "Custom".')
+  cycleEndDateTime: string?
+
+  @description('Optional. Target cost status.')
+  status: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Lab target cost (e.g. 100). The target cost will appear in the "Cost trend" chart to allow tracking lab spending relative to the target cost for the current reporting cycleSetting the target cost to 0 will disable all thresholds.')
+  target: int?
+
+  @description('Optional. The currency code of the cost. Default is "USD".')
+  currencyCode: string?
+
+  @description('Optional. Target Cost threshold at 25% display on chart. Indicates whether this threshold will be displayed on cost charts.')
+  thresholdValue25DisplayOnChart: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target cost threshold at 25% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded.')
+  thresholdValue25SendNotificationWhenExceeded: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target Cost threshold at 50% display on chart. Indicates whether this threshold will be displayed on cost charts.')
+  thresholdValue50DisplayOnChart: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target cost threshold at 50% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded.')
+  thresholdValue50SendNotificationWhenExceeded: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target Cost threshold at 75% display on chart. Indicates whether this threshold will be displayed on cost charts.')
+  thresholdValue75DisplayOnChart: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target cost threshold at 75% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded.')
+  thresholdValue75SendNotificationWhenExceeded: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target Cost threshold at 100% display on chart. Indicates whether this threshold will be displayed on cost charts.')
+  thresholdValue100DisplayOnChart: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target cost threshold at 100% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded.')
+  thresholdValue100SendNotificationWhenExceeded: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target Cost threshold at 125% display on chart. Indicates whether this threshold will be displayed on cost charts.')
+  thresholdValue125DisplayOnChart: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Target cost threshold at 125% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded.')
+  thresholdValue125SendNotificationWhenExceeded: 'Enabled' | 'Disabled'?
+}?
+
+type notificationChannelType = {
+  @description('Required. The name of the notification channel.')
+  name: 'autoShutdown' | 'costThreshold'
+
+  @description('Optional. The tags of the notification channel.')
+  tags: object?
+
+  @description('Optional. The description of the notification.')
+  description: string?
+
+  @description('Required. The list of event for which this notification is enabled. Can be "AutoShutdown" or "Cost".')
+  events: string[]
+
+  @description('Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webHookUrl" is empty.')
+  emailRecipient: string?
+
+  @description('Conditional. The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty.')
+  webHookUrl: string?
+
+  @description('Optional. The locale to use when sending a notification (fallback for unsupported languages is EN).')
+  notificationLocale: string?
+}[]?
+
+type policiesType = {
+  @description('Required. The name of the policy.')
+  name: string
+
+  @description('Optional. The description of the policy.')
+  description: string?
+
+  @description('Required. The evaluator type of the policy (i.e. AllowedValuesPolicy, MaxValuePolicy).')
+  evaluatorType: 'AllowedValuesPolicy' | 'MaxValuePolicy'
+
+  @description('Optional. The fact data of the policy.')
+  factData: string?
+
+  @description('Required. The fact name of the policy.')
+  factName:
+    | 'EnvironmentTemplate'
+    | 'GalleryImage'
+    | 'LabPremiumVmCount'
+    | 'LabTargetCost'
+    | 'LabVmCount'
+    | 'LabVmSize'
+    | 'ScheduleEditPermission'
+    | 'UserOwnedLabPremiumVmCount'
+    | 'UserOwnedLabVmCount'
+    | 'UserOwnedLabVmCountInSubnet'
+
+  @description('Optional. The status of the policy. Default is "Enabled".')
+  status: 'Disabled' | 'Enabled'?
+
+  @description('Required. The threshold of the policy (i.e. a number for MaxValuePolicy, and a JSON array of values for AllowedValuesPolicy).')
+  threshold: string
+}[]?
+
+import { dailyRecurrenceType, hourlyRecurrenceType, notificationSettingsType, weeklyRecurrenceType } from 'schedule/main.bicep'
+type scheduleType = {
+  @description('Required. The name of the schedule.')
+  name: 'LabVmsShutdown' | 'LabVmAutoStart'
+
+  @description('Optional. The tags of the schedule.')
+  tags: object?
+
+  @description('Required. The task type of the schedule (e.g. LabVmsShutdownTask, LabVmsStartupTask).')
+  taskType: 'LabVmsShutdownTask' | 'LabVmsStartupTask'
+
+  @description('Optional. The daily recurrence of the schedule.')
+  dailyRecurrence: dailyRecurrenceType?
+
+  @description('Optional. If the schedule will occur multiple times a day, specify the hourly recurrence.')
+  hourlyRecurrence: hourlyRecurrenceType?
+
+  @description('Optional. If the schedule will occur only some days of the week, specify the weekly recurrence.')
+  weeklyRecurrence: weeklyRecurrenceType?
+
+  @description('Optional. The status of the schedule (i.e. Enabled, Disabled). Default is "Enabled".')
+  status: 'Disabled' | 'Enabled'?
+
+  @description('Optional. The resource ID to which the schedule belongs.')
+  targetResourceId: string?
+
+  @description('Optional. The time zone ID of the schedule. Defaults to "Pacific Standard time".')
+  timeZoneId: string?
+
+  @description('Optional. The notification settings for the schedule.')
+  notificationSettings: notificationSettingsType?
 }[]?

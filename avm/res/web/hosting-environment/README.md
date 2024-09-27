@@ -8,7 +8,6 @@ This module deploys an App Service Environment.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -431,7 +430,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -799,6 +797,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -914,7 +918,6 @@ Switch to make the App Service Environment zone redundant. If enabled, the minim
 - Type: bool
 - Default: `False`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -924,10 +927,6 @@ Switch to make the App Service Environment zone redundant. If enabled, the minim
 | `resourceGroupName` | string | The resource group the App Service Environment was deployed into. |
 | `resourceId` | string | The resource ID of the App Service Environment. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
