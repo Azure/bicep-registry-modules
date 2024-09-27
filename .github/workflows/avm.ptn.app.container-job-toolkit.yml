@@ -31,13 +31,13 @@ on:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.ptn.app.container-job-toolkit.yml"
-      - "avm/ptn/app/container-job/**"
+      - "avm/ptn/app/container-job-toolkit/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/ptn/app/container-job"
+  modulePath: "avm/ptn/app/container-job-toolkit"
   workflowPath: ".github/workflows/avm.ptn.app.container-job-toolkit.yml"
 
 concurrency:
