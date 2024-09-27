@@ -1,0 +1,78 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.30.3.12046",
+      "templateHash": "10428804956820983215"
+    }
+  },
+  "parameters": {
+    "netAppAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "backupPolicyName": {
+      "type": "string",
+      "defaultValue": "backupPolicy",
+      "metadata": {
+        "description": "Optional. The name of the backup policy."
+      }
+    },
+    "backupPolicyLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Optional. The location of the backup policy."
+      }
+    },
+    "dailyBackupsToKeep": {
+      "type": "int",
+      "metadata": {
+        "description": "Optional. The daily backups to keep."
+      }
+    },
+    "monthlyBackupsToKeep": {
+      "type": "int",
+      "metadata": {
+        "description": "Optional. The monthly backups to keep."
+      }
+    },
+    "weeklyBackupsToKeep": {
+      "type": "int",
+      "metadata": {
+        "description": "Optional. The weekly backups to keep."
+      }
+    },
+    "backupEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Indicates whether the backup policy is enabled."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('backupEnabled')]",
+      "type": "Microsoft.NetApp/netAppAccounts/backupPolicies",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupPolicyName'))]",
+      "location": "[parameters('backupPolicyLocation')]",
+      "properties": {
+        "dailyBackupsToKeep": "[parameters('dailyBackupsToKeep')]",
+        "enabled": "[parameters('backupEnabled')]",
+        "monthlyBackupsToKeep": "[parameters('monthlyBackupsToKeep')]",
+        "weeklyBackupsToKeep": "[parameters('weeklyBackupsToKeep')]"
+      }
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), parameters('backupPolicyName'))]"
+    }
+  }
+}
