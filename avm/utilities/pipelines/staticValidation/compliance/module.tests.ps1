@@ -390,6 +390,8 @@ Describe 'Module tests' -Tag 'Module' {
             $null = Remove-Item -Path $armTemplatePath -Force
             bicep build $templateFilePath
 
+            Write-Warning $templateFilePath
+
             $newJson = Remove-JSONMetadata -TemplateObject (Get-Content $armTemplatePath -Raw | ConvertFrom-Json -Depth 99 -AsHashtable)
             $newJson = ConvertTo-OrderedHashtable -JSONInputObject (ConvertTo-Json $newJson -Depth 99)
 
