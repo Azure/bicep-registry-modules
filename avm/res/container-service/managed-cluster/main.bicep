@@ -405,6 +405,25 @@ param metricLabelsAllowlist string = ''
 @description('Optional. A comma-separated list of Kubernetes cluster metrics annotations.')
 param metricAnnotationsAllowList string = ''
 
+@description('Optional. Specifies whether the Istio ServiceMesh add-on is enabled or not.')
+param istioServiceMeshEnabled bool = false
+
+@description('Optional. The list of revisions of the Istio control plane. When an upgrade is not in progress, this holds one value. When canary upgrade is in progress, this can only hold two consecutive values.')
+param istioServiceMeshRevisions array?
+
+@description('Optional. Specifies whether the Istio Ingress Gateway is enabled or not.')
+param istioServiceMeshIngressGatewayEnabled bool = false
+
+@description('Optional. Specifies the type of the Istio Ingress Gateway.')
+@allowed([
+  'Internal'
+  'External'
+])
+param istioServiceMeshIngressGatewayType string = 'External'
+
+@description('Optional. The Istio Certificate Authority definition.')
+param istioServiceMeshCertificateAuthority istioServiceMeshCertificateAuthorityType
+
 // =========== //
 // Variables   //
 // =========== //
@@ -826,6 +845,35 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       }
     }
     supportPlan: supportPlan
+    serviceMeshProfile: istioServiceMeshEnabled
+      ? {
+          istio: {
+            revisions: istioServiceMeshRevisions
+            components: {
+              ingressGateways: istioServiceMeshIngressGatewayEnabled
+                ? [
+                    {
+                      enabled: true
+                      mode: istioServiceMeshIngressGatewayType
+                    }
+                  ]
+                : null
+            }
+            certificateAuthority: !empty(istioServiceMeshCertificateAuthority)
+              ? {
+                  plugin: {
+                    certChainObjectName: istioServiceMeshCertificateAuthority.?certChainObjectName
+                    certObjectName: istioServiceMeshCertificateAuthority.?certObjectName
+                    keyObjectName: istioServiceMeshCertificateAuthority.?keyObjectName
+                    keyVaultId: istioServiceMeshCertificateAuthority.?keyVaultResourceId
+                    rootCertObjectName: istioServiceMeshCertificateAuthority.?rootCertObjectName
+                  }
+                }
+              : null
+          }
+          mode: 'Istio'
+        }
+      : null
   }
 }
 
@@ -1291,4 +1339,21 @@ type maintenanceConfigurationType = {
 
   @description('Required. Maintenance window for the maintenance configuration.')
   maintenanceWindow: object
-}
+}?
+
+type istioServiceMeshCertificateAuthorityType = {
+  @description('Required. The resource ID of a key vault to reference a Certificate Authority from.')
+  keyVaultResourceId: string
+
+  @description('Required. The Certificate chain object name in Azure Key Vault.')
+  certChainObjectName: string
+
+  @description('Required. The Intermediate certificate object name in Azure Key Vault.')
+  certObjectName: string
+
+  @description('Required. The Intermediate certificate private key object name in Azure Key Vault.')
+  keyObjectName: string
+
+  @description('Required. Root certificate object name in Azure Key Vault.')
+  rootCertObjectName: string
+}?
