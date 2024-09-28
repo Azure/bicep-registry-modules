@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using Istio Service Mesh add-on'
+metadata description = 'This instance deploys the module with Istio Service Mesh add-on .'
 
 // ========== //
 // Parameters //
