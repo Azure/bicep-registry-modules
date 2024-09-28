@@ -3194,6 +3194,26 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Azure Kubernetes Fleet Manager Contributor Role'`
+  - `'Azure Kubernetes Fleet Manager RBAC Admin'`
+  - `'Azure Kubernetes Fleet Manager RBAC Cluster Admin'`
+  - `'Azure Kubernetes Fleet Manager RBAC Reader'`
+  - `'Azure Kubernetes Fleet Manager RBAC Writer'`
+  - `'Azure Kubernetes Service Cluster Admin Role'`
+  - `'Azure Kubernetes Service Cluster Monitoring User'`
+  - `'Azure Kubernetes Service Cluster User Role'`
+  - `'Azure Kubernetes Service Contributor Role'`
+  - `'Azure Kubernetes Service RBAC Admin'`
+  - `'Azure Kubernetes Service RBAC Cluster Admin'`
+  - `'Azure Kubernetes Service RBAC Reader'`
+  - `'Azure Kubernetes Service RBAC Writer'`
+  - `'Contributor'`
+  - `'Kubernetes Agentless Operator'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

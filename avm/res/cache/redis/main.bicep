@@ -20,6 +20,9 @@ param tags object?
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
+@description('Optional. Disable authentication via access keys.')
+param disableAccessKeyAuthentication bool = false
+
 @description('Optional. Specifies whether the non-ssl Redis server port (6379) is enabled.')
 param enableNonSslPort bool = false
 
@@ -181,6 +184,7 @@ resource redis 'Microsoft.Cache/redis@2024-03-01' = {
   tags: tags
   identity: identity
   properties: {
+    disableAccessKeyAuthentication: disableAccessKeyAuthentication
     enableNonSslPort: enableNonSslPort
     minimumTlsVersion: minimumTlsVersion
     publicNetworkAccess: !empty(publicNetworkAccess)

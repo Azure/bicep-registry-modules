@@ -31,12 +31,17 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/virtual-network-gateway:<version>`.
 
 - [AAD-VPN](#example-1-aad-vpn)
-- [Using only defaults](#example-2-using-only-defaults)
-- [ExpressRoute](#example-3-expressroute)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [Using SKU without Availability Zones](#example-5-using-sku-without-availability-zones)
-- [VPN](#example-6-vpn)
-- [WAF-aligned](#example-7-waf-aligned)
+- [VPN Active Active with BGP settings](#example-2-vpn-active-active-with-bgp-settings)
+- [VPN Active Active with BGP settings](#example-3-vpn-active-active-with-bgp-settings)
+- [VPN Active Active without BGP settings](#example-4-vpn-active-active-without-bgp-settings)
+- [VPN Active Passive with BGP settings](#example-5-vpn-active-passive-with-bgp-settings)
+- [VPN Active Passive without BGP settings](#example-6-vpn-active-passive-without-bgp-settings)
+- [Using only defaults](#example-7-using-only-defaults)
+- [ExpressRoute](#example-8-expressroute)
+- [Using large parameter set](#example-9-using-large-parameter-set)
+- [Using SKU without Availability Zones](#example-10-using-sku-without-availability-zones)
+- [VPN](#example-11-vpn)
+- [WAF-aligned](#example-12-waf-aligned)
 
 ### Example 1: _AAD-VPN_
 
@@ -52,14 +57,16 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
+    clusterSettings: {
+      clusterMode: 'activePassiveNoBgp'
+    }
     gatewayType: 'Vpn'
-    name: 'nvngavpn001'
+    name: 'nvgavpn001'
     skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
-    activeActive: false
     domainNameLabel: [
-      'dm-nvngavpn'
+      'dm-nvgavpn'
     ]
     location: '<location>'
     publicIpZones: [
@@ -96,11 +103,16 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "clusterSettings": {
+      "value": {
+        "clusterMode": "activePassiveNoBgp"
+      }
+    },
     "gatewayType": {
       "value": "Vpn"
     },
     "name": {
-      "value": "nvngavpn001"
+      "value": "nvgavpn001"
     },
     "skuName": {
       "value": "VpnGw2AZ"
@@ -109,12 +121,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "<vNetResourceId>"
     },
     // Non-required parameters
-    "activeActive": {
-      "value": false
-    },
     "domainNameLabel": {
       "value": [
-        "dm-nvngavpn"
+        "dm-nvgavpn"
       ]
     },
     "location": {
@@ -150,7 +159,613 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 2: _VPN Active Active with BGP settings_
+
+This instance deploys the module with the VPN Active Active with BGP settings.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
+  name: 'virtualNetworkGatewayDeployment'
+  params: {
+    // Required parameters
+    clusterSettings: {
+      clusterMode: 'activeActiveBgp'
+    }
+    gatewayType: 'Vpn'
+    name: 'nvgaab001'
+    skuName: 'VpnGw2AZ'
+    vNetResourceId: '<vNetResourceId>'
+    // Non-required parameters
+    allowRemoteVnetTraffic: true
+    disableIPSecReplayProtection: true
+    domainNameLabel: [
+      'dm-nvgaab'
+    ]
+    enableBgpRouteTranslationForNat: true
+    enablePrivateIpAddress: true
+    gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
+    location: '<location>'
+    publicIpZones: [
+      1
+      2
+      3
+    ]
+    vpnGatewayGeneration: 'Generation2'
+    vpnType: 'RouteBased'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "clusterSettings": {
+      "value": {
+        "clusterMode": "activeActiveBgp"
+      }
+    },
+    "gatewayType": {
+      "value": "Vpn"
+    },
+    "name": {
+      "value": "nvgaab001"
+    },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
+    "vNetResourceId": {
+      "value": "<vNetResourceId>"
+    },
+    // Non-required parameters
+    "allowRemoteVnetTraffic": {
+      "value": true
+    },
+    "disableIPSecReplayProtection": {
+      "value": true
+    },
+    "domainNameLabel": {
+      "value": [
+        "dm-nvgaab"
+      ]
+    },
+    "enableBgpRouteTranslationForNat": {
+      "value": true
+    },
+    "enablePrivateIpAddress": {
+      "value": true
+    },
+    "gatewayDefaultSiteLocalNetworkGatewayId": {
+      "value": "<gatewayDefaultSiteLocalNetworkGatewayId>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "publicIpZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
+    "vpnGatewayGeneration": {
+      "value": "Generation2"
+    },
+    "vpnType": {
+      "value": "RouteBased"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _VPN Active Active with BGP settings_
+
+This instance deploys the module with the VPN Active Active with APIPA BGP settings.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
+  name: 'virtualNetworkGatewayDeployment'
+  params: {
+    // Required parameters
+    clusterSettings: {
+      clusterMode: 'activeActiveBgp'
+      customBgpIpAddresses: [
+        '169.254.21.4'
+        '169.254.21.5'
+      ]
+      secondCustomBgpIpAddresses: [
+        '169.254.22.4'
+        '169.254.22.5'
+      ]
+    }
+    gatewayType: 'Vpn'
+    name: 'nvgaaa001'
+    skuName: 'VpnGw2AZ'
+    vNetResourceId: '<vNetResourceId>'
+    // Non-required parameters
+    allowRemoteVnetTraffic: true
+    disableIPSecReplayProtection: true
+    domainNameLabel: [
+      'dm-nvgaaa'
+    ]
+    enableBgpRouteTranslationForNat: true
+    enablePrivateIpAddress: true
+    gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
+    location: '<location>'
+    publicIpZones: [
+      1
+      2
+      3
+    ]
+    vpnGatewayGeneration: 'Generation2'
+    vpnType: 'RouteBased'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "clusterSettings": {
+      "value": {
+        "clusterMode": "activeActiveBgp",
+        "customBgpIpAddresses": [
+          "169.254.21.4",
+          "169.254.21.5"
+        ],
+        "secondCustomBgpIpAddresses": [
+          "169.254.22.4",
+          "169.254.22.5"
+        ]
+      }
+    },
+    "gatewayType": {
+      "value": "Vpn"
+    },
+    "name": {
+      "value": "nvgaaa001"
+    },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
+    "vNetResourceId": {
+      "value": "<vNetResourceId>"
+    },
+    // Non-required parameters
+    "allowRemoteVnetTraffic": {
+      "value": true
+    },
+    "disableIPSecReplayProtection": {
+      "value": true
+    },
+    "domainNameLabel": {
+      "value": [
+        "dm-nvgaaa"
+      ]
+    },
+    "enableBgpRouteTranslationForNat": {
+      "value": true
+    },
+    "enablePrivateIpAddress": {
+      "value": true
+    },
+    "gatewayDefaultSiteLocalNetworkGatewayId": {
+      "value": "<gatewayDefaultSiteLocalNetworkGatewayId>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "publicIpZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
+    "vpnGatewayGeneration": {
+      "value": "Generation2"
+    },
+    "vpnType": {
+      "value": "RouteBased"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _VPN Active Active without BGP settings_
+
+This instance deploys the module with the VPN Active Active without BGP settings.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
+  name: 'virtualNetworkGatewayDeployment'
+  params: {
+    // Required parameters
+    clusterSettings: {
+      clusterMode: 'activeActiveNoBgp'
+    }
+    gatewayType: 'Vpn'
+    name: 'nvgaa001'
+    skuName: 'VpnGw2AZ'
+    vNetResourceId: '<vNetResourceId>'
+    // Non-required parameters
+    allowRemoteVnetTraffic: true
+    disableIPSecReplayProtection: true
+    domainNameLabel: [
+      'dm-nvgaa'
+    ]
+    enableBgpRouteTranslationForNat: true
+    enablePrivateIpAddress: true
+    gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
+    location: '<location>'
+    publicIpZones: [
+      1
+      2
+      3
+    ]
+    vpnGatewayGeneration: 'Generation2'
+    vpnType: 'RouteBased'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "clusterSettings": {
+      "value": {
+        "clusterMode": "activeActiveNoBgp"
+      }
+    },
+    "gatewayType": {
+      "value": "Vpn"
+    },
+    "name": {
+      "value": "nvgaa001"
+    },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
+    "vNetResourceId": {
+      "value": "<vNetResourceId>"
+    },
+    // Non-required parameters
+    "allowRemoteVnetTraffic": {
+      "value": true
+    },
+    "disableIPSecReplayProtection": {
+      "value": true
+    },
+    "domainNameLabel": {
+      "value": [
+        "dm-nvgaa"
+      ]
+    },
+    "enableBgpRouteTranslationForNat": {
+      "value": true
+    },
+    "enablePrivateIpAddress": {
+      "value": true
+    },
+    "gatewayDefaultSiteLocalNetworkGatewayId": {
+      "value": "<gatewayDefaultSiteLocalNetworkGatewayId>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "publicIpZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
+    "vpnGatewayGeneration": {
+      "value": "Generation2"
+    },
+    "vpnType": {
+      "value": "RouteBased"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _VPN Active Passive with BGP settings_
+
+This instance deploys the module with the VPN Active Passive with APIPA BGP settings.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
+  name: 'virtualNetworkGatewayDeployment'
+  params: {
+    // Required parameters
+    clusterSettings: {
+      asn: 65815
+      clusterMode: 'activePassiveBgp'
+      customBgpIpAddresses: [
+        '169.254.21.4'
+        '169.254.21.5'
+      ]
+    }
+    gatewayType: 'Vpn'
+    name: 'nvgapb001'
+    skuName: 'VpnGw2AZ'
+    vNetResourceId: '<vNetResourceId>'
+    // Non-required parameters
+    allowRemoteVnetTraffic: true
+    disableIPSecReplayProtection: true
+    domainNameLabel: [
+      'dm-nvgapb'
+    ]
+    enableBgpRouteTranslationForNat: true
+    enablePrivateIpAddress: true
+    gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
+    location: '<location>'
+    publicIpZones: [
+      1
+      2
+      3
+    ]
+    vpnGatewayGeneration: 'Generation2'
+    vpnType: 'RouteBased'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "clusterSettings": {
+      "value": {
+        "asn": 65815,
+        "clusterMode": "activePassiveBgp",
+        "customBgpIpAddresses": [
+          "169.254.21.4",
+          "169.254.21.5"
+        ]
+      }
+    },
+    "gatewayType": {
+      "value": "Vpn"
+    },
+    "name": {
+      "value": "nvgapb001"
+    },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
+    "vNetResourceId": {
+      "value": "<vNetResourceId>"
+    },
+    // Non-required parameters
+    "allowRemoteVnetTraffic": {
+      "value": true
+    },
+    "disableIPSecReplayProtection": {
+      "value": true
+    },
+    "domainNameLabel": {
+      "value": [
+        "dm-nvgapb"
+      ]
+    },
+    "enableBgpRouteTranslationForNat": {
+      "value": true
+    },
+    "enablePrivateIpAddress": {
+      "value": true
+    },
+    "gatewayDefaultSiteLocalNetworkGatewayId": {
+      "value": "<gatewayDefaultSiteLocalNetworkGatewayId>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "publicIpZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
+    "vpnGatewayGeneration": {
+      "value": "Generation2"
+    },
+    "vpnType": {
+      "value": "RouteBased"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 6: _VPN Active Passive without BGP settings_
+
+This instance deploys the module with the VPN Active Passive without BGP settings.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
+  name: 'virtualNetworkGatewayDeployment'
+  params: {
+    // Required parameters
+    clusterSettings: {
+      clusterMode: 'activePassiveNoBgp'
+    }
+    gatewayType: 'Vpn'
+    name: 'nvgap001'
+    skuName: 'VpnGw2AZ'
+    vNetResourceId: '<vNetResourceId>'
+    // Non-required parameters
+    allowRemoteVnetTraffic: true
+    disableIPSecReplayProtection: true
+    domainNameLabel: [
+      'dm-nvgap'
+    ]
+    enableBgpRouteTranslationForNat: true
+    enablePrivateIpAddress: true
+    gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
+    location: '<location>'
+    publicIpZones: [
+      1
+      2
+      3
+    ]
+    vpnGatewayGeneration: 'Generation2'
+    vpnType: 'RouteBased'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "clusterSettings": {
+      "value": {
+        "clusterMode": "activePassiveNoBgp"
+      }
+    },
+    "gatewayType": {
+      "value": "Vpn"
+    },
+    "name": {
+      "value": "nvgap001"
+    },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
+    "vNetResourceId": {
+      "value": "<vNetResourceId>"
+    },
+    // Non-required parameters
+    "allowRemoteVnetTraffic": {
+      "value": true
+    },
+    "disableIPSecReplayProtection": {
+      "value": true
+    },
+    "domainNameLabel": {
+      "value": [
+        "dm-nvgap"
+      ]
+    },
+    "enableBgpRouteTranslationForNat": {
+      "value": true
+    },
+    "enablePrivateIpAddress": {
+      "value": true
+    },
+    "gatewayDefaultSiteLocalNetworkGatewayId": {
+      "value": "<gatewayDefaultSiteLocalNetworkGatewayId>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "publicIpZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
+    "vpnGatewayGeneration": {
+      "value": "Generation2"
+    },
+    "vpnType": {
+      "value": "RouteBased"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -164,6 +779,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
+    clusterSettings: {
+      clusterMode: 'activeActiveNoBgp'
+    }
     gatewayType: 'Vpn'
     name: 'nvgmin001'
     skuName: 'VpnGw2AZ'
@@ -192,6 +810,11 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "clusterSettings": {
+      "value": {
+        "clusterMode": "activeActiveNoBgp"
+      }
+    },
     "gatewayType": {
       "value": "Vpn"
     },
@@ -222,7 +845,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 3: _ExpressRoute_
+### Example 8: _ExpressRoute_
 
 This instance deploys the module with the ExpressRoute set of required parameters.
 
@@ -236,6 +859,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
+    clusterSettings: {
+      clusterMode: 'activePassiveBgp'
+    }
     gatewayType: 'ExpressRoute'
     name: 'nvger001'
     skuName: 'ErGw1AZ'
@@ -268,6 +894,11 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "clusterSettings": {
+      "value": {
+        "clusterMode": "activePassiveBgp"
+      }
+    },
     "gatewayType": {
       "value": "ExpressRoute"
     },
@@ -306,7 +937,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 9: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -320,12 +951,23 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
+    clusterSettings: {
+      activeGatewayPipName: 'nvgmax001-pip2'
+      clusterMode: 'activeActiveBgp'
+      customBgpIpAddresses: [
+        '169.254.21.4'
+        '169.254.21.5'
+      ]
+      secondCustomBgpIpAddresses: [
+        '169.254.22.4'
+        '169.254.22.5'
+      ]
+    }
     gatewayType: 'Vpn'
     name: 'nvgmax001'
     skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
-    activeActive: true
     allowRemoteVnetTraffic: true
     diagnosticSettings: [
       {
@@ -435,6 +1077,20 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "clusterSettings": {
+      "value": {
+        "activeGatewayPipName": "nvgmax001-pip2",
+        "clusterMode": "activeActiveBgp",
+        "customBgpIpAddresses": [
+          "169.254.21.4",
+          "169.254.21.5"
+        ],
+        "secondCustomBgpIpAddresses": [
+          "169.254.22.4",
+          "169.254.22.5"
+        ]
+      }
+    },
     "gatewayType": {
       "value": "Vpn"
     },
@@ -448,9 +1104,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "<vNetResourceId>"
     },
     // Non-required parameters
-    "activeActive": {
-      "value": true
-    },
     "allowRemoteVnetTraffic": {
       "value": true
     },
@@ -580,7 +1233,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 5: _Using SKU without Availability Zones_
+### Example 10: _Using SKU without Availability Zones_
 
 This instance deploys the module with a SKU that does not support Availability Zones.
 
@@ -594,6 +1247,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
+    clusterSettings: {
+      clusterMode: 'activePassiveNoBgp'
+    }
     gatewayType: 'Vpn'
     name: 'nvgnaz001'
     skuName: 'VpnGw1'
@@ -617,6 +1273,11 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "clusterSettings": {
+      "value": {
+        "clusterMode": "activePassiveNoBgp"
+      }
+    },
     "gatewayType": {
       "value": "Vpn"
     },
@@ -640,7 +1301,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 6: _VPN_
+### Example 11: _VPN_
 
 This instance deploys the module with the VPN set of required parameters.
 
@@ -654,12 +1315,14 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
+    clusterSettings: {
+      clusterMode: 'activeActiveNoBgp'
+    }
     gatewayType: 'Vpn'
     name: 'nvgvpn001'
     skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
-    activeActive: true
     allowRemoteVnetTraffic: true
     disableIPSecReplayProtection: true
     domainNameLabel: [
@@ -693,6 +1356,11 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "clusterSettings": {
+      "value": {
+        "clusterMode": "activeActiveNoBgp"
+      }
+    },
     "gatewayType": {
       "value": "Vpn"
     },
@@ -706,9 +1374,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "<vNetResourceId>"
     },
     // Non-required parameters
-    "activeActive": {
-      "value": true
-    },
     "allowRemoteVnetTraffic": {
       "value": true
     },
@@ -752,7 +1417,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 12: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -766,12 +1431,23 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
+    clusterSettings: {
+      asn: 65515
+      clusterMode: 'activeActiveBgp'
+      customBgpIpAddresses: [
+        '169.254.21.4'
+        '169.254.21.5'
+      ]
+      secondCustomBgpIpAddresses: [
+        '169.254.22.4'
+        '169.254.22.5'
+      ]
+    }
     gatewayType: 'Vpn'
     name: 'nvgmwaf001'
     skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
-    activeActive: true
     allowRemoteVnetTraffic: true
     diagnosticSettings: [
       {
@@ -862,6 +1538,20 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "clusterSettings": {
+      "value": {
+        "asn": 65515,
+        "clusterMode": "activeActiveBgp",
+        "customBgpIpAddresses": [
+          "169.254.21.4",
+          "169.254.21.5"
+        ],
+        "secondCustomBgpIpAddresses": [
+          "169.254.22.4",
+          "169.254.22.5"
+        ]
+      }
+    },
     "gatewayType": {
       "value": "Vpn"
     },
@@ -875,9 +1565,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "<vNetResourceId>"
     },
     // Non-required parameters
-    "activeActive": {
-      "value": true
-    },
     "allowRemoteVnetTraffic": {
       "value": true
     },
@@ -992,6 +1679,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`clusterSettings`](#parameter-clustersettings) | object | Specifies one of the following four configurations: Active-Active with (clusterMode = activeActiveBgp) or without (clusterMode = activeActiveNoBgp) BGP, Active-Passive with (clusterMode = activePassiveBgp) or without (clusterMode = activePassiveNoBgp) BGP. |
 | [`gatewayType`](#parameter-gatewaytype) | string | Specifies the gateway type. E.g. VPN, ExpressRoute. |
 | [`name`](#parameter-name) | string | Specifies the Virtual Network Gateway name. |
 | [`skuName`](#parameter-skuname) | string | The SKU of the Gateway. |
@@ -1001,17 +1689,13 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`activeActive`](#parameter-activeactive) | bool | Value to specify if the Gateway should be deployed in active-active or active-passive configuration. |
-| [`activeGatewayPipName`](#parameter-activegatewaypipname) | string | Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it's not provided, a '-pip' suffix will be appended to the gateway's name. |
 | [`allowRemoteVnetTraffic`](#parameter-allowremotevnettraffic) | bool | Configure this gateway to accept traffic from other Azure Virtual Networks. This configuration does not support connectivity to Azure Virtual WAN. |
 | [`allowVirtualWanTraffic`](#parameter-allowvirtualwantraffic) | bool | Configures this gateway to accept traffic from remote Virtual WAN networks. |
-| [`asn`](#parameter-asn) | int | ASN value. |
 | [`clientRevokedCertThumbprint`](#parameter-clientrevokedcertthumbprint) | string | Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet. |
 | [`clientRootCertData`](#parameter-clientrootcertdata) | string | Client root certificate data used to authenticate VPN clients. Cannot be configured if vpnClientAadConfiguration is provided. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableIPSecReplayProtection`](#parameter-disableipsecreplayprotection) | bool | disableIPSecReplayProtection flag. Used for VPN Gateways. |
 | [`domainNameLabel`](#parameter-domainnamelabel) | array | DNS name(s) of the Public IP resource(s). If you enabled active-active configuration, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com. |
-| [`enableBgp`](#parameter-enablebgp) | bool | Value to specify if BGP is enabled or not. |
 | [`enableBgpRouteTranslationForNat`](#parameter-enablebgproutetranslationfornat) | bool | EnableBgpRouteTranslationForNat flag. Can only be used when "natRules" are enabled on the Virtual Network Gateway. |
 | [`enableDnsForwarding`](#parameter-enablednsforwarding) | bool | Whether DNS forwarding is enabled or not and is only supported for Express Route Gateways. The DNS forwarding feature flag must be enabled on the current subscription. |
 | [`enablePrivateIpAddress`](#parameter-enableprivateipaddress) | bool | Whether private IP needs to be enabled on this gateway for connections or not. Used for configuring a Site-to-Site VPN connection over ExpressRoute private peering. |
@@ -1030,6 +1714,13 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 | [`vpnClientAddressPoolPrefix`](#parameter-vpnclientaddresspoolprefix) | string | The IP address range from which VPN clients will receive an IP address when connected. Range specified must not overlap with on-premise network. |
 | [`vpnGatewayGeneration`](#parameter-vpngatewaygeneration) | string | The generation for this VirtualNetworkGateway. Must be None if virtualNetworkGatewayType is not VPN. |
 | [`vpnType`](#parameter-vpntype) | string | Specifies the VPN type. |
+
+### Parameter: `clusterSettings`
+
+Specifies one of the following four configurations: Active-Active with (clusterMode = activeActiveBgp) or without (clusterMode = activeActiveNoBgp) BGP, Active-Passive with (clusterMode = activePassiveBgp) or without (clusterMode = activePassiveNoBgp) BGP.
+
+- Required: Yes
+- Type: object
 
 ### Parameter: `gatewayType`
 
@@ -1088,22 +1779,6 @@ Virtual Network resource ID.
 - Required: Yes
 - Type: string
 
-### Parameter: `activeActive`
-
-Value to specify if the Gateway should be deployed in active-active or active-passive configuration.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `activeGatewayPipName`
-
-Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it's not provided, a '-pip' suffix will be appended to the gateway's name.
-
-- Required: No
-- Type: string
-- Default: `[format('{0}-pip2', parameters('name'))]`
-
 ### Parameter: `allowRemoteVnetTraffic`
 
 Configure this gateway to accept traffic from other Azure Virtual Networks. This configuration does not support connectivity to Azure Virtual WAN.
@@ -1119,14 +1794,6 @@ Configures this gateway to accept traffic from remote Virtual WAN networks.
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `asn`
-
-ASN value.
-
-- Required: No
-- Type: int
-- Default: `65815`
 
 ### Parameter: `clientRevokedCertThumbprint`
 
@@ -1305,14 +1972,6 @@ DNS name(s) of the Public IP resource(s). If you enabled active-active configura
 - Required: No
 - Type: array
 - Default: `[]`
-
-### Parameter: `enableBgp`
-
-Value to specify if BGP is enabled or not.
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `enableBgpRouteTranslationForNat`
 
@@ -1582,6 +2241,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
