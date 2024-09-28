@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "16609348340052214807"
+      "version": "0.30.3.12046",
+      "templateHash": "12599229174633311842"
     },
     "name": "App Service Plan",
     "description": "This module deploys an App Service Plan.",
@@ -203,15 +203,17 @@
     },
     "skuName": {
       "type": "string",
+      "defaultValue": "P1v3",
       "metadata": {
         "example": "  'F1'\n  'B1'\n  'P1v3'\n  'I1v2'\n  ",
-        "description": "Required. The name of the SKU will Determine the tier, size, family of the App Service Plan."
+        "description": "Optional. The name of the SKU will Determine the tier, size, family of the App Service Plan. This defaults to P1v3 to leverage availability zones."
       }
     },
     "skuCapacity": {
       "type": "int",
+      "defaultValue": 3,
       "metadata": {
-        "description": "Required. Number of workers associated with the App Service Plan."
+        "description": "Optional. Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones."
       }
     },
     "location": {
@@ -447,7 +449,7 @@
       "scope": "[format('Microsoft.Web/serverfarms/{0}', parameters('name'))]",
       "name": "[guid(resourceId('Microsoft.Web/serverfarms', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+        "roleDefinitionId": "[coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
         "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
         "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
         "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
