@@ -99,11 +99,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
+          name: '8372742c-408e-4a8a-a748-aca787a0e33e'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -119,9 +121,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       accountPrivateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.purviewAccountPrivateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.purviewAccountPrivateDNSResourceId
+              }
+            ]
+          }
           service: 'account'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
           tags: {
@@ -133,9 +139,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       portalPrivateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.purviewPortalPrivateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.purviewPortalPrivateDNSResourceId
+              }
+            ]
+          }
           service: 'portal'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
           tags: {
@@ -145,17 +155,25 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.purviewPortalPrivateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.purviewPortalPrivateDNSResourceId
+              }
+            ]
+          }
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
       storageBlobPrivateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.storageBlobPrivateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.storageBlobPrivateDNSResourceId
+              }
+            ]
+          }
           service: 'blob'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
           tags: {
@@ -167,9 +185,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       storageQueuePrivateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.storageQueuePrivateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.storageQueuePrivateDNSResourceId
+              }
+            ]
+          }
           service: 'queue'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
           tags: {
@@ -179,17 +201,25 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.storageQueuePrivateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.storageQueuePrivateDNSResourceId
+              }
+            ]
+          }
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
       eventHubPrivateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.eventHubPrivateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.eventHubPrivateDNSResourceId
+              }
+            ]
+          }
           service: 'namespace'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
           tags: {

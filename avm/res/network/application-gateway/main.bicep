@@ -37,7 +37,7 @@ param enableFips bool = false
 param enableHttp2 bool = false
 
 @description('Optional. The resource ID of an associated firewall policy. Should be configured for security reasons.')
-param firewallPolicyId string = ''
+param firewallPolicyResourceId string = ''
 
 @description('Optional. Frontend IP addresses of the application gateway resource.')
 param frontendIPConfigurations array = []
@@ -88,7 +88,7 @@ param rewriteRuleSets array = []
   'Standard_v2'
   'WAF_v2'
 ])
-param sku string = 'WAF_v2'
+param sku string = 'Standard_v2'
 
 @description('Optional. The number of Application instances to be configured.')
 @minValue(0)
@@ -178,7 +178,11 @@ param urlPathMaps array = []
 param webApplicationFirewallConfiguration object = {}
 
 @description('Optional. A list of availability zones denoting where the resource needs to come from.')
-param zones array = []
+param zones array = [
+  1
+  2
+  3
+]
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
@@ -221,7 +225,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -230,6 +234,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -269,12 +284,12 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2023-04-01' =
       backendSettingsCollection: backendSettingsCollection
       customErrorConfigurations: customErrorConfigurations
       enableHttp2: enableHttp2
-      firewallPolicy: !empty(firewallPolicyId)
+      firewallPolicy: !empty(firewallPolicyResourceId)
         ? {
-            id: firewallPolicyId
+            id: firewallPolicyResourceId
           }
         : null
-      forceFirewallPolicyAssociation: !empty(firewallPolicyId)
+      forceFirewallPolicyAssociation: !empty(firewallPolicyResourceId)
       frontendIPConfigurations: frontendIPConfigurations
       frontendPorts: frontendPorts
       gatewayIPConfigurations: gatewayIPConfigurations
@@ -367,7 +382,7 @@ resource applicationGateway_diagnosticSettings 'Microsoft.Insights/diagnosticSet
   }
 ]
 
-module applicationGateway_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module applicationGateway_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-applicationGateway-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -408,8 +423,7 @@ module applicationGateway_privateEndpoints 'br/public:avm/res/network/private-en
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -421,14 +435,14 @@ module applicationGateway_privateEndpoints 'br/public:avm/res/network/private-en
 ]
 
 resource applicationGateway_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(applicationGateway.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(
+      applicationGateway.id,
+      roleAssignment.principalId,
+      roleAssignment.roleDefinitionId
+    )
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -452,6 +466,17 @@ output resourceGroupName string = resourceGroup().name
 @description('The location the resource was deployed into.')
 output location string = applicationGateway.location
 
+@description('The private endpoints of the application gateway.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: applicationGateway_privateEndpoints[i].outputs.name
+    resourceId: applicationGateway_privateEndpoints[i].outputs.resourceId
+    groupId: applicationGateway_privateEndpoints[i].outputs.groupId
+    customDnsConfig: applicationGateway_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: applicationGateway_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -470,6 +495,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -508,11 +536,20 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?

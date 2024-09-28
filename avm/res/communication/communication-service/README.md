@@ -8,7 +8,6 @@ This module deploys a Communication Service
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -332,7 +331,6 @@ module communicationService 'br/public:avm/res/communication/communication-servi
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -608,6 +606,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -706,7 +710,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -716,10 +719,6 @@ Resource tags.
 | `resourceGroupName` | string | The resource group the communication service was deployed into. |
 | `resourceId` | string | The resource ID of the communication service. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

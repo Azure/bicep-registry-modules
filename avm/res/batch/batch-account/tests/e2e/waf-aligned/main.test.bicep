@@ -84,9 +84,13 @@ module testDeployment '../../../main.bicep' = [
       poolAllocationMode: 'BatchService'
       privateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'batchAccount'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }

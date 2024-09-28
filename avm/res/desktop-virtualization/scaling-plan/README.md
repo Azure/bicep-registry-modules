@@ -8,7 +8,6 @@ This module deploys an Azure Virtual Desktop Scaling Plan.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -125,11 +124,13 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
     }
     roleAssignments: [
       {
+        name: 'c2c1c560-2169-405a-a8dc-7427e403e5ac'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -316,11 +317,13 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
     "roleAssignments": {
       "value": [
         {
+          "name": "c2c1c560-2169-405a-a8dc-7427e403e5ac",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -541,7 +544,6 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -793,6 +795,26 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Owner'`
+  - `'Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+  - `'Application Group Contributor'`
+  - `'Desktop Virtualization Application Group Contributor'`
+  - `'Desktop Virtualization Application Group Reader'`
+  - `'Desktop Virtualization Contributor'`
+  - `'Desktop Virtualization Host Pool Contributor'`
+  - `'Desktop Virtualization Host Pool Reader'`
+  - `'Desktop Virtualization Power On Off Contributor'`
+  - `'Desktop Virtualization Reader'`
+  - `'Desktop Virtualization Session Host Operator'`
+  - `'Desktop Virtualization User'`
+  - `'Desktop Virtualization User Session Operator'`
+  - `'Desktop Virtualization Virtual Machine Contributor'`
+  - `'Desktop Virtualization Workspace Contributor'`
+  - `'Desktop Virtualization Workspace Reader'`
 
 **Required parameters**
 
@@ -809,6 +831,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -859,6 +882,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -899,7 +929,6 @@ Time zone of the Scaling Plan. Defaults to UTC.
 - Type: string
 - Default: `'UTC'`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -908,10 +937,6 @@ Time zone of the Scaling Plan. Defaults to UTC.
 | `name` | string | The name of the Scaling Plan. |
 | `resourceGroupName` | string | The name of the resource group the Scaling Plan was created in. |
 | `resourceId` | string | The resource ID of the Scaling Plan. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

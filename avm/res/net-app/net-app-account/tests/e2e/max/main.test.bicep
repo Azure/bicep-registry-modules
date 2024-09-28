@@ -21,6 +21,9 @@ param serviceShort string = 'nanaamax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. The source of the encryption key.')
+param encryptionKeySource string = 'Microsoft.NetApp'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -79,6 +82,7 @@ module testDeployment '../../../main.bicep' = {
             name: '${namePrefix}-${serviceShort}-vol-001'
             zones: ['1']
             networkFeatures: 'Standard'
+            encryptionKeySource: encryptionKeySource
             protocolTypes: [
               'NFSv4.1'
             ]
@@ -106,6 +110,7 @@ module testDeployment '../../../main.bicep' = {
             name: '${namePrefix}-${serviceShort}-vol-002'
             zones: ['1']
             networkFeatures: 'Standard'
+            encryptionKeySource: encryptionKeySource
             protocolTypes: [
               'NFSv4.1'
             ]
@@ -130,11 +135,13 @@ module testDeployment '../../../main.bicep' = {
     ]
     roleAssignments: [
       {
+        name: '18051111-2a33-4f8e-8b24-441aac1e6562'
         roleDefinitionIdOrName: 'Owner'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
       {
+        name: guid('Custom seed ${namePrefix}${serviceShort}')
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'

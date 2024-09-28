@@ -8,7 +8,6 @@ This module deploys a Public IP Prefix.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -271,7 +270,6 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -373,6 +371,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -494,7 +499,6 @@ A list of availability zones denoting the IP allocated for the resource needs to
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -503,10 +507,6 @@ A list of availability zones denoting the IP allocated for the resource needs to
 | `name` | string | The name of the public IP prefix. |
 | `resourceGroupName` | string | The resource group the public IP prefix was deployed into. |
 | `resourceId` | string | The resource ID of the public IP prefix. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

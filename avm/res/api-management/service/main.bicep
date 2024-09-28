@@ -181,7 +181,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -190,6 +190,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -288,7 +299,7 @@ module service_apiVersionSets 'api-version-set/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       name: apiVersionSet.name
-      properties: contains(apiVersionSet, 'properties') ? apiVersionSet.properties : {}
+      properties: apiVersionSet.?properties ?? {}
     }
   }
 ]
@@ -300,40 +311,20 @@ module service_authorizationServers 'authorization-server/main.bicep' = [
       apiManagementServiceName: service.name
       name: authorizationServer.name
       authorizationEndpoint: authorizationServer.authorizationEndpoint
-      authorizationMethods: contains(authorizationServer, 'authorizationMethods')
-        ? authorizationServer.authorizationMethods
-        : [
-            'GET'
-          ]
-      bearerTokenSendingMethods: contains(authorizationServer, 'bearerTokenSendingMethods')
-        ? authorizationServer.bearerTokenSendingMethods
-        : [
-            'authorizationHeader'
-          ]
-      clientAuthenticationMethod: contains(authorizationServer, 'clientAuthenticationMethod')
-        ? authorizationServer.clientAuthenticationMethod
-        : [
-            'Basic'
-          ]
+      authorizationMethods: authorizationServer.?authorizationMethods ?? ['GET']
+      bearerTokenSendingMethods: authorizationServer.?bearerTokenSendingMethods ?? ['authorizationHeader']
+      clientAuthenticationMethod: authorizationServer.?clientAuthenticationMethod ?? ['Basic']
       clientId: authorizationServer.clientId
       clientSecret: authorizationServer.clientSecret
-      clientRegistrationEndpoint: contains(authorizationServer, 'clientRegistrationEndpoint')
-        ? authorizationServer.clientRegistrationEndpoint
-        : ''
-      defaultScope: contains(authorizationServer, 'defaultScope') ? authorizationServer.defaultScope : ''
+      clientRegistrationEndpoint: authorizationServer.?clientRegistrationEndpoint ?? ''
+      defaultScope: authorizationServer.?defaultScope ?? ''
       grantTypes: authorizationServer.grantTypes
-      resourceOwnerPassword: contains(authorizationServer, 'resourceOwnerPassword')
-        ? authorizationServer.resourceOwnerPassword
-        : ''
-      resourceOwnerUsername: contains(authorizationServer, 'resourceOwnerUsername')
-        ? authorizationServer.resourceOwnerUsername
-        : ''
-      serverDescription: contains(authorizationServer, 'serverDescription') ? authorizationServer.serverDescription : ''
-      supportState: contains(authorizationServer, 'supportState') ? authorizationServer.supportState : false
-      tokenBodyParameters: contains(authorizationServer, 'tokenBodyParameters')
-        ? authorizationServer.tokenBodyParameters
-        : []
-      tokenEndpoint: contains(authorizationServer, 'tokenEndpoint') ? authorizationServer.tokenEndpoint : ''
+      resourceOwnerPassword: authorizationServer.?resourceOwnerPassword ?? ''
+      resourceOwnerUsername: authorizationServer.?resourceOwnerUsername ?? ''
+      serverDescription: authorizationServer.?serverDescription ?? ''
+      supportState: authorizationServer.?supportState ?? false
+      tokenBodyParameters: authorizationServer.?tokenBodyParameters ?? []
+      tokenEndpoint: authorizationServer.?tokenEndpoint ?? ''
     }
   }
 ]
@@ -402,20 +393,17 @@ module service_identityProviders 'identity-provider/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       name: identityProvider.name
-      allowedTenants: contains(identityProvider, 'allowedTenants') ? identityProvider.allowedTenants : []
-      authority: contains(identityProvider, 'authority') ? identityProvider.authority : ''
-      clientId: contains(identityProvider, 'clientId') ? identityProvider.clientId : ''
-      clientSecret: contains(identityProvider, 'clientSecret') ? identityProvider.clientSecret : ''
-      passwordResetPolicyName: contains(identityProvider, 'passwordResetPolicyName')
-        ? identityProvider.passwordResetPolicyName
-        : ''
-      profileEditingPolicyName: contains(identityProvider, 'profileEditingPolicyName')
-        ? identityProvider.profileEditingPolicyName
-        : ''
-      signInPolicyName: contains(identityProvider, 'signInPolicyName') ? identityProvider.signInPolicyName : ''
-      signInTenant: contains(identityProvider, 'signInTenant') ? identityProvider.signInTenant : ''
-      signUpPolicyName: contains(identityProvider, 'signUpPolicyName') ? identityProvider.signUpPolicyName : ''
-      type: contains(identityProvider, 'type') ? identityProvider.type : 'aad'
+      allowedTenants: identityProvider.?allowedTenants ?? []
+      authority: identityProvider.?authority ?? ''
+      clientId: identityProvider.?clientId ?? ''
+      clientLibrary: identityProvider.?clientLibrary ?? ''
+      clientSecret: identityProvider.?clientSecret ?? ''
+      passwordResetPolicyName: identityProvider.?passwordResetPolicyName ?? ''
+      profileEditingPolicyName: identityProvider.?profileEditingPolicyName ?? ''
+      signInPolicyName: identityProvider.?signInPolicyName ?? ''
+      signInTenant: identityProvider.?signInTenant ?? ''
+      signUpPolicyName: identityProvider.?signUpPolicyName ?? ''
+      type: identityProvider.?type ?? 'aad'
     }
   }
 ]
@@ -426,11 +414,11 @@ module service_loggers 'loggers/main.bicep' = [
     params: {
       name: logger.name
       apiManagementServiceName: service.name
-      credentials: contains(logger, 'credentials') ? logger.credentials : {}
-      isBuffered: contains(logger, 'isBuffered') ? logger.isBuffered : true
-      loggerDescription: contains(logger, 'loggerDescription') ? logger.loggerDescription : ''
-      loggerType: contains(logger, 'loggerType') ? logger.loggerType : 'azureMonitor'
-      targetResourceId: contains(logger, 'targetResourceId') ? logger.targetResourceId : ''
+      credentials: logger.?credentials ?? {}
+      isBuffered: logger.?isBuffered ?? true
+      loggerDescription: logger.?loggerDescription ?? ''
+      loggerType: logger.?loggerType ?? 'azureMonitor'
+      targetResourceId: logger.?targetResourceId ?? ''
     }
     dependsOn: [
       service_namedValues
@@ -444,11 +432,11 @@ module service_namedValues 'named-value/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       displayName: namedValue.displayName
-      keyVault: contains(namedValue, 'keyVault') ? namedValue.keyVault : {}
+      keyVault: namedValue.?keyVault ?? {}
       name: namedValue.name
       tags: namedValue.?tags // Note: these are not resource tags
-      secret: contains(namedValue, 'secret') ? namedValue.secret : false
-      value: contains(namedValue, 'value') ? namedValue.value : newGuidValue
+      secret: namedValue.?secret ?? false
+      value: namedValue.?value ?? newGuidValue
     }
   }
 ]
@@ -470,7 +458,7 @@ module service_policies 'policy/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       value: policy.value
-      format: contains(policy, 'format') ? policy.format : 'xml'
+      format: policy.?format ?? 'xml'
     }
   }
 ]
@@ -480,15 +468,15 @@ module service_products 'product/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Apim-Product-${index}'
     params: {
       apiManagementServiceName: service.name
-      apis: contains(product, 'apis') ? product.apis : []
-      approvalRequired: contains(product, 'approvalRequired') ? product.approvalRequired : false
-      groups: contains(product, 'groups') ? product.groups : []
+      apis: product.?apis ?? []
+      approvalRequired: product.?approvalRequired ?? false
+      groups: product.?groups ?? []
       name: product.name
-      description: contains(product, 'description') ? product.description : ''
-      state: contains(product, 'state') ? product.state : 'published'
-      subscriptionRequired: contains(product, 'subscriptionRequired') ? product.subscriptionRequired : false
-      subscriptionsLimit: contains(product, 'subscriptionsLimit') ? product.subscriptionsLimit : 1
-      terms: contains(product, 'terms') ? product.terms : ''
+      description: product.?description ?? ''
+      state: product.?state ?? 'published'
+      subscriptionRequired: product.?subscriptionRequired ?? false
+      subscriptionsLimit: product.?subscriptionsLimit ?? 1
+      terms: product.?terms ?? ''
     }
     dependsOn: [
       service_apis
@@ -553,14 +541,10 @@ resource service_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-
 ]
 
 resource service_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(service.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(service.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -608,6 +592,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 

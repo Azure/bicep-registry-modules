@@ -344,11 +344,13 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     openServiceMeshEnabled: true
     roleAssignments: [
       {
+        name: 'ac915208-669e-4665-9792-7e2dc861f569'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -619,11 +621,13 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "roleAssignments": {
       "value": [
         {
+          "name": "ac915208-669e-4665-9792-7e2dc861f569",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -825,11 +829,13 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     networkPlugin: 'kubenet'
     roleAssignments: [
       {
+        name: '6acf186b-abbd-491b-8bd7-39fa199da81e'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -965,11 +971,13 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "roleAssignments": {
       "value": [
         {
+          "name": "6acf186b-abbd-491b-8bd7-39fa199da81e",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -1529,7 +1537,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -1651,6 +1658,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`supportPlan`](#parameter-supportplan) | string | The support plan for the Managed Cluster. |
 | [`syslogPort`](#parameter-syslogport) | int | The syslog host port. If not specified, the default port is 28330. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`vpaAddon`](#parameter-vpaaddon) | bool | Whether to enable VPA add-on in cluster. Default value is false. |
 | [`webApplicationRoutingEnabled`](#parameter-webapplicationroutingenabled) | bool | Specifies whether the webApplicationRoutingEnabled add-on is enabled or not. |
 
 ### Parameter: `name`
@@ -3186,6 +3194,26 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Azure Kubernetes Fleet Manager Contributor Role'`
+  - `'Azure Kubernetes Fleet Manager RBAC Admin'`
+  - `'Azure Kubernetes Fleet Manager RBAC Cluster Admin'`
+  - `'Azure Kubernetes Fleet Manager RBAC Reader'`
+  - `'Azure Kubernetes Fleet Manager RBAC Writer'`
+  - `'Azure Kubernetes Service Cluster Admin Role'`
+  - `'Azure Kubernetes Service Cluster Monitoring User'`
+  - `'Azure Kubernetes Service Cluster User Role'`
+  - `'Azure Kubernetes Service Contributor Role'`
+  - `'Azure Kubernetes Service RBAC Admin'`
+  - `'Azure Kubernetes Service RBAC Cluster Admin'`
+  - `'Azure Kubernetes Service RBAC Reader'`
+  - `'Azure Kubernetes Service RBAC Writer'`
+  - `'Contributor'`
+  - `'Kubernetes Agentless Operator'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -3202,6 +3230,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -3248,6 +3277,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -3329,6 +3365,14 @@ Tags of the resource.
 - Required: No
 - Type: object
 
+### Parameter: `vpaAddon`
+
+Whether to enable VPA add-on in cluster. Default value is false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `webApplicationRoutingEnabled`
 
 Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
@@ -3336,7 +3380,6 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
-
 
 ## Outputs
 
