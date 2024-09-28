@@ -1304,65 +1304,10 @@ function ConvertTo-FormattedBicepParameterfile {
         [string[]] $RequiredParametersList = @()
     )
 
-    # [0/5] Remove 'value' parameter property, if any (e.g. when dealing with a classic parameter file)
-    $JSONParametersWithoutValue = @{}
-    foreach ($parameterName in $JSONParameters.psbase.Keys) {
-        $keysOnLevel = $JSONParameters[$parameterName].Keys
-        if ($keysOnLevel.count -eq 1 -and $keysOnLevel -eq 'value') {
-            $JSONParametersWithoutValue[$parameterName] = $JSONParameters[$parameterName].value
-        } else {
-            $JSONParametersWithoutValue[$parameterName] = $JSONParameters[$parameterName]
-        }
-    }
+    # [1/2] Start by converting the JSON object to a formatted Bicep object
+    $commentedBicepParams = ConvertTo-FormattedBicep -JSONParameters $JSONParameters -RequiredParametersList $RequiredParametersList
 
-    # [1/6] Order parameters recursively
-    if ($JSONParametersWithoutValue.psbase.Keys.Count -gt 0) {
-        $orderedJSONParameters = Get-OrderedParametersJSON -ParametersJSON ($JSONParametersWithoutValue | ConvertTo-Json -Depth 99) -RequiredParametersList $RequiredParametersList
-    } else {
-        $orderedJSONParameters = @{}
-    }
-    # [2/6] Remove any JSON specific formatting
-    $templateParameterObject = $orderedJSONParameters | ConvertTo-Json -Depth 99
-    if ($templateParameterObject -ne '{}') {
-        $bicepParamsArray = $templateParameterObject -split '\r?\n' | ForEach-Object {
-            $line = $_
-            $line = $line -replace "'", "\'" # Update any [ "field": "[[concat('tags[', parameters('tagName'), ']')]"] to [ "field": "[[concat(\'tags[\', parameters(\'tagName\'), \']\')]"]
-            $line = $line -replace '"', "'" # Update any [xyz: "xyz"] to [xyz: 'xyz']
-            $line = $line -replace ',$', '' # Update any [xyz: abc,xyz,] to [xyz: abc,xyz]
-            $line = $line -replace "'(\w+)':", '$1:' # Update any ['xyz': xyz] to [xyz: xyz]
-            $line = $line -replace "'(.+.getSecret\('.+'\))'", '$1' # Update any [xyz: 'xyz.GetSecret()'] to [xyz: xyz.GetSecret()]
-            $line
-        }
-        $bicepParamsArray = $bicepParamsArray[1..($bicepParamsArray.count - 2)]
-
-        # [3/6] Format 'getSecret' references
-        $bicepParamsArray = $bicepParamsArray | ForEach-Object {
-            if ($_ -match ".+: '(\w+)\.getSecret\(\\'([0-9a-zA-Z-<>]+)\\'\)'") {
-                # e.g. change [pfxCertificate: 'kv1.getSecret(\'<certSecretName>\')'] to [pfxCertificate: kv1.getSecret('<certSecretName>')]
-                "{0}: {1}.getSecret('{2}')" -f ($_ -split ':')[0], $matches[1], $matches[2]
-            } else {
-                $_
-            }
-        }
-
-        # specific changes for bicep parameterfiles
-
-    } else {
-        $bicepParamsArray = @()
-    }
-
-    # [4/6] Format params with indent
-    $bicepParams = ($bicepParamsArray | ForEach-Object { "  $_" } | Out-String).TrimEnd()
-
-    # [5/6]  Add comment where required & optional parameters start
-    $splitInputObject = @{
-        BicepParams            = $bicepParams
-        RequiredParametersList = $RequiredParametersList
-        AllParametersList      = $JSONParameters.psBase.Keys
-    }
-    $commentedBicepParams = Add-BicepParameterTypeComment @splitInputObject
-
-    # [6/6] format as bicep parameter file
+    # [2/2] format as bicep parameter file
     $commentedBicepParams = $commentedBicepParams -split '\r?\n' | ForEach-Object {
         $line = $_
         $line = $line -replace '^( {0,4})([a-zA-Z]*)(:)(.*)', 'param $2 =$4' # Update any [    xyz: abc] to [param xyz = abc]
