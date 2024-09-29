@@ -4210,6 +4210,25 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Data Operator for Managed Disks'`
+  - `'Desktop Virtualization Power On Contributor'`
+  - `'Desktop Virtualization Power On Off Contributor'`
+  - `'Desktop Virtualization Virtual Machine Contributor'`
+  - `'DevTest Labs User'`
+  - `'Disk Backup Reader'`
+  - `'Disk Pool Operator'`
+  - `'Disk Restore Operator'`
+  - `'Disk Snapshot Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+  - `'Virtual Machine Administrator Login'`
+  - `'Virtual Machine Contributor'`
+  - `'Virtual Machine User Login'`
+  - `'VM Scanner Operator'`
 
 **Required parameters**
 

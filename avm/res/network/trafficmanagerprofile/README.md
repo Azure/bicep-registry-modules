@@ -257,7 +257,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       {
         name: 'webApp01Endpoint'
         properties: {
-          endpointLocation: 'eastus'
+          endpointLocation: '<endpointLocation>'
           endpointStatus: 'Enabled'
           priority: 1
           targetResourceId: '<targetResourceId>'
@@ -268,7 +268,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       {
         name: 'webApp02Endpoint'
         properties: {
-          endpointLocation: 'westus'
+          endpointLocation: '<endpointLocation>'
           endpointStatus: 'Enabled'
           priority: 2
           targetResourceId: '<targetResourceId>'
@@ -334,7 +334,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
         {
           "name": "webApp01Endpoint",
           "properties": {
-            "endpointLocation": "eastus",
+            "endpointLocation": "<endpointLocation>",
             "endpointStatus": "Enabled",
             "priority": 1,
             "targetResourceId": "<targetResourceId>",
@@ -345,7 +345,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
         {
           "name": "webApp02Endpoint",
           "properties": {
-            "endpointLocation": "westus",
+            "endpointLocation": "<endpointLocation>",
             "endpointStatus": "Enabled",
             "priority": 2,
             "targetResourceId": "<targetResourceId>",
@@ -675,6 +675,14 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Traffic Manager Contributor'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

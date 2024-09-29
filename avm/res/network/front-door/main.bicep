@@ -101,7 +101,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource frontDoor 'Microsoft.Network/frontDoors@2020-05-01' = {
+resource frontDoor 'Microsoft.Network/frontDoors@2021-06-01' = {
   name: name
   location: 'global'
   tags: tags
