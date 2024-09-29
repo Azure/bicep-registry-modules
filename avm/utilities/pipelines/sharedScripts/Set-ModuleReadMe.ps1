@@ -1418,7 +1418,7 @@ function Set-UsageExamplesSection {
         [bool] $addBicep = $true,
 
         [Parameter(Mandatory = $false)]
-        [bool] $addBicepParameterfile = $true,
+        [bool] $addBicepParametersfile = $true,
 
         [Parameter(Mandatory = $false)]
         [string] $SectionStartIdentifier = '## Usage examples'
@@ -1608,8 +1608,8 @@ function Set-UsageExamplesSection {
             }
             $bicepExample = ConvertTo-FormattedBicep @conversionInputObject
 
-            # [6/6] Convert the Bicep format to a Bicep Parameterfile format
-            $bicepParameterfileExample = $bicepExample -split '\r?\n' | ForEach-Object {
+            # [6/6] Convert the Bicep format to a Bicep parameters file format
+            $bicepParametersfileExample = $bicepExample -split '\r?\n' | ForEach-Object {
                 $line = $_
                 $line = $line -replace '^( {0,4})([a-zA-Z]*)(:)(.*)', 'param $2 =$4' # Update any [    xyz: abc] to [param xyz = abc]
                 $line = $line -replace '^ {0,4}', '' # Update any [    xyz: abc] to [xyz: abc]
@@ -1675,14 +1675,14 @@ function Set-UsageExamplesSection {
             }
 
             # --------------------- #
-            #   Add Bicep Parameterfile example   #
+            #   Add Bicep pParameters file example   #
             # --------------------- #
-            if ($addBicepParameterfile) {
+            if ($addBicepParametersfile) {
 
-                $formattedBicepParameterfileExample = @(
+                $formattedBicepParametersfileExample = @(
                     "using 'br/public:$($brLink):$($targetVersion)'"
                     ''
-                ) + $bicepParameterfileExample
+                ) + $bicepParametersfileExample
 
 
                 # Build result
@@ -1690,10 +1690,10 @@ function Set-UsageExamplesSection {
                     '',
                     '<details>'
                     ''
-                    '<summary>via Bicep Parameterfile</summary>'
+                    '<summary>via Bicep parameters file</summary>'
                     ''
                     '```bicep-params',
-                    ($formattedBicepParameterfileExample | ForEach-Object { "$_" }).TrimEnd(),
+                    ($formattedBicepParametersfileExample | ForEach-Object { "$_" }).TrimEnd(),
                     '```',
                     '',
                     '</details>',
