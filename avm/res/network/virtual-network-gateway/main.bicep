@@ -39,7 +39,7 @@ param gatewayType string
 ])
 param vpnGatewayGeneration string = 'None'
 
-@description('Required. The SKU of the Gateway.')
+@description('Optional. The SKU of the Gateway.')
 @allowed([
   'Basic'
   'VpnGw1'
