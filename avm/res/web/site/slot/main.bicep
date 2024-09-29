@@ -264,6 +264,7 @@ module slot_appsettings 'config--appsettings/main.bicep' = if (!empty(appSetting
     storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
     appInsightResourceId: appInsightResourceId
     appSettingsKeyValuePairs: appSettingsKeyValuePairs
+    currentAppSettings: !empty(slot.id) ? list('${slot.id}/config/appsettings', '2023-12-01').properties : {}
   }
 }
 
