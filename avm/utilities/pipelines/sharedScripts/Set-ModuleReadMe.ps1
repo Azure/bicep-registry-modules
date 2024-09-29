@@ -1292,32 +1292,6 @@ Convert the given JSONParameters object with one required parameter to a formatt
     }
 '
 #>
-function ConvertTo-FormattedBicepParameterfile {
-
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $true)]
-        [hashtable] $JSONParameters,
-
-        [Parameter(Mandatory = $false)]
-        [AllowEmptyCollection()]
-        [string[]] $RequiredParametersList = @()
-    )
-
-    # [1/2] Start by converting the JSON object to a formatted Bicep object
-    $commentedBicepParams = ConvertTo-FormattedBicep -JSONParameters $JSONParameters -RequiredParametersList $RequiredParametersList
-
-    # [2/2] format as bicep parameter file
-    $commentedBicepParams = $commentedBicepParams -split '\r?\n' | ForEach-Object {
-        $line = $_
-        $line = $line -replace '^( {0,4})([a-zA-Z]*)(:)(.*)', 'param $2 =$4' # Update any [    xyz: abc] to [param xyz = abc]
-        $line = $line -replace '^ {0,4}', '' # Update any [    xyz: abc] to [xyz: abc]
-        $line
-    }
-
-    return $commentedBicepParams
-}
-
 function ConvertTo-FormattedBicep {
 
     [CmdletBinding()]
@@ -1620,21 +1594,27 @@ function Set-UsageExamplesSection {
                 }
             }
 
-            # [5/6] Convert Bicep parameter block to JSON parameter block to enable processing
+            # [4/6] Convert Bicep parameter block to JSON parameter block to enable processing
             $conversionInputObject = @{
                 BicepParamBlock = ($paramsBlockArray | Out-String).TrimEnd()
                 CurrentFilePath = $testFilePath
             }
             $paramsInJSONFormat = ConvertTo-FormattedJSONParameterObject @conversionInputObject
 
-            # [6/6] Convert JSON parameters back to Bicep and order & format them
+            # [5/6] Convert JSON parameters back to Bicep and order & format them
             $conversionInputObject = @{
                 JSONParameters         = $paramsInJSONFormat
                 RequiredParametersList = $RequiredParametersList
             }
             $bicepExample = ConvertTo-FormattedBicep @conversionInputObject
 
-            $bicepParameterfileExample = ConvertTo-FormattedBicepParameterfile @conversionInputObject
+            # [6/6] Convert the Bicep format to a Bicep Parameterfile format
+            $bicepParameterfileExample = $bicepExample -split '\r?\n' | ForEach-Object {
+                $line = $_
+                $line = $line -replace '^( {0,4})([a-zA-Z]*)(:)(.*)', 'param $2 =$4' # Update any [    xyz: abc] to [param xyz = abc]
+                $line = $line -replace '^ {0,4}', '' # Update any [    xyz: abc] to [xyz: abc]
+                $line
+            }
 
             # --------------------- #
             #   Add Bicep example   #
