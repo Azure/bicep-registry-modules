@@ -27,8 +27,6 @@ param diagnosticSettings diagnosticSettingType
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-var publicIpNameSuffix = '-pip-01'
-
 module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.6.0' = [
   for (ipConfiguration, index) in ipConfigurations: if (contains(ipConfiguration, 'pipConfiguration') && !contains(
     ipConfiguration.pipConfiguration,
@@ -36,7 +34,7 @@ module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-a
   )) {
     name: '${deployment().name}-publicIP-${index}'
     params: {
-      name: ipConfiguration.pipConfiguration.?name ?? '${virtualMachineName}${ipConfiguration.pipConfiguration.?publicIpNameSuffix ?? publicIpNameSuffix}'
+      name: ipConfiguration.pipConfiguration.?name ?? '${virtualMachineName}${ipConfiguration.pipConfiguration.?publicIpNameSuffix}'
       diagnosticSettings: ipConfiguration.?diagnosticSettings
       location: location
       lock: lock
@@ -78,7 +76,7 @@ module networkInterface 'br/public:avm/res/network/network-interface:0.4.0' = {
           ? !contains(ipConfiguration.pipConfiguration, 'publicIPAddressResourceId')
               ? resourceId(
                   'Microsoft.Network/publicIPAddresses',
-                  ipConfiguration.pipConfiguration.?name ?? '${virtualMachineName}${ipConfiguration.pipConfiguration.?publicIpNameSuffix ?? publicIpNameSuffix}'
+                  ipConfiguration.pipConfiguration.?name ?? '${virtualMachineName}${ipConfiguration.pipConfiguration.?publicIpNameSuffix}'
                 )
               : ipConfiguration.pipConfiguration.publicIPAddressResourceId
           : null

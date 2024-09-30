@@ -11,18 +11,15 @@ metadata description = 'This instance deploys the module with registering to an 
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'cvmlinatmg'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-// Set to fixed location as the RP function returns unsupported locations (configurationProfileAssignments)
-// Right now (2024/04) the following locations are supported: centralus, eastus, eastus2, southcentralus, westus, westus2, westcentralus, northeurope, westeurope, canadacentral, japaneast, uksouth, australiasoutheast, australiaeast, southeastasia, westus3
-param enforcedLocation string = 'westeurope'
+// Capacity constraints for VM type
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'eastus2'
 
 // ============ //
 // Dependencies //
@@ -32,7 +29,7 @@ param enforcedLocation string = 'westeurope'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
