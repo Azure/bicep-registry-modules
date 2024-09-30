@@ -130,6 +130,41 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/dev-ops-infrastructure/pool:<version>'
+
+// Required parameters
+param agentProfile = {
+  kind: 'Stateless'
+}
+param concurrency = 1
+param devCenterProjectResourceId = '<devCenterProjectResourceId>'
+param fabricProfileSkuName = 'Standard_DS2_v2'
+param images = [
+  {
+    wellKnownImageName: 'windows-2022/latest'
+  }
+]
+param name = 'mdpmin001'
+param organizationProfile = {
+  kind: 'AzureDevOps'
+  organizations: [
+    {
+      url: '<url>'
+    }
+  ]
+}
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -380,6 +415,112 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/dev-ops-infrastructure/pool:<version>'
+
+// Required parameters
+param agentProfile = {
+  kind: 'Stateless'
+  resourcePredictions: {
+    daysData: [
+      {
+        '09:00:00': 1
+        '17:00:00': 0
+      }
+      {}
+      {}
+      {}
+      {
+        '09:00:00': 1
+        '17:00:00': 0
+      }
+      {}
+      {}
+    ]
+    timeZone: 'Central Europe Standard Time'
+  }
+  resourcePredictionsProfile: {
+    kind: 'Automatic'
+    predictionPreference: 'Balanced'
+  }
+}
+param concurrency = 1
+param devCenterProjectResourceId = '<devCenterProjectResourceId>'
+param fabricProfileSkuName = 'Standard_D2_v2'
+param images = [
+  {
+    aliases: [
+      'windows-2022'
+    ]
+    buffer: '*'
+    wellKnownImageName: 'windows-2022/latest'
+  }
+]
+param name = 'mdpmax001'
+param organizationProfile = {
+  kind: 'AzureDevOps'
+  organizations: [
+    {
+      parallelism: 1
+      projects: [
+        '<azureDevOpsProjectName>'
+      ]
+      url: '<url>'
+    }
+  ]
+  permissionProfile: {
+    kind: 'CreatorOnly'
+  }
+}
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+]
+param storageProfile = {
+  dataDisks: [
+    {
+      caching: 'ReadWrite'
+      diskSizeGiB: 100
+      driveLetter: 'B'
+      storageAccountType: 'Standard_LRS'
+    }
+  ]
+  osDiskStorageAccountType: 'Standard'
+}
+param subnetResourceId = '<subnetResourceId>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -535,6 +676,71 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/dev-ops-infrastructure/pool:<version>'
+
+// Required parameters
+param agentProfile = {
+  kind: 'Stateless'
+  resourcePredictions: {
+    daysData: [
+      {
+        '09:00:00': 1
+        '17:00:00': 0
+      }
+      {}
+      {}
+      {}
+      {
+        '09:00:00': 1
+        '17:00:00': 0
+      }
+      {}
+      {}
+    ]
+    timeZone: 'Central Europe Standard Time'
+  }
+  resourcePredictionsProfile: {
+    kind: 'Automatic'
+    predictionPreference: 'Balanced'
+  }
+}
+param concurrency = 1
+param devCenterProjectResourceId = '<devCenterProjectResourceId>'
+param fabricProfileSkuName = 'Standard_D2_v2'
+param images = [
+  {
+    wellKnownImageName: 'windows-2022/latest'
+  }
+]
+param name = 'mdpwaf001'
+param organizationProfile = {
+  kind: 'AzureDevOps'
+  organizations: [
+    {
+      parallelism: 1
+      projects: [
+        '<azureDevOpsProjectName>'
+      ]
+      url: '<url>'
+    }
+  ]
+  permissionProfile: {
+    kind: 'CreatorOnly'
+  }
+}
+// Non-required parameters
+param location = '<location>'
+param subnetResourceId = '<subnetResourceId>'
 ```
 
 </details>

@@ -102,6 +102,30 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/connection:<version>'
+
+// Required parameters
+param name = 'ncmin001'
+virtualNetworkGateway1: {
+  id: '<id>'
+}
+// Non-required parameters
+param connectionType = 'Vnet2Vnet'
+param location = '<location>'
+virtualNetworkGateway2: {
+  id: '<id>'
+}
+param vpnSharedKey = '<vpnSharedKey>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -208,6 +232,42 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/connection:<version>'
+
+// Required parameters
+param name = 'ncmax001'
+virtualNetworkGateway1: {
+  id: '<id>'
+}
+// Non-required parameters
+param connectionType = 'Vnet2Vnet'
+param dpdTimeoutSeconds = 45
+param enableBgp = false
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param usePolicyBasedTrafficSelectors = false
+virtualNetworkGateway2: {
+  id: '<id>'
+}
+param vpnSharedKey = '<vpnSharedKey>'
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -297,6 +357,39 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/connection:<version>'
+
+// Required parameters
+param name = 'ncwaf001'
+virtualNetworkGateway1: {
+  id: '<id>'
+}
+// Non-required parameters
+param connectionType = 'Vnet2Vnet'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+virtualNetworkGateway2: {
+  id: '<id>'
+}
+param vpnSharedKey = '<vpnSharedKey>'
 ```
 
 </details>

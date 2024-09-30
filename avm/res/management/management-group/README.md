@@ -81,6 +81,22 @@ module managementGroup 'br/public:avm/res/management/management-group:<version>'
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/management/management-group:<version>'
+
+// Required parameters
+param name = 'mmgmin001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -137,6 +153,24 @@ module managementGroup 'br/public:avm/res/management/management-group:<version>'
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/management/management-group:<version>'
+
+// Required parameters
+param name = 'mmgmax001'
+// Non-required parameters
+param displayName = 'Test MG'
+param location = '<location>'
+param parentId = '<parentId>'
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -188,6 +222,24 @@ module managementGroup 'br/public:avm/res/management/management-group:<version>'
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/management/management-group:<version>'
+
+// Required parameters
+param name = 'mmgwaf001'
+// Non-required parameters
+param displayName = 'Test MG'
+param location = '<location>'
+param parentId = '<parentId>'
 ```
 
 </details>

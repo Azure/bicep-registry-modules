@@ -79,6 +79,23 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/instance-pool:<version>'
+
+// Required parameters
+param name = '<name>'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 2: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
@@ -130,6 +147,24 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/instance-pool:<version>'
+
+// Required parameters
+param name = '<name>'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param location = '<location>'
+param skuName = 'GP_Gen8IM'
 ```
 
 </details>

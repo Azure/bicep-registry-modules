@@ -95,6 +95,26 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kubernetes-configuration/extension:<version>'
+
+// Required parameters
+param clusterName = '<clusterName>'
+param extensionType = 'microsoft.flux'
+param name = 'kcemin001'
+// Non-required parameters
+param location = '<location>'
+param releaseNamespace = 'flux-system'
+param releaseTrain = 'Stable'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -223,6 +243,55 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kubernetes-configuration/extension:<version>'
+
+// Required parameters
+param clusterName = '<clusterName>'
+param extensionType = 'microsoft.flux'
+param name = 'kcemax001'
+// Non-required parameters
+param configurationSettings = {
+  'image-automation-controller.enabled': 'false'
+  'image-reflector-controller.enabled': 'false'
+  'kustomize-controller.enabled': 'true'
+  'notification-controller.enabled': 'false'
+  'source-controller.enabled': 'true'
+}
+param fluxConfigurations = [
+  {
+    gitRepository: {
+      repositoryRef: {
+        branch: 'main'
+      }
+      sshKnownHosts: ''
+      syncIntervalInSeconds: 300
+      timeoutInSeconds: 180
+      url: 'https://github.com/mspnp/aks-baseline'
+    }
+    kustomizations: {
+      unified: {
+        path: './cluster-manifests'
+      }
+    }
+    namespace: 'flux-system'
+    scope: 'cluster'
+    suspend: false
+  }
+]
+param location = '<location>'
+param releaseNamespace = 'flux-system'
+param releaseTrain = 'Stable'
+param version = '0.5.2'
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -346,6 +415,55 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kubernetes-configuration/extension:<version>'
+
+// Required parameters
+param clusterName = '<clusterName>'
+param extensionType = 'microsoft.flux'
+param name = 'kcewaf001'
+// Non-required parameters
+param configurationSettings = {
+  'image-automation-controller.enabled': 'false'
+  'image-reflector-controller.enabled': 'false'
+  'kustomize-controller.enabled': 'true'
+  'notification-controller.enabled': 'false'
+  'source-controller.enabled': 'true'
+}
+param fluxConfigurations = [
+  {
+    gitRepository: {
+      repositoryRef: {
+        branch: 'main'
+      }
+      sshKnownHosts: ''
+      syncIntervalInSeconds: 300
+      timeoutInSeconds: 180
+      url: 'https://github.com/mspnp/aks-baseline'
+    }
+    kustomizations: {
+      unified: {
+        path: './cluster-manifests'
+      }
+    }
+    namespace: 'flux-system'
+    scope: 'cluster'
+    suspend: false
+  }
+]
+param location = '<location>'
+param releaseNamespace = 'flux-system'
+param releaseTrain = 'Stable'
+param version = '0.5.2'
 ```
 
 </details>

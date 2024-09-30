@@ -35,15 +35,15 @@ This module provides you with a packaged solution to create custom images using 
 | `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
-| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/fileServices) |
+| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/fileServices) |
 | `Microsoft.Storage/storageAccounts/fileServices/shares` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/fileServices/shares) |
-| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/localUsers) |
+| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/localUsers) |
 | `Microsoft.Storage/storageAccounts/managementPolicies` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/managementPolicies) |
-| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices) |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices/queues) |
-| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices) |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices/tables) |
-| `Microsoft.VirtualMachineImages/imageTemplates` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/imageTemplates) |
+| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices) |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices/queues) |
+| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices) |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices/tables) |
+| `Microsoft.VirtualMachineImages/imageTemplates` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/2023-07-01/imageTemplates) |
 
 ## Usage examples
 
@@ -156,6 +156,43 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>'
+
+// Required parameters
+param computeGalleryImageDefinitionName = '<computeGalleryImageDefinitionName>'
+param computeGalleryImageDefinitions = [
+  {
+    hyperVGeneration: 'V2'
+    name: 'sid-linux'
+    offer: 'devops_linux'
+    osType: 'Linux'
+    publisher: 'devops'
+    sku: 'devops_linux_az'
+  }
+]
+param computeGalleryName = 'galapvmiaibmin'
+param imageTemplateImageSource = {
+  offer: 'ubuntu-24_04-lts'
+  publisher: 'canonical'
+  sku: 'server'
+  type: 'PlatformImage'
+  version: 'latest'
+}
+// Non-required parameters
+param assetsStorageAccountName = 'stapvmiaibmin'
+param deploymentsToPerform = '<deploymentsToPerform>'
+param location = '<location>'
+param resourceGroupName = '<resourceGroupName>'
 ```
 
 </details>
@@ -331,6 +368,74 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>'
+
+// Required parameters
+param computeGalleryImageDefinitionName = '<computeGalleryImageDefinitionName>'
+param computeGalleryImageDefinitions = [
+  {
+    hyperVGeneration: 'V2'
+    name: '<name>'
+    offer: 'devops_linux'
+    osType: 'Linux'
+    publisher: 'devops'
+    sku: 'devops_linux_az'
+  }
+]
+param computeGalleryName = 'galapvmiaiba'
+param imageTemplateImageSource = {
+  offer: '0001-com-ubuntu-server-jammy'
+  publisher: 'canonical'
+  sku: '22_04-lts-gen2'
+  type: 'PlatformImage'
+  version: 'latest'
+}
+// Non-required parameters
+param assetsStorageAccountContainerName = '<assetsStorageAccountContainerName>'
+param assetsStorageAccountName = '<assetsStorageAccountName>'
+param deploymentsToPerform = '<deploymentsToPerform>'
+param imageTemplateCustomizationSteps = [
+  {
+    name: 'PowerShell installation'
+    scriptUri: '<scriptUri>'
+    type: 'Shell'
+  }
+  {
+    destination: '<destination>'
+    name: '<name>'
+    sourceUri: '<sourceUri>'
+    type: 'File'
+  }
+  {
+    inline: [
+      'pwsh \'<value>\''
+    ]
+    name: 'Software installation'
+    type: 'Shell'
+  }
+]
+param location = '<location>'
+param resourceGroupName = '<resourceGroupName>'
+param storageAccountFilesToUpload = [
+  {
+    name: '<name>'
+    value: '<value>'
+  }
+  {
+    name: '<name>'
+    value: '<value>'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _Deploying only the assets & image_
 
 This instance deploys the module with the conditions set up to only update the assets on the assets storage account and build the image, assuming all dependencies are setup.
@@ -477,6 +582,55 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>'
+
+// Required parameters
+param computeGalleryImageDefinitionName = '<computeGalleryImageDefinitionName>'
+param computeGalleryImageDefinitions = '<computeGalleryImageDefinitions>'
+param computeGalleryName = '<computeGalleryName>'
+param imageTemplateImageSource = {
+  offer: 'ubuntu-24_04-lts'
+  publisher: 'canonical'
+  sku: 'server'
+  type: 'PlatformImage'
+  version: 'latest'
+}
+// Non-required parameters
+param assetsStorageAccountContainerName = '<assetsStorageAccountContainerName>'
+param assetsStorageAccountName = '<assetsStorageAccountName>'
+param deploymentScriptManagedIdentityName = '<deploymentScriptManagedIdentityName>'
+param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
+param deploymentScriptSubnetName = '<deploymentScriptSubnetName>'
+param deploymentsToPerform = 'Only assets & image'
+param imageManagedIdentityName = '<imageManagedIdentityName>'
+param imageSubnetName = '<imageSubnetName>'
+param imageTemplateCustomizationSteps = [
+  {
+    name: 'Example script'
+    scriptUri: '<scriptUri>'
+    type: 'Shell'
+  }
+]
+param imageTemplateResourceGroupName = '<imageTemplateResourceGroupName>'
+param location = '<location>'
+param resourceGroupName = '<resourceGroupName>'
+param storageAccountFilesToUpload = [
+  {
+    name: '<name>'
+    value: '<value>'
+  }
+]
+param virtualNetworkName = '<virtualNetworkName>'
+```
+
+</details>
+<p>
+
 ### Example 4: _Deploying only the base services_
 
 This instance deploys the module with the conditions set up to only deploy the base resources, that is everything but the image.
@@ -578,6 +732,44 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>'
+
+// Required parameters
+param computeGalleryImageDefinitionName = '<computeGalleryImageDefinitionName>'
+param computeGalleryImageDefinitions = [
+  {
+    hyperVGeneration: 'V2'
+    name: '<name>'
+    offer: 'devops_linux'
+    osType: 'Linux'
+    publisher: 'devops'
+    sku: 'devops_linux_az'
+  }
+]
+param computeGalleryName = 'galapvmiaibob'
+param imageTemplateImageSource = {
+  offer: 'ubuntu-24_04-lts'
+  publisher: 'canonical'
+  sku: 'server'
+  type: 'PlatformImage'
+  version: 'latest'
+}
+// Non-required parameters
+param assetsStorageAccountName = 'stapvmiaibob'
+param deploymentsToPerform = 'Only base'
+param imageManagedIdentityName = 'msi-it-apvmiaibob'
+param location = '<location>'
+param resourceGroupName = '<resourceGroupName>'
 ```
 
 </details>
@@ -702,6 +894,47 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>'
+
+// Required parameters
+param computeGalleryImageDefinitionName = '<computeGalleryImageDefinitionName>'
+param computeGalleryImageDefinitions = '<computeGalleryImageDefinitions>'
+param computeGalleryName = '<computeGalleryName>'
+param imageTemplateImageSource = {
+  offer: 'ubuntu-24_04-lts'
+  publisher: 'canonical'
+  sku: 'server'
+  type: 'PlatformImage'
+  version: 'latest'
+}
+// Non-required parameters
+param deploymentScriptManagedIdentityName = '<deploymentScriptManagedIdentityName>'
+param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
+param deploymentScriptSubnetName = '<deploymentScriptSubnetName>'
+param deploymentsToPerform = 'Only image'
+param imageManagedIdentityName = '<imageManagedIdentityName>'
+param imageSubnetName = '<imageSubnetName>'
+param imageTemplateCustomizationSteps = [
+  {
+    name: 'Example script'
+    scriptUri: '<scriptUri>'
+    type: 'Shell'
+  }
+]
+param imageTemplateResourceGroupName = '<imageTemplateResourceGroupName>'
+param location = '<location>'
+param resourceGroupName = '<resourceGroupName>'
+param virtualNetworkName = '<virtualNetworkName>'
 ```
 
 </details>

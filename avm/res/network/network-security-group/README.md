@@ -79,6 +79,22 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-security-group:<version>'
+
+// Required parameters
+param name = 'nnsgmin001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -389,6 +405,148 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-security-group:<version>'
+
+// Required parameters
+param name = 'nnsgmax001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'b6d38ee8-4058-42b1-af6a-b8d585cf61ef'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param securityRules = [
+  {
+    name: 'Specific'
+    properties: {
+      access: 'Allow'
+      description: 'Tests specific IPs and ports'
+      destinationAddressPrefix: '*'
+      destinationPortRange: '8080'
+      direction: 'Inbound'
+      priority: 100
+      protocol: '*'
+      sourceAddressPrefix: '*'
+      sourcePortRange: '*'
+    }
+  }
+  {
+    name: 'Ranges'
+    properties: {
+      access: 'Allow'
+      description: 'Tests Ranges'
+      destinationAddressPrefixes: [
+        '10.2.0.0/16'
+        '10.3.0.0/16'
+      ]
+      destinationPortRanges: [
+        '90'
+        '91'
+      ]
+      direction: 'Inbound'
+      priority: 101
+      protocol: '*'
+      sourceAddressPrefixes: [
+        '10.0.0.0/16'
+        '10.1.0.0/16'
+      ]
+      sourcePortRanges: [
+        '80'
+        '81'
+      ]
+    }
+  }
+  {
+    name: 'Port_8082'
+    properties: {
+      access: 'Allow'
+      description: 'Allow inbound access on TCP 8082'
+      destinationApplicationSecurityGroupResourceIds: [
+        '<applicationSecurityGroupResourceId>'
+      ]
+      destinationPortRange: '8082'
+      direction: 'Inbound'
+      priority: 102
+      protocol: '*'
+      sourceApplicationSecurityGroupResourceIds: [
+        '<applicationSecurityGroupResourceId>'
+      ]
+      sourcePortRange: '*'
+    }
+  }
+  {
+    name: 'Deny-All-Inbound'
+    properties: {
+      access: 'Deny'
+      destinationAddressPrefix: '*'
+      destinationPortRange: '*'
+      direction: 'Inbound'
+      priority: 4095
+      protocol: '*'
+      sourceAddressPrefix: '*'
+      sourcePortRange: '*'
+    }
+  }
+  {
+    name: 'Allow-AzureCloud-Tcp'
+    properties: {
+      access: 'Allow'
+      destinationAddressPrefix: 'AzureCloud'
+      destinationPortRange: '443'
+      direction: 'Outbound'
+      priority: 250
+      protocol: 'Tcp'
+      sourceAddressPrefixes: [
+        '10.10.10.0/24'
+        '192.168.1.0/24'
+      ]
+      sourcePortRange: '*'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -481,6 +639,45 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-security-group:<version>'
+
+// Required parameters
+param name = 'nnsgwaf001'
+// Non-required parameters
+param location = '<location>'
+param securityRules = [
+  {
+    name: 'deny-hop-outbound'
+    properties: {
+      access: 'Deny'
+      destinationAddressPrefix: '*'
+      destinationPortRanges: [
+        '22'
+        '3389'
+      ]
+      direction: 'Outbound'
+      priority: 200
+      protocol: 'Tcp'
+      sourceAddressPrefix: 'VirtualNetwork'
+      sourcePortRange: '*'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

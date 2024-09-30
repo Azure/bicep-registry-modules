@@ -88,6 +88,24 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/desktop-virtualization/application-group:<version>'
+
+// Required parameters
+param applicationGroupType = 'Desktop'
+param hostpoolName = '<hostpoolName>'
+param name = 'dvagmin002'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -278,6 +296,85 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/desktop-virtualization/application-group:<version>'
+
+// Required parameters
+param applicationGroupType = 'RemoteApp'
+param hostpoolName = '<hostpoolName>'
+param name = 'dvagmax002'
+// Non-required parameters
+param applications = [
+  {
+    commandLineArguments: ''
+    commandLineSetting: 'DoNotAllow'
+    description: 'Notepad by ARM template'
+    filePath: 'C:\\Windows\\System32\\notepad.exe'
+    friendlyName: 'Notepad'
+    iconIndex: 0
+    iconPath: 'C:\\Windows\\System32\\notepad.exe'
+    name: 'notepad'
+    showInPortal: true
+  }
+  {
+    filePath: 'C:\\Program Files\\Windows NT\\Accessories\\wordpad.exe'
+    friendlyName: 'Wordpad'
+    name: 'wordpad'
+  }
+]
+param description = 'myDescription'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: '30eaf006-ee2d-4a95-921c-87dfdb4c2061'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
@@ -356,6 +453,36 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/desktop-virtualization/application-group:<version>'
+
+// Required parameters
+param applicationGroupType = 'Desktop'
+param hostpoolName = '<hostpoolName>'
+param name = 'dvagwaf002'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  Role: 'DeploymentValidation'
 }
 ```
 

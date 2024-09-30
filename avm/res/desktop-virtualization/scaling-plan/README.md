@@ -79,6 +79,22 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>'
+
+// Required parameters
+param name = 'dvspmin002'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -459,6 +475,180 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>'
+
+// Required parameters
+param name = 'dvspmax002'
+// Non-required parameters
+param description = 'myDescription'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param friendlyName = 'friendlyName'
+param hostPoolReferences = [
+  {
+    hostPoolArmPath: '<hostPoolArmPath>'
+    scalingPlanEnabled: true
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'c2c1c560-2169-405a-a8dc-7427e403e5ac'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param schedules = [
+  {
+    daysOfWeek: [
+      'Friday'
+      'Monday'
+      'Thursday'
+      'Wednesday'
+    ]
+    name: 'WeekdaySchedule'
+    offPeakLoadBalancingAlgorithm: 'DepthFirst'
+    offPeakStartTime: {
+      hour: 20
+      minute: 0
+    }
+    peakLoadBalancingAlgorithm: 'DepthFirst'
+    peakStartTime: {
+      hour: 9
+      minute: 0
+    }
+    rampDownCapacityThresholdPct: 90
+    rampDownForceLogoffUsers: true
+    rampDownLoadBalancingAlgorithm: 'DepthFirst'
+    rampDownMinimumHostsPct: 0
+    rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+    rampDownStartTime: {
+      hour: 18
+      minute: 0
+    }
+    rampDownStopHostsWhen: 'ZeroActiveSessions'
+    rampDownWaitTimeMinutes: 30
+    rampUpCapacityThresholdPct: 80
+    rampUpLoadBalancingAlgorithm: 'BreadthFirst'
+    rampUpMinimumHostsPct: 20
+    rampUpStartTime: {
+      hour: 7
+      minute: 0
+    }
+  }
+  {
+    daysOfWeek: [
+      'Tuesday'
+    ]
+    name: 'weekdaysSchedule-agent-updates'
+    offPeakLoadBalancingAlgorithm: 'DepthFirst'
+    offPeakStartTime: {
+      hour: 20
+      minute: 0
+    }
+    peakLoadBalancingAlgorithm: 'DepthFirst'
+    peakStartTime: {
+      hour: 9
+      minute: 0
+    }
+    rampDownCapacityThresholdPct: 90
+    rampDownForceLogoffUsers: true
+    rampDownLoadBalancingAlgorithm: 'DepthFirst'
+    rampDownMinimumHostsPct: 0
+    rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+    rampDownStartTime: {
+      hour: 19
+      minute: 0
+    }
+    rampDownStopHostsWhen: 'ZeroActiveSessions'
+    rampDownWaitTimeMinutes: 30
+    rampUpCapacityThresholdPct: 80
+    rampUpLoadBalancingAlgorithm: 'BreadthFirst'
+    rampUpMinimumHostsPct: 20
+    rampUpStartTime: {
+      hour: 7
+      minute: 0
+    }
+  }
+  {
+    daysOfWeek: [
+      'Saturday'
+      'Sunday'
+    ]
+    name: 'WeekendSchedule'
+    offPeakLoadBalancingAlgorithm: 'DepthFirst'
+    offPeakStartTime: {
+      hour: 18
+      minute: 0
+    }
+    peakLoadBalancingAlgorithm: 'DepthFirst'
+    peakStartTime: {
+      hour: 10
+      minute: 0
+    }
+    rampDownCapacityThresholdPct: 90
+    rampDownForceLogoffUsers: true
+    rampDownLoadBalancingAlgorithm: 'DepthFirst'
+    rampDownMinimumHostsPct: 0
+    rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+    rampDownStartTime: {
+      hour: 16
+      minute: 0
+    }
+    rampDownStopHostsWhen: 'ZeroActiveSessions'
+    rampDownWaitTimeMinutes: 30
+    rampUpCapacityThresholdPct: 90
+    rampUpLoadBalancingAlgorithm: 'DepthFirst'
+    rampUpMinimumHostsPct: 0
+    rampUpStartTime: {
+      hour: 9
+      minute: 0
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -539,6 +729,37 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>'
+
+// Required parameters
+param name = 'dvspwaf002'
+// Non-required parameters
+param description = 'myDescription'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param friendlyName = 'myFriendlyName'
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

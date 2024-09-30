@@ -247,6 +247,101 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/front-door:<version>'
+
+// Required parameters
+param backendPools = [
+  {
+    name: 'backendPool'
+    properties: {
+      backends: [
+        {
+          address: 'biceptest.local'
+          backendHostHeader: 'backendAddress'
+          enabledState: 'Enabled'
+          httpPort: 80
+          httpsPort: 443
+          priority: 1
+          weight: 50
+        }
+      ]
+      HealthProbeSettings: {
+        id: '<id>'
+      }
+      LoadBalancingSettings: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param frontendEndpoints = [
+  {
+    name: 'frontEnd'
+    properties: {
+      hostName: '<hostName>'
+      sessionAffinityEnabledState: 'Disabled'
+      sessionAffinityTtlSeconds: 60
+    }
+  }
+]
+param healthProbeSettings = [
+  {
+    name: 'heathProbe'
+    properties: {
+      intervalInSeconds: 60
+      path: '/'
+      protocol: 'Https'
+    }
+  }
+]
+param loadBalancingSettings = [
+  {
+    name: 'loadBalancer'
+    properties: {
+      additionalLatencyMilliseconds: 0
+      sampleSize: 50
+      successfulSamplesRequired: 1
+    }
+  }
+]
+param name = '<name>'
+param routingRules = [
+  {
+    name: 'routingRule'
+    properties: {
+      acceptedProtocols: [
+        'Https'
+      ]
+      enabledState: 'Enabled'
+      frontendEndpoints: [
+        {
+          id: '<id>'
+        }
+      ]
+      patternsToMatch: [
+        '/*'
+      ]
+      routeConfiguration: {
+        '@odata.type': '#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration'
+        backendPool: {
+          id: '<id>'
+        }
+      }
+    }
+  }
+]
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -587,6 +682,157 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/front-door:<version>'
+
+// Required parameters
+param backendPools = [
+  {
+    name: 'backendPool'
+    properties: {
+      backends: [
+        {
+          address: 'biceptest.local'
+          backendHostHeader: 'backendAddress'
+          enabledState: 'Enabled'
+          httpPort: 80
+          httpsPort: 443
+          priority: 1
+          privateLinkAlias: ''
+          privateLinkApprovalMessage: ''
+          privateLinkLocation: ''
+          weight: 50
+        }
+      ]
+      HealthProbeSettings: {
+        id: '<id>'
+      }
+      LoadBalancingSettings: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param frontendEndpoints = [
+  {
+    name: 'frontEnd'
+    properties: {
+      hostName: '<hostName>'
+      sessionAffinityEnabledState: 'Disabled'
+      sessionAffinityTtlSeconds: 60
+    }
+  }
+]
+param healthProbeSettings = [
+  {
+    name: 'heathProbe'
+    properties: {
+      enabledState: ''
+      healthProbeMethod: ''
+      intervalInSeconds: 60
+      path: '/'
+      protocol: 'Https'
+    }
+  }
+]
+param loadBalancingSettings = [
+  {
+    name: 'loadBalancer'
+    properties: {
+      additionalLatencyMilliseconds: 0
+      sampleSize: 50
+      successfulSamplesRequired: 1
+    }
+  }
+]
+param name = '<name>'
+param routingRules = [
+  {
+    name: 'routingRule'
+    properties: {
+      acceptedProtocols: [
+        'Http'
+        'Https'
+      ]
+      enabledState: 'Enabled'
+      frontendEndpoints: [
+        {
+          id: '<id>'
+        }
+      ]
+      patternsToMatch: [
+        '/*'
+      ]
+      routeConfiguration: {
+        '@odata.type': '#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration'
+        backendPool: {
+          id: '<id>'
+        }
+        forwardingProtocol: 'MatchRequest'
+      }
+    }
+  }
+]
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'FrontdoorAccessLog'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param enforceCertificateNameCheck = 'Disabled'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'b2c1ef5f-3422-4a49-8e55-7789fe980b64'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param sendRecvTimeoutSeconds = 10
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -849,6 +1095,123 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/front-door:<version>'
+
+// Required parameters
+param backendPools = [
+  {
+    name: 'backendPool'
+    properties: {
+      backends: [
+        {
+          address: 'biceptest.local'
+          backendHostHeader: 'backendAddress'
+          enabledState: 'Enabled'
+          httpPort: 80
+          httpsPort: 443
+          priority: 1
+          privateLinkAlias: ''
+          privateLinkApprovalMessage: ''
+          privateLinkLocation: ''
+          weight: 50
+        }
+      ]
+      HealthProbeSettings: {
+        id: '<id>'
+      }
+      LoadBalancingSettings: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param frontendEndpoints = [
+  {
+    name: 'frontEnd'
+    properties: {
+      hostName: '<hostName>'
+      sessionAffinityEnabledState: 'Disabled'
+      sessionAffinityTtlSeconds: 60
+    }
+  }
+]
+param healthProbeSettings = [
+  {
+    name: 'heathProbe'
+    properties: {
+      enabledState: 'Enabled'
+      healthProbeMethod: 'HEAD'
+      intervalInSeconds: 60
+      path: '/healthz'
+      protocol: 'Https'
+    }
+  }
+]
+param loadBalancingSettings = [
+  {
+    name: 'loadBalancer'
+    properties: {
+      additionalLatencyMilliseconds: 0
+      sampleSize: 50
+      successfulSamplesRequired: 1
+    }
+  }
+]
+param name = '<name>'
+param routingRules = [
+  {
+    name: 'routingRule'
+    properties: {
+      acceptedProtocols: [
+        'Http'
+        'Https'
+      ]
+      enabledState: 'Enabled'
+      frontendEndpoints: [
+        {
+          id: '<id>'
+        }
+      ]
+      patternsToMatch: [
+        '/*'
+      ]
+      routeConfiguration: {
+        '@odata.type': '#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration'
+        backendPool: {
+          id: '<id>'
+        }
+        forwardingProtocol: 'MatchRequest'
+      }
+    }
+  }
+]
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param enforceCertificateNameCheck = 'Disabled'
+param location = '<location>'
+param sendRecvTimeoutSeconds = 10
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

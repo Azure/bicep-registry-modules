@@ -186,6 +186,65 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/aad/domain-service:<version>'
+
+// Required parameters
+param domainName = 'onmicrosoft.com'
+// Non-required parameters
+param additionalRecipients = [
+  '@noreply.github.com'
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param externalAccess = 'Enabled'
+param ldaps = 'Enabled'
+param location = '<location>'
+param lock = {
+  kind: 'None'
+  name: 'myCustomLockName'
+}
+param name = 'aaddswaf001'
+param pfxCertificate = '<pfxCertificate>'
+param pfxCertificatePassword = '<pfxCertificatePassword>'
+param replicaSets = [
+  {
+    location: 'NorthEurope'
+    subnetId: '<subnetId>'
+  }
+]
+param sku = 'Standard'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**

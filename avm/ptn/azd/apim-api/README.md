@@ -103,6 +103,28 @@ module apimApi 'br/public:avm/ptn/azd/apim-api:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/apim-api:<version>'
+
+// Required parameters
+param apiBackendUrl = '<apiBackendUrl>'
+param apiDescription = 'api description'
+param apiDisplayName = 'apd-aapmin'
+param apiName = 'an-aapmin001'
+param apiPath = 'apipath-aapmin'
+param name = '<name>'
+param webFrontendUrl = '<webFrontendUrl>'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**

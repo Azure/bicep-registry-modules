@@ -72,6 +72,19 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-watcher:<version>'
+
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -310,6 +323,113 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-watcher:<version>'
+
+param connectionMonitors = [
+  {
+    endpoints: [
+      {
+        name: '<name>'
+        resourceId: '<resourceId>'
+        type: 'AzureVM'
+      }
+      {
+        address: 'www.bing.com'
+        name: 'Bing'
+        type: 'ExternalAddress'
+      }
+    ]
+    name: 'nnwmax-cm-001'
+    testConfigurations: [
+      {
+        httpConfiguration: {
+          method: 'Get'
+          port: 80
+          preferHTTPS: false
+          requestHeaders: []
+          validStatusCodeRanges: [
+            '200'
+          ]
+        }
+        name: 'HTTP Bing Test'
+        protocol: 'Http'
+        successThreshold: {
+          checksFailedPercent: 5
+          roundTripTimeMs: 100
+        }
+        testFrequencySec: 30
+      }
+    ]
+    testGroups: [
+      {
+        destinations: [
+          'Bing'
+        ]
+        disable: false
+        name: 'test-http-Bing'
+        sources: [
+          'subnet-001(<value>)'
+        ]
+        testConfigurations: [
+          'HTTP Bing Test'
+        ]
+      }
+    ]
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param flowLogs = [
+  {
+    enabled: false
+    storageId: '<storageId>'
+    targetResourceId: '<targetResourceId>'
+  }
+  {
+    formatVersion: 1
+    name: 'nnwmax-fl-001'
+    retentionInDays: 8
+    storageId: '<storageId>'
+    targetResourceId: '<targetResourceId>'
+    trafficAnalyticsInterval: 10
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param name = '<name>'
+param roleAssignments = [
+  {
+    name: 'e8e93fb7-f450-41d5-ae86-a32d34e72578'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -502,6 +622,94 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-watcher:<version>'
+
+param connectionMonitors = [
+  {
+    endpoints: [
+      {
+        name: '<name>'
+        resourceId: '<resourceId>'
+        type: 'AzureVM'
+      }
+      {
+        address: 'www.bing.com'
+        name: 'Bing'
+        type: 'ExternalAddress'
+      }
+    ]
+    name: 'nnwwaf-cm-001'
+    testConfigurations: [
+      {
+        httpConfiguration: {
+          method: 'Get'
+          port: 80
+          preferHTTPS: false
+          requestHeaders: []
+          validStatusCodeRanges: [
+            '200'
+          ]
+        }
+        name: 'HTTP Bing Test'
+        protocol: 'Http'
+        successThreshold: {
+          checksFailedPercent: 5
+          roundTripTimeMs: 100
+        }
+        testFrequencySec: 30
+      }
+    ]
+    testGroups: [
+      {
+        destinations: [
+          'Bing'
+        ]
+        disable: false
+        name: 'test-http-Bing'
+        sources: [
+          'subnet-001(<value>)'
+        ]
+        testConfigurations: [
+          'HTTP Bing Test'
+        ]
+      }
+    ]
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param flowLogs = [
+  {
+    enabled: false
+    storageId: '<storageId>'
+    targetResourceId: '<targetResourceId>'
+  }
+  {
+    formatVersion: 1
+    name: 'nnwwaf-fl-001'
+    retentionInDays: 8
+    storageId: '<storageId>'
+    targetResourceId: '<targetResourceId>'
+    trafficAnalyticsInterval: 10
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param name = '<name>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

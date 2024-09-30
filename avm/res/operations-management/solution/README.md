@@ -81,6 +81,23 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operations-management/solution:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
+param name = 'Updates'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Microsoft solution_
 
 This instance deploys the module with a Microsoft solution.
@@ -136,6 +153,25 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operations-management/solution:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
+param name = 'AzureAutomation'
+// Non-required parameters
+param location = '<location>'
+param product = 'OMSGallery'
+param publisher = 'Microsoft'
 ```
 
 </details>
@@ -201,6 +237,25 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operations-management/solution:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
+param name = 'omsnonms001'
+// Non-required parameters
+param location = '<location>'
+param product = 'nonmsTestSolutionProduct'
+param publisher = 'nonmsTestSolutionPublisher'
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -256,6 +311,25 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operations-management/solution:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
+param name = 'AzureAutomation'
+// Non-required parameters
+param location = '<location>'
+param product = 'OMSGallery'
+param publisher = 'Microsoft'
 ```
 
 </details>

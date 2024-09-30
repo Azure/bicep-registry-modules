@@ -35,14 +35,14 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 | `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
-| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/fileServices) |
+| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/fileServices) |
 | `Microsoft.Storage/storageAccounts/fileServices/shares` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/fileServices/shares) |
-| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/localUsers) |
+| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/localUsers) |
 | `Microsoft.Storage/storageAccounts/managementPolicies` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/managementPolicies) |
-| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices) |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices/queues) |
-| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices) |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices/tables) |
+| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices) |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices/queues) |
+| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices) |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices/tables) |
 | `Microsoft.Subscription/aliases` | [2021-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Subscription/2021-10-01/aliases) |
 
 ## Usage examples
@@ -130,6 +130,30 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param resourceProviders = {}
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
 ```
 
 </details>
@@ -315,6 +339,63 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param deploymentScriptLocation = '<deploymentScriptLocation>'
+param deploymentScriptManagedIdentityName = '<deploymentScriptManagedIdentityName>'
+param deploymentScriptName = 'ds-ssahs'
+param deploymentScriptNetworkSecurityGroupName = '<deploymentScriptNetworkSecurityGroupName>'
+param deploymentScriptResourceGroupName = '<deploymentScriptResourceGroupName>'
+param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
+param deploymentScriptVirtualNetworkName = '<deploymentScriptVirtualNetworkName>'
+param hubNetworkResourceId = '<hubNetworkResourceId>'
+param resourceProviders = {
+  'Microsoft.AVS': [
+    'AzureServicesVm'
+  ]
+  'Microsoft.HybridCompute': [
+    'ArcServerPrivateLinkPreview'
+  ]
+}
+param roleAssignmentEnabled = true
+param roleAssignments = [
+  {
+    definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
+    principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+    relativeScope: '<relativeScope>'
+  }
+]
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+param virtualNetworkAddressSpace = [
+  '10.110.0.0/16'
+]
+param virtualNetworkEnabled = true
+param virtualNetworkLocation = '<virtualNetworkLocation>'
+param virtualNetworkName = '<virtualNetworkName>'
+param virtualNetworkPeeringEnabled = true
+param virtualNetworkResourceGroupLockEnabled = false
+param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
+param virtualNetworkUseRemoteGateways = false
+```
+
+</details>
+<p>
+
 ### Example 3: _Vwan topology._
 
 This instance deploys a subscription with a vwan network topology.
@@ -472,6 +553,55 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param deploymentScriptLocation = '<deploymentScriptLocation>'
+param deploymentScriptManagedIdentityName = '<deploymentScriptManagedIdentityName>'
+param deploymentScriptName = 'ds-ssawan'
+param deploymentScriptNetworkSecurityGroupName = '<deploymentScriptNetworkSecurityGroupName>'
+param deploymentScriptResourceGroupName = '<deploymentScriptResourceGroupName>'
+param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
+param deploymentScriptVirtualNetworkName = '<deploymentScriptVirtualNetworkName>'
+param hubNetworkResourceId = '<hubNetworkResourceId>'
+param resourceProviders = {}
+param roleAssignmentEnabled = true
+param roleAssignments = [
+  {
+    definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
+    principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+    relativeScope: '<relativeScope>'
+  }
+]
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+param virtualNetworkAddressSpace = [
+  '10.210.0.0/16'
+]
+param virtualNetworkEnabled = true
+param virtualNetworkLocation = '<virtualNetworkLocation>'
+param virtualNetworkName = '<virtualNetworkName>'
+param virtualNetworkPeeringEnabled = true
+param virtualNetworkResourceGroupLockEnabled = false
+param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 ```
 
 </details>

@@ -79,6 +79,22 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/trafficmanagerprofile:<version>'
+
+// Required parameters
+param name = 'ntmpmin001'
+// Non-required parameters
+param location = 'global'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -217,6 +233,65 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/trafficmanagerprofile:<version>'
+
+// Required parameters
+param name = 'ntmpmax001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = 'global'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param relativeName = 'ntmpmax001-rn'
+param roleAssignments = [
+  {
+    name: '76e7bd82-b689-4072-87be-519bfabf733e'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -379,6 +454,74 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/trafficmanagerprofile:<version>'
+
+// Required parameters
+param name = 'ntmpwaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param endpoints = [
+  {
+    name: 'webApp01Endpoint'
+    properties: {
+      endpointLocation: '<endpointLocation>'
+      endpointStatus: 'Enabled'
+      priority: 1
+      targetResourceId: '<targetResourceId>'
+      weight: 1
+    }
+    type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
+  }
+  {
+    name: 'webApp02Endpoint'
+    properties: {
+      endpointLocation: '<endpointLocation>'
+      endpointStatus: 'Enabled'
+      priority: 2
+      targetResourceId: '<targetResourceId>'
+      weight: 1
+    }
+    type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
+  }
+]
+param location = 'global'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param monitorConfig = {
+  path: '/'
+  port: '443'
+  protocol: 'https'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

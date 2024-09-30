@@ -67,14 +67,14 @@ This module deploys self-hosted agents and runners for Azure DevOps and GitHub o
 | `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
-| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/fileServices) |
+| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/fileServices) |
 | `Microsoft.Storage/storageAccounts/fileServices/shares` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/fileServices/shares) |
-| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/localUsers) |
+| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/localUsers) |
 | `Microsoft.Storage/storageAccounts/managementPolicies` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/managementPolicies) |
-| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices) |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices/queues) |
-| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices) |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices/tables) |
+| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices) |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices/queues) |
+| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices) |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices/tables) |
 
 ## Usage examples
 
@@ -181,6 +181,38 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>'
+
+// Required parameters
+param computeTypes = [
+  'azure-container-app'
+  'azure-container-instance'
+]
+param namingPrefix = '<namingPrefix>'
+param networkingConfiguration = {
+  addressSpace: '10.0.0.0/16'
+  networkType: 'createNew'
+  virtualNetworkName: 'vnet-aca'
+}
+param selfHostedConfig = {
+  agentsPoolName: 'agents-pool'
+  devOpsOrganization: 'azureDevOpsOrganization'
+  personalAccessToken: '<personalAccessToken>'
+  selfHostedType: 'azuredevops'
+}
+// Non-required parameters
+param location = '<location>'
+param privateNetworking = false
+```
+
+</details>
+<p>
+
 ### Example 2: _Using only defaults for Azure DevOps self-hosted agents using Azure Container Instances._
 
 This instance deploys the module with the minimum set of required parameters for Azure DevOps self-hosted agents in Azure Container Instances.
@@ -267,6 +299,37 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>'
+
+// Required parameters
+param computeTypes = [
+  'azure-container-instance'
+]
+param namingPrefix = '<namingPrefix>'
+param networkingConfiguration = {
+  addressSpace: '10.0.0.0/16'
+  networkType: 'createNew'
+  virtualNetworkName: 'vnet-aci'
+}
+param selfHostedConfig = {
+  agentsPoolName: 'aci-pool'
+  devOpsOrganization: 'azureDevOpsOrganization'
+  personalAccessToken: '<personalAccessToken>'
+  selfHostedType: 'azuredevops'
+}
+// Non-required parameters
+param location = '<location>'
+param privateNetworking = false
+```
+
+</details>
+<p>
+
 ### Example 3: _Using only defaults for GitHub self-hosted runners using Azure Container Apps._
 
 This instance deploys the module with the minimum set of required parameters for GitHub self-hosted runners in Azure Container Apps.
@@ -348,6 +411,37 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>'
+
+// Required parameters
+param computeTypes = [
+  'azure-container-app'
+]
+param namingPrefix = '<namingPrefix>'
+param networkingConfiguration = {
+  addressSpace: '10.0.0.0/16'
+  networkType: 'createNew'
+  virtualNetworkName: 'vnet-aca'
+}
+param selfHostedConfig = {
+  githubOrganization: 'githHubOrganization'
+  githubRepository: 'dummyRepo'
+  personalAccessToken: '<personalAccessToken>'
+  selfHostedType: 'github'
+}
+// Non-required parameters
+param location = '<location>'
+param privateNetworking = false
 ```
 
 </details>
@@ -456,6 +550,48 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>'
+
+// Required parameters
+param computeTypes = [
+  'azure-container-app'
+]
+param namingPrefix = '<namingPrefix>'
+param networkingConfiguration = {
+  addressSpace: '10.0.0.0/16'
+  containerAppSubnetAddressPrefix: '10.0.1.0/24'
+  containerAppSubnetName: 'acaSubnet'
+  networkType: 'createNew'
+  virtualNetworkName: 'vnet-aca'
+}
+param selfHostedConfig = {
+  agentNamePrefix: '<agentNamePrefix>'
+  agentsPoolName: 'aca-pool'
+  azureContainerAppTarget: {
+    resources: {
+      cpu: '1'
+      memory: '2Gi'
+    }
+  }
+  devOpsOrganization: 'azureDevOpsOrganization'
+  personalAccessToken: '<personalAccessToken>'
+  placeHolderAgentName: 'acaPlaceHolderAgent'
+  selfHostedType: 'azuredevops'
+  targetPipelinesQueueLength: '1'
+}
+// Non-required parameters
+param location = '<location>'
+param privateNetworking = false
 ```
 
 </details>
@@ -571,6 +707,49 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>'
+
+// Required parameters
+param computeTypes = [
+  'azure-container-instance'
+]
+param namingPrefix = '<namingPrefix>'
+param networkingConfiguration = {
+  addressSpace: '10.0.0.0/16'
+  containerInstanceSubnetAddressPrefix: '10.0.1.0/24'
+  containerInstanceSubnetName: 'aci-subnet'
+  networkType: 'createNew'
+  virtualNetworkName: 'vnet-aci'
+}
+param selfHostedConfig = {
+  azureContainerInstanceTarget: {
+    cpu: 1
+    memoryInGB: 2
+    numberOfInstances: 3
+    sku: 'Standard'
+  }
+  ephemeral: true
+  githubOrganization: 'githHubOrganization'
+  githubRepository: 'dummyRepo'
+  personalAccessToken: '<personalAccessToken>'
+  runnerNamePrefix: '<runnerNamePrefix>'
+  runnerScope: 'repo'
+  selfHostedType: 'github'
+  targetWorkflowQueueLength: '1'
+}
+// Non-required parameters
+param location = '<location>'
+param privateNetworking = false
+```
+
+</details>
+<p>
+
 ### Example 6: _Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet._
 
 This instance deploys the module with the minimum set of required parameters Azure DevOps self-hosted agents using Private networking in Azure Container Instances in an existing vnet.
@@ -674,6 +853,48 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>'
+
+// Required parameters
+param computeTypes = [
+  'azure-container-instance'
+]
+param namingPrefix = '<namingPrefix>'
+param networkingConfiguration = {
+  computeNetworking: {
+    computeNetworkType: 'azureContainerInstance'
+    containerInstanceSubnetName: 'aci-subnet'
+  }
+  containerRegistryPrivateDnsZoneResourceId: '<containerRegistryPrivateDnsZoneResourceId>'
+  containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
+  natGatewayPublicIpAddressResourceId: '<natGatewayPublicIpAddressResourceId>'
+  natGatewayResourceId: '<natGatewayResourceId>'
+  networkType: 'useExisting'
+  virtualNetworkResourceId: '<virtualNetworkResourceId>'
+}
+param selfHostedConfig = {
+  agentNamePrefix: '<agentNamePrefix>'
+  agentsPoolName: 'aci-pool'
+  azureContainerInstanceTarget: {
+    numberOfInstances: 2
+  }
+  devOpsOrganization: 'azureDevOpsOrganization'
+  personalAccessToken: '<personalAccessToken>'
+  selfHostedType: 'azuredevops'
+}
+// Non-required parameters
+param location = '<location>'
+param privateNetworking = true
 ```
 
 </details>
@@ -785,6 +1006,47 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>'
+
+// Required parameters
+param computeTypes = [
+  'azure-container-instance'
+]
+param namingPrefix = '<namingPrefix>'
+param networkingConfiguration = {
+  computeNetworking: {
+    computeNetworkType: 'azureContainerApp'
+    containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
+    containerAppSubnetName: 'aca-subnet'
+    containerInstanceSubnetName: 'aci-subnet'
+    deploymentScriptPrivateDnsZoneResourceId: '<deploymentScriptPrivateDnsZoneResourceId>'
+  }
+  containerRegistryPrivateDnsZoneResourceId: '<containerRegistryPrivateDnsZoneResourceId>'
+  containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
+  natGatewayPublicIpAddressResourceId: '<natGatewayPublicIpAddressResourceId>'
+  natGatewayResourceId: '<natGatewayResourceId>'
+  networkType: 'useExisting'
+  virtualNetworkResourceId: '<virtualNetworkResourceId>'
+}
+param selfHostedConfig = {
+  githubOrganization: 'githHubOrganization'
+  githubRepository: 'dummyRepo'
+  personalAccessToken: '<personalAccessToken>'
+  selfHostedType: 'github'
+}
+// Non-required parameters
+param location = '<location>'
+param privateNetworking = true
+```
+
+</details>
+<p>
+
 ### Example 8: _Using only defaults for GitHub self-hosted runners using Private networking._
 
 This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Instances.
@@ -866,6 +1128,37 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>'
+
+// Required parameters
+param computeTypes = [
+  'azure-container-instance'
+]
+param namingPrefix = '<namingPrefix>'
+param networkingConfiguration = {
+  addressSpace: '10.0.0.0/16'
+  networkType: 'createNew'
+  virtualNetworkName: 'vnet-aci'
+}
+param selfHostedConfig = {
+  githubOrganization: 'githHubOrganization'
+  githubRepository: 'dummyRepo'
+  personalAccessToken: '<personalAccessToken>'
+  selfHostedType: 'github'
+}
+// Non-required parameters
+param location = '<location>'
+param privateNetworking = true
 ```
 
 </details>

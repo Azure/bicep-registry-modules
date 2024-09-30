@@ -86,6 +86,22 @@ module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/signal-r-service/web-pub-sub:<version>'
+
+// Required parameters
+param name = 'srswpsmin-001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -332,6 +348,109 @@ module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/signal-r-service/web-pub-sub:<version>'
+
+// Required parameters
+param name = 'srswpsmax-001'
+// Non-required parameters
+param capacity = 2
+param clientCertEnabled = false
+param disableAadAuth = false
+param disableLocalAuth = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param networkAcls = {
+  defaultAction: 'Allow'
+  privateEndpoints: [
+    {
+      allow: []
+      deny: [
+        'ServerConnection'
+        'Trace'
+      ]
+      name: 'pe-srswpsmax-001'
+    }
+  ]
+  publicNetwork: {
+    allow: []
+    deny: [
+      'RESTAPI'
+      'Trace'
+    ]
+  }
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'webpubsub'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param resourceLogConfigurationsToEnable = [
+  'ConnectivityLogs'
+]
+param roleAssignments = [
+  {
+    name: '8e40bf2f-0457-4292-a83a-eedc36d04f6a'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param sku = 'Standard_S1'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -502,6 +621,76 @@ module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/signal-r-service/web-pub-sub:<version>'
+
+// Required parameters
+param name = 'srswpswaf-001'
+// Non-required parameters
+param capacity = 2
+param clientCertEnabled = false
+param disableAadAuth = false
+param disableLocalAuth = true
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+param networkAcls = {
+  defaultAction: 'Allow'
+  privateEndpoints: [
+    {
+      allow: []
+      deny: [
+        'ServerConnection'
+        'Trace'
+      ]
+      name: 'pe-srswpswaf-001'
+    }
+  ]
+  publicNetwork: {
+    allow: []
+    deny: [
+      'RESTAPI'
+      'Trace'
+    ]
+  }
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'webpubsub'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param resourceLogConfigurationsToEnable = [
+  'ConnectivityLogs'
+]
+param sku = 'Standard_S1'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

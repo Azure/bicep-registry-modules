@@ -86,6 +86,22 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis:<version>'
+
+// Required parameters
+param name = 'crmin001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using EntraID authentication_
 
 This instance deploys the module with EntraID authentication.
@@ -136,6 +152,25 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis:<version>'
+
+// Required parameters
+param name = 'crentrid001'
+// Non-required parameters
+param location = '<location>'
+param redisConfiguration = {
+  'aad-enabled': 'true'
 }
 ```
 
@@ -424,6 +459,125 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis:<version>'
+
+// Required parameters
+param name = 'crmax001'
+// Non-required parameters
+param capacity = 2
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param enableNonSslPort = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param minimumTlsVersion = '1.2'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    roleAssignments: [
+      {
+        name: '8d6043f5-8a22-447f-bc31-23d23e09de6c'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param redisVersion = '6'
+param roleAssignments = [
+  {
+    name: 'f20e5c94-a697-421e-8768-d576399dbd87'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param shardCount = 1
+param skuName = 'Premium'
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  resourceType: 'Redis Cache'
+}
+param zoneRedundant = true
+param zones = [
+  1
+  2
+]
+```
+
+</details>
+<p>
+
 ### Example 4: _Passive Geo-Replicated Redis Cache_
 
 This instance deploys the module with geo-replication enabled.
@@ -525,6 +679,40 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis:<version>'
+
+// Required parameters
+param name = 'crpgeo001'
+// Non-required parameters
+param capacity = 2
+param enableNonSslPort = true
+param geoReplicationObject = {
+  linkedRedisCacheLocation: '<linkedRedisCacheLocation>'
+  linkedRedisCacheResourceId: '<linkedRedisCacheResourceId>'
+  name: '<name>'
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param minimumTlsVersion = '1.2'
+param redisVersion = '6'
+param replicasPerMaster = 1
+param replicasPerPrimary = 1
+param shardCount = 1
+param skuName = 'Premium'
+param zoneRedundant = false
 ```
 
 </details>
@@ -715,6 +903,78 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis:<version>'
+
+// Required parameters
+param name = 'crwaf001'
+// Non-required parameters
+param capacity = 2
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param enableNonSslPort = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param minimumTlsVersion = '1.2'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param redisVersion = '6'
+param replicasPerMaster = 3
+param replicasPerPrimary = 3
+param shardCount = 1
+param skuName = 'Premium'
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  resourceType: 'Redis Cache'
+}
+param zoneRedundant = true
+param zones = [
+  1
+  2
+  3
+]
 ```
 
 </details>

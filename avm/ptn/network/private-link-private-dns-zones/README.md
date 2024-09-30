@@ -76,6 +76,19 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>'
+
+
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -134,6 +147,26 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>'
+
+param location = '<location>'
+param privateLinkPrivateDnsZones = [
+  'testpdnszone1.int'
+  'testpdnszone2.local'
+]
+param virtualNetworkResourceIdsToLinkTo = [
+  '<vnetResourceId>'
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
@@ -173,6 +206,21 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>'
+
+param virtualNetworkResourceIdsToLinkTo = [
+  '<vnetResourceId>'
+]
 ```
 
 </details>

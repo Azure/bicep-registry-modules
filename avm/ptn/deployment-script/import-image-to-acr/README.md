@@ -93,6 +93,25 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/deployment-script/import-image-to-acr:<version>'
+
+// Required parameters
+param acrName = '<acrName>'
+param image = 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+param name = 'dsiitamin001'
+// Non-required parameters
+param location = '<location>'
+param overwriteExistingImage = true
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -187,6 +206,35 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/deployment-script/import-image-to-acr:<version>'
+
+// Required parameters
+param acrName = '<acrName>'
+param image = 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+param name = 'dsiitamax001'
+// Non-required parameters
+param assignRbacRole = true
+param cleanupPreference = 'OnExpiration'
+param location = '<location>'
+param managedIdentities = '<managedIdentities>'
+param newImageName = 'application/your-image-name:tag'
+param overwriteExistingImage = true
+param storageAccountResourceId = '<storageAccountResourceId>'
+param subnetResourceIds = '<subnetResourceIds>'
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -246,6 +294,26 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/deployment-script/import-image-to-acr:<version>'
+
+// Required parameters
+param acrName = '<acrName>'
+param image = 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+param name = 'dsiitawaf001'
+// Non-required parameters
+param location = '<location>'
+param managedIdentities = '<managedIdentities>'
+param overwriteExistingImage = true
 ```
 
 </details>

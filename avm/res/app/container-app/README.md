@@ -106,6 +106,33 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/container-app:<version>'
+
+// Required parameters
+param containers = [
+  {
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+    resources: {
+      cpu: '<cpu>'
+      memory: '0.5Gi'
+    }
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'acamin001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Without ingress enabled_
 
 This instance deploys the module with ingress traffic completely disabled.
@@ -179,6 +206,34 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/container-app:<version>'
+
+// Required parameters
+param containers = [
+  {
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+    resources: {
+      cpu: '<cpu>'
+      memory: '0.5Gi'
+    }
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'acapriv001'
+// Non-required parameters
+param disableIngress = true
+param location = '<location>'
 ```
 
 </details>
@@ -412,6 +467,105 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/container-app:<version>'
+
+// Required parameters
+param containers = [
+  {
+    env: [
+      {
+        name: 'ContainerAppStoredSecretName'
+        secretRef: 'containerappstoredsecret'
+      }
+      {
+        name: 'ContainerAppKeyVaultStoredSecretName'
+        secretRef: 'keyvaultstoredsecret'
+      }
+    ]
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+    probes: [
+      {
+        httpGet: {
+          httpHeaders: [
+            {
+              name: 'Custom-Header'
+              value: 'Awesome'
+            }
+          ]
+          path: '/health'
+          port: 8080
+        }
+        initialDelaySeconds: 3
+        periodSeconds: 3
+        type: 'Liveness'
+      }
+    ]
+    resources: {
+      cpu: '<cpu>'
+      memory: '0.5Gi'
+    }
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'acamax001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param roleAssignments = [
+  {
+    name: 'e9bac1ee-aebe-4513-9337-49e87a7be05e'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param secrets = {
+  secureList: [
+    {
+      name: 'containerappstoredsecret'
+      value: '<value>'
+    }
+    {
+      identity: '<identity>'
+      keyVaultUrl: '<keyVaultUrl>'
+      name: 'keyvaultstoredsecret'
+    }
+  ]
+}
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+```
+
+</details>
+<p>
+
 ### Example 4: _VNet integrated container app deployment_
 
 This instance deploys the container app in a managed environment with a virtual network using TCP ingress.
@@ -513,6 +667,44 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/container-app:<version>'
+
+// Required parameters
+param containers = [
+  {
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+    resources: {
+      cpu: '<cpu>'
+      memory: '0.5Gi'
+    }
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'acavnet001'
+// Non-required parameters
+param additionalPortMappings = [
+  {
+    exposedPort: 8080
+    external: false
+    targetPort: 8080
+  }
+]
+param ingressAllowInsecure = false
+param ingressExternal = false
+param ingressTargetPort = 80
+param ingressTransport = 'tcp'
+param location = '<location>'
 ```
 
 </details>
@@ -660,6 +852,65 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/container-app:<version>'
+
+// Required parameters
+param containers = [
+  {
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+    probes: [
+      {
+        httpGet: {
+          httpHeaders: [
+            {
+              name: 'Custom-Header'
+              value: 'Awesome'
+            }
+          ]
+          path: '/health'
+          port: 8080
+        }
+        initialDelaySeconds: 3
+        periodSeconds: 3
+        type: 'Liveness'
+      }
+    ]
+    resources: {
+      cpu: '<cpu>'
+      memory: '0.5Gi'
+    }
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'acawaf001'
+// Non-required parameters
+param ingressAllowInsecure = false
+param ingressExternal = false
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
 }
 ```
 
