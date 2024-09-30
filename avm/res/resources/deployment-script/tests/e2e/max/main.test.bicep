@@ -65,18 +65,16 @@ module testDeployment '../../../main.bicep' = {
     }
     containerGroupName: 'dep-${namePrefix}-cg-${serviceShort}'
     arguments: '-argument1 \\"test\\"'
-    environmentVariables: {
-      secureList: [
-        {
-          name: 'var1'
-          value: 'test'
-        }
-        {
-          name: 'var2'
-          secureValue: guid(deployment().name)
-        }
-      ]
-    }
+    environmentVariables: [
+      {
+        name: 'var1'
+        value: 'test'
+      }
+      {
+        name: 'var2'
+        secureValue: guid(deployment().name)
+      }
+    ]
     managedIdentities: {
       userAssignedResourcesIds: [
         nestedDependencies.outputs.managedIdentityResourceId

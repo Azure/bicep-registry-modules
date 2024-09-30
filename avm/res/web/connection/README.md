@@ -13,7 +13,6 @@ This module deploys an Azure API Connection.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -290,7 +289,6 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -462,6 +460,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -581,7 +585,6 @@ Links to test the API connection.
 - Required: No
 - Type: array
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -590,10 +593,6 @@ Links to test the API connection.
 | `name` | string | The name of the connection. |
 | `resourceGroupName` | string | The resource group the connection was deployed into. |
 | `resourceId` | string | The resource ID of the connection. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -125,7 +125,7 @@ module testDeployment '../../../main.bicep' = {
         collation: 'SQL_Latin1_General_CP1_CI_AS'
         skuTier: 'GeneralPurpose'
         skuName: 'ElasticPool'
-        capacity: 0
+        skuCapacity: 0
         maxSizeBytes: 34359738368
         licenseType: 'LicenseIncluded'
         diagnosticSettings: [
@@ -180,9 +180,13 @@ module testDeployment '../../../main.bicep' = {
     privateEndpoints: [
       {
         subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+            }
+          ]
+        }
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
@@ -191,9 +195,13 @@ module testDeployment '../../../main.bicep' = {
       }
       {
         subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+            }
+          ]
+        }
       }
     ]
     virtualNetworkRules: [

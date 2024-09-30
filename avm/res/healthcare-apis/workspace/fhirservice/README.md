@@ -7,9 +7,7 @@ This module deploys a Healthcare API Workspace FHIR Service.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -470,6 +468,21 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DICOM Data Owner'`
+  - `'DICOM Data Reader'`
+  - `'FHIR Data Contributor'`
+  - `'FHIR Data Converter'`
+  - `'FHIR Data Exporter'`
+  - `'FHIR Data Importer'`
+  - `'FHIR Data Reader'`
+  - `'FHIR Data Writer'`
+  - `'FHIR SMART User'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -576,7 +589,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -587,10 +599,6 @@ Tags of the resource.
 | `resourceId` | string | The resource ID of the fhir service. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 | `workspaceName` | string | The name of the fhir workspace. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 
@@ -633,7 +641,3 @@ acrOciArtifacts: [
 </details>
 
 <p>
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

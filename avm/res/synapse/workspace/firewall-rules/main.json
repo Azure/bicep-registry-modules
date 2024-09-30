@@ -1,0 +1,74 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.29.47.4906",
+      "templateHash": "6729418057172891787"
+    },
+    "name": "Synapse Workspaces Firewall Rules",
+    "description": "This module deploys Synapse Workspaces Firewall Rules.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the firewall rule."
+      }
+    },
+    "startIpAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The start IP address of the firewall rule. Must be IPv4 format."
+      }
+    },
+    "endIpAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Synapse/workspaces/firewallRules",
+      "apiVersion": "2021-06-01",
+      "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
+      "properties": {
+        "startIpAddress": "[parameters('startIpAddress')]",
+        "endIpAddress": "[parameters('endIpAddress')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed firewall rule."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed firewall rule."
+      },
+      "value": "[resourceId('Microsoft.Synapse/workspaces/firewallRules', parameters('workspaceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed firewall rule."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

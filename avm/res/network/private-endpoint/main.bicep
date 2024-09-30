@@ -72,7 +72,7 @@ var builtInRoleNames = {
     'b12aa53e-6015-4669-85d0-8515ebb3ae7f'
   )
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -179,6 +179,9 @@ output location string = privateEndpoint.location
 
 @description('The custom DNS configurations of the private endpoint.')
 output customDnsConfig customDnsConfigType = privateEndpoint.properties.customDnsConfigs
+
+@description('The IDs of the network interfaces associated with the private endpoint.')
+output networkInterfaceIds array = privateEndpoint.properties.networkInterfaces
 
 @description('The group Id for the private endpoint Group.')
 output groupId string = !empty(privateEndpoint.properties.manualPrivateLinkServiceConnections) && length(privateEndpoint.properties.manualPrivateLinkServiceConnections[0].properties.?groupIds) > 0

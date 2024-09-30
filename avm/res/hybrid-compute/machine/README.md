@@ -8,7 +8,6 @@ This module deploys an Arc Machine for use with Arc Resource Bridge for Azure St
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -329,7 +328,6 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -511,6 +509,16 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+  - `'Arc machine Administrator Login'`
+  - `'Arc machine Contributor'`
+  - `'Arc machine User Login'`
+  - `'Windows Admin Center Administrator Login'`
 
 **Required parameters**
 
@@ -617,7 +625,6 @@ The GUID of the on-premises virtual machine from your hypervisor.
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -627,10 +634,6 @@ The GUID of the on-premises virtual machine from your hypervisor.
 | `resourceGroupName` | string | The name of the resource group the VM was created in. |
 | `resourceId` | string | The resource ID of the machine. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

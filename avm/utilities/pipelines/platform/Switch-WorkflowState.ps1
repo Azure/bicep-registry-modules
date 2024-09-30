@@ -15,7 +15,7 @@ Mandatory. The owning organization of the repository. For example, 'MyOrg'.
 Optional. The name of the repository. Defaults to 'bicep-registry-modules'.
 
 .PARAMETER IncludePattern
-Optional. A regex pattern to match against the workflow names. Defaults to 'avm\.(?:res|ptn)' - avm.res & avm.ptn.
+Optional. A regex pattern to match against the workflow names. Defaults to 'avm\.(?:res|ptn|utl)' - avm.res, avm.ptn & avm.utl.
 
 .PARAMETER ExlcudePattern
 Optional. A regex pattern that should not match against the workflow names. Defaults to '^$' - empty.
@@ -26,7 +26,7 @@ Optional. The GitHub PAT token to use for authentication when interacting with G
 .EXAMPLE
 Switch-WorkflowState -RepositoryOwner 'Paul' -RepositoryName 'bicep-registry-modules' -TargetState 'enable' -GitHubToken ('iAmAToken' | ConvertTo-SecureString -AsPlainText -Force)
 
-Enable any AVM res/ptn workflow in the [Paul/bicep-registry-modules] repository that is not in state 'active' using a custom GitHub PAT token.
+Enable any AVM res/ptn/utl workflow in the [Paul/bicep-registry-modules] repository that is not in state 'active' using a custom GitHub PAT token.
 
 .EXAMPLE
 Switch-WorkflowState -RepositoryOwner 'Paul' -RepositoryName 'bicep-registry-modules' -TargetState 'disable'
@@ -58,7 +58,7 @@ function Switch-WorkflowState {
         [string] $RepositoryName = 'bicep-registry-modules',
 
         [Parameter(Mandatory = $false)]
-        [string] $IncludePattern = 'avm\.(?:res|ptn)',
+        [string] $IncludePattern = 'avm\.(?:res|ptn|utl)',
 
         [Parameter(Mandatory = $false)]
         [string] $ExlcudePattern = '^$',
