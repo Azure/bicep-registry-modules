@@ -1,5 +1,5 @@
 metadata name = 'Fabric Capacities'
-metadata description = '<Add description>'
+metadata description = 'This module deploys Fabric capacities, which provide the compute resources for all the experiences in Fabric.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the resource to create.')
@@ -27,18 +27,15 @@ param tags object?
 @description('Optional. SKU tier of the Fabric resource.')
 param skuName string = 'F2'
 
+@allowed(['Fabric'])
 @description('Optional. SKU name of the Fabric resource.')
 param skuTier string = 'Fabric'
 
-@description('Optional. List of admin members. Format: ["something@domain.com"].')
-param adminMembers array = []
+@description('Required. List of admin members. Format: ["something@domain.com"].')
+param adminMembers array
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
-
-//
-// Add your parameters here
-//
 
 // ============== //
 // Resources      //
@@ -63,10 +60,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-//
-// Add your resources here
-//
-
 resource fabricCapacities 'Microsoft.Fabric/capacities@2023-11-01' = {
   name: name
   location: location
@@ -76,19 +69,15 @@ resource fabricCapacities 'Microsoft.Fabric/capacities@2023-11-01' = {
     tier: skuTier
   }
   properties: {
-    // Required properties here
     administration: {
       members: adminMembers
     }
-    // Optional properties here
   }
 }
 
 // ============ //
 // Outputs      //
 // ============ //
-
-// Add your outputs here
 
 @description('The name of the resource group the module was deployed to.')
 output resourceGroupName string = resourceGroup().name
@@ -101,10 +90,3 @@ output name string = fabricCapacities.name
 
 @description('The location the resource was deployed into.')
 output location string = fabricCapacities.location
-
-// ================ //
-// Definitions      //
-// ================ //
-//
-// Add your User-defined-types here, if any
-//

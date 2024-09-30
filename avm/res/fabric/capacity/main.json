@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "13116120435039015688"
+      "version": "0.30.3.12046",
+      "templateHash": "13489015936607818470"
     },
     "name": "Fabric Capacities",
-    "description": "<Add description>",
+    "description": "This module deploys Fabric capacities, which provide the compute resources for all the experiences in Fabric.",
     "owner": "Azure/module-maintainers"
   },
   "parameters": {
@@ -56,15 +56,17 @@
     "skuTier": {
       "type": "string",
       "defaultValue": "Fabric",
+      "allowedValues": [
+        "Fabric"
+      ],
       "metadata": {
         "description": "Optional. SKU name of the Fabric resource."
       }
     },
     "adminMembers": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
-        "description": "Optional. List of admin members. Format: [\"something@domain.com\"]."
+        "description": "Required. List of admin members. Format: [\"something@domain.com\"]."
       }
     },
     "enableTelemetry": {
