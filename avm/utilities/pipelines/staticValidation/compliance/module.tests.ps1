@@ -388,6 +388,7 @@ Describe 'Module tests' -Tag 'Module' {
 
             # Recompile json
             $null = Remove-Item -Path $armTemplatePath -Force
+            bicep --version
             bicep build $templateFilePath
 
             $newJson = Remove-JSONMetadata -TemplateObject (Get-Content $armTemplatePath -Raw | ConvertFrom-Json -Depth 99 -AsHashtable)
