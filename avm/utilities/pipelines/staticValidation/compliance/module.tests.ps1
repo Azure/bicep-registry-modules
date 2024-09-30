@@ -15,6 +15,8 @@ param (
 
 Write-Verbose ("repoRootPath: $repoRootPath") -Verbose
 Write-Verbose ("moduleFolderPaths: $($moduleFolderPaths.count)") -Verbose
+Write-Verbose "Bicep version"
+bicep --version
 
 $script:RgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
 $script:SubscriptionDeploymentSchema = 'https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#'
@@ -388,7 +390,7 @@ Describe 'Module tests' -Tag 'Module' {
 
             # Recompile json
             $null = Remove-Item -Path $armTemplatePath -Force
-            bicep --version
+            
             bicep build $templateFilePath
 
             $newJson = Remove-JSONMetadata -TemplateObject (Get-Content $armTemplatePath -Raw | ConvertFrom-Json -Depth 99 -AsHashtable)
