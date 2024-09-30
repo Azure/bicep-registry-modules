@@ -95,7 +95,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Linux'
-      vmSize: 'Standard_DS2_v2'
+      vmSize: 'Standard_DS2_v5'
       configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
       disablePasswordAuthentication: true
       publicKeys: [

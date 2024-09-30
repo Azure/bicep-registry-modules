@@ -89,7 +89,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Windows'
-      vmSize: 'Standard_DS2_v2'
+      vmSize: 'Standard_DS2_v5'
       adminPassword: password
       extensionAadJoinConfig: {
         enabled: true

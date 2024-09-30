@@ -91,7 +91,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Linux'
-      vmSize: 'Standard_DS2_v2'
+      vmSize: 'Standard_DS2_v5'
       disablePasswordAuthentication: true
       publicKeys: [
         {
