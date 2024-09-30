@@ -179,20 +179,6 @@ function Set-EnvironmentOnAgent {
     sudo mv ./bicep /usr/local/bin/bicep
 
     Write-Verbose 'Bicep CLI version after install:' -Verbose
-    bicep --version
-
-    # Define the path to the Bicep file (replace 'path/to/your/file.bicep' with your actual file path)
-    $BICEP_FILE = "/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/res/key-vault/vault/key/main.bicep"
-
-    Set-Location "/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/res/key-vault/vault/key/"
-
-    # Build the Bicep file
-    bicep --version
-    
-    az bicep build --file $BICEP_FILE
-
-    # Print the contents of the built file
-    Get-Content main.json
 
     ###############################
     ##   Install Extensions CLI   #
