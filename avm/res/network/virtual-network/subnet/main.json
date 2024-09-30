@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "17087074157977382192"
+      "templateHash": "5699372618313647761"
     },
     "name": "Virtual Network Subnets",
     "description": "This module deploys a Virtual Network Subnet.",
@@ -91,7 +91,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The Name of the subnet resource."
+        "description": "Requird. The Name of the subnet resource."
       }
     },
     "virtualNetworkName": {
@@ -102,41 +102,45 @@
     },
     "addressPrefix": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The address prefix for the subnet."
+        "description": "Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty."
       }
     },
     "networkSecurityGroupResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the network security group to assign to the subnet."
       }
     },
     "routeTableResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the route table to assign to the subnet."
       }
     },
     "serviceEndpoints": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The service endpoints to enable on the subnet."
       }
     },
-    "delegations": {
-      "type": "array",
-      "defaultValue": [],
+    "delegation": {
+      "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The delegations to enable on the subnet."
+        "description": "Optional. The delegation to enable on the subnet."
       }
     },
     "natGatewayResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the NAT Gateway to use for the subnet."
       }
@@ -150,7 +154,7 @@
         ""
       ],
       "metadata": {
-        "description": "Optional. enable or disable apply network policies on private endpoint in the subnet."
+        "description": "Optional. Enable or disable apply network policies on private endpoint in the subnet."
       }
     },
     "privateLinkServiceNetworkPolicies": {
@@ -162,14 +166,35 @@
         ""
       ],
       "metadata": {
-        "description": "Optional. enable or disable apply network policies on private link service in the subnet."
+        "description": "Optional. Enable or disable apply network policies on private link service in the subnet."
       }
     },
     "addressPrefixes": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. List of address prefixes for the subnet."
+        "description": "Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty."
+      }
+    },
+    "defaultOutboundAccess": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet."
+      }
+    },
+    "sharingScope": {
+      "type": "string",
+      "allowedValues": [
+        "DelegatedServices",
+        "Tenant"
+      ],
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
       }
     },
     "applicationGatewayIPConfigurations": {
@@ -177,13 +202,6 @@
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Application gateway IP configurations of virtual network resource."
-      }
-    },
-    "ipAllocations": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. Array of IpAllocation which reference this subnet."
       }
     },
     "serviceEndpointPolicies": {
@@ -213,7 +231,7 @@
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
@@ -221,26 +239,35 @@
     "virtualNetwork": {
       "existing": true,
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('virtualNetworkName')]"
     },
     "subnet": {
       "type": "Microsoft.Network/virtualNetworks/subnets",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('virtualNetworkName'), parameters('name'))]",
       "properties": {
+        "copy": [
+          {
+            "name": "serviceEndpoints",
+            "count": "[length(parameters('serviceEndpoints'))]",
+            "input": {
+              "service": "[parameters('serviceEndpoints')[copyIndex('serviceEndpoints')]]"
+            }
+          }
+        ],
         "addressPrefix": "[parameters('addressPrefix')]",
+        "addressPrefixes": "[parameters('addressPrefixes')]",
         "networkSecurityGroup": "[if(not(empty(parameters('networkSecurityGroupResourceId'))), createObject('id', parameters('networkSecurityGroupResourceId')), null())]",
         "routeTable": "[if(not(empty(parameters('routeTableResourceId'))), createObject('id', parameters('routeTableResourceId')), null())]",
         "natGateway": "[if(not(empty(parameters('natGatewayResourceId'))), createObject('id', parameters('natGatewayResourceId')), null())]",
-        "serviceEndpoints": "[parameters('serviceEndpoints')]",
-        "delegations": "[parameters('delegations')]",
+        "delegations": "[if(not(empty(parameters('delegation'))), createArray(createObject('name', parameters('delegation'), 'properties', createObject('serviceName', parameters('delegation')))), createArray())]",
         "privateEndpointNetworkPolicies": "[if(not(empty(parameters('privateEndpointNetworkPolicies'))), parameters('privateEndpointNetworkPolicies'), null())]",
         "privateLinkServiceNetworkPolicies": "[if(not(empty(parameters('privateLinkServiceNetworkPolicies'))), parameters('privateLinkServiceNetworkPolicies'), null())]",
-        "addressPrefixes": "[parameters('addressPrefixes')]",
         "applicationGatewayIPConfigurations": "[parameters('applicationGatewayIPConfigurations')]",
-        "ipAllocations": "[parameters('ipAllocations')]",
-        "serviceEndpointPolicies": "[parameters('serviceEndpointPolicies')]"
+        "serviceEndpointPolicies": "[parameters('serviceEndpointPolicies')]",
+        "defaultOutboundAccess": "[parameters('defaultOutboundAccess')]",
+        "sharingScope": "[parameters('sharingScope')]"
       },
       "dependsOn": [
         "virtualNetwork"
@@ -291,19 +318,19 @@
       },
       "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name'))]"
     },
-    "subnetAddressPrefix": {
+    "addressPrefix": {
       "type": "string",
       "metadata": {
         "description": "The address prefix for the subnet."
       },
-      "value": "[reference('subnet').addressPrefix]"
+      "value": "[coalesce(tryGet(reference('subnet'), 'addressPrefix'), '')]"
     },
-    "subnetAddressPrefixes": {
+    "addressPrefixes": {
       "type": "array",
       "metadata": {
         "description": "List of address prefixes for the subnet."
       },
-      "value": "[if(not(empty(parameters('addressPrefixes'))), reference('subnet').addressPrefixes, createArray())]"
+      "value": "[coalesce(tryGet(reference('subnet'), 'addressPrefixes'), createArray())]"
     }
   }
 }

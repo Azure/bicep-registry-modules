@@ -8,7 +8,6 @@ This module deploys an API Management Service. The default deployment is set to 
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -337,6 +336,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         ]
         authority: '<authority>'
         clientId: 'apimClientid'
+        clientLibrary: 'MSAL-2'
         clientSecret: 'apimSlientSecret'
         name: 'aad'
         signinTenant: 'mytenant.onmicrosoft.com'
@@ -579,6 +579,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           ],
           "authority": "<authority>",
           "clientId": "apimClientid",
+          "clientLibrary": "MSAL-2",
           "clientSecret": "apimSlientSecret",
           "name": "aad",
           "signinTenant": "mytenant.onmicrosoft.com"
@@ -893,6 +894,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         ]
         authority: '<authority>'
         clientId: 'apimClientid'
+        clientLibrary: 'MSAL-2'
         clientSecret: '<clientSecret>'
         name: 'aad'
         signinTenant: 'mytenant.onmicrosoft.com'
@@ -1113,6 +1115,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           ],
           "authority": "<authority>",
           "clientId": "apimClientid",
+          "clientLibrary": "MSAL-2",
           "clientSecret": "<clientSecret>",
           "name": "aad",
           "signinTenant": "mytenant.onmicrosoft.com"
@@ -1227,7 +1230,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -1740,6 +1742,16 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'API Management Developer Portal Content Editor'`
+  - `'API Management Service Contributor'`
+  - `'API Management Service Operator Role'`
+  - `'API Management Service Reader Role'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1903,7 +1915,6 @@ A list of availability zones denoting where the resource needs to come from. Onl
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1913,10 +1924,6 @@ A list of availability zones denoting where the resource needs to come from. Onl
 | `resourceGroupName` | string | The resource group the API management service was deployed into. |
 | `resourceId` | string | The resource ID of the API management service. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 

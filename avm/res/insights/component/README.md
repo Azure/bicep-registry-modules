@@ -8,7 +8,6 @@ This component deploys an Application Insights instance.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -328,7 +327,6 @@ module component 'br/public:avm/res/insights/component:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -647,6 +645,16 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+  - `'Monitoring Metrics Publisher'`
+  - `'Application Insights Component Contributor'`
+  - `'Application Insights Snapshot Debugger'`
+  - `'Monitoring Contributor'`
 
 **Required parameters**
 
@@ -753,7 +761,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -765,10 +772,6 @@ Tags of the resource.
 | `name` | string | The name of the application insights component. |
 | `resourceGroupName` | string | The resource group the application insights component was deployed into. |
 | `resourceId` | string | The resource ID of the application insights component. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

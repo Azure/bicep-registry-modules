@@ -477,7 +477,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
 </details>
 <p>
 
-
 ## Parameters
 
 **Optional parameters**
@@ -929,7 +928,6 @@ An array of of objects of virtual hub route table resource IDs to propagate rout
 - Required: No
 - Type: array
 - Default: `[]`
-
 
 ## Outputs
 

@@ -8,7 +8,6 @@ This module deploys a Network Watcher.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -129,7 +128,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
             disable: false
             name: 'test-http-Bing'
             sources: [
-              'subnet-001(${resourceGroup.name})'
+              'subnet-001(<value>)'
             ]
             testConfigurations: [
               'HTTP Bing Test'
@@ -241,7 +240,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
               "disable": false,
               "name": "test-http-Bing",
               "sources": [
-                "subnet-001(${resourceGroup.name})"
+                "subnet-001(<value>)"
               ],
               "testConfigurations": [
                 "HTTP Bing Test"
@@ -367,7 +366,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
             disable: false
             name: 'test-http-Bing'
             sources: [
-              'subnet-001(${resourceGroup.name})'
+              'subnet-001(<value>)'
             ]
             testConfigurations: [
               'HTTP Bing Test'
@@ -460,7 +459,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
               "disable": false,
               "name": "test-http-Bing",
               "sources": [
-                "subnet-001(${resourceGroup.name})"
+                "subnet-001(<value>)"
               ],
               "testConfigurations": [
                 "HTTP Bing Test"
@@ -508,7 +507,6 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -607,6 +605,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -705,7 +710,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -714,10 +718,6 @@ Tags of the resource.
 | `name` | string | The name of the deployed network watcher. |
 | `resourceGroupName` | string | The resource group the network watcher was deployed into. |
 | `resourceId` | string | The resource ID of the deployed network watcher. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -7,7 +7,7 @@ metadata owner = 'Azure/module-maintainers'
 @maxLength(60)
 param name string
 
-@description('Required. The name of the SKU will Determine the tier, size, family of the App Service Plan.')
+@description('Optional. The name of the SKU will Determine the tier, size, family of the App Service Plan. This defaults to P1v3 to leverage availability zones.')
 @metadata({
   example: '''
   'F1'
@@ -16,10 +16,10 @@ param name string
   'I1v2'
   '''
 })
-param skuName string
+param skuName string = 'P1v3'
 
-@description('Required. Number of workers associated with the App Service Plan.')
-param skuCapacity int
+@description('Optional. Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones.')
+param skuCapacity int = 3
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -185,11 +185,12 @@ resource appServicePlan_roleAssignments 'Microsoft.Authorization/roleAssignments
   for (roleAssignment, index) in (roleAssignments ?? []): {
     name: guid(appServicePlan.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+          roleAssignment.roleDefinitionIdOrName,
+          '/providers/Microsoft.Authorization/roleDefinitions/'
+        )
+        ? roleAssignment.roleDefinitionIdOrName
+        : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType

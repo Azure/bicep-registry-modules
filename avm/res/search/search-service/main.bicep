@@ -53,12 +53,12 @@ param privateEndpoints privateEndpointType
 @description('Optional. The sharedPrivateLinkResources to create as part of the search Service.')
 param sharedPrivateLinkResources array = []
 
-@description('Optional. This value can be set to \'enabled\' to avoid breaking changes on existing customer resources and templates. If set to \'disabled\', traffic over public interface is not allowed, and private endpoint connections would be the exclusive access method.')
+@description('Optional. This value can be set to \'Enabled\' to avoid breaking changes on existing customer resources and templates. If set to \'Disabled\', traffic over public interface is not allowed, and private endpoint connections would be the exclusive access method.')
 @allowed([
-  'enabled'
-  'disabled'
+  'Enabled'
+  'Disabled'
 ])
-param publicNetworkAccess string = 'enabled'
+param publicNetworkAccess string = 'Enabled'
 
 @description('Optional. The number of replicas in the search service. If specified, it must be a value between 1 and 12 inclusive for standard SKUs or between 1 and 3 inclusive for basic SKU.')
 @minValue(1)
@@ -123,7 +123,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -158,7 +158,7 @@ var formattedRoleAssignments = [
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.search-searchservice.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.search-searchservice.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -193,7 +193,7 @@ resource searchService 'Microsoft.Search/searchServices@2024-03-01-preview' = {
     networkRuleSet: networkRuleSet
     partitionCount: partitionCount
     replicaCount: replicaCount
-    publicNetworkAccess: publicNetworkAccess
+    publicNetworkAccess: toLower(publicNetworkAccess)
     semanticSearch: semanticSearch
   }
 }
@@ -254,7 +254,7 @@ resource searchService_roleAssignments 'Microsoft.Authorization/roleAssignments@
   }
 ]
 
-module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.6.1' = [
+module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-searchService-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -295,8 +295,7 @@ module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoin
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -315,9 +314,7 @@ module searchService_sharedPrivateLinkResources 'shared-private-link-resource/ma
   for (sharedPrivateLinkResource, index) in sharedPrivateLinkResources: {
     name: '${uniqueString(deployment().name, location)}-searchService-SharedPrivateLink-${index}'
     params: {
-      name: contains(sharedPrivateLinkResource, 'name')
-        ? sharedPrivateLinkResource.name
-        : 'spl-${last(split(searchService.id, '/'))}-${sharedPrivateLinkResource.groupId}-${index}'
+      name: sharedPrivateLinkResource.?name ?? 'spl-${last(split(searchService.id, '/'))}-${sharedPrivateLinkResource.groupId}-${index}'
       searchServiceName: searchService.name
       privateLinkResourceId: sharedPrivateLinkResource.privateLinkResourceId
       groupId: sharedPrivateLinkResource.groupId
@@ -345,6 +342,17 @@ output systemAssignedMIPrincipalId string = searchService.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = searchService.location
+
+@description('The private endpoints of the search service.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: searchService_privateEndpoints[i].outputs.name
+    resourceId: searchService_privateEndpoints[i].outputs.resourceId
+    groupId: searchService_privateEndpoints[i].outputs.groupId
+    customDnsConfig: searchService_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: searchService_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
 
 // =============== //
 //   Definitions   //
@@ -408,11 +416,20 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?

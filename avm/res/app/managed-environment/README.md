@@ -8,15 +8,14 @@ This module deploys an App Managed Environment (also known as a Container App En
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/managedEnvironments` | [2023-11-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-11-02-preview/managedEnvironments) |
-| `Microsoft.App/managedEnvironments/storages` | [2023-11-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-11-02-preview/managedEnvironments/storages) |
+| `Microsoft.App/managedEnvironments` | [2024-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-02-02-preview/managedEnvironments) |
+| `Microsoft.App/managedEnvironments/storages` | [2024-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-02-02-preview/managedEnvironments/storages) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -171,6 +170,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         ]
       }
     }
+    peerTrafficEncryption: true
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     roleAssignments: [
@@ -287,6 +287,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
           ]
         }
       }
+    },
+    "peerTrafficEncryption": {
+      "value": true
     },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
@@ -504,7 +507,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -542,6 +544,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 | [`logsDestination`](#parameter-logsdestination) | string | Logs destination. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`openTelemetryConfiguration`](#parameter-opentelemetryconfiguration) | object | Open Telemetry configuration. |
+| [`peerTrafficEncryption`](#parameter-peertrafficencryption) | bool | Whether or not to encrypt peer traffic. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`storages`](#parameter-storages) | array | The list of storages to mount on the environment. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -761,12 +764,26 @@ Open Telemetry configuration.
 - Type: object
 - Default: `{}`
 
+### Parameter: `peerTrafficEncryption`
+
+Whether or not to encrypt peer traffic.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -931,7 +948,6 @@ Whether or not this Managed Environment is zone-redundant.
 - Type: bool
 - Default: `True`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -943,10 +959,6 @@ Whether or not this Managed Environment is zone-redundant.
 | `resourceId` | string | The resource ID of the Managed Environment. |
 | `staticIp` | string | The IP address of the Managed Environment. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
