@@ -1,4 +1,4 @@
-# Search Services `[Microsoft.Search/searchServices]`
+# Search Services `[Search/SearchService]`
 
 This module deploys a Search Service.
 
@@ -111,8 +111,8 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     location: '<location>'
     secretsExportConfiguration: {
       keyVaultResourceId: '<keyVaultResourceId>'
-      primaryAdminKeyName: 'Primary-Admin-Key-Name'
-      secondaryAdminKeyName: 'Secondary-Admin-Key-Name'
+      primaryAdminKeyName: 'Primary-Admin-Key'
+      secondaryAdminKeyName: 'Secondary-Admin-Key'
     }
   }
 }
@@ -151,8 +151,8 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     "secretsExportConfiguration": {
       "value": {
         "keyVaultResourceId": "<keyVaultResourceId>",
-        "primaryAdminKeyName": "Primary-Admin-Key-Name",
-        "secondaryAdminKeyName": "Secondary-Admin-Key-Name"
+        "primaryAdminKeyName": "Primary-Admin-Key",
+        "secondaryAdminKeyName": "Secondary-Admin-Key"
       }
     }
   }
