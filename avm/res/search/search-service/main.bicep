@@ -337,18 +337,18 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
     keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
     secretsToSet: union(
       [],
-      contains(secretsExportConfiguration!, 'primaryAdminKey')
+      contains(secretsExportConfiguration!, 'primaryAdminKeyName')
         ? [
             {
-              name: secretsExportConfiguration!.primaryAdminKey
+              name: secretsExportConfiguration!.primaryAdminKeyName
               value: searchService.listAdminKeys().primaryKey
             }
           ]
         : [],
-      contains(secretsExportConfiguration!, 'secondaryAdminKey')
+      contains(secretsExportConfiguration!, 'secondaryAdminKeyName')
         ? [
             {
-              name: secretsExportConfiguration!.secondaryAdminKey
+              name: secretsExportConfiguration!.secondaryAdminKeyName
               value: searchService.listAdminKeys().secondaryKey
             }
           ]

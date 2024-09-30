@@ -55,8 +55,8 @@ module testDeployment '../../../main.bicep' = {
     }
     secretsExportConfiguration: {
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      primaryAdminKey: 'Primary-Admin-Key'
-      secondaryAdminKey: 'Secondary-Admin-Key'
+      primaryAdminKeyName: 'Primary-Admin-Key'
+      secondaryAdminKeyName: 'Secondary-Admin-Key'
     }
   }
 }
