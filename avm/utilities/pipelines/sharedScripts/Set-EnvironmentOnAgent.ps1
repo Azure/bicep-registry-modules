@@ -189,7 +189,7 @@ function Set-EnvironmentOnAgent {
     # Build the Bicep file
     bicep --version
     
-    bicep build --file $BICEP_FILE
+    az bicep build --file $BICEP_FILE
 
     # Print the contents of the built file
     Get-Content main.json
