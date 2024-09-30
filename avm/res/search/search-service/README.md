@@ -84,6 +84,22 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/search/search-service:<version>'
+
+// Required parameters
+param name = 'sssmin002'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -300,6 +316,92 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/search/search-service:<version>'
+
+// Required parameters
+param name = 'sssmax001'
+// Non-required parameters
+param authOptions = {
+  aadOrApiKey: {
+    aadAuthFailureMode: 'http401WithBearerChallenge'
+  }
+}
+param cmkEnforcement = 'Enabled'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAuth = false
+param hostingMode = 'highDensity'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkRuleSet = {
+  ipRules: [
+    {
+      value: '40.74.28.0/23'
+    }
+    {
+      value: '87.147.204.13'
+    }
+  ]
+}
+param partitionCount = 2
+param replicaCount = 3
+param roleAssignments = [
+  {
+    name: '73ec30e0-2e25-475f-beec-d90cab332eb7'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param semanticSearch = 'standard'
+param sku = 'standard3'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _Private endpoint-enabled deployment_
 
 This instance deploys the module with private endpoints.
@@ -446,6 +548,70 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/search/search-service:<version>'
+
+// Required parameters
+param name = 'ssspe001'
+// Non-required parameters
+param location = '<location>'
+param privateEndpoints = [
+  {
+    applicationSecurityGroupResourceIds: [
+      '<applicationSecurityGroupResourceId>'
+    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+param sharedPrivateLinkResources = [
+  {
+    groupId: 'blob'
+    privateLinkResourceId: '<privateLinkResourceId>'
+    requestMessage: 'Please approve this request'
+    resourceRegion: '<resourceRegion>'
+  }
+  {
+    groupId: 'vault'
+    privateLinkResourceId: '<privateLinkResourceId>'
+    requestMessage: 'Please approve this request'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -612,6 +778,69 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/search/search-service:<version>'
+
+// Required parameters
+param name = 'ssswaf001'
+// Non-required parameters
+param authOptions = {
+  aadOrApiKey: {
+    aadAuthFailureMode: 'http401WithBearerChallenge'
+  }
+}
+param cmkEnforcement = 'Enabled'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAuth = false
+param hostingMode = 'highDensity'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param networkRuleSet = {
+  ipRules: [
+    {
+      value: '40.74.28.0/23'
+    }
+    {
+      value: '87.147.204.13'
+    }
+  ]
+}
+param partitionCount = 2
+param replicaCount = 3
+param sku = 'standard3'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

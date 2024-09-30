@@ -235,6 +235,89 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cdn/profile:<version>'
+
+// Required parameters
+param name = 'dep-test-cdnpafd'
+param sku = 'Standard_AzureFrontDoor'
+// Non-required parameters
+param afdEndpoints = [
+  {
+    name: 'dep-test-cdnpafd-afd-endpoint'
+    routes: [
+      {
+        customDomainNames: [
+          'dep-test-cdnpafd-custom-domain'
+        ]
+        name: 'dep-test-cdnpafd-afd-route'
+        originGroupName: 'dep-test-cdnpafd-origin-group'
+        ruleSets: [
+          {
+            name: 'deptestcdnpafdruleset'
+          }
+        ]
+      }
+    ]
+  }
+]
+param customDomains = [
+  {
+    certificateType: 'ManagedCertificate'
+    hostName: 'dep-test-cdnpafd-custom-domain.azurewebsites.net'
+    name: 'dep-test-cdnpafd-custom-domain'
+  }
+]
+param location = 'global'
+param originGroups = [
+  {
+    loadBalancingSettings: {
+      additionalLatencyInMilliseconds: 50
+      sampleSize: 4
+      successfulSamplesRequired: 3
+    }
+    name: 'dep-test-cdnpafd-origin-group'
+    origins: [
+      {
+        hostName: 'dep-test-cdnpafd-origin.azurewebsites.net'
+        name: 'dep-test-cdnpafd-origin'
+      }
+    ]
+  }
+]
+param originResponseTimeoutSeconds = 60
+param ruleSets = [
+  {
+    name: 'deptestcdnpafdruleset'
+    rules: [
+      {
+        actions: [
+          {
+            name: 'UrlRedirect'
+            parameters: {
+              customHostname: 'dev-etradefd.trade.azure.defra.cloud'
+              customPath: '/test123'
+              destinationProtocol: 'Https'
+              redirectType: 'PermanentRedirect'
+              typeName: 'DeliveryRuleUrlRedirectActionParameters'
+            }
+          }
+        ]
+        name: 'deptestcdnpafdrule'
+        order: 1
+      }
+    ]
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -282,6 +365,23 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cdn/profile:<version>'
+
+// Required parameters
+param name = 'dep-test-cdnpmin'
+param sku = 'Standard_Microsoft'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -455,6 +555,77 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cdn/profile:<version>'
+
+// Required parameters
+param name = 'dep-test-cdnpmax'
+param sku = 'Standard_Verizon'
+// Non-required parameters
+param endpointProperties = {
+  contentTypesToCompress: [
+    'application/javascript'
+    'application/json'
+    'application/x-javascript'
+    'application/xml'
+    'text/css'
+    'text/html'
+    'text/javascript'
+    'text/plain'
+  ]
+  geoFilters: []
+  isCompressionEnabled: true
+  isHttpAllowed: true
+  isHttpsAllowed: true
+  originGroups: []
+  originHostHeader: '<originHostHeader>'
+  origins: [
+    {
+      name: 'dep-cdn-endpoint01'
+      properties: {
+        enabled: true
+        hostName: '<hostName>'
+        httpPort: 80
+        httpsPort: 443
+      }
+    }
+  ]
+  queryStringCachingBehavior: 'IgnoreQueryString'
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param originResponseTimeoutSeconds = 60
+param roleAssignments = [
+  {
+    name: '50362c78-6910-43c3-8639-9cae123943bb'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -568,6 +739,54 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cdn/profile:<version>'
+
+// Required parameters
+param name = 'dep-test-cdnpwaf'
+param sku = 'Standard_Verizon'
+// Non-required parameters
+param endpointProperties = {
+  contentTypesToCompress: [
+    'application/javascript'
+    'application/json'
+    'application/x-javascript'
+    'application/xml'
+    'text/css'
+    'text/html'
+    'text/javascript'
+    'text/plain'
+  ]
+  geoFilters: []
+  isCompressionEnabled: true
+  isHttpAllowed: true
+  isHttpsAllowed: true
+  originGroups: []
+  originHostHeader: '<originHostHeader>'
+  origins: [
+    {
+      name: 'dep-cdn-endpoint01'
+      properties: {
+        enabled: true
+        hostName: '<hostName>'
+        httpPort: 80
+        httpsPort: 443
+      }
+    }
+  ]
+  queryStringCachingBehavior: 'IgnoreQueryString'
+}
+param location = '<location>'
+param originResponseTimeoutSeconds = 60
 ```
 
 </details>
