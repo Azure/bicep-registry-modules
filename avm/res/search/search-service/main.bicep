@@ -563,10 +563,10 @@ type secretsExportConfigurationType = {
   keyVaultResourceId: string
 
   @description('Optional. The primaryAdminKey secret name to create.')
-  primaryAdminKey: string?
+  primaryAdminKeyName: string?
 
   @description('Optional. The secondaryAdminKey secret name to create.')
-  secondaryAdminKey: string?
+  secondaryAdminKeyName: string?
 }
 
 import { secretSetType } from 'modules/keyVaultExport.bicep'
