@@ -149,6 +149,7 @@ module blobServices_container 'container/main.bicep' = [
     name: '${deployment().name}-Container-${index}'
     params: {
       storageAccountName: storageAccount.name
+      blobServiceName: blobServices.name
       name: container.name
       defaultEncryptionScope: container.?defaultEncryptionScope
       denyEncryptionScopeOverride: container.?denyEncryptionScopeOverride
