@@ -433,7 +433,7 @@ type subnetType = {
   networkSecurityGroupResourceId: string?
 
   @description('Optional. enable or disable apply network policies on private endpoint in the subnet.')
-  privateEndpointNetworkPolicies: ('Disabled' | 'Enabled' | '')?
+  privateEndpointNetworkPolicies: ('NetworkSecurityGroupEnabled' | 'RouteTableEnabled' | '')?
 
   @description('Optional. enable or disable apply network policies on private link service in the subnet.')
   privateLinkServiceNetworkPolicies: ('Disabled' | 'Enabled' | '')?
