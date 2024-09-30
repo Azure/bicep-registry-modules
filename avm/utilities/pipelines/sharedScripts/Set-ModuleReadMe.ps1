@@ -1611,8 +1611,8 @@ function Set-UsageExamplesSection {
             # [6/6] Convert the Bicep format to a Bicep parameters file format
             $bicepParametersfileExample = $bicepExample -split '\r?\n' | ForEach-Object {
                 $line = $_
-                $line = $line -replace '^( {0,4})([a-zA-Z]*)(:)(.*)', 'param $2 =$4' # Update any [    xyz: abc] to [param xyz = abc]
-                $line = $line -replace '^ {0,4}', '' # Update any [    xyz: abc] to [xyz: abc]
+                $line = $line -replace '^(\s{4})([a-zA-Z]*)(:)(.*)', 'param $2 =$4' # Update any [    xyz: abc] to [param xyz = abc]
+                $line = $line -replace '^\s{4}', '' # Update any [    xyz: abc] to [xyz: abc]
                 $line
             }
 
