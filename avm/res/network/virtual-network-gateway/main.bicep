@@ -15,7 +15,11 @@ param gatewayPipName string = '${name}-pip1'
 param publicIPPrefixResourceId string = ''
 
 @description('Optional. Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones.')
-param publicIpZones array = []
+param publicIpZones array = [
+  1
+  2
+  3
+]
 
 @description('Optional. DNS name(s) of the Public IP resource(s). If you enabled active-active configuration, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com.')
 param domainNameLabel array = []
@@ -35,7 +39,7 @@ param gatewayType string
 ])
 param vpnGatewayGeneration string = 'None'
 
-@description('Required. The SKU of the Gateway.')
+@description('Optional. The SKU of the Gateway.')
 @allowed([
   'Basic'
   'VpnGw1'
@@ -55,7 +59,7 @@ param vpnGatewayGeneration string = 'None'
   'ErGw2AZ'
   'ErGw3AZ'
 ])
-param skuName string
+param skuName string = (gatewayType == 'VPN') ? 'VpnGw1AZ' : 'ErGw1AZ'
 
 @description('Optional. Specifies the VPN type.')
 @allowed([
@@ -174,7 +178,6 @@ var bgpSettingsVar = isActiveActive
         }
       ]
     }
-
 
 // Potential IP configurations (active-active vs active-passive)
 var ipConfiguration = isActiveActive
@@ -554,53 +557,45 @@ type diagnosticSettingType = {
 }[]?
 
 type activePassiveNoBgpType = {
-  
   clusterMode: 'activePassiveNoBgp'
-
 }
 
 type activeActiveNoBgpType = {
-  
   clusterMode: 'activeActiveNoBgp'
 
   @description('Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip2\' suffix will be appended to the gateway\'s name.')
   activeGatewayPipName: string?
-
 }
 
 type activePassiveBgpType = {
-  
   clusterMode: 'activePassiveBgp'
 
   @description('Optional. The Autonomous System Number value. If it\'s not provided, a default \'65515\' value will be assigned to the ASN.')
   @minValue(0)
   @maxValue(4294967295)
-  asn: int? 
+  asn: int?
 
   @description('Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
   customBgpIpAddresses: string[]?
 }
 
 type activeActiveBgpType = {
-  
   clusterMode: 'activeActiveBgp'
 
   @description('Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it\'s not provided, a \'-pip2\' suffix will be appended to the gateway\'s name.')
   activeGatewayPipName: string?
-  
+
   @description('Optional. The Autonomous System Number value. If it\'s not provided, a default \'65515\' value will be assigned to the ASN.')
   @minValue(0)
   @maxValue(4294967295)
-  asn: int? 
+  asn: int?
 
   @description('Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
   customBgpIpAddresses: string[]?
-  
+
   @description('Optional. The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
   secondCustomBgpIpAddresses: string[]?
 }
 
 @discriminator('clusterMode')
 type clusterSettingType = activeActiveNoBgpType | activeActiveBgpType | activePassiveBgpType | activePassiveNoBgpType
-
-
