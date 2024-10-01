@@ -124,6 +124,7 @@ module testDeployment '../../../main.bicep' = [
               'authorizationCode'
             ]
             name: 'AuthServer1'
+            displayName: 'AuthServer1'
             tokenEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/token'
           }
         ]
@@ -241,6 +242,7 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
           name: 'Starter'
+          displayName: 'Starter'
           subscriptionRequired: false
         }
       ]
@@ -270,6 +272,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'testArmSubscriptionAllApis'
           scope: '/apis'
+          displayName: 'testArmSubscriptionAllApis'
         }
       ]
       managedIdentities: {
