@@ -245,22 +245,26 @@ output hubVirtualNetworks object[] = [
 
 @description('Array of hub bastion resources.')
 output hubBastions object[] = [
-  for (hub, index) in items(hubVirtualNetworks ?? {}): {
-    resourceGroupName: hubBastion[index].outputs.resourceGroupName
-    location: hubBastion[index].outputs.location
-    name: hubBastion[index].outputs.name
-    resourceId: hubBastion[index].outputs.resourceId
-  }
+  for (hub, index) in items(hubVirtualNetworks ?? {}): (hub.value.enableBastion)
+    ? {
+        resourceGroupName: hubBastion[index].outputs.resourceGroupName
+        location: hubBastion[index].outputs.location
+        name: hubBastion[index].outputs.name
+        resourceId: hubBastion[index].outputs.resourceId
+      }
+    : {}
 ]
 
 @description('Array of hub Azure Firewall resources.')
 output hubAzureFirewalls object[] = [
-  for (hub, index) in items(hubVirtualNetworks ?? {}): {
-    resourceGroupName: hubAzureFirewall[index].outputs.resourceGroupName
-    location: hubAzureFirewall[index].outputs.location
-    name: hubAzureFirewall[index].outputs.name
-    resourceId: hubAzureFirewall[index].outputs.resourceId
-  }
+  for (hub, index) in items(hubVirtualNetworks ?? {}): (hub.value.enableAzureFirewall)
+    ? {
+        resourceGroupName: hubAzureFirewall[index].outputs.resourceGroupName
+        location: hubAzureFirewall[index].outputs.location
+        name: hubAzureFirewall[index].outputs.name
+        resourceId: hubAzureFirewall[index].outputs.resourceId
+      }
+    : {}
 ]
 
 @description('The subnets of the hub virtual network.')
