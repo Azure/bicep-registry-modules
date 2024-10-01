@@ -41,4 +41,3 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The FQDN of the frontend.')
 output fqdn string = frontend.properties.fqdn
-
