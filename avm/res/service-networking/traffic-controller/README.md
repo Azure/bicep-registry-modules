@@ -8,7 +8,6 @@ This module deploys an Application Gateway for Containers
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -365,7 +364,6 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
 </details>
 <p>
 
-
 ## Parameters
 
 **Required parameters**
@@ -646,6 +644,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -744,7 +748,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -756,10 +759,6 @@ Resource tags.
 | `name` | string | The name of the Application Gateway for Containers. |
 | `resourceGroupName` | string | The name of the resource group the resource was created in. |
 | `resourceId` | string | The resource ID of the Application Gateway for Containers. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 

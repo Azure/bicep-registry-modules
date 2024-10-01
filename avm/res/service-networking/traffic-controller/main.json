@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "12596859376760798164"
+      "version": "0.30.23.60470",
+      "templateHash": "13555357375349247834"
     },
     "name": "Application Gateway for Containers",
     "description": "This module deploys an Application Gateway for Containers",
@@ -480,8 +480,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "15229634960628564975"
+              "version": "0.30.23.60470",
+              "templateHash": "12093954076612099884"
             },
             "name": "Application Gateway for Containers Frontend",
             "description": "This module deploys an Application Gateway for Containers Frontend",
@@ -586,8 +586,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "13830191223102804829"
+              "version": "0.30.23.60470",
+              "templateHash": "17751059838446450774"
             },
             "name": "Application Gateway for Containers Association",
             "description": "This module deploys an Application Gateway for Containers Association",
