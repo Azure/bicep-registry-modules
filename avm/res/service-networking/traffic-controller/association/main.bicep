@@ -49,10 +49,3 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The resource ID of the associated subnet.')
 output subnetResourceId string = association.properties.subnet.id
-
-// ================ //
-// Definitions      //
-// ================ //
-//
-// Add your User-defined-types here, if any
-//
