@@ -44,6 +44,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     location: enforcedLocation
   }
@@ -60,6 +61,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
+      managedIdentityName: nestedDependencies.outputs.managedIdentityName
       virtualMachineConfiguration: {
         adminUsername: 'localAdminUser'
         adminPassword: password

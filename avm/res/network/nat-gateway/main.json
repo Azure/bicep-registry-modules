@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "693015077235905038"
+      "version": "0.30.3.12046",
+      "templateHash": "16462612640291787003"
     },
     "name": "NAT Gateways",
     "description": "This module deploys a NAT Gateway.",
@@ -213,7 +213,7 @@
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
@@ -308,7 +308,9 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": "[if(contains(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'name'), createObject('value', coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()].name), createObject('value', format('{0}-pip', parameters('name'))))]",
+          "name": {
+            "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'name'), format('{0}-pip', parameters('name')))]"
+          },
           "location": {
             "value": "[parameters('location')]"
           },
@@ -340,7 +342,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "zones": {
-            "value": "[tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'zones')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'zones'), if(not(equals(parameters('zone'), 0)), createArray(parameters('zone')), null()))]"
           },
           "enableTelemetry": {
             "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
@@ -1004,8 +1006,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "15040145942768763519"
+              "version": "0.30.3.12046",
+              "templateHash": "9121047532434826411"
             }
           },
           "parameters": {
@@ -1050,7 +1052,9 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": "[if(contains(coalesce(parameters('publicIPPrefixObjects'), createArray())[copyIndex()], 'name'), createObject('value', coalesce(parameters('publicIPPrefixObjects'), createArray())[copyIndex()].name), createObject('value', format('{0}-pip', parameters('name'))))]",
+          "name": {
+            "value": "[coalesce(tryGet(coalesce(parameters('publicIPPrefixObjects'), createArray())[copyIndex()], 'name'), format('{0}-pip', parameters('name')))]"
+          },
           "location": {
             "value": "[parameters('location')]"
           },
@@ -1416,8 +1420,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "15040145942768763519"
+              "version": "0.30.3.12046",
+              "templateHash": "9121047532434826411"
             }
           },
           "parameters": {

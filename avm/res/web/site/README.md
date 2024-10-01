@@ -21,8 +21,9 @@ This module deploys a Web or Function App.
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Web/sites` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/sites) |
+| `Microsoft.Web/sites` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
 | `Microsoft.Web/sites/basicPublishingCredentialsPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
+| `Microsoft.Web/sites/config` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
 | `Microsoft.Web/sites/config` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
 | `Microsoft.Web/sites/extensions` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites/extensions) |
 | `Microsoft.Web/sites/hybridConnectionNamespaces/relays` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/sites/hybridConnectionNamespaces/relays) |
@@ -41,15 +42,16 @@ The following section provides usage examples for the module, which were used to
 
 - [Function App, using only defaults](#example-1-function-app-using-only-defaults)
 - [Function App, using large parameter set](#example-2-function-app-using-large-parameter-set)
-- [Web App, using only defaults](#example-3-web-app-using-only-defaults)
-- [Web App](#example-4-web-app)
-- [WAF-aligned](#example-5-waf-aligned)
-- [Web App, using only defaults](#example-6-web-app-using-only-defaults)
-- [Web App, using large parameter set](#example-7-web-app-using-large-parameter-set)
-- [Web App, using only defaults](#example-8-web-app-using-only-defaults)
-- [Web App, using large parameter set](#example-9-web-app-using-large-parameter-set)
-- [Web App](#example-10-web-app)
-- [Windows Web App for Containers, using only defaults](#example-11-windows-web-app-for-containers-using-only-defaults)
+- [Function App, using only defaults](#example-3-function-app-using-only-defaults)
+- [Web App, using only defaults](#example-4-web-app-using-only-defaults)
+- [Web App](#example-5-web-app)
+- [WAF-aligned](#example-6-waf-aligned)
+- [Web App, using only defaults](#example-7-web-app-using-only-defaults)
+- [Web App, using large parameter set](#example-8-web-app-using-large-parameter-set)
+- [Web App, using only defaults](#example-9-web-app-using-only-defaults)
+- [Web App, using large parameter set](#example-10-web-app-using-large-parameter-set)
+- [Web App](#example-11-web-app)
+- [Windows Web App for Containers, using only defaults](#example-12-windows-web-app-for-containers-using-only-defaults)
 
 ### Example 1: _Function App, using only defaults_
 
@@ -515,7 +517,75 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 3: _Web App, using only defaults_
+### Example 3: _Function App, using only defaults_
+
+This instance deploys the module as Function App with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: 'siteDeployment'
+  params: {
+    // Required parameters
+    kind: 'functionapp'
+    name: 'wsfaset001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    appSettingsKeyValuePairs: {
+      AzureFunctionsJobHost__logging__logLevel__default: 'Trace'
+      FUNCTIONS_EXTENSION_VERSION: '~4'
+      FUNCTIONS_WORKER_RUNTIME: 'dotnet'
+    }
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "functionapp"
+    },
+    "name": {
+      "value": "wsfaset001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    // Non-required parameters
+    "appSettingsKeyValuePairs": {
+      "value": {
+        "AzureFunctionsJobHost__logging__logLevel__default": "Trace",
+        "FUNCTIONS_EXTENSION_VERSION": "~4",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Web App, using only defaults_
 
 This instance deploys the module as a Linux Web App with the minimum set of required parameters.
 
@@ -591,7 +661,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 4: _Web App_
+### Example 5: _Web App_
 
 This instance deploys the module as Web App with the set of logs configuration.
 
@@ -723,7 +793,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -865,7 +935,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 6: _Web App, using only defaults_
+### Example 7: _Web App, using only defaults_
 
 This instance deploys the module as Web App with the minimum set of required parameters.
 
@@ -921,7 +991,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 7: _Web App, using large parameter set_
+### Example 8: _Web App, using large parameter set_
 
 This instance deploys the module as Web App with most of its features enabled.
 
@@ -1389,7 +1459,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 8: _Web App, using only defaults_
+### Example 9: _Web App, using only defaults_
 
 This instance deploys the module as a Linux Web App with the minimum set of required parameters.
 
@@ -1445,7 +1515,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 9: _Web App, using large parameter set_
+### Example 10: _Web App, using large parameter set_
 
 This instance deploys the module asa Linux Web App with most of its features enabled.
 
@@ -1907,7 +1977,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 10: _Web App_
+### Example 11: _Web App_
 
 This instance deploys the module as Web App with the set of api management configuration.
 
@@ -2003,7 +2073,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 11: _Windows Web App for Containers, using only defaults_
+### Example 12: _Windows Web App for Containers, using only defaults_
 
 This instance deploys the module as a Windows based Container Web App with the minimum set of required parameters.
 
@@ -3001,6 +3071,15 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'App Compliance Automation Administrator'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+  - `'Web Plan Contributor'`
+  - `'Website Contributor'`
 
 **Required parameters**
 

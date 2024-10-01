@@ -468,6 +468,21 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DICOM Data Owner'`
+  - `'DICOM Data Reader'`
+  - `'FHIR Data Contributor'`
+  - `'FHIR Data Converter'`
+  - `'FHIR Data Exporter'`
+  - `'FHIR Data Importer'`
+  - `'FHIR Data Reader'`
+  - `'FHIR Data Writer'`
+  - `'FHIR SMART User'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

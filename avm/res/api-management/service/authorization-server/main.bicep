@@ -5,6 +5,10 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. Identifier of the authorization server.')
 param name string
 
+@description('Required. API Management Service Authorization Servers name. Must be 1 to 50 characters long.')
+@maxLength(50)
+param displayName string
+
 @description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
@@ -85,7 +89,7 @@ resource authorizationServer 'Microsoft.ApiManagement/service/authorizationServe
     bearerTokenSendingMethods: bearerTokenSendingMethods
     resourceOwnerUsername: resourceOwnerUsername
     resourceOwnerPassword: resourceOwnerPassword
-    displayName: name
+    displayName: displayName
     clientRegistrationEndpoint: clientRegistrationEndpoint
     authorizationEndpoint: authorizationEndpoint
     grantTypes: grantTypes

@@ -461,10 +461,10 @@ type virtualNetworkType = {
   description: string?
 
   @description('Optional. The allowed subnets of the virtual network.')
-  allowedSubnets: allowedSubnetType[]?
+  allowedSubnets: allowedSubnetType?
 
   @description('Optional. The subnet overrides of the virtual network.')
-  subnetOverrides: subnetOverrideType[]?
+  subnetOverrides: subnetOverrideType?
 }[]?
 
 type costsType = {

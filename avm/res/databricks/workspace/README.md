@@ -112,6 +112,9 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     customPrivateSubnetName: '<customPrivateSubnetName>'
     customPublicSubnetName: '<customPublicSubnetName>'
     customVirtualNetworkResourceId: '<customVirtualNetworkResourceId>'
+    defaultCatalog: {
+      initialType: 'UnityCatalog'
+    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -245,6 +248,11 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     },
     "customVirtualNetworkResourceId": {
       "value": "<customVirtualNetworkResourceId>"
+    },
+    "defaultCatalog": {
+      "value": {
+        "initialType": "UnityCatalog"
+      }
     },
     "diagnosticSettings": {
       "value": [
@@ -677,6 +685,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 | [`customPrivateSubnetName`](#parameter-customprivatesubnetname) | string | The name of the Private Subnet within the Virtual Network. |
 | [`customPublicSubnetName`](#parameter-custompublicsubnetname) | string | The name of a Public Subnet within the Virtual Network. |
 | [`customVirtualNetworkResourceId`](#parameter-customvirtualnetworkresourceid) | string | The resource ID of a Virtual Network where this Databricks Cluster should be created. |
+| [`defaultCatalog`](#parameter-defaultcatalog) | object | The default catalog configuration for the Databricks workspace. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disablePublicIp`](#parameter-disablepublicip) | bool | Disable Public IP. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -853,6 +862,33 @@ The resource ID of a Virtual Network where this Databricks Cluster should be cre
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `defaultCatalog`
+
+The default catalog configuration for the Databricks workspace.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`initialType`](#parameter-defaultcataloginitialtype) | string | Choose between HiveMetastore or UnityCatalog. |
+
+### Parameter: `defaultCatalog.initialType`
+
+Choose between HiveMetastore or UnityCatalog.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'HiveMetastore'
+    'UnityCatalog'
+  ]
+  ```
 
 ### Parameter: `diagnosticSettings`
 
@@ -1529,6 +1565,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1941,6 +1983,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

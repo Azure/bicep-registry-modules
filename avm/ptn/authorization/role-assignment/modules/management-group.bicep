@@ -44,13 +44,23 @@ var builtInRoleNames = {
   Owner: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
   'Resource Policy Contributor': '/providers/Microsoft.Authorization/roleDefinitions/36243c78-bf99-498c-9df9-86d9f8d28608'
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
-  'Management Group Reader': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ac63b705-f282-497d-ac71-919bf39d939d')
+  'Role Based Access Control Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
+  'Management Group Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'ac63b705-f282-497d-ac71-919bf39d939d'
+  )
 }
 
-var roleDefinitionIdVar = (contains(builtInRoleNames, roleDefinitionIdOrName) ? builtInRoleNames[roleDefinitionIdOrName] : roleDefinitionIdOrName)
-
+var roleDefinitionIdVar = (contains(builtInRoleNames, roleDefinitionIdOrName)
+  ? builtInRoleNames[roleDefinitionIdOrName]
+  : roleDefinitionIdOrName)
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(managementGroupId, roleDefinitionIdVar, principalId)
@@ -59,7 +69,9 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     principalId: principalId
     description: !empty(description) ? description : null
     principalType: !empty(principalType) ? any(principalType) : null
-    delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId) ? delegatedManagedIdentityResourceId : null
+    delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId)
+      ? delegatedManagedIdentityResourceId
+      : null
     conditionVersion: !empty(conditionVersion) && !empty(condition) ? conditionVersion : null
     condition: !empty(condition) ? condition : null
   }
