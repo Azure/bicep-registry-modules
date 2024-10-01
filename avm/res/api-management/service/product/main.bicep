@@ -5,6 +5,10 @@ metadata owner = 'Azure/module-maintainers'
 @sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
+@sys.description('Required. API Management Service Products name. Must be 1 to 300 characters long.')
+@maxLength(300)
+param displayName string
+
 @sys.description('Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the products APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the products APIs. Can be present only if subscriptionRequired property is present and has a value of false.')
 param approvalRequired bool = false
 
@@ -41,7 +45,7 @@ resource product 'Microsoft.ApiManagement/service/products@2022-08-01' = {
   parent: service
   properties: {
     description: description
-    displayName: name
+    displayName: displayName
     terms: terms
     subscriptionRequired: subscriptionRequired
     approvalRequired: subscriptionRequired ? approvalRequired : null

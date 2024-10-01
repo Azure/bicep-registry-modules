@@ -31,9 +31,10 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/nat-gateway:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Combine a generated and provided Public IP Prefix](#example-3-combine-a-generated-and-provided-public-ip-prefix)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using an existing Public IP](#example-2-using-an-existing-public-ip)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Combine a generated and provided Public IP Prefix](#example-4-combine-a-generated-and-provided-public-ip-prefix)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -87,7 +88,63 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using an existing Public IP_
+
+This instance deploys the module using an existing Public IP address.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
+  name: 'natGatewayDeployment'
+  params: {
+    // Required parameters
+    name: 'nngepip001'
+    zone: 1
+    // Non-required parameters
+    location: '<location>'
+    publicIpResourceIds: '<publicIpResourceIds>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nngepip001"
+    },
+    "zone": {
+      "value": 1
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "publicIpResourceIds": {
+      "value": "<publicIpResourceIds>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -287,7 +344,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 </details>
 <p>
 
-### Example 3: _Combine a generated and provided Public IP Prefix_
+### Example 4: _Combine a generated and provided Public IP Prefix_
 
 This example shows how you can provide a Public IP Prefix to the module, while also generating one in the module.
 
@@ -359,7 +416,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -628,6 +685,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
