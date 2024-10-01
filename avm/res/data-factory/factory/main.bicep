@@ -9,7 +9,7 @@ param name string
 param managedVirtualNetworkName string = ''
 
 @description('Optional. An array of managed private endpoints objects created in the Data Factory managed virtual network.')
-param managedPrivateEndpoints managedPrivateEndpointsType = []
+param managedPrivateEndpoints managedPrivateEndpointType[] = []
 
 @description('Optional. An array of objects for the configuration of an Integration Runtime.')
 param integrationRuntimes integrationRuntimesType = []
@@ -588,7 +588,7 @@ type customerManagedKeyType = {
   userAssignedIdentityResourceId: string?
 }?
 
-type managedPrivateEndpointsType = {
+type managedPrivateEndpointType = {
   @description('Required. Specify the name of managed private endpoint.')
   name: string
 
@@ -600,7 +600,7 @@ type managedPrivateEndpointsType = {
 
   @description('Optional. Specify the FQDNS of the linked resources to create private endpoints for, depending on the type of linked resource this is required.')
   fqdns: string[]?
-}[]
+}
 
 type integrationRuntimesType = {
   @description('Required. Specify the name of integration runtime.')
