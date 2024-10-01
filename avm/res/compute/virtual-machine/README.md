@@ -98,7 +98,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2ds_v5'
+    vmSize: 'Standard_D2s_v3'
     zone: 0
     // Non-required parameters
     configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
@@ -174,7 +174,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_D2ds_v5"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 0
@@ -248,7 +248,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2ds_v5'
+    vmSize: 'Standard_D2s_v3'
     zone: 0
     // Non-required parameters
     disablePasswordAuthentication: true
@@ -319,7 +319,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_D2ds_v5"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 0
@@ -473,7 +473,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'osdisk01'
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2ds_v5'
+    vmSize: 'Standard_D2s_v3'
     zone: 1
     // Non-required parameters
     backupPolicyName: '<backupPolicyName>'
@@ -773,7 +773,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_D2ds_v5"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 1
@@ -1092,7 +1092,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2ds_v5'
+    vmSize: 'Standard_D2s_v3'
     zone: 2
     // Non-required parameters
     adminPassword: '<adminPassword>'
@@ -1384,7 +1384,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2ds_v5"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 2
@@ -1659,7 +1659,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2ds_v5'
+    vmSize: 'Standard_D2s_v3'
     zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
@@ -1721,7 +1721,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2ds_v5"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 0
@@ -1785,7 +1785,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2ds_v5'
+    vmSize: 'Standard_D2s_v3'
     zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
@@ -1880,7 +1880,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2ds_v5"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 0
@@ -1975,7 +1975,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2ds_v5'
+    vmSize: 'Standard_D2s_v3'
     zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
@@ -2060,7 +2060,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2ds_v5"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 0
@@ -2231,7 +2231,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'osdisk01'
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2ds_v5'
+    vmSize: 'Standard_D2s_v3'
     zone: 2
     // Non-required parameters
     adminPassword: '<adminPassword>'
@@ -2556,7 +2556,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2ds_v5"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 2
@@ -2977,7 +2977,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2ds_v5'
+    vmSize: 'Standard_D2s_v3'
     zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
@@ -3052,7 +3052,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2ds_v5"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 0
@@ -3125,7 +3125,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2ds_v5'
+    vmSize: 'Standard_D2s_v3'
     zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
@@ -3188,7 +3188,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2ds_v5"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 0

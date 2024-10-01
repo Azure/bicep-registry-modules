@@ -90,7 +90,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Windows'
-      vmSize: 'Standard_D2ds_v5'
+      vmSize: 'Standard_D2s_v3'
       adminPassword: password
       extensionGuestConfigurationExtension: {
         enabled: true
