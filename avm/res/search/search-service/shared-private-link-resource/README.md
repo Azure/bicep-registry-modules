@@ -1,6 +1,4 @@
 # Search Services Private Link Resources `[Microsoft.Search/searchServices/sharedPrivateLinkResources]`
-
-
 This module deploys a Search Service Private Link Resource.
 
 ## Navigation
