@@ -844,6 +844,7 @@ param authorizationServers = {
       clientId: 'apimclientid'
       clientRegistrationEndpoint: 'http://localhost'
       clientSecret: '<clientSecret>'
+      displayName: 'AuthServer1'
       grantTypes: [
         'authorizationCode'
       ]
@@ -958,6 +959,7 @@ param products = [
       }
     ]
     approvalRequired: false
+    displayName: 'Starter'
     groups: [
       {
         name: 'developers'
@@ -990,6 +992,7 @@ param roleAssignments = [
 param subnetResourceId = '<subnetResourceId>'
 param subscriptions = [
   {
+    displayName: 'testArmSubscriptionAllApis'
     name: 'testArmSubscriptionAllApis'
     scope: '/apis'
   }
@@ -1580,6 +1583,7 @@ param authorizationServers = {
       clientId: 'apimClientid'
       clientRegistrationEndpoint: 'https://localhost'
       clientSecret: '<clientSecret>'
+      displayName: 'AuthServer1'
       grantTypes: [
         'authorizationCode'
       ]
@@ -1716,6 +1720,7 @@ param products = [
 ]
 param subscriptions = [
   {
+    displayName: 'testArmSubscriptionAllApis'
     name: 'testArmSubscriptionAllApis'
     scope: '/apis'
   }
