@@ -1,4 +1,4 @@
-# Search Services `[Microsoft.Search/SearchService]`
+# Search Services `[Microsoft.Search/SearchServices]`
 
 This module deploys a Search Service.
 
