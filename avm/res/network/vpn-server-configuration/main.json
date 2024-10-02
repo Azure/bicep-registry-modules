@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "8266021575689311349"
+      "version": "0.30.23.60470",
+      "templateHash": "11742668183850609496"
     },
     "name": "VPN Server Configuration",
     "description": "This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway.",
@@ -57,21 +57,21 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The audience for the AAD/Entrance authentication."
+        "description": "Conditional. The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication."
       }
     },
     "aadIssuer": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The issuer for the AAD/Entrance authentication."
+        "description": "Conditional. The issuer for the AAD/Entra authentication. Required if configuring Entra ID authentication"
       }
     },
     "aadTenant": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The audience for the AAD/Entrance authentication."
+        "description": "Conditional. The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication"
       }
     },
     "p2sConfigurationPolicyGroups": {
@@ -81,45 +81,39 @@
         "description": "Optional. The P2S configuration policy groups for the configuration."
       }
     },
-    "vpnServerConfigurationName": {
-      "type": "string",
-      "metadata": {
-        "description": "Optional. The name of the VpnServerConfiguration that is unique within a resource group."
-      }
-    },
     "radiusClientRootCertificates": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. The root certificates of the Radius client."
+        "description": "Optional. The revoked RADIUS client certificates for the configuration."
       }
     },
     "radiusServerAddress": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The address of the Radius server. Required if configuring Radius."
+        "description": "Conditional. The address of the RADIUS server. Required if configuring a single RADIUS."
       }
     },
     "radiusServerRootCertificates": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. The root certificates of the Radius server."
+        "description": "Optional. The root certificates of the RADIUS server."
       }
     },
     "radiusServers": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. The list of Radius servers."
+        "description": "Optional. The list of RADIUS servers. Required if configuring multiple RADIUS servers."
       }
     },
     "radiusServerSecret": {
       "type": "securestring",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The Radius server secret. Required if configuring Radius."
+        "description": "Conditional. The RADIUS server secret. Required if configuring a single RADIUS server."
       }
     },
     "vpnAuthenticationTypes": {
@@ -145,14 +139,14 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. The revoked VPN Client certificates for the configuration."
+        "description": "Optional. The revoked VPN Client certificate thumbprints for the configuration."
       }
     },
     "vpnClientRootCertificates": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Conditional. The VPN Client root certificates for the configuration. Required if using certificate authentication."
+        "description": "Conditional. The VPN Client root certificate public keys for the configuration. Required if using certificate authentication."
       }
     },
     "vpnProtocols": {
@@ -210,7 +204,7 @@
     },
     "vpnServerConfig": {
       "type": "Microsoft.Network/vpnServerConfigurations",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2023-11-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -280,7 +274,7 @@
             "count": "[length(parameters('vpnClientRootCertificates'))]",
             "input": {
               "name": "[parameters('vpnClientRootCertificates')[copyIndex('vpnClientRootCertificates')].name]",
-              "publicCertData": "[parameters('vpnClientRootCertificates')[copyIndex('vpnClientRootCertificates')].thumbprint]"
+              "publicCertData": "[parameters('vpnClientRootCertificates')[copyIndex('vpnClientRootCertificates')].publicCertData]"
             }
           }
         ],
@@ -289,7 +283,6 @@
           "aadIssuer": "[parameters('aadIssuer')]",
           "aadTenant": "[parameters('aadTenant')]"
         },
-        "name": "[parameters('vpnServerConfigurationName')]",
         "radiusServerAddress": "[parameters('radiusServerAddress')]",
         "radiusServerSecret": "[parameters('radiusServerSecret')]",
         "vpnAuthenticationTypes": "[parameters('vpnAuthenticationTypes')]",
@@ -338,7 +331,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('vpnServerConfig', '2024-01-01', 'full').location]"
+      "value": "[reference('vpnServerConfig', '2023-11-01', 'full').location]"
     }
   }
 }

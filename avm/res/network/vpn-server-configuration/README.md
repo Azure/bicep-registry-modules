@@ -8,7 +8,6 @@ This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -16,7 +15,7 @@ This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Network/vpnServerConfigurations` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/vpnServerConfigurations) |
+| `Microsoft.Network/vpnServerConfigurations` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/vpnServerConfigurations) |
 
 ## Usage examples
 
@@ -44,10 +43,32 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
   name: 'vpnServerConfigurationDeployment'
   params: {
     // Required parameters
-    name: 'vscmin001'
-    vpnServerConfigurationName: 'vscmin-vpnServerConfig'
+    name: 'vscminVPNConfig'
     // Non-required parameters
+    aadAudience: '11111111-1234-4321-1234-111111111111'
+    aadIssuer: 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
+    aadTenant: 'https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111'
     location: '<location>'
+    p2sConfigurationPolicyGroups: [
+      {
+        isDefault: 'true'
+        policymembers: [
+          {
+            attributeType: 'AADGroupId'
+            attributeValue: '11111111-1111-2222-3333-111111111111'
+            name: 'UserGroup1'
+          }
+        ]
+        priority: '0'
+        userVPNPolicyGroupName: 'DefaultGroup'
+      }
+    ]
+    vpnAuthenticationTypes: [
+      'AAD'
+    ]
+    vpnProtocols: [
+      'OpenVPN'
+    ]
   }
 }
 ```
@@ -66,14 +87,46 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
   "parameters": {
     // Required parameters
     "name": {
-      "value": "vscmin001"
-    },
-    "vpnServerConfigurationName": {
-      "value": "vscmin-vpnServerConfig"
+      "value": "vscminVPNConfig"
     },
     // Non-required parameters
+    "aadAudience": {
+      "value": "11111111-1234-4321-1234-111111111111"
+    },
+    "aadIssuer": {
+      "value": "https://sts.windows.net/11111111-1111-1111-1111-111111111111/"
+    },
+    "aadTenant": {
+      "value": "https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111"
+    },
     "location": {
       "value": "<location>"
+    },
+    "p2sConfigurationPolicyGroups": {
+      "value": [
+        {
+          "isDefault": "true",
+          "policymembers": [
+            {
+              "attributeType": "AADGroupId",
+              "attributeValue": "11111111-1111-2222-3333-111111111111",
+              "name": "UserGroup1"
+            }
+          ],
+          "priority": "0",
+          "userVPNPolicyGroupName": "DefaultGroup"
+        }
+      ]
+    },
+    "vpnAuthenticationTypes": {
+      "value": [
+        "AAD"
+      ]
+    },
+    "vpnProtocols": {
+      "value": [
+        "OpenVPN"
+      ]
     }
   }
 }
@@ -96,10 +149,112 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
   name: 'vpnServerConfigurationDeployment'
   params: {
     // Required parameters
-    name: 'vscmax001'
-    vpnServerConfigurationName: 'vscmax-vpnServerConfig'
+    name: 'vscmaxVPNConfig'
     // Non-required parameters
+    aadAudience: '11111111-1234-4321-1234-111111111111'
+    aadIssuer: 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
+    aadTenant: 'https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111'
     location: '<location>'
+    p2sConfigurationPolicyGroups: [
+      {
+        isDefault: 'true'
+        policymembers: [
+          {
+            attributeType: 'AADGroupId'
+            attributeValue: '11111111-1111-2222-3333-111111111111'
+            name: 'UserGroup1'
+          }
+          {
+            attributeType: 'AADGroupId'
+            attributeValue: '11111111-1111-3333-4444-111111111111'
+            name: 'UserGroup2'
+          }
+        ]
+        priority: '0'
+        userVPNPolicyGroupName: 'DefaultGroup'
+      }
+      {
+        isDefault: 'false'
+        policymembers: [
+          {
+            attributeType: 'AADGroupId'
+            attributeValue: '11111111-1111-4444-5555-111111111111'
+            name: 'UserGroup3'
+          }
+          {
+            attributeType: 'AADGroupId'
+            attributeValue: '11111111-1111-5555-6666-111111111111'
+            name: 'UserGroup4'
+          }
+        ]
+        priority: '1'
+        userVPNPolicyGroupName: 'AdditionalGroup'
+      }
+    ]
+    radiusClientRootCertificates: [
+      {
+        name: 'TestRadiusClientRevokedCert'
+        thumbprint: '1f24c630cda418ef2069ffad4fdd5f463a1b59aa'
+      }
+    ]
+    radiusServerRootCertificates: [
+      {
+        name: 'TestRadiusRootCert'
+        publicCertData: 'MIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UECxMXR4xvYmFsU2lnbiBSb390IENBIC0gUjMxEzARBgNVBAoTCkdsb8JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aEyiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bLyCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkWqQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBovHd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX4268NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o2HLO02JQZR7rkpeDMdmztcpHWD8f'
+      }
+    ]
+    radiusServers: [
+      {
+        radiusServerAddress: '10.150.1.50'
+        radiusServerScore: '10'
+        radiusServerSecret: 'TestSecret'
+      }
+      {
+        radiusServerAddress: '10.150.1.150'
+        radiusServerScore: '20'
+        radiusServerSecret: 'TestSecret2'
+      }
+    ]
+    vpnAuthenticationTypes: [
+      'AAD'
+      'Certificate'
+      'Radius'
+    ]
+    vpnClientIpsecPolicies: [
+      {
+        dhGroup: 'DHGroup14'
+        ikeEncryption: 'AES256'
+        ikeIntegrity: 'SHA256'
+        ipsecEncryption: 'AES256'
+        ipsecIntegrity: 'SHA256'
+        pfsGroup: 'PFS14'
+        saDataSizeKilobytes: 0
+        saLifeTimeSeconds: 27000
+      }
+    ]
+    vpnClientRevokedCertificates: [
+      {
+        name: 'TestRevokedCert'
+        thumbprint: '1f24c630cda418ef2069ffad4fdd5f463a1b69aa'
+      }
+      {
+        name: 'TestRevokedCert2'
+        thumbprint: '1f24c630cda418ef2069ffad4fdd5f463a1b69bb'
+      }
+    ]
+    vpnClientRootCertificates: [
+      {
+        name: 'TestRootCert'
+        publicCertData: 'MIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UECxMXR4xvYmFsU2lnbiBSb390IENBIC0gUjMxEzARBgNVBAoTCkdsb8JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aEyiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bLyCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkWqQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBovHd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX4268NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o2HLO02JQZR7rkpeDMdmztcpHWD8f'
+      }
+      {
+        name: 'TestRootCert2'
+        publicCertData: 'MIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcMARELBQAwTDEgMB4GA1UECxMXR4xvYmFsU2lnbiBSb390IENBIC0gUjMxEzARBgNVBAoTCkdsb8JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aEyiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bLyCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkWqQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBovHd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX4268NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o2HLO02JQZR7rkpeDMdmztcpHWD8f'
+      }
+    ]
+    vpnProtocols: [
+      'OpenVPN'
+    ]
   }
 }
 ```
@@ -118,14 +273,138 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
   "parameters": {
     // Required parameters
     "name": {
-      "value": "vscmax001"
-    },
-    "vpnServerConfigurationName": {
-      "value": "vscmax-vpnServerConfig"
+      "value": "vscmaxVPNConfig"
     },
     // Non-required parameters
+    "aadAudience": {
+      "value": "11111111-1234-4321-1234-111111111111"
+    },
+    "aadIssuer": {
+      "value": "https://sts.windows.net/11111111-1111-1111-1111-111111111111/"
+    },
+    "aadTenant": {
+      "value": "https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111"
+    },
     "location": {
       "value": "<location>"
+    },
+    "p2sConfigurationPolicyGroups": {
+      "value": [
+        {
+          "isDefault": "true",
+          "policymembers": [
+            {
+              "attributeType": "AADGroupId",
+              "attributeValue": "11111111-1111-2222-3333-111111111111",
+              "name": "UserGroup1"
+            },
+            {
+              "attributeType": "AADGroupId",
+              "attributeValue": "11111111-1111-3333-4444-111111111111",
+              "name": "UserGroup2"
+            }
+          ],
+          "priority": "0",
+          "userVPNPolicyGroupName": "DefaultGroup"
+        },
+        {
+          "isDefault": "false",
+          "policymembers": [
+            {
+              "attributeType": "AADGroupId",
+              "attributeValue": "11111111-1111-4444-5555-111111111111",
+              "name": "UserGroup3"
+            },
+            {
+              "attributeType": "AADGroupId",
+              "attributeValue": "11111111-1111-5555-6666-111111111111",
+              "name": "UserGroup4"
+            }
+          ],
+          "priority": "1",
+          "userVPNPolicyGroupName": "AdditionalGroup"
+        }
+      ]
+    },
+    "radiusClientRootCertificates": {
+      "value": [
+        {
+          "name": "TestRadiusClientRevokedCert",
+          "thumbprint": "1f24c630cda418ef2069ffad4fdd5f463a1b59aa"
+        }
+      ]
+    },
+    "radiusServerRootCertificates": {
+      "value": [
+        {
+          "name": "TestRadiusRootCert",
+          "publicCertData": "MIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UECxMXR4xvYmFsU2lnbiBSb390IENBIC0gUjMxEzARBgNVBAoTCkdsb8JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aEyiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bLyCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkWqQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBovHd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX4268NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o2HLO02JQZR7rkpeDMdmztcpHWD8f"
+        }
+      ]
+    },
+    "radiusServers": {
+      "value": [
+        {
+          "radiusServerAddress": "10.150.1.50",
+          "radiusServerScore": "10",
+          "radiusServerSecret": "TestSecret"
+        },
+        {
+          "radiusServerAddress": "10.150.1.150",
+          "radiusServerScore": "20",
+          "radiusServerSecret": "TestSecret2"
+        }
+      ]
+    },
+    "vpnAuthenticationTypes": {
+      "value": [
+        "AAD",
+        "Certificate",
+        "Radius"
+      ]
+    },
+    "vpnClientIpsecPolicies": {
+      "value": [
+        {
+          "dhGroup": "DHGroup14",
+          "ikeEncryption": "AES256",
+          "ikeIntegrity": "SHA256",
+          "ipsecEncryption": "AES256",
+          "ipsecIntegrity": "SHA256",
+          "pfsGroup": "PFS14",
+          "saDataSizeKilobytes": 0,
+          "saLifeTimeSeconds": 27000
+        }
+      ]
+    },
+    "vpnClientRevokedCertificates": {
+      "value": [
+        {
+          "name": "TestRevokedCert",
+          "thumbprint": "1f24c630cda418ef2069ffad4fdd5f463a1b69aa"
+        },
+        {
+          "name": "TestRevokedCert2",
+          "thumbprint": "1f24c630cda418ef2069ffad4fdd5f463a1b69bb"
+        }
+      ]
+    },
+    "vpnClientRootCertificates": {
+      "value": [
+        {
+          "name": "TestRootCert",
+          "publicCertData": "MIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UECxMXR4xvYmFsU2lnbiBSb390IENBIC0gUjMxEzARBgNVBAoTCkdsb8JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aEyiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bLyCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkWqQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBovHd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX4268NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o2HLO02JQZR7rkpeDMdmztcpHWD8f"
+        },
+        {
+          "name": "TestRootCert2",
+          "publicCertData": "MIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcMARELBQAwTDEgMB4GA1UECxMXR4xvYmFsU2lnbiBSb390IENBIC0gUjMxEzARBgNVBAoTCkdsb8JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aEyiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bLyCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkWqQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBovHd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX4268NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o2HLO02JQZR7rkpeDMdmztcpHWD8f"
+        }
+      ]
+    },
+    "vpnProtocols": {
+      "value": [
+        "OpenVPN"
+      ]
     }
   }
 }
@@ -148,15 +427,36 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
   name: 'vpnServerConfigurationDeployment'
   params: {
     // Required parameters
-    name: 'vscwaf001'
-    vpnServerConfigurationName: 'vscwaf-vpnServerConfig'
+    name: 'vscwafVPNConfig'
     // Non-required parameters
+    aadAudience: '11111111-1234-4321-1234-111111111111'
+    aadIssuer: 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
+    aadTenant: 'https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111'
     location: '<location>'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'ResourceLock'
     }
+    p2sConfigurationPolicyGroups: [
+      {
+        isDefault: 'true'
+        policymembers: [
+          {
+            attributeType: 'AADGroupId'
+            attributeValue: '11111111-1111-2222-3333-111111111111'
+            name: 'UserGroup1'
+          }
+        ]
+        priority: '0'
+        userVPNPolicyGroupName: 'DefaultGroup'
+      }
+    ]
+    vpnAuthenticationTypes: [
+      'AAD'
+    ]
+    vpnProtocols: [
+      'OpenVPN'
+    ]
   }
 }
 ```
@@ -175,21 +475,52 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
   "parameters": {
     // Required parameters
     "name": {
-      "value": "vscwaf001"
-    },
-    "vpnServerConfigurationName": {
-      "value": "vscwaf-vpnServerConfig"
+      "value": "vscwafVPNConfig"
     },
     // Non-required parameters
+    "aadAudience": {
+      "value": "11111111-1234-4321-1234-111111111111"
+    },
+    "aadIssuer": {
+      "value": "https://sts.windows.net/11111111-1111-1111-1111-111111111111/"
+    },
+    "aadTenant": {
+      "value": "https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111"
+    },
     "location": {
       "value": "<location>"
     },
-    "tags": {
+    "lock": {
       "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
+        "kind": "CanNotDelete",
+        "name": "ResourceLock"
       }
+    },
+    "p2sConfigurationPolicyGroups": {
+      "value": [
+        {
+          "isDefault": "true",
+          "policymembers": [
+            {
+              "attributeType": "AADGroupId",
+              "attributeValue": "11111111-1111-2222-3333-111111111111",
+              "name": "UserGroup1"
+            }
+          ],
+          "priority": "0",
+          "userVPNPolicyGroupName": "DefaultGroup"
+        }
+      ]
+    },
+    "vpnAuthenticationTypes": {
+      "value": [
+        "AAD"
+      ]
+    },
+    "vpnProtocols": {
+      "value": [
+        "OpenVPN"
+      ]
     }
   }
 }
@@ -197,7 +528,6 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
 
 </details>
 <p>
-
 
 ## Parameters
 
@@ -211,30 +541,29 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`radiusServerAddress`](#parameter-radiusserveraddress) | string | The address of the Radius server. Required if configuring Radius. |
-| [`radiusServerSecret`](#parameter-radiusserversecret) | securestring | The Radius server secret. Required if configuring Radius. |
-| [`vpnClientRootCertificates`](#parameter-vpnclientrootcertificates) | array | The VPN Client root certificates for the configuration. Required if using certificate authentication. |
+| [`aadAudience`](#parameter-aadaudience) | string | The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication. |
+| [`aadIssuer`](#parameter-aadissuer) | string | The issuer for the AAD/Entra authentication. Required if configuring Entra ID authentication |
+| [`aadTenant`](#parameter-aadtenant) | string | The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication |
+| [`radiusServerAddress`](#parameter-radiusserveraddress) | string | The address of the RADIUS server. Required if configuring a single RADIUS. |
+| [`radiusServerSecret`](#parameter-radiusserversecret) | securestring | The RADIUS server secret. Required if configuring a single RADIUS server. |
+| [`vpnClientRootCertificates`](#parameter-vpnclientrootcertificates) | array | The VPN Client root certificate public keys for the configuration. Required if using certificate authentication. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aadAudience`](#parameter-aadaudience) | string | The audience for the AAD/Entrance authentication. |
-| [`aadIssuer`](#parameter-aadissuer) | string | The issuer for the AAD/Entrance authentication. |
-| [`aadTenant`](#parameter-aadtenant) | string | The audience for the AAD/Entrance authentication. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location where all resources will be created. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`p2sConfigurationPolicyGroups`](#parameter-p2sconfigurationpolicygroups) | array | The P2S configuration policy groups for the configuration. |
-| [`radiusClientRootCertificates`](#parameter-radiusclientrootcertificates) | array | The root certificates of the Radius client. |
-| [`radiusServerRootCertificates`](#parameter-radiusserverrootcertificates) | array | The root certificates of the Radius server. |
-| [`radiusServers`](#parameter-radiusservers) | array | The list of Radius servers. |
+| [`radiusClientRootCertificates`](#parameter-radiusclientrootcertificates) | array | The revoked RADIUS client certificates for the configuration. |
+| [`radiusServerRootCertificates`](#parameter-radiusserverrootcertificates) | array | The root certificates of the RADIUS server. |
+| [`radiusServers`](#parameter-radiusservers) | array | The list of RADIUS servers. Required if configuring multiple RADIUS servers. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`vpnAuthenticationTypes`](#parameter-vpnauthenticationtypes) | array | The authentication types for the VPN configuration. |
 | [`vpnClientIpsecPolicies`](#parameter-vpnclientipsecpolicies) | array | The IPsec policies for the configuration. |
-| [`vpnClientRevokedCertificates`](#parameter-vpnclientrevokedcertificates) | array | The revoked VPN Client certificates for the configuration. |
+| [`vpnClientRevokedCertificates`](#parameter-vpnclientrevokedcertificates) | array | The revoked VPN Client certificate thumbprints for the configuration. |
 | [`vpnProtocols`](#parameter-vpnprotocols) | array | The allowed VPN protocols for the configuration. |
-| [`vpnServerConfigurationName`](#parameter-vpnserverconfigurationname) | string | The name of the VpnServerConfiguration that is unique within a resource group. |
 
 ### Parameter: `name`
 
@@ -243,48 +572,48 @@ The name of the user VPN configuration.
 - Required: Yes
 - Type: string
 
-### Parameter: `radiusServerAddress`
-
-The address of the Radius server. Required if configuring Radius.
-
-- Required: No
-- Type: string
-
-### Parameter: `radiusServerSecret`
-
-The Radius server secret. Required if configuring Radius.
-
-- Required: No
-- Type: securestring
-
-### Parameter: `vpnClientRootCertificates`
-
-The VPN Client root certificates for the configuration. Required if using certificate authentication.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
 ### Parameter: `aadAudience`
 
-The audience for the AAD/Entrance authentication.
+The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication.
 
 - Required: No
 - Type: string
 
 ### Parameter: `aadIssuer`
 
-The issuer for the AAD/Entrance authentication.
+The issuer for the AAD/Entra authentication. Required if configuring Entra ID authentication
 
 - Required: No
 - Type: string
 
 ### Parameter: `aadTenant`
 
-The audience for the AAD/Entrance authentication.
+The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication
 
 - Required: No
 - Type: string
+
+### Parameter: `radiusServerAddress`
+
+The address of the RADIUS server. Required if configuring a single RADIUS.
+
+- Required: No
+- Type: string
+
+### Parameter: `radiusServerSecret`
+
+The RADIUS server secret. Required if configuring a single RADIUS server.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `vpnClientRootCertificates`
+
+The VPN Client root certificate public keys for the configuration. Required if using certificate authentication.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `enableTelemetry`
 
@@ -348,7 +677,7 @@ The P2S configuration policy groups for the configuration.
 
 ### Parameter: `radiusClientRootCertificates`
 
-The root certificates of the Radius client.
+The revoked RADIUS client certificates for the configuration.
 
 - Required: No
 - Type: array
@@ -356,7 +685,7 @@ The root certificates of the Radius client.
 
 ### Parameter: `radiusServerRootCertificates`
 
-The root certificates of the Radius server.
+The root certificates of the RADIUS server.
 
 - Required: No
 - Type: array
@@ -364,7 +693,7 @@ The root certificates of the Radius server.
 
 ### Parameter: `radiusServers`
 
-The list of Radius servers.
+The list of RADIUS servers. Required if configuring multiple RADIUS servers.
 
 - Required: No
 - Type: array
@@ -403,7 +732,7 @@ The IPsec policies for the configuration.
 
 ### Parameter: `vpnClientRevokedCertificates`
 
-The revoked VPN Client certificates for the configuration.
+The revoked VPN Client certificate thumbprints for the configuration.
 
 - Required: No
 - Type: array
@@ -424,14 +753,6 @@ The allowed VPN protocols for the configuration.
   ]
   ```
 
-### Parameter: `vpnServerConfigurationName`
-
-The name of the VpnServerConfiguration that is unique within a resource group.
-
-- Required: Yes
-- Type: string
-
-
 ## Outputs
 
 | Output | Type | Description |
@@ -440,10 +761,6 @@ The name of the VpnServerConfiguration that is unique within a resource group.
 | `name` | string | The name of the user VPN configuration. |
 | `resourceGroupName` | string | The name of the resource group the user VPN configuration was deployed into. |
 | `resourceId` | string | The resource ID of the user VPN configuration. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

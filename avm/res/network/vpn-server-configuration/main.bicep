@@ -8,34 +8,31 @@ param name string
 @description('Optional. Location where all resources will be created.')
 param location string = resourceGroup().location
 
-@description('Optional. The audience for the AAD/Entrance authentication.')
+@description('Conditional. The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication.')
 param aadAudience string?
 
-@description('Optional. The issuer for the AAD/Entrance authentication.')
+@description('Conditional. The issuer for the AAD/Entra authentication. Required if configuring Entra ID authentication')
 param aadIssuer string?
 
-@description('Optional. The audience for the AAD/Entrance authentication.')
+@description('Conditional. The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication')
 param aadTenant string?
 
 @description('Optional. The P2S configuration policy groups for the configuration.')
 param p2sConfigurationPolicyGroups array = []
 
-@description('Optional. The name of the VpnServerConfiguration that is unique within a resource group.')
-param vpnServerConfigurationName string
-
-@description('Optional. The root certificates of the Radius client.')
+@description('Optional. The revoked RADIUS client certificates for the configuration.')
 param radiusClientRootCertificates array = []
 
-@description('Conditional. The address of the Radius server. Required if configuring Radius.')
+@description('Conditional. The address of the RADIUS server. Required if configuring a single RADIUS.')
 param radiusServerAddress string?
 
-@description('Optional. The root certificates of the Radius server.')
+@description('Optional. The root certificates of the RADIUS server.')
 param radiusServerRootCertificates array = []
 
-@description('Optional. The list of Radius servers.')
+@description('Optional. The list of RADIUS servers. Required if configuring multiple RADIUS servers.')
 param radiusServers array = []
 
-@description('Conditional. The Radius server secret. Required if configuring Radius.')
+@description('Conditional. The RADIUS server secret. Required if configuring a single RADIUS server.')
 @secure()
 param radiusServerSecret string?
 
@@ -50,10 +47,10 @@ param vpnAuthenticationTypes array = []
 @description('Optional. The IPsec policies for the configuration.')
 param vpnClientIpsecPolicies array = []
 
-@description('Optional. The revoked VPN Client certificates for the configuration.')
+@description('Optional. The revoked VPN Client certificate thumbprints for the configuration.')
 param vpnClientRevokedCertificates array = []
 
-@description('Conditional. The VPN Client root certificates for the configuration. Required if using certificate authentication.')
+@description('Conditional. The VPN Client root certificate public keys for the configuration. Required if using certificate authentication.')
 param vpnClientRootCertificates array = []
 
 @description('Optional. The allowed VPN protocols for the configuration.')
@@ -94,7 +91,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource vpnServerConfig 'Microsoft.Network/vpnServerConfigurations@2024-01-01' = {
+resource vpnServerConfig 'Microsoft.Network/vpnServerConfigurations@2023-11-01' = {
   name: name
   location: location
   tags: tags
@@ -114,7 +111,6 @@ resource vpnServerConfig 'Microsoft.Network/vpnServerConfigurations@2024-01-01' 
         }
       }
     ]
-    name: vpnServerConfigurationName
     radiusClientRootCertificates: [
       for clientRootroot in radiusClientRootCertificates: {
         name: clientRootroot.name
@@ -158,7 +154,7 @@ resource vpnServerConfig 'Microsoft.Network/vpnServerConfigurations@2024-01-01' 
     vpnClientRootCertificates: [
       for cert in vpnClientRootCertificates: {
         name: cert.name
-        publicCertData: cert.thumbprint
+        publicCertData: cert.publicCertData
       }
     ]
     vpnProtocols: vpnProtocols
