@@ -46,13 +46,3 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
-
-module test 'br/public:avm/res/container-instance/container-group:0.2.0' = {
-  scope:
-  name:
-  params: {
-    name:
-    containers:
-    ipAddressPorts:
-  }
-}
