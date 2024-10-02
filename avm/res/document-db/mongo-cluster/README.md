@@ -1,6 +1,8 @@
-# Data Factories `[Microsoft.DataFactory/factories]`
+# Azure Cosmos DB MongoDB vCore cluster `[Microsoft.DocumentDB/mongoClusters]`
 
-This module deploys a Data Factory.
+This module deploys a Azure Cosmos DB MongoDB vCore cluster.
+
+**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.
 
 ## Navigation
 
@@ -9,7 +11,6 @@ This module deploys a Data Factory.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
-- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -18,12 +19,10 @@ This module deploys a Data Factory.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DataFactory/factories` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories) |
-| `Microsoft.DataFactory/factories/integrationRuntimes` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/integrationRuntimes) |
-| `Microsoft.DataFactory/factories/linkedservices` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/linkedservices) |
-| `Microsoft.DataFactory/factories/managedVirtualNetworks` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks) |
-| `Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks/managedPrivateEndpoints) |
+| `Microsoft.DocumentDB/mongoClusters` | [2024-02-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-02-15-preview/mongoClusters) |
+| `Microsoft.DocumentDB/mongoClusters/firewallRules` | [2024-02-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-02-15-preview/mongoClusters/firewallRules) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -33,11 +32,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/data-factory/factory:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/document-db/mongo-cluster:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Deploying with a key vault reference to save secrets](#example-2-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -49,11 +49,16 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module factory 'br/public:avm/res/data-factory/factory:<version>' = {
-  name: 'factoryDeployment'
+module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
+  name: 'mongoClusterDeployment'
   params: {
     // Required parameters
-    name: 'dffmin001'
+    administratorLogin: 'Admin001'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    name: 'ddmcdefmin001'
+    nodeCount: 2
+    sku: 'M30'
+    storage: 256
     // Non-required parameters
     location: '<location>'
   }
@@ -73,8 +78,23 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "administratorLogin": {
+      "value": "Admin001"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
     "name": {
-      "value": "dffmin001"
+      "value": "ddmcdefmin001"
+    },
+    "nodeCount": {
+      "value": 2
+    },
+    "sku": {
+      "value": "M30"
+    },
+    "storage": {
+      "value": 256
     },
     // Non-required parameters
     "location": {
@@ -87,9 +107,9 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Deploying with a key vault reference to save secrets_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module saving its secrets in a key vault.
 
 
 <details>
@@ -97,17 +117,96 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module factory 'br/public:avm/res/data-factory/factory:<version>' = {
-  name: 'factoryDeployment'
+module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
+  name: 'mongoClusterDeployment'
   params: {
     // Required parameters
-    name: 'dffmax001'
+    administratorLogin: 'Admin002'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    name: 'kv-ref'
+    nodeCount: 2
+    sku: 'M30'
+    storage: 256
     // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
+    location: '<location>'
+    secretsExportConfiguration: {
+      connectionStringSecretName: 'connectionString'
       keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "administratorLogin": {
+      "value": "Admin002"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "name": {
+      "value": "kv-ref"
+    },
+    "nodeCount": {
+      "value": 2
+    },
+    "sku": {
+      "value": "M30"
+    },
+    "storage": {
+      "value": 256
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "secretsExportConfiguration": {
+      "value": {
+        "connectionStringSecretName": "connectionString",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with the maximum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
+  name: 'mongoClusterDeployment'
+  params: {
+    // Required parameters
+    administratorLogin: 'Admin003'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    name: 'ddmcmax001'
+    nodeCount: 2
+    sku: 'M30'
+    storage: 256
+    // Non-required parameters
+    createMode: 'Default'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -122,75 +221,20 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    gitConfigureLater: true
-    globalParameters: {
-      testParameter1: {
-        type: 'String'
-        value: 'testValue1'
-      }
-    }
-    integrationRuntimes: [
-      {
-        name: 'TestRuntime'
-        type: 'SelfHosted'
-      }
-      {
-        managedVirtualNetworkName: 'default'
-        name: 'IRvnetManaged'
-        type: 'Managed'
-        typeProperties: {
-          computeProperties: {
-            location: 'AutoResolve'
-          }
-        }
-      }
-    ]
-    linkedServices: [
-      {
-        name: 'SQLdbLinkedservice'
-        type: 'AzureSQLDatabase'
-        typeProperties: {
-          connectionString: '<connectionString>'
-        }
-      }
-      {
-        description: 'This is a description for the linked service using the IRvnetManaged integration runtime.'
-        integrationRuntimeName: 'IRvnetManaged'
-        name: 'LakeStoreLinkedservice'
-        parameters: {
-          storageAccountName: {
-            defaultValue: 'madeupstorageaccname'
-            type: 'String'
-          }
-        }
-        type: 'AzureBlobFS'
-        typeProperties: {
-          url: '<url>'
-        }
-      }
-    ]
+    highAvailabilityMode: false
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
+    networkAcls: {
+      allowAllIPs: true
+      allowAzureIPs: true
+      customRules: [
+        {
+          endIpAddress: '5.6.7.8'
+          firewallRuleName: 'allow-1.2.3.4-to-5.6.7.8'
+          startIpAddress: '1.2.3.4'
+        }
       ]
     }
-    managedPrivateEndpoints: [
-      {
-        fqdns: [
-          '<storageAccountBlobEndpoint>'
-        ]
-        groupId: 'blob'
-        name: '<name>'
-        privateLinkResourceId: '<privateLinkResourceId>'
-      }
-    ]
-    managedVirtualNetworkName: 'default'
+    nodeType: 'Shard'
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -202,8 +246,9 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         }
         subnetResourceId: '<subnetResourceId>'
         tags: {
-          application: 'AVM'
+          Environment: 'Non-Prod'
           'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
         }
       }
       {
@@ -219,7 +264,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     ]
     roleAssignments: [
       {
-        name: '12093237-f40a-4f36-868f-accbeebf540c'
+        name: '60395919-cfd3-47bf-8349-775ddebb255e'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -236,11 +281,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -258,16 +298,27 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "administratorLogin": {
+      "value": "Admin003"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
     "name": {
-      "value": "dffmax001"
+      "value": "ddmcmax001"
+    },
+    "nodeCount": {
+      "value": 2
+    },
+    "sku": {
+      "value": "M30"
+    },
+    "storage": {
+      "value": 256
     },
     // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
+    "createMode": {
+      "value": "Default"
     },
     "diagnosticSettings": {
       "value": [
@@ -285,92 +336,27 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         }
       ]
     },
-    "gitConfigureLater": {
-      "value": true
-    },
-    "globalParameters": {
-      "value": {
-        "testParameter1": {
-          "type": "String",
-          "value": "testValue1"
-        }
-      }
-    },
-    "integrationRuntimes": {
-      "value": [
-        {
-          "name": "TestRuntime",
-          "type": "SelfHosted"
-        },
-        {
-          "managedVirtualNetworkName": "default",
-          "name": "IRvnetManaged",
-          "type": "Managed",
-          "typeProperties": {
-            "computeProperties": {
-              "location": "AutoResolve"
-            }
-          }
-        }
-      ]
-    },
-    "linkedServices": {
-      "value": [
-        {
-          "name": "SQLdbLinkedservice",
-          "type": "AzureSQLDatabase",
-          "typeProperties": {
-            "connectionString": "<connectionString>"
-          }
-        },
-        {
-          "description": "This is a description for the linked service using the IRvnetManaged integration runtime.",
-          "integrationRuntimeName": "IRvnetManaged",
-          "name": "LakeStoreLinkedservice",
-          "parameters": {
-            "storageAccountName": {
-              "defaultValue": "madeupstorageaccname",
-              "type": "String"
-            }
-          },
-          "type": "AzureBlobFS",
-          "typeProperties": {
-            "url": "<url>"
-          }
-        }
-      ]
+    "highAvailabilityMode": {
+      "value": false
     },
     "location": {
       "value": "<location>"
     },
-    "lock": {
+    "networkAcls": {
       "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
+        "allowAllIPs": true,
+        "allowAzureIPs": true,
+        "customRules": [
+          {
+            "endIpAddress": "5.6.7.8",
+            "firewallRuleName": "allow-1.2.3.4-to-5.6.7.8",
+            "startIpAddress": "1.2.3.4"
+          }
         ]
       }
     },
-    "managedPrivateEndpoints": {
-      "value": [
-        {
-          "fqdns": [
-            "<storageAccountBlobEndpoint>"
-          ],
-          "groupId": "blob",
-          "name": "<name>",
-          "privateLinkResourceId": "<privateLinkResourceId>"
-        }
-      ]
-    },
-    "managedVirtualNetworkName": {
-      "value": "default"
+    "nodeType": {
+      "value": "Shard"
     },
     "privateEndpoints": {
       "value": [
@@ -384,8 +370,9 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           },
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
-            "application": "AVM",
-            "hidden-title": "This is visible in the resource name"
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
           }
         },
         {
@@ -403,7 +390,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "12093237-f40a-4f36-868f-accbeebf540c",
+          "name": "60395919-cfd3-47bf-8349-775ddebb255e",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -420,13 +407,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -435,7 +415,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -445,33 +425,18 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module factory 'br/public:avm/res/data-factory/factory:<version>' = {
-  name: 'factoryDeployment'
+module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
+  name: 'mongoClusterDeployment'
   params: {
     // Required parameters
-    name: 'dffwaf001'
+    administratorLogin: 'Admin001'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    name: 'ddmcwaf001'
+    nodeCount: 2
+    sku: 'M30'
+    storage: 256
     // Non-required parameters
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    gitConfigureLater: true
-    integrationRuntimes: [
-      {
-        name: 'TestRuntime'
-        type: 'SelfHosted'
-      }
-    ]
     location: '<location>'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -489,40 +454,27 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "administratorLogin": {
+      "value": "Admin001"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
     "name": {
-      "value": "dffwaf001"
+      "value": "ddmcwaf001"
+    },
+    "nodeCount": {
+      "value": 2
+    },
+    "sku": {
+      "value": "M30"
+    },
+    "storage": {
+      "value": 256
     },
     // Non-required parameters
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "gitConfigureLater": {
-      "value": true
-    },
-    "integrationRuntimes": {
-      "value": [
-        {
-          "name": "TestRuntime",
-          "type": "SelfHosted"
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -537,94 +489,79 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the Azure Factory to create. |
+| [`administratorLogin`](#parameter-administratorlogin) | string | Username for admin user. |
+| [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | Password for admin user. |
+| [`name`](#parameter-name) | string | Name of the Azure Cosmos DB MongoDB vCore cluster. |
+| [`nodeCount`](#parameter-nodecount) | int | Number of nodes in the node group. |
+| [`sku`](#parameter-sku) | string | SKU defines the CPU and memory that is provisioned for each node. |
+| [`storage`](#parameter-storage) | int | Disk storage size for the node group in GB. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
+| [`createMode`](#parameter-createmode) | string | Mode to create the azure cosmos db mongodb vCore cluster. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`gitAccountName`](#parameter-gitaccountname) | string | The account name. |
-| [`gitCollaborationBranch`](#parameter-gitcollaborationbranch) | string | The collaboration branch name. Default is 'main'. |
-| [`gitConfigureLater`](#parameter-gitconfigurelater) | bool | Boolean to define whether or not to configure git during template deployment. |
-| [`gitDisablePublish`](#parameter-gitdisablepublish) | bool | Disable manual publish operation in ADF studio to favor automated publish. |
-| [`gitHostName`](#parameter-githostname) | string | The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 'FactoryGitHubConfiguration'. |
-| [`gitLastCommitId`](#parameter-gitlastcommitid) | string | Add the last commit id from your git repo. |
-| [`gitProjectName`](#parameter-gitprojectname) | string | The project name. Only relevant for 'FactoryVSTSConfiguration'. |
-| [`gitRepositoryName`](#parameter-gitrepositoryname) | string | The repository name. |
-| [`gitRepoType`](#parameter-gitrepotype) | string | Repository type - can be 'FactoryVSTSConfiguration' or 'FactoryGitHubConfiguration'. Default is 'FactoryVSTSConfiguration'. |
-| [`gitRootFolder`](#parameter-gitrootfolder) | string | The root folder path name. Default is '/'. |
-| [`gitTenantId`](#parameter-gittenantid) | string | Add the tenantId of your Azure subscription. |
-| [`globalParameters`](#parameter-globalparameters) | object | List of Global Parameters for the factory. |
-| [`integrationRuntimes`](#parameter-integrationruntimes) | array | An array of objects for the configuration of an Integration Runtime. |
-| [`linkedServices`](#parameter-linkedservices) | array | An array of objects for the configuration of Linked Services. |
-| [`location`](#parameter-location) | string | Location for all Resources. |
+| [`highAvailabilityMode`](#parameter-highavailabilitymode) | bool | Whether high availability is enabled on the node group. |
+| [`location`](#parameter-location) | string | Default to current resource group scope location. Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`managedPrivateEndpoints`](#parameter-managedprivateendpoints) | array | An array of managed private endpoints objects created in the Data Factory managed virtual network. |
-| [`managedVirtualNetworkName`](#parameter-managedvirtualnetworkname) | string | The name of the Managed Virtual Network. |
-| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration Details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
+| [`networkAcls`](#parameter-networkacls) | object | IP addresses to allow access to the cluster from. |
+| [`nodeType`](#parameter-nodetype) | string | Deployed Node type in the node group. |
+| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
+| [`tags`](#parameter-tags) | object | Tags of the Database Account resource. |
+
+### Parameter: `administratorLogin`
+
+Username for admin user.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `administratorLoginPassword`
+
+Password for admin user.
+
+- Required: Yes
+- Type: securestring
 
 ### Parameter: `name`
 
-The name of the Azure Factory to create.
+Name of the Azure Cosmos DB MongoDB vCore cluster.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `customerManagedKey`
+### Parameter: `nodeCount`
 
-The customer managed key definition.
+Number of nodes in the node group.
 
-- Required: No
-- Type: object
+- Required: Yes
+- Type: int
 
-**Required parameters**
+### Parameter: `sku`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
-| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
-| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
-
-### Parameter: `customerManagedKey.keyName`
-
-The name of the customer managed key to use for encryption.
+SKU defines the CPU and memory that is provisioned for each node.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `customerManagedKey.keyVaultResourceId`
+### Parameter: `storage`
 
-The resource ID of a key vault to reference a customer managed key for encryption from.
+Disk storage size for the node group in GB.
 
 - Required: Yes
-- Type: string
+- Type: int
 
-### Parameter: `customerManagedKey.keyVersion`
+### Parameter: `createMode`
 
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
-
-- Required: No
-- Type: string
-
-### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
-
-User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+Mode to create the azure cosmos db mongodb vCore cluster.
 
 - Required: No
 - Type: string
+- Default: `'Default'`
 
 ### Parameter: `diagnosticSettings`
 
@@ -780,236 +717,17 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `gitAccountName`
+### Parameter: `highAvailabilityMode`
 
-The account name.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitCollaborationBranch`
-
-The collaboration branch name. Default is 'main'.
-
-- Required: No
-- Type: string
-- Default: `'main'`
-
-### Parameter: `gitConfigureLater`
-
-Boolean to define whether or not to configure git during template deployment.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `gitDisablePublish`
-
-Disable manual publish operation in ADF studio to favor automated publish.
+Whether high availability is enabled on the node group.
 
 - Required: No
 - Type: bool
 - Default: `False`
 
-### Parameter: `gitHostName`
-
-The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 'FactoryGitHubConfiguration'.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitLastCommitId`
-
-Add the last commit id from your git repo.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitProjectName`
-
-The project name. Only relevant for 'FactoryVSTSConfiguration'.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitRepositoryName`
-
-The repository name.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitRepoType`
-
-Repository type - can be 'FactoryVSTSConfiguration' or 'FactoryGitHubConfiguration'. Default is 'FactoryVSTSConfiguration'.
-
-- Required: No
-- Type: string
-- Default: `'FactoryVSTSConfiguration'`
-
-### Parameter: `gitRootFolder`
-
-The root folder path name. Default is '/'.
-
-- Required: No
-- Type: string
-- Default: `'/'`
-
-### Parameter: `gitTenantId`
-
-Add the tenantId of your Azure subscription.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `globalParameters`
-
-List of Global Parameters for the factory.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
-### Parameter: `integrationRuntimes`
-
-An array of objects for the configuration of an Integration Runtime.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-integrationruntimesname) | string | Specify the name of integration runtime. |
-| [`type`](#parameter-integrationruntimestype) | string | Specify the type of the integration runtime. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`integrationRuntimeCustomDescription`](#parameter-integrationruntimesintegrationruntimecustomdescription) | string | Specify custom description for the integration runtime. |
-| [`managedVirtualNetworkName`](#parameter-integrationruntimesmanagedvirtualnetworkname) | string | Specify managed vritual network name for the integration runtime to link to. |
-| [`typeProperties`](#parameter-integrationruntimestypeproperties) | object | Integration Runtime type properties. Required if type is "Managed". |
-
-### Parameter: `integrationRuntimes.name`
-
-Specify the name of integration runtime.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `integrationRuntimes.type`
-
-Specify the type of the integration runtime.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Managed'
-    'SelfHosted'
-  ]
-  ```
-
-### Parameter: `integrationRuntimes.integrationRuntimeCustomDescription`
-
-Specify custom description for the integration runtime.
-
-- Required: No
-- Type: string
-
-### Parameter: `integrationRuntimes.managedVirtualNetworkName`
-
-Specify managed vritual network name for the integration runtime to link to.
-
-- Required: No
-- Type: string
-
-### Parameter: `integrationRuntimes.typeProperties`
-
-Integration Runtime type properties. Required if type is "Managed".
-
-- Required: No
-- Type: object
-
-### Parameter: `linkedServices`
-
-An array of objects for the configuration of Linked Services.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-linkedservicesname) | string | The name of the Linked Service. |
-| [`type`](#parameter-linkedservicestype) | string | The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`description`](#parameter-linkedservicesdescription) | string | The description of the Integration Runtime. |
-| [`integrationRuntimeName`](#parameter-linkedservicesintegrationruntimename) | string | The name of the Integration Runtime to use. |
-| [`parameters`](#parameter-linkedservicesparameters) | object | Use this to add parameters for a linked service connection string. |
-| [`typeProperties`](#parameter-linkedservicestypeproperties) | object | Used to add connection properties for your linked services. |
-
-### Parameter: `linkedServices.name`
-
-The name of the Linked Service.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `linkedServices.type`
-
-The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `linkedServices.description`
-
-The description of the Integration Runtime.
-
-- Required: No
-- Type: string
-
-### Parameter: `linkedServices.integrationRuntimeName`
-
-The name of the Integration Runtime to use.
-
-- Required: No
-- Type: string
-
-### Parameter: `linkedServices.parameters`
-
-Use this to add parameters for a linked service connection string.
-
-- Required: No
-- Type: object
-
-### Parameter: `linkedServices.typeProperties`
-
-Used to add connection properties for your linked services.
-
-- Required: No
-- Type: object
-
 ### Parameter: `location`
 
-Location for all Resources.
+Default to current resource group scope location. Location for all resources.
 
 - Required: No
 - Type: string
@@ -1051,95 +769,58 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `managedIdentities`
+### Parameter: `networkAcls`
 
-The managed identity definition for this resource.
+IP addresses to allow access to the cluster from.
 
 - Required: No
 - Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
-
-### Parameter: `managedIdentities.systemAssigned`
-
-Enables system assigned managed identity on the resource.
-
-- Required: No
-- Type: bool
-
-### Parameter: `managedIdentities.userAssignedResourceIds`
-
-The resource ID(s) to assign to the resource.
-
-- Required: No
-- Type: array
-
-### Parameter: `managedPrivateEndpoints`
-
-An array of managed private endpoints objects created in the Data Factory managed virtual network.
-
-- Required: No
-- Type: array
-- Default: `[]`
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupId`](#parameter-managedprivateendpointsgroupid) | string | Specify the sub-resource of the managed private endpoint. |
-| [`name`](#parameter-managedprivateendpointsname) | string | Specify the name of managed private endpoint. |
-| [`privateLinkResourceId`](#parameter-managedprivateendpointsprivatelinkresourceid) | string | Specify the resource ID to create the managed private endpoint for. |
+| [`allowAllIPs`](#parameter-networkaclsallowallips) | bool | Indicates whether to allow all IP addresses. |
+| [`allowAzureIPs`](#parameter-networkaclsallowazureips) | bool | Indicates whether to allow all Azure internal IP addresses. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdns`](#parameter-managedprivateendpointsfqdns) | array | Specify the FQDNS of the linked resources to create private endpoints for, depending on the type of linked resource this is required. |
+| [`customRules`](#parameter-networkaclscustomrules) | array | List of custom firewall rules. |
 
-### Parameter: `managedPrivateEndpoints.groupId`
+### Parameter: `networkAcls.allowAllIPs`
 
-Specify the sub-resource of the managed private endpoint.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `managedPrivateEndpoints.name`
-
-Specify the name of managed private endpoint.
+Indicates whether to allow all IP addresses.
 
 - Required: Yes
-- Type: string
+- Type: bool
 
-### Parameter: `managedPrivateEndpoints.privateLinkResourceId`
+### Parameter: `networkAcls.allowAzureIPs`
 
-Specify the resource ID to create the managed private endpoint for.
+Indicates whether to allow all Azure internal IP addresses.
 
 - Required: Yes
-- Type: string
+- Type: bool
 
-### Parameter: `managedPrivateEndpoints.fqdns`
+### Parameter: `networkAcls.customRules`
 
-Specify the FQDNS of the linked resources to create private endpoints for, depending on the type of linked resource this is required.
+List of custom firewall rules.
 
 - Required: No
 - Type: array
 
-### Parameter: `managedVirtualNetworkName`
+### Parameter: `nodeType`
 
-The name of the Managed Virtual Network.
+Deployed Node type in the node group.
 
 - Required: No
 - Type: string
-- Default: `''`
+- Default: `'Shard'`
 
 ### Parameter: `privateEndpoints`
 
-Configuration Details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
+Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
 
 - Required: No
 - Type: array
@@ -1196,19 +877,19 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
-| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint ip address. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private ip addresses of the private endpoint. |
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
-Fqdn that resolves to private endpoint IP address.
+Fqdn that resolves to private endpoint ip address.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
-A list of private IP addresses of the private endpoint.
+A list of private ip addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
@@ -1261,7 +942,7 @@ Properties of private endpoint IP configurations.
 | :-- | :-- | :-- |
 | [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
 | [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
-| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private ip address obtained from the private endpoint's subnet. |
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
 
@@ -1279,7 +960,7 @@ The member name of a group obtained from the remote resource that this private e
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
-A private IP address obtained from the private endpoint's subnet.
+A private ip address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
@@ -1543,22 +1224,6 @@ Tags to be applied on all resources/resource groups in this deployment.
 - Required: No
 - Type: object
 
-### Parameter: `publicNetworkAccess`
-
-Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.
-
-- Required: No
-- Type: string
-- Default: `''`
-- Allowed:
-  ```Bicep
-  [
-    ''
-    'Disabled'
-    'Enabled'
-  ]
-  ```
-
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
@@ -1567,10 +1232,9 @@ Array of role assignments to create.
 - Type: array
 - Roles configurable by name:
   - `'Contributor'`
-  - `'Data Factory Contributor'`
   - `'Owner'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator'`
+  - `'Role Based Access Control Administrator (Preview)'`
   - `'User Access Administrator'`
 
 **Required parameters**
@@ -1663,9 +1327,42 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `secretsExportConfiguration`
+
+Key vault reference and secret settings for the module's secrets export.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The resource ID of the key vault where to store the secrets of this module. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`connectionStringSecretName`](#parameter-secretsexportconfigurationconnectionstringsecretname) | string | The name to use when creating the primary write connection string secret. |
+
+### Parameter: `secretsExportConfiguration.keyVaultResourceId`
+
+The resource ID of the key vault where to store the secrets of this module.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `secretsExportConfiguration.connectionStringSecretName`
+
+The name to use when creating the primary write connection string secret.
+
+- Required: No
+- Type: string
+
 ### Parameter: `tags`
 
-Tags of the resource.
+Tags of the Database Account resource.
 
 - Required: No
 - Type: object
@@ -1674,12 +1371,14 @@ Tags of the resource.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `location` | string | The location the resource was deployed into. |
-| `name` | string | The Name of the Azure Data Factory instance. |
-| `privateEndpoints` | array | The private endpoints of the Data Factory. |
-| `resourceGroupName` | string | The name of the Resource Group with the Data factory. |
-| `resourceId` | string | The Resource ID of the Data Factory. |
-| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+| `connectionStringKey` | string | The connection string key of the mongo cluster. |
+| `exportedSecrets` |  | The references to the secrets exported to the provided Key Vault. |
+| `firewallRules` | array | The name and resource ID of firewall rule. |
+| `mongoClusterResourceId` | string | The resource ID of the Azure Cosmos DB MongoDB vCore cluster. |
+| `name` | string | The name of the Azure Cosmos DB MongoDB vCore cluster. |
+| `privateEndpoints` | array | The private endpoints of the database account. |
+| `resourceGroupName` | string | The name of the resource group the firewall rule was created in. |
+| `resourceId` | string | The resource ID of the resource group the firewall rule was created in. |
 
 ## Cross-referenced modules
 
@@ -1688,58 +1387,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
-
-## Notes
-
-### Parameter Usage: `managedPrivateEndpoints`
-
-To use Managed Private Endpoints the following dependencies must be deployed:
-
-- The `managedVirtualNetworkName` property must be set to allow provisioning of a managed virtual network in Azure Data Factory.
-- Destination private link resource must be created before and permissions allow requesting a private link connection to that resource.
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"managedPrivateEndpoints": {
-    "value": [
-        {
-            "name": "mystorageaccount-managed-privateEndpoint", // Required: The managed private endpoint resource name
-            "groupId": "blob", // Required: The groupId to which the managed private endpoint is created
-            "fqdns": [
-                "mystorageaccount.blob.core.windows.net" // Required: Fully qualified domain names
-            ],
-            "privateLinkResourceId": "/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.Storage/storageAccounts/mystorageaccount"
-            // Required: The ARM resource ID of the resource to which the managed private endpoint is created.
-        }
-    ]
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-managedPrivateEndpoints:  [
-    // Example showing all available fields
-    {
-        name: 'mystorageaccount-managed-privateEndpoint' // Required: The managed private endpoint resource name
-        groupId: 'blob' // Required: The groupId to which the managed private endpoint is created
-        fqdns: [
-          'mystorageaccount.blob.core.windows.net' // Required: Fully qualified domain names
-        ]
-        privateLinkResourceId: '/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.Storage/storageAccounts/mystorageaccount'
-    } // Required: The ARM resource ID of the resource to which the managed private endpoint is created.
-]
-```
-
-</details>
-<p>
 
 ## Data Collection
 

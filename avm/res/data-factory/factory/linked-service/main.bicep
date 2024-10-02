@@ -41,6 +41,7 @@ resource linkedService 'Microsoft.DataFactory/factories/linkedservices@2018-06-0
           referenceName: integrationRuntimeName
           type: 'IntegrationRuntimeReference'
         }
+    #disable-next-line BCP225 // false-positive as 'type' is interpreted as a syntax value
     type: type
     typeProperties: typeProperties
     parameters: parameters
