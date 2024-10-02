@@ -435,7 +435,7 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
-      name: 'ResourceLock'
+      name: 'myCustomLockName'
     }
     p2sConfigurationPolicyGroups: [
       {
@@ -493,7 +493,7 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
     "lock": {
       "value": {
         "kind": "CanNotDelete",
-        "name": "ResourceLock"
+        "name": "myCustomLockName"
       }
     },
     "p2sConfigurationPolicyGroups": {
@@ -542,8 +542,8 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`aadAudience`](#parameter-aadaudience) | string | The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication. |
-| [`aadIssuer`](#parameter-aadissuer) | string | The issuer for the AAD/Entra authentication. Required if configuring Entra ID authentication |
-| [`aadTenant`](#parameter-aadtenant) | string | The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication |
+| [`aadIssuer`](#parameter-aadissuer) | string | The issuer for the AAD/Entra authentication. Required if configuring Entra ID authentication. |
+| [`aadTenant`](#parameter-aadtenant) | string | The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication. |
 | [`radiusServerAddress`](#parameter-radiusserveraddress) | string | The address of the RADIUS server. Required if configuring a single RADIUS. |
 | [`radiusServerSecret`](#parameter-radiusserversecret) | securestring | The RADIUS server secret. Required if configuring a single RADIUS server. |
 | [`vpnClientRootCertificates`](#parameter-vpnclientrootcertificates) | array | The VPN Client root certificate public keys for the configuration. Required if using certificate authentication. |
@@ -581,14 +581,14 @@ The audience for the AAD/Entra authentication. Required if configuring Entra ID 
 
 ### Parameter: `aadIssuer`
 
-The issuer for the AAD/Entra authentication. Required if configuring Entra ID authentication
+The issuer for the AAD/Entra authentication. Required if configuring Entra ID authentication.
 
 - Required: No
 - Type: string
 
 ### Parameter: `aadTenant`
 
-The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication
+The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication.
 
 - Required: No
 - Type: string

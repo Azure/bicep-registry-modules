@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "11742668183850609496"
+      "templateHash": "5103322953711246998"
     },
     "name": "VPN Server Configuration",
     "description": "This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway.",
@@ -64,14 +64,14 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The issuer for the AAD/Entra authentication. Required if configuring Entra ID authentication"
+        "description": "Conditional. The issuer for the AAD/Entra authentication. Required if configuring Entra ID authentication."
       }
     },
     "aadTenant": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication"
+        "description": "Conditional. The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication."
       }
     },
     "p2sConfigurationPolicyGroups": {

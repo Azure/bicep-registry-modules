@@ -79,7 +79,7 @@ module testDeployment '../../../main.bicep' = [
         'OpenVPN'
       ]
       lock: {
-        name: 'ResourceLock'
+        name: 'myCustomLockName'
         kind: 'CanNotDelete'
       }
     }

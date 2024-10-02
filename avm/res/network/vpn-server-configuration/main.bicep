@@ -11,10 +11,10 @@ param location string = resourceGroup().location
 @description('Conditional. The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication.')
 param aadAudience string?
 
-@description('Conditional. The issuer for the AAD/Entra authentication. Required if configuring Entra ID authentication')
+@description('Conditional. The issuer for the AAD/Entra authentication. Required if configuring Entra ID authentication.')
 param aadIssuer string?
 
-@description('Conditional. The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication')
+@description('Conditional. The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication.')
 param aadTenant string?
 
 @description('Optional. The P2S configuration policy groups for the configuration.')
