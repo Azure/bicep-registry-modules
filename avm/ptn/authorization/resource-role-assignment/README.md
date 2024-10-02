@@ -55,7 +55,7 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -137,7 +137,7 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

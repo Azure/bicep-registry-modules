@@ -80,7 +80,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -158,7 +158,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -233,7 +233,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -514,7 +514,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1037,7 +1037,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1295,7 +1295,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

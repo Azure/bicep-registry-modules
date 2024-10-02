@@ -69,7 +69,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -315,7 +315,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -888,7 +888,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1371,7 +1371,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1780,7 +1780,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

@@ -76,7 +76,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -194,7 +194,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -334,7 +334,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -548,7 +548,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -680,7 +680,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -807,7 +807,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -928,7 +928,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

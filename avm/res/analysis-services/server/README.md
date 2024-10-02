@@ -62,7 +62,7 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -188,7 +188,7 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -433,7 +433,7 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

@@ -99,7 +99,7 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

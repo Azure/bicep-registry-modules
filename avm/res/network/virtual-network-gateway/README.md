@@ -95,7 +95,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -248,7 +248,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -409,7 +409,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -578,7 +578,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -736,7 +736,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -899,7 +899,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1042,7 +1042,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1153,7 +1153,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1367,7 +1367,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1686,7 +1686,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1795,7 +1795,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2014,7 +2014,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

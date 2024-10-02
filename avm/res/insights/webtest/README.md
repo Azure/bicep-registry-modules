@@ -62,7 +62,7 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -184,7 +184,7 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -359,7 +359,7 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

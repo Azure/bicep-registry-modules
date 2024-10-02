@@ -66,7 +66,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -169,7 +169,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -403,7 +403,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -798,7 +798,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

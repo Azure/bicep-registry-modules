@@ -59,7 +59,7 @@ module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -168,7 +168,7 @@ module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -348,7 +348,7 @@ module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

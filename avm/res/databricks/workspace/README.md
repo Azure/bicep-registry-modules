@@ -61,7 +61,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -228,7 +228,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -635,7 +635,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

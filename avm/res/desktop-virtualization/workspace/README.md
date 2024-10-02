@@ -60,7 +60,7 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -247,7 +247,7 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -586,7 +586,7 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

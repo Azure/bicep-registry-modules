@@ -62,7 +62,7 @@ module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -164,7 +164,7 @@ module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -316,7 +316,7 @@ module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

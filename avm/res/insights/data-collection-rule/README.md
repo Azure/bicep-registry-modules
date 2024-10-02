@@ -74,7 +74,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -247,7 +247,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -547,7 +547,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -786,7 +786,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -981,7 +981,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1285,7 +1285,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1758,7 +1758,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2128,7 +2128,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2526,7 +2526,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

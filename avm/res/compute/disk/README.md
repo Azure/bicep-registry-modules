@@ -61,7 +61,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -141,7 +141,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -226,7 +226,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -346,7 +346,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -521,7 +521,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

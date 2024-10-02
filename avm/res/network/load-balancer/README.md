@@ -68,7 +68,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -267,7 +267,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -670,7 +670,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1031,7 +1031,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1452,7 +1452,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

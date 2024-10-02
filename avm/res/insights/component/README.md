@@ -58,7 +58,7 @@ module component 'br/public:avm/res/insights/component:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -169,7 +169,7 @@ module component 'br/public:avm/res/insights/component:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -355,7 +355,7 @@ module component 'br/public:avm/res/insights/component:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

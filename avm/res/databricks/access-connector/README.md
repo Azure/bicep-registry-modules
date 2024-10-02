@@ -56,7 +56,7 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:<version>'
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -154,7 +154,7 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:<version>'
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -306,7 +306,7 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:<version>'
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

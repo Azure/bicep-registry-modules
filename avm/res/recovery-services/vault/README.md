@@ -83,7 +83,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -235,7 +235,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -790,7 +790,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1954,7 +1954,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

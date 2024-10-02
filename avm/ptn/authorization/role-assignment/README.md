@@ -59,7 +59,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -135,7 +135,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -219,7 +219,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -304,7 +304,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -391,7 +391,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -471,7 +471,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

@@ -65,7 +65,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -378,7 +378,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -973,7 +973,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

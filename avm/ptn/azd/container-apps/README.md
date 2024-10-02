@@ -83,7 +83,7 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

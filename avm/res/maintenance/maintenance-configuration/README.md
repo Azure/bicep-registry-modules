@@ -56,7 +56,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -177,7 +177,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -407,7 +407,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

@@ -61,7 +61,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -174,7 +174,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -351,7 +351,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

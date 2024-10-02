@@ -106,7 +106,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -276,7 +276,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -495,7 +495,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -679,7 +679,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -826,7 +826,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

@@ -60,7 +60,7 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -170,7 +170,7 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -331,7 +331,7 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

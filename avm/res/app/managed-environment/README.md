@@ -72,7 +72,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -258,7 +258,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -546,7 +546,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

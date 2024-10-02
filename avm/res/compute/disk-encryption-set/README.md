@@ -88,7 +88,7 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -224,7 +224,7 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -331,7 +331,7 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -489,7 +489,7 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

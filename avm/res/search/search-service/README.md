@@ -64,7 +64,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -139,7 +139,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -301,7 +301,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -581,7 +581,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -796,7 +796,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

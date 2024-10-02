@@ -65,7 +65,7 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -173,7 +173,7 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -320,7 +320,7 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

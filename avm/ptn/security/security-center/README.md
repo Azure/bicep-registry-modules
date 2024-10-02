@@ -60,7 +60,7 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -137,7 +137,7 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -228,7 +228,7 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

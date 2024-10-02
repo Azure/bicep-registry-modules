@@ -56,7 +56,7 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -127,7 +127,7 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -206,7 +206,7 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -285,7 +285,7 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

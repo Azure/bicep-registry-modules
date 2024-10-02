@@ -73,7 +73,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -214,7 +214,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -371,7 +371,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

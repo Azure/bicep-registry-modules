@@ -63,7 +63,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -242,7 +242,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -646,7 +646,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -925,7 +925,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

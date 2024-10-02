@@ -56,7 +56,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -164,7 +164,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -351,7 +351,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

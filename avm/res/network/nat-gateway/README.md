@@ -63,7 +63,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -133,7 +133,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -276,7 +276,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -502,7 +502,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -625,7 +625,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

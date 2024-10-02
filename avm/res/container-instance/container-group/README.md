@@ -83,7 +83,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -274,7 +274,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -570,7 +570,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -870,7 +870,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1141,7 +1141,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

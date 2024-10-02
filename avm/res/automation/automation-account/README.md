@@ -70,7 +70,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -144,7 +144,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -464,7 +464,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1207,7 +1207,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

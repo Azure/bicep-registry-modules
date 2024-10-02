@@ -53,7 +53,7 @@ module diagnosticSetting 'br/public:avm/res/insights/diagnostic-setting:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -124,7 +124,7 @@ module diagnosticSetting 'br/public:avm/res/insights/diagnostic-setting:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -219,7 +219,7 @@ module diagnosticSetting 'br/public:avm/res/insights/diagnostic-setting:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

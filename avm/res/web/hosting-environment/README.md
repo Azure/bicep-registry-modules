@@ -60,7 +60,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -189,7 +189,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -435,7 +435,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

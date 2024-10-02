@@ -66,7 +66,7 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -435,7 +435,7 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1144,7 +1144,7 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

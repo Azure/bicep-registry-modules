@@ -64,7 +64,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -131,7 +131,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -306,7 +306,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -622,7 +622,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -800,7 +800,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

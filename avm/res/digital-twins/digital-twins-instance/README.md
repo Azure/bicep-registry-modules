@@ -59,7 +59,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -205,7 +205,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -481,7 +481,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -588,7 +588,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

@@ -1,4 +1,4 @@
-# Azure Cosmos DB MongoDB vCore cluster `[DocumentDb/MongoCluster]`
+# Azure Cosmos DB MongoDB vCore cluster `[Microsoft.DocumentDB/mongoClusters]`
 
 This module deploys a Azure Cosmos DB MongoDB vCore cluster.
 
@@ -70,7 +70,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -163,7 +163,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -336,7 +336,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -587,7 +587,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

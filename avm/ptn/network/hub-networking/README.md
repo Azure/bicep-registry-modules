@@ -64,7 +64,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -280,7 +280,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -724,7 +724,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -990,7 +990,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

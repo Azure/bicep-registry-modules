@@ -85,7 +85,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -173,7 +173,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -261,7 +261,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -429,7 +429,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -726,7 +726,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -838,7 +838,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1192,7 +1192,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1767,7 +1767,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1910,7 +1910,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2040,7 +2040,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2152,7 +2152,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2494,7 +2494,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -3130,7 +3130,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

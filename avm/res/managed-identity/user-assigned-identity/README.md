@@ -57,7 +57,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -167,7 +167,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -358,7 +358,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

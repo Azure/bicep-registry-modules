@@ -57,7 +57,7 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -247,7 +247,7 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -596,7 +596,7 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

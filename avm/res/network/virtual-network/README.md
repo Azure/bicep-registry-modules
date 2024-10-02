@@ -65,7 +65,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -150,7 +150,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -356,7 +356,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -696,7 +696,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -912,7 +912,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

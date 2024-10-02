@@ -70,7 +70,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -234,7 +234,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -482,7 +482,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -634,7 +634,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

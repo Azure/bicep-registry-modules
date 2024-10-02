@@ -60,7 +60,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -202,7 +202,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -470,7 +470,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

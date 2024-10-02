@@ -93,7 +93,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -419,7 +419,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -950,7 +950,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1147,7 +1147,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1515,7 +1515,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1866,7 +1866,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

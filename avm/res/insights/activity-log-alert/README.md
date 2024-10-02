@@ -85,7 +85,7 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -275,7 +275,7 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -522,7 +522,7 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

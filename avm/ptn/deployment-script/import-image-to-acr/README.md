@@ -62,7 +62,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -151,7 +151,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -265,7 +265,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

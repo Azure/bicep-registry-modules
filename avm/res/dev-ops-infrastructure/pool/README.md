@@ -77,7 +77,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -281,7 +281,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -596,7 +596,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

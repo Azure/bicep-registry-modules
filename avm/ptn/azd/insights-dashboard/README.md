@@ -62,7 +62,7 @@ module insightsDashboard 'br/public:avm/ptn/azd/insights-dashboard:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -134,7 +134,7 @@ module insightsDashboard 'br/public:avm/ptn/azd/insights-dashboard:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

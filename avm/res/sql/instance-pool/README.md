@@ -54,7 +54,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -124,7 +124,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

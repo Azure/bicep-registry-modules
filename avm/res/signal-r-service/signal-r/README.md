@@ -64,7 +64,7 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -212,7 +212,7 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -519,7 +519,7 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

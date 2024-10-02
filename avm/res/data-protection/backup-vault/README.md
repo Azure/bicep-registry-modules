@@ -58,7 +58,7 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -216,7 +216,7 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -555,7 +555,7 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

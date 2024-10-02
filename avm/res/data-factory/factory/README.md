@@ -65,7 +65,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -266,7 +266,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -650,7 +650,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

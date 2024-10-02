@@ -60,7 +60,7 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -195,7 +195,7 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -415,7 +415,7 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

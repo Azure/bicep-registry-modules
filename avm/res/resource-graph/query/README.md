@@ -57,7 +57,7 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -154,7 +154,7 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -296,7 +296,7 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

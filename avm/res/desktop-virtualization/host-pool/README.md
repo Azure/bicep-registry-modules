@@ -60,7 +60,7 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -229,7 +229,7 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -548,7 +548,7 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

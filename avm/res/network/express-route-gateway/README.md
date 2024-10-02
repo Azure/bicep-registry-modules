@@ -57,7 +57,7 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -155,7 +155,7 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -302,7 +302,7 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

@@ -56,7 +56,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -168,7 +168,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -336,7 +336,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

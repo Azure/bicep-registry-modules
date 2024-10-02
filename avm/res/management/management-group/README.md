@@ -59,7 +59,7 @@ module managementGroup 'br/public:avm/res/management/management-group:<version>'
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -125,7 +125,7 @@ module managementGroup 'br/public:avm/res/management/management-group:<version>'
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -199,7 +199,7 @@ module managementGroup 'br/public:avm/res/management/management-group:<version>'
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

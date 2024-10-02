@@ -61,7 +61,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -235,7 +235,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -598,7 +598,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

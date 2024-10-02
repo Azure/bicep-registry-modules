@@ -63,7 +63,7 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -119,7 +119,7 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -192,7 +192,7 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

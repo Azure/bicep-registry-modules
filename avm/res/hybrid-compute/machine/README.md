@@ -59,7 +59,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -160,7 +160,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -305,7 +305,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -379,7 +379,7 @@ module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

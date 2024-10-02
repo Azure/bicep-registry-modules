@@ -94,7 +94,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -219,7 +219,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -299,7 +299,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -496,7 +496,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -806,7 +806,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -933,7 +933,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

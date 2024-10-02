@@ -64,7 +64,7 @@ module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -215,7 +215,7 @@ module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -531,7 +531,7 @@ module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

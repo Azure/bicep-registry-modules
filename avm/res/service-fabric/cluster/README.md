@@ -79,7 +79,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -362,7 +362,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -933,7 +933,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

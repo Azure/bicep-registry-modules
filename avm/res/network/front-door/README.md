@@ -136,7 +136,7 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -503,7 +503,7 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -960,7 +960,7 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

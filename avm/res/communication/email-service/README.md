@@ -59,7 +59,7 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -200,7 +200,7 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -426,7 +426,7 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

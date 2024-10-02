@@ -60,7 +60,7 @@ module privateLinkScope 'br/public:avm/res/insights/private-link-scope:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -285,7 +285,7 @@ module privateLinkScope 'br/public:avm/res/insights/private-link-scope:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -803,7 +803,7 @@ module privateLinkScope 'br/public:avm/res/insights/private-link-scope:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

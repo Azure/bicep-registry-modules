@@ -56,7 +56,7 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -248,7 +248,7 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -596,7 +596,7 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

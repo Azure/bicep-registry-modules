@@ -69,7 +69,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -171,7 +171,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -348,7 +348,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -614,7 +614,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -779,7 +779,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

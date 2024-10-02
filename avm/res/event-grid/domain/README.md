@@ -61,7 +61,7 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -203,7 +203,7 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -482,7 +482,7 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

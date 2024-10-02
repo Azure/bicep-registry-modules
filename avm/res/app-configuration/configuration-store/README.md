@@ -65,7 +65,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -161,7 +161,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -380,7 +380,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -666,7 +666,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -826,7 +826,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

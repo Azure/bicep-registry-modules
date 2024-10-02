@@ -83,7 +83,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -195,7 +195,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -304,7 +304,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -431,7 +431,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -506,7 +506,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -596,7 +596,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -822,7 +822,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1213,7 +1213,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1428,7 +1428,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

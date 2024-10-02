@@ -57,7 +57,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -164,7 +164,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -376,7 +376,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

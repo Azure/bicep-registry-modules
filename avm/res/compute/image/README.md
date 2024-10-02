@@ -59,7 +59,7 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -172,7 +172,7 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -338,7 +338,7 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

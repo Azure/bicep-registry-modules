@@ -56,7 +56,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -148,7 +148,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -283,7 +283,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

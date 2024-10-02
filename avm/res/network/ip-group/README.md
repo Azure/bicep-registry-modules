@@ -56,7 +56,7 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -152,7 +152,7 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -297,7 +297,7 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

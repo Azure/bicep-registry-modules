@@ -62,7 +62,7 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -177,7 +177,7 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -338,7 +338,7 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

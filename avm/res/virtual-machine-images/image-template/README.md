@@ -75,7 +75,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -281,7 +281,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -605,7 +605,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {

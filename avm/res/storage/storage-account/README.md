@@ -83,7 +83,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -157,7 +157,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -233,7 +233,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -314,7 +314,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -399,7 +399,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -899,7 +899,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1855,7 +1855,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1973,7 +1973,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2136,7 +2136,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2281,7 +2281,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2587,7 +2587,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
