@@ -45,7 +45,7 @@ param radiusServerSecret string?
 param vpnAuthenticationTypes array = []
 
 @description('Optional. The IPsec policies for the configuration.')
-param vpnClientIpsecPolicies array = []
+param vpnClientIpsecPolicies vpnClientIpsecPoliciesType[]?
 
 @description('Optional. The revoked VPN Client certificate thumbprints for the configuration.')
 param vpnClientRevokedCertificates array = []
@@ -102,7 +102,7 @@ resource vpnServerConfig 'Microsoft.Network/vpnServerConfigurations@2023-11-01' 
       aadTenant: aadTenant
     }
     configurationPolicyGroups: [
-      for group in p2sConfigurationPolicyGroups: {
+      for group in (p2sConfigurationPolicyGroups) ?? []: {
         name: group.userVPNPolicyGroupName
         properties: {
           isDefault: group.isDefault
@@ -112,20 +112,20 @@ resource vpnServerConfig 'Microsoft.Network/vpnServerConfigurations@2023-11-01' 
       }
     ]
     radiusClientRootCertificates: [
-      for clientRootroot in radiusClientRootCertificates: {
+      for clientRootroot in (radiusClientRootCertificates) ?? []: {
         name: clientRootroot.name
         thumbprint: clientRootroot.thumbprint
       }
     ]
     radiusServerAddress: radiusServerAddress
     radiusServerRootCertificates: [
-      for serverRoot in radiusServerRootCertificates: {
+      for serverRoot in (radiusServerRootCertificates) ?? []: {
         name: serverRoot.name
         publicCertData: serverRoot.publicCertData
       }
     ]
     radiusServers: [
-      for server in radiusServers: {
+      for server in (radiusServers) ?? []: {
         radiusServerAddress: server.radiusServerAddress
         radiusServerScore: server.radiusServerScore
         radiusServerSecret: server.radiusServerSecret
@@ -134,7 +134,7 @@ resource vpnServerConfig 'Microsoft.Network/vpnServerConfigurations@2023-11-01' 
     radiusServerSecret: radiusServerSecret
     vpnAuthenticationTypes: vpnAuthenticationTypes
     vpnClientIpsecPolicies: [
-      for policy in vpnClientIpsecPolicies: {
+      for policy in (vpnClientIpsecPolicies) ?? []: {
         dhGroup: policy.dhGroup
         ikeEncryption: policy.ikeEncryption
         ikeIntegrity: policy.ikeIntegrity
@@ -146,13 +146,13 @@ resource vpnServerConfig 'Microsoft.Network/vpnServerConfigurations@2023-11-01' 
       }
     ]
     vpnClientRevokedCertificates: [
-      for cert in vpnClientRevokedCertificates: {
+      for cert in (vpnClientRevokedCertificates) ?? []: {
         name: cert.name
         thumbprint:cert.thumbprint
       }
     ]
     vpnClientRootCertificates: [
-      for cert in vpnClientRootCertificates: {
+      for cert in (vpnClientRootCertificates) ?? []: {
         name: cert.name
         publicCertData: cert.publicCertData
       }
@@ -195,3 +195,30 @@ type lockType = {
   @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
+
+@export()
+type vpnClientIpsecPoliciesType = {
+  @description('Optional. The Diffie-Hellman group used in IKE phase 1. Required if using IKEv2.')
+  dhGroup: string?
+
+  @description('Optional. The encryption algorithm used in IKE phase 1. Required if using IKEv2.')
+  ikeEncryption: string?
+
+  @description('Optional. The integrity algorithm used in IKE phase 1. Required if using IKEv2.')
+  ikeIntegrity: string?
+
+  @description('Optional. The encryption algorithm used in IKE phase 2. Required if using IKEv2.')
+  ipsecEncryption: string?
+
+  @description('Optional. The integrity algorithm used in IKE phase 2. Required if using IKEv2.')
+  ipsecIntegrity: string?
+
+  @description('Optional. The Perfect Forward Secrecy (PFS) group used in IKE phase 2. Required if using IKEv2.')
+  pfsGroup: string?
+
+  @description('Optional. The size of the SA data in kilobytes. Required if using IKEv2.')
+  saDataSizeKilobytes: int?
+
+  @description('Optional. The lifetime of the SA in seconds. Required if using IKEv2.')
+  salfetimeSeconds: int?
+}
