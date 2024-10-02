@@ -1674,9 +1674,9 @@ function Set-UsageExamplesSection {
                 )
             }
 
-            # --------------------- #
-            #   Add Bicep parameters file example   #
-            # --------------------- #
+            # ---------------------------------------- #
+            #   Add Bicep parameter file example   #
+            # ---------------------------------------- #
             if ($addBicepParametersfile) {
 
                 $formattedBicepParametersfileExample = @(
