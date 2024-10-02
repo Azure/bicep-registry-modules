@@ -69,6 +69,9 @@ param siteConfig object = {
   alwaysOn: true
 }
 
+@description('Optional. The Function App configuration object.')
+param functionAppConfig object = {}
+
 @description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
 param storageAccountResourceId string?
 
@@ -265,6 +268,7 @@ resource app 'Microsoft.Web/sites@2023-12-01' = {
     keyVaultReferenceIdentity: keyVaultAccessIdentityResourceId
     virtualNetworkSubnetId: virtualNetworkSubnetId
     siteConfig: siteConfig
+    functionAppConfig: functionAppConfig
     clientCertEnabled: clientCertEnabled
     clientCertExclusionPaths: clientCertExclusionPaths
     clientCertMode: clientCertMode
@@ -352,6 +356,7 @@ module app_slots 'slot/main.bicep' = [
       storageAccountRequired: slot.?storageAccountRequired ?? storageAccountRequired
       virtualNetworkSubnetId: slot.?virtualNetworkSubnetId ?? virtualNetworkSubnetId
       siteConfig: slot.?siteConfig ?? siteConfig
+      functionAppConfig: slot.?functionAppConfig ?? functionAppConfig
       storageAccountResourceId: slot.?storageAccountResourceId ?? storageAccountResourceId
       storageAccountUseIdentityAuthentication: slot.?storageAccountUseIdentityAuthentication ?? storageAccountUseIdentityAuthentication
       appInsightResourceId: slot.?appInsightResourceId ?? appInsightResourceId
