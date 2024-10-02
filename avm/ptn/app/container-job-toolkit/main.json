@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "16170488596458335091"
+      "templateHash": "6937366639468043993"
     },
     "name": "container-job-toolkit",
     "description": "This module deploys a container to run as a job.",
@@ -258,14 +258,6 @@
         "description": "Optional. Deploy resources in a virtual network and use it for private endpoints."
       }
     },
-    "addressPrefix": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "default": "10.50.0.0/16",
-        "description": "Conditional. The address prefix for the virtual network needs to be at least a /16. Required if `deployInVnet` is `true`."
-      }
-    },
     "deployDnsZoneKeyVault": {
       "type": "bool",
       "defaultValue": true,
@@ -278,6 +270,13 @@
       "defaultValue": true,
       "metadata": {
         "description": "Conditional. A new private DNS Zone will be created. Setting to `false` requires an existing private DNS zone `privatelink.azurecr.io`. Required if `deployInVnet` is `true`."
+      }
+    },
+    "addressPrefix": {
+      "type": "string",
+      "defaultValue": "10.50.0.0/16",
+      "metadata": {
+        "description": "Conditional. The address prefix for the virtual network needs to be at least a /16. Three subnets will be created (the first /24 will be used for private endpoints, the second /24 for service endpoints and the second /23 is used for the workload). Required if `zoneRedundant` for consumption plan is desired or `deployInVnet` is `true`."
       }
     },
     "containerImageSource": {
@@ -351,7 +350,7 @@
       "nullable": true,
       "metadata": {
         "example": "[[\r\n    {\r\n      workloadProfileType: 'D4'\r\n      name: 'CAW01'\r\n      minimumCount: 0\r\n      maximumCount: 1\r\n    }\r\n  ]",
-        "description": "Optional. Workload profiles for the managed environment."
+        "description": "Optional. Workload profiles for the managed environment. Leave empty to use a consumption based profile."
       }
     },
     "workloadProfileName": {
@@ -470,7 +469,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "4900199924329250567"
+              "templateHash": "10948975113936227568"
             }
           },
           "definitions": {
@@ -640,13 +639,6 @@
                 "description": "Optional. Deploy resources in a virtual network and use it for private endpoints."
               }
             },
-            "addressPrefix": {
-              "type": "string",
-              "defaultValue": "10.50.0.0/16",
-              "metadata": {
-                "description": "Conditional. The address prefix for the virtual network needs to be at least a /16. Required, if `deployInVnet` is `true`."
-              }
-            },
             "deployDnsZoneKeyVault": {
               "type": "bool",
               "defaultValue": true,
@@ -659,6 +651,33 @@
               "defaultValue": true,
               "metadata": {
                 "description": "Conditional. A new private DNS Zone will be created. Optional, if `deployInVnet` is `true`."
+              }
+            },
+            "addressPrefix": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The address prefix for the virtual network needs to be at least a /16. Three subnets will be created (the first /24 will be used for private endpoints, the second /24 for service endpoints and the second /23 is used for the workload). Required, if `deployInVnet` is `true`."
+              }
+            },
+            "dockerBridgeCidr": {
+              "type": "string",
+              "defaultValue": "172.16.0.1/28",
+              "metadata": {
+                "description": "Conditional. CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if `zoneRedundant` for consumption plan is desired or `deployInVnet` is `true`."
+              }
+            },
+            "platformReservedCidr": {
+              "type": "string",
+              "defaultValue": "172.17.17.0/24",
+              "metadata": {
+                "description": "Conditional. IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if `zoneRedundant` for consumption plan is desired or `deployInVnet` is `true`."
+              }
+            },
+            "platformReservedDnsIP": {
+              "type": "string",
+              "defaultValue": "172.17.17.17",
+              "metadata": {
+                "description": "Conditional. An IP address from the IP range defined by \"platformReservedCidr\" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if `zoneRedundant` for consumption plan is desired or `deployInVnet` is `true`."
               }
             },
             "managedIdentityResourceId": {
@@ -781,8 +800,9 @@
               "69566ab7-960f-475b-8e7c-b3118f30c6bd"
             ],
             "privateEndpointSubnetAddressPrefix": "[cidrSubnet(parameters('addressPrefix'), 24, 0)]",
-            "serviceEndpointSubnetAddressPrefix": "[cidrSubnet(parameters('addressPrefix'), 24, 1)]",
-            "workloadSubnetAddressPrefix": "[cidrSubnet(parameters('addressPrefix'), 23, 1)]"
+            "deploymentscriptSubnetAddressPrefix": "[cidrSubnet(parameters('addressPrefix'), 24, 1)]",
+            "workloadSubnetAddressPrefix": "[cidrSubnet(parameters('addressPrefix'), 23, 1)]",
+            "zoneRedundant": "[or(parameters('deployInVnet'), and(not(empty(parameters('addressPrefix'))), empty(parameters('workloadProfiles'))))]"
           },
           "resources": {
             "dnsZoneKeyVault_existing": {
@@ -840,8 +860,15 @@
               "name": "[coalesce(parameters('managedIdentityName'), format('jobsUserIdentity-{0}', parameters('name')))]",
               "location": "[parameters('resourceLocation')]"
             },
+            "userIdentity_existing": {
+              "condition": "[not(equals(parameters('managedIdentityResourceId'), null()))]",
+              "existing": true,
+              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+              "apiVersion": "2023-01-31",
+              "name": "[if(not(empty(parameters('managedIdentityResourceId'))), last(split(parameters('managedIdentityResourceId'), '/')), 'dummy-for-deployment-validation')]"
+            },
             "nsg": {
-              "condition": "[parameters('deployInVnet')]",
+              "condition": "[variables('zoneRedundant')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-nsg', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
@@ -1470,7 +1497,7 @@
               }
             },
             "vnet": {
-              "condition": "[parameters('deployInVnet')]",
+              "condition": "[variables('zoneRedundant')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-vnet', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
@@ -1497,7 +1524,7 @@
                       },
                       {
                         "name": "deploymentscript-subnet",
-                        "addressPrefix": "[variables('serviceEndpointSubnetAddressPrefix')]",
+                        "addressPrefix": "[variables('deploymentscriptSubnetAddressPrefix')]",
                         "networkSecurityGroupResourceId": "[reference('nsg').outputs.resourceId.value]",
                         "serviceEndpoints": [
                           "Microsoft.Storage"
@@ -1508,7 +1535,7 @@
                         "name": "workload-subnet",
                         "addressPrefix": "[variables('workloadSubnetAddressPrefix')]",
                         "networkSecurityGroupResourceId": "[reference('nsg').outputs.resourceId.value]",
-                        "delegation": "Microsoft.App/environments"
+                        "delegation": "[if(parameters('deployInVnet'), 'Microsoft.App/environments', null())]"
                       }
                     ]
                   },
@@ -10678,469 +10705,6 @@
                 "vnet"
               ]
             },
-            "userIdentity_existing": {
-              "condition": "[equals(parameters('managedIdentityResourceId'), null())]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-userAssignedIdentity', uniqueString(deployment().name, parameters('resourceLocation')))]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "name": {
-                    "value": "[last(split(parameters('managedIdentityResourceId'), '/'))]"
-                  },
-                  "location": {
-                    "value": "[parameters('resourceLocation')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "languageVersion": "2.0",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "10609859695208799167"
-                    },
-                    "name": "User Assigned Identities",
-                    "description": "This module deploys a User Assigned Identity.",
-                    "owner": "Azure/module-maintainers"
-                  },
-                  "definitions": {
-                    "lockType": {
-                      "type": "object",
-                      "properties": {
-                        "name": {
-                          "type": "string",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. Specify the name of lock."
-                          }
-                        },
-                        "kind": {
-                          "type": "string",
-                          "allowedValues": [
-                            "CanNotDelete",
-                            "None",
-                            "ReadOnly"
-                          ],
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. Specify the type of lock."
-                          }
-                        }
-                      },
-                      "nullable": true
-                    },
-                    "roleAssignmentType": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                            }
-                          },
-                          "roleDefinitionIdOrName": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                            }
-                          },
-                          "principalId": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                            }
-                          },
-                          "principalType": {
-                            "type": "string",
-                            "allowedValues": [
-                              "Device",
-                              "ForeignGroup",
-                              "Group",
-                              "ServicePrincipal",
-                              "User"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The principal type of the assigned principal ID."
-                            }
-                          },
-                          "description": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The description of the role assignment."
-                            }
-                          },
-                          "condition": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                            }
-                          },
-                          "conditionVersion": {
-                            "type": "string",
-                            "allowedValues": [
-                              "2.0"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Version of the condition."
-                            }
-                          },
-                          "delegatedManagedIdentityResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The Resource Id of the delegated managed identity resource."
-                            }
-                          }
-                        }
-                      },
-                      "nullable": true
-                    },
-                    "federatedIdentityCredentialsType": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The name of the federated identity credential."
-                            }
-                          },
-                          "audiences": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "metadata": {
-                              "description": "Required. The list of audiences that can appear in the issued token."
-                            }
-                          },
-                          "issuer": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The URL of the issuer to be trusted."
-                            }
-                          },
-                          "subject": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The identifier of the external identity."
-                            }
-                          }
-                        }
-                      },
-                      "nullable": true
-                    }
-                  },
-                  "parameters": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Name of the User Assigned Identity."
-                      }
-                    },
-                    "location": {
-                      "type": "string",
-                      "defaultValue": "[resourceGroup().location]",
-                      "metadata": {
-                        "description": "Optional. Location for all resources."
-                      }
-                    },
-                    "federatedIdentityCredentials": {
-                      "$ref": "#/definitions/federatedIdentityCredentialsType",
-                      "metadata": {
-                        "description": "Optional. The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object."
-                      }
-                    },
-                    "lock": {
-                      "$ref": "#/definitions/lockType",
-                      "metadata": {
-                        "description": "Optional. The lock settings of the service."
-                      }
-                    },
-                    "roleAssignments": {
-                      "$ref": "#/definitions/roleAssignmentType",
-                      "metadata": {
-                        "description": "Optional. Array of role assignments to create."
-                      }
-                    },
-                    "tags": {
-                      "type": "object",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Tags of the resource."
-                      }
-                    },
-                    "enableTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable/Disable usage telemetry for module."
-                      }
-                    }
-                  },
-                  "variables": {
-                    "copy": [
-                      {
-                        "name": "formattedRoleAssignments",
-                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
-                        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
-                      }
-                    ],
-                    "builtInRoleNames": {
-                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-                      "Managed Identity Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e40ec5ca-96e0-45a2-b4ff-59039f2c2b59')]",
-                      "Managed Identity Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f1a07417-d97a-45cb-824c-7a7467783830')]",
-                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
-                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-                    }
-                  },
-                  "resources": {
-                    "avmTelemetry": {
-                      "condition": "[parameters('enableTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.managedidentity-userassignedidentity.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": [],
-                          "outputs": {
-                            "telemetry": {
-                              "type": "String",
-                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "userAssignedIdentity": {
-                      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-                      "apiVersion": "2023-01-31",
-                      "name": "[parameters('name')]",
-                      "location": "[parameters('location')]",
-                      "tags": "[parameters('tags')]"
-                    },
-                    "userAssignedIdentity_lock": {
-                      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
-                      "type": "Microsoft.Authorization/locks",
-                      "apiVersion": "2020-05-01",
-                      "scope": "[format('Microsoft.ManagedIdentity/userAssignedIdentities/{0}', parameters('name'))]",
-                      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
-                      "properties": {
-                        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
-                      },
-                      "dependsOn": [
-                        "userAssignedIdentity"
-                      ]
-                    },
-                    "userAssignedIdentity_roleAssignments": {
-                      "copy": {
-                        "name": "userAssignedIdentity_roleAssignments",
-                        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
-                      },
-                      "type": "Microsoft.Authorization/roleAssignments",
-                      "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.ManagedIdentity/userAssignedIdentities/{0}', parameters('name'))]",
-                      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
-                      "properties": {
-                        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
-                        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
-                        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
-                        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
-                        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
-                      },
-                      "dependsOn": [
-                        "userAssignedIdentity"
-                      ]
-                    },
-                    "userAssignedIdentity_federatedIdentityCredentials": {
-                      "copy": {
-                        "name": "userAssignedIdentity_federatedIdentityCredentials",
-                        "count": "[length(coalesce(parameters('federatedIdentityCredentials'), createArray()))]",
-                        "mode": "serial",
-                        "batchSize": 1
-                      },
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-UserMSI-FederatedIdentityCredential-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-                      "properties": {
-                        "expressionEvaluationOptions": {
-                          "scope": "inner"
-                        },
-                        "mode": "Incremental",
-                        "parameters": {
-                          "name": {
-                            "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].name]"
-                          },
-                          "userAssignedIdentityName": {
-                            "value": "[parameters('name')]"
-                          },
-                          "audiences": {
-                            "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].audiences]"
-                          },
-                          "issuer": {
-                            "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].issuer]"
-                          },
-                          "subject": {
-                            "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].subject]"
-                          }
-                        },
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "metadata": {
-                            "_generator": {
-                              "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "3716898257490923786"
-                            },
-                            "name": "User Assigned Identity Federated Identity Credential",
-                            "description": "This module deploys a User Assigned Identity Federated Identity Credential.",
-                            "owner": "Azure/module-maintainers"
-                          },
-                          "parameters": {
-                            "userAssignedIdentityName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Conditional. The name of the parent user assigned identity. Required if the template is used in a standalone deployment."
-                              }
-                            },
-                            "name": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. The name of the secret."
-                              }
-                            },
-                            "audiences": {
-                              "type": "array",
-                              "metadata": {
-                                "description": "Required. The list of audiences that can appear in the issued token. Should be set to api://AzureADTokenExchange for Azure AD. It says what Microsoft identity platform should accept in the aud claim in the incoming token. This value represents Azure AD in your external identity provider and has no fixed value across identity providers - you might need to create a new application registration in your IdP to serve as the audience of this token."
-                              }
-                            },
-                            "issuer": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. The URL of the issuer to be trusted. Must match the issuer claim of the external token being exchanged."
-                              }
-                            },
-                            "subject": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. The identifier of the external software workload within the external identity provider. Like the audience value, it has no fixed format, as each IdP uses their own - sometimes a GUID, sometimes a colon delimited identifier, sometimes arbitrary strings. The value here must match the sub claim within the token presented to Azure AD."
-                              }
-                            }
-                          },
-                          "resources": [
-                            {
-                              "type": "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials",
-                              "apiVersion": "2023-01-31",
-                              "name": "[format('{0}/{1}', parameters('userAssignedIdentityName'), parameters('name'))]",
-                              "properties": {
-                                "audiences": "[parameters('audiences')]",
-                                "issuer": "[parameters('issuer')]",
-                                "subject": "[parameters('subject')]"
-                              }
-                            }
-                          ],
-                          "outputs": {
-                            "name": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the federated identity credential."
-                              },
-                              "value": "[parameters('name')]"
-                            },
-                            "resourceId": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The resource ID of the federated identity credential."
-                              },
-                              "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials', parameters('userAssignedIdentityName'), parameters('name'))]"
-                            },
-                            "resourceGroupName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the resource group the federated identity credential was created in."
-                              },
-                              "value": "[resourceGroup().name]"
-                            }
-                          }
-                        }
-                      },
-                      "dependsOn": [
-                        "userAssignedIdentity"
-                      ]
-                    }
-                  },
-                  "outputs": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The name of the user assigned identity."
-                      },
-                      "value": "[parameters('name')]"
-                    },
-                    "resourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource ID of the user assigned identity."
-                      },
-                      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]"
-                    },
-                    "principalId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The principal ID (object ID) of the user assigned identity."
-                      },
-                      "value": "[reference('userAssignedIdentity').principalId]"
-                    },
-                    "clientId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The client ID (application ID) of the user assigned identity."
-                      },
-                      "value": "[reference('userAssignedIdentity').clientId]"
-                    },
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource group the user assigned identity was deployed into."
-                      },
-                      "value": "[resourceGroup().name]"
-                    },
-                    "location": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The location the resource was deployed into."
-                      },
-                      "value": "[reference('userAssignedIdentity', '2023-01-31', 'full').location]"
-                    }
-                  }
-                }
-              }
-            },
             "vault": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -11176,7 +10740,7 @@
                     "value": "[union(if(not(empty(coalesce(parameters('appInsightsConnectionString'), ''))), createArray(createObject('name', 'applicationinsights-connection-string', 'value', parameters('appInsightsConnectionString'))), createArray()), variables('secrets'))]"
                   },
                   "roleAssignments": {
-                    "value": "[union(createArray(createObject('principalId', if(not(equals(parameters('managedIdentityResourceId'), null())), reference('userIdentity_existing').outputs.principalId.value, reference('userIdentity_new').principalId), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', '4633458b-17de-408a-b874-0445c86b69e6')), variables('formattedVaultRoleAssignments'))]"
+                    "value": "[union(createArray(createObject('principalId', if(not(equals(parameters('managedIdentityResourceId'), null())), reference('userIdentity_existing').principalId, reference('userIdentity_new').principalId), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', '4633458b-17de-408a-b874-0445c86b69e6')), variables('formattedVaultRoleAssignments'))]"
                   },
                   "publicNetworkAccess": "[if(parameters('deployInVnet'), createObject('value', 'Disabled'), createObject('value', null()))]"
                 },
@@ -16780,7 +16344,7 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "principalId": "[if(not(equals(parameters('managedIdentityResourceId'), null())), createObject('value', reference('userIdentity_existing').outputs.principalId.value), createObject('value', reference('userIdentity_new').principalId))]",
+                  "principalId": "[if(not(equals(parameters('managedIdentityResourceId'), null())), createObject('value', reference('userIdentity_existing').principalId), createObject('value', reference('userIdentity_new').principalId))]",
                   "principalType": {
                     "value": "ServicePrincipal"
                   },
@@ -17072,7 +16636,7 @@
                       {
                         "name": "value",
                         "count": "[length(variables('storageAccountRbacRoles'))]",
-                        "input": "[createObject('principalId', if(not(equals(parameters('managedIdentityResourceId'), null())), reference('userIdentity_existing').outputs.principalId.value, reference('userIdentity_new').principalId), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', variables('storageAccountRbacRoles')[copyIndex('value')])]"
+                        "input": "[createObject('principalId', if(not(equals(parameters('managedIdentityResourceId'), null())), reference('userIdentity_existing').principalId, reference('userIdentity_new').principalId), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', variables('storageAccountRbacRoles')[copyIndex('value')])]"
                       }
                     ]
                   }
@@ -22200,15 +21764,15 @@
                     "value": "[parameters('lock')]"
                   },
                   "workloadProfiles": "[if(not(empty(parameters('workloadProfiles'))), createObject('value', parameters('workloadProfiles')), createObject('value', null()))]",
-                  "zoneRedundant": "[if(empty(parameters('workloadProfiles')), createObject('value', false()), createObject('value', true()))]",
+                  "zoneRedundant": "[if(or(not(empty(parameters('workloadProfiles'))), not(empty(parameters('addressPrefix')))), createObject('value', true()), createObject('value', false()))]",
                   "infrastructureResourceGroupName": {
                     "value": "[format('{0}-infrastructure', parameters('resourceGroupName'))]"
                   },
                   "internal": "[if(parameters('deployInVnet'), createObject('value', true()), createObject('value', false()))]",
-                  "infrastructureSubnetId": "[if(parameters('deployInVnet'), createObject('value', reference('vnet').outputs.subnetResourceIds.value[2]), createObject('value', null()))]",
-                  "dockerBridgeCidr": "[if(parameters('deployInVnet'), createObject('value', '172.16.0.1/28'), createObject('value', null()))]",
-                  "platformReservedCidr": "[if(parameters('deployInVnet'), createObject('value', '172.17.17.0/24'), createObject('value', null()))]",
-                  "platformReservedDnsIP": "[if(parameters('deployInVnet'), createObject('value', '172.17.17.17'), createObject('value', null()))]"
+                  "infrastructureSubnetId": "[if(or(parameters('deployInVnet'), not(empty(parameters('addressPrefix')))), createObject('value', reference('vnet').outputs.subnetResourceIds.value[2]), createObject('value', null()))]",
+                  "dockerBridgeCidr": "[if(parameters('deployInVnet'), createObject('value', parameters('dockerBridgeCidr')), createObject('value', null()))]",
+                  "platformReservedCidr": "[if(parameters('deployInVnet'), createObject('value', parameters('platformReservedCidr')), createObject('value', null()))]",
+                  "platformReservedDnsIP": "[if(parameters('deployInVnet'), createObject('value', parameters('platformReservedDnsIP')), createObject('value', null()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -22794,19 +22358,43 @@
             },
             "userManagedIdentityResourceId": {
               "type": "string",
-              "value": "[if(equals(parameters('managedIdentityResourceId'), null()), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), format('jobsUserIdentity-{0}', parameters('name')))), reference('userIdentity_existing').outputs.resourceId.value)]"
+              "value": "[if(equals(parameters('managedIdentityResourceId'), null()), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), format('jobsUserIdentity-{0}', parameters('name')))), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', if(not(empty(parameters('managedIdentityResourceId'))), last(split(parameters('managedIdentityResourceId'), '/')), 'dummy-for-deployment-validation')))]"
+            },
+            "storageAccountResourceId": {
+              "type": "string",
+              "value": "[if(parameters('deployInVnet'), reference('storage').outputs.resourceId.value, '')]"
             },
             "vnetResourceId": {
               "type": "string",
               "value": "[if(parameters('deployInVnet'), reference('vnet').outputs.resourceId.value, '')]"
             },
+            "privateEndpointSubnetAddressPrefix": {
+              "type": "string",
+              "value": "[if(parameters('deployInVnet'), variables('privateEndpointSubnetAddressPrefix'), '')]"
+            },
+            "deploymentscriptSubnetAddressPrefix": {
+              "type": "string",
+              "value": "[if(parameters('deployInVnet'), variables('deploymentscriptSubnetAddressPrefix'), '')]"
+            },
+            "workloadSubnetAddressPrefix": {
+              "type": "string",
+              "value": "[if(parameters('deployInVnet'), variables('workloadSubnetAddressPrefix'), '')]"
+            },
             "subnetResourceId_deploymentScript": {
               "type": "string",
               "value": "[if(parameters('deployInVnet'), reference('vnet').outputs.subnetResourceIds.value[1], '')]"
             },
-            "storageAccountResourceId": {
+            "dockerBridgeCidr": {
               "type": "string",
-              "value": "[if(parameters('deployInVnet'), reference('storage').outputs.resourceId.value, '')]"
+              "value": "[parameters('dockerBridgeCidr')]"
+            },
+            "platformReservedCidr": {
+              "type": "string",
+              "value": "[parameters('platformReservedCidr')]"
+            },
+            "platformReservedDnsIP": {
+              "type": "string",
+              "value": "[parameters('platformReservedDnsIP')]"
             }
           }
         }
@@ -24978,6 +24566,27 @@
         "description": "Conditional. The virtual network resourceId, if a virtual network was deployed. If `deployInVnet` is `false`, this output will be empty."
       },
       "value": "[reference('services').outputs.vnetResourceId.value]"
+    },
+    "privateEndpointSubnetAddressPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The address prefix for the private endpoint subnet, if a virtual network was deployed. If `deployInVnet` is `false`, this output will be empty."
+      },
+      "value": "[if(parameters('deployInVnet'), reference('services').outputs.privateEndpointSubnetAddressPrefix.value, '')]"
+    },
+    "deploymentscriptSubnetAddressPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The address prefix for the service endpoint subnet, if a virtual network was deployed. If `deployInVnet` is `false`, this output will be empty."
+      },
+      "value": "[reference('services').outputs.deploymentscriptSubnetAddressPrefix.value]"
+    },
+    "workloadSubnetAddressPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The address prefix for the workload subnet, if a virtual network was deployed. If `addressPrefix` is empty, this output will be empty."
+      },
+      "value": "[reference('services').outputs.workloadSubnetAddressPrefix.value]"
     }
   }
 }

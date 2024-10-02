@@ -51,15 +51,14 @@ param registryRoleAssignments roleAssignmentType
 @description('Optional. Deploy resources in a virtual network and use it for private endpoints.')
 param deployInVnet bool = false
 
-@description('Conditional. The address prefix for the virtual network needs to be at least a /16. Required if `deployInVnet` is `true`.')
-@metadata({ default: '10.50.0.0/16' })
-param addressPrefix string?
-
 @description('Conditional. A new private DNS Zone will be created. Setting to `false` requires an existing private DNS zone `privatelink.vaultcore.azure.net`. Required if `deployInVnet` is `true`.')
 param deployDnsZoneKeyVault bool = true
 
 @description('Conditional. A new private DNS Zone will be created. Setting to `false` requires an existing private DNS zone `privatelink.azurecr.io`. Required if `deployInVnet` is `true`.')
 param deployDnsZoneContainerRegistry bool = true
+
+@description('Conditional. The address prefix for the virtual network needs to be at least a /16. Three subnets will be created (the first /24 will be used for private endpoints, the second /24 for service endpoints and the second /23 is used for the workload). Required if `zoneRedundant` for consumption plan is desired or `deployInVnet` is `true`.')
+param addressPrefix string = '10.50.0.0/16' // set a default value for the cidrSubnet calculation, even if not used
 
 // container related parameters
 // -------------------------
@@ -128,7 +127,7 @@ param environmentVariables environmentVariablesType[]?
 #disable-next-line secure-secrets-in-params // @secure() is specified in UDT
 param secrets secretType[]?
 
-@description('Optional. Workload profiles for the managed environment.')
+@description('Optional. Workload profiles for the managed environment. Leave empty to use a consumption based profile.')
 @metadata({
   example: '''[
     {
@@ -296,6 +295,17 @@ output resourceGroupName string = resourceGroup().name
 
 @description('Conditional. The virtual network resourceId, if a virtual network was deployed. If `deployInVnet` is `false`, this output will be empty.')
 output vnetResourceId string = services.outputs.vnetResourceId
+
+@description('Conditional. The address prefix for the private endpoint subnet, if a virtual network was deployed. If `deployInVnet` is `false`, this output will be empty.')
+output privateEndpointSubnetAddressPrefix string = deployInVnet
+  ? services.outputs.privateEndpointSubnetAddressPrefix
+  : ''
+
+@description('Conditional. The address prefix for the service endpoint subnet, if a virtual network was deployed. If `deployInVnet` is `false`, this output will be empty.')
+output deploymentscriptSubnetAddressPrefix string = services.outputs.deploymentscriptSubnetAddressPrefix
+
+@description('Conditional. The address prefix for the workload subnet, if a virtual network was deployed. If `addressPrefix` is empty, this output will be empty.')
+output workloadSubnetAddressPrefix string = services.outputs.workloadSubnetAddressPrefix
 
 // ================ //
 // Definitions      //

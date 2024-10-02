@@ -31,10 +31,9 @@ This module deploys a container to run as a job.
 | `Microsoft.KeyVault/vaults` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults) |
 | `Microsoft.KeyVault/vaults/accessPolicies` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/accessPolicies) |
 | `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
 | `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
 | `Microsoft.Network/privateDnsZones` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones) |
 | `Microsoft.Network/privateDnsZones/A` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/A) |
@@ -185,6 +184,7 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
       kind: 'None'
       name: 'No lock for testing'
     }
+    managedIdentityName: 'acjmaxmi'
     managedIdentityResourceId: '<managedIdentityResourceId>'
     memory: '8Gi'
     newContainerImageName: 'application/frontend:latest'
@@ -296,6 +296,9 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
         "name": "No lock for testing"
       }
     },
+    "managedIdentityName": {
+      "value": "acjmaxmi"
+    },
     "managedIdentityResourceId": {
       "value": "<managedIdentityResourceId>"
     },
@@ -377,8 +380,8 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     workloadProfileName: 'CAW01'
     workloadProfiles: [
       {
-        maximumCount: 1
-        minimumCount: 0
+        maximumCount: 6
+        minimumCount: 3
         name: 'CAW01'
         workloadProfileType: 'D4'
       }
@@ -431,8 +434,8 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     "workloadProfiles": {
       "value": [
         {
-          "maximumCount": 1,
-          "minimumCount": 0,
+          "maximumCount": 6,
+          "minimumCount": 3,
           "name": "CAW01",
           "workloadProfileType": "D4"
         }
@@ -458,7 +461,7 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefix`](#parameter-addressprefix) | string | The address prefix for the virtual network needs to be at least a /16. Required if `deployInVnet` is `true`. |
+| [`addressPrefix`](#parameter-addressprefix) | string | The address prefix for the virtual network needs to be at least a /16. Three subnets will be created (the first /24 will be used for private endpoints, the second /24 for service endpoints and the second /23 is used for the workload). Required if `zoneRedundant` for consumption plan is desired or `deployInVnet` is `true`. |
 | [`deployDnsZoneContainerRegistry`](#parameter-deploydnszonecontainerregistry) | bool | A new private DNS Zone will be created. Setting to `false` requires an existing private DNS zone `privatelink.azurecr.io`. Required if `deployInVnet` is `true`. |
 | [`deployDnsZoneKeyVault`](#parameter-deploydnszonekeyvault) | bool | A new private DNS Zone will be created. Setting to `false` requires an existing private DNS zone `privatelink.vaultcore.azure.net`. Required if `deployInVnet` is `true`. |
 
@@ -486,7 +489,7 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
 | [`secrets`](#parameter-secrets) | array | The secrets of the Container App. They will be added to Key Vault and configured as secrets in the Container App Job. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`workloadProfileName`](#parameter-workloadprofilename) | string |  The name of the workload profile to use. Leave empty to use a consumption based profile. |
-| [`workloadProfiles`](#parameter-workloadprofiles) | array | Workload profiles for the managed environment. |
+| [`workloadProfiles`](#parameter-workloadprofiles) | array | Workload profiles for the managed environment. Leave empty to use a consumption based profile. |
 
 ### Parameter: `containerImageSource`
 
@@ -505,10 +508,11 @@ Name of the resource to create. Will be used for naming the job and other resour
 
 ### Parameter: `addressPrefix`
 
-The address prefix for the virtual network needs to be at least a /16. Required if `deployInVnet` is `true`.
+The address prefix for the virtual network needs to be at least a /16. Three subnets will be created (the first /24 will be used for private endpoints, the second /24 for service endpoints and the second /23 is used for the workload). Required if `zoneRedundant` for consumption plan is desired or `deployInVnet` is `true`.
 
 - Required: No
 - Type: string
+- Default: `'10.50.0.0/16'`
 
 ### Parameter: `deployDnsZoneContainerRegistry`
 
@@ -1012,7 +1016,7 @@ Tags of the resource.
 
 ### Parameter: `workloadProfiles`
 
-Workload profiles for the managed environment.
+Workload profiles for the managed environment. Leave empty to use a consumption based profile.
 
 - Required: No
 - Type: array
@@ -1032,10 +1036,13 @@ Workload profiles for the managed environment.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `deploymentscriptSubnetAddressPrefix` | string | Conditional. The address prefix for the service endpoint subnet, if a virtual network was deployed. If `deployInVnet` is `false`, this output will be empty. |
 | `name` | string | The name of the container job. |
+| `privateEndpointSubnetAddressPrefix` | string | Conditional. The address prefix for the private endpoint subnet, if a virtual network was deployed. If `deployInVnet` is `false`, this output will be empty. |
 | `resourceGroupName` | string | The name of the Resource Group the resource was deployed into. |
 | `resourceId` | string | The resource ID of the container job. |
 | `vnetResourceId` | string | Conditional. The virtual network resourceId, if a virtual network was deployed. If `deployInVnet` is `false`, this output will be empty. |
+| `workloadSubnetAddressPrefix` | string | Conditional. The address prefix for the workload subnet, if a virtual network was deployed. If `addressPrefix` is empty, this output will be empty. |
 
 ## Cross-referenced modules
 
@@ -1049,7 +1056,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/app/managed-environment:0.8.0` | Remote reference |
 | `br/public:avm/res/container-registry/registry:0.5.1` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.9.0` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.6.0` | Remote reference |
 | `br/public:avm/res/network/private-endpoint:0.8.0` | Remote reference |
@@ -1068,6 +1074,13 @@ Environment variables and secrets can be deployed by specifying the correspondin
 - container app secrets if the `value` has been set
 
 > If a value for the `appInsightsConnectionString` parameter is passed, a secret `applicationinsightsconnectionstring` is automatically added to the container app secrets and as `applicationinsights-connection-string` to Key Vault.
+
+#### Zone Redundancy
+
+[Zone Redundant configuration](https://learn.microsoft.com/en-us/azure/reliability/reliability-azure-container-apps) will be configured automatically if
+
+1. `deployInVnet`has been enabled
+2. No `workloadProfile` has been specified, which will deploy the Managed Environment with a Consumption Plan, _and_ an `addressPrefix` has been specified.
 
 ## Data Collection
 

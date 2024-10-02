@@ -76,6 +76,8 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       deployInVnet: true
+      addressPrefix: '192.168.0.0/16'
+      managedIdentityName: '${namePrefix}${serviceShort}mi'
       workloadProfiles: [
         {
           workloadProfileType: 'D4'
@@ -88,7 +90,6 @@ module testDeployment '../../../main.bicep' = [
       managedIdentityResourceId: dependencies.outputs.userIdentityResourceId
       cpu: '2'
       memory: '8Gi'
-      addressPrefix: '192.168.0.0/16'
       cronExpression: '0 * * * *'
       environmentVariables: [
         { name: 'key1', value: 'value1' }

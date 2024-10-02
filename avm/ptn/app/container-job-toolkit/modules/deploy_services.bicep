@@ -12,14 +12,23 @@ param name string
 @description('Optional. Deploy resources in a virtual network and use it for private endpoints.')
 param deployInVnet bool = true
 
-@description('Conditional. The address prefix for the virtual network needs to be at least a /16. Required, if `deployInVnet` is `true`.')
-param addressPrefix string = '10.50.0.0/16' // set a default value for the cidrSubnet calculation, even if not used
-
 @description('Conditional. A new private DNS Zone will be created. Optional, if `deployInVnet` is `true`.')
 param deployDnsZoneKeyVault bool = true
 
 @description('Conditional. A new private DNS Zone will be created. Optional, if `deployInVnet` is `true`.')
 param deployDnsZoneContainerRegistry bool = true
+
+@description('Conditional. The address prefix for the virtual network needs to be at least a /16. Three subnets will be created (the first /24 will be used for private endpoints, the second /24 for service endpoints and the second /23 is used for the workload). Required, if `deployInVnet` is `true`.')
+param addressPrefix string
+
+@description('Conditional. CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if `zoneRedundant` for consumption plan is desired or `deployInVnet` is `true`.')
+param dockerBridgeCidr string = '172.16.0.1/28'
+
+@description('Conditional. IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if `zoneRedundant` for consumption plan is desired or `deployInVnet` is `true`.')
+param platformReservedCidr string = '172.17.17.0/24'
+
+@description('Conditional. An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if `zoneRedundant` for consumption plan is desired or `deployInVnet` is `true`.')
+param platformReservedDnsIP string = '172.17.17.17'
 
 @description('Optional. Pass the name to use an existing managed identity for importing the container image and run the job. If not provided, a new managed identity will be created.')
 param managedIdentityResourceId string?
@@ -143,8 +152,9 @@ var formattedRegistryRoleAssignments = [
 ]
 // network related variables
 var privateEndpointSubnetAddressPrefix = cidrSubnet(addressPrefix, 24, 0) // the first /24 subnet in the address space
-var serviceEndpointSubnetAddressPrefix = cidrSubnet(addressPrefix, 24, 1) // the second /24 subnet in the address space
+var deploymentscriptSubnetAddressPrefix = cidrSubnet(addressPrefix, 24, 1) // the second /24 subnet in the address space
 var workloadSubnetAddressPrefix = cidrSubnet(addressPrefix, 23, 1) // the second /23 subnet in the address space, as the first /24 subnet is used for private endpoints
+var zoneRedundant = deployInVnet || (!empty(addressPrefix) && empty(workloadProfiles)) // zoneRedundant is only needed if the environment is deployed in a vnet or for consumption plan if an addressPrefix has been provided
 
 // filter and prepare secrets that need to be added to Key Vault in order to reference them later
 var secrets = [
@@ -159,7 +169,7 @@ var secrets = [
 
 // Networking resources
 // -----------------
-module nsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (deployInVnet) {
+module nsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (zoneRedundant) {
   name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-nsg'
   params: {
     name: 'nsg-${name}'
@@ -169,7 +179,7 @@ module nsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (deploy
   }
 }
 
-module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (deployInVnet) {
+module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (zoneRedundant) {
   name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-vnet'
   params: {
     name: 'vnet-${name}'
@@ -184,7 +194,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (deployInVnet
       }
       {
         name: 'deploymentscript-subnet'
-        addressPrefix: serviceEndpointSubnetAddressPrefix
+        addressPrefix: deploymentscriptSubnetAddressPrefix
         networkSecurityGroupResourceId: nsg.outputs.resourceId
         serviceEndpoints: ['Microsoft.Storage']
         delegation: 'Microsoft.ContainerInstance/containerGroups'
@@ -193,7 +203,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (deployInVnet
         name: 'workload-subnet'
         addressPrefix: workloadSubnetAddressPrefix
         networkSecurityGroupResourceId: nsg.outputs.resourceId
-        delegation: 'Microsoft.App/environments'
+        delegation: deployInVnet ? 'Microsoft.App/environments' : null // don't delegate if used for zoneRedundant consumption plan
       }
     ]
     location: resourceLocation
@@ -334,8 +344,13 @@ resource userIdentity_new 'Microsoft.ManagedIdentity/userAssignedIdentities@2023
   location: resourceLocation
 }
 resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (managedIdentityResourceId != null) {
-  name: last(split(managedIdentityResourceId!, '/'))
-  scope: resourceGroup(split(managedIdentityResourceId!, '/')[2], split(managedIdentityResourceId!, '/')[4]) // get the resource group from the managed identity, as it could be in another resource group
+  name: !empty(managedIdentityResourceId)
+    ? last(split(managedIdentityResourceId!, '/'))
+    : 'dummy-for-deployment-validation'
+  // get the resource group from the managed identity, as it could be in another resource group
+  scope: !empty(managedIdentityResourceId)
+    ? resourceGroup(split(managedIdentityResourceId!, '/')[2], split(managedIdentityResourceId!, '/')[4])
+    : resourceGroup()
 }
 
 // supporting resources
@@ -457,14 +472,14 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.8.0' = {
     tags: tags
     lock: lock
     workloadProfiles: !empty(workloadProfiles) ? workloadProfiles : null
-    zoneRedundant: empty(workloadProfiles) ? false : true // zone redundant is not available for consumption plans
+    zoneRedundant: !empty(workloadProfiles) || !empty(addressPrefix) ? true : false
     infrastructureResourceGroupName: '${resourceGroupName}-infrastructure'
     // vnet configuration
     internal: deployInVnet ? true : false
-    infrastructureSubnetId: deployInVnet ? vnet.outputs.subnetResourceIds[2] : null // third subnet is the workload subnet
-    dockerBridgeCidr: deployInVnet ? '172.16.0.1/28' : null
-    platformReservedCidr: deployInVnet ? '172.17.17.0/24' : null
-    platformReservedDnsIP: deployInVnet ? '172.17.17.17' : null
+    infrastructureSubnetId: deployInVnet || !empty(addressPrefix) ? vnet.outputs.subnetResourceIds[2] : null // third subnet is the workload subnet
+    dockerBridgeCidr: deployInVnet ? dockerBridgeCidr : null
+    platformReservedCidr: deployInVnet ? platformReservedCidr : null
+    platformReservedDnsIP: deployInVnet ? platformReservedDnsIP : null
   }
 }
 
@@ -478,9 +493,18 @@ output managedEnvironmentId string = managedEnvironment.outputs.resourceId
 output userManagedIdentityResourceId string = managedIdentityResourceId == null
   ? userIdentity_new.id
   : userIdentity_existing.id
-output vnetResourceId string = deployInVnet ? vnet.outputs.resourceId : ''
-output subnetResourceId_deploymentScript string = deployInVnet ? vnet.outputs.subnetResourceIds[1] : ''
 output storageAccountResourceId string = deployInVnet ? storage.outputs.resourceId : ''
+
+output vnetResourceId string = deployInVnet ? vnet.outputs.resourceId : ''
+
+output privateEndpointSubnetAddressPrefix string = deployInVnet ? privateEndpointSubnetAddressPrefix : ''
+output deploymentscriptSubnetAddressPrefix string = deployInVnet ? deploymentscriptSubnetAddressPrefix : ''
+output workloadSubnetAddressPrefix string = deployInVnet ? workloadSubnetAddressPrefix : '' // also used for zoneRedundant configuration
+output subnetResourceId_deploymentScript string = deployInVnet ? vnet.outputs.subnetResourceIds[1] : ''
+
+output dockerBridgeCidr string = dockerBridgeCidr
+output platformReservedCidr string = platformReservedCidr
+output platformReservedDnsIP string = platformReservedDnsIP
 
 // ================ //
 // Definitions      //

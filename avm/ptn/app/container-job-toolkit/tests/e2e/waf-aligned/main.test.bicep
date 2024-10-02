@@ -63,8 +63,8 @@ module testDeployment '../../../main.bicep' = [
         {
           workloadProfileType: 'D4'
           name: 'CAW01'
-          minimumCount: 0
-          maximumCount: 1
+          minimumCount: 3
+          maximumCount: 6
         }
       ]
       workloadProfileName: 'CAW01'
