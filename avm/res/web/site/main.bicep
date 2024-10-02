@@ -70,7 +70,7 @@ param siteConfig object = {
 }
 
 @description('Optional. The Function App configuration object.')
-param functionAppConfig object = {}
+param functionAppConfig object?
 
 @description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
 param storageAccountResourceId string?
