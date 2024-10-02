@@ -1,3 +1,7 @@
+metadata name = 'Azure NetApp Files Snapshot Policy'
+metadata description = 'This module deploys a Snapshot Policy for an Azure NetApp File.'
+metadata owner = 'Azure/module-maintainers'
+
 @description('Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment.')
 param netAppAccountName string
 
