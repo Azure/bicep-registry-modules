@@ -3,10 +3,6 @@ name: "avm.template.module"
 on:
   workflow_call:
     inputs:
-      workflowInput:
-        type: string
-        description: "Input from the workflow caller in JSON format"
-        required: true
       moduleTestFilePaths:
         type: string
         description: "List of relative path to the module test files in JSON format"
@@ -18,6 +14,10 @@ on:
       modulePath:
         type: string
         description: "Relative path to the module folder"
+        required: true
+      calculatedJobControls:
+        type: string
+        description: "The pipeline actions to run based on the changed files"
         required: true
 
 env:
@@ -34,18 +34,25 @@ jobs:
   job_module_static_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Static validation"
     runs-on: ubuntu-latest
-    if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
+    if: (fromJson(inputs.calculatedJobControls)).RunStaticValidation == 'true'
     steps:
-      - name: "Checkout"
-        uses: actions/checkout@v4
+      # - name: "Checkout"
+      #   uses: actions/checkout@v4
+      #   with:
+      #     fetch-depth: 0
+      # - name: Set environment
+      #   uses: ./.github/actions/templates/avm-setEnvironment
+      # - name: "Run tests"
+      #   uses: ./.github/actions/templates/avm-validateModulePester
+      #   with:
+      #     modulePath: "${{ inputs.modulePath }}"
+      - name: Static validation
+        uses: azure/powershell@v1
         with:
-          fetch-depth: 0
-      - name: Set environment
-        uses: ./.github/actions/templates/avm-setEnvironment
-      - name: "Run tests"
-        uses: ./.github/actions/templates/avm-validateModulePester
-        with:
-          modulePath: "${{ inputs.modulePath }}"
+          azPSVersion: "latest"
+          inlineScript: |
+            Write-Host 'Calculated static validation: ${{ fromJson(inputs.calculatedJobControls).RunStaticValidation }}'
+            Write-Host 'Calculated deployment validation: ${{ fromJson(inputs.calculatedJobControls).RunDeploymentValidation }}'
 
   #########################
   #   PSRule validation   #
@@ -53,46 +60,63 @@ jobs:
   job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "PSRule [${{ matrix.testCases.name }}]"
     runs-on: ubuntu-latest
-    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    # TODO: We could also consider running this only for changed deployment files?
+    if: (fromJson(inputs.calculatedJobControls)).RunStaticValidation == 'true'
     strategy:
       fail-fast: false
       matrix:
         testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set environment
-        uses: ./.github/actions/templates/avm-setEnvironment
-      - name: "Run PSRule validation with [${{ matrix.testCases.path }}]"
-        uses: ./.github/actions/templates/avm-validateModulePSRule
+      # - name: Checkout
+      #   uses: actions/checkout@v4
+      # - name: Set environment
+      #   uses: ./.github/actions/templates/avm-setEnvironment
+      # - name: "Run PSRule validation with [${{ matrix.testCases.path }}]"
+      #   uses: ./.github/actions/templates/avm-validateModulePSRule
+      #   with:
+      #     templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
+      #     subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+      #     managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+      #     psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
+      #     psruleBaseline: "Azure.Default"
+      - name: PSRule
+        uses: azure/powershell@v1
         with:
-          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
-          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
-          psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
-          psruleBaseline: "Azure.Default"
+          azPSVersion: "latest"
+          inlineScript: |
+            Write-Host 'Running PSRule test for [${{ matrix.testCases.path }}]'
+            Write-Host 'Calculated static validation: ${{ fromJson(inputs.calculatedJobControls).RunStaticValidation }}'
+            Write-Host 'Calculated deployment validation: ${{ fromJson(inputs.calculatedJobControls).RunDeploymentValidation }}'
 
   job_psrule_test_waf_reliability: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "PSRule - WAF Reliability [${{ matrix.testCases.name }}]"
     runs-on: ubuntu-latest
-    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.calculatedJobControls)).RunStaticValidation == 'true'  }}
     strategy:
       fail-fast: false
       matrix:
         testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set environment
-        uses: ./.github/actions/templates/avm-setEnvironment
-      - name: "Run PSRule validation with [${{ matrix.testCases.path }}]"
-        uses: ./.github/actions/templates/avm-validateModulePSRule
+      # - name: Checkout
+      #   uses: actions/checkout@v4
+      # - name: Set environment
+      #   uses: ./.github/actions/templates/avm-setEnvironment
+      # - name: "Run PSRule validation with [${{ matrix.testCases.path }}]"
+      #   uses: ./.github/actions/templates/avm-validateModulePSRule
+      #   with:
+      #     templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
+      #     subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+      #     managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+      #     psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
+      #     psruleBaseline: "Azure.Pillar.Reliability"
+      - name: PSRule WAF Reliability
+        uses: azure/powershell@v1
         with:
-          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
-          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
-          psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
-          psruleBaseline: "Azure.Pillar.Reliability"
+          azPSVersion: "latest"
+          inlineScript: |
+            Write-Host 'Running PSRule test for [${{ matrix.testCases.path }}]'
+            Write-Host 'Calculated static validation: ${{ fromJson(inputs.calculatedJobControls).RunStaticValidation }}'
+            Write-Host 'Calculated deployment validation: ${{ fromJson(inputs.calculatedJobControls).RunDeploymentValidation }}'
 
   #############################
   #   Deployment validation   #
@@ -102,7 +126,7 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       !cancelled() &&
-      (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
+      (fromJson(inputs.calculatedJobControls)).RunDeploymentValidation == 'true' &&
       needs.job_module_static_validation.result != 'failure' &&
       needs.job_psrule_test_waf_reliability.result != 'failure'
     needs:
@@ -113,26 +137,36 @@ jobs:
       matrix:
         testCases: ${{ fromJson(inputs.moduleTestFilePaths) }}
     steps:
-      - name: "Checkout"
-        uses: actions/checkout@v4
+      # - name: "Checkout"
+      #   uses: actions/checkout@v4
+      #   with:
+      #     fetch-depth: 0
+      # - name: Set environment
+      #   uses: ./.github/actions/templates/avm-setEnvironment
+      #   with:
+      #     removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
+      # - name: "Run deployment validation with test file [${{ matrix.testCases.path }}]"
+      #   uses: ./.github/actions/templates/avm-validateModuleDeployment
+      #   with:
+      #     modulePath: "${{ inputs.modulePath }}"
+      #     templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
+      #     deploymentMetadataLocation: "WestEurope"
+      #     subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+      #     managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+      #     removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
+      #     customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
+      #   env:
+      #     AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Deployment test task
+        uses: azure/powershell@v1
         with:
-          fetch-depth: 0
-      - name: Set environment
-        uses: ./.github/actions/templates/avm-setEnvironment
-        with:
-          removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
-      - name: "Run deployment validation with test file [${{ matrix.testCases.path }}]"
-        uses: ./.github/actions/templates/avm-validateModuleDeployment
-        with:
-          modulePath: "${{ inputs.modulePath }}"
-          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          deploymentMetadataLocation: "WestEurope"
-          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
-          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
-          removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
-          customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
-        env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          azPSVersion: "latest"
+          inlineScript: |
+            Write-Host 'Running Deployment test for [${{ matrix.testCases.path }}]'
+            Write-Host 'GH event: ${{ github.event_name }}'
+            Write-Host 'Calculated static validation: ${{ fromJson(inputs.calculatedJobControls).RunStaticValidation }}'
+            Write-Host 'Calculated deployment validation: ${{ fromJson(inputs.calculatedJobControls).RunDeploymentValidation }}'
+            Write-Host 'Remove: ${{ fromJson(inputs.calculatedJobControls).RunDeploymentRemoval }}'
 
   ##################
   #   Publishing   #
@@ -150,18 +184,24 @@ jobs:
       - job_module_static_validation
       - job_module_deploy_validation
     steps:
-      - name: "Checkout"
-        uses: actions/checkout@v4
+      # - name: "Checkout"
+      #   uses: actions/checkout@v4
+      #   with:
+      #     fetch-depth: 0
+      # - name: Set environment
+      #   uses: ./.github/actions/templates/avm-setEnvironment
+      # - name: "Publishing"
+      #   uses: ./.github/actions/templates/avm-publishModule
+      #   with:
+      #     templateFilePath: "${{ inputs.modulePath }}/main.bicep"
+      #   env:
+      #     PUBLISH_REGISTRY_SERVER: "${{ secrets.PUBLISH_REGISTRY_SERVER }}"
+      #     PUBLISH_CLIENT_ID: "${{ secrets.PUBLISH_CLIENT_ID }}"
+      #     PUBLISH_TENANT_ID: "${{ secrets.PUBLISH_TENANT_ID }}"
+      #     PUBLISH_SUBSCRIPTION_ID: "${{ secrets.PUBLISH_SUBSCRIPTION_ID }}"
+      - name: Publish task
+        uses: azure/powershell@v1
         with:
-          fetch-depth: 0
-      - name: Set environment
-        uses: ./.github/actions/templates/avm-setEnvironment
-      - name: "Publishing"
-        uses: ./.github/actions/templates/avm-publishModule
-        with:
-          templateFilePath: "${{ inputs.modulePath }}/main.bicep"
-        env:
-          PUBLISH_REGISTRY_SERVER: "${{ secrets.PUBLISH_REGISTRY_SERVER }}"
-          PUBLISH_CLIENT_ID: "${{ secrets.PUBLISH_CLIENT_ID }}"
-          PUBLISH_TENANT_ID: "${{ secrets.PUBLISH_TENANT_ID }}"
-          PUBLISH_SUBSCRIPTION_ID: "${{ secrets.PUBLISH_SUBSCRIPTION_ID }}"
+          azPSVersion: "latest"
+          inlineScript: |
+            Write-Host 'Running publishing for [${{ inputs.modulePath }}]'

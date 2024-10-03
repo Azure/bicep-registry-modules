@@ -37,8 +37,6 @@ function Get-GitHubWorkflowDefaultInput {
             $workflowParameters[$inputName] = $inputs[$inputName].default
         }
 
-        Write-Verbose 'Get workflow default input complete'
-
         # Return hashtable
         return $workflowParameters
     }

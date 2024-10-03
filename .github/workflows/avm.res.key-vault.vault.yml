@@ -24,7 +24,19 @@ on:
         required: false
   push:
     branches:
-      - main
+      # - main
+      - users/alsehr/bu_calculatedPipelineStages
+    paths:
+      - ".github/actions/templates/avm-**"
+      - ".github/workflows/avm.template.module.yml"
+      - ".github/workflows/avm.res.key-vault.vault.yml"
+      - "avm/res/key-vault/vault/**"
+      - "avm/utilities/pipelines/**"
+
+  pull_request:
+    branches:
+      # - main
+      - users/alsehr/bu_calculatedPipelineStages
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
@@ -53,9 +65,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: "Set input parameters to output variables"
-        id: get-workflow-param
-        uses: ./.github/actions/templates/avm-getWorkflowInput
+      - name: "Get calculated job controls"
+        id: get-calculated-job-controls
+        uses: ./.github/actions/templates/avm-getCalculatedJobControls
         with:
           workflowPath: "${{ env.workflowPath}}"
       - name: "Get module test file paths"
@@ -64,8 +76,8 @@ jobs:
         with:
           modulePath: "${{ env.modulePath }}"
     outputs:
-      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
       moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
+      calculatedJobControls : ${{ steps.get-calculated-job-controls.outputs.calculatedJobControls }}
       psRuleModuleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.psRuleModuleTestFilePaths }}
       modulePath: "${{ env.modulePath }}"
 
@@ -81,8 +93,8 @@ jobs:
       - job_initialize_pipeline
     uses: ./.github/workflows/avm.template.module.yml
     with:
-      workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
       moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
+      calculatedJobControls : "${{ needs.job_initialize_pipeline.outputs.calculatedJobControls }}"
       psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
       modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
     secrets: inherit

@@ -1,0 +1,91 @@
+#########################################################
+## 'Get Workflow Controls' Composite Action            ##
+#########################################################
+##
+## This composite action contains the logic to calcuate the actions the workflow should run (e.g. only static, static + deployment, etc.) based on the type of trigger & the files changed.
+##
+#########################################################
+##
+##-------------------------------------------##
+## ACTION PARAMETERS                         ##
+##-------------------------------------------##
+##
+##   |========================================================================================================================================================================|
+##   | Parameter    | Required | Default | Description                                                                      | Example                                         |
+##   |--------------|----------|---------|----------------------------------------------------------------------------------|-------------------------------------------------|
+##   | workflowPath | true     | ''      | The path to the workflow file used to retrieve default workflow input parameters | '.github/workflows/avm.res.key-vault.vault.yml' |
+##   | modulePath   | true     | ''      | The path to the module handled by this pipeline                                  | 'avm/res/key-vault/vault'                       |
+##   |========================================================================================================================================================================|
+##
+#########################################################
+##
+##----------------------------------------##
+## ACTION OUTPUTS                         ##
+##----------------------------------------##
+##
+##   |==============================================================================================|
+##   | Output            | Description                                                              |
+##   |-------------------|--------------------------------------------------------------------------|
+##   | calculatedJobControls | An estimated pipeline action caluclated by evaluation changed files.     |
+##   |==============================================================================================|
+##
+##---------------------------------------------##
+
+name: "Get Workflow Controls"
+description: "Get Workflow Controls"
+
+inputs:
+  workflowPath:
+    description: "The path to the workflow file used to retrieve default workflow input parameters."
+    required: true
+  modulePath:
+    description: "The path to the module's folder"
+    required: true
+
+outputs:
+  calculatedJobControls:
+    description: "The calculated actions to be executed, based on which files changed & inputs configured."
+    value: ${{ steps.get-workflow-controls.outputs.calculatedJobControls }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get (calculated) workflow controls
+      id: get-workflow-controls
+      run: |
+        # Grouping task logs
+        Write-Output '::group::Investigate GitHub event'
+
+        # Load used functions
+        . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'workflows' 'Get-CalculatedJobControlObject.ps1')
+
+        if(Test-Path $env:GITHUB_EVENT_PATH) {
+          # $content = Get-Content $env:GITHUB_EVENT_PATH -Raw | ConvertFrom-Json
+
+          $functionInput = @{
+            # Commit       = $content.after
+            ModulePath   = '${{ inputs.modulePath }}'
+            GitHubEvent  = '${{ github.event_name }}'
+            WorkflowPath = '${{ inputs.workflowPath }}'
+            RepoRoot     = $env:GITHUB_WORKSPACE
+          }
+          if('${{ github.event_name }}' -eq 'workflow_dispatch') {
+            $functionInput['WorkflowParameters'] = ('${{ toJSON(github.event.inputs) }}' | ConvertFrom-Json -AsHashTable)
+          }
+
+          Write-Verbose "Invoke task with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          $result = Get-CalculatedJobControlObject @functionInput
+
+          # Output values to be accessed by next jobs
+          $calculatedJobControls = @{}
+          foreach($parameterName in $result.Keys) {
+            Write-Verbose ('Passing output [{0}] with value [{1}]' -f $parameterName, $result[$parameterName]) -Verbose
+            $calculatedJobControls[$parameterName] = $result[$parameterName].toString()
+          }
+          Write-Output ('{0}={1}' -f 'calculatedJobControls', ($calculatedJobControls | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT
+
+        }
+        Write-Output '::endgroup::'
+      shell: pwsh
