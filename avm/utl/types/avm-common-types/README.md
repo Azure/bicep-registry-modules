@@ -1,4 +1,4 @@
-# Default interface types for AVM modules `[Types/AvmCommonType]`
+# Default interface types for AVM modules `[Types/AvmCommonTypes]`
 
 This module provides you with all common variants for AVM interfaces to be used in AVM modules.
 
@@ -22,7 +22,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/utl/types/avm-common-type:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/utl/types/avm-common-types:<version>`.
 
 - [Import](#example-1-import)
 

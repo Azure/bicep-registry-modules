@@ -1,4 +1,4 @@
-name: "avm.ptn.types.avm-common-type"
+name: "avm.ptn.types.avm-common-types"
 
 on:
   workflow_dispatch:
@@ -30,15 +30,15 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.utl.types.avm-common-type.yml"
-      - "avm/utl/types/avm-common-type/**"
+      - ".github/workflows/avm.utl.types.avm-common-types.yml"
+      - "avm/utl/types/avm-common-types/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/utl/types/avm-common-type"
-  workflowPath: ".github/workflows/avm.utl.types.avm-common-type.yml"
+  modulePath: "avm/utl/types/avm-common-types"
+  workflowPath: ".github/workflows/avm.utl.types.avm-common-types.yml"
 
 concurrency:
   group: ${{ github.workflow }}
