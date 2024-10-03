@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "5103322953711246998"
+      "templateHash": "17638255215829732671"
     },
     "name": "VPN Server Configuration",
     "description": "This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway.",
@@ -37,6 +37,70 @@
         }
       },
       "nullable": true
+    },
+    "vpnClientIpsecPoliciesType": {
+      "type": "object",
+      "properties": {
+        "dhGroup": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Diffie-Hellman group used in IKE phase 1. Required if using IKEv2."
+          }
+        },
+        "ikeEncryption": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The encryption algorithm used in IKE phase 1. Required if using IKEv2."
+          }
+        },
+        "ikeIntegrity": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The integrity algorithm used in IKE phase 1. Required if using IKEv2."
+          }
+        },
+        "ipsecEncryption": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The encryption algorithm used in IKE phase 2. Required if using IKEv2."
+          }
+        },
+        "ipsecIntegrity": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The integrity algorithm used in IKE phase 2. Required if using IKEv2."
+          }
+        },
+        "pfsGroup": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Perfect Forward Secrecy (PFS) group used in IKE phase 2. Required if using IKEv2."
+          }
+        },
+        "saDataSizeKilobytes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The size of the SA data in kilobytes. Required if using IKEv2."
+          }
+        },
+        "salfetimeSeconds": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The lifetime of the SA in seconds. Required if using IKEv2."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
     }
   },
   "parameters": {
@@ -130,7 +194,10 @@
     },
     "vpnClientIpsecPolicies": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/vpnClientIpsecPoliciesType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The IPsec policies for the configuration."
       }
@@ -212,69 +279,69 @@
         "copy": [
           {
             "name": "configurationPolicyGroups",
-            "count": "[length(parameters('p2sConfigurationPolicyGroups'))]",
+            "count": "[length(coalesce(parameters('p2sConfigurationPolicyGroups'), createArray()))]",
             "input": {
-              "name": "[parameters('p2sConfigurationPolicyGroups')[copyIndex('configurationPolicyGroups')].userVPNPolicyGroupName]",
+              "name": "[coalesce(parameters('p2sConfigurationPolicyGroups'), createArray())[copyIndex('configurationPolicyGroups')].userVPNPolicyGroupName]",
               "properties": {
-                "isDefault": "[parameters('p2sConfigurationPolicyGroups')[copyIndex('configurationPolicyGroups')].isDefault]",
-                "policyMembers": "[parameters('p2sConfigurationPolicyGroups')[copyIndex('configurationPolicyGroups')].policyMembers]",
-                "priority": "[parameters('p2sConfigurationPolicyGroups')[copyIndex('configurationPolicyGroups')].priority]"
+                "isDefault": "[coalesce(parameters('p2sConfigurationPolicyGroups'), createArray())[copyIndex('configurationPolicyGroups')].isDefault]",
+                "policyMembers": "[coalesce(parameters('p2sConfigurationPolicyGroups'), createArray())[copyIndex('configurationPolicyGroups')].policyMembers]",
+                "priority": "[coalesce(parameters('p2sConfigurationPolicyGroups'), createArray())[copyIndex('configurationPolicyGroups')].priority]"
               }
             }
           },
           {
             "name": "radiusClientRootCertificates",
-            "count": "[length(parameters('radiusClientRootCertificates'))]",
+            "count": "[length(coalesce(parameters('radiusClientRootCertificates'), createArray()))]",
             "input": {
-              "name": "[parameters('radiusClientRootCertificates')[copyIndex('radiusClientRootCertificates')].name]",
-              "thumbprint": "[parameters('radiusClientRootCertificates')[copyIndex('radiusClientRootCertificates')].thumbprint]"
+              "name": "[coalesce(parameters('radiusClientRootCertificates'), createArray())[copyIndex('radiusClientRootCertificates')].name]",
+              "thumbprint": "[coalesce(parameters('radiusClientRootCertificates'), createArray())[copyIndex('radiusClientRootCertificates')].thumbprint]"
             }
           },
           {
             "name": "radiusServerRootCertificates",
-            "count": "[length(parameters('radiusServerRootCertificates'))]",
+            "count": "[length(coalesce(parameters('radiusServerRootCertificates'), createArray()))]",
             "input": {
-              "name": "[parameters('radiusServerRootCertificates')[copyIndex('radiusServerRootCertificates')].name]",
-              "publicCertData": "[parameters('radiusServerRootCertificates')[copyIndex('radiusServerRootCertificates')].publicCertData]"
+              "name": "[coalesce(parameters('radiusServerRootCertificates'), createArray())[copyIndex('radiusServerRootCertificates')].name]",
+              "publicCertData": "[coalesce(parameters('radiusServerRootCertificates'), createArray())[copyIndex('radiusServerRootCertificates')].publicCertData]"
             }
           },
           {
             "name": "radiusServers",
-            "count": "[length(parameters('radiusServers'))]",
+            "count": "[length(coalesce(parameters('radiusServers'), createArray()))]",
             "input": {
-              "radiusServerAddress": "[parameters('radiusServers')[copyIndex('radiusServers')].radiusServerAddress]",
-              "radiusServerScore": "[parameters('radiusServers')[copyIndex('radiusServers')].radiusServerScore]",
-              "radiusServerSecret": "[parameters('radiusServers')[copyIndex('radiusServers')].radiusServerSecret]"
+              "radiusServerAddress": "[coalesce(parameters('radiusServers'), createArray())[copyIndex('radiusServers')].radiusServerAddress]",
+              "radiusServerScore": "[coalesce(parameters('radiusServers'), createArray())[copyIndex('radiusServers')].radiusServerScore]",
+              "radiusServerSecret": "[coalesce(parameters('radiusServers'), createArray())[copyIndex('radiusServers')].radiusServerSecret]"
             }
           },
           {
             "name": "vpnClientIpsecPolicies",
-            "count": "[length(parameters('vpnClientIpsecPolicies'))]",
+            "count": "[length(coalesce(parameters('vpnClientIpsecPolicies'), createArray()))]",
             "input": {
-              "dhGroup": "[parameters('vpnClientIpsecPolicies')[copyIndex('vpnClientIpsecPolicies')].dhGroup]",
-              "ikeEncryption": "[parameters('vpnClientIpsecPolicies')[copyIndex('vpnClientIpsecPolicies')].ikeEncryption]",
-              "ikeIntegrity": "[parameters('vpnClientIpsecPolicies')[copyIndex('vpnClientIpsecPolicies')].ikeIntegrity]",
-              "ipsecEncryption": "[parameters('vpnClientIpsecPolicies')[copyIndex('vpnClientIpsecPolicies')].ipsecEncryption]",
-              "ipsecIntegrity": "[parameters('vpnClientIpsecPolicies')[copyIndex('vpnClientIpsecPolicies')].ipsecIntegrity]",
-              "pfsGroup": "[parameters('vpnClientIpsecPolicies')[copyIndex('vpnClientIpsecPolicies')].pfsGroup]",
-              "saDataSizeKilobytes": "[parameters('vpnClientIpsecPolicies')[copyIndex('vpnClientIpsecPolicies')].saDataSizeKilobytes]",
-              "saLifeTimeSeconds": "[parameters('vpnClientIpsecPolicies')[copyIndex('vpnClientIpsecPolicies')].saLifeTimeSeconds]"
+              "dhGroup": "[coalesce(parameters('vpnClientIpsecPolicies'), createArray())[copyIndex('vpnClientIpsecPolicies')].dhGroup]",
+              "ikeEncryption": "[coalesce(parameters('vpnClientIpsecPolicies'), createArray())[copyIndex('vpnClientIpsecPolicies')].ikeEncryption]",
+              "ikeIntegrity": "[coalesce(parameters('vpnClientIpsecPolicies'), createArray())[copyIndex('vpnClientIpsecPolicies')].ikeIntegrity]",
+              "ipsecEncryption": "[coalesce(parameters('vpnClientIpsecPolicies'), createArray())[copyIndex('vpnClientIpsecPolicies')].ipsecEncryption]",
+              "ipsecIntegrity": "[coalesce(parameters('vpnClientIpsecPolicies'), createArray())[copyIndex('vpnClientIpsecPolicies')].ipsecIntegrity]",
+              "pfsGroup": "[coalesce(parameters('vpnClientIpsecPolicies'), createArray())[copyIndex('vpnClientIpsecPolicies')].pfsGroup]",
+              "saDataSizeKilobytes": "[coalesce(parameters('vpnClientIpsecPolicies'), createArray())[copyIndex('vpnClientIpsecPolicies')].saDataSizeKilobytes]",
+              "saLifeTimeSeconds": "[coalesce(parameters('vpnClientIpsecPolicies'), createArray())[copyIndex('vpnClientIpsecPolicies')].saLifeTimeSeconds]"
             }
           },
           {
             "name": "vpnClientRevokedCertificates",
-            "count": "[length(parameters('vpnClientRevokedCertificates'))]",
+            "count": "[length(coalesce(parameters('vpnClientRevokedCertificates'), createArray()))]",
             "input": {
-              "name": "[parameters('vpnClientRevokedCertificates')[copyIndex('vpnClientRevokedCertificates')].name]",
-              "thumbprint": "[parameters('vpnClientRevokedCertificates')[copyIndex('vpnClientRevokedCertificates')].thumbprint]"
+              "name": "[coalesce(parameters('vpnClientRevokedCertificates'), createArray())[copyIndex('vpnClientRevokedCertificates')].name]",
+              "thumbprint": "[coalesce(parameters('vpnClientRevokedCertificates'), createArray())[copyIndex('vpnClientRevokedCertificates')].thumbprint]"
             }
           },
           {
             "name": "vpnClientRootCertificates",
-            "count": "[length(parameters('vpnClientRootCertificates'))]",
+            "count": "[length(coalesce(parameters('vpnClientRootCertificates'), createArray()))]",
             "input": {
-              "name": "[parameters('vpnClientRootCertificates')[copyIndex('vpnClientRootCertificates')].name]",
-              "publicCertData": "[parameters('vpnClientRootCertificates')[copyIndex('vpnClientRootCertificates')].publicCertData]"
+              "name": "[coalesce(parameters('vpnClientRootCertificates'), createArray())[copyIndex('vpnClientRootCertificates')].name]",
+              "publicCertData": "[coalesce(parameters('vpnClientRootCertificates'), createArray())[copyIndex('vpnClientRootCertificates')].publicCertData]"
             }
           }
         ],

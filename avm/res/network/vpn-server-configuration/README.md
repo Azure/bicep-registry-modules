@@ -728,7 +728,75 @@ The IPsec policies for the configuration.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dhGroup`](#parameter-vpnclientipsecpoliciesdhgroup) | string | The Diffie-Hellman group used in IKE phase 1. Required if using IKEv2. |
+| [`ikeEncryption`](#parameter-vpnclientipsecpoliciesikeencryption) | string | The encryption algorithm used in IKE phase 1. Required if using IKEv2. |
+| [`ikeIntegrity`](#parameter-vpnclientipsecpoliciesikeintegrity) | string | The integrity algorithm used in IKE phase 1. Required if using IKEv2. |
+| [`ipsecEncryption`](#parameter-vpnclientipsecpoliciesipsecencryption) | string | The encryption algorithm used in IKE phase 2. Required if using IKEv2. |
+| [`ipsecIntegrity`](#parameter-vpnclientipsecpoliciesipsecintegrity) | string | The integrity algorithm used in IKE phase 2. Required if using IKEv2. |
+| [`pfsGroup`](#parameter-vpnclientipsecpoliciespfsgroup) | string | The Perfect Forward Secrecy (PFS) group used in IKE phase 2. Required if using IKEv2. |
+| [`saDataSizeKilobytes`](#parameter-vpnclientipsecpoliciessadatasizekilobytes) | int | The size of the SA data in kilobytes. Required if using IKEv2. |
+| [`salfetimeSeconds`](#parameter-vpnclientipsecpoliciessalfetimeseconds) | int | The lifetime of the SA in seconds. Required if using IKEv2. |
+
+### Parameter: `vpnClientIpsecPolicies.dhGroup`
+
+The Diffie-Hellman group used in IKE phase 1. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `vpnClientIpsecPolicies.ikeEncryption`
+
+The encryption algorithm used in IKE phase 1. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `vpnClientIpsecPolicies.ikeIntegrity`
+
+The integrity algorithm used in IKE phase 1. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `vpnClientIpsecPolicies.ipsecEncryption`
+
+The encryption algorithm used in IKE phase 2. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `vpnClientIpsecPolicies.ipsecIntegrity`
+
+The integrity algorithm used in IKE phase 2. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `vpnClientIpsecPolicies.pfsGroup`
+
+The Perfect Forward Secrecy (PFS) group used in IKE phase 2. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `vpnClientIpsecPolicies.saDataSizeKilobytes`
+
+The size of the SA data in kilobytes. Required if using IKEv2.
+
+- Required: No
+- Type: int
+
+### Parameter: `vpnClientIpsecPolicies.salfetimeSeconds`
+
+The lifetime of the SA in seconds. Required if using IKEv2.
+
+- Required: No
+- Type: int
 
 ### Parameter: `vpnClientRevokedCertificates`
 
