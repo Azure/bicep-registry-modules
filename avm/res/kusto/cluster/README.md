@@ -1390,6 +1390,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -1510,6 +1521,10 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
 
 **Required parameters**
 
@@ -1699,7 +1714,6 @@ The resource ID of the subnet to which to deploy the Kusto Cluster.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `identity` | object | The identity of the cluster. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the kusto cluster. |
 | `privateEndpoints` | array | The private endpoints of the kusto cluster. |

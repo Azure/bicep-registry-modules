@@ -290,6 +290,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           clientId: 'apimclientid'
           clientRegistrationEndpoint: 'http://localhost'
           clientSecret: '<clientSecret>'
+          displayName: 'AuthServer1'
           grantTypes: [
             'authorizationCode'
           ]
@@ -404,6 +405,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           }
         ]
         approvalRequired: false
+        displayName: 'Starter'
         groups: [
           {
             name: 'developers'
@@ -436,6 +438,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     subnetResourceId: '<subnetResourceId>'
     subscriptions: [
       {
+        displayName: 'testArmSubscriptionAllApis'
         name: 'testArmSubscriptionAllApis'
         scope: '/apis'
       }
@@ -525,6 +528,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             "clientId": "apimclientid",
             "clientRegistrationEndpoint": "http://localhost",
             "clientSecret": "<clientSecret>",
+            "displayName": "AuthServer1",
             "grantTypes": [
               "authorizationCode"
             ],
@@ -663,6 +667,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             }
           ],
           "approvalRequired": false,
+          "displayName": "Starter",
           "groups": [
             {
               "name": "developers"
@@ -703,6 +708,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "subscriptions": {
       "value": [
         {
+          "displayName": "testArmSubscriptionAllApis",
           "name": "testArmSubscriptionAllApis",
           "scope": "/apis"
         }
@@ -837,6 +843,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           clientId: 'apimClientid'
           clientRegistrationEndpoint: 'https://localhost'
           clientSecret: '<clientSecret>'
+          displayName: 'AuthServer1'
           grantTypes: [
             'authorizationCode'
           ]
@@ -973,6 +980,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     subscriptions: [
       {
+        displayName: 'testArmSubscriptionAllApis'
         name: 'testArmSubscriptionAllApis'
         scope: '/apis'
       }
@@ -1048,6 +1056,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             "clientId": "apimClientid",
             "clientRegistrationEndpoint": "https://localhost",
             "clientSecret": "<clientSecret>",
+            "displayName": "AuthServer1",
             "grantTypes": [
               "authorizationCode"
             ],
@@ -1212,6 +1221,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "subscriptions": {
       "value": [
         {
+          "displayName": "testArmSubscriptionAllApis",
           "name": "testArmSubscriptionAllApis",
           "scope": "/apis"
         }
@@ -1742,6 +1752,16 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'API Management Developer Portal Content Editor'`
+  - `'API Management Service Contributor'`
+  - `'API Management Service Operator Role'`
+  - `'API Management Service Reader Role'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1916,6 +1936,8 @@ A list of availability zones denoting where the resource needs to come from. Onl
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Notes
+
+The latest version of this module only includes supported versions of the API Management resource. All unsupported versions of API Management have been removed from the related parameters. See the [API Management stv1 platform retirement](!https://learn.microsoft.com/en-us/azure/api-management/breaking-changes/stv1-platform-retirement-august-2024) article for more details.
 
 ### Parameter Usage: `apiManagementServicePolicy`
 

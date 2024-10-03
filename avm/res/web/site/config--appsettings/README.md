@@ -13,7 +13,7 @@ This module deploys a Site App Setting.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Web/sites/config` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
+| `Microsoft.Web/sites/config` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
 
 ## Parameters
 
@@ -35,6 +35,7 @@ This module deploys a Site App Setting.
 | :-- | :-- | :-- |
 | [`appInsightResourceId`](#parameter-appinsightresourceid) | string | Resource ID of the app insight to leverage for this resource. |
 | [`appSettingsKeyValuePairs`](#parameter-appsettingskeyvaluepairs) | object | The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING. |
+| [`currentAppSettings`](#parameter-currentappsettings) | object | The current app settings. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions. |
 | [`storageAccountUseIdentityAuthentication`](#parameter-storageaccountuseidentityauthentication) | bool | If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'. |
 
@@ -82,6 +83,14 @@ The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDas
 
 - Required: No
 - Type: object
+
+### Parameter: `currentAppSettings`
+
+The current app settings.
+
+- Required: No
+- Type: object
+- Default: `{}`
 
 ### Parameter: `storageAccountResourceId`
 

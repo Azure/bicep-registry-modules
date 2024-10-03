@@ -38,7 +38,6 @@ By integrating with Microsoft Entra ID for secure identity management and utiliz
 | `Microsoft.MachineLearningServices/workspaces` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-04-01-preview/workspaces) |
 | `Microsoft.MachineLearningServices/workspaces/computes` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2022-10-01/workspaces/computes) |
 | `Microsoft.Maintenance/configurationAssignments` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
 | `Microsoft.Network/bastionHosts` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/bastionHosts) |
 | `Microsoft.Network/networkInterfaces` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkInterfaces) |
 | `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
@@ -52,27 +51,28 @@ By integrating with Microsoft Entra ID for secure identity management and utiliz
 | `Microsoft.Network/privateDnsZones/SRV` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV) |
 | `Microsoft.Network/privateDnsZones/TXT` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT) |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/virtualNetworkLinks) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 | `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.OperationalInsights/workspaces` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces) |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems) |
 | `Microsoft.Storage/storageAccounts` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts) |
 | `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
-| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/fileServices) |
+| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/fileServices) |
 | `Microsoft.Storage/storageAccounts/fileServices/shares` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/fileServices/shares) |
-| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/localUsers) |
+| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/localUsers) |
 | `Microsoft.Storage/storageAccounts/managementPolicies` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/managementPolicies) |
-| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices) |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices/queues) |
-| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices) |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices/tables) |
+| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices) |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices/queues) |
+| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices) |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices/tables) |
 
 ## Usage examples
 
@@ -185,10 +185,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     logAnalyticsConfiguration: {
       name: 'log-aipbmax'
     }
-    managedIdentityConfiguration: {
-      hubName: 'id-hub-aipbmax'
-      projectName: 'id-project-aipbmax'
-    }
+    managedIdentityName: '<managedIdentityName>'
     storageAccountConfiguration: {
       allowSharedKeyAccess: true
       name: 'staipbmax'
@@ -321,11 +318,8 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
         "name": "log-aipbmax"
       }
     },
-    "managedIdentityConfiguration": {
-      "value": {
-        "hubName": "id-hub-aipbmax",
-        "projectName": "id-project-aipbmax"
-      }
+    "managedIdentityName": {
+      "value": "<managedIdentityName>"
     },
     "storageAccountConfiguration": {
       "value": {
@@ -544,6 +538,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     // Required parameters
     name: '<name>'
     // Non-required parameters
+    managedIdentityName: '<managedIdentityName>'
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
@@ -591,6 +586,9 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       "value": "<name>"
     },
     // Non-required parameters
+    "managedIdentityName": {
+      "value": "<managedIdentityName>"
+    },
     "tags": {
       "value": {
         "Env": "test",
@@ -649,7 +647,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 | [`keyVaultConfiguration`](#parameter-keyvaultconfiguration) | object | Configuration for the key vault. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`logAnalyticsConfiguration`](#parameter-loganalyticsconfiguration) | object | Configuration for the Log Analytics workspace. |
-| [`managedIdentityConfiguration`](#parameter-managedidentityconfiguration) | object | Configuration for the user-assigned managed identities. |
+| [`managedIdentityName`](#parameter-managedidentityname) | string | The name of the user assigned identity for the AI Studio hub. If not provided, the hub will use a system assigned identity. |
 | [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | Configuration for the storage account. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 | [`virtualMachineConfiguration`](#parameter-virtualmachineconfiguration) | secureObject | Configuration for the virtual machine. |
@@ -889,30 +887,9 @@ The name of the Log Analytics workspace.
 - Required: No
 - Type: string
 
-### Parameter: `managedIdentityConfiguration`
+### Parameter: `managedIdentityName`
 
-Configuration for the user-assigned managed identities.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`hubName`](#parameter-managedidentityconfigurationhubname) | string | The name of the workspace hub user-assigned managed identity. |
-| [`projectName`](#parameter-managedidentityconfigurationprojectname) | string | The name of the workspace project user-assigned managed identity. |
-
-### Parameter: `managedIdentityConfiguration.hubName`
-
-The name of the workspace hub user-assigned managed identity.
-
-- Required: No
-- Type: string
-
-### Parameter: `managedIdentityConfiguration.projectName`
-
-The name of the workspace project user-assigned managed identity.
+The name of the user assigned identity for the AI Studio hub. If not provided, the hub will use a system assigned identity.
 
 - Required: No
 - Type: string
@@ -1144,14 +1121,6 @@ The name of the AI Studio workspace project.
 | `location` | string | The location the module was deployed to. |
 | `logAnalyticsWorkspaceName` | string | The name of the log analytics workspace. |
 | `logAnalyticsWorkspaceResourceId` | string | The resource ID of the log analytics workspace. |
-| `managedIdentityHubClientId` | string | The client ID of the workspace hub user assigned managed identity. |
-| `managedIdentityHubName` | string | The name of the workspace hub user assigned managed identity. |
-| `managedIdentityHubPrincipalId` | string | The principal ID of the workspace hub user assigned managed identity. |
-| `managedIdentityHubResourceId` | string | The resource ID of the workspace hub user assigned managed identity. |
-| `managedIdentityProjectClientId` | string | The client ID of the workspace project user assigned managed identity. |
-| `managedIdentityProjectName` | string | The name of the workspace project user assigned managed identity. |
-| `managedIdentityProjectPrincipalId` | string | The principal ID of the workspace project user assigned managed identity. |
-| `managedIdentityProjectResourceId` | string | The resource ID of the workspace project user assigned managed identity. |
 | `resourceGroupName` | string | The name of the resource group the module was deployed to. |
 | `storageAccountName` | string | The name of the storage account. |
 | `storageAccountResourceId` | string | The resource ID of the storage account. |
@@ -1161,8 +1130,10 @@ The name of the AI Studio workspace project.
 | `virtualNetworkResourceId` | string | The resource ID of the virtual network. |
 | `virtualNetworkSubnetName` | string | The name of the subnet in the virtual network. |
 | `virtualNetworkSubnetResourceId` | string | The resource ID of the subnet in the virtual network. |
+| `workspaceHubManagedIdentityPrincipalId` | string | The principal ID of the workspace hub system assigned identity, if applicable. |
 | `workspaceHubName` | string | The name of the workspace hub. |
 | `workspaceHubResourceId` | string | The resource ID of the workspace hub. |
+| `workspaceProjectManagedIdentityPrincipalId` | string | The principal ID of the workspace project system assigned identity. |
 | `workspaceProjectName` | string | The name of the workspace project. |
 | `workspaceProjectResourceId` | string | The resource ID of the workspace project. |
 
@@ -1180,6 +1151,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/bastion-host:0.2.2` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.3.1` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.3.1` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.4.0` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.11.0` | Remote reference |
 
 ## Data Collection

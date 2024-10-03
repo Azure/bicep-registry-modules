@@ -295,7 +295,7 @@ var virtualWanHubSubscriptionId = (!empty(virtualHubResourceIdChecked) ? split(v
 var virtualWanHubResourceGroupName = (!empty(virtualHubResourceIdChecked)
   ? split(virtualHubResourceIdChecked, '/')[4]
   : '')
-var virtualWanHubConnectionName = 'vhc-${guid(virtualHubResourceIdChecked, virtualNetworkName, virtualNetworkResourceGroupName, virtualNetworkLocation, subscriptionId)}'
+var virtualWanHubConnectionName = 'vhc-${virtualNetworkName}-${substring(guid(virtualHubResourceIdChecked, virtualNetworkName, virtualNetworkResourceGroupName, virtualNetworkLocation, subscriptionId), 0, 5)}'
 var virtualWanHubConnectionAssociatedRouteTable = !empty(virtualNetworkVwanAssociatedRouteTableResourceId)
   ? virtualNetworkVwanAssociatedRouteTableResourceId
   : '${virtualHubResourceIdChecked}/hubRouteTables/defaultRouteTable'
@@ -389,7 +389,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (virt
             remotePeeringUseRemoteGateways: false
           }
         ]
-      : []
+      : null
     enableTelemetry: enableTelemetry
   }
 }
@@ -609,17 +609,21 @@ module createDsVnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (!emp
     addressPrefixes: [
       virtualNetworkDeploymentScriptAddressPrefix
     ]
-    subnets: [
-      {
-        addressPrefix: !empty(resourceProviders) ? cidrSubnet(virtualNetworkDeploymentScriptAddressPrefix, 24, 0) : null
-        name: 'ds-subnet-001'
-        networkSecurityGroupResourceId: !empty(resourceProviders) ? createDsNsg.outputs.resourceId : null
-        serviceEndpoints: [
-          'Microsoft.Storage'
+    subnets: !empty(resourceProviders)
+      ? [
+          {
+            addressPrefix: !empty(resourceProviders)
+              ? cidrSubnet(virtualNetworkDeploymentScriptAddressPrefix, 24, 0)
+              : null
+            name: 'ds-subnet-001'
+            networkSecurityGroupResourceId: !empty(resourceProviders) ? createDsNsg.outputs.resourceId : null
+            serviceEndpoints: [
+              'Microsoft.Storage'
+            ]
+            delegation: 'Microsoft.ContainerInstance/containerGroups'
+          }
         ]
-        delegation: 'Microsoft.ContainerInstance/containerGroups'
-      }
-    ]
+      : null
     enableTelemetry: enableTelemetry
   }
 }
