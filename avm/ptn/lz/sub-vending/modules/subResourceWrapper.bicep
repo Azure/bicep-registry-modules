@@ -361,7 +361,7 @@ module tagResourceGroup 'tags.bicep' = if (virtualNetworkEnabled && !empty(virtu
   }
 }
 
-module createLzVnet 'br/public:avm/res/network/virtual-network:0.1.7' = if (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+module createLzVnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   dependsOn: [
     createResourceGroupForLzNetworking
   ]
@@ -377,12 +377,12 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.1.7' = if (virt
     peerings: (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(hubVirtualNetworkResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))
       ? [
           {
+            remoteVirtualNetworkResourceId: hubVirtualNetworkResourceIdChecked
             allowForwardedTraffic: true
             allowVirtualNetworkAccess: true
             allowGatewayTransit: false
             useRemoteGateways: virtualNetworkUseRemoteGateways
             remotePeeringEnabled: virtualNetworkPeeringEnabled
-            remoteVirtualNetworkId: hubVirtualNetworkResourceIdChecked
             remotePeeringAllowForwardedTraffic: true
             remotePeeringAllowVirtualNetworkAccess: true
             remotePeeringAllowGatewayTransit: true
@@ -600,7 +600,7 @@ module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' 
   }
 }
 
-module createDsVnet 'br/public:avm/res/network/virtual-network:0.1.7' = if (!empty(resourceProviders)) {
+module createDsVnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.createdsVnet
   params: {
@@ -615,18 +615,9 @@ module createDsVnet 'br/public:avm/res/network/virtual-network:0.1.7' = if (!emp
         name: 'ds-subnet-001'
         networkSecurityGroupResourceId: !empty(resourceProviders) ? createDsNsg.outputs.resourceId : null
         serviceEndpoints: [
-          {
-            service: 'Microsoft.Storage'
-          }
+          'Microsoft.Storage'
         ]
-        delegations: [
-          {
-            name: 'Microsoft.ContainerInstance.containerGroups'
-            properties: {
-              serviceName: 'Microsoft.ContainerInstance/containerGroups'
-            }
-          }
-        ]
+        delegation: 'Microsoft.ContainerInstance/containerGroups'
       }
     ]
     enableTelemetry: enableTelemetry
