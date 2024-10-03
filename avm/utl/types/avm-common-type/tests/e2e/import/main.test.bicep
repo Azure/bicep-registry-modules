@@ -119,14 +119,6 @@ output locks types.lockType = {
   name: 'myLock'
 }
 
-// ======== //
-//   Tags   //
-// ======== //
-output tags types.tagsType = {
-  tagA: 'tagValueA'
-  tagB: 'tagValueB'
-}
-
 // ====================== //
 //   Managed Idenitites   //
 // ====================== //
@@ -153,13 +145,15 @@ output privateEndpointMultiService types.privateEndpointMultiServiceType = {
     kind: 'CanNotDelete'
     name: 'myLock'
   }
-  roleAssignments: {
-    principalId: '11111111-1111-1111-1111-111111111111'
-    roleDefinitionIdOrName: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-    ) // Reader
-  }
+  roleAssignments: [
+    {
+      principalId: '11111111-1111-1111-1111-111111111111'
+      roleDefinitionIdOrName: subscriptionResourceId(
+        'Microsoft.Authorization/roleDefinitions',
+        'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+      ) // Reader
+    }
+  ]
   subnetResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Network/virtualNetworks/myVnet/subnets/defaultSubnet'
   service: 'blob'
   applicationSecurityGroupResourceIds: [

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "1255731738547382740"
+      "templateHash": "5266443159177431002"
     },
     "name": "Default interface types for AVM modules",
     "description": "This module provides you with all common variants for AVM interfaces to be used in AVM modules.\n\nDetails for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/bicep/interfaces).\n"
@@ -410,16 +410,6 @@
         "__bicep_export!": true
       }
     },
-    "tagsType": {
-      "type": "object",
-      "properties": {},
-      "additionalProperties": {
-        "type": "string"
-      },
-      "metadata": {
-        "__bicep_export!": true
-      }
-    },
     "managedIdentitiesAllType": {
       "type": "object",
       "properties": {
@@ -676,14 +666,17 @@
           }
         },
         "roleAssignments": {
-          "$ref": "#/definitions/roleAssignmentType",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
           "nullable": true,
           "metadata": {
             "description": "Optional. Array of role assignments to create."
           }
         },
         "tags": {
-          "$ref": "#/definitions/tagsType",
+          "type": "object",
           "nullable": true,
           "metadata": {
             "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
@@ -811,14 +804,17 @@
           }
         },
         "roleAssignments": {
-          "$ref": "#/definitions/roleAssignmentType",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
           "nullable": true,
           "metadata": {
             "description": "Optional. Array of role assignments to create."
           }
         },
         "tags": {
-          "$ref": "#/definitions/tagsType",
+          "type": "object",
           "nullable": true,
           "metadata": {
             "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."

@@ -170,15 +170,6 @@ type lockType = {
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }
 
-// ======== //
-//   Tags   //
-// ======== //
-
-@export()
-type tagsType = {
-  *: string
-}
-
 // ====================== //
 //   Managed Idenitites   //
 // ====================== //
@@ -294,10 +285,10 @@ type privateEndpointSingleServiceType = {
   lock: lockType?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType?
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. Tags to be applied on all resources/Resource Groups in this deployment.')
-  tags: tagsType?
+  tags: object?
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
@@ -350,10 +341,10 @@ type privateEndpointMultiServiceType = {
   lock: lockType?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType?
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-  tags: tagsType?
+  tags: object?
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
