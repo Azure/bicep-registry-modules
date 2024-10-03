@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "15179702678978782456"
+      "version": "0.30.3.12046",
+      "templateHash": "17375159703541878382"
     },
     "name": "import-image-to-acr",
     "description": "This modules deployes an image to an Azure Container Registry.",
@@ -127,7 +127,7 @@
     },
     "newImageName": {
       "type": "string",
-      "defaultValue": "[last(split(parameters('image'), '/'))]",
+      "defaultValue": "[string(skip(parameters('image'), add(indexOf(parameters('image'), '/'), 1)))]",
       "metadata": {
         "example": "your-image-name:tag",
         "description": "Optional. The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline."
@@ -368,7 +368,7 @@
             "value": "[parameters('subnetResourceIds')]"
           },
           "scriptContent": {
-            "value": "#!/bin/bash\n    set -e\n\n    echo \"Waiting on RBAC replication ($initialDelay)\\n\"\n    sleep $initialDelay\n\n    # retry loop to catch errors (usually RBAC delays, but 'Error copying blobs' is also not unheard of)\n    retryLoopCount=0\n    until [ $retryLoopCount -ge $retryMax ]\n    do\n      echo \"Importing Image ($retryLoopCount): $imageName into ACR: $acrName\\n\"\n      if [ $overwriteExistingImage = 'true' ]; then\n        if [ -n \"$sourceRegistryUsername\" ] && [ -n \"$sourceRegistryPassword\" ]; then\n          az acr import -n $acrName --source $imageName --image $newImageName --force --username $sourceRegistryUsername --password $sourceRegistryPassword\n        else\n          az acr import -n $acrName --source $imageName --image $newImageName --force\n        fi\n      else\n        if [ -n \"$sourceRegistryUsername\" ] && [ -n \"$sourceRegistryPassword\" ]; then\n          az acr import -n $acrName --source $imageName --image $newImageName --username $sourceRegistryUsername --password $sourceRegistryPassword\n        else\n          az acr import -n $acrName --source $imageName --image $newImageName\n        fi\n      fi\n\n      sleep $retrySleep\n      retryLoopCount=$((retryLoopCount+1))\n    done\n\n    echo \"done\\n\""
+            "value": "#!/bin/bash\n    echo \"Waiting on RBAC replication ($initialDelay)\\n\"\n    sleep $initialDelay\n\n    # retry loop to catch errors (usually RBAC delays, but 'Error copying blobs' is also not unheard of)\n    retryLoopCount=0\n    until [ $retryLoopCount -ge $retryMax ]\n    do\n      echo \"Importing Image ($retryLoopCount): $imageName into ACR: $acrName\\n\"\n      if [ $overwriteExistingImage = 'true' ]; then\n        if [ -n \"$sourceRegistryUsername\" ] && [ -n \"$sourceRegistryPassword\" ]; then\n          az acr import -n $acrName --source $imageName --image $newImageName --force --username $sourceRegistryUsername --password $sourceRegistryPassword\n        else\n          az acr import -n $acrName --source $imageName --image $newImageName --force\n        fi\n      else\n        if [ -n \"$sourceRegistryUsername\" ] && [ -n \"$sourceRegistryPassword\" ]; then\n          az acr import -n $acrName --source $imageName --image $newImageName --username $sourceRegistryUsername --password $sourceRegistryPassword\n        else\n          az acr import -n $acrName --source $imageName --image $newImageName\n        fi\n      fi\n\n      sleep $retrySleep\n      retryLoopCount=$((retryLoopCount+1))\n    done\n\n    echo \"done\\n\""
           }
         },
         "template": {
@@ -910,7 +910,7 @@
       },
       "value": {
         "originalImage": "[parameters('image')]",
-        "acrHostedImage": "[format('{0}{1}', reference('acr').loginServer, string(skip(parameters('image'), indexOf(parameters('image'), '/'))))]"
+        "acrHostedImage": "[if(empty(parameters('newImageName')), format('{0}{1}', reference('acr').loginServer, string(skip(parameters('image'), indexOf(parameters('image'), '/')))), format('{0}/{1}', reference('acr').loginServer, parameters('newImageName')))]"
       }
     }
   }
