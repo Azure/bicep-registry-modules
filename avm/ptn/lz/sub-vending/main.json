@@ -6,7 +6,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
+<<<<<<< HEAD
       "templateHash": "8871281165882177202"
+=======
+      "templateHash": "2343164809013150587"
+>>>>>>> bea4f7ee5cd8e05c00829f989ec443f3a39f9ce5
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -871,7 +875,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
+<<<<<<< HEAD
               "templateHash": "17730419253467843481"
+=======
+              "templateHash": "12288692280280036332"
+>>>>>>> bea4f7ee5cd8e05c00829f989ec443f3a39f9ce5
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1513,7 +1521,7 @@
             "virtualWanHubName": "[if(not(empty(variables('virtualHubResourceIdChecked'))), split(variables('virtualHubResourceIdChecked'), '/')[8], '')]",
             "virtualWanHubSubscriptionId": "[if(not(empty(variables('virtualHubResourceIdChecked'))), split(variables('virtualHubResourceIdChecked'), '/')[2], '')]",
             "virtualWanHubResourceGroupName": "[if(not(empty(variables('virtualHubResourceIdChecked'))), split(variables('virtualHubResourceIdChecked'), '/')[4], '')]",
-            "virtualWanHubConnectionName": "[format('vhc-{0}', guid(variables('virtualHubResourceIdChecked'), parameters('virtualNetworkName'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), parameters('subscriptionId')))]",
+            "virtualWanHubConnectionName": "[format('vhc-{0}-{1}', parameters('virtualNetworkName'), substring(guid(variables('virtualHubResourceIdChecked'), parameters('virtualNetworkName'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), parameters('subscriptionId')), 0, 5))]",
             "virtualWanHubConnectionAssociatedRouteTable": "[if(not(empty(parameters('virtualNetworkVwanAssociatedRouteTableResourceId'))), parameters('virtualNetworkVwanAssociatedRouteTableResourceId'), format('{0}/hubRouteTables/defaultRouteTable', variables('virtualHubResourceIdChecked')))]",
             "virutalWanHubDefaultRouteTableId": {
               "id": "[format('{0}/hubRouteTables/defaultRouteTable', variables('virtualHubResourceIdChecked'))]"
@@ -2806,7 +2814,11 @@
                   "ddosProtectionPlanResourceId": {
                     "value": "[parameters('virtualNetworkDdosPlanResourceId')]"
                   },
+<<<<<<< HEAD
                   "peerings": "[if(and(and(and(and(and(and(parameters('virtualNetworkEnabled'), parameters('virtualNetworkPeeringEnabled')), not(empty(variables('hubVirtualNetworkResourceIdChecked')))), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), createObject('value', createArray(createObject('remoteVirtualNetworkResourceId', variables('hubVirtualNetworkResourceIdChecked'), 'allowForwardedTraffic', true(), 'allowVirtualNetworkAccess', true(), 'allowGatewayTransit', false(), 'useRemoteGateways', parameters('virtualNetworkUseRemoteGateways'), 'remotePeeringEnabled', parameters('virtualNetworkPeeringEnabled'), 'remotePeeringAllowForwardedTraffic', true(), 'remotePeeringAllowVirtualNetworkAccess', true(), 'remotePeeringAllowGatewayTransit', true(), 'remotePeeringUseRemoteGateways', false()))), createObject('value', createArray()))]",
+=======
+                  "peerings": "[if(and(and(and(and(and(and(parameters('virtualNetworkEnabled'), parameters('virtualNetworkPeeringEnabled')), not(empty(variables('hubVirtualNetworkResourceIdChecked')))), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), createObject('value', createArray(createObject('remoteVirtualNetworkResourceId', variables('hubVirtualNetworkResourceIdChecked'), 'allowForwardedTraffic', true(), 'allowVirtualNetworkAccess', true(), 'allowGatewayTransit', false(), 'useRemoteGateways', parameters('virtualNetworkUseRemoteGateways'), 'remotePeeringEnabled', parameters('virtualNetworkPeeringEnabled'), 'remotePeeringAllowForwardedTraffic', true(), 'remotePeeringAllowVirtualNetworkAccess', true(), 'remotePeeringAllowGatewayTransit', true(), 'remotePeeringUseRemoteGateways', false()))), createObject('value', null()))]",
+>>>>>>> bea4f7ee5cd8e05c00829f989ec443f3a39f9ce5
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   }
@@ -14170,6 +14182,7 @@
                       "[parameters('virtualNetworkDeploymentScriptAddressPrefix')]"
                     ]
                   },
+<<<<<<< HEAD
                   "subnets": {
                     "value": [
                       {
@@ -14183,6 +14196,9 @@
                       }
                     ]
                   },
+=======
+                  "subnets": "[if(not(empty(parameters('resourceProviders'))), createObject('value', createArray(createObject('addressPrefix', if(not(empty(parameters('resourceProviders'))), cidrSubnet(parameters('virtualNetworkDeploymentScriptAddressPrefix'), 24, 0), null()), 'name', 'ds-subnet-001', 'networkSecurityGroupResourceId', if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDsNsg), '2022-09-01').outputs.resourceId.value, null()), 'serviceEndpoints', createArray('Microsoft.Storage'), 'delegation', 'Microsoft.ContainerInstance/containerGroups'))), createObject('value', null()))]",
+>>>>>>> bea4f7ee5cd8e05c00829f989ec443f3a39f9ce5
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   }

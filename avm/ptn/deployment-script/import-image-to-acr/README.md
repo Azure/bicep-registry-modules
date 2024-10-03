@@ -115,7 +115,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     cleanupPreference: 'OnExpiration'
     location: '<location>'
     managedIdentities: '<managedIdentities>'
-    newImageName: 'your-image-name:tag'
+    newImageName: 'application/your-image-name:tag'
     overwriteExistingImage: true
     storageAccountResourceId: '<storageAccountResourceId>'
     subnetResourceIds: '<subnetResourceIds>'
@@ -163,7 +163,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
       "value": "<managedIdentities>"
     },
     "newImageName": {
-      "value": "your-image-name:tag"
+      "value": "application/your-image-name:tag"
     },
     "overwriteExistingImage": {
       "value": true
@@ -281,6 +281,8 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 | [`overwriteExistingImage`](#parameter-overwriteexistingimage) | bool | The image will be overwritten if it already exists in the ACR with the same tag. Default is false. |
 | [`retryMax`](#parameter-retrymax) | int | The maximum number of retries for the script import operation. Default is 3. |
 | [`runOnce`](#parameter-runonce) | bool | How the deployment script should be forced to execute. Default is to force the script to deploy the image to run every time. |
+| [`sourceRegistryPassword`](#parameter-sourceregistrypassword) | securestring | The password for the source registry. Required if the source registry is private, or to logon to the public docker registry. |
+| [`sourceRegistryUsername`](#parameter-sourceregistryusername) | string | The username for the source registry. Required if the source registry is private, or to logon to the public docker registry. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | The resource id of the storage account to use for the deployment script. An existing storage account is needed, if PrivateLink is going to be used for the deployment script. |
 | [`subnetResourceIds`](#parameter-subnetresourceids) | array | The subnet ids to use for the deployment script. An existing subnet is needed, if PrivateLink is going to be used for the deployment script. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -298,7 +300,12 @@ A fully qualified image name to import.
 
 - Required: Yes
 - Type: string
-- Example: `mcr.microsoft.com/k8se/quickstart-jobs:latest`
+- Example:
+  ```Bicep
+  mcr.microsoft.com/k8se/quickstart-jobs:latest
+  docker.io/library/image:latest
+  docker.io/hello-world:latest
+  ```
 
 ### Parameter: `name`
 
@@ -388,7 +395,7 @@ The new image name in the ACR. You can use this to import a publically available
 
 - Required: No
 - Type: string
-- Default: `[last(split(parameters('image'), '/'))]`
+- Default: `[string(skip(parameters('image'), add(indexOf(parameters('image'), '/'), 1)))]`
 - Example: `your-image-name:tag`
 
 ### Parameter: `overwriteExistingImage`
@@ -414,6 +421,22 @@ How the deployment script should be forced to execute. Default is to force the s
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `sourceRegistryPassword`
+
+The password for the source registry. Required if the source registry is private, or to logon to the public docker registry.
+
+- Required: No
+- Type: securestring
+- Default: `''`
+
+### Parameter: `sourceRegistryUsername`
+
+The username for the source registry. Required if the source registry is private, or to logon to the public docker registry.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `storageAccountResourceId`
 
@@ -458,13 +481,17 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/resources/deployment-script:0.2.3` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.4.0` | Remote reference |
 
 ## Notes
 
 The deployment script service will need and provision a Storage Account as well as a Container Instance to execute the provided script. _The deployment script resource is available only in the regions where Azure Container Instances is available._
 
-> The service cleans up these resources after the deployment script finishes. You incur charges for these resources until they're removed.
+> The service cleans up these resources after the deployment script finishes. You incur charges for these resources until they are removed.
+
+### Authentication to source Container Registry
+
+Authentication is possible by setting the ```sourceRegistryUsername``` and ```sourceRegistryPassword``` parameters. An example that uses Key Vault is in the max sample. It is commented out, as for the shared environments no user exists, that could be used to access e.g. docker hub images.
 
 ### Private network access
 
