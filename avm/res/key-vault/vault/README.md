@@ -284,8 +284,10 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     enableRbacAuthorization: false
     keys: [
       {
-        attributesExp: 1725109032
-        attributesNbf: 10000
+        attributes: {
+          exp: 1725109032
+          nbf: 10000
+        }
         name: 'keyName'
         roleAssignments: [
           {
@@ -427,8 +429,10 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     ]
     secrets: [
       {
-        attributesExp: 1702648632
-        attributesNbf: 10000
+        attributes: {
+          exp: 1725109032
+          nbf: 10000
+        }
         contentType: 'Something'
         name: 'secretName'
         roleAssignments: [
@@ -540,8 +544,10 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "keys": {
       "value": [
         {
-          "attributesExp": 1725109032,
-          "attributesNbf": 10000,
+          "attributes": {
+            "exp": 1725109032,
+            "nbf": 10000
+          },
           "name": "keyName",
           "roleAssignments": [
             {
@@ -695,8 +701,10 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "secrets": {
       "value": [
         {
-          "attributesExp": 1702648632,
-          "attributesNbf": 10000,
+          "attributes": {
+            "exp": 1725109032,
+            "nbf": 10000
+          },
           "contentType": "Something",
           "name": "secretName",
           "roleAssignments": [
