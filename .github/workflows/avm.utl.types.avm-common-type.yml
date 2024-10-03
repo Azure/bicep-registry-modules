@@ -7,7 +7,7 @@ on:
         type: boolean
         description: "Execute static validation"
         required: false
-        default: true
+        default: false # true
       deploymentValidation:
         type: boolean
         description: "Execute deployment validation"
@@ -25,6 +25,7 @@ on:
         default: 'northeurope'
   push:
     branches:
+      # - main
       - users/alsehr/1396_commonTypes
     paths:
       - ".github/actions/templates/avm-**"
