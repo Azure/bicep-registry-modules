@@ -123,10 +123,8 @@ module testDeployment '../../../main.bicep' = [
       enableRbacAuthorization: false
       keys: [
         {
-          attributes: {
-            exp: 1725109032
-            nbf: 10000
-          }
+          attributesExp: 1725109032
+          attributesNbf: 10000
           name: 'keyName'
           roleAssignments: [
             {
@@ -276,10 +274,8 @@ module testDeployment '../../../main.bicep' = [
       ]
       secrets: [
         {
-          attributes: {
-            exp: 1725109032
-            nbf: 10000
-          }
+          attributesExp: 1702648632
+          attributesNbf: 10000
           contentType: 'Something'
           name: 'secretName'
           roleAssignments: [
