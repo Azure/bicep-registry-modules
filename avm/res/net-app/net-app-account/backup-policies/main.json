@@ -5,8 +5,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.3.12046",
-      "templateHash": "10428804956820983215"
-    }
+      "templateHash": "6774994080428210035"
+    },
+    "name": "Azure NetApp Files Backup Policy",
+    "description": "This module deploys a Backup Policy for Azure NetApp File.",
+    "owner": "Azure/module-maintainers"
   },
   "parameters": {
     "netAppAccountName": {

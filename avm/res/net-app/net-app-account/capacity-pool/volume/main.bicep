@@ -301,7 +301,7 @@ module backupPolicies '../../backup-policies/main.bicep' = if (backupEnabled) {
 }
 
 module snapshotPolicies '../../snapshot-policies/main.bicep' = if (snapEnabled) {
-  name: 'snapshot-deployment'
+  name: uniqueString(snapshotPolicyName)
   params: {
     dailyHour: dailyHour
     dailyMinute: dailyMinute
