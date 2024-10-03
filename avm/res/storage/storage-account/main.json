@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "6607893452071234065"
+      "templateHash": "7109049210516898074"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -816,12 +816,11 @@
       "type": "string",
       "defaultValue": "TLS1_2",
       "allowedValues": [
-        "TLS1_0",
-        "TLS1_1",
-        "TLS1_2"
+        "TLS1_2",
+        "TLS1_3"
       ],
       "metadata": {
-        "description": "Optional. Set the minimum TLS version on request to storage."
+        "description": "Optional. Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 are deprecated and not supported anymore."
       }
     },
     "enableHierarchicalNamespace": {
@@ -1040,7 +1039,7 @@
     },
     "storageAccount": {
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2023-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "kind": "[parameters('kind')]",
@@ -1064,7 +1063,7 @@
         "accessTier": "[if(and(not(equals(parameters('kind'), 'Storage')), not(equals(parameters('kind'), 'BlockBlobStorage'))), parameters('accessTier'), null())]",
         "sasPolicy": "[if(not(empty(parameters('sasExpirationPeriod'))), createObject('expirationAction', 'Log', 'sasExpirationPeriod', parameters('sasExpirationPeriod')), null())]",
         "supportsHttpsTrafficOnly": "[parameters('supportsHttpsTrafficOnly')]",
-        "isHnsEnabled": "[if(parameters('enableHierarchicalNamespace'), parameters('enableHierarchicalNamespace'), null())]",
+        "isHnsEnabled": "[parameters('enableHierarchicalNamespace')]",
         "isSftpEnabled": "[parameters('enableSftp')]",
         "isNfsV3Enabled": "[if(parameters('enableNfsV3'), parameters('enableNfsV3'), '')]",
         "largeFileSharesState": "[if(or(equals(parameters('skuName'), 'Standard_LRS'), equals(parameters('skuName'), 'Standard_ZRS')), parameters('largeFileSharesState'), null())]",
@@ -4906,7 +4905,7 @@
             "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1'), createArray(createObject('name', parameters('secretsExportConfiguration').accessKey1, 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2022-09-01').keys[0].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString1'), createArray(createObject('name', parameters('secretsExportConfiguration').connectionString1, 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2022-09-01').keys[0].value))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2'), createArray(createObject('name', parameters('secretsExportConfiguration').accessKey2, 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2022-09-01').keys[1].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString2'), createArray(createObject('name', parameters('secretsExportConfiguration').connectionString2, 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2022-09-01').keys[1].value))), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1'), createArray(createObject('name', parameters('secretsExportConfiguration').accessKey1, 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[0].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString1'), createArray(createObject('name', parameters('secretsExportConfiguration').connectionString1, 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[0].value))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2'), createArray(createObject('name', parameters('secretsExportConfiguration').accessKey2, 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[1].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString2'), createArray(createObject('name', parameters('secretsExportConfiguration').connectionString2, 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[1].value))), createArray()))]"
           }
         },
         "template": {
@@ -5058,14 +5057,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('storageAccount', '2022-09-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('storageAccount', '2023-05-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('storageAccount', '2022-09-01', 'full').location]"
+      "value": "[reference('storageAccount', '2023-05-01', 'full').location]"
     },
     "serviceEndpoints": {
       "type": "object",
