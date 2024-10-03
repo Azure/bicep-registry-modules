@@ -78,10 +78,6 @@ module testDeployment '../../../main.bicep' = [
       vpnProtocols: [
         'OpenVPN'
       ]
-      lock: {
-        name: 'myCustomLockName'
-        kind: 'CanNotDelete'
-      }
     }
   }
 ]

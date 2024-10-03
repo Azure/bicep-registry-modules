@@ -433,10 +433,6 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
     aadIssuer: 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
     aadTenant: 'https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     p2sConfigurationPolicyGroups: [
       {
         isDefault: 'true'
@@ -489,12 +485,6 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "p2sConfigurationPolicyGroups": {
       "value": [
