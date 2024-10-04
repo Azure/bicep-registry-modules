@@ -59,7 +59,7 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -88,6 +88,26 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/image:<version>'
+
+// Required parameters
+param name = 'cimin001'
+param osAccountType = 'Standard_LRS'
+param osDiskBlobUri = '<osDiskBlobUri>'
+param osDiskCaching = 'ReadWrite'
+param osType = 'Windows'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -152,7 +172,7 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -229,6 +249,55 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/image:<version>'
+
+// Required parameters
+param name = 'cimax001'
+param osAccountType = 'Premium_LRS'
+param osDiskBlobUri = '<osDiskBlobUri>'
+param osDiskCaching = 'ReadWrite'
+param osType = 'Windows'
+// Non-required parameters
+param diskEncryptionSetResourceId = '<diskEncryptionSetResourceId>'
+param diskSizeGB = 128
+param hyperVGeneration = 'V1'
+param location = '<location>'
+param osState = 'Generalized'
+param roleAssignments = [
+  {
+    name: '2dfcdedd-220c-4b6b-b8bd-58e22e0c5434'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param zoneResilient = true
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -269,7 +338,7 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -320,6 +389,36 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/image:<version>'
+
+// Required parameters
+param name = 'ciwaf001'
+param osAccountType = 'Premium_LRS'
+param osDiskBlobUri = '<osDiskBlobUri>'
+param osDiskCaching = 'ReadWrite'
+param osType = 'Windows'
+// Non-required parameters
+param diskEncryptionSetResourceId = '<diskEncryptionSetResourceId>'
+param diskSizeGB = 128
+param hyperVGeneration = 'V1'
+param location = '<location>'
+param osState = 'Generalized'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param zoneResilient = true
 ```
 
 </details>

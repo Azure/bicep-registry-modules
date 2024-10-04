@@ -136,7 +136,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -243,6 +243,98 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/application-gateway:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param backendAddressPools = [
+  {
+    name: 'backendAddressPool1'
+  }
+]
+param backendHttpSettingsCollection = [
+  {
+    name: 'backendHttpSettings1'
+    properties: {
+      cookieBasedAffinity: 'Disabled'
+      port: 80
+      protocol: 'Http'
+    }
+  }
+]
+param frontendIPConfigurations = [
+  {
+    name: 'frontendIPConfig1'
+    properties: {
+      publicIPAddress: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param frontendPorts = [
+  {
+    name: 'frontendPort1'
+    properties: {
+      port: 80
+    }
+  }
+]
+param gatewayIPConfigurations = [
+  {
+    name: 'publicIPConfig1'
+    properties: {
+      subnet: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param httpListeners = [
+  {
+    name: 'httpListener1'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostName: 'www.contoso.com'
+      protocol: 'Http'
+    }
+  }
+]
+param location = '<location>'
+param requestRoutingRules = [
+  {
+    name: 'requestRoutingRule1'
+    properties: {
+      backendAddressPool: {
+        id: '<id>'
+      }
+      backendHttpSettings: {
+        id: '<id>'
+      }
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 100
+      ruleType: 'Basic'
+    }
+  }
+]
 ```
 
 </details>
@@ -718,7 +810,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1230,6 +1322,466 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/application-gateway:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param backendAddressPools = [
+  {
+    name: 'appServiceBackendPool'
+    properties: {
+      backendAddresses: [
+        {
+          fqdn: 'aghapp.azurewebsites.net'
+        }
+      ]
+    }
+  }
+  {
+    name: 'privateVmBackendPool'
+    properties: {
+      backendAddresses: [
+        {
+          ipAddress: '10.0.0.4'
+        }
+      ]
+    }
+  }
+]
+param backendHttpSettingsCollection = [
+  {
+    name: 'appServiceBackendHttpsSetting'
+    properties: {
+      cookieBasedAffinity: 'Disabled'
+      pickHostNameFromBackendAddress: true
+      port: 443
+      protocol: 'Https'
+      requestTimeout: 30
+    }
+  }
+  {
+    name: 'privateVmHttpSetting'
+    properties: {
+      cookieBasedAffinity: 'Disabled'
+      pickHostNameFromBackendAddress: false
+      port: 80
+      probe: {
+        id: '<id>'
+      }
+      protocol: 'Http'
+      requestTimeout: 30
+    }
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+enableHttp2: true
+param enableTelemetry = '<enableTelemetry>'
+param frontendIPConfigurations = [
+  {
+    name: 'private'
+    properties: {
+      privateIPAddress: '10.0.0.20'
+      privateIPAllocationMethod: 'Static'
+      subnet: {
+        id: '<id>'
+      }
+    }
+  }
+  {
+    name: 'public'
+    properties: {
+      privateIPAllocationMethod: 'Dynamic'
+      privateLinkConfiguration: {
+        id: '<id>'
+      }
+      publicIPAddress: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param frontendPorts = [
+  {
+    name: 'port443'
+    properties: {
+      port: 443
+    }
+  }
+  {
+    name: 'port4433'
+    properties: {
+      port: 4433
+    }
+  }
+  {
+    name: 'port80'
+    properties: {
+      port: 80
+    }
+  }
+  {
+    name: 'port8080'
+    properties: {
+      port: 8080
+    }
+  }
+]
+param gatewayIPConfigurations = [
+  {
+    name: 'apw-ip-configuration'
+    properties: {
+      subnet: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param httpListeners = [
+  {
+    name: 'public443'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'https'
+      requireServerNameIndication: false
+      sslCertificate: {
+        id: '<id>'
+      }
+    }
+  }
+  {
+    name: 'private4433'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'https'
+      requireServerNameIndication: false
+      sslCertificate: {
+        id: '<id>'
+      }
+    }
+  }
+  {
+    name: 'httpRedirect80'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'Http'
+      requireServerNameIndication: false
+    }
+  }
+  {
+    name: 'httpRedirect8080'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'Http'
+      requireServerNameIndication: false
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'public'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param privateLinkConfigurations = [
+  {
+    id: '<id>'
+    name: 'pvtlink01'
+    properties: {
+      ipConfigurations: [
+        {
+          id: '<id>'
+          name: 'privateLinkIpConfig1'
+          properties: {
+            primary: false
+            privateIPAllocationMethod: 'Dynamic'
+            subnet: {
+              id: '<id>'
+            }
+          }
+        }
+      ]
+    }
+  }
+]
+param probes = [
+  {
+    name: 'privateVmHttpSettingProbe'
+    properties: {
+      host: '10.0.0.4'
+      interval: 60
+      match: {
+        statusCodes: [
+          '200'
+          '401'
+        ]
+      }
+      minServers: 3
+      path: '/'
+      pickHostNameFromBackendHttpSettings: false
+      protocol: 'Http'
+      timeout: 15
+      unhealthyThreshold: 5
+    }
+  }
+]
+param redirectConfigurations = [
+  {
+    name: 'httpRedirect80'
+    properties: {
+      includePath: true
+      includeQueryString: true
+      redirectType: 'Permanent'
+      requestRoutingRules: [
+        {
+          id: '<id>'
+        }
+      ]
+      targetListener: {
+        id: '<id>'
+      }
+    }
+  }
+  {
+    name: 'httpRedirect8080'
+    properties: {
+      includePath: true
+      includeQueryString: true
+      redirectType: 'Permanent'
+      requestRoutingRules: [
+        {
+          id: '<id>'
+        }
+      ]
+      targetListener: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param requestRoutingRules = [
+  {
+    name: 'public443-appServiceBackendHttpsSetting-appServiceBackendHttpsSetting'
+    properties: {
+      backendAddressPool: {
+        id: '<id>'
+      }
+      backendHttpSettings: {
+        id: '<id>'
+      }
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 200
+      ruleType: 'Basic'
+    }
+  }
+  {
+    name: 'private4433-privateVmHttpSetting-privateVmHttpSetting'
+    properties: {
+      backendAddressPool: {
+        id: '<id>'
+      }
+      backendHttpSettings: {
+        id: '<id>'
+      }
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 250
+      ruleType: 'Basic'
+    }
+  }
+  {
+    name: 'httpRedirect80-public443'
+    properties: {
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 300
+      redirectConfiguration: {
+        id: '<id>'
+      }
+      ruleType: 'Basic'
+    }
+  }
+  {
+    name: 'httpRedirect8080-private4433'
+    properties: {
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 350
+      redirectConfiguration: {
+        id: '<id>'
+      }
+      rewriteRuleSet: {
+        id: '<id>'
+      }
+      ruleType: 'Basic'
+    }
+  }
+]
+param rewriteRuleSets = [
+  {
+    id: '<id>'
+    name: 'customRewrite'
+    properties: {
+      rewriteRules: [
+        {
+          actionSet: {
+            requestHeaderConfigurations: [
+              {
+                headerName: 'Content-Type'
+                headerValue: 'JSON'
+              }
+              {
+                headerName: 'someheader'
+              }
+            ]
+            responseHeaderConfigurations: []
+          }
+          conditions: []
+          name: 'NewRewrite'
+          ruleSequence: 100
+        }
+      ]
+    }
+  }
+]
+param roleAssignments = [
+  {
+    name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param sku = 'WAF_v2'
+param sslCertificates = [
+  {
+    name: 'az-apgw-x-001-ssl-certificate'
+    properties: {
+      keyVaultSecretId: '<keyVaultSecretId>'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param webApplicationFirewallConfiguration = {
+  disabledRuleGroups: [
+    {
+      ruleGroupName: 'Known-CVEs'
+    }
+    {
+      ruleGroupName: 'REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION'
+    }
+    {
+      ruleGroupName: 'REQUEST-941-APPLICATION-ATTACK-XSS'
+    }
+  ]
+  enabled: true
+  exclusions: [
+    {
+      matchVariable: 'RequestHeaderNames'
+      selector: 'hola'
+      selectorMatchOperator: 'StartsWith'
+    }
+  ]
+  fileUploadLimitInMb: 100
+  firewallMode: 'Detection'
+  maxRequestBodySizeInKb: 128
+  requestBodyCheck: true
+  ruleSetType: 'OWASP'
+  ruleSetVersion: '3.0'
+}
+param zones = [
+  '1'
+  '2'
+  '3'
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -1650,7 +2202,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2102,6 +2654,416 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/application-gateway:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param backendAddressPools = [
+  {
+    name: 'appServiceBackendPool'
+    properties: {
+      backendAddresses: [
+        {
+          fqdn: 'aghapp.azurewebsites.net'
+        }
+      ]
+    }
+  }
+  {
+    name: 'privateVmBackendPool'
+    properties: {
+      backendAddresses: [
+        {
+          ipAddress: '10.0.0.4'
+        }
+      ]
+    }
+  }
+]
+param backendHttpSettingsCollection = [
+  {
+    name: 'appServiceBackendHttpsSetting'
+    properties: {
+      cookieBasedAffinity: 'Disabled'
+      pickHostNameFromBackendAddress: true
+      port: 443
+      protocol: 'Https'
+      requestTimeout: 30
+    }
+  }
+  {
+    name: 'privateVmHttpSetting'
+    properties: {
+      cookieBasedAffinity: 'Disabled'
+      pickHostNameFromBackendAddress: false
+      port: 80
+      probe: {
+        id: '<id>'
+      }
+      protocol: 'Http'
+      requestTimeout: 30
+    }
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+enableHttp2: true
+param enableTelemetry = '<enableTelemetry>'
+param firewallPolicyResourceId = '<firewallPolicyResourceId>'
+param frontendIPConfigurations = [
+  {
+    name: 'private'
+    properties: {
+      privateIPAddress: '10.0.0.20'
+      privateIPAllocationMethod: 'Static'
+      subnet: {
+        id: '<id>'
+      }
+    }
+  }
+  {
+    name: 'public'
+    properties: {
+      privateIPAllocationMethod: 'Dynamic'
+      privateLinkConfiguration: {
+        id: '<id>'
+      }
+      publicIPAddress: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param frontendPorts = [
+  {
+    name: 'port443'
+    properties: {
+      port: 443
+    }
+  }
+  {
+    name: 'port4433'
+    properties: {
+      port: 4433
+    }
+  }
+  {
+    name: 'port80'
+    properties: {
+      port: 80
+    }
+  }
+  {
+    name: 'port8080'
+    properties: {
+      port: 8080
+    }
+  }
+]
+param gatewayIPConfigurations = [
+  {
+    name: 'apw-ip-configuration'
+    properties: {
+      subnet: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param httpListeners = [
+  {
+    name: 'public443'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'https'
+      requireServerNameIndication: false
+      sslCertificate: {
+        id: '<id>'
+      }
+    }
+  }
+  {
+    name: 'private4433'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'https'
+      requireServerNameIndication: false
+      sslCertificate: {
+        id: '<id>'
+      }
+    }
+  }
+  {
+    name: 'httpRedirect80'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'Http'
+      requireServerNameIndication: false
+    }
+  }
+  {
+    name: 'httpRedirect8080'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'Http'
+      requireServerNameIndication: false
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'public'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param privateLinkConfigurations = [
+  {
+    id: '<id>'
+    name: 'pvtlink01'
+    properties: {
+      ipConfigurations: [
+        {
+          id: '<id>'
+          name: 'privateLinkIpConfig1'
+          properties: {
+            primary: false
+            privateIPAllocationMethod: 'Dynamic'
+            subnet: {
+              id: '<id>'
+            }
+          }
+        }
+      ]
+    }
+  }
+]
+param probes = [
+  {
+    name: 'privateVmHttpSettingProbe'
+    properties: {
+      host: '10.0.0.4'
+      interval: 60
+      match: {
+        statusCodes: [
+          '200'
+          '401'
+        ]
+      }
+      minServers: 3
+      path: '/'
+      pickHostNameFromBackendHttpSettings: false
+      protocol: 'Http'
+      timeout: 15
+      unhealthyThreshold: 5
+    }
+  }
+]
+param redirectConfigurations = [
+  {
+    name: 'httpRedirect80'
+    properties: {
+      includePath: true
+      includeQueryString: true
+      redirectType: 'Permanent'
+      requestRoutingRules: [
+        {
+          id: '<id>'
+        }
+      ]
+      targetListener: {
+        id: '<id>'
+      }
+    }
+  }
+  {
+    name: 'httpRedirect8080'
+    properties: {
+      includePath: true
+      includeQueryString: true
+      redirectType: 'Permanent'
+      requestRoutingRules: [
+        {
+          id: '<id>'
+        }
+      ]
+      targetListener: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param requestRoutingRules = [
+  {
+    name: 'public443-appServiceBackendHttpsSetting-appServiceBackendHttpsSetting'
+    properties: {
+      backendAddressPool: {
+        id: '<id>'
+      }
+      backendHttpSettings: {
+        id: '<id>'
+      }
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 200
+      ruleType: 'Basic'
+    }
+  }
+  {
+    name: 'private4433-privateVmHttpSetting-privateVmHttpSetting'
+    properties: {
+      backendAddressPool: {
+        id: '<id>'
+      }
+      backendHttpSettings: {
+        id: '<id>'
+      }
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 250
+      ruleType: 'Basic'
+    }
+  }
+  {
+    name: 'httpRedirect80-public443'
+    properties: {
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 300
+      redirectConfiguration: {
+        id: '<id>'
+      }
+      ruleType: 'Basic'
+    }
+  }
+  {
+    name: 'httpRedirect8080-private4433'
+    properties: {
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 350
+      redirectConfiguration: {
+        id: '<id>'
+      }
+      rewriteRuleSet: {
+        id: '<id>'
+      }
+      ruleType: 'Basic'
+    }
+  }
+]
+param rewriteRuleSets = [
+  {
+    id: '<id>'
+    name: 'customRewrite'
+    properties: {
+      rewriteRules: [
+        {
+          actionSet: {
+            requestHeaderConfigurations: [
+              {
+                headerName: 'Content-Type'
+                headerValue: 'JSON'
+              }
+              {
+                headerName: 'someheader'
+              }
+            ]
+            responseHeaderConfigurations: []
+          }
+          conditions: []
+          name: 'NewRewrite'
+          ruleSequence: 100
+        }
+      ]
+    }
+  }
+]
+param sku = 'WAF_v2'
+param sslCertificates = [
+  {
+    name: 'az-apgw-x-001-ssl-certificate'
+    properties: {
+      keyVaultSecretId: '<keyVaultSecretId>'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
