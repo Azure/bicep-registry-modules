@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "10504263612709234516"
+      "templateHash": "12193891383187993365"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -1631,7 +1631,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "16491495841511408666"
+              "templateHash": "18037703368269722870"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -1767,7 +1767,7 @@
               "properties": {
                 "highAvailabilityReplicaCount": "[parameters('highAvailabilityReplicaCount')]",
                 "licenseType": "[parameters('licenseType')]",
-                "maintenanceConfigurationId": "[if(not(empty(parameters('maintenanceConfigurationId'))), parameters('maintenanceConfigurationId'), null())]",
+                "maintenanceConfigurationId": "[parameters('maintenanceConfigurationId')]",
                 "maxSizeBytes": "[parameters('maxSizeBytes')]",
                 "minCapacity": "[parameters('minCapacity')]",
                 "perDatabaseSettings": {
