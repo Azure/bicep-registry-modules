@@ -78,7 +78,7 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -130,6 +130,45 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/vpn-server-configuration:<version>'
+
+// Required parameters
+param name = 'vscminVPNConfig'
+// Non-required parameters
+param aadAudience = '11111111-1234-4321-1234-111111111111'
+param aadIssuer = 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
+param aadTenant = 'https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111'
+param location = '<location>'
+p2sConfigurationPolicyGroups: [
+  {
+    isDefault: 'true'
+    policymembers: [
+      {
+        attributeType: 'AADGroupId'
+        attributeValue: '11111111-1111-2222-3333-111111111111'
+        name: 'UserGroup1'
+      }
+    ]
+    priority: '0'
+    userVPNPolicyGroupName: 'DefaultGroup'
+  }
+]
+param vpnAuthenticationTypes = [
+  'AAD'
+]
+param vpnProtocols = [
+  'OpenVPN'
+]
 ```
 
 </details>
@@ -264,7 +303,7 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -413,6 +452,125 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/vpn-server-configuration:<version>'
+
+// Required parameters
+param name = 'vscmaxVPNConfig'
+// Non-required parameters
+param aadAudience = '11111111-1234-4321-1234-111111111111'
+param aadIssuer = 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
+param aadTenant = 'https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111'
+param location = '<location>'
+p2sConfigurationPolicyGroups: [
+  {
+    isDefault: 'true'
+    policymembers: [
+      {
+        attributeType: 'AADGroupId'
+        attributeValue: '11111111-1111-2222-3333-111111111111'
+        name: 'UserGroup1'
+      }
+      {
+        attributeType: 'AADGroupId'
+        attributeValue: '11111111-1111-3333-4444-111111111111'
+        name: 'UserGroup2'
+      }
+    ]
+    priority: '0'
+    userVPNPolicyGroupName: 'DefaultGroup'
+  }
+  {
+    isDefault: 'false'
+    policymembers: [
+      {
+        attributeType: 'AADGroupId'
+        attributeValue: '11111111-1111-4444-5555-111111111111'
+        name: 'UserGroup3'
+      }
+      {
+        attributeType: 'AADGroupId'
+        attributeValue: '11111111-1111-5555-6666-111111111111'
+        name: 'UserGroup4'
+      }
+    ]
+    priority: '1'
+    userVPNPolicyGroupName: 'AdditionalGroup'
+  }
+]
+param radiusClientRootCertificates = [
+  {
+    name: 'TestRadiusClientRevokedCert'
+    thumbprint: '1f24c630cda418ef2069ffad4fdd5f463a1b59aa'
+  }
+]
+param radiusServerRootCertificates = [
+  {
+    name: 'TestRadiusRootCert'
+    publicCertData: 'MIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UECxMXR4xvYmFsU2lnbiBSb390IENBIC0gUjMxEzARBgNVBAoTCkdsb8JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aEyiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bLyCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkWqQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBovHd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX4268NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o2HLO02JQZR7rkpeDMdmztcpHWD8f'
+  }
+]
+param radiusServers = [
+  {
+    radiusServerAddress: '10.150.1.50'
+    radiusServerScore: '10'
+    radiusServerSecret: 'TestSecret'
+  }
+  {
+    radiusServerAddress: '10.150.1.150'
+    radiusServerScore: '20'
+    radiusServerSecret: 'TestSecret2'
+  }
+]
+param vpnAuthenticationTypes = [
+  'AAD'
+  'Certificate'
+  'Radius'
+]
+param vpnClientIpsecPolicies = [
+  {
+    dhGroup: 'DHGroup14'
+    ikeEncryption: 'AES256'
+    ikeIntegrity: 'SHA256'
+    ipsecEncryption: 'AES256'
+    ipsecIntegrity: 'SHA256'
+    pfsGroup: 'PFS14'
+    saDataSizeKilobytes: 0
+    saLifeTimeSeconds: 27000
+  }
+]
+param vpnClientRevokedCertificates = [
+  {
+    name: 'TestRevokedCert'
+    thumbprint: '1f24c630cda418ef2069ffad4fdd5f463a1b69aa'
+  }
+  {
+    name: 'TestRevokedCert2'
+    thumbprint: '1f24c630cda418ef2069ffad4fdd5f463a1b69bb'
+  }
+]
+param vpnClientRootCertificates = [
+  {
+    name: 'TestRootCert'
+    publicCertData: 'MIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UECxMXR4xvYmFsU2lnbiBSb390IENBIC0gUjMxEzARBgNVBAoTCkdsb8JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aEyiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bLyCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkWqQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBovHd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX4268NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o2HLO02JQZR7rkpeDMdmztcpHWD8f'
+  }
+  {
+    name: 'TestRootCert2'
+    publicCertData: 'MIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcMARELBQAwTDEgMB4GA1UECxMXR4xvYmFsU2lnbiBSb390IENBIC0gUjMxEzARBgNVBAoTCkdsb8JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aEyiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bLyCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkWqQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBovHd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX4268NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o2HLO02JQZR7rkpeDMdmztcpHWD8f'
+  }
+]
+param vpnProtocols = [
+  'OpenVPN'
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -462,7 +620,7 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -514,6 +672,45 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/vpn-server-configuration:<version>'
+
+// Required parameters
+param name = 'vscwafVPNConfig'
+// Non-required parameters
+param aadAudience = '11111111-1234-4321-1234-111111111111'
+param aadIssuer = 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
+param aadTenant = 'https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111'
+param location = '<location>'
+p2sConfigurationPolicyGroups: [
+  {
+    isDefault: 'true'
+    policymembers: [
+      {
+        attributeType: 'AADGroupId'
+        attributeValue: '11111111-1111-2222-3333-111111111111'
+        name: 'UserGroup1'
+      }
+    ]
+    priority: '0'
+    userVPNPolicyGroupName: 'DefaultGroup'
+  }
+]
+param vpnAuthenticationTypes = [
+  'AAD'
+]
+param vpnProtocols = [
+  'OpenVPN'
+]
 ```
 
 </details>
