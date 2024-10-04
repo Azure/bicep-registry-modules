@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.3.12046",
-      "templateHash": "6774994080428210035"
+      "templateHash": "3120749710689745257"
     },
     "name": "Azure NetApp Files Backup Policy",
     "description": "This module deploys a Backup Policy for Azure NetApp File.",
@@ -73,9 +73,26 @@
     }
   ],
   "outputs": {
-    "id": {
+    "Id": {
       "type": "string",
+      "metadata": {
+        "description": "The resource IDs of the backup Policy created within volume."
+      },
       "value": "[resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), parameters('backupPolicyName'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Backup Policy."
+      },
+      "value": "[parameters('backupPolicyName')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the Backup Policy was created in."
+      },
+      "value": "[resourceGroup().name]"
     }
   }
 }

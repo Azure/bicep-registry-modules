@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.3.12046",
-      "templateHash": "8452299158673219606"
+      "templateHash": "5016554437910226007"
     },
     "name": "Azure NetApp Files Snapshot Policy",
     "description": "This module deploys a Snapshot Policy for an Azure NetApp File.",
@@ -179,9 +179,26 @@
     }
   ],
   "outputs": {
-    "snapshotId": {
+    "SnapshotId": {
       "type": "string",
+      "metadata": {
+        "description": "The resource IDs of the snapshot Policy created within volume."
+      },
       "value": "[resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', parameters('netAppAccountName'), parameters('snapshotPolicyName'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Backup Policy."
+      },
+      "value": "[parameters('snapshotPolicyName')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the Snapshot was created in."
+      },
+      "value": "[resourceGroup().name]"
     }
   }
 }

@@ -198,6 +198,8 @@ Weekly snapshot used bytes.
 
 ## Outputs
 
-| Output | Type |
-| :-- | :-- |
-| `snapshotId` | string |
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `name` | string | The name of the Backup Policy. |
+| `resourceGroupName` | string | The name of the Resource Group the Snapshot was created in. |
+| `SnapshotId` | string | The resource IDs of the snapshot Policy created within volume. |

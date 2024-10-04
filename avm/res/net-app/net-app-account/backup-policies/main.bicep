@@ -38,5 +38,11 @@ resource backupPolicies 'Microsoft.NetApp/netAppAccounts/backupPolicies@2024-03-
     weeklyBackupsToKeep: weeklyBackupsToKeep
   }
 }
+@description('The resource IDs of the backup Policy created within volume.')
+output Id string = backupPolicies.id
 
-output id string = backupPolicies.id
+@description('The name of the Backup Policy.')
+output name string = backupPolicies.name
+
+@description('The name of the Resource Group the Backup Policy was created in.')
+output resourceGroupName string = resourceGroup().name

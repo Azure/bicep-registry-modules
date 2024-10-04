@@ -260,14 +260,14 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
 
             backup: backupEnabled
               ? {
-                  backupPolicyId: backupPolicies.outputs.id
+                  backupPolicyId: backupPolicies.outputs.Id
                   policyEnforced: policyEnforced
                   backupVaultId: backupVaultId
                 }
               : {}
             snapshot: snapEnabled
               ? {
-                  snapshotPolicyId: snapshotPolicies.outputs.snapshotId
+                  snapshotPolicyId: snapshotPolicies.outputs.SnapshotId
                 }
               : {}
           }
