@@ -72,7 +72,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -142,6 +142,38 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/azure-stack-hci/cluster:<version>'
+
+// Required parameters
+param clusterNodeNames = '<clusterNodeNames>'
+param clusterWitnessStorageAccountName = '<clusterWitnessStorageAccountName>'
+param customLocationName = '<customLocationName>'
+param defaultGateway = '<defaultGateway>'
+param deploymentMode = 'Deploy'
+param deploymentPrefix = '<deploymentPrefix>'
+param dnsServers = '<dnsServers>'
+param domainFqdn = '<domainFqdn>'
+param domainOUPath = '<domainOUPath>'
+param endingIPAddress = '<endingIPAddress>'
+param keyVaultName = '<keyVaultName>'
+param name = '<name>'
+param networkIntents = '<networkIntents>'
+param startingIPAddress = '<startingIPAddress>'
+param storageConnectivitySwitchless = false
+param storageNetworks = '<storageNetworks>'
+param subnetMask = '<subnetMask>'
+// Non-required parameters
+param enableStorageAutoIp = '<enableStorageAutoIp>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Deploy Azure Stack HCI Cluster in Azure with a 3 node switchless configuration_
 
 This test deploys an Azure VM to host a 3 node switchless Azure Stack HCI cluster, validates the cluster configuration, and then deploys the cluster.
@@ -188,7 +220,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -262,6 +294,42 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/azure-stack-hci/cluster:<version>'
+
+// Required parameters
+param clusterNodeNames = [
+  'hcinode1'
+  'hcinode2'
+  'hcinode3'
+]
+param clusterWitnessStorageAccountName = '<clusterWitnessStorageAccountName>'
+param customLocationName = '<customLocationName>'
+param defaultGateway = '<defaultGateway>'
+param deploymentMode = 'Deploy'
+param deploymentPrefix = '<deploymentPrefix>'
+param dnsServers = '<dnsServers>'
+param domainFqdn = '<domainFqdn>'
+param domainOUPath = '<domainOUPath>'
+param endingIPAddress = '<endingIPAddress>'
+param keyVaultName = '<keyVaultName>'
+param name = '<name>'
+param networkIntents = '<networkIntents>'
+param startingIPAddress = '<startingIPAddress>'
+param storageConnectivitySwitchless = true
+param storageNetworks = '<storageNetworks>'
+param subnetMask = '<subnetMask>'
+// Non-required parameters
+param enableStorageAutoIp = '<enableStorageAutoIp>'
+```
+
+</details>
+<p>
+
 ### Example 3: _Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration WAF aligned_
 
 This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster, validates the cluster configuration, and then deploys the cluster. WAF aligned.
@@ -304,7 +372,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -369,6 +437,38 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/azure-stack-hci/cluster:<version>'
+
+// Required parameters
+param clusterNodeNames = '<clusterNodeNames>'
+param clusterWitnessStorageAccountName = '<clusterWitnessStorageAccountName>'
+param customLocationName = '<customLocationName>'
+param defaultGateway = '<defaultGateway>'
+param deploymentMode = 'Deploy'
+param deploymentPrefix = '<deploymentPrefix>'
+param dnsServers = '<dnsServers>'
+param domainFqdn = '<domainFqdn>'
+param domainOUPath = '<domainOUPath>'
+param endingIPAddress = '<endingIPAddress>'
+param keyVaultName = '<keyVaultName>'
+param name = '<name>'
+param networkIntents = '<networkIntents>'
+param startingIPAddress = '<startingIPAddress>'
+param storageConnectivitySwitchless = false
+param storageNetworks = '<storageNetworks>'
+param subnetMask = '<subnetMask>'
+// Non-required parameters
+param enableStorageAutoIp = '<enableStorageAutoIp>'
 ```
 
 </details>
@@ -741,6 +841,14 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'User Access Administrator'`
+  - `'Azure Stack HCI Administrator'`
+  - `'Windows Admin Center Administrator Login'`
 
 **Required parameters**
 
