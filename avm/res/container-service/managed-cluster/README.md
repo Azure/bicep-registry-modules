@@ -3084,6 +3084,7 @@ Specifies the network policy used for building Kubernetes network. - calico or a
   [
     'azure'
     'calico'
+    'cilium'
   ]
   ```
 

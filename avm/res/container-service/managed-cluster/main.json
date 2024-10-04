@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "6707709888421096485"
+      "version": "0.30.23.60470",
+      "templateHash": "3843531582351256851"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -747,7 +747,8 @@
       "nullable": true,
       "allowedValues": [
         "azure",
-        "calico"
+        "calico",
+        "cilium"
       ],
       "metadata": {
         "description": "Optional. Specifies the network policy used for building Kubernetes network. - calico or azure."
@@ -1633,8 +1634,8 @@
         "networkProfile": {
           "networkDataplane": "[parameters('networkDataplane')]",
           "networkPlugin": "[parameters('networkPlugin')]",
-          "networkPluginMode": "[parameters('networkPluginMode')]",
-          "networkPolicy": "[parameters('networkPolicy')]",
+          "networkPluginMode": "[if(equals(parameters('networkDataplane'), 'cilium'), 'overlay', parameters('networkPluginMode'))]",
+          "networkPolicy": "[if(equals(parameters('networkDataplane'), 'cilium'), 'cilium', parameters('networkPolicy'))]",
           "podCidr": "[parameters('podCidr')]",
           "serviceCidr": "[parameters('serviceCidr')]",
           "dnsServiceIP": "[parameters('dnsServiceIP')]",
@@ -1841,8 +1842,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "12168542117744033419"
+              "version": "0.30.23.60470",
+              "templateHash": "2505380725266419010"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
@@ -2038,8 +2039,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "2004205618690542488"
+              "version": "0.30.23.60470",
+              "templateHash": "4315564225725874539"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
