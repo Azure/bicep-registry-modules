@@ -133,6 +133,7 @@ jobs:
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          CI_KEY_VAULT_NAME: ${{ secrets.CI_KEY_VAULT_NAME }}
 
   ##################
   #   Publishing   #
