@@ -125,7 +125,7 @@ param useExistingSnapshot bool
 @description('Optional. The name of the snapshot.')
 param snapshotName string
 
-@description('Optional.The snapshot Policy id')
+@description('Optional. The snapshot Policy id.')
 param snapshotPolicyId string
 
 @description('Optional. The resource ID of the volume.')
@@ -143,13 +143,13 @@ param location string = resourceGroup().location
 @description('Optional. Zone where the volume will be placed.')
 param zones array = ['1']
 
-@description('Optional. If Backup policy is enforced')
+@description('Optional. If Backup policy is enforced.')
 param policyEnforced bool = false
 
-@description('Optional.The backup policy location')
+@description('Optional. The backup policy location.')
 param backupPolicyLocation string
 
-@description('Optional.The location of snashot policies')
+@description('Optional. The location of snashot policies.')
 param snapshotPolicyLocation string
 
 @description('Optional. The pool service level. Must match the one of the parent capacity pool.')

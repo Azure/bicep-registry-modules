@@ -44,6 +44,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`backupEnabled`](#parameter-backupenabled) | bool | Indicates whether the backup policy is enabled. |
 | [`backupLabel`](#parameter-backuplabel) | string | The label of the backup. |
 | [`backupName`](#parameter-backupname) | string | The name of the backup. |
+| [`backupPolicyLocation`](#parameter-backuppolicylocation) | string | The backup policy location. |
 | [`backupPolicyName`](#parameter-backuppolicyname) | string | The name of the backup policy. |
 | [`backupVaultLocation`](#parameter-backupvaultlocation) | string | The location of the backup vault. |
 | [`backupVaultName`](#parameter-backupvaultname) | string | The name of the backup vault. |
@@ -71,7 +72,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`monthlySnapshotsToKeep`](#parameter-monthlysnapshotstokeep) | int | Monthly snapshot count to keep. |
 | [`monthlyUsedBytes`](#parameter-monthlyusedbytes) | int | Monthly snapshot used bytes. |
 | [`networkFeatures`](#parameter-networkfeatures) | string | Network feature for the volume. |
-| [`policyEnforced`](#parameter-policyenforced) | bool | If Backup policy is enforced |
+| [`policyEnforced`](#parameter-policyenforced) | bool | If Backup policy is enforced. |
 | [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. |
 | [`remoteVolumeRegion`](#parameter-remotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
 | [`remoteVolumeResourceId`](#parameter-remotevolumeresourceid) | string | The resource ID of the remote volume. |
@@ -81,6 +82,8 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
 | [`snapEnabled`](#parameter-snapenabled) | bool | Indicates whether the snapshot policy is enabled. |
 | [`snapshotName`](#parameter-snapshotname) | string | The name of the snapshot. |
+| [`snapshotPolicyId`](#parameter-snapshotpolicyid) | string | The snapshot Policy id. |
+| [`snapshotPolicyLocation`](#parameter-snapshotpolicylocation) | string | The location of snashot policies. |
 | [`snapshotPolicyName`](#parameter-snapshotpolicyname) | string | The name of the snapshot policy. |
 | [`useExistingSnapshot`](#parameter-useexistingsnapshot) | bool | Indicates whether to use an existing snapshot. |
 | [`volumeResourceId`](#parameter-volumeresourceid) | string | The resource ID of the volume. |
@@ -146,6 +149,13 @@ The label of the backup.
 ### Parameter: `backupName`
 
 The name of the backup.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupPolicyLocation`
+
+The backup policy location.
 
 - Required: Yes
 - Type: string
@@ -358,7 +368,7 @@ Network feature for the volume.
 
 ### Parameter: `policyEnforced`
 
-If Backup policy is enforced
+If Backup policy is enforced.
 
 - Required: No
 - Type: bool
@@ -532,6 +542,20 @@ Indicates whether the snapshot policy is enabled.
 ### Parameter: `snapshotName`
 
 The name of the snapshot.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `snapshotPolicyId`
+
+The snapshot Policy id.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `snapshotPolicyLocation`
+
+The location of snashot policies.
 
 - Required: Yes
 - Type: string

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.3.12046",
-      "templateHash": "14082833342240774310"
+      "templateHash": "7867609752134894968"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -343,7 +343,7 @@
     "snapshotPolicyId": {
       "type": "string",
       "metadata": {
-        "description": "Optional.The snapshot Policy id"
+        "description": "Optional. The snapshot Policy id."
       }
     },
     "volumeResourceId": {
@@ -384,19 +384,19 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. If Backup policy is enforced"
+        "description": "Optional. If Backup policy is enforced."
       }
     },
     "backupPolicyLocation": {
       "type": "string",
       "metadata": {
-        "description": "Optional.The backup policy location"
+        "description": "Optional. The backup policy location."
       }
     },
     "snapshotPolicyLocation": {
       "type": "string",
       "metadata": {
-        "description": "Optional.The location of snashot policies"
+        "description": "Optional. The location of snashot policies."
       }
     },
     "serviceLevel": {
