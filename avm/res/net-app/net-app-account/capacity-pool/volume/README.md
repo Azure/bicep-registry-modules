@@ -46,6 +46,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`backupName`](#parameter-backupname) | string | The name of the backup. |
 | [`backupPolicyLocation`](#parameter-backuppolicylocation) | string | The backup policy location. |
 | [`backupPolicyName`](#parameter-backuppolicyname) | string | The name of the backup policy. |
+| [`backupVaultId`](#parameter-backupvaultid) | string | The Id of the Backup Vault. |
 | [`backupVaultLocation`](#parameter-backupvaultlocation) | string | The location of the backup vault. |
 | [`backupVaultName`](#parameter-backupvaultname) | string | The name of the backup vault. |
 | [`coolAccess`](#parameter-coolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
@@ -76,7 +77,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. |
 | [`remoteVolumeRegion`](#parameter-remotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
 | [`remoteVolumeResourceId`](#parameter-remotevolumeresourceid) | string | The resource ID of the remote volume. |
-| [`replicationEnabled`](#parameter-replicationenabled) | bool | Boolean to enable replication |
+| [`replicationEnabled`](#parameter-replicationenabled) | bool | Boolean to enable replication. |
 | [`replicationSchedule`](#parameter-replicationschedule) | string | The replication schedule for the volume. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
@@ -167,6 +168,13 @@ The name of the backup policy.
 - Required: No
 - Type: string
 - Default: `'backupPolicy'`
+
+### Parameter: `backupVaultId`
+
+The Id of the Backup Vault.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `backupVaultLocation`
 
@@ -398,7 +406,7 @@ The resource ID of the remote volume.
 
 ### Parameter: `replicationEnabled`
 
-Boolean to enable replication
+Boolean to enable replication.
 
 - Required: No
 - Type: bool

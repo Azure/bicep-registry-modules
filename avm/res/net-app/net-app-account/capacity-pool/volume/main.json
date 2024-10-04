@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.3.12046",
-      "templateHash": "7867609752134894968"
+      "templateHash": "4228241570721737853"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -467,14 +467,14 @@
     "backupVaultId": {
       "type": "string",
       "metadata": {
-        "description": "Optional.The Id of the Backup Vault"
+        "description": "Optional. The Id of the Backup Vault."
       }
     },
     "replicationEnabled": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Boolean to enable replication"
+        "description": "Optional. Boolean to enable replication."
       }
     }
   },

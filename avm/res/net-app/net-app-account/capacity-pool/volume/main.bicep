@@ -188,10 +188,10 @@ param exportPolicyRules array = []
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@description('Optional.The Id of the Backup Vault')
+@description('Optional. The Id of the Backup Vault.')
 param backupVaultId string
 
-@description('Optional. Boolean to enable replication')
+@description('Optional. Boolean to enable replication.')
 param replicationEnabled bool = true
 
 var builtInRoleNames = {
