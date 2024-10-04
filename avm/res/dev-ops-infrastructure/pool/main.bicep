@@ -14,7 +14,7 @@ param fabricProfileSkuName string
 param concurrency int
 
 @description('Required. The VM images of the machines in the pool.')
-param images imageType
+param images imageType[]
 
 @description('Optional. The geo-location where the resource lives.')
 param location string = resourceGroup().location
@@ -279,12 +279,12 @@ type imageType = {
   @description('Optional. The percentage of the buffer to be allocated to this image.')
   buffer: string?
 
-  @description('Required. The image to use from a well-known set of images made available to customers.')
-  wellKnownImageName: string
+  @description('Conditional. The image to use from a well-known set of images made available to customers. Required if `resourceId` is not set.')
+  wellKnownImageName: string?
 
-  @description('Optional. The resource id of the image.')
+  @description('Conditional. The specific resource id of the marketplace or compute gallery image. Required if `wellKnownImageName` is not set.')
   resourceId: string?
-}[]
+}
 
 type organizationProfileType = {
   @description('Required. Azure DevOps organization profile.')

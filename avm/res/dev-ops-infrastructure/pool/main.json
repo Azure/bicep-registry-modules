@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "3502193398932835678"
+      "templateHash": "2381525425502965594"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource.",
@@ -130,39 +130,37 @@
       "nullable": true
     },
     "imageType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "aliases": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. List of aliases to reference the image by."
-            }
+      "type": "object",
+      "properties": {
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
           },
-          "buffer": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The percentage of the buffer to be allocated to this image."
-            }
-          },
-          "wellKnownImageName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The image to use from a well-known set of images made available to customers."
-            }
-          },
-          "resourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The resource id of the image."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of aliases to reference the image by."
+          }
+        },
+        "buffer": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The percentage of the buffer to be allocated to this image."
+          }
+        },
+        "wellKnownImageName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The image to use from a well-known set of images made available to customers. Required if `resourceId` is not set."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The specific resource id of the marketplace or compute gallery image. Required if `wellKnownImageName` is not set."
           }
         }
       }
@@ -734,7 +732,10 @@
       }
     },
     "images": {
-      "$ref": "#/definitions/imageType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/imageType"
+      },
       "metadata": {
         "description": "Required. The VM images of the machines in the pool."
       }
