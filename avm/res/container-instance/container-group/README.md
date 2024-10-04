@@ -83,7 +83,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -130,6 +130,48 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-instance/container-group:<version>'
+
+// Required parameters
+param containers = [
+  {
+    name: 'az-aci-x-001'
+    properties: {
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 2
+        }
+      }
+    }
+  }
+]
+param ipAddressPorts = [
+  {
+    port: 443
+    protocol: 'Tcp'
+  }
+]
+param name = 'cicgmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -232,7 +274,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -329,6 +371,93 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-instance/container-group:<version>'
+
+// Required parameters
+param containers = [
+  {
+    name: 'az-aci-x-001'
+    properties: {
+      command: []
+      environmentVariables: []
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 80
+          protocol: 'Tcp'
+        }
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 2
+        }
+      }
+    }
+  }
+  {
+    name: 'az-aci-x-002'
+    properties: {
+      command: []
+      environmentVariables: []
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 8080
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 2
+        }
+      }
+    }
+  }
+]
+param ipAddressPorts = [
+  {
+    port: 80
+    protocol: 'Tcp'
+  }
+  {
+    port: 443
+    protocol: 'Tcp'
+  }
+]
+param name = 'cicgencr001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 ```
 
@@ -441,7 +570,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -553,6 +682,102 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-instance/container-group:<version>'
+
+// Required parameters
+param containers = [
+  {
+    name: 'az-aci-x-001'
+    properties: {
+      command: []
+      environmentVariables: [
+        {
+          name: 'CLIENT_ID'
+          value: 'TestClientId'
+        }
+        {
+          name: 'CLIENT_SECRET'
+          secureValue: 'TestSecret'
+        }
+      ]
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 80
+          protocol: 'Tcp'
+        }
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 2
+        }
+      }
+    }
+  }
+  {
+    name: 'az-aci-x-002'
+    properties: {
+      command: []
+      environmentVariables: []
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 8080
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 2
+        }
+      }
+    }
+  }
+]
+param ipAddressPorts = [
+  {
+    port: 80
+    protocol: 'Tcp'
+  }
+  {
+    port: 443
+    protocol: 'Tcp'
+  }
+]
+param name = 'cicgmax001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 4: _Using private network_
 
 This instance deploys the module within a virtual network.
@@ -645,7 +870,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -743,6 +968,88 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-instance/container-group:<version>'
+
+// Required parameters
+param containers = [
+  {
+    name: 'az-aci-x-001'
+    properties: {
+      command: []
+      environmentVariables: []
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 80
+          protocol: 'Tcp'
+        }
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 4
+        }
+      }
+    }
+  }
+  {
+    name: 'az-aci-x-002'
+    properties: {
+      command: []
+      environmentVariables: []
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 8080
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 2
+        }
+      }
+    }
+  }
+]
+param ipAddressPorts = [
+  {
+    port: 80
+    protocol: 'Tcp'
+  }
+  {
+    port: 443
+    protocol: 'Tcp'
+  }
+  {
+    port: 8080
+    protocol: 'Tcp'
+  }
+]
+param name = 'cicgprivate001'
+// Non-required parameters
+param ipAddressType = 'Private'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param subnetId = '<subnetId>'
+```
+
+</details>
+<p>
+
 ### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -834,7 +1141,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -923,6 +1230,87 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-instance/container-group:<version>'
+
+// Required parameters
+param containers = [
+  {
+    name: 'az-aci-x-001'
+    properties: {
+      command: []
+      environmentVariables: []
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 80
+          protocol: 'Tcp'
+        }
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 2
+        }
+      }
+    }
+  }
+  {
+    name: 'az-aci-x-002'
+    properties: {
+      command: []
+      environmentVariables: []
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 8080
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 2
+        }
+      }
+    }
+  }
+]
+param ipAddressPorts = [
+  {
+    port: 80
+    protocol: 'Tcp'
+  }
+  {
+    port: 443
+    protocol: 'Tcp'
+  }
+]
+param name = 'cicgwaf001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
