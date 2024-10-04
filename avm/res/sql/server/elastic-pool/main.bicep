@@ -68,7 +68,7 @@ resource elasticPool 'Microsoft.Sql/servers/elasticPools@2023-08-01-preview' = {
   properties: {
     highAvailabilityReplicaCount: highAvailabilityReplicaCount
     licenseType: licenseType
-    maintenanceConfigurationId: !empty(maintenanceConfigurationId) ? maintenanceConfigurationId : null
+    maintenanceConfigurationId: maintenanceConfigurationId
     maxSizeBytes: maxSizeBytes
     minCapacity: minCapacity
     perDatabaseSettings: {
