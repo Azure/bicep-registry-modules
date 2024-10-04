@@ -53,6 +53,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     dnsServers: '<dnsServers>'
     domainFqdn: '<domainFqdn>'
     domainOUPath: '<domainOUPath>'
+    enableStorageAutoIp: '<enableStorageAutoIp>'
     endingIPAddress: '<endingIPAddress>'
     keyVaultName: '<keyVaultName>'
     name: '<name>'
@@ -61,8 +62,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     storageConnectivitySwitchless: false
     storageNetworks: '<storageNetworks>'
     subnetMask: '<subnetMask>'
-    // Non-required parameters
-    enableStorageAutoIp: '<enableStorageAutoIp>'
   }
 }
 ```
@@ -107,6 +106,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     "domainOUPath": {
       "value": "<domainOUPath>"
     },
+    "enableStorageAutoIp": {
+      "value": "<enableStorageAutoIp>"
+    },
     "endingIPAddress": {
       "value": "<endingIPAddress>"
     },
@@ -130,10 +132,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     },
     "subnetMask": {
       "value": "<subnetMask>"
-    },
-    // Non-required parameters
-    "enableStorageAutoIp": {
-      "value": "<enableStorageAutoIp>"
     }
   }
 }
@@ -159,6 +157,7 @@ param deploymentPrefix = '<deploymentPrefix>'
 param dnsServers = '<dnsServers>'
 param domainFqdn = '<domainFqdn>'
 param domainOUPath = '<domainOUPath>'
+param enableStorageAutoIp = '<enableStorageAutoIp>'
 param endingIPAddress = '<endingIPAddress>'
 param keyVaultName = '<keyVaultName>'
 param name = '<name>'
@@ -167,8 +166,6 @@ param startingIPAddress = '<startingIPAddress>'
 param storageConnectivitySwitchless = false
 param storageNetworks = '<storageNetworks>'
 param subnetMask = '<subnetMask>'
-// Non-required parameters
-param enableStorageAutoIp = '<enableStorageAutoIp>'
 ```
 
 </details>
@@ -201,6 +198,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     dnsServers: '<dnsServers>'
     domainFqdn: '<domainFqdn>'
     domainOUPath: '<domainOUPath>'
+    enableStorageAutoIp: '<enableStorageAutoIp>'
     endingIPAddress: '<endingIPAddress>'
     keyVaultName: '<keyVaultName>'
     name: '<name>'
@@ -209,8 +207,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     storageConnectivitySwitchless: true
     storageNetworks: '<storageNetworks>'
     subnetMask: '<subnetMask>'
-    // Non-required parameters
-    enableStorageAutoIp: '<enableStorageAutoIp>'
   }
 }
 ```
@@ -259,6 +255,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     "domainOUPath": {
       "value": "<domainOUPath>"
     },
+    "enableStorageAutoIp": {
+      "value": "<enableStorageAutoIp>"
+    },
     "endingIPAddress": {
       "value": "<endingIPAddress>"
     },
@@ -282,10 +281,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     },
     "subnetMask": {
       "value": "<subnetMask>"
-    },
-    // Non-required parameters
-    "enableStorageAutoIp": {
-      "value": "<enableStorageAutoIp>"
     }
   }
 }
@@ -315,6 +310,7 @@ param deploymentPrefix = '<deploymentPrefix>'
 param dnsServers = '<dnsServers>'
 param domainFqdn = '<domainFqdn>'
 param domainOUPath = '<domainOUPath>'
+param enableStorageAutoIp = '<enableStorageAutoIp>'
 param endingIPAddress = '<endingIPAddress>'
 param keyVaultName = '<keyVaultName>'
 param name = '<name>'
@@ -323,8 +319,6 @@ param startingIPAddress = '<startingIPAddress>'
 param storageConnectivitySwitchless = true
 param storageNetworks = '<storageNetworks>'
 param subnetMask = '<subnetMask>'
-// Non-required parameters
-param enableStorageAutoIp = '<enableStorageAutoIp>'
 ```
 
 </details>
@@ -353,6 +347,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     dnsServers: '<dnsServers>'
     domainFqdn: '<domainFqdn>'
     domainOUPath: '<domainOUPath>'
+    enableStorageAutoIp: '<enableStorageAutoIp>'
     endingIPAddress: '<endingIPAddress>'
     keyVaultName: '<keyVaultName>'
     name: '<name>'
@@ -361,8 +356,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     storageConnectivitySwitchless: false
     storageNetworks: '<storageNetworks>'
     subnetMask: '<subnetMask>'
-    // Non-required parameters
-    enableStorageAutoIp: '<enableStorageAutoIp>'
   }
 }
 ```
@@ -407,6 +400,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     "domainOUPath": {
       "value": "<domainOUPath>"
     },
+    "enableStorageAutoIp": {
+      "value": "<enableStorageAutoIp>"
+    },
     "endingIPAddress": {
       "value": "<endingIPAddress>"
     },
@@ -430,10 +426,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     },
     "subnetMask": {
       "value": "<subnetMask>"
-    },
-    // Non-required parameters
-    "enableStorageAutoIp": {
-      "value": "<enableStorageAutoIp>"
     }
   }
 }
@@ -459,6 +451,7 @@ param deploymentPrefix = '<deploymentPrefix>'
 param dnsServers = '<dnsServers>'
 param domainFqdn = '<domainFqdn>'
 param domainOUPath = '<domainOUPath>'
+param enableStorageAutoIp = '<enableStorageAutoIp>'
 param endingIPAddress = '<endingIPAddress>'
 param keyVaultName = '<keyVaultName>'
 param name = '<name>'
@@ -467,8 +460,6 @@ param startingIPAddress = '<startingIPAddress>'
 param storageConnectivitySwitchless = false
 param storageNetworks = '<storageNetworks>'
 param subnetMask = '<subnetMask>'
-// Non-required parameters
-param enableStorageAutoIp = '<enableStorageAutoIp>'
 ```
 
 </details>
@@ -587,9 +578,8 @@ The ADDS OU path - ex "OU=HCI,DC=contoso,DC=com".
 
 Enable storage auto IP assignment. This should be true for most deployments except when deploying a three-node switchless cluster, in which case storage IPs should be configured before deployment and this value set to false.
 
-- Required: No
+- Required: Yes
 - Type: bool
-- Default: `True`
 
 ### Parameter: `endingIPAddress`
 
