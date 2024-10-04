@@ -88,6 +88,6 @@ The weekly backups to keep.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `Id` | string | The resource IDs of the backup Policy created within volume. |
 | `name` | string | The name of the Backup Policy. |
 | `resourceGroupName` | string | The name of the Resource Group the Backup Policy was created in. |
+| `resourceId` | string | The resource IDs of the backup Policy created within volume. |

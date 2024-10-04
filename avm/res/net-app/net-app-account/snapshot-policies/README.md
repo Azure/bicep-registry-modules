@@ -202,4 +202,4 @@ Weekly snapshot used bytes.
 | :-- | :-- | :-- |
 | `name` | string | The name of the Backup Policy. |
 | `resourceGroupName` | string | The name of the Resource Group the Snapshot was created in. |
-| `SnapshotId` | string | The resource IDs of the snapshot Policy created within volume. |
+| `resourceId` | string | The resource IDs of the snapshot Policy created within volume. |

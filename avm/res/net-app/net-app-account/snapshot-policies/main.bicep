@@ -104,7 +104,7 @@ resource snapshotPolicies 'Microsoft.NetApp/netAppAccounts/snapshotPolicies@2024
 }
 
 @description('The resource IDs of the snapshot Policy created within volume.')
-output SnapshotId string = snapshotPolicies.id
+output resourceId string = snapshotPolicies.id
 
 @description('The name of the Backup Policy.')
 output name string = snapshotPolicies.name

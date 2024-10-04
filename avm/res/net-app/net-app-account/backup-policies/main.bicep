@@ -39,7 +39,7 @@ resource backupPolicies 'Microsoft.NetApp/netAppAccounts/backupPolicies@2024-03-
   }
 }
 @description('The resource IDs of the backup Policy created within volume.')
-output Id string = backupPolicies.id
+output resourceId string = backupPolicies.id
 
 @description('The name of the Backup Policy.')
 output name string = backupPolicies.name
