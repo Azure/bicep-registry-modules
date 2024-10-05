@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "973776533492793692"
+      "version": "0.30.23.60470",
+      "templateHash": "6347373659148864152"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -388,7 +388,11 @@
     },
     "publicIpZones": {
       "type": "array",
-      "defaultValue": [],
+      "defaultValue": [
+        1,
+        2,
+        3
+      ],
       "metadata": {
         "description": "Optional. Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones."
       }
@@ -424,6 +428,7 @@
     },
     "skuName": {
       "type": "string",
+      "defaultValue": "[if(equals(parameters('gatewayType'), 'VPN'), 'VpnGw1AZ', 'ErGw1AZ')]",
       "allowedValues": [
         "Basic",
         "VpnGw1",
@@ -444,7 +449,7 @@
         "ErGw3AZ"
       ],
       "metadata": {
-        "description": "Required. The SKU of the Gateway."
+        "description": "Optional. The SKU of the Gateway."
       }
     },
     "vpnType": {
@@ -1455,8 +1460,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "915174536118171652"
+              "version": "0.30.23.60470",
+              "templateHash": "15500017864202979057"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a Virtual Network Gateway NAT Rule.",

@@ -72,7 +72,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -101,6 +101,30 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-manager:<version>'
+
+// Required parameters
+param name = 'nnmmin001'
+param networkManagerScopeAccesses = [
+  'Connectivity'
+]
+param networkManagerScopes = {
+  subscriptions: [
+    '<id>'
+  ]
+}
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -362,7 +386,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -632,6 +656,252 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-manager:<version>'
+
+// Required parameters
+param name = '<name>'
+param networkManagerScopeAccesses = [
+  'Connectivity'
+  'SecurityAdmin'
+]
+param networkManagerScopes = {
+  managementGroups: [
+    '/providers/Microsoft.Management/managementGroups/#_managementGroupId_#'
+  ]
+}
+// Non-required parameters
+param connectivityConfigurations = [
+  {
+    appliesToGroups: [
+      {
+        groupConnectivity: 'None'
+        isGlobal: false
+        networkGroupResourceId: '<networkGroupResourceId>'
+        useHubGateway: false
+      }
+    ]
+    connectivityTopology: 'HubAndSpoke'
+    deleteExistingPeering: true
+    description: 'hubSpokeConnectivity description'
+    hubs: [
+      {
+        resourceId: '<resourceId>'
+        resourceType: 'Microsoft.Network/virtualNetworks'
+      }
+    ]
+    isGlobal: false
+    name: 'hubSpokeConnectivity'
+  }
+  {
+    appliesToGroups: [
+      {
+        groupConnectivity: 'DirectlyConnected'
+        isGlobal: true
+        networkGroupResourceId: '<networkGroupResourceId>'
+        useHubGateway: false
+      }
+    ]
+    connectivityTopology: 'Mesh'
+    deleteExistingPeering: true
+    description: 'MeshConnectivity description'
+    isGlobal: true
+    name: 'MeshConnectivity-1'
+  }
+  {
+    appliesToGroups: [
+      {
+        groupConnectivity: 'DirectlyConnected'
+        isGlobal: false
+        networkGroupResourceId: '<networkGroupResourceId>'
+        useHubGateway: false
+      }
+    ]
+    connectivityTopology: 'Mesh'
+    isGlobal: false
+    name: 'MeshConnectivity-2'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param networkGroups = [
+  {
+    description: 'network-group-spokes description'
+    name: 'network-group-spokes-1'
+    staticMembers: [
+      {
+        name: 'virtualNetworkSpoke1'
+        resourceId: '<resourceId>'
+      }
+      {
+        name: 'virtualNetworkSpoke2'
+        resourceId: '<resourceId>'
+      }
+    ]
+  }
+  {
+    name: 'network-group-spokes-2'
+    staticMembers: [
+      {
+        name: 'virtualNetworkSpoke3'
+        resourceId: '<resourceId>'
+      }
+    ]
+  }
+  {
+    name: 'network-group-spokes-3'
+  }
+]
+param roleAssignments = [
+  {
+    name: 'e8472331-308c-4c77-aa31-017279d8e5b6'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param scopeConnections = [
+  {
+    description: 'description of the scope connection'
+    name: 'scope-connection-test'
+    resourceId: '<resourceId>'
+    tenantId: '<tenantId>'
+  }
+]
+param securityAdminConfigurations = [
+  {
+    applyOnNetworkIntentPolicyBasedServices: [
+      'AllowRulesOnly'
+    ]
+    description: 'description of the security admin config'
+    name: 'test-security-admin-config-1'
+    ruleCollections: [
+      {
+        appliesToGroups: [
+          {
+            networkGroupResourceId: '<networkGroupResourceId>'
+          }
+        ]
+        description: 'test-rule-collection-description'
+        name: 'test-rule-collection-1'
+        rules: [
+          {
+            access: 'Allow'
+            description: 'test-inbound-allow-rule-1-description'
+            direction: 'Inbound'
+            name: 'test-inbound-allow-rule-1'
+            priority: 150
+            protocol: 'Tcp'
+          }
+          {
+            access: 'Deny'
+            description: 'test-outbound-deny-rule-2-description'
+            direction: 'Outbound'
+            name: 'test-outbound-deny-rule-2'
+            priority: 200
+            protocol: 'Tcp'
+            sourcePortRanges: [
+              '442-445'
+              '80'
+            ]
+            sources: [
+              {
+                addressPrefix: 'AppService.WestEurope'
+                addressPrefixType: 'ServiceTag'
+              }
+            ]
+          }
+        ]
+      }
+      {
+        appliesToGroups: [
+          {
+            networkGroupResourceId: '<networkGroupResourceId>'
+          }
+          {
+            networkGroupResourceId: '<networkGroupResourceId>'
+          }
+        ]
+        name: 'test-rule-collection-2'
+        rules: [
+          {
+            access: 'Allow'
+            destinationPortRanges: [
+              '442-445'
+              '80'
+            ]
+            destinations: [
+              {
+                addressPrefix: '192.168.20.20'
+                addressPrefixType: 'IPPrefix'
+              }
+            ]
+            direction: 'Inbound'
+            name: 'test-inbound-allow-rule-3'
+            priority: 250
+            protocol: 'Tcp'
+          }
+          {
+            access: 'Allow'
+            description: 'test-inbound-allow-rule-4-description'
+            destinations: [
+              {
+                addressPrefix: '172.16.0.0/24'
+                addressPrefixType: 'IPPrefix'
+              }
+              {
+                addressPrefix: '172.16.1.0/24'
+                addressPrefixType: 'IPPrefix'
+              }
+            ]
+            direction: 'Inbound'
+            name: 'test-inbound-allow-rule-4'
+            priority: 260
+            protocol: 'Tcp'
+            sources: [
+              {
+                addressPrefix: '10.0.0.0/24'
+                addressPrefixType: 'IPPrefix'
+              }
+              {
+                addressPrefix: '100.100.100.100'
+                addressPrefixType: 'IPPrefix'
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -671,7 +941,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -706,6 +976,35 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-manager:<version>'
+
+// Required parameters
+param name = 'nnmwaf001'
+param networkManagerScopeAccesses = [
+  'SecurityAdmin'
+]
+param networkManagerScopes = {
+  subscriptions: [
+    '<id>'
+  ]
+}
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
