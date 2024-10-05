@@ -246,7 +246,7 @@ param osDisk = {
   }
 }
 param osType = 'Linux'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 0
 // Non-required parameters
 param configurationProfile = '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
@@ -443,7 +443,7 @@ param osDisk = {
   }
 }
 param osType = 'Linux'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 0
 // Non-required parameters
 param disablePasswordAuthentication = true
@@ -1222,7 +1222,7 @@ param osDisk = {
   name: 'osdisk01'
 }
 param osType = 'Linux'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 1
 // Non-required parameters
 param backupPolicyName = '<backupPolicyName>'
@@ -2112,7 +2112,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 2
 // Non-required parameters
 param adminPassword = '<adminPassword>'
@@ -2446,7 +2446,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 0
 // Non-required parameters
 param adminPassword = '<adminPassword>'
@@ -2671,6 +2671,10 @@ param nicConfigurations = [
     ipConfigurations: [
       {
         name: 'ipconfig01'
+        pipConfiguration: {
+          publicIpNameSuffix: '-pip-01'
+          zones: []
+        }
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -2685,7 +2689,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 0
 // Non-required parameters
 param adminPassword = '<adminPassword>'
@@ -2933,7 +2937,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 0
 // Non-required parameters
 param adminPassword = '<adminPassword>'
@@ -3724,7 +3728,7 @@ param nicConfigurations = [
         ]
         name: 'ipconfig01'
         pipConfiguration: {
-          publicIpNameSuffix: '-pip-01'
+          publicIPAddressResourceId: '<publicIPAddressResourceId>'
           roleAssignments: [
             {
               name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
@@ -3742,11 +3746,6 @@ param nicConfigurations = [
               principalType: 'ServicePrincipal'
               roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
             }
-          ]
-          zones: [
-            1
-            2
-            3
           ]
         }
         subnetResourceId: '<subnetResourceId>'
@@ -3784,7 +3783,7 @@ param osDisk = {
   name: 'osdisk01'
 }
 param osType = 'Windows'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 2
 // Non-required parameters
 param adminPassword = '<adminPassword>'
@@ -4340,7 +4339,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 0
 // Non-required parameters
 param adminPassword = '<adminPassword>'
@@ -4522,7 +4521,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 0
 // Non-required parameters
 param adminPassword = '<adminPassword>'
