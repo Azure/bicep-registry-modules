@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "6937366639468043993"
+      "templateHash": "16836933229074643730"
     },
     "name": "container-job-toolkit",
     "description": "This module deploys a container to run as a job.",
@@ -469,7 +469,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "10948975113936227568"
+              "templateHash": "7432819285836486809"
             }
           },
           "definitions": {
@@ -16648,8 +16648,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "6114802105697707433"
+                      "version": "0.30.23.60470",
+                      "templateHash": "7514297051944706964"
                     },
                     "name": "Storage Accounts",
                     "description": "This module deploys a Storage Account.",
@@ -17459,12 +17459,11 @@
                       "type": "string",
                       "defaultValue": "TLS1_2",
                       "allowedValues": [
-                        "TLS1_0",
-                        "TLS1_1",
-                        "TLS1_2"
+                        "TLS1_2",
+                        "TLS1_3"
                       ],
                       "metadata": {
-                        "description": "Optional. Set the minimum TLS version on request to storage."
+                        "description": "Optional. Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 are deprecated and not supported anymore."
                       }
                     },
                     "enableHierarchicalNamespace": {
@@ -17647,7 +17646,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.13.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.14.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -17683,7 +17682,7 @@
                     },
                     "storageAccount": {
                       "type": "Microsoft.Storage/storageAccounts",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2023-05-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "kind": "[parameters('kind')]",
@@ -17707,7 +17706,7 @@
                         "accessTier": "[if(and(not(equals(parameters('kind'), 'Storage')), not(equals(parameters('kind'), 'BlockBlobStorage'))), parameters('accessTier'), null())]",
                         "sasPolicy": "[if(not(empty(parameters('sasExpirationPeriod'))), createObject('expirationAction', 'Log', 'sasExpirationPeriod', parameters('sasExpirationPeriod')), null())]",
                         "supportsHttpsTrafficOnly": "[parameters('supportsHttpsTrafficOnly')]",
-                        "isHnsEnabled": "[if(parameters('enableHierarchicalNamespace'), parameters('enableHierarchicalNamespace'), null())]",
+                        "isHnsEnabled": "[parameters('enableHierarchicalNamespace')]",
                         "isSftpEnabled": "[parameters('enableSftp')]",
                         "isNfsV3Enabled": "[if(parameters('enableNfsV3'), parameters('enableNfsV3'), '')]",
                         "largeFileSharesState": "[if(or(equals(parameters('skuName'), 'Standard_LRS'), equals(parameters('skuName'), 'Standard_ZRS')), parameters('largeFileSharesState'), null())]",
@@ -18580,8 +18579,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "11289787713365096902"
+                              "version": "0.30.23.60470",
+                              "templateHash": "16749766572958481061"
                             },
                             "name": "Storage Account Management Policies",
                             "description": "This module deploys a Storage Account Management Policy.",
@@ -18690,8 +18689,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "18130658711251621530"
+                              "version": "0.30.23.60470",
+                              "templateHash": "14184905621772237225"
                             },
                             "name": "Storage Account Local Users",
                             "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication.",
@@ -18908,8 +18907,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "17077763197163073998"
+                              "version": "0.30.23.60470",
+                              "templateHash": "12887537147730330940"
                             },
                             "name": "Storage Account blob Services",
                             "description": "This module deploys a Storage Account Blob Service.",
@@ -19268,6 +19267,9 @@
                                   "storageAccountName": {
                                     "value": "[parameters('storageAccountName')]"
                                   },
+                                  "blobServiceName": {
+                                    "value": "[variables('name')]"
+                                  },
                                   "name": {
                                     "value": "[coalesce(parameters('containers'), createArray())[copyIndex()].name]"
                                   },
@@ -19306,8 +19308,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.29.47.4906",
-                                      "templateHash": "1020003258393866601"
+                                      "version": "0.30.23.60470",
+                                      "templateHash": "7740343838101895320"
                                     },
                                     "name": "Storage Account Blob Containers",
                                     "description": "This module deploys a Storage Account Blob Container.",
@@ -19394,6 +19396,13 @@
                                       "maxLength": 24,
                                       "metadata": {
                                         "description": "Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment."
+                                      }
+                                    },
+                                    "blobServiceName": {
+                                      "type": "string",
+                                      "defaultValue": "default",
+                                      "metadata": {
+                                        "description": "Optional. The name of the parent Blob Service. Required if the template is used in a standalone deployment."
                                       }
                                     },
                                     "name": {
@@ -19506,7 +19515,7 @@
                                       "existing": true,
                                       "type": "Microsoft.Storage/storageAccounts/blobServices",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]",
+                                      "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('blobServiceName'))]",
                                       "dependsOn": [
                                         "storageAccount"
                                       ]
@@ -19520,7 +19529,7 @@
                                     "container": {
                                       "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
                                       "apiVersion": "2022-09-01",
-                                      "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', parameters('name'))]",
+                                      "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), parameters('blobServiceName'), parameters('name'))]",
                                       "properties": {
                                         "defaultEncryptionScope": "[if(not(empty(parameters('defaultEncryptionScope'))), parameters('defaultEncryptionScope'), null())]",
                                         "denyEncryptionScopeOverride": "[if(equals(parameters('denyEncryptionScopeOverride'), true()), parameters('denyEncryptionScopeOverride'), null())]",
@@ -19541,8 +19550,8 @@
                                       },
                                       "type": "Microsoft.Authorization/roleAssignments",
                                       "apiVersion": "2022-04-01",
-                                      "scope": "[format('Microsoft.Storage/storageAccounts/{0}/blobServices/{1}/containers/{2}', parameters('storageAccountName'), 'default', parameters('name'))]",
-                                      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', parameters('storageAccountName'), 'default', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+                                      "scope": "[format('Microsoft.Storage/storageAccounts/{0}/blobServices/{1}/containers/{2}', parameters('storageAccountName'), parameters('blobServiceName'), parameters('name'))]",
+                                      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', parameters('storageAccountName'), parameters('blobServiceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                                       "properties": {
                                         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
                                         "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
@@ -19589,8 +19598,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.29.47.4906",
-                                              "templateHash": "7245741358008626948"
+                                              "version": "0.30.23.60470",
+                                              "templateHash": "17642721918788484059"
                                             },
                                             "name": "Storage Account Blob Container Immutability Policies",
                                             "description": "This module deploys a Storage Account Blob Container Immutability Policy.",
@@ -19688,7 +19697,7 @@
                                       "metadata": {
                                         "description": "The resource ID of the deployed container."
                                       },
-                                      "value": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', parameters('storageAccountName'), 'default', parameters('name'))]"
+                                      "value": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', parameters('storageAccountName'), parameters('blobServiceName'), parameters('name'))]"
                                     },
                                     "resourceGroupName": {
                                       "type": "string",
@@ -19701,6 +19710,7 @@
                                 }
                               },
                               "dependsOn": [
+                                "blobServices",
                                 "storageAccount"
                               ]
                             }
@@ -19768,8 +19778,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "1933197013743223154"
+                              "version": "0.30.23.60470",
+                              "templateHash": "3657184950062156101"
                             },
                             "name": "Storage Account File Share Services",
                             "description": "This module deploys a Storage Account File Share Service.",
@@ -20049,8 +20059,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.29.47.4906",
-                                      "templateHash": "13477688809575027800"
+                                      "version": "0.30.23.60470",
+                                      "templateHash": "5694394509785243538"
                                     },
                                     "name": "Storage Account File Shares",
                                     "description": "This module deploys a Storage Account File Share.",
@@ -20256,8 +20266,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.29.47.4906",
-                                              "templateHash": "10820882302387746924"
+                                              "version": "0.30.23.60470",
+                                              "templateHash": "11498628270290452072"
                                             }
                                           },
                                           "parameters": {
@@ -20532,8 +20542,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "9552908737955027812"
+                              "version": "0.30.23.60470",
+                              "templateHash": "6947504466788447852"
                             },
                             "name": "Storage Account Queue Services",
                             "description": "This module deploys a Storage Account Queue Service.",
@@ -20777,8 +20787,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.29.47.4906",
-                                      "templateHash": "1992900679572007532"
+                                      "version": "0.30.23.60470",
+                                      "templateHash": "6090221832347220924"
                                     },
                                     "name": "Storage Account Queues",
                                     "description": "This module deploys a Storage Account Queue.",
@@ -21048,8 +21058,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "15143318143658591417"
+                              "version": "0.30.23.60470",
+                              "templateHash": "6657632516379685259"
                             },
                             "name": "Storage Account Table Services",
                             "description": "This module deploys a Storage Account Table Service.",
@@ -21290,8 +21300,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.29.47.4906",
-                                      "templateHash": "16017327978473583176"
+                                      "version": "0.30.23.60470",
+                                      "templateHash": "7397003163362434404"
                                     },
                                     "name": "Storage Account Table",
                                     "description": "This module deploys a Storage Account Table.",
@@ -21538,7 +21548,7 @@
                             "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
                           },
                           "secretsToSet": {
-                            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1'), createArray(createObject('name', parameters('secretsExportConfiguration').accessKey1, 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2022-09-01').keys[0].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString1'), createArray(createObject('name', parameters('secretsExportConfiguration').connectionString1, 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2022-09-01').keys[0].value))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2'), createArray(createObject('name', parameters('secretsExportConfiguration').accessKey2, 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2022-09-01').keys[1].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString2'), createArray(createObject('name', parameters('secretsExportConfiguration').connectionString2, 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2022-09-01').keys[1].value))), createArray()))]"
+                            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1'), createArray(createObject('name', parameters('secretsExportConfiguration').accessKey1, 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[0].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString1'), createArray(createObject('name', parameters('secretsExportConfiguration').connectionString1, 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[0].value))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2'), createArray(createObject('name', parameters('secretsExportConfiguration').accessKey2, 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[1].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString2'), createArray(createObject('name', parameters('secretsExportConfiguration').connectionString2, 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[1].value))), createArray()))]"
                           }
                         },
                         "template": {
@@ -21548,8 +21558,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "986606208324987345"
+                              "version": "0.30.23.60470",
+                              "templateHash": "12263717469683062316"
                             }
                           },
                           "definitions": {
@@ -21690,14 +21700,14 @@
                       "metadata": {
                         "description": "The principal ID of the system assigned identity."
                       },
-                      "value": "[coalesce(tryGet(tryGet(reference('storageAccount', '2022-09-01', 'full'), 'identity'), 'principalId'), '')]"
+                      "value": "[coalesce(tryGet(tryGet(reference('storageAccount', '2023-05-01', 'full'), 'identity'), 'principalId'), '')]"
                     },
                     "location": {
                       "type": "string",
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('storageAccount', '2022-09-01', 'full').location]"
+                      "value": "[reference('storageAccount', '2023-05-01', 'full').location]"
                     },
                     "serviceEndpoints": {
                       "type": "object",
@@ -22461,7 +22471,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.3.12046",
-              "templateHash": "17986899658013887007"
+              "templateHash": "8652026027157801674"
             },
             "name": "import-image-to-acr",
             "description": "This modules deployes an image to an Azure Container Registry.",
@@ -22655,7 +22665,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.ptn.deploymentscript-importimagetoacr.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.ptn.deploymentscript-importimagetoacr.{0}.{1}', replace('0.3.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -22823,7 +22833,7 @@
                     "value": "[parameters('subnetResourceIds')]"
                   },
                   "scriptContent": {
-                    "value": "#!/bin/bash\n    set -e\n\n    echo \"Waiting on RBAC replication ($initialDelay)\\n\"\n    sleep $initialDelay\n\n    # retry loop to catch errors (usually RBAC delays, but 'Error copying blobs' is also not unheard of)\n    retryLoopCount=0\n    until [ $retryLoopCount -ge $retryMax ]\n    do\n      echo \"Importing Image ($retryLoopCount): $imageName into ACR: $acrName\\n\"\n      if [ $overwriteExistingImage = 'true' ]; then\n        if [ -n \"$sourceRegistryUsername\" ] && [ -n \"$sourceRegistryPassword\" ]; then\n          az acr import -n $acrName --source $imageName --image $newImageName --force --username $sourceRegistryUsername --password $sourceRegistryPassword\n        else\n          az acr import -n $acrName --source $imageName --image $newImageName --force\n        fi\n      else\n        if [ -n \"$sourceRegistryUsername\" ] && [ -n \"$sourceRegistryPassword\" ]; then\n          az acr import -n $acrName --source $imageName --image $newImageName --username $sourceRegistryUsername --password $sourceRegistryPassword\n        else\n          az acr import -n $acrName --source $imageName --image $newImageName\n        fi\n      fi\n\n      sleep $retrySleep\n      retryLoopCount=$((retryLoopCount+1))\n    done\n\n    echo \"done\\n\""
+                    "value": "#!/bin/bash\n    echo \"Waiting on RBAC replication ($initialDelay)\\n\"\n    sleep $initialDelay\n\n    # retry loop to catch errors (usually RBAC delays, but 'Error copying blobs' is also not unheard of)\n    retryLoopCount=0\n    until [ $retryLoopCount -ge $retryMax ]\n    do\n      echo \"Importing Image ($retryLoopCount): $imageName into ACR: $acrName\\n\"\n      if [ $overwriteExistingImage = 'true' ]; then\n        if [ -n \"$sourceRegistryUsername\" ] && [ -n \"$sourceRegistryPassword\" ]; then\n          az acr import -n $acrName --source $imageName --image $newImageName --force --username $sourceRegistryUsername --password $sourceRegistryPassword\n        else\n          az acr import -n $acrName --source $imageName --image $newImageName --force\n        fi\n      else\n        if [ -n \"$sourceRegistryUsername\" ] && [ -n \"$sourceRegistryPassword\" ]; then\n          az acr import -n $acrName --source $imageName --image $newImageName --username $sourceRegistryUsername --password $sourceRegistryPassword\n        else\n          az acr import -n $acrName --source $imageName --image $newImageName\n        fi\n      fi\n\n      sleep $retrySleep\n      retryLoopCount=$((retryLoopCount+1))\n    done\n\n    echo \"done\\n\""
                   }
                 },
                 "template": {

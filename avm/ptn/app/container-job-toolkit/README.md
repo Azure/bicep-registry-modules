@@ -51,7 +51,7 @@ This module deploys a container to run as a job.
 | `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
-| `Microsoft.Storage/storageAccounts` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts) |
+| `Microsoft.Storage/storageAccounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-05-01/storageAccounts) |
 | `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
@@ -105,7 +105,7 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -131,6 +131,25 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/app/container-job-toolkit:<version>'
+
+// Required parameters
+param containerImageSource = 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param name = 'acjmin001'
+// Non-required parameters
+param location = '<location>'
+param overwriteExistingImage = true
 ```
 
 </details>
@@ -224,7 +243,7 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -354,6 +373,84 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/app/container-job-toolkit:<version>'
+
+// Required parameters
+param containerImageSource = 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param name = 'acjmax001'
+// Non-required parameters
+param addressPrefix = '192.168.0.0/16'
+param appInsightsConnectionString = '<appInsightsConnectionString>'
+param cpu = '2'
+param cronExpression = '0 * * * *'
+param deployDnsZoneContainerRegistry = false
+param deployDnsZoneKeyVault = false
+param deployInVnet = true
+param environmentVariables = [
+  {
+    name: 'key1'
+    value: 'value1'
+  }
+  {
+    name: 'key2'
+    secretRef: 'secretkey1'
+  }
+]
+param keyVaultName = '<keyVaultName>'
+param keyVaultRoleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Key Vault Secrets Officer'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'None'
+  name: 'No lock for testing'
+}
+param managedIdentityName = 'acjmaxmi'
+param managedIdentityResourceId = '<managedIdentityResourceId>'
+param memory = '8Gi'
+param newContainerImageName = 'application/frontend:latest'
+param overwriteExistingImage = true
+param registryRoleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'AcrImageSigner'
+  }
+]
+param secrets = [
+  {
+    identity: '<identity>'
+    keyVaultUrl: '<keyVaultUrl>'
+    name: 'secretkey1'
+  }
+]
+param tags = {
+  environment: 'test'
+}
+param workloadProfileName = 'CAW01'
+param workloadProfiles = [
+  {
+    maximumCount: 1
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _Align to WAF_
 
 This instance deploys the module with private networking and a workload plan.
@@ -395,7 +492,7 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -443,6 +540,37 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/app/container-job-toolkit:<version>'
+
+// Required parameters
+param containerImageSource = 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param name = 'acjwaf001'
+// Non-required parameters
+param appInsightsConnectionString = '<appInsightsConnectionString>'
+param deployInVnet = true
+param location = '<location>'
+param managedIdentityResourceId = '<managedIdentityResourceId>'
+param overwriteExistingImage = true
+param workloadProfileName = 'CAW01'
+param workloadProfiles = [
+  {
+    maximumCount: 6
+    minimumCount: 3
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
 ```
 
 </details>
@@ -1051,7 +1179,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/ptn/authorization/resource-role-assignment:0.1.1` | Remote reference |
-| `br/public:avm/ptn/deployment-script/import-image-to-acr:0.3.1` | Remote reference |
+| `br/public:avm/ptn/deployment-script/import-image-to-acr:0.3.2` | Remote reference |
 | `br/public:avm/res/app/job:0.5.0` | Remote reference |
 | `br/public:avm/res/app/managed-environment:0.8.0` | Remote reference |
 | `br/public:avm/res/container-registry/registry:0.5.1` | Remote reference |
@@ -1060,7 +1188,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/private-dns-zone:0.6.0` | Remote reference |
 | `br/public:avm/res/network/private-endpoint:0.8.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.4.0` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.13.2` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.14.1` | Remote reference |
 
 ## Notes
 
