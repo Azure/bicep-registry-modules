@@ -14,11 +14,11 @@ Mandatory. The name of the organization to which the Root Certificate is issued.
 .PARAMETER CAOrganization
 Mandatory. The name of the organization to which the Certificate Authority is issued. It helps identify the legal entity that owns the certificate
 
-.PARAMETER CACertSubjectName
+.PARAMETER CertSubjectName
 Optional. The subject distinguished name is the name of the user of the certificate. The distinguished name for the certificate is a textual representation of the subject or issuer of the certificate
 
 .EXAMPLE
-./Set-CertificateAuthorityInKeyVault.ps1 -KeyVaultName 'myVault' -RootOrganization 'Istio' -CAOrganization 'Istio' -CACertSubjectName 'istiod.aks-istio-system.com'
+./Set-CertificateAuthorityInKeyVault.ps1 -KeyVaultName 'myVault' -RootOrganization 'Istio' -CAOrganization 'Istio' -CertSubjectName 'istiod.aks-istio-system.com'
 
 Generate a Certificate Authority and store it in the Key Vault 'myVault' with the default or provided organizations and subject name
 #>
@@ -33,7 +33,7 @@ param(
     [string] $CAOrganization,
 
     [Parameter(Mandatory = $true)]
-    [string] $CACertSubjectName
+    [string] $CertSubjectName
 )
 
 # Install open-ssl if not available
@@ -99,7 +99,7 @@ $caKeyContent = Get-Content -Path $caKeyFile -Raw
 $caKeyContentSecureString = ConvertTo-SecureString -String $caKeyContent -AsPlainText -Force
 Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name 'ca-key' -SecretValue $caKeyContentSecureString
 
-$caCAConfFile = 'ca.conf'
+$caConfFile = 'ca.conf'
 $caCommonName = 'Intermediate CA'
 $caConfLocation = Split-Path -Leaf (Get-Location)
 $caConfContent = @"
@@ -118,22 +118,22 @@ basicConstraints = critical, CA:true, pathlen:0
 keyUsage = critical, digitalSignature, nonRepudiation, keyEncipherment, keyCertSign
 subjectAltName=@san
 [ san ]
-DNS.1 = $($CACertSubjectName)
+DNS.1 = $($CertSubjectName)
 [ req_dn ]
 O = $($CAOrganization)
 CN = $($caCommonName)
 L = $($caConfLocation)
 "@
 
-Write-Verbose ('Generating openssl config file [{0}]' -f $caCAConfFile) -Verbose
+Write-Verbose ('Generating openssl config file [{0}]' -f $caConfFile) -Verbose
 
-$caConfContent | Set-Content -Path $caCAConfFile
+$caConfContent | Set-Content -Path $caConfFile
 
 $caCertCSRFile = 'ca-cert.csr'
 
 Write-Verbose ('Generating certificate signing request [{0}]' -f $caCertCSRFile) -Verbose
 
-openssl req -sha256 -new -key $caKeyFile -config $caCAConfFile -out $caCertCSRFile
+openssl req -sha256 -new -key $caKeyFile -config $caConfFile -out $caCertCSRFile
 
 $caCertFile = 'ca-cert.pem'
 $caCertDays = 3650
