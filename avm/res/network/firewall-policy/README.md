@@ -324,12 +324,35 @@ param name = 'nfpmax001'
 param allowSqlRedirect = true
 param autoLearnPrivateRanges = 'Enabled'
 param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
 param mode = 'Alert'
+param roleAssignments = [
+  {
+    name: 'c1c7fa14-5a90-4932-8781-fa91318b8858'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
 param ruleCollectionGroups = [
   {
     name: 'rule-001'
