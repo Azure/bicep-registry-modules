@@ -31,6 +31,19 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    caOrganization: 'Istio'
+    caSubjectName: 'istiod.aks-istio.system.svc'
+    cacertDeploymentScriptName:
+    keyVaultName:
+    managedIdentityName:
+    rootOrganization: 'Istio'
+  }
+}
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -51,6 +64,14 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       istioServiceMeshEnabled: true
+      istioServiceMeshCertificateAuthority: {
+        certChainObjectName: nestedDependencies.outputs.certChainSecretName
+        certObjectName: nestedDependencies.outputs.caCertSecretName
+        keyObjectName: nestedDependencies.outputs.caKeySecretName
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        rootCertObjectName: nestedDependencies.outputs.rootCertSecretName
+      }
+      enableKeyvaultSecretsProvider: true
     }
   }
 ]
