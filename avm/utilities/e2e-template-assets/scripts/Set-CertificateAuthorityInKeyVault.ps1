@@ -9,18 +9,18 @@ Generate a new Certificate Authority and store it as secret in the given Key Vau
 Mandatory. The name of the Key Vault to add a new certificate to, or fetch the secret reference it from
 
 .PARAMETER RootOrganization
-Mandatory. The name of the organization to which the Root Certificate is issued. It helps identify the legal entity that owns the certificate
+Mandatory. The name of the organization to which the Root Certificate is issued. It helps identify the legal entity that owns the root certificate
 
 .PARAMETER CAOrganization
-Mandatory. The name of the organization to which the Certificate Authority is issued. It helps identify the legal entity that owns the certificate
+Mandatory. The name of the organization to which the Certificate Authority is issued. It helps identify the legal entity that owns the certificate authority
 
 .PARAMETER CertSubjectName
-Optional. The subject distinguished name is the name of the user of the certificate. The distinguished name for the certificate is a textual representation of the subject or issuer of the certificate
+Mandatory. The subject distinguished name is the name of the user of the certificate authority. The distinguished name for the certificate is a textual representation of the subject or issuer of the certificate
 
 .EXAMPLE
 ./Set-CertificateAuthorityInKeyVault.ps1 -KeyVaultName 'myVault' -RootOrganization 'Istio' -CAOrganization 'Istio' -CertSubjectName 'istiod.aks-istio-system.com'
 
-Generate a Certificate Authority and store it in the Key Vault 'myVault' with the default or provided organizations and subject name
+Generate a Certificate Authority and store it in the Key Vault 'myVault' with the provided organizations and subject name
 #>
 param(
     [Parameter(Mandatory = $true)]
@@ -45,6 +45,11 @@ $rootKeySize = 4096
 Write-Verbose ('Generating root key [{0}]' -f $rootKeyFile) -Verbose
 
 openssl genrsa -out $rootKeyFile $rootKeySize
+
+$rootKeyContent = Get-Content -Path $rootKeyFile -Raw
+$rootKeyContentSecureString = ConvertTo-SecureString -String $rootKeyContent -AsPlainText -Force
+$rootKeySecretName = 'root-key'
+Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $rootKeySecretName -SecretValue $rootKeyContentSecureString
 
 $rootConfFile = 'root-ca.conf'
 $rootCommonName = 'Root CA'
@@ -86,7 +91,8 @@ openssl x509 -req -sha256 -days $rootCertDays -signkey $rootKeyFile -extensions 
 
 $rootCertContent = Get-Content -Path $rootCertFile -Raw
 $rootCertContentSecureString = ConvertTo-SecureString -String $rootCertContent -AsPlainText -Force
-Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name 'root-cert' -SecretValue $rootCertContentSecureString
+$rootCertSecret = 'root-cert'
+Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $rootCertSecret -SecretValue $rootCertContentSecureString
 
 $caKeyFile = 'ca-key.pem'
 $caKeySize = '4096'
@@ -97,7 +103,8 @@ openssl genrsa -out $caKeyFile $caKeySize
 
 $caKeyContent = Get-Content -Path $caKeyFile -Raw
 $caKeyContentSecureString = ConvertTo-SecureString -String $caKeyContent -AsPlainText -Force
-Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name 'ca-key' -SecretValue $caKeyContentSecureString
+$caKeySecretName = 'ca-key'
+Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $caKeySecretName -SecretValue $caKeyContentSecureString
 
 $caConfFile = 'ca.conf'
 $caCommonName = 'Intermediate CA'
@@ -144,10 +151,21 @@ openssl x509 -req -sha256 -days $caCertDays -CA $rootCertFile -CAkey $rootKeyFil
 
 $caCertContent = Get-Content -Path $caCertFile -Raw
 $caCertContentSecureString = ConvertTo-SecureString -String $caCertContent -AsPlainText -Force
-Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name 'ca-cert' -SecretValue $caCertContentSecureString
+$caCertSecretName = 'ca-cert'
+Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $caCertSecretName -SecretValue $caCertContentSecureString
 
 Write-Verbose 'Generating cert chain' -Verbose
 
 $certChainContent = $caCertContent + $rootCertContent
 $certChainContentSecureString = ConvertTo-SecureString -String $certChainContent -AsPlainText -Force
-Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name 'cert-chain' -SecretValue $certChainContentSecureString
+$certChainSecretName = 'cert-chain'
+Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $certChainSecretName -SecretValue $certChainContentSecureString
+
+# Write into Deployment Script output stream
+$DeploymentScriptOutputs = @{
+    rootKeySecretName   = $rootKeySecretName
+    rootCertSecretName  = $rootCertSecretName
+    caKeySecretName     = $caKeySecretName
+    caCertSecretName    = $caCertSecretName
+    certChainSecretName = $certChainSecretName
+}
