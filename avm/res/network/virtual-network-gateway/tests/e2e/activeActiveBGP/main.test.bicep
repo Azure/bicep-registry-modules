@@ -15,11 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.virtualnetworkgatewa
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-<<<<<<<< HEAD:avm/res/network/virtual-network-gateway/tests/e2e/activeActiveBGP/main.test.bicep
 param serviceShort string = 'nvgaab'
-========
-param serviceShort string = 'nvgavpn'
->>>>>>>> 7ff2e41d2ea4cd91f7b3d31783b2268eb2e2f2dd:avm/res/network/virtual-network-gateway/tests/e2e/aadvpn/main.test.bicep
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -61,16 +57,10 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'VpnGw2AZ'
       gatewayType: 'Vpn'
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
-<<<<<<<< HEAD:avm/res/network/virtual-network-gateway/tests/e2e/activeActiveBGP/main.test.bicep
       clusterSettings: {
         clusterMode: 'activeActiveBgp'
       }
 
-========
-      clusterSettings:{
-        clusterMode: 'activePassiveNoBgp'
-      }
->>>>>>>> 7ff2e41d2ea4cd91f7b3d31783b2268eb2e2f2dd:avm/res/network/virtual-network-gateway/tests/e2e/aadvpn/main.test.bicep
       domainNameLabel: [
         '${namePrefix}-dm-${serviceShort}'
       ]

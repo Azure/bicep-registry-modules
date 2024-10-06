@@ -18,11 +18,7 @@ param firstPipName string = '${name}-pip1'
 param publicIPPrefixResourceId string = ''
 
 @description('Optional. Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones.')
-param publicIpZones array = [
-  1
-  2
-  3
-]
+param publicIpZones array = []
 
 @description('Optional. DNS name(s) of the Public IP resource(s). If you enabled Active-Active mode, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com.')
 param domainNameLabel array = []
@@ -42,7 +38,7 @@ param gatewayType string
 ])
 param vpnGatewayGeneration string = 'None'
 
-@description('Optional. The SKU of the Gateway.')
+@description('Required. The SKU of the Gateway.')
 @allowed([
   'Basic'
   'VpnGw1'
@@ -62,7 +58,7 @@ param vpnGatewayGeneration string = 'None'
   'ErGw2AZ'
   'ErGw3AZ'
 ])
-param skuName string = (gatewayType == 'VPN') ? 'VpnGw1AZ' : 'ErGw1AZ'
+param skuName string
 
 @description('Optional. Specifies the VPN type.')
 @allowed([
@@ -74,8 +70,6 @@ param vpnType string = 'RouteBased'
 @description('Required. Virtual Network resource ID.')
 param vNetResourceId string
 
-@description('Required. Specifies one of the following four configurations: Active-Active with (clusterMode = activeActiveBgp) or without (clusterMode = activeActiveNoBgp) BGP, Active-Passive with (clusterMode = activePassiveBgp) or without (clusterMode = activePassiveNoBgp) BGP.')
-param clusterSettings clusterSettingType
 @description('Required. Specifies one of the following four configurations: Active-Active with (clusterMode = activeActiveBgp) or without (clusterMode = activeActiveNoBgp) BGP, Active-Passive with (clusterMode = activePassiveBgp) or without (clusterMode = activePassiveNoBgp) BGP.')
 param clusterSettings clusterSettingType
 
@@ -380,15 +374,11 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2023-04
   properties: {
     ipConfigurations: ipConfiguration
     activeActive: isActiveActive
-    activeActive: isActiveActive
     allowRemoteVnetTraffic: allowRemoteVnetTraffic
     allowVirtualWanTraffic: allowVirtualWanTraffic
     enableBgp: isBgp
     bgpSettings: isBgp ? bgpSettingsVar : null
-    enableBgp: isBgp
-    bgpSettings: isBgp ? bgpSettingsVar : null
     disableIPSecReplayProtection: disableIPSecReplayProtection
-    enableDnsForwarding: !isExpressRoute ? enableDnsForwarding : null
     enableDnsForwarding: !isExpressRoute ? enableDnsForwarding : null
     enablePrivateIpAddress: enablePrivateIpAddress
     enableBgpRouteTranslationForNat: enableBgpRouteTranslationForNat
@@ -417,11 +407,6 @@ module virtualNetworkGateway_natRules 'nat-rule/main.bicep' = [
     params: {
       name: natRule.name
       virtualNetworkGatewayName: virtualNetworkGateway.name
-      externalMappings: natRule.?externalMappings ?? []
-      internalMappings: natRule.?internalMappings ?? []
-      ipConfigurationId: natRule.?ipConfigurationId ?? ''
-      mode: natRule.?mode ?? ''
-      type: natRule.?type ?? ''
       externalMappings: natRule.?externalMappings ?? []
       internalMappings: natRule.?internalMappings ?? []
       ipConfigurationId: natRule.?ipConfigurationId ?? ''
