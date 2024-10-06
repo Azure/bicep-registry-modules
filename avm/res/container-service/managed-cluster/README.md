@@ -174,23 +174,26 @@ param primaryAgentPoolProfile = [
 ]
 // Non-required parameters
 param location = '<location>'
-param maintenanceConfiguration = {
-  maintenanceWindow: {
-    durationHours: 4
-    schedule: {
-      absoluteMonthly: '<absoluteMonthly>'
-      daily: '<daily>'
-      relativeMonthly: '<relativeMonthly>'
-      weekly: {
-        dayOfWeek: 'Sunday'
-        intervalWeeks: 1
+param maintenanceConfigurations = [
+  {
+    maintenanceWindow: {
+      durationHours: 4
+      schedule: {
+        absoluteMonthly: '<absoluteMonthly>'
+        daily: '<daily>'
+        relativeMonthly: '<relativeMonthly>'
+        weekly: {
+          dayOfWeek: 'Sunday'
+          intervalWeeks: 1
+        }
       }
+      startDate: '2024-07-03'
+      startTime: '00:00'
+      utcOffset: '+00:00'
     }
-    startDate: '2024-07-03'
-    startTime: '00:00'
-    utcOffset: '+00:00'
+    name: 'aksManagedAutoUpgradeSchedule'
   }
-}
+]
 param managedIdentities = {
   systemAssigned: true
 }
@@ -850,6 +853,7 @@ param agentPools = [
     vnetSubnetID: '<vnetSubnetID>'
   }
 ]
+param autoNodeOsUpgradeProfileUpgradeChannel = 'Unmanaged'
 param autoUpgradeProfileUpgradeChannel = 'stable'
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -949,6 +953,38 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param maintenanceConfigurations = [
+  {
+    maintenanceWindow: {
+      durationHours: 4
+      schedule: {
+        weekly: {
+          dayOfWeek: 'Sunday'
+          intervalWeeks: 1
+        }
+      }
+      startDate: '2024-07-15'
+      startTime: '00:00'
+      utcOffset: '+00:00'
+    }
+    name: 'aksManagedAutoUpgradeSchedule'
+  }
+  {
+    maintenanceWindow: {
+      durationHours: 4
+      schedule: {
+        weekly: {
+          dayOfWeek: 'Sunday'
+          intervalWeeks: 1
+        }
+      }
+      startDate: '2024-07-15'
+      startTime: '00:00'
+      utcOffset: '+00:00'
+    }
+    name: 'aksManagedNodeOSUpgradeSchedule'
+  }
+]
 param managedIdentities = {
   userAssignedResourcesIds: [
     '<managedIdentityResourceId>'
@@ -2262,6 +2298,7 @@ param agentPools = [
     vmSize: 'Standard_DS2_v2'
   }
 ]
+param autoNodeOsUpgradeProfileUpgradeChannel = 'Unmanaged'
 param autoUpgradeProfileUpgradeChannel = 'stable'
 param diagnosticSettings = [
   {
@@ -2296,6 +2333,38 @@ param dnsServiceIP = '10.10.200.10'
 param enableAzureDefender = true
 param enablePrivateCluster = true
 param location = '<location>'
+param maintenanceConfigurations = [
+  {
+    maintenanceWindow: {
+      durationHours: 4
+      schedule: {
+        weekly: {
+          dayOfWeek: 'Sunday'
+          intervalWeeks: 1
+        }
+      }
+      startDate: '2024-07-15'
+      startTime: '00:00'
+      utcOffset: '+00:00'
+    }
+    name: 'aksManagedAutoUpgradeSchedule'
+  }
+  {
+    maintenanceWindow: {
+      durationHours: 4
+      schedule: {
+        weekly: {
+          dayOfWeek: 'Sunday'
+          intervalWeeks: 1
+        }
+      }
+      startDate: '2024-07-15'
+      startTime: '00:00'
+      utcOffset: '+00:00'
+    }
+    name: 'aksManagedNodeOSUpgradeSchedule'
+  }
+]
 param managedIdentities = {
   userAssignedResourcesIds: [
     '<managedIdentityResourceId>'
