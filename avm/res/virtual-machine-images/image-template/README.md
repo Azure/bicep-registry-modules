@@ -17,7 +17,7 @@ This module deploys a Virtual Machine Image Template that can be consumed by Azu
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.VirtualMachineImages/imageTemplates` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/imageTemplates) |
+| `Microsoft.VirtualMachineImages/imageTemplates` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/2023-07-01/imageTemplates) |
 
 ## Usage examples
 
@@ -75,7 +75,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -116,6 +116,40 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/virtual-machine-images/image-template:<version>'
+
+// Required parameters
+param distributions = [
+  {
+    imageName: 'mi-vmiitmin-001'
+    type: 'ManagedImage'
+  }
+]
+param imageSource = {
+  offer: 'Windows-11'
+  publisher: 'MicrosoftWindowsDesktop'
+  sku: 'win11-23h2-ent'
+  type: 'PlatformImage'
+  version: 'latest'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param name = 'vmiitmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -247,7 +281,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -399,6 +433,122 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/virtual-machine-images/image-template:<version>'
+
+// Required parameters
+param distributions = [
+  {
+    imageName: 'mi-vmiitmax-001'
+    type: 'ManagedImage'
+  }
+  {
+    imageName: 'umi-vmiitmax-001'
+    type: 'VHD'
+  }
+  {
+    replicationRegions: [
+      '<resourceLocation>'
+    ]
+    sharedImageGalleryImageDefinitionResourceId: '<sharedImageGalleryImageDefinitionResourceId>'
+    sharedImageGalleryImageDefinitionTargetVersion: '<sharedImageGalleryImageDefinitionTargetVersion>'
+    type: 'SharedImage'
+  }
+]
+param imageSource = {
+  offer: 'ubuntu-24_04-lts'
+  publisher: 'canonical'
+  sku: 'server'
+  type: 'PlatformImage'
+  version: 'latest'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param name = 'vmiitmax001'
+// Non-required parameters
+param buildTimeoutInMinutes = 60
+param customizationSteps = [
+  {
+    name: 'PowerShell installation'
+    scriptUri: '<scriptUri>'
+    type: 'Shell'
+  }
+  {
+    destination: 'Initialize-LinuxSoftware.ps1'
+    name: 'Initialize-LinuxSoftware'
+    sourceUri: '<sourceUri>'
+    type: 'File'
+  }
+  {
+    inline: [
+      'pwsh \'Initialize-LinuxSoftware.ps1\''
+    ]
+    name: 'Software installation'
+    type: 'Shell'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param optimizeVmBoot = 'Enabled'
+param osDiskSizeGB = 127
+param roleAssignments = [
+  {
+    name: 'bb257a92-dc06-4831-9b74-ee5442d8ce0f'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param stagingResourceGroupResourceId = '<stagingResourceGroupResourceId>'
+param subnetResourceId = '<subnetResourceId>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param validationProcess = {
+  continueDistributeOnFailure: true
+  inVMValidations: [
+    {
+      inline: [
+        'echo \'Software validation successful.\''
+      ]
+      name: 'Validate-Software'
+      type: 'Shell'
+    }
+  ]
+  sourceValidationOnly: false
+}
+param vmSize = 'Standard_D2s_v3'
+param vmUserAssignedIdentities = [
+  '<managedIdentityResourceId>'
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -455,7 +605,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -513,6 +663,52 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/virtual-machine-images/image-template:<version>'
+
+// Required parameters
+param distributions = [
+  {
+    sharedImageGalleryImageDefinitionResourceId: '<sharedImageGalleryImageDefinitionResourceId>'
+    type: 'SharedImage'
+  }
+]
+param imageSource = {
+  offer: 'Windows-11'
+  publisher: 'MicrosoftWindowsDesktop'
+  sku: 'win11-22h2-avd'
+  type: 'PlatformImage'
+  version: 'latest'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param name = 'vmiitwaf001'
+// Non-required parameters
+param customizationSteps = [
+  {
+    restartTimeout: '10m'
+    type: 'WindowsRestart'
+  }
+]
+param location = '<location>'
+param subnetResourceId = '<subnetResourceId>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

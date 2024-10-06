@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "9188161100861636713"
+      "version": "0.30.3.12046",
+      "templateHash": "8969613921663763778"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
@@ -2315,8 +2315,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "15958982442955537466"
+              "version": "0.30.3.12046",
+              "templateHash": "5568850224456572684"
             },
             "name": "Virtual Networks",
             "description": "This module deploys a Virtual Network.",
@@ -6436,8 +6436,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "13190798974838698070"
+              "version": "0.30.3.12046",
+              "templateHash": "16563975082451649304"
             },
             "name": "Existing Virtual Network Subnets",
             "description": "This module retrieves an existing Virtual Network Subnet.",
@@ -6519,8 +6519,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "11735652948112662202"
+              "version": "0.30.3.12046",
+              "templateHash": "10294962787410461549"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet.",
@@ -6859,12 +6859,7 @@
       },
       "copy": {
         "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]",
-        "input": {
-          "resourceGroupName": "[reference(format('hubBastion[{0}]', copyIndex())).outputs.resourceGroupName.value]",
-          "location": "[reference(format('hubBastion[{0}]', copyIndex())).outputs.location.value]",
-          "name": "[reference(format('hubBastion[{0}]', copyIndex())).outputs.name.value]",
-          "resourceId": "[reference(format('hubBastion[{0}]', copyIndex())).outputs.resourceId.value]"
-        }
+        "input": "[if(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableBastion, createObject('resourceGroupName', reference(format('hubBastion[{0}]', copyIndex())).outputs.resourceGroupName.value, 'location', reference(format('hubBastion[{0}]', copyIndex())).outputs.location.value, 'name', reference(format('hubBastion[{0}]', copyIndex())).outputs.name.value, 'resourceId', reference(format('hubBastion[{0}]', copyIndex())).outputs.resourceId.value), createObject())]"
       }
     },
     "hubAzureFirewalls": {
@@ -6877,12 +6872,7 @@
       },
       "copy": {
         "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]",
-        "input": {
-          "resourceGroupName": "[reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceGroupName.value]",
-          "location": "[reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.location.value]",
-          "name": "[reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.name.value]",
-          "resourceId": "[reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceId.value]"
-        }
+        "input": "[if(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall, createObject('resourceGroupName', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceGroupName.value, 'location', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.location.value, 'name', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.name.value, 'resourceId', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceId.value), createObject())]"
       }
     },
     "hubVirtualNetworkSubnets": {
