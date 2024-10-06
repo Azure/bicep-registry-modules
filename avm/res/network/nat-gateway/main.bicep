@@ -99,7 +99,7 @@ module publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.5.1' = [
   for (publicIPAddressObject, index) in (publicIPAddressObjects ?? []): {
     name: '${uniqueString(deployment().name, location)}-NatGw-PIP-${index}'
     params: {
-      name: contains(publicIPAddressObject, 'name') ? publicIPAddressObject.name : '${name}-pip'
+      name: publicIPAddressObject.?name ?? '${name}-pip'
       location: location
       lock: publicIPAddressObject.?lock ?? lock
       diagnosticSettings: publicIPAddressObject.?diagnosticSettings
@@ -133,7 +133,7 @@ module publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0.4.1' = [
   for (publicIPPrefixObject, index) in (publicIPPrefixObjects ?? []): {
     name: '${uniqueString(deployment().name, location)}-NatGw-Prefix-PIP-${index}'
     params: {
-      name: contains(publicIPPrefixObject, 'name') ? publicIPPrefixObject.name : '${name}-pip'
+      name: publicIPPrefixObject.?name ?? '${name}-pip'
       location: location
       lock: publicIPPrefixObject.?lock ?? lock
       prefixLength: publicIPPrefixObject.prefixLength

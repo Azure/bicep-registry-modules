@@ -245,7 +245,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource app 'Microsoft.Web/sites@2022-09-01' = {
+resource app 'Microsoft.Web/sites@2023-12-01' = {
   name: name
   location: location
   kind: kind
@@ -294,6 +294,7 @@ module app_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettings
     storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
     appInsightResourceId: appInsightResourceId
     appSettingsKeyValuePairs: appSettingsKeyValuePairs
+    currentAppSettings: !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
   }
 }
 
