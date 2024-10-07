@@ -117,7 +117,9 @@ resource pip 'Microsoft.Network/publicIPAddresses@2024-01-01' = {
   sku: {
     name: 'Standard'
   }
-  properties: {}
+  properties: {
+    publicIPAllocationMethod: 'Static'
+  }
 }
 
 resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2022-04-01' = {
