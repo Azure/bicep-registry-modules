@@ -44,9 +44,11 @@ var computeGalleryImageDefinitionsVar = [
     hyperVGeneration: 'V2'
     name: 'sid-linux'
     osType: 'Linux'
-    publisher: 'devops'
-    offer: 'devops_linux'
-    sku: 'devops_linux_az'
+    identifier: {
+      publisher: 'devops'
+      offer: 'devops_linux'
+      sku: 'devops_linux_az'
+    }
     osState: 'Generalized'
   }
 ]

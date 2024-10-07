@@ -77,12 +77,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     computeGalleryImageDefinitions: [
       {
         hyperVGeneration: 'V2'
+        identifier: {
+          offer: 'devops_linux'
+          publisher: 'devops'
+          sku: 'devops_linux_az'
+        }
         name: 'sid-linux'
-        offer: 'devops_linux'
         osState: 'Generalized'
         osType: 'Linux'
-        publisher: 'devops'
-        sku: 'devops_linux_az'
       }
     ]
     computeGalleryName: 'galapvmiaibmin'
@@ -122,12 +124,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
       "value": [
         {
           "hyperVGeneration": "V2",
+          "identifier": {
+            "offer": "devops_linux",
+            "publisher": "devops",
+            "sku": "devops_linux_az"
+          },
           "name": "sid-linux",
-          "offer": "devops_linux",
           "osState": "Generalized",
-          "osType": "Linux",
-          "publisher": "devops",
-          "sku": "devops_linux_az"
+          "osType": "Linux"
         }
       ]
     },
@@ -175,12 +179,14 @@ param computeGalleryImageDefinitionName = '<computeGalleryImageDefinitionName>'
 param computeGalleryImageDefinitions = [
   {
     hyperVGeneration: 'V2'
+    identifier: {
+      offer: 'devops_linux'
+      publisher: 'devops'
+      sku: 'devops_linux_az'
+    }
     name: 'sid-linux'
-    offer: 'devops_linux'
     osState: 'Generalized'
     osType: 'Linux'
-    publisher: 'devops'
-    sku: 'devops_linux_az'
   }
 ]
 param computeGalleryName = 'galapvmiaibmin'
@@ -219,12 +225,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     computeGalleryImageDefinitions: [
       {
         hyperVGeneration: 'V2'
+        identifier: {
+          offer: 'devops_linux'
+          publisher: 'devops'
+          sku: 'devops_linux_az'
+        }
         name: '<name>'
-        offer: 'devops_linux'
         osState: 'Generalized'
         osType: 'Linux'
-        publisher: 'devops'
-        sku: 'devops_linux_az'
       }
     ]
     computeGalleryName: 'galapvmiaiba'
@@ -295,12 +303,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
       "value": [
         {
           "hyperVGeneration": "V2",
+          "identifier": {
+            "offer": "devops_linux",
+            "publisher": "devops",
+            "sku": "devops_linux_az"
+          },
           "name": "<name>",
-          "offer": "devops_linux",
           "osState": "Generalized",
-          "osType": "Linux",
-          "publisher": "devops",
-          "sku": "devops_linux_az"
+          "osType": "Linux"
         }
       ]
     },
@@ -385,12 +395,14 @@ param computeGalleryImageDefinitionName = '<computeGalleryImageDefinitionName>'
 param computeGalleryImageDefinitions = [
   {
     hyperVGeneration: 'V2'
+    identifier: {
+      offer: 'devops_linux'
+      publisher: 'devops'
+      sku: 'devops_linux_az'
+    }
     name: '<name>'
-    offer: 'devops_linux'
     osState: 'Generalized'
     osType: 'Linux'
-    publisher: 'devops'
-    sku: 'devops_linux_az'
   }
 ]
 param computeGalleryName = 'galapvmiaiba'
@@ -655,12 +667,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     computeGalleryImageDefinitions: [
       {
         hyperVGeneration: 'V2'
+        identifier: {
+          offer: 'devops_linux'
+          publisher: 'devops'
+          sku: 'devops_linux_az'
+        }
         name: '<name>'
-        offer: 'devops_linux'
         osState: 'Generalized'
         osType: 'Linux'
-        publisher: 'devops'
-        sku: 'devops_linux_az'
       }
     ]
     computeGalleryName: 'galapvmiaibob'
@@ -701,12 +715,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
       "value": [
         {
           "hyperVGeneration": "V2",
+          "identifier": {
+            "offer": "devops_linux",
+            "publisher": "devops",
+            "sku": "devops_linux_az"
+          },
           "name": "<name>",
-          "offer": "devops_linux",
           "osState": "Generalized",
-          "osType": "Linux",
-          "publisher": "devops",
-          "sku": "devops_linux_az"
+          "osType": "Linux"
         }
       ]
     },
@@ -757,12 +773,14 @@ param computeGalleryImageDefinitionName = '<computeGalleryImageDefinitionName>'
 param computeGalleryImageDefinitions = [
   {
     hyperVGeneration: 'V2'
+    identifier: {
+      offer: 'devops_linux'
+      publisher: 'devops'
+      sku: 'devops_linux_az'
+    }
     name: '<name>'
-    offer: 'devops_linux'
     osState: 'Generalized'
     osType: 'Linux'
-    publisher: 'devops'
-    sku: 'devops_linux_az'
   }
 ]
 param computeGalleryName = 'galapvmiaibob'
