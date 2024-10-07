@@ -73,7 +73,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -120,6 +120,40 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kubernetes-configuration/flux-configuration:<version>'
+
+// Required parameters
+param clusterName = '<clusterName>'
+param kustomizations = {
+  unified: {
+    path: './cluster-manifests'
+  }
+}
+param name = 'kcfcmin001'
+param namespace = 'flux-system'
+param scope = 'cluster'
+param sourceKind = 'GitRepository'
+// Non-required parameters
+param gitRepository = {
+  repositoryRef: {
+    branch: 'main'
+  }
+  sshKnownHosts: ''
+  syncIntervalInSeconds: 300
+  timeoutInSeconds: 180
+  url: 'https://github.com/mspnp/aks-baseline'
+}
+param location = '<location>'
 ```
 
 </details>
@@ -180,7 +214,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -243,6 +277,51 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kubernetes-configuration/flux-configuration:<version>'
+
+// Required parameters
+param clusterName = '<clusterName>'
+param kustomizations = {
+  unified: {
+    dependsOn: []
+    force: false
+    path: './cluster-manifests'
+    postBuild: {
+      substitute: {
+        TEST_VAR1: 'foo'
+        TEST_VAR2: 'bar'
+      }
+    }
+    prune: true
+    syncIntervalInSeconds: 300
+    timeoutInSeconds: 300
+  }
+}
+param name = 'kcfcmax001'
+param namespace = 'flux-system'
+param scope = 'cluster'
+param sourceKind = 'GitRepository'
+// Non-required parameters
+param gitRepository = {
+  repositoryRef: {
+    branch: 'main'
+  }
+  sshKnownHosts: ''
+  syncIntervalInSeconds: 300
+  timeoutInSeconds: 180
+  url: 'https://github.com/mspnp/aks-baseline'
+}
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -292,7 +371,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -344,6 +423,45 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kubernetes-configuration/flux-configuration:<version>'
+
+// Required parameters
+param clusterName = '<clusterName>'
+param kustomizations = {
+  unified: {
+    dependsOn: []
+    force: false
+    path: './cluster-manifests'
+    prune: true
+    syncIntervalInSeconds: 300
+    timeoutInSeconds: 300
+  }
+}
+param name = 'kcfcwaf001'
+param namespace = 'flux-system'
+param scope = 'cluster'
+param sourceKind = 'GitRepository'
+// Non-required parameters
+param gitRepository = {
+  repositoryRef: {
+    branch: 'main'
+  }
+  sshKnownHosts: ''
+  syncIntervalInSeconds: 300
+  timeoutInSeconds: 180
+  url: 'https://github.com/mspnp/aks-baseline'
+}
+param location = '<location>'
 ```
 
 </details>

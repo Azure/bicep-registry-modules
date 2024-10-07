@@ -60,7 +60,7 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -77,6 +77,22 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/desktop-virtualization/host-pool:<version>'
+
+// Required parameters
+param name = 'dvhpmin002'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -213,7 +229,7 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -372,6 +388,127 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/desktop-virtualization/host-pool:<version>'
+
+// Required parameters
+param name = 'dvhpmax001'
+// Non-required parameters
+param agentUpdate = {
+  maintenanceWindows: [
+    {
+      dayOfWeek: 'Friday'
+      hour: 7
+    }
+    {
+      dayOfWeek: 'Saturday'
+      hour: 8
+    }
+  ]
+  maintenanceWindowTimeZone: 'Alaskan Standard Time'
+  type: 'Scheduled'
+  useSessionHostLocalTime: false
+}
+param customRdpProperty = 'audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2;'
+param description = 'My first AVD Host Pool'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param enableTelemetry = true
+param friendlyName = 'AVDv2'
+param hostPoolType = 'Pooled'
+param loadBalancerType = 'BreadthFirst'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param maxSessionLimit = 99999
+param personalDesktopAssignmentType = 'Automatic'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+param roleAssignments = [
+  {
+    name: '52c43567-917f-4c56-8c9b-6cadeef37b51'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param vmTemplate = {
+  customImageId: '<customImageId>'
+  domain: 'domainname.onmicrosoft.com'
+  galleryImageOffer: 'office-365'
+  galleryImagePublisher: 'microsoftwindowsdesktop'
+  galleryImageSKU: '20h1-evd-o365pp'
+  imageType: 'Gallery'
+  imageUri: '<imageUri>'
+  namePrefix: 'avdv2'
+  osDiskType: 'StandardSSD_LRS'
+  useManagedDisks: true
+  vmSize: {
+    cores: 2
+    id: 'Standard_D2s_v3'
+    ram: 8
+  }
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -411,7 +548,7 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -444,6 +581,35 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/desktop-virtualization/host-pool:<version>'
+
+// Required parameters
+param name = 'dvhpwaf002'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

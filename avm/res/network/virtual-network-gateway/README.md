@@ -62,7 +62,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
     gatewayType: 'Vpn'
     name: 'nvgavpn001'
-    skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     domainNameLabel: [
@@ -74,6 +73,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       2
       3
     ]
+    skuName: 'VpnGw2AZ'
     vpnClientAadConfiguration: {
       aadAudience: '41b23e61-6c1e-4545-b367-cd054e0ed4b4'
       aadIssuer: '<aadIssuer>'
@@ -95,7 +95,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -113,9 +113,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "name": {
       "value": "nvgavpn001"
-    },
-    "skuName": {
-      "value": "VpnGw2AZ"
     },
     "vNetResourceId": {
       "value": "<vNetResourceId>"
@@ -135,6 +132,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         2,
         3
       ]
+    },
+    "skuName": {
+      "value": "VpnGw2AZ"
     },
     "vpnClientAadConfiguration": {
       "value": {
@@ -159,6 +159,48 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network-gateway:<version>'
+
+// Required parameters
+param clusterSettings = {
+  clusterMode: 'activePassiveNoBgp'
+}
+param gatewayType = 'Vpn'
+param name = 'nvgavpn001'
+param vNetResourceId = '<vNetResourceId>'
+// Non-required parameters
+param domainNameLabel = [
+  'dm-nvgavpn'
+]
+param location = '<location>'
+param publicIpZones = [
+  1
+  2
+  3
+]
+param skuName = 'VpnGw2AZ'
+param vpnClientAadConfiguration = {
+  aadAudience: '41b23e61-6c1e-4545-b367-cd054e0ed4b4'
+  aadIssuer: '<aadIssuer>'
+  aadTenant: '<aadTenant>'
+  vpnAuthenticationTypes: [
+    'AAD'
+  ]
+  vpnClientProtocols: [
+    'OpenVPN'
+  ]
+}
+param vpnType = 'RouteBased'
+```
+
+</details>
+<p>
+
 ### Example 2: _VPN Active Active with BGP settings_
 
 This instance deploys the module with the VPN Active Active with BGP settings.
@@ -178,7 +220,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
     gatewayType: 'Vpn'
     name: 'nvgaab001'
-    skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
@@ -195,6 +236,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       2
       3
     ]
+    skuName: 'VpnGw2AZ'
     vpnGatewayGeneration: 'Generation2'
     vpnType: 'RouteBased'
   }
@@ -206,7 +248,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -224,9 +266,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "name": {
       "value": "nvgaab001"
-    },
-    "skuName": {
-      "value": "VpnGw2AZ"
     },
     "vNetResourceId": {
       "value": "<vNetResourceId>"
@@ -262,6 +301,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         3
       ]
     },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
     "vpnGatewayGeneration": {
       "value": "Generation2"
     },
@@ -270,6 +312,43 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network-gateway:<version>'
+
+// Required parameters
+param clusterSettings = {
+  clusterMode: 'activeActiveBgp'
+}
+param gatewayType = 'Vpn'
+param name = 'nvgaab001'
+param vNetResourceId = '<vNetResourceId>'
+// Non-required parameters
+param allowRemoteVnetTraffic = true
+param disableIPSecReplayProtection = true
+param domainNameLabel = [
+  'dm-nvgaab'
+]
+param enableBgpRouteTranslationForNat = true
+param enablePrivateIpAddress = true
+param gatewayDefaultSiteLocalNetworkGatewayId = '<gatewayDefaultSiteLocalNetworkGatewayId>'
+param location = '<location>'
+param publicIpZones = [
+  1
+  2
+  3
+]
+param skuName = 'VpnGw2AZ'
+param vpnGatewayGeneration = 'Generation2'
+param vpnType = 'RouteBased'
 ```
 
 </details>
@@ -302,7 +381,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
     gatewayType: 'Vpn'
     name: 'nvgaaa001'
-    skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
@@ -319,6 +397,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       2
       3
     ]
+    skuName: 'VpnGw2AZ'
     vpnGatewayGeneration: 'Generation2'
     vpnType: 'RouteBased'
   }
@@ -330,7 +409,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -356,9 +435,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "name": {
       "value": "nvgaaa001"
-    },
-    "skuName": {
-      "value": "VpnGw2AZ"
     },
     "vNetResourceId": {
       "value": "<vNetResourceId>"
@@ -394,6 +470,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         3
       ]
     },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
     "vpnGatewayGeneration": {
       "value": "Generation2"
     },
@@ -402,6 +481,51 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network-gateway:<version>'
+
+// Required parameters
+param clusterSettings = {
+  clusterMode: 'activeActiveBgp'
+  customBgpIpAddresses: [
+    '169.254.21.4'
+    '169.254.21.5'
+  ]
+  secondCustomBgpIpAddresses: [
+    '169.254.22.4'
+    '169.254.22.5'
+  ]
+}
+param gatewayType = 'Vpn'
+param name = 'nvgaaa001'
+param vNetResourceId = '<vNetResourceId>'
+// Non-required parameters
+param allowRemoteVnetTraffic = true
+param disableIPSecReplayProtection = true
+param domainNameLabel = [
+  'dm-nvgaaa'
+]
+param enableBgpRouteTranslationForNat = true
+param enablePrivateIpAddress = true
+param gatewayDefaultSiteLocalNetworkGatewayId = '<gatewayDefaultSiteLocalNetworkGatewayId>'
+param location = '<location>'
+param publicIpZones = [
+  1
+  2
+  3
+]
+param skuName = 'VpnGw2AZ'
+param vpnGatewayGeneration = 'Generation2'
+param vpnType = 'RouteBased'
 ```
 
 </details>
@@ -426,7 +550,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
     gatewayType: 'Vpn'
     name: 'nvgaa001'
-    skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
@@ -443,6 +566,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       2
       3
     ]
+    skuName: 'VpnGw2AZ'
     vpnGatewayGeneration: 'Generation2'
     vpnType: 'RouteBased'
   }
@@ -454,7 +578,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -472,9 +596,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "name": {
       "value": "nvgaa001"
-    },
-    "skuName": {
-      "value": "VpnGw2AZ"
     },
     "vNetResourceId": {
       "value": "<vNetResourceId>"
@@ -510,6 +631,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         3
       ]
     },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
     "vpnGatewayGeneration": {
       "value": "Generation2"
     },
@@ -518,6 +642,43 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network-gateway:<version>'
+
+// Required parameters
+param clusterSettings = {
+  clusterMode: 'activeActiveNoBgp'
+}
+param gatewayType = 'Vpn'
+param name = 'nvgaa001'
+param vNetResourceId = '<vNetResourceId>'
+// Non-required parameters
+param allowRemoteVnetTraffic = true
+param disableIPSecReplayProtection = true
+param domainNameLabel = [
+  'dm-nvgaa'
+]
+param enableBgpRouteTranslationForNat = true
+param enablePrivateIpAddress = true
+param gatewayDefaultSiteLocalNetworkGatewayId = '<gatewayDefaultSiteLocalNetworkGatewayId>'
+param location = '<location>'
+param publicIpZones = [
+  1
+  2
+  3
+]
+param skuName = 'VpnGw2AZ'
+param vpnGatewayGeneration = 'Generation2'
+param vpnType = 'RouteBased'
 ```
 
 </details>
@@ -547,7 +708,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
     gatewayType: 'Vpn'
     name: 'nvgapb001'
-    skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
@@ -564,6 +724,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       2
       3
     ]
+    skuName: 'VpnGw2AZ'
     vpnGatewayGeneration: 'Generation2'
     vpnType: 'RouteBased'
   }
@@ -575,7 +736,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -598,9 +759,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "name": {
       "value": "nvgapb001"
-    },
-    "skuName": {
-      "value": "VpnGw2AZ"
     },
     "vNetResourceId": {
       "value": "<vNetResourceId>"
@@ -636,6 +794,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         3
       ]
     },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
     "vpnGatewayGeneration": {
       "value": "Generation2"
     },
@@ -644,6 +805,48 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network-gateway:<version>'
+
+// Required parameters
+param clusterSettings = {
+  asn: 65815
+  clusterMode: 'activePassiveBgp'
+  customBgpIpAddresses: [
+    '169.254.21.4'
+    '169.254.21.5'
+  ]
+}
+param gatewayType = 'Vpn'
+param name = 'nvgapb001'
+param vNetResourceId = '<vNetResourceId>'
+// Non-required parameters
+param allowRemoteVnetTraffic = true
+param disableIPSecReplayProtection = true
+param domainNameLabel = [
+  'dm-nvgapb'
+]
+param enableBgpRouteTranslationForNat = true
+param enablePrivateIpAddress = true
+param gatewayDefaultSiteLocalNetworkGatewayId = '<gatewayDefaultSiteLocalNetworkGatewayId>'
+param location = '<location>'
+param publicIpZones = [
+  1
+  2
+  3
+]
+param skuName = 'VpnGw2AZ'
+param vpnGatewayGeneration = 'Generation2'
+param vpnType = 'RouteBased'
 ```
 
 </details>
@@ -668,7 +871,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
     gatewayType: 'Vpn'
     name: 'nvgap001'
-    skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
@@ -685,6 +887,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       2
       3
     ]
+    skuName: 'VpnGw2AZ'
     vpnGatewayGeneration: 'Generation2'
     vpnType: 'RouteBased'
   }
@@ -696,7 +899,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -714,9 +917,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "name": {
       "value": "nvgap001"
-    },
-    "skuName": {
-      "value": "VpnGw2AZ"
     },
     "vNetResourceId": {
       "value": "<vNetResourceId>"
@@ -752,6 +952,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         3
       ]
     },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
     "vpnGatewayGeneration": {
       "value": "Generation2"
     },
@@ -760,6 +963,43 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network-gateway:<version>'
+
+// Required parameters
+param clusterSettings = {
+  clusterMode: 'activePassiveNoBgp'
+}
+param gatewayType = 'Vpn'
+param name = 'nvgap001'
+param vNetResourceId = '<vNetResourceId>'
+// Non-required parameters
+param allowRemoteVnetTraffic = true
+param disableIPSecReplayProtection = true
+param domainNameLabel = [
+  'dm-nvgap'
+]
+param enableBgpRouteTranslationForNat = true
+param enablePrivateIpAddress = true
+param gatewayDefaultSiteLocalNetworkGatewayId = '<gatewayDefaultSiteLocalNetworkGatewayId>'
+param location = '<location>'
+param publicIpZones = [
+  1
+  2
+  3
+]
+param skuName = 'VpnGw2AZ'
+param vpnGatewayGeneration = 'Generation2'
+param vpnType = 'RouteBased'
 ```
 
 </details>
@@ -784,7 +1024,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
     gatewayType: 'Vpn'
     name: 'nvgmin001'
-    skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     location: '<location>'
@@ -793,6 +1032,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       2
       3
     ]
+    skuName: 'VpnGw2AZ'
   }
 }
 ```
@@ -802,7 +1042,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -821,9 +1061,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "name": {
       "value": "nvgmin001"
     },
-    "skuName": {
-      "value": "VpnGw2AZ"
-    },
     "vNetResourceId": {
       "value": "<vNetResourceId>"
     },
@@ -837,9 +1074,39 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         2,
         3
       ]
+    },
+    "skuName": {
+      "value": "VpnGw2AZ"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network-gateway:<version>'
+
+// Required parameters
+param clusterSettings = {
+  clusterMode: 'activeActiveNoBgp'
+}
+param gatewayType = 'Vpn'
+param name = 'nvgmin001'
+param vNetResourceId = '<vNetResourceId>'
+// Non-required parameters
+param location = '<location>'
+param publicIpZones = [
+  1
+  2
+  3
+]
+param skuName = 'VpnGw2AZ'
 ```
 
 </details>
@@ -864,7 +1131,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
     gatewayType: 'ExpressRoute'
     name: 'nvger001'
-    skuName: 'ErGw1AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     domainNameLabel: [
@@ -877,6 +1143,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       2
       3
     ]
+    skuName: 'ErGw1AZ'
   }
 }
 ```
@@ -886,7 +1153,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -904,9 +1171,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "name": {
       "value": "nvger001"
-    },
-    "skuName": {
-      "value": "ErGw1AZ"
     },
     "vNetResourceId": {
       "value": "<vNetResourceId>"
@@ -929,9 +1193,43 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         2,
         3
       ]
+    },
+    "skuName": {
+      "value": "ErGw1AZ"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network-gateway:<version>'
+
+// Required parameters
+param clusterSettings = {
+  clusterMode: 'activePassiveBgp'
+}
+param gatewayType = 'ExpressRoute'
+param name = 'nvger001'
+param vNetResourceId = '<vNetResourceId>'
+// Non-required parameters
+param domainNameLabel = [
+  'dm-nvger'
+]
+param gatewayPipName = 'pip-nvger'
+param location = '<location>'
+param publicIpZones = [
+  1
+  2
+  3
+]
+param skuName = 'ErGw1AZ'
 ```
 
 </details>
@@ -965,7 +1263,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
     gatewayType: 'Vpn'
     name: 'nvgmax001'
-    skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
@@ -1053,6 +1350,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    skuName: 'VpnGw2AZ'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -1069,7 +1367,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1096,9 +1394,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "name": {
       "value": "nvgmax001"
-    },
-    "skuName": {
-      "value": "VpnGw2AZ"
     },
     "vNetResourceId": {
       "value": "<vNetResourceId>"
@@ -1213,6 +1508,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         }
       ]
     },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -1228,6 +1526,128 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network-gateway:<version>'
+
+// Required parameters
+param clusterSettings = {
+  activeGatewayPipName: 'nvgmax001-pip2'
+  clusterMode: 'activeActiveBgp'
+  customBgpIpAddresses: [
+    '169.254.21.4'
+    '169.254.21.5'
+  ]
+  secondCustomBgpIpAddresses: [
+    '169.254.22.4'
+    '169.254.22.5'
+  ]
+}
+param gatewayType = 'Vpn'
+param name = 'nvgmax001'
+param vNetResourceId = '<vNetResourceId>'
+// Non-required parameters
+param allowRemoteVnetTraffic = true
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableIPSecReplayProtection = true
+param domainNameLabel = [
+  'dm-nvgmax'
+]
+param enableBgpRouteTranslationForNat = true
+param enablePrivateIpAddress = true
+param gatewayDefaultSiteLocalNetworkGatewayId = '<gatewayDefaultSiteLocalNetworkGatewayId>'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param natRules = [
+  {
+    externalMappings: [
+      {
+        addressSpace: '192.168.0.0/24'
+        portRange: '100'
+      }
+    ]
+    internalMappings: [
+      {
+        addressSpace: '10.100.0.0/24'
+        portRange: '100'
+      }
+    ]
+    mode: 'IngressSnat'
+    name: 'nat-rule-1-static-IngressSnat'
+    type: 'Static'
+  }
+  {
+    externalMappings: [
+      {
+        addressSpace: '10.200.0.0/26'
+      }
+    ]
+    internalMappings: [
+      {
+        addressSpace: '172.16.0.0/26'
+      }
+    ]
+    mode: 'EgressSnat'
+    name: 'nat-rule-2-dynamic-EgressSnat'
+    type: 'Static'
+  }
+]
+param publicIpZones = [
+  1
+  2
+  3
+]
+param roleAssignments = [
+  {
+    name: 'db30550e-70b7-4dbe-901e-e9363b69c05f'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param skuName = 'VpnGw2AZ'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param vpnGatewayGeneration = 'Generation2'
+param vpnType = 'RouteBased'
 ```
 
 </details>
@@ -1252,10 +1672,11 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
     gatewayType: 'Vpn'
     name: 'nvgnaz001'
-    skuName: 'VpnGw1'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     location: '<location>'
+    publicIpZones: []
+    skuName: 'VpnGw1'
   }
 }
 ```
@@ -1265,7 +1686,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1284,18 +1705,44 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "name": {
       "value": "nvgnaz001"
     },
-    "skuName": {
-      "value": "VpnGw1"
-    },
     "vNetResourceId": {
       "value": "<vNetResourceId>"
     },
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "publicIpZones": {
+      "value": []
+    },
+    "skuName": {
+      "value": "VpnGw1"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network-gateway:<version>'
+
+// Required parameters
+param clusterSettings = {
+  clusterMode: 'activePassiveNoBgp'
+}
+param gatewayType = 'Vpn'
+param name = 'nvgnaz001'
+param vNetResourceId = '<vNetResourceId>'
+// Non-required parameters
+param location = '<location>'
+param publicIpZones = []
+param skuName = 'VpnGw1'
 ```
 
 </details>
@@ -1320,7 +1767,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
     gatewayType: 'Vpn'
     name: 'nvgvpn001'
-    skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
@@ -1337,6 +1783,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       2
       3
     ]
+    skuName: 'VpnGw2AZ'
     vpnGatewayGeneration: 'Generation2'
     vpnType: 'RouteBased'
   }
@@ -1348,7 +1795,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1366,9 +1813,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "name": {
       "value": "nvgvpn001"
-    },
-    "skuName": {
-      "value": "VpnGw2AZ"
     },
     "vNetResourceId": {
       "value": "<vNetResourceId>"
@@ -1404,6 +1848,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         3
       ]
     },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
     "vpnGatewayGeneration": {
       "value": "Generation2"
     },
@@ -1412,6 +1859,43 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network-gateway:<version>'
+
+// Required parameters
+param clusterSettings = {
+  clusterMode: 'activeActiveNoBgp'
+}
+param gatewayType = 'Vpn'
+param name = 'nvgvpn001'
+param vNetResourceId = '<vNetResourceId>'
+// Non-required parameters
+param allowRemoteVnetTraffic = true
+param disableIPSecReplayProtection = true
+param domainNameLabel = [
+  'dm-nvgvpn'
+]
+param enableBgpRouteTranslationForNat = true
+param enablePrivateIpAddress = true
+param gatewayDefaultSiteLocalNetworkGatewayId = '<gatewayDefaultSiteLocalNetworkGatewayId>'
+param location = '<location>'
+param publicIpZones = [
+  1
+  2
+  3
+]
+param skuName = 'VpnGw2AZ'
+param vpnGatewayGeneration = 'Generation2'
+param vpnType = 'RouteBased'
 ```
 
 </details>
@@ -1445,7 +1929,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     }
     gatewayType: 'Vpn'
     name: 'nvgmwaf001'
-    skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
@@ -1514,6 +1997,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       2
       3
     ]
+    skuName: 'VpnGw2AZ'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -1530,7 +2014,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1557,9 +2041,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "name": {
       "value": "nvgmwaf001"
-    },
-    "skuName": {
-      "value": "VpnGw2AZ"
     },
     "vNetResourceId": {
       "value": "<vNetResourceId>"
@@ -1653,6 +2134,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         3
       ]
     },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -1673,6 +2157,109 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network-gateway:<version>'
+
+// Required parameters
+param clusterSettings = {
+  asn: 65515
+  clusterMode: 'activeActiveBgp'
+  customBgpIpAddresses: [
+    '169.254.21.4'
+    '169.254.21.5'
+  ]
+  secondCustomBgpIpAddresses: [
+    '169.254.22.4'
+    '169.254.22.5'
+  ]
+}
+param gatewayType = 'Vpn'
+param name = 'nvgmwaf001'
+param vNetResourceId = '<vNetResourceId>'
+// Non-required parameters
+param allowRemoteVnetTraffic = true
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableIPSecReplayProtection = true
+param domainNameLabel = [
+  'dm-nvgmwaf'
+]
+param enableBgpRouteTranslationForNat = true
+param enablePrivateIpAddress = true
+param gatewayDefaultSiteLocalNetworkGatewayId = '<gatewayDefaultSiteLocalNetworkGatewayId>'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param natRules = [
+  {
+    externalMappings: [
+      {
+        addressSpace: '192.168.0.0/24'
+        portRange: '100'
+      }
+    ]
+    internalMappings: [
+      {
+        addressSpace: '10.100.0.0/24'
+        portRange: '100'
+      }
+    ]
+    mode: 'IngressSnat'
+    name: 'nat-rule-1-static-IngressSnat'
+    type: 'Static'
+  }
+  {
+    externalMappings: [
+      {
+        addressSpace: '10.200.0.0/26'
+      }
+    ]
+    internalMappings: [
+      {
+        addressSpace: '172.16.0.0/26'
+      }
+    ]
+    mode: 'EgressSnat'
+    name: 'nat-rule-2-dynamic-EgressSnat'
+    type: 'Static'
+  }
+]
+param publicIpZones = [
+  1
+  2
+  3
+]
+param skuName = 'VpnGw2AZ'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param vpnGatewayGeneration = 'Generation2'
+param vpnType = 'RouteBased'
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -1682,7 +2269,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 | [`clusterSettings`](#parameter-clustersettings) | object | Specifies one of the following four configurations: Active-Active with (clusterMode = activeActiveBgp) or without (clusterMode = activeActiveNoBgp) BGP, Active-Passive with (clusterMode = activePassiveBgp) or without (clusterMode = activePassiveNoBgp) BGP. |
 | [`gatewayType`](#parameter-gatewaytype) | string | Specifies the gateway type. E.g. VPN, ExpressRoute. |
 | [`name`](#parameter-name) | string | Specifies the Virtual Network Gateway name. |
-| [`skuName`](#parameter-skuname) | string | The SKU of the Gateway. |
 | [`vNetResourceId`](#parameter-vnetresourceid) | string | Virtual Network resource ID. |
 
 **Optional parameters**
@@ -1709,6 +2295,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 | [`publicIPPrefixResourceId`](#parameter-publicipprefixresourceid) | string | Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix. |
 | [`publicIpZones`](#parameter-publicipzones) | array | Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`skuName`](#parameter-skuname) | string | The SKU of the Gateway. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`vpnClientAadConfiguration`](#parameter-vpnclientaadconfiguration) | object | Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured if clientRootCertData is provided. |
 | [`vpnClientAddressPoolPrefix`](#parameter-vpnclientaddresspoolprefix) | string | The IP address range from which VPN clients will receive an IP address when connected. Range specified must not overlap with on-premise network. |
@@ -1742,35 +2329,6 @@ Specifies the Virtual Network Gateway name.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `skuName`
-
-The SKU of the Gateway.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Basic'
-    'ErGw1AZ'
-    'ErGw2AZ'
-    'ErGw3AZ'
-    'HighPerformance'
-    'Standard'
-    'UltraPerformance'
-    'VpnGw1'
-    'VpnGw1AZ'
-    'VpnGw2'
-    'VpnGw2AZ'
-    'VpnGw3'
-    'VpnGw3AZ'
-    'VpnGw4'
-    'VpnGw4AZ'
-    'VpnGw5'
-    'VpnGw5AZ'
-  ]
-  ```
 
 ### Parameter: `vNetResourceId`
 
@@ -2233,7 +2791,14 @@ Specifies the zones of the Public IP address. Basic IP SKU does not support Avai
 
 - Required: No
 - Type: array
-- Default: `[]`
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -2336,6 +2901,36 @@ The principal type of the assigned principal ID.
     'Group'
     'ServicePrincipal'
     'User'
+  ]
+  ```
+
+### Parameter: `skuName`
+
+The SKU of the Gateway.
+
+- Required: No
+- Type: string
+- Default: `[if(equals(parameters('gatewayType'), 'VPN'), 'VpnGw1AZ', 'ErGw1AZ')]`
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'ErGw1AZ'
+    'ErGw2AZ'
+    'ErGw3AZ'
+    'HighPerformance'
+    'Standard'
+    'UltraPerformance'
+    'VpnGw1'
+    'VpnGw1AZ'
+    'VpnGw2'
+    'VpnGw2AZ'
+    'VpnGw3'
+    'VpnGw3AZ'
+    'VpnGw4'
+    'VpnGw4AZ'
+    'VpnGw5'
+    'VpnGw5AZ'
   ]
   ```
 
