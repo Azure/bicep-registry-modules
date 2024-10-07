@@ -114,6 +114,9 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
 resource pip 'Microsoft.Network/publicIPAddresses@2024-01-01' = {
   name: publicIPAddressName
   location: location
+  sku: {
+    name: 'Standard'
+  }
   properties: {}
 }
 

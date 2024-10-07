@@ -573,7 +573,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           #disable-next-line use-resource-id-functions // It's a reference from inside a loop which makes resolving it using a resource reference particulary difficult.
           id: az.resourceId(
             'Microsoft.Network/networkInterfaces',
-            nicConfiguration.?name ?? '${name}${nicConfiguration.nicSuffix}'
+            nicConfiguration.?name ?? '${name}${nicConfiguration.?nicSuffix}'
           )
         }
       ]
