@@ -239,7 +239,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (deploymentsT
         serviceEndpoints: [
           'Microsoft.Storage'
         ]
-        delegation: 'Microsoft.ContainerInstance.containerGroups'
+        delegation: 'Microsoft.ContainerInstance/containerGroups'
       }
     ]
     location: location
