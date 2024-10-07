@@ -117,7 +117,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -136,6 +136,25 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-platform/baseline:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param virtualMachineConfiguration = {
+  adminPassword: '<adminPassword>'
+  adminUsername: 'localAdminUser'
 }
 ```
 
@@ -269,7 +288,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -410,6 +429,123 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-platform/baseline:<version>'
+
+// Required parameters
+param name = 'aipbmax'
+// Non-required parameters
+param applicationInsightsConfiguration = {
+  name: 'appi-aipbmax'
+}
+param bastionConfiguration = {
+  disableCopyPaste: true
+  enabled: true
+  enableFileCopy: true
+  enableIpConnect: true
+  enableKerberos: true
+  enableShareableLink: true
+  name: 'bas-aipbmax'
+  networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+  scaleUnits: 3
+  sku: 'Standard'
+  subnetAddressPrefix: '10.1.1.0/26'
+}
+param containerRegistryConfiguration = {
+  name: 'craipbmax'
+  trustPolicyStatus: 'disabled'
+}
+param keyVaultConfiguration = {
+  enablePurgeProtection: false
+  name: '<name>'
+}
+param logAnalyticsConfiguration = {
+  name: 'log-aipbmax'
+}
+param managedIdentityName = '<managedIdentityName>'
+param storageAccountConfiguration = {
+  allowSharedKeyAccess: true
+  name: 'staipbmax'
+  sku: 'Standard_GRS'
+}
+param virtualMachineConfiguration = {
+  adminPassword: '<adminPassword>'
+  adminUsername: 'localAdminUser'
+  enableAadLoginExtension: true
+  enableAzureMonitorAgent: true
+  enabled: true
+  encryptionAtHost: false
+  imageReference: {
+    offer: 'dsvm-win-2022'
+    publisher: 'microsoft-dsvm'
+    sku: 'winserver-2022'
+    version: 'latest'
+  }
+  maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
+  name: '<name>'
+  nicConfigurationConfiguration: {
+    ipConfigName: 'ipcfg-aipbmax'
+    name: 'nic-aipbmax'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+    privateIPAllocationMethod: 'Dynamic'
+  }
+  osDisk: {
+    caching: 'ReadOnly'
+    createOption: 'FromImage'
+    deleteOption: 'Delete'
+    diskSizeGB: 256
+    managedDisk: {
+      storageAccountType: 'Standard_LRS'
+    }
+    name: 'disk-aipbmax'
+  }
+  patchMode: 'AutomaticByPlatform'
+  size: 'Standard_DS1_v2'
+  zone: 0
+}
+param virtualNetworkConfiguration = {
+  addressPrefix: '10.1.0.0/16'
+  enabled: true
+  name: 'vnet-aipbmax'
+  subnet: {
+    addressPrefix: '10.1.0.0/24'
+    name: 'snet-aipbmax'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+  }
+}
+param workspaceConfiguration = {
+  computes: [
+    {
+      computeType: 'ComputeInstance'
+      description: 'Default'
+      location: '<location>'
+      name: '<name>'
+      properties: {
+        vmSize: 'STANDARD_DS11_V2'
+      }
+      sku: 'Standard'
+    }
+  ]
+  name: 'hub-aipbmax'
+  networkIsolationMode: 'AllowOnlyApprovedOutbound'
+  networkOutboundRules: {
+    rule1: {
+      category: 'UserDefined'
+      destination: 'pypi.org'
+      type: 'FQDN'
+    }
+  }
+  projectName: 'project-aipbmax'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _Without virtual machine_
 
 This instance deploys the module with a virtual network, but no virtual machine or Azure Bastion host.
@@ -441,7 +577,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -464,6 +600,27 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-platform/baseline:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param bastionConfiguration = {
+  enabled: false
+}
+param virtualMachineConfiguration = {
+  enabled: false
 }
 ```
 
@@ -498,7 +655,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -516,6 +673,24 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-platform/baseline:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param virtualNetworkConfiguration = {
+  enabled: false
 }
 ```
 
@@ -574,7 +749,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -620,6 +795,48 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
           }
         }
       }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-platform/baseline:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param managedIdentityName = '<managedIdentityName>'
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+param virtualMachineConfiguration = {
+  adminPassword: '<adminPassword>'
+  adminUsername: 'localAdminUser'
+  enableAadLoginExtension: true
+  enableAzureMonitorAgent: true
+  maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
+  patchMode: 'AutomaticByPlatform'
+  zone: 1
+}
+param workspaceConfiguration = {
+  networkIsolationMode: 'AllowOnlyApprovedOutbound'
+  networkOutboundRules: {
+    rule: {
+      category: 'UserDefined'
+      destination: {
+        serviceResourceId: '<serviceResourceId>'
+        subresourceTarget: 'blob'
+      }
+      type: 'PrivateEndpoint'
     }
   }
 }

@@ -95,7 +95,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -160,6 +160,51 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/machine-learning-services/workspace:<version>'
+
+// Required parameters
+param name = 'mlswai001'
+param sku = 'Basic'
+// Non-required parameters
+param associatedApplicationInsightsResourceId = '<associatedApplicationInsightsResourceId>'
+param associatedKeyVaultResourceId = '<associatedKeyVaultResourceId>'
+param associatedStorageAccountResourceId = '<associatedStorageAccountResourceId>'
+param connections = [
+  {
+    category: 'AIServices'
+    connectionProperties: {
+      authType: 'ApiKey'
+      credentials: {
+        key: 'key'
+      }
+    }
+    metadata: {
+      ApiType: 'Azure'
+      ApiVersion: '2023-07-01-preview'
+      DeploymentApiVersion: '2023-10-01-preview'
+      Location: '<Location>'
+      ResourceId: '<ResourceId>'
+    }
+    name: 'ai'
+    target: '<target>'
+  }
+]
+param kind = 'Hub'
+param location = '<location>'
+param workspaceHubConfig = {
+  additionalWorkspaceStorageAccounts: '<additionalWorkspaceStorageAccounts>'
+  defaultWorkspaceResourceGroup: '<defaultWorkspaceResourceGroup>'
+}
+```
+
+</details>
+<p>
+
 ### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -190,7 +235,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -219,6 +264,26 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/machine-learning-services/workspace:<version>'
+
+// Required parameters
+param name = 'mlswmin001'
+param sku = 'Basic'
+// Non-required parameters
+param associatedApplicationInsightsResourceId = '<associatedApplicationInsightsResourceId>'
+param associatedKeyVaultResourceId = '<associatedKeyVaultResourceId>'
+param associatedStorageAccountResourceId = '<associatedStorageAccountResourceId>'
+param location = '<location>'
 ```
 
 </details>
@@ -279,7 +344,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -346,6 +411,51 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/machine-learning-services/workspace:<version>'
+
+// Required parameters
+param name = 'mlswecr001'
+param sku = 'Basic'
+// Non-required parameters
+param associatedApplicationInsightsResourceId = '<associatedApplicationInsightsResourceId>'
+param associatedKeyVaultResourceId = '<associatedKeyVaultResourceId>'
+param associatedStorageAccountResourceId = '<associatedStorageAccountResourceId>'
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param managedNetworkSettings = {
+  isolationMode: 'AllowInternetOutbound'
+  outboundRules: {
+    rule: {
+      category: 'UserDefined'
+      destination: {
+        serviceResourceId: '<serviceResourceId>'
+        subresourceTarget: 'blob'
+      }
+      type: 'PrivateEndpoint'
+    }
+  }
+}
+param primaryUserAssignedIdentity = '<primaryUserAssignedIdentity>'
+```
+
+</details>
+<p>
+
 ### Example 4: _Creating Azure ML managed feature store_
 
 This instance deploys an Azure ML managed feature store.
@@ -382,7 +492,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -421,6 +531,32 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/machine-learning-services/workspace:<version>'
+
+// Required parameters
+param name = 'mlswfs001'
+param sku = 'Basic'
+// Non-required parameters
+param associatedApplicationInsightsResourceId = '<associatedApplicationInsightsResourceId>'
+param associatedKeyVaultResourceId = '<associatedKeyVaultResourceId>'
+param associatedStorageAccountResourceId = '<associatedStorageAccountResourceId>'
+param featureStoreSettings = {
+  computeRuntime: {
+    sparkRuntimeVersion: '3.3'
+  }
+}
+param kind = 'FeatureStore'
+param location = '<location>'
 ```
 
 </details>
@@ -591,7 +727,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -792,6 +928,161 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/machine-learning-services/workspace:<version>'
+
+// Required parameters
+param name = 'mlswmax001'
+param sku = 'Premium'
+// Non-required parameters
+param associatedApplicationInsightsResourceId = '<associatedApplicationInsightsResourceId>'
+param associatedKeyVaultResourceId = '<associatedKeyVaultResourceId>'
+param associatedStorageAccountResourceId = '<associatedStorageAccountResourceId>'
+param computes = [
+  {
+    computeLocation: '<computeLocation>'
+    computeType: 'AmlCompute'
+    description: 'Default CPU Cluster'
+    disableLocalAuth: false
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    name: 'DefaultCPU'
+    properties: {
+      enableNodePublicIp: true
+      isolatedNetwork: false
+      osType: 'Linux'
+      remoteLoginPortPublicAccess: 'Disabled'
+      scaleSettings: {
+        maxNodeCount: 3
+        minNodeCount: 0
+        nodeIdleTimeBeforeScaleDown: 'PT5M'
+      }
+      vmPriority: 'Dedicated'
+      vmSize: 'STANDARD_DS11_V2'
+    }
+    sku: 'Basic'
+  }
+]
+param connections = [
+  {
+    category: 'ApiKey'
+    connectionProperties: {
+      authType: 'ApiKey'
+      credentials: {
+        key: 'key'
+      }
+    }
+    name: 'connection'
+    target: 'https://example.com'
+  }
+]
+param description = 'The cake is a lie.'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param discoveryUrl = 'http://example.com'
+param imageBuildCompute = 'testcompute'
+param kind = 'Default'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param managedNetworkSettings = {
+  isolationMode: 'Disabled'
+}
+param primaryUserAssignedIdentity = '<primaryUserAssignedIdentity>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      name: 'group1'
+      privateDnsZoneGroupConfigs: [
+        {
+          name: 'config1'
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      name: 'group2'
+      privateDnsZoneGroupConfigs: [
+        {
+          name: 'config2'
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    name: 'f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param serverlessComputeSettings = {
+  serverlessComputeCustomSubnet: '<serverlessComputeCustomSubnet>'
+  serverlessComputeNoPublicIP: true
+}
+param systemDatastoresAuthMode = 'accessKey'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -881,7 +1172,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -978,6 +1269,85 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/machine-learning-services/workspace:<version>'
+
+// Required parameters
+param name = 'mlswwaf001'
+param sku = 'Standard'
+// Non-required parameters
+param associatedApplicationInsightsResourceId = '<associatedApplicationInsightsResourceId>'
+param associatedKeyVaultResourceId = '<associatedKeyVaultResourceId>'
+param associatedStorageAccountResourceId = '<associatedStorageAccountResourceId>'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param managedNetworkSettings = {
+  isolationMode: 'AllowOnlyApprovedOutbound'
+  outboundRules: {
+    rule1: {
+      category: 'UserDefined'
+      destination: {
+        serviceResourceId: '<serviceResourceId>'
+        sparkEnabled: true
+        subresourceTarget: 'blob'
+      }
+      type: 'PrivateEndpoint'
+    }
+    rule2: {
+      category: 'UserDefined'
+      destination: 'pypi.org'
+      type: 'FQDN'
+    }
+    rule3: {
+      category: 'UserDefined'
+      destination: {
+        portRanges: '80,443'
+        protocol: 'TCP'
+        serviceTag: 'AppService'
+      }
+      type: 'ServiceTag'
+    }
+  }
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param systemDatastoresAuthMode = 'identity'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

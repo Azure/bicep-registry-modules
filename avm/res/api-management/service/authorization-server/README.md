@@ -23,6 +23,7 @@ This module deploys an API Management Service Authorization Server.
 | [`authorizationEndpoint`](#parameter-authorizationendpoint) | string | OAuth authorization endpoint. See <http://tools.ietf.org/html/rfc6749#section-3.2>. |
 | [`clientId`](#parameter-clientid) | securestring | Client or app ID registered with this authorization server. |
 | [`clientSecret`](#parameter-clientsecret) | securestring | Client or app secret registered with this authorization server. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
+| [`displayName`](#parameter-displayname) | string | API Management Service Authorization Servers name. Must be 1 to 50 characters long. |
 | [`grantTypes`](#parameter-granttypes) | array | Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials. |
 | [`name`](#parameter-name) | string | Identifier of the authorization server. |
 
@@ -68,6 +69,13 @@ Client or app secret registered with this authorization server. This property wi
 
 - Required: Yes
 - Type: securestring
+
+### Parameter: `displayName`
+
+API Management Service Authorization Servers name. Must be 1 to 50 characters long.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `grantTypes`
 
