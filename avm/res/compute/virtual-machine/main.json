@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.3.12046",
-      "templateHash": "12117395608740395895"
+      "templateHash": "1443306495474212036"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -1050,7 +1050,7 @@
                   "deleteOption": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'deleteOption'), 'Delete')]",
                   "primary": "[if(equals(copyIndex('networkInterfaces'), 0), true(), false())]"
                 },
-                "id": "[resourceId('Microsoft.Network/networkInterfaces', coalesce(tryGet(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'name'), format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].nicSuffix)))]"
+                "id": "[resourceId('Microsoft.Network/networkInterfaces', coalesce(tryGet(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'name'), format('{0}{1}', parameters('name'), tryGet(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'nicSuffix'))))]"
               }
             }
           ]
