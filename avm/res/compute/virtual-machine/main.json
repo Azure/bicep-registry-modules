@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.3.12046",
-      "templateHash": "15900277661974990629"
+      "templateHash": "12117395608740395895"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -1207,7 +1207,7 @@
         "mode": "Incremental",
         "parameters": {
           "networkInterfaceName": {
-            "value": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex()], 'name'), format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex()].nicSuffix))]"
+            "value": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex()], 'name'), format('{0}{1}', parameters('name'), tryGet(parameters('nicConfigurations')[copyIndex()], 'nicSuffix')))]"
           },
           "virtualMachineName": {
             "value": "[parameters('name')]"

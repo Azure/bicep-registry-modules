@@ -478,7 +478,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
   for (nicConfiguration, index) in nicConfigurations: {
     name: '${uniqueString(deployment().name, location)}-VM-Nic-${index}'
     params: {
-      networkInterfaceName: nicConfiguration.?name ?? '${name}${nicConfiguration.nicSuffix}'
+      networkInterfaceName: nicConfiguration.?name ?? '${name}${nicConfiguration.?nicSuffix}'
       virtualMachineName: name
       location: location
       enableIPForwarding: nicConfiguration.?enableIPForwarding ?? false
