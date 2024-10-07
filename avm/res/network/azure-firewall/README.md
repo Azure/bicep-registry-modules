@@ -1296,7 +1296,138 @@ param zones = []
 </details>
 <p>
 
-### Example 9: _WAF-aligned_
+### Example 9: _Forced tunneling_
+
+This instance deploys the module and sets up forced tunneling.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
+  name: 'azureFirewallDeployment'
+  params: {
+    // Required parameters
+    name: 'naftunn001'
+    // Non-required parameters
+    additionalPublicIpConfigurations: [
+      {
+        name: 'ipConfig01'
+        publicIPAddressResourceId: '<publicIPAddressResourceId>'
+      }
+    ]
+    azureSkuTier: 'Standard'
+    enableForcedTunneling: true
+    location: '<location>'
+    managementIPAddressObject: {
+      publicIPAllocationMethod: 'Static'
+      roleAssignments: [
+        {
+          principalId: '<principalId>'
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Reader'
+        }
+      ]
+    }
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "naftunn001"
+    },
+    // Non-required parameters
+    "additionalPublicIpConfigurations": {
+      "value": [
+        {
+          "name": "ipConfig01",
+          "publicIPAddressResourceId": "<publicIPAddressResourceId>"
+        }
+      ]
+    },
+    "azureSkuTier": {
+      "value": "Standard"
+    },
+    "enableForcedTunneling": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managementIPAddressObject": {
+      "value": {
+        "publicIPAllocationMethod": "Static",
+        "roleAssignments": [
+          {
+            "principalId": "<principalId>",
+            "principalType": "ServicePrincipal",
+            "roleDefinitionIdOrName": "Reader"
+          }
+        ]
+      }
+    },
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/azure-firewall:<version>'
+
+// Required parameters
+param name = 'naftunn001'
+// Non-required parameters
+param additionalPublicIpConfigurations = [
+  {
+    name: 'ipConfig01'
+    publicIPAddressResourceId: '<publicIPAddressResourceId>'
+  }
+]
+param azureSkuTier = 'Standard'
+param enableForcedTunneling = true
+param location = '<location>'
+param managementIPAddressObject = {
+  publicIPAllocationMethod: 'Static'
+  roleAssignments: [
+    {
+      principalId: '<principalId>'
+      principalType: 'ServicePrincipal'
+      roleDefinitionIdOrName: 'Reader'
+    }
+  ]
+}
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+```
+
+</details>
+<p>
+
+### Example 10: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
