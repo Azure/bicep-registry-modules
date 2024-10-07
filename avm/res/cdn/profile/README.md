@@ -420,6 +420,9 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       }
     ]
     location: 'global'
+    managedIdentities: {
+      systemAssigned: true
+    }
     originGroups: [
       {
         loadBalancingSettings: {
@@ -517,6 +520,11 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     "location": {
       "value": "global"
     },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
     "originGroups": {
       "value": [
         {
@@ -608,6 +616,9 @@ param customDomains = [
   }
 ]
 param location = 'global'
+param managedIdentities = {
+  systemAssigned: true
+}
 param originGroups = [
   {
     loadBalancingSettings: {
