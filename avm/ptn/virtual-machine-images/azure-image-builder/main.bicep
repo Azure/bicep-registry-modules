@@ -186,7 +186,6 @@ module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0
 
 // MSI Subscription contributor assignment
 resource imageMSI_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
-  // name: guid(subscription().subscriptionId, imageManagedIdentityName, contributorRole.id)
   name: guid(
     subscription().id,
     '${subscription().id}/resourceGroups/${resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${imageManagedIdentityName}',
