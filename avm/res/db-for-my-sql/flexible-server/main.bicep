@@ -371,8 +371,8 @@ module flexibleServer_databases 'database/main.bicep' = [
     params: {
       name: database.name
       flexibleServerName: flexibleServer.name
-      collation: contains(database, 'collation') ? database.collation : ''
-      charset: contains(database, 'charset') ? database.charset : ''
+      collation: database.?collation ?? ''
+      charset: database.?charset ?? ''
     }
   }
 ]
@@ -397,7 +397,7 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
       login: administrator.login
       sid: administrator.sid
       identityResourceId: administrator.identityResourceId
-      tenantId: contains(administrator, 'tenantId') ? administrator.tenantId : tenant().tenantId
+      tenantId: administrator.?tenantId ?? tenant().tenantId
     }
   }
 ]
