@@ -1153,6 +1153,7 @@ param originResponseTimeoutSeconds = 60
 | [`endpointProperties`](#parameter-endpointproperties) | object | Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details). |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`originResponseTimeoutSeconds`](#parameter-originresponsetimeoutseconds) | int | Send and receive timeout on forwarding request to the origin. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`ruleSets`](#parameter-rulesets) | array | Array of rule set objects. |
@@ -1280,6 +1281,34 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource.
+
+- Required: No
+- Type: array
 
 ### Parameter: `originResponseTimeoutSeconds`
 
@@ -1501,6 +1530,7 @@ Endpoint tags.
 | `profileType` | string | The type of the CDN profile. |
 | `resourceGroupName` | string | The resource group where the CDN profile is deployed. |
 | `resourceId` | string | The resource ID of the CDN profile. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 | `uri` | string | The uri of the CDN profile endpoint. |
 
 ## Data Collection
