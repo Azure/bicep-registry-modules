@@ -179,6 +179,7 @@ function Set-EnvironmentOnAgent {
     sudo mv ./bicep /usr/local/bin/bicep
 
     Write-Verbose 'Bicep CLI version after install:' -Verbose
+    bicep --version
 
     ###############################
     ##   Install Extensions CLI   #
