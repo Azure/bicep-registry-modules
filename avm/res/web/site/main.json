@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "4626438010490721609"
+      "version": "0.30.23.60470",
+      "templateHash": "12115053115954215642"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -607,6 +607,13 @@
         "description": "Optional. The site config object."
       }
     },
+    "functionAppConfig": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The Function App configuration object."
+      }
+    },
     "storageAccountResourceId": {
       "type": "string",
       "nullable": true,
@@ -876,6 +883,7 @@
         "keyVaultReferenceIdentity": "[parameters('keyVaultAccessIdentityResourceId')]",
         "virtualNetworkSubnetId": "[parameters('virtualNetworkSubnetId')]",
         "siteConfig": "[parameters('siteConfig')]",
+        "functionAppConfig": "[parameters('functionAppConfig')]",
         "clientCertEnabled": "[parameters('clientCertEnabled')]",
         "clientCertExclusionPaths": "[parameters('clientCertExclusionPaths')]",
         "clientCertMode": "[parameters('clientCertMode')]",
@@ -1008,8 +1016,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "3998275265127709875"
+              "version": "0.30.23.60470",
+              "templateHash": "10845600494881775271"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting.",
@@ -1172,8 +1180,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "15126303852151434516"
+              "version": "0.30.23.60470",
+              "templateHash": "9901606105705730734"
             },
             "name": "Site Auth Settings V2 Config",
             "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -1276,8 +1284,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "1719886395722436280"
+              "version": "0.30.23.60470",
+              "templateHash": "5314244939846396394"
             },
             "name": "Site logs Config",
             "description": "This module deploys a Site logs Configuration.",
@@ -1371,8 +1379,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "7195763436259190781"
+              "version": "0.30.23.60470",
+              "templateHash": "4796843420829841335"
             },
             "name": "Site Api Management Config",
             "description": "This module deploys a Site Api Management Configuration.",
@@ -1465,8 +1473,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "2006653133597094766"
+              "version": "0.30.23.60470",
+              "templateHash": "8769701913978391000"
             },
             "name": "Site Deployment Extension ",
             "description": "This module deploys a Site extension for MSDeploy.",
@@ -1589,6 +1597,9 @@
           "siteConfig": {
             "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'siteConfig'), parameters('siteConfig'))]"
           },
+          "functionAppConfig": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'functionAppConfig'), parameters('functionAppConfig'))]"
+          },
           "storageAccountResourceId": {
             "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'storageAccountResourceId'), parameters('storageAccountResourceId'))]"
           },
@@ -1684,8 +1695,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "13282951347078727812"
+              "version": "0.30.23.60470",
+              "templateHash": "16398712095816733590"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -2258,6 +2269,13 @@
                 "description": "Optional. The site config object."
               }
             },
+            "functionAppConfig": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The Function App config object."
+              }
+            },
             "storageAccountResourceId": {
               "type": "string",
               "nullable": true,
@@ -2504,7 +2522,7 @@
             },
             "slot": {
               "type": "Microsoft.Web/sites/slots",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2023-12-01",
               "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "kind": "[parameters('kind')]",
@@ -2519,6 +2537,7 @@
                 "keyVaultReferenceIdentity": "[parameters('keyVaultAccessIdentityResourceId')]",
                 "virtualNetworkSubnetId": "[parameters('virtualNetworkSubnetId')]",
                 "siteConfig": "[parameters('siteConfig')]",
+                "functionAppConfig": "[parameters('functionAppConfig')]",
                 "clientCertEnabled": "[parameters('clientCertEnabled')]",
                 "clientCertExclusionPaths": "[parameters('clientCertExclusionPaths')]",
                 "clientCertMode": "[parameters('clientCertMode')]",
@@ -2657,8 +2676,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "9363357518124041583"
+                      "version": "0.30.23.60470",
+                      "templateHash": "4751023237415156564"
                     },
                     "name": "Site Slot App Settings",
                     "description": "This module deploys a Site Slot App Setting.",
@@ -2840,8 +2859,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "3412962465179136371"
+                      "version": "0.30.23.60470",
+                      "templateHash": "12145671704242923554"
                     },
                     "name": "Site Slot Auth Settings V2 Config",
                     "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -2962,8 +2981,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "6875784212879192632"
+                      "version": "0.30.23.60470",
+                      "templateHash": "9837227282603977030"
                     },
                     "name": "Web Site Slot Basic Publishing Credentials Policies",
                     "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy.",
@@ -3088,8 +3107,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "4120073340411344208"
+                      "version": "0.30.23.60470",
+                      "templateHash": "1330320751784094185"
                     },
                     "name": "Web/Function Apps Slot Hybrid Connection Relay",
                     "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay.",
@@ -3194,8 +3213,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "2006653133597094766"
+                      "version": "0.30.23.60470",
+                      "templateHash": "8769701913978391000"
                     },
                     "name": "Site Deployment Extension ",
                     "description": "This module deploys a Site extension for MSDeploy.",
@@ -4058,14 +4077,14 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[coalesce(tryGet(tryGet(reference('slot', '2022-09-01', 'full'), 'identity'), 'principalId'), '')]"
+              "value": "[coalesce(tryGet(tryGet(reference('slot', '2023-12-01', 'full'), 'identity'), 'principalId'), '')]"
             },
             "location": {
               "type": "string",
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('slot', '2022-09-01', 'full').location]"
+              "value": "[reference('slot', '2023-12-01', 'full').location]"
             },
             "privateEndpoints": {
               "type": "array",
@@ -4123,8 +4142,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "5861139703409371797"
+              "version": "0.30.23.60470",
+              "templateHash": "2961784489694025029"
             },
             "name": "Web Site Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Basic Publishing Credentials Policy.",
@@ -4239,8 +4258,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "7661794789768148013"
+              "version": "0.30.23.60470",
+              "templateHash": "1833159536134902561"
             },
             "name": "Web/Function Apps Hybrid Connection Relay",
             "description": "This module deploys a Site Hybrid Connection Namespace Relay.",
