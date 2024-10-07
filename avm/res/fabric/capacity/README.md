@@ -103,6 +103,7 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
     name: 'fcwaf001'
     // Non-required parameters
     location: '<location>'
+    skuName: 'F64'
   }
 }
 ```
@@ -131,6 +132,9 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "skuName": {
+      "value": "F64"
     }
   }
 }

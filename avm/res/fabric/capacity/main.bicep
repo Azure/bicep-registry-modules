@@ -60,7 +60,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource fabricCapacities 'Microsoft.Fabric/capacities@2023-11-01' = {
+resource fabricCapacity 'Microsoft.Fabric/capacities@2023-11-01' = {
   name: name
   location: location
   tags: tags
@@ -83,10 +83,10 @@ resource fabricCapacities 'Microsoft.Fabric/capacities@2023-11-01' = {
 output resourceGroupName string = resourceGroup().name
 
 @description('The resource ID of the deployed Fabric resource.')
-output resourceId string = fabricCapacities.id
+output resourceId string = fabricCapacity.id
 
 @description('The name of the deployed Fabric resource.')
-output name string = fabricCapacities.name
+output name string = fabricCapacity.name
 
 @description('The location the resource was deployed into.')
-output location string = fabricCapacities.location
+output location string = fabricCapacity.location

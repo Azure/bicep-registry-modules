@@ -43,6 +43,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      skuName: 'F64'
       adminMembers: [
         'mattschmitt@microsoft.com'
       ]
