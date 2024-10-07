@@ -47,6 +47,7 @@ var computeGalleryImageDefinitionsVar = [
     publisher: 'devops'
     offer: 'devops_linux'
     sku: 'devops_linux_az'
+    osState: 'Generalized'
   }
 ]
 var assetsStorageAccountContainerName = 'aibscripts'

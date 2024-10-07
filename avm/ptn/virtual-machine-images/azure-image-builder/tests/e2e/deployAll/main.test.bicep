@@ -49,6 +49,7 @@ module testDeployment '../../../main.bicep' = [
           publisher: 'devops'
           offer: 'devops_linux'
           sku: 'devops_linux_az'
+          osState: 'Generalized'
         }
       ]
       storageAccountFilesToUpload: [

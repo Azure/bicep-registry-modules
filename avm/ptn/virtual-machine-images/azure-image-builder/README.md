@@ -79,6 +79,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
         hyperVGeneration: 'V2'
         name: 'sid-linux'
         offer: 'devops_linux'
+        osState: 'Generalized'
         osType: 'Linux'
         publisher: 'devops'
         sku: 'devops_linux_az'
@@ -123,6 +124,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
           "hyperVGeneration": "V2",
           "name": "sid-linux",
           "offer": "devops_linux",
+          "osState": "Generalized",
           "osType": "Linux",
           "publisher": "devops",
           "sku": "devops_linux_az"
@@ -175,6 +177,7 @@ param computeGalleryImageDefinitions = [
     hyperVGeneration: 'V2'
     name: 'sid-linux'
     offer: 'devops_linux'
+    osState: 'Generalized'
     osType: 'Linux'
     publisher: 'devops'
     sku: 'devops_linux_az'
@@ -218,6 +221,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
         hyperVGeneration: 'V2'
         name: '<name>'
         offer: 'devops_linux'
+        osState: 'Generalized'
         osType: 'Linux'
         publisher: 'devops'
         sku: 'devops_linux_az'
@@ -293,6 +297,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
           "hyperVGeneration": "V2",
           "name": "<name>",
           "offer": "devops_linux",
+          "osState": "Generalized",
           "osType": "Linux",
           "publisher": "devops",
           "sku": "devops_linux_az"
@@ -382,6 +387,7 @@ param computeGalleryImageDefinitions = [
     hyperVGeneration: 'V2'
     name: '<name>'
     offer: 'devops_linux'
+    osState: 'Generalized'
     osType: 'Linux'
     publisher: 'devops'
     sku: 'devops_linux_az'
@@ -651,6 +657,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
         hyperVGeneration: 'V2'
         name: '<name>'
         offer: 'devops_linux'
+        osState: 'Generalized'
         osType: 'Linux'
         publisher: 'devops'
         sku: 'devops_linux_az'
@@ -696,6 +703,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
           "hyperVGeneration": "V2",
           "name": "<name>",
           "offer": "devops_linux",
+          "osState": "Generalized",
           "osType": "Linux",
           "publisher": "devops",
           "sku": "devops_linux_az"
@@ -751,6 +759,7 @@ param computeGalleryImageDefinitions = [
     hyperVGeneration: 'V2'
     name: '<name>'
     offer: 'devops_linux'
+    osState: 'Generalized'
     osType: 'Linux'
     publisher: 'devops'
     sku: 'devops_linux_az'
