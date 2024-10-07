@@ -14,6 +14,7 @@ param name string
   'B1'
   'P1v3'
   'I1v2'
+  'FC1'
   '''
 })
 param skuName string = 'P1v3'
@@ -129,7 +130,8 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   tags: tags
   sku: {
     name: skuName
-    capacity: skuCapacity
+    capacity: skuName == 'FC1' ? null : skuCapacity
+    tier: skuName == 'FC1' ? 'FlexConsumption' : null
   }
   properties: {
     workerTierName: workerTierName
