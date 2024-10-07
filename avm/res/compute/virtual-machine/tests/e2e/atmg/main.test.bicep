@@ -1,3 +1,4 @@
+// WARNING: this test is disabled, as there is an known issue on Azure, preventing deployment, see https://techcommunity.microsoft.com/t5/azure-infrastructure/enabling-azure-automanage-or-creating-a-custom-configuration/m-p/4251861
 targetScope = 'subscription'
 
 metadata name = 'Using automanage for the VM.'
@@ -11,15 +12,14 @@ metadata description = 'This instance deploys the module with registering to an 
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${serviceShort}-rg'
 
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
+
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'cvmlinatmg'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
-
-// Capacity constraints for VM type
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'eastus2'
 
 // ============ //
 // Dependencies //
@@ -27,16 +27,16 @@ var enforcedLocation = 'eastus2'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = if (false) {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
+module nestedDependencies 'dependencies.bicep' = if (false) {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: enforcedLocation
+    location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
@@ -55,11 +55,11 @@ module nestedDependencies 'dependencies.bicep' = {
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
+  for iteration in ['init', 'idem']: if (false) {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: enforcedLocation
+      location: resourceLocation
       name: '${namePrefix}${serviceShort}'
       adminUsername: 'localAdminUser'
       imageReference: {
