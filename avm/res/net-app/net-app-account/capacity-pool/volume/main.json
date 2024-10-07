@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.3.12046",
-      "templateHash": "4228241570721737853"
+      "templateHash": "3878108397799577614"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
@@ -605,7 +605,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.3.12046",
-              "templateHash": "1026423454450709411"
+              "templateHash": "16399924782439066553"
             },
             "name": "Azure NetApp Files Backup Policy",
             "description": "This module deploys a Backup Policy for Azure NetApp File.",
@@ -622,13 +622,13 @@
               "type": "string",
               "defaultValue": "backupPolicy",
               "metadata": {
-                "description": "Optional. The name of the backup policy."
+                "description": "Required. The name of the backup policy."
               }
             },
             "backupPolicyLocation": {
               "type": "string",
               "metadata": {
-                "description": "Optional. The location of the backup policy."
+                "description": "Optional. The location of the backup policy. Required if the template is used in a standalone deployment."
               }
             },
             "dailyBackupsToKeep": {
@@ -659,7 +659,6 @@
           },
           "resources": [
             {
-              "condition": "[parameters('backupEnabled')]",
               "type": "Microsoft.NetApp/netAppAccounts/backupPolicies",
               "apiVersion": "2024-03-01",
               "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupPolicyName'))]",

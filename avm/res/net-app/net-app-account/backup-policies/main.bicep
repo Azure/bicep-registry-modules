@@ -5,10 +5,10 @@ metadata owner = 'Azure/module-maintainers'
 @description('Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment.')
 param netAppAccountName string
 
-@description('Optional. The name of the backup policy.')
+@description('Required. The name of the backup policy.')
 param backupPolicyName string = 'backupPolicy'
 
-@description('Optional. The location of the backup policy.')
+@description('Optional. The location of the backup policy. Required if the template is used in a standalone deployment.')
 param backupPolicyLocation string
 
 @description('Optional. The daily backups to keep.')
@@ -27,7 +27,7 @@ resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
   name: netAppAccountName
 }
 
-resource backupPolicies 'Microsoft.NetApp/netAppAccounts/backupPolicies@2024-03-01' = if (backupEnabled) {
+resource backupPolicies 'Microsoft.NetApp/netAppAccounts/backupPolicies@2024-03-01' = {
   name: backupPolicyName
   parent: netAppAccount
   location: backupPolicyLocation
