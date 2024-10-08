@@ -17,13 +17,13 @@ param externalProviderResourceId string
 param tags object?
 
 @sys.description('Optional. The description of the virtual network.')
-param description string = ''
+param description string?
 
 @sys.description('Optional. The allowed subnets of the virtual network.')
-param allowedSubnets array = []
+param allowedSubnets allowedSubnetType
 
 @sys.description('Optional. The subnet overrides of the virtual network.')
-param subnetOverrides array = []
+param subnetOverrides subnetOverrideType
 
 resource lab 'Microsoft.DevTestLab/labs@2018-09-15' existing = {
   name: labName
@@ -64,7 +64,7 @@ type allowedSubnetType = {
 
   @sys.description('Required. The name of the subnet as seen in the lab.')
   labSubnetName: string
-}
+}[]?
 
 @export()
 type subnetOverrideType = {
@@ -84,7 +84,7 @@ type subnetOverrideType = {
       @sys.description('Required. Protocol type of the port.')
       transportProtocol: 'Tcp' | 'Udp'
     }[]
-  }
+  }?
 
   @sys.description('Optional. Indicates whether this subnet can be used during virtual machine creation (i.e. Allow, Deny).')
   useInVmCreationPermission: 'Allow' | 'Deny' | 'Default'?
@@ -94,4 +94,4 @@ type subnetOverrideType = {
 
   @sys.description('Optional. The virtual network pool associated with this subnet.')
   virtualNetworkPoolName: string?
-}
+}[]?

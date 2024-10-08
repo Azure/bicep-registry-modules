@@ -25,7 +25,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -126,6 +126,9 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
         }
+      }
+      managedIdentities: {
+        systemAssigned: true
       }
       tags: {
         'hidden-title': 'This is visible in the resource name'
