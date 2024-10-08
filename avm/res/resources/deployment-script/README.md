@@ -76,7 +76,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -128,6 +128,38 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resources/deployment-script:<version>'
+
+// Required parameters
+param kind = 'AzureCLI'
+param name = 'rdscli001'
+// Non-required parameters
+param azCliVersion = '2.9.1'
+param environmentVariables = [
+  {
+    name: 'var1'
+    value: 'AVM Deployment Script test!'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param retentionInterval = 'P1D'
+param scriptContent = 'echo \'Enviornment variable value is: \' $var1'
+param storageAccountResourceId = '<storageAccountResourceId>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -162,7 +194,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -195,6 +227,30 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resources/deployment-script:<version>'
+
+// Required parameters
+param kind = 'AzurePowerShell'
+param name = 'rdsmin001'
+// Non-required parameters
+param azPowerShellVersion = '9.7'
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param scriptContent = 'Write-Host \'AVM Deployment Script test!\''
 ```
 
 </details>
@@ -278,7 +334,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -382,6 +438,74 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resources/deployment-script:<version>'
+
+// Required parameters
+param kind = 'AzureCLI'
+param name = 'rdsmax001'
+// Non-required parameters
+param arguments = '-argument1 \\\'test\\\''
+param azCliVersion = '2.9.1'
+param cleanupPreference = 'Always'
+param containerGroupName = 'dep-cg-rdsmax'
+param environmentVariables = [
+  {
+    name: 'var1'
+    value: 'test'
+  }
+  {
+    name: 'var2'
+    secureValue: '<secureValue>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'None'
+}
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param retentionInterval = 'P1D'
+param roleAssignments = [
+  {
+    name: 'd8eadbae-2c20-4e8f-9a48-4c6d739d0c4a'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param runOnce = true
+param scriptContent = 'echo \'AVM Deployment Script test!\''
+param storageAccountResourceId = '<storageAccountResourceId>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param timeout = 'PT1H'
+```
+
+</details>
+<p>
+
 ### Example 4: _Using Private Endpoint_
 
 This instance deploys the module with access to a private endpoint.
@@ -424,7 +548,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -482,6 +606,38 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resources/deployment-script:<version>'
+
+// Required parameters
+param kind = 'AzureCLI'
+param name = 'rdspe001'
+// Non-required parameters
+param azCliVersion = '2.9.1'
+param cleanupPreference = 'Always'
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param retentionInterval = 'P1D'
+param runOnce = true
+param scriptContent = 'echo \'AVM Deployment Script test!\''
+param storageAccountResourceId = '<storageAccountResourceId>'
+param subnetResourceIds = [
+  '<subnetResourceId>'
+]
+param timeout = 'PT1H'
+```
+
+</details>
+<p>
+
 ### Example 5: _Using Private Networking_
 
 This instance deploys the module with access to a private network.
@@ -524,7 +680,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -582,6 +738,38 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resources/deployment-script:<version>'
+
+// Required parameters
+param kind = 'AzureCLI'
+param name = 'rdsnet001'
+// Non-required parameters
+param azCliVersion = '2.9.1'
+param cleanupPreference = 'Always'
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param retentionInterval = 'P1D'
+param runOnce = true
+param scriptContent = 'echo \'AVM Deployment Script test!\''
+param storageAccountResourceId = '<storageAccountResourceId>'
+param subnetResourceIds = [
+  '<subnetResourceId>'
+]
+param timeout = 'PT1H'
+```
+
+</details>
+<p>
+
 ### Example 6: _Using Azure PowerShell_
 
 This instance deploys the module with an Azure PowerShell script.
@@ -619,7 +807,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -661,6 +849,33 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resources/deployment-script:<version>'
+
+// Required parameters
+param kind = 'AzurePowerShell'
+param name = 'rdsps001'
+// Non-required parameters
+param arguments = '-var1 \\\'AVM Deployment Script test!\\\''
+param azPowerShellVersion = '9.7'
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param retentionInterval = 'P1D'
+param scriptContent = 'param([string] $var1);Write-Host \'Argument var1 value is:\' $var1'
+param storageAccountResourceId = '<storageAccountResourceId>'
 ```
 
 </details>
@@ -713,7 +928,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -773,6 +988,43 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resources/deployment-script:<version>'
+
+// Required parameters
+param kind = 'AzureCLI'
+param name = 'rdswaf001'
+// Non-required parameters
+param azCliVersion = '2.9.1'
+param cleanupPreference = 'Always'
+param location = '<location>'
+param lock = {
+  kind: 'None'
+}
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param retentionInterval = 'P1D'
+param runOnce = true
+param scriptContent = 'echo \'AVM Deployment Script test!\''
+param storageAccountResourceId = '<storageAccountResourceId>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param timeout = 'PT1H'
 ```
 
 </details>

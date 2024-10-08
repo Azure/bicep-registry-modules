@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "8938543730613882040"
+      "version": "0.30.23.60470",
+      "templateHash": "4499855760252174192"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -1224,8 +1224,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "7494731697751039419"
+              "version": "0.30.23.60470",
+              "templateHash": "15469258025112973480"
             },
             "name": "Key Vault Access Policies",
             "description": "This module deploys a Key Vault Access Policy.",
@@ -1493,8 +1493,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "114626909766354577"
+              "version": "0.30.23.60470",
+              "templateHash": "10121697157844029321"
             },
             "name": "Key Vault Secrets",
             "description": "This module deploys a Key Vault Secret.",
@@ -1791,8 +1791,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "14269695922191217406"
+              "version": "0.30.23.60470",
+              "templateHash": "796741209006922272"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key.",
@@ -2018,19 +2018,7 @@
               "apiVersion": "2022-07-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
-              "properties": {
-                "attributes": {
-                  "enabled": "[parameters('attributesEnabled')]",
-                  "exp": "[parameters('attributesExp')]",
-                  "nbf": "[parameters('attributesNbf')]"
-                },
-                "curveName": "[parameters('curveName')]",
-                "keyOps": "[parameters('keyOps')]",
-                "keySize": "[parameters('keySize')]",
-                "kty": "[parameters('kty')]",
-                "rotationPolicy": "[coalesce(parameters('rotationPolicy'), createObject())]",
-                "release_policy": "[coalesce(parameters('releasePolicy'), createObject())]"
-              },
+              "properties": "[shallowMerge(createArray(createObject('attributes', createObject('enabled', parameters('attributesEnabled'), 'exp', parameters('attributesExp'), 'nbf', parameters('attributesNbf')), 'curveName', parameters('curveName'), 'keyOps', parameters('keyOps'), 'keySize', parameters('keySize'), 'kty', parameters('kty'), 'release_policy', coalesce(parameters('releasePolicy'), createObject())), if(empty(parameters('rotationPolicy')), createObject(), createObject('rotationPolicy', parameters('rotationPolicy')))))]",
               "dependsOn": [
                 "keyVault"
               ]

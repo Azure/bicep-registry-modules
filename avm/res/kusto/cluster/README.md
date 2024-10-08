@@ -63,7 +63,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -83,6 +83,23 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'akcmin0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -175,7 +192,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -302,6 +319,83 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'akcmax0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param acceptedAudiences = [
+  {
+    value: 'https://contoso.com'
+  }
+]
+param allowedFqdnList = [
+  'contoso.com'
+]
+param allowedIpRangeList = [
+  '192.168.1.1'
+]
+param autoScaleMax = 6
+param autoScaleMin = 3
+param capacity = 3
+param enableAutoScale = true
+param enableAutoStop = true
+param enableDiskEncryption = true
+param enableDoubleEncryption = true
+param enablePublicNetworkAccess = true
+param enablePurge = true
+param enableRestrictOutboundNetworkAccess = true
+param enableStreamingIngest = true
+param enableZoneRedundant = true
+param engineType = 'V3'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param principalAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'Group'
+    role: 'AllDatabasesViewer'
+  }
+]
+param publicIPType = 'DualStack'
+param roleAssignments = [
+  {
+    name: 'c2a4b728-c3d0-47f5-afbb-ea45c45859de'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _Private endpoint-enabled deployment_
 
 This instance deploys the module with private endpoints.
@@ -360,7 +454,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -424,6 +518,54 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'akcpe0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param enablePublicNetworkAccess = false
+param location = '<location>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'cluster'
+    subnetResourceId: '<subnetResourceId>'
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'cluster'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicIPType = 'IPv4'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -474,7 +616,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -543,6 +685,46 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'akcwaf0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param autoScaleMax = 10
+param autoScaleMin = 3
+param capacity = 3
+param enableAutoScale = true
+param enableAutoStop = true
+param enableDiskEncryption = true
+param enableDoubleEncryption = true
+param enablePublicNetworkAccess = false
+param enableZoneRedundant = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+param tier = 'Standard'
 ```
 
 </details>
