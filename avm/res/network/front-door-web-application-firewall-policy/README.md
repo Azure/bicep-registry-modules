@@ -56,7 +56,7 @@ module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-do
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -73,6 +73,22 @@ module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-do
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/front-door-web-application-firewall-policy:<version>'
+
+// Required parameters
+param name = 'nagwafpmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -195,7 +211,7 @@ module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-do
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -322,6 +338,113 @@ module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-do
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/front-door-web-application-firewall-policy:<version>'
+
+// Required parameters
+param name = 'nagwafpmax001'
+// Non-required parameters
+param customRules = {
+  rules: [
+    {
+      action: 'Block'
+      enabledState: 'Enabled'
+      matchConditions: [
+        {
+          matchValue: [
+            'CH'
+          ]
+          matchVariable: 'RemoteAddr'
+          negateCondition: false
+          operator: 'GeoMatch'
+          selector: '<selector>'
+          transforms: []
+        }
+        {
+          matchValue: [
+            'windows'
+          ]
+          matchVariable: 'RequestHeader'
+          negateCondition: false
+          operator: 'Contains'
+          selector: 'UserAgent'
+          transforms: []
+        }
+        {
+          matchValue: [
+            '?>'
+            '<?php'
+          ]
+          matchVariable: 'QueryString'
+          negateCondition: false
+          operator: 'Contains'
+          transforms: [
+            'Lowercase'
+            'UrlDecode'
+          ]
+        }
+      ]
+      name: 'CustomRule1'
+      priority: 2
+      rateLimitDurationInMinutes: 1
+      rateLimitThreshold: 10
+      ruleType: 'MatchRule'
+    }
+  ]
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedRules = {
+  managedRuleSets: [
+    {
+      ruleSetType: 'Microsoft_BotManagerRuleSet'
+      ruleSetVersion: '1.0'
+    }
+  ]
+}
+param policySettings = {
+  customBlockResponseBody: 'PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg=='
+  customBlockResponseStatusCode: 200
+  mode: 'Prevention'
+  redirectUrl: 'http://www.bing.com'
+}
+param roleAssignments = [
+  {
+    name: 'bb049c96-2571-4a25-b760-444ab25d86ed'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param sku = 'Premium_AzureFrontDoor'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -416,7 +539,7 @@ module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-do
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -510,6 +633,90 @@ module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-do
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/front-door-web-application-firewall-policy:<version>'
+
+// Required parameters
+param name = 'nagwafpwaf001'
+// Non-required parameters
+param customRules = {
+  rules: [
+    {
+      action: 'Block'
+      enabledState: 'Enabled'
+      matchConditions: [
+        {
+          matchValue: [
+            'CH'
+          ]
+          matchVariable: 'RemoteAddr'
+          negateCondition: false
+          operator: 'GeoMatch'
+          selector: '<selector>'
+          transforms: []
+        }
+        {
+          matchValue: [
+            'windows'
+          ]
+          matchVariable: 'RequestHeader'
+          negateCondition: false
+          operator: 'Contains'
+          selector: 'UserAgent'
+          transforms: []
+        }
+        {
+          matchValue: [
+            '?>'
+            '<?php'
+          ]
+          matchVariable: 'QueryString'
+          negateCondition: false
+          operator: 'Contains'
+          transforms: [
+            'Lowercase'
+            'UrlDecode'
+          ]
+        }
+      ]
+      name: 'CustomRule1'
+      priority: 2
+      rateLimitDurationInMinutes: 1
+      rateLimitThreshold: 10
+      ruleType: 'MatchRule'
+    }
+  ]
+}
+param location = '<location>'
+param managedRules = {
+  managedRuleSets: [
+    {
+      ruleSetType: 'Microsoft_BotManagerRuleSet'
+      ruleSetVersion: '1.0'
+    }
+  ]
+}
+param policySettings = {
+  customBlockResponseBody: 'PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg=='
+  customBlockResponseStatusCode: 200
+  mode: 'Prevention'
+  redirectUrl: 'http://www.bing.com'
+}
+param sku = 'Premium_AzureFrontDoor'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -675,6 +882,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

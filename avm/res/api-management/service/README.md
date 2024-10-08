@@ -80,7 +80,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -106,6 +106,25 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/api-management/service:<version>'
+
+// Required parameters
+param name = 'apiscon001'
+param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
+param publisherName = 'az-amorg-x-001'
+// Non-required parameters
+param location = '<location>'
+param sku = 'Consumption'
 ```
 
 </details>
@@ -139,7 +158,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -162,6 +181,24 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/api-management/service:<version>'
+
+// Required parameters
+param name = 'apismin001'
+param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
+param publisherName = 'az-amorg-x-001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -196,7 +233,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -222,6 +259,25 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/api-management/service:<version>'
+
+// Required parameters
+param name = 'apisdev001'
+param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
+param publisherName = 'az-amorg-x-001'
+// Non-required parameters
+param location = '<location>'
+param sku = 'Developer'
 ```
 
 </details>
@@ -290,6 +346,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           clientId: 'apimclientid'
           clientRegistrationEndpoint: 'http://localhost'
           clientSecret: '<clientSecret>'
+          displayName: 'AuthServer1'
           grantTypes: [
             'authorizationCode'
           ]
@@ -404,6 +461,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           }
         ]
         approvalRequired: false
+        displayName: 'Starter'
         groups: [
           {
             name: 'developers'
@@ -436,6 +494,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     subnetResourceId: '<subnetResourceId>'
     subscriptions: [
       {
+        displayName: 'testArmSubscriptionAllApis'
         name: 'testArmSubscriptionAllApis'
         scope: '/apis'
       }
@@ -455,7 +514,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -525,6 +584,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             "clientId": "apimclientid",
             "clientRegistrationEndpoint": "http://localhost",
             "clientSecret": "<clientSecret>",
+            "displayName": "AuthServer1",
             "grantTypes": [
               "authorizationCode"
             ],
@@ -663,6 +723,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             }
           ],
           "approvalRequired": false,
+          "displayName": "Starter",
           "groups": [
             {
               "name": "developers"
@@ -703,6 +764,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "subscriptions": {
       "value": [
         {
+          "displayName": "testArmSubscriptionAllApis",
           "name": "testArmSubscriptionAllApis",
           "scope": "/apis"
         }
@@ -720,6 +782,227 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/api-management/service:<version>'
+
+// Required parameters
+param name = 'apismax001'
+param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
+param publisherName = 'az-amorg-x-001'
+// Non-required parameters
+param additionalLocations = [
+  {
+    disableGateway: false
+    location: '<location>'
+    publicIpAddressId: '<publicIpAddressId>'
+    sku: {
+      capacity: 1
+      name: 'Premium'
+    }
+    virtualNetworkConfiguration: {
+      subnetResourceId: '<subnetResourceId>'
+    }
+  }
+]
+param apiDiagnostics = [
+  {
+    apiName: 'echo-api'
+    loggerName: 'logger'
+    metrics: true
+    name: 'applicationinsights'
+  }
+]
+param apis = [
+  {
+    apiVersionSet: {
+      name: 'echo-version-set'
+      properties: {
+        description: 'echo-version-set'
+        displayName: 'echo-version-set'
+        versioningScheme: 'Segment'
+      }
+    }
+    displayName: 'Echo API'
+    name: 'echo-api'
+    path: 'echo'
+    serviceUrl: 'http://echoapi.cloudapp.net/api'
+  }
+]
+param authorizationServers = {
+  secureList: [
+    {
+      authorizationEndpoint: '<authorizationEndpoint>'
+      clientId: 'apimclientid'
+      clientRegistrationEndpoint: 'http://localhost'
+      clientSecret: '<clientSecret>'
+      displayName: 'AuthServer1'
+      grantTypes: [
+        'authorizationCode'
+      ]
+      name: 'AuthServer1'
+      tokenEndpoint: '<tokenEndpoint>'
+    }
+  ]
+}
+param backends = [
+  {
+    name: 'backend'
+    tls: {
+      validateCertificateChain: false
+      validateCertificateName: false
+    }
+    url: 'http://echoapi.cloudapp.net/api'
+  }
+]
+param caches = [
+  {
+    connectionString: 'connectionstringtest'
+    name: 'westeurope'
+    useFromLocation: 'westeurope'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param identityProviders = [
+  {
+    allowedTenants: [
+      'mytenant.onmicrosoft.com'
+    ]
+    authority: '<authority>'
+    clientId: 'apimClientid'
+    clientLibrary: 'MSAL-2'
+    clientSecret: 'apimSlientSecret'
+    name: 'aad'
+    signinTenant: 'mytenant.onmicrosoft.com'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param loggers = [
+  {
+    credentials: {
+      instrumentationKey: '<instrumentationKey>'
+    }
+    description: 'Logger to Azure Application Insights'
+    isBuffered: false
+    loggerType: 'applicationInsights'
+    name: 'logger'
+    resourceId: '<resourceId>'
+  }
+]
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param namedValues = [
+  {
+    displayName: 'apimkey'
+    name: 'apimkey'
+    secret: true
+  }
+]
+param policies = [
+  {
+    format: 'xml'
+    value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
+  }
+]
+param portalsettings = [
+  {
+    name: 'signin'
+    properties: {
+      enabled: false
+    }
+  }
+  {
+    name: 'signup'
+    properties: {
+      enabled: false
+      termsOfService: {
+        consentRequired: false
+        enabled: false
+      }
+    }
+  }
+]
+param products = [
+  {
+    apis: [
+      {
+        name: 'echo-api'
+      }
+    ]
+    approvalRequired: false
+    displayName: 'Starter'
+    groups: [
+      {
+        name: 'developers'
+      }
+    ]
+    name: 'Starter'
+    subscriptionRequired: false
+  }
+]
+param publicIpAddressResourceId = '<publicIpAddressResourceId>'
+param roleAssignments = [
+  {
+    name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param subnetResourceId = '<subnetResourceId>'
+param subscriptions = [
+  {
+    displayName: 'testArmSubscriptionAllApis'
+    name: 'testArmSubscriptionAllApis'
+    scope: '/apis'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param virtualNetworkType = 'Internal'
 ```
 
 </details>
@@ -754,7 +1037,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -780,6 +1063,25 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/api-management/service:<version>'
+
+// Required parameters
+param name = 'apisv2s001'
+param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
+param publisherName = 'az-amorg-x-001'
+// Non-required parameters
+param location = '<location>'
+param sku = 'BasicV2'
 ```
 
 </details>
@@ -837,6 +1139,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           clientId: 'apimClientid'
           clientRegistrationEndpoint: 'https://localhost'
           clientSecret: '<clientSecret>'
+          displayName: 'AuthServer1'
           grantTypes: [
             'authorizationCode'
           ]
@@ -973,6 +1276,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     subscriptions: [
       {
+        displayName: 'testArmSubscriptionAllApis'
         name: 'testArmSubscriptionAllApis'
         scope: '/apis'
       }
@@ -991,7 +1295,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1048,6 +1352,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             "clientId": "apimClientid",
             "clientRegistrationEndpoint": "https://localhost",
             "clientSecret": "<clientSecret>",
+            "displayName": "AuthServer1",
             "grantTypes": [
               "authorizationCode"
             ],
@@ -1212,6 +1517,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "subscriptions": {
       "value": [
         {
+          "displayName": "testArmSubscriptionAllApis",
           "name": "testArmSubscriptionAllApis",
           "scope": "/apis"
         }
@@ -1225,6 +1531,204 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/api-management/service:<version>'
+
+// Required parameters
+param name = 'apiswaf001'
+param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
+param publisherName = 'az-amorg-x-001'
+// Non-required parameters
+param additionalLocations = [
+  {
+    disableGateway: false
+    location: 'westus'
+    sku: {
+      capacity: 1
+      name: 'Premium'
+    }
+  }
+]
+param apis = [
+  {
+    apiVersionSet: {
+      name: 'echo-version-set'
+      properties: {
+        description: 'An echo API version set'
+        displayName: 'Echo version set'
+        versioningScheme: 'Segment'
+      }
+    }
+    description: 'An echo API service'
+    displayName: 'Echo API'
+    name: 'echo-api'
+    path: 'echo'
+    serviceUrl: 'https://echoapi.cloudapp.net/api'
+  }
+]
+param authorizationServers = {
+  secureList: [
+    {
+      authorizationEndpoint: '<authorizationEndpoint>'
+      clientId: 'apimClientid'
+      clientRegistrationEndpoint: 'https://localhost'
+      clientSecret: '<clientSecret>'
+      displayName: 'AuthServer1'
+      grantTypes: [
+        'authorizationCode'
+      ]
+      name: 'AuthServer1'
+      tokenEndpoint: '<tokenEndpoint>'
+    }
+  ]
+}
+param backends = [
+  {
+    name: 'backend'
+    tls: {
+      validateCertificateChain: false
+      validateCertificateName: false
+    }
+    url: 'https://echoapi.cloudapp.net/api'
+  }
+]
+param caches = [
+  {
+    connectionString: 'connectionstringtest'
+    name: 'westeurope'
+    useFromLocation: 'westeurope'
+  }
+]
+param customProperties = {
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2': 'True'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA256': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA256': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Ssl30': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10': 'False'
+  'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11': 'False'
+}
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param identityProviders = [
+  {
+    allowedTenants: [
+      'mytenant.onmicrosoft.com'
+    ]
+    authority: '<authority>'
+    clientId: 'apimClientid'
+    clientLibrary: 'MSAL-2'
+    clientSecret: '<clientSecret>'
+    name: 'aad'
+    signinTenant: 'mytenant.onmicrosoft.com'
+  }
+]
+param location = '<location>'
+param loggers = [
+  {
+    credentials: {
+      instrumentationKey: '<instrumentationKey>'
+    }
+    description: 'Logger to Azure Application Insights'
+    isBuffered: false
+    loggerType: 'applicationInsights'
+    name: 'logger'
+    resourceId: '<resourceId>'
+  }
+]
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param minApiVersion = '2022-08-01'
+param namedValues = [
+  {
+    displayName: 'apimkey'
+    name: 'apimkey'
+    secret: true
+  }
+]
+param policies = [
+  {
+    format: 'xml'
+    value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
+  }
+]
+param portalsettings = [
+  {
+    name: 'signin'
+    properties: {
+      enabled: false
+    }
+  }
+  {
+    name: 'signup'
+    properties: {
+      enabled: false
+      termsOfService: {
+        consentRequired: false
+        enabled: false
+      }
+    }
+  }
+]
+param products = [
+  {
+    apis: [
+      {
+        name: 'echo-api'
+      }
+    ]
+    approvalRequired: true
+    description: 'This is an echo API'
+    displayName: 'Echo API'
+    groups: [
+      {
+        name: 'developers'
+      }
+    ]
+    name: 'Starter'
+    subscriptionRequired: true
+    terms: 'By accessing or using the services provided by Echo API through Azure API Management, you agree to be bound by these Terms of Use. These terms may be updated from time to time, and your continued use of the services constitutes acceptance of any changes.'
+  }
+]
+param subscriptions = [
+  {
+    displayName: 'testArmSubscriptionAllApis'
+    name: 'testArmSubscriptionAllApis'
+    scope: '/apis'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -1742,6 +2246,16 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'API Management Developer Portal Content Editor'`
+  - `'API Management Service Contributor'`
+  - `'API Management Service Operator Role'`
+  - `'API Management Service Reader Role'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1916,6 +2430,8 @@ A list of availability zones denoting where the resource needs to come from. Onl
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Notes
+
+The latest version of this module only includes supported versions of the API Management resource. All unsupported versions of API Management have been removed from the related parameters. See the [API Management stv1 platform retirement](!https://learn.microsoft.com/en-us/azure/api-management/breaking-changes/stv1-platform-retirement-august-2024) article for more details.
 
 ### Parameter Usage: `apiManagementServicePolicy`
 

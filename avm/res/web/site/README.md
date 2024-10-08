@@ -21,12 +21,13 @@ This module deploys a Web or Function App.
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Web/sites` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/sites) |
+| `Microsoft.Web/sites` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
 | `Microsoft.Web/sites/basicPublishingCredentialsPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
+| `Microsoft.Web/sites/config` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
 | `Microsoft.Web/sites/config` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
 | `Microsoft.Web/sites/extensions` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites/extensions) |
 | `Microsoft.Web/sites/hybridConnectionNamespaces/relays` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/sites/hybridConnectionNamespaces/relays) |
-| `Microsoft.Web/sites/slots` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/sites/slots) |
+| `Microsoft.Web/sites/slots` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites/slots) |
 | `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
 | `Microsoft.Web/sites/slots/config` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
 | `Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/sites/slots/hybridConnectionNamespaces/relays) |
@@ -41,15 +42,16 @@ The following section provides usage examples for the module, which were used to
 
 - [Function App, using only defaults](#example-1-function-app-using-only-defaults)
 - [Function App, using large parameter set](#example-2-function-app-using-large-parameter-set)
-- [Web App, using only defaults](#example-3-web-app-using-only-defaults)
-- [Web App](#example-4-web-app)
-- [WAF-aligned](#example-5-waf-aligned)
-- [Web App, using only defaults](#example-6-web-app-using-only-defaults)
-- [Web App, using large parameter set](#example-7-web-app-using-large-parameter-set)
-- [Web App, using only defaults](#example-8-web-app-using-only-defaults)
-- [Web App, using large parameter set](#example-9-web-app-using-large-parameter-set)
-- [Web App](#example-10-web-app)
-- [Windows Web App for Containers, using only defaults](#example-11-windows-web-app-for-containers-using-only-defaults)
+- [Function App, using only defaults](#example-3-function-app-using-only-defaults)
+- [Web App, using only defaults](#example-4-web-app-using-only-defaults)
+- [Web App](#example-5-web-app)
+- [WAF-aligned](#example-6-waf-aligned)
+- [Web App, using only defaults](#example-7-web-app-using-only-defaults)
+- [Web App, using large parameter set](#example-8-web-app-using-large-parameter-set)
+- [Web App, using only defaults](#example-9-web-app-using-only-defaults)
+- [Web App, using large parameter set](#example-10-web-app-using-large-parameter-set)
+- [Web App](#example-11-web-app)
+- [Windows Web App for Containers, using only defaults](#example-12-windows-web-app-for-containers-using-only-defaults)
 
 ### Example 1: _Function App, using only defaults_
 
@@ -79,7 +81,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -102,6 +104,24 @@ module site 'br/public:avm/res/web/site:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/site:<version>'
+
+// Required parameters
+param kind = 'functionapp'
+param name = 'wsfamin001'
+param serverFarmResourceId = '<serverFarmResourceId>'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -297,7 +317,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -515,7 +535,278 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 3: _Web App, using only defaults_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/site:<version>'
+
+// Required parameters
+param kind = 'functionapp'
+param name = 'wsfamax001'
+param serverFarmResourceId = '<serverFarmResourceId>'
+// Non-required parameters
+param appInsightResourceId = '<appInsightResourceId>'
+param appSettingsKeyValuePairs = {
+  AzureFunctionsJobHost__logging__logLevel__default: 'Trace'
+  EASYAUTH_SECRET: '<EASYAUTH_SECRET>'
+  FUNCTIONS_EXTENSION_VERSION: '~4'
+  FUNCTIONS_WORKER_RUNTIME: 'dotnet'
+}
+authSettingV2Configuration: {
+  globalValidation: {
+    requireAuthentication: true
+    unauthenticatedClientAction: 'Return401'
+  }
+  httpSettings: {
+    forwardProxy: {
+      convention: 'NoProxy'
+    }
+    requireHttps: true
+    routes: {
+      apiPrefix: '/.auth'
+    }
+  }
+  identityProviders: {
+    azureActiveDirectory: {
+      enabled: true
+      login: {
+        disableWWWAuthenticate: false
+      }
+      registration: {
+        clientId: 'd874dd2f-2032-4db1-a053-f0ec243685aa'
+        clientSecretSettingName: 'EASYAUTH_SECRET'
+        openIdIssuer: '<openIdIssuer>'
+      }
+      validation: {
+        allowedAudiences: [
+          'api://d874dd2f-2032-4db1-a053-f0ec243685aa'
+        ]
+        defaultAuthorizationPolicy: {
+          allowedPrincipals: {}
+        }
+        jwtClaimChecks: {}
+      }
+    }
+  }
+  login: {
+    allowedExternalRedirectUrls: [
+      'string'
+    ]
+    cookieExpiration: {
+      convention: 'FixedTime'
+      timeToExpiration: '08:00:00'
+    }
+    nonce: {
+      nonceExpirationInterval: '00:05:00'
+      validateNonce: true
+    }
+    preserveUrlFragmentsForLogins: false
+    routes: {}
+    tokenStore: {
+      azureBlobStorage: {}
+      enabled: true
+      fileSystem: {}
+      tokenRefreshExtensionHours: 72
+    }
+  }
+  platform: {
+    enabled: true
+    runtimeVersion: '~1'
+  }
+}
+param basicPublishingCredentialsPolicies = [
+  {
+    allow: false
+    name: 'ftp'
+  }
+  {
+    allow: false
+    name: 'scm'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param hybridConnectionRelays = [
+  {
+    resourceId: '<resourceId>'
+    sendKeyName: 'defaultSender'
+  }
+]
+param keyVaultAccessIdentityResourceId = '<keyVaultAccessIdentityResourceId>'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    name: '9efc9c10-f482-4af0-9acb-03b5a16f947e'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param siteConfig = {
+  alwaysOn: true
+  use32BitWorkerProcess: false
+}
+param storageAccountResourceId = '<storageAccountResourceId>'
+param storageAccountUseIdentityAuthentication = true
+```
+
+</details>
+<p>
+
+### Example 3: _Function App, using only defaults_
+
+This instance deploys the module as Function App with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: 'siteDeployment'
+  params: {
+    // Required parameters
+    kind: 'functionapp'
+    name: 'wsfaset001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    appSettingsKeyValuePairs: {
+      AzureFunctionsJobHost__logging__logLevel__default: 'Trace'
+      FUNCTIONS_EXTENSION_VERSION: '~4'
+      FUNCTIONS_WORKER_RUNTIME: 'dotnet'
+    }
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "functionapp"
+    },
+    "name": {
+      "value": "wsfaset001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    // Non-required parameters
+    "appSettingsKeyValuePairs": {
+      "value": {
+        "AzureFunctionsJobHost__logging__logLevel__default": "Trace",
+        "FUNCTIONS_EXTENSION_VERSION": "~4",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/site:<version>'
+
+// Required parameters
+param kind = 'functionapp'
+param name = 'wsfaset001'
+param serverFarmResourceId = '<serverFarmResourceId>'
+// Non-required parameters
+param appSettingsKeyValuePairs = {
+  AzureFunctionsJobHost__logging__logLevel__default: 'Trace'
+  FUNCTIONS_EXTENSION_VERSION: '~4'
+  FUNCTIONS_WORKER_RUNTIME: 'dotnet'
+}
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 4: _Web App, using only defaults_
 
 This instance deploys the module as a Linux Web App with the minimum set of required parameters.
 
@@ -552,7 +843,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -591,7 +882,34 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 4: _Web App_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/site:<version>'
+
+// Required parameters
+param kind = 'app,linux,container'
+param name = 'wslwamin001'
+param serverFarmResourceId = '<serverFarmResourceId>'
+// Non-required parameters
+param location = '<location>'
+param siteConfig = {
+  appSettings: [
+    {
+      name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'
+      value: 'false'
+    }
+  ]
+  linuxFxVersion: 'DOCKER|mcr.microsoft.com/appsvc/staticsite:latest'
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Web App_
 
 This instance deploys the module as Web App with the set of logs configuration.
 
@@ -652,7 +970,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -723,7 +1041,58 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/site:<version>'
+
+// Required parameters
+param kind = 'app'
+param name = 'wslc001'
+param serverFarmResourceId = '<serverFarmResourceId>'
+// Non-required parameters
+param appInsightResourceId = '<appInsightResourceId>'
+param appSettingsKeyValuePairs = {
+  ENABLE_ORYX_BUILD: 'True'
+  JAVA_OPTS: '<JAVA_OPTS>'
+  SCM_DO_BUILD_DURING_DEPLOYMENT: 'True'
+}
+param location = '<location>'
+param logsConfiguration = {
+  applicationLogs: {
+    fileSystem: {
+      level: 'Verbose'
+    }
+  }
+  detailedErrorMessages: {
+    enabled: true
+  }
+  failedRequestsTracing: {
+    enabled: true
+  }
+  httpLogs: {
+    fileSystem: {
+      enabled: true
+      retentionInDays: 1
+      retentionInMb: 35
+    }
+  }
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param siteConfig = {
+  alwaysOn: true
+  appCommandLine: ''
+}
+```
+
+</details>
+<p>
+
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -785,7 +1154,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -865,7 +1234,59 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 6: _Web App, using only defaults_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/site:<version>'
+
+// Required parameters
+param kind = 'app'
+param name = 'wswaf001'
+param serverFarmResourceId = '<serverFarmResourceId>'
+// Non-required parameters
+param basicPublishingCredentialsPolicies = [
+  {
+    allow: false
+    name: 'ftp'
+  }
+  {
+    allow: false
+    name: 'scm'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param httpsOnly = true
+param location = '<location>'
+param publicNetworkAccess = 'Disabled'
+param scmSiteAlsoStopped = true
+param siteConfig = {
+  alwaysOn: true
+  healthCheckPath: '/healthz'
+  metadata: [
+    {
+      name: 'CURRENT_STACK'
+      value: 'dotnetcore'
+    }
+  ]
+}
+param vnetContentShareEnabled = true
+param vnetImagePullEnabled = true
+param vnetRouteAllEnabled = true
+```
+
+</details>
+<p>
+
+### Example 7: _Web App, using only defaults_
 
 This instance deploys the module as Web App with the minimum set of required parameters.
 
@@ -893,7 +1314,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -921,7 +1342,25 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 7: _Web App, using large parameter set_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/site:<version>'
+
+// Required parameters
+param kind = 'app'
+param name = 'wswamin001'
+param serverFarmResourceId = '<serverFarmResourceId>'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 8: _Web App, using large parameter set_
 
 This instance deploys the module as Web App with most of its features enabled.
 
@@ -1138,7 +1577,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1389,7 +1828,214 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 8: _Web App, using only defaults_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/site:<version>'
+
+// Required parameters
+param kind = 'app'
+param name = 'wswamax001'
+param serverFarmResourceId = '<serverFarmResourceId>'
+// Non-required parameters
+param basicPublishingCredentialsPolicies = [
+  {
+    allow: false
+    name: 'ftp'
+  }
+  {
+    allow: false
+    name: 'scm'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param httpsOnly = true
+param hybridConnectionRelays = [
+  {
+    resourceId: '<resourceId>'
+    sendKeyName: 'defaultSender'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+param roleAssignments = [
+  {
+    name: '0c2c82ef-069c-4085-b1bc-01614e0aa5ff'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param scmSiteAlsoStopped = true
+param siteConfig = {
+  alwaysOn: true
+  metadata: [
+    {
+      name: 'CURRENT_STACK'
+      value: 'dotnetcore'
+    }
+  ]
+}
+param slots = [
+  {
+    basicPublishingCredentialsPolicies: [
+      {
+        allow: false
+        name: 'ftp'
+      }
+      {
+        allow: false
+        name: 'scm'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    hybridConnectionRelays: [
+      {
+        resourceId: '<resourceId>'
+        sendKeyName: 'defaultSender'
+      }
+    ]
+    name: 'slot1'
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'sites-slot1'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    roleAssignments: [
+      {
+        name: '845ed19c-78e7-4422-aa3d-b78b67cd78a2'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    siteConfig: {
+      alwaysOn: true
+      metadata: [
+        {
+          name: 'CURRENT_STACK'
+          value: 'dotnetcore'
+        }
+      ]
+    }
+    storageAccountResourceId: '<storageAccountResourceId>'
+    storageAccountUseIdentityAuthentication: true
+  }
+  {
+    basicPublishingCredentialsPolicies: [
+      {
+        name: 'ftp'
+      }
+      {
+        name: 'scm'
+      }
+    ]
+    name: 'slot2'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    storageAccountUseIdentityAuthentication: true
+  }
+]
+param storageAccountResourceId = '<storageAccountResourceId>'
+param storageAccountUseIdentityAuthentication = true
+param vnetContentShareEnabled = true
+param vnetImagePullEnabled = true
+param vnetRouteAllEnabled = true
+```
+
+</details>
+<p>
+
+### Example 9: _Web App, using only defaults_
 
 This instance deploys the module as a Linux Web App with the minimum set of required parameters.
 
@@ -1417,7 +2063,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1445,7 +2091,25 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 9: _Web App, using large parameter set_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/site:<version>'
+
+// Required parameters
+param kind = 'app,linux'
+param name = 'wswalmin001'
+param serverFarmResourceId = '<serverFarmResourceId>'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 10: _Web App, using large parameter set_
 
 This instance deploys the module asa Linux Web App with most of its features enabled.
 
@@ -1659,7 +2323,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1907,7 +2571,211 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 10: _Web App_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/site:<version>'
+
+// Required parameters
+param kind = 'app,linux'
+param name = 'wswalmax001'
+param serverFarmResourceId = '<serverFarmResourceId>'
+// Non-required parameters
+param basicPublishingCredentialsPolicies = [
+  {
+    allow: false
+    name: 'ftp'
+  }
+  {
+    allow: false
+    name: 'scm'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param httpsOnly = true
+param hybridConnectionRelays = [
+  {
+    resourceId: '<resourceId>'
+    sendKeyName: 'defaultSender'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param scmSiteAlsoStopped = true
+param siteConfig = {
+  alwaysOn: true
+  metadata: [
+    {
+      name: 'CURRENT_STACK'
+      value: 'dotnetcore'
+    }
+  ]
+}
+param slots = [
+  {
+    basicPublishingCredentialsPolicies: [
+      {
+        allow: false
+        name: 'ftp'
+      }
+      {
+        allow: false
+        name: 'scm'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    hybridConnectionRelays: [
+      {
+        resourceId: '<resourceId>'
+        sendKeyName: 'defaultSender'
+      }
+    ]
+    name: 'slot1'
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'sites-slot1'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    siteConfig: {
+      alwaysOn: true
+      metadata: [
+        {
+          name: 'CURRENT_STACK'
+          value: 'dotnetcore'
+        }
+      ]
+    }
+    storageAccountResourceId: '<storageAccountResourceId>'
+    storageAccountUseIdentityAuthentication: true
+  }
+  {
+    basicPublishingCredentialsPolicies: [
+      {
+        name: 'ftp'
+      }
+      {
+        name: 'scm'
+      }
+    ]
+    name: 'slot2'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    storageAccountUseIdentityAuthentication: true
+  }
+]
+param storageAccountResourceId = '<storageAccountResourceId>'
+param storageAccountUseIdentityAuthentication = true
+param vnetContentShareEnabled = true
+param vnetImagePullEnabled = true
+param vnetRouteAllEnabled = true
+```
+
+</details>
+<p>
+
+### Example 11: _Web App_
 
 This instance deploys the module as Web App with the set of api management configuration.
 
@@ -1950,7 +2818,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2003,7 +2871,40 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 11: _Windows Web App for Containers, using only defaults_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/site:<version>'
+
+// Required parameters
+param kind = 'app'
+param name = 'wswc001'
+param serverFarmResourceId = '<serverFarmResourceId>'
+// Non-required parameters
+param apiManagementConfiguration = {
+  id: '<id>'
+}
+param appInsightResourceId = '<appInsightResourceId>'
+param appSettingsKeyValuePairs = {
+  ENABLE_ORYX_BUILD: 'True'
+  SCM_DO_BUILD_DURING_DEPLOYMENT: 'False'
+}
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+param siteConfig = {
+  alwaysOn: true
+  appCommandLine: ''
+}
+```
+
+</details>
+<p>
+
+### Example 12: _Windows Web App for Containers, using only defaults_
 
 This instance deploys the module as a Windows based Container Web App with the minimum set of required parameters.
 
@@ -2040,7 +2941,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2079,6 +2980,33 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/site:<version>'
+
+// Required parameters
+param kind = 'app,container,windows'
+param name = 'wswcamin001'
+param serverFarmResourceId = '<serverFarmResourceId>'
+// Non-required parameters
+param location = '<location>'
+param siteConfig = {
+  appSettings: [
+    {
+      name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'
+      value: 'false'
+    }
+  ]
+  windowsFxVersion: 'DOCKER|mcr.microsoft.com/azure-app-service/windows/parkingpage:latest'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -2109,6 +3037,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enabled`](#parameter-enabled) | bool | Setting this value to false disables the app (takes the app offline). |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`functionAppConfig`](#parameter-functionappconfig) | object | The Function App configuration object. |
 | [`hostNameSslStates`](#parameter-hostnamesslstates) | array | Hostname SSL states are used to manage the SSL bindings for app's hostnames. |
 | [`httpsOnly`](#parameter-httpsonly) | bool | Configures a site to accept only HTTPS requests. Issues redirect for HTTP requests. |
 | [`hybridConnectionRelays`](#parameter-hybridconnectionrelays) | array | Names of hybrid connection relays to connect app with. |
@@ -2437,6 +3366,13 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `functionAppConfig`
+
+The Function App configuration object.
+
+- Required: No
+- Type: object
 
 ### Parameter: `hostNameSslStates`
 
@@ -3001,6 +3937,15 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'App Compliance Automation Administrator'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+  - `'Web Plan Contributor'`
+  - `'Website Contributor'`
 
 **Required parameters**
 

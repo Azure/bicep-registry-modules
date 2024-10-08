@@ -56,7 +56,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -214,6 +214,7 @@ output imageResourceIds array = [
 //   Definitions   //
 // =============== //
 
+@export()
 type lockType = {
   @sys.description('Optional. Specify the name of lock.')
   name: string?
@@ -222,6 +223,7 @@ type lockType = {
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }
 
+@export()
 type roleAssignmentType = {
   @sys.description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
   name: string?
@@ -249,6 +251,8 @@ type roleAssignmentType = {
 }[]
 
 import { identifierType, purchasePlanType, resourceRangeType } from './image/main.bicep'
+
+@export()
 type imageType = {
   @sys.description('Required. Name of the image definition.')
   @minLength(1)
@@ -277,7 +281,13 @@ type imageType = {
   hyperVGeneration: ('V1' | 'V2')?
 
   @sys.description('Optional. The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`.')
-  securityType: ('Standard' | 'TrustedLaunch' | 'ConfidentialVM' | 'ConfidentialVMSupported')?
+  securityType: (
+    | 'Standard'
+    | 'ConfidentialVM'
+    | 'TrustedLaunchSupported'
+    | 'TrustedLaunch'
+    | 'TrustedLaunchAndConfidentialVmSupported'
+    | 'ConfidentialVMSupported')?
 
   @sys.description('Optional. Specify if the image supports accelerated networking. Defaults to true.')
   isAcceleratedNetworkSupported: bool?
