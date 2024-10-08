@@ -18,6 +18,7 @@ This module deploys a Search Service.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Search/searchServices` | [2024-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2024-03-01-preview/searchServices) |
@@ -32,9 +33,10 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/search/search-service:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Private endpoint-enabled deployment](#example-3-private-endpoint-enabled-deployment)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Deploying with a key vault reference to save secrets](#example-2-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Private endpoint-enabled deployment](#example-4-private-endpoint-enabled-deployment)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -62,7 +64,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -84,7 +86,126 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/search/search-service:<version>'
+
+// Required parameters
+param name = 'sssmin002'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 2: _Deploying with a key vault reference to save secrets_
+
+This instance deploys the module saving admin key secrets in a key vault.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module searchService 'br/public:avm/res/search/search-service:<version>' = {
+  name: 'searchServiceDeployment'
+  params: {
+    // Required parameters
+    name: 'kv-ref'
+    // Non-required parameters
+    authOptions: {
+      aadOrApiKey: {
+        aadAuthFailureMode: 'http401WithBearerChallenge'
+      }
+    }
+    disableLocalAuth: false
+    location: '<location>'
+    secretsExportConfiguration: {
+      keyVaultResourceId: '<keyVaultResourceId>'
+      primaryAdminKeyName: 'Primary-Admin-Key'
+      secondaryAdminKeyName: 'Secondary-Admin-Key'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "kv-ref"
+    },
+    // Non-required parameters
+    "authOptions": {
+      "value": {
+        "aadOrApiKey": {
+          "aadAuthFailureMode": "http401WithBearerChallenge"
+        }
+      }
+    },
+    "disableLocalAuth": {
+      "value": false
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "secretsExportConfiguration": {
+      "value": {
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "primaryAdminKeyName": "Primary-Admin-Key",
+        "secondaryAdminKeyName": "Secondary-Admin-Key"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/search/search-service:<version>'
+
+// Required parameters
+param name = 'kv-ref'
+// Non-required parameters
+param authOptions = {
+  aadOrApiKey: {
+    aadAuthFailureMode: 'http401WithBearerChallenge'
+  }
+}
+param disableLocalAuth = false
+param location = '<location>'
+param secretsExportConfiguration = {
+  keyVaultResourceId: '<keyVaultResourceId>'
+  primaryAdminKeyName: 'Primary-Admin-Key'
+  secondaryAdminKeyName: 'Secondary-Admin-Key'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -180,7 +301,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -300,7 +421,93 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 </details>
 <p>
 
-### Example 3: _Private endpoint-enabled deployment_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/search/search-service:<version>'
+
+// Required parameters
+param name = 'sssmax001'
+// Non-required parameters
+param authOptions = {
+  aadOrApiKey: {
+    aadAuthFailureMode: 'http401WithBearerChallenge'
+  }
+}
+param cmkEnforcement = 'Enabled'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAuth = false
+param hostingMode = 'highDensity'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkRuleSet = {
+  ipRules: [
+    {
+      value: '40.74.28.0/23'
+    }
+    {
+      value: '87.147.204.13'
+    }
+  ]
+}
+param partitionCount = 2
+param replicaCount = 3
+param roleAssignments = [
+  {
+    name: '73ec30e0-2e25-475f-beec-d90cab332eb7'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param semanticSearch = 'standard'
+param sku = 'standard3'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Private endpoint-enabled deployment_
 
 This instance deploys the module with private endpoints.
 
@@ -314,7 +521,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   name: 'searchServiceDeployment'
   params: {
     // Required parameters
-    name: 'ssspe001'
+    name: 'ssspr001'
     // Non-required parameters
     location: '<location>'
     privateEndpoints: [
@@ -374,7 +581,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -383,7 +590,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssspe001"
+      "value": "ssspr001"
     },
     // Non-required parameters
     "location": {
@@ -452,7 +659,71 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/search/search-service:<version>'
+
+// Required parameters
+param name = 'ssspr001'
+// Non-required parameters
+param location = '<location>'
+param privateEndpoints = [
+  {
+    applicationSecurityGroupResourceIds: [
+      '<applicationSecurityGroupResourceId>'
+    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+param sharedPrivateLinkResources = [
+  {
+    groupId: 'blob'
+    privateLinkResourceId: '<privateLinkResourceId>'
+    requestMessage: 'Please approve this request'
+    resourceRegion: '<resourceRegion>'
+  }
+  {
+    groupId: 'vault'
+    privateLinkResourceId: '<privateLinkResourceId>'
+    requestMessage: 'Please approve this request'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -525,7 +796,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -618,6 +889,69 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/search/search-service:<version>'
+
+// Required parameters
+param name = 'ssswaf001'
+// Non-required parameters
+param authOptions = {
+  aadOrApiKey: {
+    aadAuthFailureMode: 'http401WithBearerChallenge'
+  }
+}
+param cmkEnforcement = 'Enabled'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAuth = false
+param hostingMode = 'highDensity'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param networkRuleSet = {
+  ipRules: [
+    {
+      value: '40.74.28.0/23'
+    }
+    {
+      value: '87.147.204.13'
+    }
+  ]
+}
+param partitionCount = 2
+param replicaCount = 3
+param sku = 'standard3'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -645,6 +979,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | This value can be set to 'Enabled' to avoid breaking changes on existing customer resources and templates. If set to 'Disabled', traffic over public interface is not allowed, and private endpoint connections would be the exclusive access method. |
 | [`replicaCount`](#parameter-replicacount) | int | The number of replicas in the search service. If specified, it must be a value between 1 and 12 inclusive for standard SKUs or between 1 and 3 inclusive for basic SKU. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`semanticSearch`](#parameter-semanticsearch) | string | Sets options that control the availability of semantic search. This configuration is only possible for certain search SKUs in certain locations. |
 | [`sharedPrivateLinkResources`](#parameter-sharedprivatelinkresources) | array | The sharedPrivateLinkResources to create as part of the search Service. |
 | [`sku`](#parameter-sku) | string | Defines the SKU of an Azure Cognitive Search Service, which determines price tier and capacity limits. |
@@ -1236,6 +1571,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -1370,6 +1716,15 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'Search Index Data Contributor'`
+  - `'Search Index Data Reader'`
+  - `'Search Service Contributor'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1461,6 +1816,47 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `secretsExportConfiguration`
+
+Key vault reference and secret settings for the module's secrets export.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The key vault name where to store the API Admin keys generated by the modules. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`primaryAdminKeyName`](#parameter-secretsexportconfigurationprimaryadminkeyname) | string | The primaryAdminKey secret name to create. |
+| [`secondaryAdminKeyName`](#parameter-secretsexportconfigurationsecondaryadminkeyname) | string | The secondaryAdminKey secret name to create. |
+
+### Parameter: `secretsExportConfiguration.keyVaultResourceId`
+
+The key vault name where to store the API Admin keys generated by the modules.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `secretsExportConfiguration.primaryAdminKeyName`
+
+The primaryAdminKey secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.secondaryAdminKeyName`
+
+The secondaryAdminKey secret name to create.
+
+- Required: No
+- Type: string
+
 ### Parameter: `semanticSearch`
 
 Sets options that control the availability of semantic search. This configuration is only possible for certain search SKUs in certain locations.
@@ -1515,9 +1911,9 @@ Tags to help categorize the resource in the Azure portal.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the search service. |
-| `privateEndpoints` | array | The private endpoints of the search service. |
 | `resourceGroupName` | string | The name of the resource group the search service was created in. |
 | `resourceId` | string | The resource ID of the search service. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |

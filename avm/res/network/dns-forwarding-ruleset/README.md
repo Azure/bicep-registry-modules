@@ -61,7 +61,7 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -83,6 +83,25 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/dns-forwarding-ruleset:<version>'
+
+// Required parameters
+param dnsForwardingRulesetOutboundEndpointResourceIds = [
+  '<dnsResolverOutboundEndpointsResourceId>'
+]
+param name = 'ndfrsmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -164,7 +183,7 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -248,6 +267,72 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/dns-forwarding-ruleset:<version>'
+
+// Required parameters
+param dnsForwardingRulesetOutboundEndpointResourceIds = [
+  '<dnsResolverOutboundEndpointsId>'
+]
+param name = 'ndfrsmax001'
+// Non-required parameters
+param forwardingRules = [
+  {
+    domainName: 'contoso.'
+    forwardingRuleState: 'Enabled'
+    name: 'rule1'
+    targetDnsServers: [
+      {
+        ipAddress: '192.168.0.1'
+        port: '53'
+      }
+    ]
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: '38837eb6-838b-4c77-8d7d-baa102195d9f'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param virtualNetworkLinks = [
+  {
+    name: 'mytestvnetlink1'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -286,7 +371,7 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -320,6 +405,34 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/dns-forwarding-ruleset:<version>'
+
+// Required parameters
+param dnsForwardingRulesetOutboundEndpointResourceIds = [
+  '<dnsResolverOutboundEndpointsId>'
+]
+param name = 'ndfrswaf001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -504,6 +617,15 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 

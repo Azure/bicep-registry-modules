@@ -390,7 +390,7 @@ function Set-DefinitionSection {
                     )
                 }
             } else {
-                $formattedDefaultValue = $null
+                $formattedDefaultValue = $null # Reset value for future iterations
             }
 
             # Format allowed values
@@ -420,7 +420,31 @@ function Set-DefinitionSection {
                     )
                 }
             } else {
-                $formattedAllowedValues = $null
+                $formattedAllowedValues = $null # Reset value for future iterations
+            }
+
+            # Special case for 'roleAssignments' parameter
+            if (($parameter.name -eq 'roleAssignments') -and ($TemplateFileContent.variables.keys -contains 'builtInRoleNames')) {
+                if ([String]::IsNullOrEmpty($ParentName)) {
+                    # Top-level invocation
+                    $roles = $TemplateFileContent.variables.builtInRoleNames.Keys
+                } else {
+                    # Nested-invocation (requires e.g., roles for of nested private endpoint template)
+                    $flattendResources = Get-NestedResourceList -TemplateFileContent $TemplateFileContent
+                    if ($resourceIdentifier = $flattendResources.identifier | Where-Object { $_ -match "^.*_$ParentName`$" }) {
+                        $roles = ($flattendResources | Where-Object {
+                                $_.identifier -eq $resourceIdentifier
+                            }).properties.template.variables.builtInRoleNames.Keys
+                    } else {
+                        Write-Warning ('Failed to identify roles for parameter [{0}] of type [{1}] as resource with identifier [{2}] was not found in the corresponding linked template.' -f $parameter.name, $ParentName, "*_$ParentName")
+                    }
+                }
+                $formattedRoleNames = $roles.count -gt 0 ? @(
+                    '- Roles configurable by name:',
+                    ($roles | ForEach-Object { "  - ``'$_'``" } | Out-String).TrimEnd()
+                ) : $null
+            } else {
+                $formattedRoleNames = $null # Reset value for future iterations
             }
 
             # Format example
@@ -457,7 +481,8 @@ function Set-DefinitionSection {
             ('- Type: {0}' -f $type),
             ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
             ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null),
-            ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null)
+            ((-not [String]::IsNullOrEmpty($formattedRoleNames)) ? $formattedRoleNames : $null),
+            ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null),
                 ''
             ) | Where-Object { $null -ne $_ }
 
@@ -1393,6 +1418,9 @@ function Set-UsageExamplesSection {
         [bool] $addBicep = $true,
 
         [Parameter(Mandatory = $false)]
+        [bool] $addBicepParametersFile = $true,
+
+        [Parameter(Mandatory = $false)]
         [string] $SectionStartIdentifier = '## Usage examples'
     )
 
@@ -1566,19 +1594,31 @@ function Set-UsageExamplesSection {
                 }
             }
 
-            # [5/6] Convert Bicep parameter block to JSON parameter block to enable processing
+            # [4/6] Convert Bicep parameter block to JSON parameter block to enable processing
             $conversionInputObject = @{
                 BicepParamBlock = ($paramsBlockArray | Out-String).TrimEnd()
                 CurrentFilePath = $testFilePath
             }
             $paramsInJSONFormat = ConvertTo-FormattedJSONParameterObject @conversionInputObject
 
-            # [6/6] Convert JSON parameters back to Bicep and order & format them
+            # [5/6] Convert JSON parameters back to Bicep and order & format them
             $conversionInputObject = @{
                 JSONParameters         = $paramsInJSONFormat
                 RequiredParametersList = $RequiredParametersList
             }
             $bicepExample = ConvertTo-FormattedBicep @conversionInputObject
+
+            # [6/6] Convert the Bicep format to a Bicep parameters file format
+            if ($bicepExample.length -gt 0) {
+                $bicepParamBlockArray = $bicepExample -split '\r?\n'
+                $topLevelParamIndent = ([regex]::Match($bicepParamBlockArray[0], '^(\s+).*')).Captures.Groups[1].Value.Length
+                $bicepParametersFileExample = $bicepParamBlockArray | ForEach-Object {
+                    $line = $_
+                    $line = $line -replace "^(\s{$topLevelParamIndent})([a-zA-Z]*)(:)(.*)", 'param $2 =$4' # Update any [    xyz: abc] to [param xyz = abc]
+                    $line = $line -replace "^\s{$topLevelParamIndent}", '' # Update any [    xyz: abc] to [xyz: abc]
+                    $line
+                }
+            }
 
             # --------------------- #
             #   Add Bicep example   #
@@ -1627,10 +1667,37 @@ function Set-UsageExamplesSection {
                     '',
                     '<details>'
                     ''
-                    '<summary>via JSON Parameter file</summary>'
+                    '<summary>via JSON parameters file</summary>'
                     ''
                     '```json',
                     $orderedJSONExample.Trim()
+                    '```',
+                    '',
+                    '</details>',
+                    '<p>'
+                )
+            }
+
+            # ---------------------------------------- #
+            #     Add Bicep parameters file example    #
+            # ---------------------------------------- #
+            if ($addBicepParametersFile) {
+
+                $formattedbicepParametersFileExample = @(
+                    "using 'br/public:$($brLink):$($targetVersion)'"
+                    ''
+                ) + $bicepParametersFileExample
+
+
+                # Build result
+                $testFilesContent += @(
+                    '',
+                    '<details>'
+                    ''
+                    '<summary>via Bicep parameters file</summary>'
+                    ''
+                    '```bicep-params',
+                    ($formattedbicepParametersFileExample | ForEach-Object { "$_" }).TrimEnd(),
                     '```',
                     '',
                     '</details>',
