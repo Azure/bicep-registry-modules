@@ -59,7 +59,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -71,6 +71,19 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/digital-twins/digital-twins-instance:<version>'
+
+param name = 'dtdimin001'
 ```
 
 </details>
@@ -192,7 +205,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -322,6 +335,112 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/digital-twins/digital-twins-instance:<version>'
+
+// Required parameters
+param name = 'dtdmax001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param eventGridEndpoints = [
+  {
+    eventGridDomainId: '<eventGridDomainId>'
+    topicEndpoint: '<topicEndpoint>'
+  }
+]
+param eventHubEndpoints = [
+  {
+    authenticationType: 'IdentityBased'
+    endpointUri: '<endpointUri>'
+    entityPath: '<entityPath>'
+    managedIdentities: {
+      userAssignedResourceId: '<userAssignedResourceId>'
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneResourceIds: [
+      '<privateDNSZoneResourceId>'
+    ]
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param serviceBusEndpoints = [
+  {
+    authenticationType: 'IdentityBased'
+    endpointUri: '<endpointUri>'
+    entityPath: '<entityPath>'
+    managedIdentities: {
+      userAssignedResourceId: '<userAssignedResourceId>'
+    }
+    name: 'ServiceBusPrimary'
+  }
+  {
+    authenticationType: 'IdentityBased'
+    endpointUri: '<endpointUri>'
+    entityPath: '<entityPath>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    name: 'ServiceBusSeconday'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _Using private endpoint parameter set_
 
 This instance deploys the module with idempotancy tests for private endpoints.
@@ -362,7 +481,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -395,6 +514,36 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/digital-twins/digital-twins-instance:<version>'
+
+// Required parameters
+param name = 'dtdpep001'
+// Non-required parameters
+param location = '<location>'
+param privateEndpoints = [
+  {
+    privateDnsZoneResourceIds: [
+      '<privateDNSZoneResourceId>'
+    ]
+    subnetResourceId: '<subnetResourceId>'
+  }
+  {
+    privateDnsZoneResourceIds: [
+      '<privateDNSZoneResourceId>'
+    ]
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
 ```
 
 </details>
@@ -439,7 +588,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -472,6 +621,35 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/digital-twins/digital-twins-instance:<version>'
+
+// Required parameters
+param name = 'dtdiwaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

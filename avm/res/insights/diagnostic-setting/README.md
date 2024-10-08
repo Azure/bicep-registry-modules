@@ -53,7 +53,7 @@ module diagnosticSetting 'br/public:avm/res/insights/diagnostic-setting:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -71,6 +71,21 @@ module diagnosticSetting 'br/public:avm/res/insights/diagnostic-setting:<version
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/diagnostic-setting:<version>'
+
+param location = '<location>'
+param name = 'idsmin001'
+param workspaceResourceId = '<workspaceResourceId>'
 ```
 
 </details>
@@ -109,7 +124,7 @@ module diagnosticSetting 'br/public:avm/res/insights/diagnostic-setting:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -148,6 +163,29 @@ module diagnosticSetting 'br/public:avm/res/insights/diagnostic-setting:<version
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/diagnostic-setting:<version>'
+
+param eventHubAuthorizationRuleResourceId = '<eventHubAuthorizationRuleResourceId>'
+param eventHubName = '<eventHubName>'
+param location = '<location>'
+param metricCategories = [
+  {
+    category: 'AllMetrics'
+  }
+]
+param name = 'idsmax001'
+param storageAccountResourceId = '<storageAccountResourceId>'
+param workspaceResourceId = '<workspaceResourceId>'
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -181,7 +219,7 @@ module diagnosticSetting 'br/public:avm/res/insights/diagnostic-setting:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -215,6 +253,29 @@ module diagnosticSetting 'br/public:avm/res/insights/diagnostic-setting:<version
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/diagnostic-setting:<version>'
+
+param eventHubAuthorizationRuleResourceId = '<eventHubAuthorizationRuleResourceId>'
+param eventHubName = '<eventHubName>'
+param location = '<location>'
+param metricCategories = [
+  {
+    category: 'AllMetrics'
+  }
+]
+param name = 'idswaf001'
+param storageAccountResourceId = '<storageAccountResourceId>'
+param workspaceResourceId = '<workspaceResourceId>'
 ```
 
 </details>

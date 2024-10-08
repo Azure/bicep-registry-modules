@@ -57,7 +57,7 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -77,6 +77,23 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/express-route-gateway:<version>'
+
+// Required parameters
+param name = 'nergmin001'
+param virtualHubId = '<virtualHubId>'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -138,7 +155,7 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -202,6 +219,52 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/express-route-gateway:<version>'
+
+// Required parameters
+param name = 'nergmax001'
+param virtualHubId = '<virtualHubId>'
+// Non-required parameters
+param autoScaleConfigurationBoundsMax = 3
+param autoScaleConfigurationBoundsMin = 2
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: '78ad6c3f-7f77-4d26-9576-dbd947241ef0'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  hello: 'world'
+  'hidden-title': 'This is visible in the resource name'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -239,7 +302,7 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -276,6 +339,33 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/express-route-gateway:<version>'
+
+// Required parameters
+param name = 'nergwaf001'
+param virtualHubId = '<virtualHubId>'
+// Non-required parameters
+param autoScaleConfigurationBoundsMax = 3
+param autoScaleConfigurationBoundsMin = 2
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param tags = {
+  hello: 'world'
+  'hidden-title': 'This is visible in the resource name'
 }
 ```
 

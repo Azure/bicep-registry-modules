@@ -56,7 +56,7 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -73,6 +73,22 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/ip-group:<version>'
+
+// Required parameters
+param name = 'nigmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -136,7 +152,7 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -198,6 +214,54 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/ip-group:<version>'
+
+// Required parameters
+param name = 'nigmax001'
+// Non-required parameters
+param ipAddresses = [
+  '10.0.0.1'
+  '10.0.0.2'
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: '26438d40-c8be-4229-ba65-800cf4e49dc8'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -233,7 +297,7 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -262,6 +326,31 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/ip-group:<version>'
+
+// Required parameters
+param name = 'nigwaf001'
+// Non-required parameters
+param ipAddresses = [
+  '10.0.0.1'
+  '10.0.0.2'
+]
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

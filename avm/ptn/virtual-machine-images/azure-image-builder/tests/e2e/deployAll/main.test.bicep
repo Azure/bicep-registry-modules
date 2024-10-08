@@ -46,9 +46,12 @@ module testDeployment '../../../main.bicep' = [
           hyperVGeneration: 'V2'
           name: computeGalleryImageDefinitionName
           osType: 'Linux'
-          publisher: 'devops'
-          offer: 'devops_linux'
-          sku: 'devops_linux_az'
+          osState: 'Generalized'
+          identifier: {
+            publisher: 'devops'
+            offer: 'devops_linux'
+            sku: 'devops_linux_az'
+          }
         }
       ]
       storageAccountFilesToUpload: [

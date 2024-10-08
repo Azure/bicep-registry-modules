@@ -69,7 +69,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -86,6 +86,22 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/namespace:<version>'
+
+// Required parameters
+param name = 'egnmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -299,7 +315,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -517,6 +533,204 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/namespace:<version>'
+
+// Required parameters
+param name = 'egnmax001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    name: 'bde32b53-e30c-41d0-a338-c637853fe524'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param topics = [
+  {
+    eventRetentionInDays: 7
+    eventSubscriptions: [
+      {
+        deliveryConfiguration: {
+          deliveryMode: 'Queue'
+          queue: {
+            eventTimeToLive: 'P7D'
+            maxDeliveryCount: 10
+            receiveLockDurationInSeconds: 60
+          }
+        }
+        name: 'subscription1'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+      }
+      {
+        deliveryConfiguration: {
+          deliveryMode: 'Push'
+          push: {
+            deliveryWithResourceIdentity: {
+              destination: {
+                endpointType: 'EventHub'
+                properties: {
+                  deliveryAttributeMappings: [
+                    {
+                      name: 'StaticHeader1'
+                      properties: {
+                        isSecret: false
+                        value: 'staticVaule'
+                      }
+                      type: 'Static'
+                    }
+                    {
+                      name: 'DynamicHeader1'
+                      properties: {
+                        sourceField: 'id'
+                      }
+                      type: 'Dynamic'
+                    }
+                    {
+                      name: 'StaticSecretHeader1'
+                      properties: {
+                        isSecret: true
+                        value: 'Hidden'
+                      }
+                      type: 'Static'
+                    }
+                  ]
+                  resourceId: '<resourceId>'
+                }
+              }
+              identity: {
+                type: 'UserAssigned'
+                userAssignedIdentity: '<userAssignedIdentity>'
+              }
+            }
+            eventTimeToLive: 'P7D'
+            maxDeliveryCount: 10
+          }
+        }
+        name: 'subscription2'
+      }
+    ]
+    name: 'topic1'
+  }
+  {
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    name: 'topic2'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _MQTT Broker with routing to a namespace topic_
 
 This instance deploys the module as a MQTT Broker with routing to a topic within the same Eventgrid namespace.
@@ -674,7 +888,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -853,6 +1067,153 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/namespace:<version>'
+
+// Required parameters
+param name = 'egnmqttct001'
+// Non-required parameters
+param alternativeAuthenticationNameSources = [
+  'ClientCertificateEmail'
+  'ClientCertificateUri'
+]
+param clientGroups = [
+  {
+    description: 'this is group1'
+    name: 'group1'
+    query: 'attributes.keyName IN [\'a\', \'b\', \'c\']'
+  }
+]
+param clients = [
+  {
+    attributes: {
+      deviceTypes: [
+        'Fan'
+        'Light'
+      ]
+      floor: 12
+      room: '345'
+    }
+    authenticationName: 'client2auth'
+    clientCertificateAuthenticationAllowedThumbprints: [
+      '1111111111111111111111111111111111111111'
+      '2222222222222222222222222222222222222222'
+    ]
+    clientCertificateAuthenticationValidationSchema: 'ThumbprintMatch'
+    description: 'this is client2'
+    name: 'client1'
+    state: 'Enabled'
+  }
+  {
+    clientCertificateAuthenticationAllowedThumbprints: [
+      '3333333333333333333333333333333333333333'
+    ]
+    clientCertificateAuthenticationValidationSchema: 'ThumbprintMatch'
+    name: 'client2'
+  }
+  {
+    name: 'client3'
+  }
+  {
+    clientCertificateAuthenticationValidationSchema: 'IpMatchesAuthenticationName'
+    name: 'client4'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param maximumClientSessionsPerAuthenticationName = 5
+param maximumSessionExpiryInHours = 2
+param permissionBindings = [
+  {
+    clientGroupName: 'group1'
+    description: 'this is binding1'
+    name: 'bindiing1'
+    permission: 'Publisher'
+    topicSpaceName: 'topicSpace1'
+  }
+  {
+    clientGroupName: 'group1'
+    name: 'bindiing2'
+    permission: 'Subscriber'
+    topicSpaceName: 'topicSpace2'
+  }
+]
+param routeTopicResourceId = '<routeTopicResourceId>'
+param routingEnrichments = {
+  dynamic: [
+    {
+      key: 'dynamic1'
+      value: '<value>'
+    }
+  ]
+  static: [
+    {
+      key: 'static1'
+      value: 'value1'
+      valueType: 'String'
+    }
+    {
+      key: 'static2'
+      value: 'value2'
+      valueType: 'String'
+    }
+  ]
+}
+param routingIdentityInfo = {
+  type: 'UserAssigned'
+  userAssignedIdentity: '<userAssignedIdentity>'
+}
+param topics = [
+  {
+    name: 'topic1'
+  }
+]
+param topicSpaces = [
+  {
+    name: 'topicSpace1'
+    topicTemplates: [
+      'devices/foo/bar'
+      'devices/topic1/+'
+    ]
+  }
+  {
+    name: 'topicSpace2'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    topicTemplates: [
+      'devices/topic1/+'
+    ]
+  }
+]
+param topicSpacesState = 'Enabled'
+```
+
+</details>
+<p>
+
 ### Example 4: _MQTT Broker with routing to a namespace topic_
 
 This instance deploys the module as a MQTT Broker with routing to a topic within the same Eventgrid namespace.
@@ -1010,7 +1371,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1189,6 +1550,153 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/namespace:<version>'
+
+// Required parameters
+param name = 'egnmqttnt001'
+// Non-required parameters
+param alternativeAuthenticationNameSources = [
+  'ClientCertificateEmail'
+  'ClientCertificateUri'
+]
+param clientGroups = [
+  {
+    description: 'this is group1'
+    name: 'group1'
+    query: 'attributes.keyName IN [\'a\', \'b\', \'c\']'
+  }
+]
+param clients = [
+  {
+    attributes: {
+      deviceTypes: [
+        'Fan'
+        'Light'
+      ]
+      floor: 12
+      room: '345'
+    }
+    authenticationName: 'client2auth'
+    clientCertificateAuthenticationAllowedThumbprints: [
+      '1111111111111111111111111111111111111111'
+      '2222222222222222222222222222222222222222'
+    ]
+    clientCertificateAuthenticationValidationSchema: 'ThumbprintMatch'
+    description: 'this is client2'
+    name: 'client1'
+    state: 'Enabled'
+  }
+  {
+    clientCertificateAuthenticationAllowedThumbprints: [
+      '3333333333333333333333333333333333333333'
+    ]
+    clientCertificateAuthenticationValidationSchema: 'ThumbprintMatch'
+    name: 'client2'
+  }
+  {
+    name: 'client3'
+  }
+  {
+    clientCertificateAuthenticationValidationSchema: 'IpMatchesAuthenticationName'
+    name: 'client4'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param maximumClientSessionsPerAuthenticationName = 5
+param maximumSessionExpiryInHours = 2
+param permissionBindings = [
+  {
+    clientGroupName: 'group1'
+    description: 'this is binding1'
+    name: 'bindiing1'
+    permission: 'Publisher'
+    topicSpaceName: 'topicSpace1'
+  }
+  {
+    clientGroupName: 'group1'
+    name: 'bindiing2'
+    permission: 'Subscriber'
+    topicSpaceName: 'topicSpace2'
+  }
+]
+param routeTopicResourceId = '<routeTopicResourceId>'
+param routingEnrichments = {
+  dynamic: [
+    {
+      key: 'dynamic1'
+      value: '<value>'
+    }
+  ]
+  static: [
+    {
+      key: 'static1'
+      value: 'value1'
+      valueType: 'String'
+    }
+    {
+      key: 'static2'
+      value: 'value2'
+      valueType: 'String'
+    }
+  ]
+}
+param routingIdentityInfo = {
+  type: 'UserAssigned'
+  userAssignedIdentity: '<userAssignedIdentity>'
+}
+param topics = [
+  {
+    name: 'topic1'
+  }
+]
+param topicSpaces = [
+  {
+    name: 'topicSpace1'
+    topicTemplates: [
+      'devices/foo/bar'
+      'devices/topic1/+'
+    ]
+  }
+  {
+    name: 'topicSpace2'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    topicTemplates: [
+      'devices/topic1/+'
+    ]
+  }
+]
+param topicSpacesState = 'Enabled'
+```
+
+</details>
+<p>
+
 ### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -1272,7 +1780,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1353,6 +1861,79 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/namespace:<version>'
+
+// Required parameters
+param name = 'egnwaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

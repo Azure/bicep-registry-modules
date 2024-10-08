@@ -72,7 +72,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -120,6 +120,37 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/managed-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param name = 'amemin001'
+// Non-required parameters
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetId = '<infrastructureSubnetId>'
+param internal = true
+param location = '<location>'
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
 ```
 
 </details>
@@ -227,7 +258,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -357,6 +388,98 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/managed-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param name = 'amemax001'
+// Non-required parameters
+param appInsightsConnectionString = '<appInsightsConnectionString>'
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetId = '<infrastructureSubnetId>'
+param internal = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param openTelemetryConfiguration = {
+  logsConfiguration: {
+    destinations: [
+      'appInsights'
+    ]
+  }
+  tracesConfiguration: {
+    destinations: [
+      'appInsights'
+    ]
+  }
+}
+param peerTrafficEncryption = true
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param roleAssignments = [
+  {
+    name: '43fc5250-f111-472b-8722-f1cb4a0e754b'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param storages = [
+  {
+    accessMode: 'ReadWrite'
+    kind: 'SMB'
+    shareName: 'smbfileshare'
+    storageAccountName: '<storageAccountName>'
+  }
+  {
+    accessMode: 'ReadWrite'
+    kind: 'NFS'
+    shareName: 'nfsfileshare'
+    storageAccountName: '<storageAccountName>'
+  }
+]
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -423,7 +546,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -502,6 +625,62 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/managed-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param name = 'amewaf001'
+// Non-required parameters
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetId = '<infrastructureSubnetId>'
+param internal = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
 ```
 
 </details>

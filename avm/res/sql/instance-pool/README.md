@@ -54,7 +54,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -74,6 +74,23 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/instance-pool:<version>'
+
+// Required parameters
+param name = '<name>'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -107,7 +124,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -130,6 +147,24 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/instance-pool:<version>'
+
+// Required parameters
+param name = '<name>'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param location = '<location>'
+param skuName = 'GP_Gen8IM'
 ```
 
 </details>

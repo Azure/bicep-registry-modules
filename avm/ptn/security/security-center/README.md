@@ -60,7 +60,7 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -80,6 +80,23 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/security/security-center:<version>'
+
+// Required parameters
+param scope = '<scope>'
+param workspaceResourceId = '<workspaceResourceId>'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -120,7 +137,7 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -159,6 +176,31 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/security/security-center:<version>'
+
+// Required parameters
+param scope = '<scope>'
+param workspaceResourceId = '<workspaceResourceId>'
+// Non-required parameters
+param deviceSecurityGroupProperties = {}
+param ioTSecuritySolutionProperties = {}
+param location = '<location>'
+param securityContactProperties = {
+  alertNotifications: 'Off'
+  alertsToAdmins: 'Off'
+  email: 'foo@contoso.com'
+  phone: '+12345678'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -186,7 +228,7 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -206,6 +248,23 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/security/security-center:<version>'
+
+// Required parameters
+param scope = '<scope>'
+param workspaceResourceId = '<workspaceResourceId>'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>

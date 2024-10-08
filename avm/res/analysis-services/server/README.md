@@ -62,7 +62,7 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -79,6 +79,22 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/analysis-services/server:<version>'
+
+// Required parameters
+param name = 'assmin'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -172,7 +188,7 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -270,6 +286,84 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/analysis-services/server:<version>'
+
+// Required parameters
+param name = 'assmax'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'Engine'
+      }
+      {
+        category: 'Service'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param firewallSettings = {
+  enablePowerBIService: true
+  firewallRules: [
+    {
+      firewallRuleName: 'AllowFromAll'
+      rangeEnd: '255.255.255.255'
+      rangeStart: '0.0.0.0'
+    }
+  ]
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: '0a657697-dd80-427e-b1bc-7970ab74f937'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param skuCapacity = 1
+param skuName = 'S0'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -339,7 +433,7 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -410,6 +504,65 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/analysis-services/server:<version>'
+
+// Required parameters
+param name = 'asswaf'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'Engine'
+      }
+      {
+        category: 'Service'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param firewallSettings = {
+  enablePowerBIService: true
+  firewallRules: [
+    {
+      firewallRuleName: 'AllowFromAll'
+      rangeEnd: '255.255.255.255'
+      rangeStart: '0.0.0.0'
+    }
+  ]
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param skuCapacity = 1
+param skuName = 'S0'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

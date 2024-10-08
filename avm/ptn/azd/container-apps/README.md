@@ -83,7 +83,7 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -140,6 +140,40 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/container-apps:<version>'
+
+// Required parameters
+param containerAppsEnvironmentName = 'acazrcae001'
+param containerRegistryName = 'acazrcr001'
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+// Non-required parameters
+param acrSku = 'Standard'
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
+param internal = true
+param location = '<location>'
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
+param zoneRedundant = true
 ```
 
 </details>

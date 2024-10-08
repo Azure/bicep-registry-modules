@@ -129,8 +129,10 @@ resource key 'Microsoft.KeyVault/vaults/keys@2022-07-01' = {
     keyOps: keyOps
     keySize: keySize
     kty: kty
-    rotationPolicy: rotationPolicy ?? {}
     release_policy: releasePolicy ?? {}
+    ...(empty(rotationPolicy) ? {} : {
+      rotationPolicy: rotationPolicy
+    })
   }
 }
 

@@ -57,7 +57,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -74,6 +74,22 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/managed-identity/user-assigned-identity:<version>'
+
+// Required parameters
+param name = 'miuaimin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -151,7 +167,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -227,6 +243,68 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/managed-identity/user-assigned-identity:<version>'
+
+// Required parameters
+param name = 'miuaimax001'
+// Non-required parameters
+param federatedIdentityCredentials = [
+  {
+    audiences: [
+      'api://AzureADTokenExchange'
+    ]
+    issuer: '<issuer>'
+    name: 'test-fed-cred-miuaimax-001'
+    subject: 'system:serviceaccount:default:workload-identity-sa'
+  }
+  {
+    audiences: [
+      'api://AzureADTokenExchange'
+    ]
+    issuer: '<issuer>'
+    name: 'test-fed-cred-miuaimax-002'
+    subject: 'system:serviceaccount:default:workload-identity-sa'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'b1a2c427-c4b1-435a-9b82-40c1b59537ac'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -280,7 +358,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -329,6 +407,49 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/managed-identity/user-assigned-identity:<version>'
+
+// Required parameters
+param name = 'miuaiwaf001'
+// Non-required parameters
+param federatedIdentityCredentials = [
+  {
+    audiences: [
+      'api://AzureADTokenExchange'
+    ]
+    issuer: '<issuer>'
+    name: 'test-fed-cred-miuaiwaf-001'
+    subject: 'system:serviceaccount:default:workload-identity-sa'
+  }
+  {
+    audiences: [
+      'api://AzureADTokenExchange'
+    ]
+    issuer: '<issuer>'
+    name: 'test-fed-cred-miuaiwaf-002'
+    subject: 'system:serviceaccount:default:workload-identity-sa'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

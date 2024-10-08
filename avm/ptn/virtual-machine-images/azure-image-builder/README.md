@@ -18,32 +18,32 @@ This module provides you with a packaged solution to create custom images using 
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/galleries` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries) |
+| `Microsoft.Compute/galleries` | [2023-07-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-03/galleries) |
 | `Microsoft.Compute/galleries/applications` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/applications) |
-| `Microsoft.Compute/galleries/images` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/images) |
+| `Microsoft.Compute/galleries/images` | [2023-07-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-03/galleries/images) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Network/virtualNetworks` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/virtualNetworkPeerings) |
+| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 | `Microsoft.Resources/resourceGroups` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2024-03-01/resourceGroups) |
 | `Microsoft.Storage/storageAccounts` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts) |
 | `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
-| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/fileServices) |
+| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/fileServices) |
 | `Microsoft.Storage/storageAccounts/fileServices/shares` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/fileServices/shares) |
-| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/localUsers) |
+| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/localUsers) |
 | `Microsoft.Storage/storageAccounts/managementPolicies` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/managementPolicies) |
-| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices) |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices/queues) |
-| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices) |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices/tables) |
-| `Microsoft.VirtualMachineImages/imageTemplates` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/imageTemplates) |
+| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices) |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices/queues) |
+| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices) |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices/tables) |
+| `Microsoft.VirtualMachineImages/imageTemplates` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/2023-07-01/imageTemplates) |
 
 ## Usage examples
 
@@ -77,11 +77,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     computeGalleryImageDefinitions: [
       {
         hyperVGeneration: 'V2'
+        identifier: {
+          offer: 'devops_linux'
+          publisher: 'devops'
+          sku: 'devops_linux_az'
+        }
         name: 'sid-linux'
-        offer: 'devops_linux'
+        osState: 'Generalized'
         osType: 'Linux'
-        publisher: 'devops'
-        sku: 'devops_linux_az'
       }
     ]
     computeGalleryName: 'galapvmiaibmin'
@@ -106,7 +109,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -121,11 +124,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
       "value": [
         {
           "hyperVGeneration": "V2",
+          "identifier": {
+            "offer": "devops_linux",
+            "publisher": "devops",
+            "sku": "devops_linux_az"
+          },
           "name": "sid-linux",
-          "offer": "devops_linux",
-          "osType": "Linux",
-          "publisher": "devops",
-          "sku": "devops_linux_az"
+          "osState": "Generalized",
+          "osType": "Linux"
         }
       ]
     },
@@ -161,6 +167,46 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>'
+
+// Required parameters
+param computeGalleryImageDefinitionName = '<computeGalleryImageDefinitionName>'
+param computeGalleryImageDefinitions = [
+  {
+    hyperVGeneration: 'V2'
+    identifier: {
+      offer: 'devops_linux'
+      publisher: 'devops'
+      sku: 'devops_linux_az'
+    }
+    name: 'sid-linux'
+    osState: 'Generalized'
+    osType: 'Linux'
+  }
+]
+param computeGalleryName = 'galapvmiaibmin'
+param imageTemplateImageSource = {
+  offer: 'ubuntu-24_04-lts'
+  publisher: 'canonical'
+  sku: 'server'
+  type: 'PlatformImage'
+  version: 'latest'
+}
+// Non-required parameters
+param assetsStorageAccountName = 'stapvmiaibmin'
+param deploymentsToPerform = '<deploymentsToPerform>'
+param location = '<location>'
+param resourceGroupName = '<resourceGroupName>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Deploying all resources_
 
 This instance deploys the module with the conditions set up to deploy all resource and build the image.
@@ -179,11 +225,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     computeGalleryImageDefinitions: [
       {
         hyperVGeneration: 'V2'
+        identifier: {
+          offer: 'devops_linux'
+          publisher: 'devops'
+          sku: 'devops_linux_az'
+        }
         name: '<name>'
-        offer: 'devops_linux'
+        osState: 'Generalized'
         osType: 'Linux'
-        publisher: 'devops'
-        sku: 'devops_linux_az'
       }
     ]
     computeGalleryName: 'galapvmiaiba'
@@ -239,7 +288,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -254,11 +303,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
       "value": [
         {
           "hyperVGeneration": "V2",
+          "identifier": {
+            "offer": "devops_linux",
+            "publisher": "devops",
+            "sku": "devops_linux_az"
+          },
           "name": "<name>",
-          "offer": "devops_linux",
-          "osType": "Linux",
-          "publisher": "devops",
-          "sku": "devops_linux_az"
+          "osState": "Generalized",
+          "osType": "Linux"
         }
       ]
     },
@@ -331,6 +383,77 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>'
+
+// Required parameters
+param computeGalleryImageDefinitionName = '<computeGalleryImageDefinitionName>'
+param computeGalleryImageDefinitions = [
+  {
+    hyperVGeneration: 'V2'
+    identifier: {
+      offer: 'devops_linux'
+      publisher: 'devops'
+      sku: 'devops_linux_az'
+    }
+    name: '<name>'
+    osState: 'Generalized'
+    osType: 'Linux'
+  }
+]
+param computeGalleryName = 'galapvmiaiba'
+param imageTemplateImageSource = {
+  offer: '0001-com-ubuntu-server-jammy'
+  publisher: 'canonical'
+  sku: '22_04-lts-gen2'
+  type: 'PlatformImage'
+  version: 'latest'
+}
+// Non-required parameters
+param assetsStorageAccountContainerName = '<assetsStorageAccountContainerName>'
+param assetsStorageAccountName = '<assetsStorageAccountName>'
+param deploymentsToPerform = '<deploymentsToPerform>'
+param imageTemplateCustomizationSteps = [
+  {
+    name: 'PowerShell installation'
+    scriptUri: '<scriptUri>'
+    type: 'Shell'
+  }
+  {
+    destination: '<destination>'
+    name: '<name>'
+    sourceUri: '<sourceUri>'
+    type: 'File'
+  }
+  {
+    inline: [
+      'pwsh \'<value>\''
+    ]
+    name: 'Software installation'
+    type: 'Shell'
+  }
+]
+param location = '<location>'
+param resourceGroupName = '<resourceGroupName>'
+param storageAccountFilesToUpload = [
+  {
+    name: '<name>'
+    value: '<value>'
+  }
+  {
+    name: '<name>'
+    value: '<value>'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _Deploying only the assets & image_
 
 This instance deploys the module with the conditions set up to only update the assets on the assets storage account and build the image, assuming all dependencies are setup.
@@ -390,7 +513,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -477,6 +600,55 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>'
+
+// Required parameters
+param computeGalleryImageDefinitionName = '<computeGalleryImageDefinitionName>'
+param computeGalleryImageDefinitions = '<computeGalleryImageDefinitions>'
+param computeGalleryName = '<computeGalleryName>'
+param imageTemplateImageSource = {
+  offer: 'ubuntu-24_04-lts'
+  publisher: 'canonical'
+  sku: 'server'
+  type: 'PlatformImage'
+  version: 'latest'
+}
+// Non-required parameters
+param assetsStorageAccountContainerName = '<assetsStorageAccountContainerName>'
+param assetsStorageAccountName = '<assetsStorageAccountName>'
+param deploymentScriptManagedIdentityName = '<deploymentScriptManagedIdentityName>'
+param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
+param deploymentScriptSubnetName = '<deploymentScriptSubnetName>'
+param deploymentsToPerform = 'Only assets & image'
+param imageManagedIdentityName = '<imageManagedIdentityName>'
+param imageSubnetName = '<imageSubnetName>'
+param imageTemplateCustomizationSteps = [
+  {
+    name: 'Example script'
+    scriptUri: '<scriptUri>'
+    type: 'Shell'
+  }
+]
+param imageTemplateResourceGroupName = '<imageTemplateResourceGroupName>'
+param location = '<location>'
+param resourceGroupName = '<resourceGroupName>'
+param storageAccountFilesToUpload = [
+  {
+    name: '<name>'
+    value: '<value>'
+  }
+]
+param virtualNetworkName = '<virtualNetworkName>'
+```
+
+</details>
+<p>
+
 ### Example 4: _Deploying only the base services_
 
 This instance deploys the module with the conditions set up to only deploy the base resources, that is everything but the image.
@@ -495,11 +667,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     computeGalleryImageDefinitions: [
       {
         hyperVGeneration: 'V2'
+        identifier: {
+          offer: 'devops_linux'
+          publisher: 'devops'
+          sku: 'devops_linux_az'
+        }
         name: '<name>'
-        offer: 'devops_linux'
+        osState: 'Generalized'
         osType: 'Linux'
-        publisher: 'devops'
-        sku: 'devops_linux_az'
       }
     ]
     computeGalleryName: 'galapvmiaibob'
@@ -525,7 +700,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -540,11 +715,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
       "value": [
         {
           "hyperVGeneration": "V2",
+          "identifier": {
+            "offer": "devops_linux",
+            "publisher": "devops",
+            "sku": "devops_linux_az"
+          },
           "name": "<name>",
-          "offer": "devops_linux",
-          "osType": "Linux",
-          "publisher": "devops",
-          "sku": "devops_linux_az"
+          "osState": "Generalized",
+          "osType": "Linux"
         }
       ]
     },
@@ -578,6 +756,47 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>'
+
+// Required parameters
+param computeGalleryImageDefinitionName = '<computeGalleryImageDefinitionName>'
+param computeGalleryImageDefinitions = [
+  {
+    hyperVGeneration: 'V2'
+    identifier: {
+      offer: 'devops_linux'
+      publisher: 'devops'
+      sku: 'devops_linux_az'
+    }
+    name: '<name>'
+    osState: 'Generalized'
+    osType: 'Linux'
+  }
+]
+param computeGalleryName = 'galapvmiaibob'
+param imageTemplateImageSource = {
+  offer: 'ubuntu-24_04-lts'
+  publisher: 'canonical'
+  sku: 'server'
+  type: 'PlatformImage'
+  version: 'latest'
+}
+// Non-required parameters
+param assetsStorageAccountName = 'stapvmiaibob'
+param deploymentsToPerform = 'Only base'
+param imageManagedIdentityName = 'msi-it-apvmiaibob'
+param location = '<location>'
+param resourceGroupName = '<resourceGroupName>'
 ```
 
 </details>
@@ -634,7 +853,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -702,6 +921,47 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>'
+
+// Required parameters
+param computeGalleryImageDefinitionName = '<computeGalleryImageDefinitionName>'
+param computeGalleryImageDefinitions = '<computeGalleryImageDefinitions>'
+param computeGalleryName = '<computeGalleryName>'
+param imageTemplateImageSource = {
+  offer: 'ubuntu-24_04-lts'
+  publisher: 'canonical'
+  sku: 'server'
+  type: 'PlatformImage'
+  version: 'latest'
+}
+// Non-required parameters
+param deploymentScriptManagedIdentityName = '<deploymentScriptManagedIdentityName>'
+param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
+param deploymentScriptSubnetName = '<deploymentScriptSubnetName>'
+param deploymentsToPerform = 'Only image'
+param imageManagedIdentityName = '<imageManagedIdentityName>'
+param imageSubnetName = '<imageSubnetName>'
+param imageTemplateCustomizationSteps = [
+  {
+    name: 'Example script'
+    scriptUri: '<scriptUri>'
+    type: 'Shell'
+  }
+]
+param imageTemplateResourceGroupName = '<imageTemplateResourceGroupName>'
+param location = '<location>'
+param resourceGroupName = '<resourceGroupName>'
+param virtualNetworkName = '<virtualNetworkName>'
 ```
 
 </details>
@@ -1026,12 +1286,12 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/compute/gallery:0.4.0` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.2.2` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.1.6` | Remote reference |
-| `br/public:avm/res/resources/deployment-script:0.3.1` | Remote reference |
+| `br/public:avm/res/compute/gallery:0.7.0` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.4.0` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.4.0` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.9.1` | Remote reference |
-| `br/public:avm/res/virtual-machine-images/image-template:0.3.1` | Remote reference |
+| `br/public:avm/res/virtual-machine-images/image-template:0.4.0` | Remote reference |
 
 ## Notes
 

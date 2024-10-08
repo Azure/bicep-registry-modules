@@ -62,7 +62,7 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -90,6 +90,27 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/vpn-site:<version>'
+
+// Required parameters
+param name = 'nvsmin'
+param virtualWanId = '<virtualWanId>'
+// Non-required parameters
+param addressPrefixes = [
+  '10.0.0.0/16'
+]
+param ipAddress = '1.2.3.4'
+param location = '<location>'
 ```
 
 </details>
@@ -190,7 +211,7 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -295,6 +316,91 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/vpn-site:<version>'
+
+// Required parameters
+param name = 'nvsmax'
+param virtualWanId = '<virtualWanId>'
+// Non-required parameters
+param deviceProperties = {
+  linkSpeedInMbps: 0
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+o365Policy: {
+  breakOutCategories: {
+    allow: true
+    default: true
+    optimize: true
+  }
+}
+param roleAssignments = [
+  {
+    name: '1dcfa9c2-5e95-42d2-bf04-bdecad93abcf'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  tagA: 'valueA'
+  tagB: 'valueB'
+}
+param vpnSiteLinks = [
+  {
+    name: 'vSite-nvsmax'
+    properties: {
+      bgpProperties: {
+        asn: 65010
+        bgpPeeringAddress: '1.1.1.1'
+      }
+      ipAddress: '1.2.3.4'
+      linkProperties: {
+        linkProviderName: 'contoso'
+        linkSpeedInMbps: 5
+      }
+    }
+  }
+  {
+    name: 'Link1'
+    properties: {
+      bgpProperties: {
+        asn: 65020
+        bgpPeeringAddress: '192.168.1.0'
+      }
+      ipAddress: '2.2.2.2'
+      linkProperties: {
+        linkProviderName: 'contoso'
+        linkSpeedInMbps: 5
+      }
+    }
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -371,7 +477,7 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -450,6 +556,72 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/vpn-site:<version>'
+
+// Required parameters
+param name = 'nvswaf'
+param virtualWanId = '<virtualWanId>'
+// Non-required parameters
+param deviceProperties = {
+  linkSpeedInMbps: 0
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+o365Policy: {
+  breakOutCategories: {
+    allow: true
+    default: true
+    optimize: true
+  }
+}
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  tagA: 'valueA'
+  tagB: 'valueB'
+}
+param vpnSiteLinks = [
+  {
+    name: 'vSite-nvswaf'
+    properties: {
+      bgpProperties: {
+        asn: 65010
+        bgpPeeringAddress: '1.1.1.1'
+      }
+      ipAddress: '1.2.3.4'
+      linkProperties: {
+        linkProviderName: 'contoso'
+        linkSpeedInMbps: 5
+      }
+    }
+  }
+  {
+    name: 'Link1'
+    properties: {
+      bgpProperties: {
+        asn: 65020
+        bgpPeeringAddress: '192.168.1.0'
+      }
+      ipAddress: '2.2.2.2'
+      linkProperties: {
+        linkProviderName: 'contoso'
+        linkSpeedInMbps: 5
+      }
+    }
+  }
+]
 ```
 
 </details>

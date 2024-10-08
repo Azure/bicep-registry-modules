@@ -56,7 +56,7 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -73,6 +73,22 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/route-table:<version>'
+
+// Required parameters
+param name = 'nrtmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -142,7 +158,7 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -210,6 +226,60 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/route-table:<version>'
+
+// Required parameters
+param name = 'nrtmax001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'de4b134c-7087-480d-892f-ce6629720d29'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param routes = [
+  {
+    name: 'default'
+    properties: {
+      addressPrefix: '0.0.0.0/0'
+      nextHopIpAddress: '172.16.0.20'
+      nextHopType: 'VirtualAppliance'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -255,7 +325,7 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -296,6 +366,41 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/route-table:<version>'
+
+// Required parameters
+param name = 'nrtwaf001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param routes = [
+  {
+    name: 'default'
+    properties: {
+      addressPrefix: '0.0.0.0/0'
+      nextHopIpAddress: '172.16.0.20'
+      nextHopType: 'VirtualAppliance'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

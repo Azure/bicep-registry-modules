@@ -58,7 +58,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -75,6 +75,22 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/gallery:<version>'
+
+// Required parameters
+param name = 'cgmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -190,7 +206,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           product: 'testProduct'
           publisher: 'testPublisher'
         }
-        securityType: 'TrustedLaunch'
+        securityType: 'Standard'
         vCPUs: {
           max: 8
           min: 2
@@ -311,7 +327,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -420,7 +436,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
             "product": "testProduct",
             "publisher": "testPublisher"
           },
-          "securityType": "TrustedLaunch",
+          "securityType": "Standard",
           "vCPUs": {
             "max": 8,
             "min": 2
@@ -548,6 +564,227 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/gallery:<version>'
+
+// Required parameters
+param name = 'cgmax001'
+// Non-required parameters
+param applications = [
+  {
+    name: 'cgmax-appd-001'
+    supportedOSType: 'Linux'
+  }
+  {
+    name: 'cgmax-appd-002'
+    roleAssignments: [
+      {
+        name: '4ef8d3d3-54be-4522-92c3-284977292d87'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    supportedOSType: 'Windows'
+  }
+]
+param images = [
+  {
+    architecture: 'x64'
+    description: 'testDescription'
+    endOfLife: '2033-01-01'
+    eula: 'test Eula'
+    excludedDiskTypes: [
+      'Standard_LRS'
+    ]
+    hyperVGeneration: 'V1'
+    identifier: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+    }
+    name: 'az-imgd-ws-001'
+    osState: 'Generalized'
+    osType: 'Windows'
+    privacyStatementUri: 'https://testPrivacyStatementUri.com'
+    purchasePlan: {
+      name: 'testPlanName1'
+      product: 'testProduct1'
+      publisher: 'testPublisher1'
+    }
+    releaseNoteUri: 'https://testReleaseNoteUri.com'
+  }
+  {
+    hyperVGeneration: 'V2'
+    identifier: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition-hibernate'
+    }
+    isAcceleratedNetworkSupported: false
+    isHibernateSupported: true
+    memory: {
+      max: 16
+      min: 4
+    }
+    name: 'az-imgd-ws-002'
+    osState: 'Generalized'
+    osType: 'Windows'
+    vCPUs: {
+      max: 8
+      min: 2
+    }
+  }
+  {
+    hyperVGeneration: 'V2'
+    identifier: {
+      offer: 'WindowsDesktop'
+      publisher: 'MicrosoftWindowsDesktop'
+      sku: 'Win11-21H2'
+    }
+    memory: {
+      max: 16
+      min: 4
+    }
+    name: 'az-imgd-wdtl-003'
+    osState: 'Generalized'
+    osType: 'Windows'
+    purchasePlan: {
+      name: 'testPlanName'
+      product: 'testProduct'
+      publisher: 'testPublisher'
+    }
+    securityType: 'Standard'
+    vCPUs: {
+      max: 8
+      min: 2
+    }
+  }
+  {
+    hyperVGeneration: 'V2'
+    identifier: {
+      offer: '0001-com-ubuntu-minimal-focal'
+      publisher: 'canonical'
+      sku: '22_04-lts-gen2'
+    }
+    isAcceleratedNetworkSupported: false
+    memory: {
+      max: 32
+      min: 4
+    }
+    name: 'az-imgd-us-004'
+    osState: 'Generalized'
+    osType: 'Linux'
+    vCPUs: {
+      max: 4
+      min: 1
+    }
+  }
+  {
+    hyperVGeneration: 'V2'
+    identifier: {
+      offer: '0001-com-ubuntu-minimal-focal'
+      publisher: 'canonical'
+      sku: '20_04-lts-gen2'
+    }
+    isAcceleratedNetworkSupported: true
+    memory: {
+      max: 32
+      min: 4
+    }
+    name: 'az-imgd-us-005'
+    osState: 'Generalized'
+    osType: 'Linux'
+    vCPUs: {
+      max: 4
+      min: 1
+    }
+  }
+  {
+    architecture: 'x64'
+    description: 'testDescription'
+    endOfLife: '2033-01-01'
+    eula: 'test Eula'
+    excludedDiskTypes: [
+      'Standard_LRS'
+    ]
+    hyperVGeneration: 'V2'
+    identifier: {
+      offer: '0001-com-ubuntu-server-focal'
+      publisher: 'canonical'
+      sku: '20_04-lts-gen2'
+    }
+    isAcceleratedNetworkSupported: false
+    isHibernateSupported: true
+    memory: {
+      max: 32
+      min: 4
+    }
+    name: 'az-imgd-us-006'
+    osState: 'Generalized'
+    osType: 'Linux'
+    privacyStatementUri: 'https://testPrivacyStatementUri.com'
+    purchasePlan: {
+      name: 'testPlanName'
+      product: 'testProduct'
+      publisher: 'testPublisher'
+    }
+    releaseNoteUri: 'https://testReleaseNoteUri.com'
+    securityType: 'TrustedLaunch'
+    vCPUs: {
+      max: 4
+      min: 1
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: '3bd58a78-108d-4f87-b404-0a03e49303d8'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -597,7 +834,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -642,6 +879,45 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/gallery:<version>'
+
+// Required parameters
+param name = 'cgwaf001'
+// Non-required parameters
+param applications = [
+  {
+    name: 'cgwaf-appd-001'
+    supportedOSType: 'Windows'
+  }
+]
+param images = [
+  {
+    identifier: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+    }
+    name: 'az-imgd-ws-001'
+    osState: 'Generalized'
+    osType: 'Windows'
+  }
+]
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -967,6 +1243,8 @@ The security type of the image. Requires a hyperVGeneration V2. Defaults to `Sta
     'ConfidentialVMSupported'
     'Standard'
     'TrustedLaunch'
+    'TrustedLaunchAndConfidentialVmSupported'
+    'TrustedLaunchSupported'
   ]
   ```
 

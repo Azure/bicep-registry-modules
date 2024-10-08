@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "9363357518124041583"
+      "version": "0.30.23.60470",
+      "templateHash": "4751023237415156564"
     },
     "name": "Site Slot App Settings",
     "description": "This module deploys a Site Slot App Setting.",

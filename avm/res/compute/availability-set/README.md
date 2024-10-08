@@ -56,7 +56,7 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -73,6 +73,22 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/availability-set:<version>'
+
+// Required parameters
+param name = 'casmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -133,7 +149,7 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -192,6 +208,51 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/availability-set:<version>'
+
+// Required parameters
+param name = 'casmax001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param proximityPlacementGroupResourceId = '<proximityPlacementGroupResourceId>'
+param roleAssignments = [
+  {
+    name: 'd9d13442-232d-4861-9ab9-bad5e90c4f71'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -228,7 +289,7 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -260,6 +321,32 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/availability-set:<version>'
+
+// Required parameters
+param name = 'caswaf001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param proximityPlacementGroupResourceId = '<proximityPlacementGroupResourceId>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

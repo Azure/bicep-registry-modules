@@ -58,7 +58,7 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -75,6 +75,22 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/data-protection/backup-vault:<version>'
+
+// Required parameters
+param name = 'dpbvmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -200,7 +216,7 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -328,6 +344,116 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/data-protection/backup-vault:<version>'
+
+// Required parameters
+param name = 'dpbvmax001'
+// Non-required parameters
+param azureMonitorAlertSettingsAlertsForAllJobFailures = 'Disabled'
+param backupPolicies = [
+  {
+    name: 'DefaultPolicy'
+    properties: {
+      datasourceTypes: [
+        'Microsoft.Compute/disks'
+      ]
+      objectType: 'BackupPolicy'
+      policyRules: [
+        {
+          backupParameters: {
+            backupType: 'Incremental'
+            objectType: 'AzureBackupParams'
+          }
+          dataStore: {
+            dataStoreType: 'OperationalStore'
+            objectType: 'DataStoreInfoBase'
+          }
+          name: 'BackupDaily'
+          objectType: 'AzureBackupRule'
+          trigger: {
+            objectType: 'ScheduleBasedTriggerContext'
+            schedule: {
+              repeatingTimeIntervals: [
+                'R/2022-05-31T23:30:00+01:00/P1D'
+              ]
+              timeZone: 'W. Europe Standard Time'
+            }
+            taggingCriteria: [
+              {
+                isDefault: true
+                taggingPriority: 99
+                tagInfo: {
+                  id: 'Default_'
+                  tagName: 'Default'
+                }
+              }
+            ]
+          }
+        }
+        {
+          isDefault: true
+          lifecycles: [
+            {
+              deleteAfter: {
+                duration: 'P7D'
+                objectType: 'AbsoluteDeleteOption'
+              }
+              sourceDataStore: {
+                dataStoreType: 'OperationalStore'
+                objectType: 'DataStoreInfoBase'
+              }
+              targetDataStoreCopySettings: []
+            }
+          ]
+          name: 'Default'
+          objectType: 'AzureRetentionRule'
+        }
+      ]
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param roleAssignments = [
+  {
+    name: 'cbc3932a-1bee-4318-ae76-d70e1ba399c8'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -429,7 +555,7 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -530,6 +656,97 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/data-protection/backup-vault:<version>'
+
+// Required parameters
+param name = 'dpbvwaf001'
+// Non-required parameters
+param azureMonitorAlertSettingsAlertsForAllJobFailures = 'Disabled'
+param backupPolicies = [
+  {
+    name: 'DefaultPolicy'
+    properties: {
+      datasourceTypes: [
+        'Microsoft.Compute/disks'
+      ]
+      objectType: 'BackupPolicy'
+      policyRules: [
+        {
+          backupParameters: {
+            backupType: 'Incremental'
+            objectType: 'AzureBackupParams'
+          }
+          dataStore: {
+            dataStoreType: 'OperationalStore'
+            objectType: 'DataStoreInfoBase'
+          }
+          name: 'BackupDaily'
+          objectType: 'AzureBackupRule'
+          trigger: {
+            objectType: 'ScheduleBasedTriggerContext'
+            schedule: {
+              repeatingTimeIntervals: [
+                'R/2022-05-31T23:30:00+01:00/P1D'
+              ]
+              timeZone: 'W. Europe Standard Time'
+            }
+            taggingCriteria: [
+              {
+                isDefault: true
+                taggingPriority: 99
+                tagInfo: {
+                  id: 'Default_'
+                  tagName: 'Default'
+                }
+              }
+            ]
+          }
+        }
+        {
+          isDefault: true
+          lifecycles: [
+            {
+              deleteAfter: {
+                duration: 'P7D'
+                objectType: 'AbsoluteDeleteOption'
+              }
+              sourceDataStore: {
+                dataStoreType: 'OperationalStore'
+                objectType: 'DataStoreInfoBase'
+              }
+              targetDataStoreCopySettings: []
+            }
+          ]
+          name: 'Default'
+          objectType: 'AzureRetentionRule'
+        }
+      ]
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

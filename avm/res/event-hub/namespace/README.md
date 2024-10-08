@@ -67,7 +67,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -84,6 +84,22 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-hub/namespace:<version>'
+
+// Required parameters
+param name = 'ehnmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -128,7 +144,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -166,6 +182,35 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-hub/namespace:<version>'
+
+// Required parameters
+param name = 'ehnenc001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param requireInfrastructureEncryption = true
+param skuName = 'Premium'
 ```
 
 </details>
@@ -370,7 +415,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -601,6 +646,195 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-hub/namespace:<version>'
+
+// Required parameters
+param name = 'ehnmax001'
+// Non-required parameters
+param authorizationRules = [
+  {
+    name: 'RootManageSharedAccessKey'
+    rights: [
+      'Listen'
+      'Manage'
+      'Send'
+    ]
+  }
+  {
+    name: 'SendListenAccess'
+    rights: [
+      'Listen'
+      'Send'
+    ]
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAuth = true
+param eventhubs = [
+  {
+    name: 'az-evh-x-001'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+  }
+  {
+    authorizationRules: [
+      {
+        name: 'RootManageSharedAccessKey'
+        rights: [
+          'Listen'
+          'Manage'
+          'Send'
+        ]
+      }
+      {
+        name: 'SendListenAccess'
+        rights: [
+          'Listen'
+          'Send'
+        ]
+      }
+    ]
+    captureDescriptionDestinationArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+    captureDescriptionDestinationBlobContainer: 'eventhub'
+    captureDescriptionDestinationName: 'EventHubArchive.AzureBlockBlob'
+    captureDescriptionDestinationStorageAccountResourceId: '<captureDescriptionDestinationStorageAccountResourceId>'
+    captureDescriptionEnabled: true
+    captureDescriptionEncoding: 'Avro'
+    captureDescriptionIntervalInSeconds: 300
+    captureDescriptionSizeLimitInBytes: 314572800
+    captureDescriptionSkipEmptyArchives: true
+    consumergroups: [
+      {
+        name: 'custom'
+        userMetadata: 'customMetadata'
+      }
+    ]
+    messageRetentionInDays: 1
+    name: 'az-evh-x-002'
+    partitionCount: 2
+    retentionDescriptionCleanupPolicy: 'Delete'
+    retentionDescriptionRetentionTimeInHours: 3
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    status: 'Active'
+  }
+  {
+    name: 'az-evh-x-003'
+    retentionDescriptionCleanupPolicy: 'Compact'
+    retentionDescriptionTombstoneRetentionTimeInHours: 24
+  }
+]
+param isAutoInflateEnabled = true
+param kafkaEnabled = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param maximumThroughputUnits = 4
+param minimumTlsVersion = '1.2'
+param networkRuleSets = {
+  defaultAction: 'Deny'
+  ipRules: [
+    {
+      action: 'Allow'
+      ipMask: '10.10.10.10'
+    }
+  ]
+  publicNetworkAccess: 'Disabled'
+  trustedServiceAccessEnabled: false
+  virtualNetworkRules: [
+    {
+      ignoreMissingVnetServiceEndpoint: true
+      subnetResourceId: '<subnetResourceId>'
+    }
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'namespace'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param publicNetworkAccess = 'Disabled'
+param roleAssignments = [
+  {
+    name: 'bd0f41e3-8e3e-4cd3-b028-edd61608bd9f'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param skuCapacity = 2
+param skuName = 'Standard'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param zoneRedundant = true
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -754,7 +988,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -925,6 +1159,149 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-hub/namespace:<version>'
+
+// Required parameters
+param name = 'ehnwaf001'
+// Non-required parameters
+param authorizationRules = [
+  {
+    name: 'RootManageSharedAccessKey'
+    rights: [
+      'Listen'
+      'Manage'
+      'Send'
+    ]
+  }
+  {
+    name: 'SendListenAccess'
+    rights: [
+      'Listen'
+      'Send'
+    ]
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAuth = true
+param eventhubs = [
+  {
+    name: 'az-evh-x-001'
+  }
+  {
+    authorizationRules: [
+      {
+        name: 'RootManageSharedAccessKey'
+        rights: [
+          'Listen'
+          'Manage'
+          'Send'
+        ]
+      }
+      {
+        name: 'SendListenAccess'
+        rights: [
+          'Listen'
+          'Send'
+        ]
+      }
+    ]
+    captureDescriptionDestinationArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+    captureDescriptionDestinationBlobContainer: 'eventhub'
+    captureDescriptionDestinationName: 'EventHubArchive.AzureBlockBlob'
+    captureDescriptionDestinationStorageAccountResourceId: '<captureDescriptionDestinationStorageAccountResourceId>'
+    captureDescriptionEnabled: true
+    captureDescriptionEncoding: 'Avro'
+    captureDescriptionIntervalInSeconds: 300
+    captureDescriptionSizeLimitInBytes: 314572800
+    captureDescriptionSkipEmptyArchives: true
+    consumergroups: [
+      {
+        name: 'custom'
+        userMetadata: 'customMetadata'
+      }
+    ]
+    messageRetentionInDays: 1
+    name: 'az-evh-x-002'
+    partitionCount: 2
+    retentionDescriptionCleanupPolicy: 'Delete'
+    retentionDescriptionRetentionTimeInHours: 3
+    status: 'Active'
+  }
+  {
+    name: 'az-evh-x-003'
+    retentionDescriptionCleanupPolicy: 'Compact'
+    retentionDescriptionTombstoneRetentionTimeInHours: 24
+  }
+]
+param isAutoInflateEnabled = true
+param kafkaEnabled = true
+param location = '<location>'
+param maximumThroughputUnits = 4
+param minimumTlsVersion = '1.2'
+param networkRuleSets = {
+  defaultAction: 'Deny'
+  ipRules: [
+    {
+      action: 'Allow'
+      ipMask: '10.10.10.10'
+    }
+  ]
+  trustedServiceAccessEnabled: false
+  virtualNetworkRules: [
+    {
+      ignoreMissingVnetServiceEndpoint: true
+      subnetResourceId: '<subnetResourceId>'
+    }
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param publicNetworkAccess = 'Disabled'
+param skuCapacity = 2
+param skuName = 'Standard'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

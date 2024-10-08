@@ -56,7 +56,7 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -73,6 +73,22 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/service-endpoint-policy:<version>'
+
+// Required parameters
+param name = 'nsepmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -132,7 +148,7 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -188,6 +204,50 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/service-endpoint-policy:<version>'
+
+// Required parameters
+param name = 'nsepmax001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: '36fbc5db-13e9-4bda-9594-1b1cc9db2d6d'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -219,7 +279,7 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -242,6 +302,27 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/service-endpoint-policy:<version>'
+
+// Required parameters
+param name = 'nsepwaf001'
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

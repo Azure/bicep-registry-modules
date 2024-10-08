@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "3412962465179136371"
+      "version": "0.30.23.60470",
+      "templateHash": "12145671704242923554"
     },
     "name": "Site Slot Auth Settings V2 Config",
     "description": "This module deploys a Site Auth Settings V2 Configuration.",

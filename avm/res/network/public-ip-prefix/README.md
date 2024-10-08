@@ -57,7 +57,7 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -77,6 +77,23 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/public-ip-prefix:<version>'
+
+// Required parameters
+param name = 'npipmin001'
+param prefixLength = 28
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -141,7 +158,7 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -206,6 +223,55 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/public-ip-prefix:<version>'
+
+// Required parameters
+param name = 'npipmax001'
+param prefixLength = 28
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'bf62ed65-07be-48e8-b760-2d59795cd282'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param zones = [
+  1
+  2
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -238,7 +304,7 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -264,6 +330,28 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/public-ip-prefix:<version>'
+
+// Required parameters
+param name = 'npipwaf001'
+param prefixLength = 28
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

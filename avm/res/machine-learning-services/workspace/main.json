@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "6210663004291725942"
+      "version": "0.30.23.60470",
+      "templateHash": "13428062064493278756"
     },
     "name": "Machine Learning Services Workspaces",
     "description": "This module deploys a Machine Learning Services Workspace.",
@@ -1981,8 +1981,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "8580750401363518569"
+              "version": "0.30.23.60470",
+              "templateHash": "6461308246344228681"
             },
             "name": "Machine Learning Services Workspaces Computes",
             "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`).",
@@ -2244,8 +2244,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "2277907099827503661"
+              "version": "0.30.23.60470",
+              "templateHash": "11897886685116125832"
             },
             "name": "Machine Learning Services Workspaces Connections",
             "description": "This module creates a connection in a Machine Learning Services workspace.",

@@ -62,7 +62,7 @@ module insightsDashboard 'br/public:avm/ptn/azd/insights-dashboard:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -82,6 +82,23 @@ module insightsDashboard 'br/public:avm/ptn/azd/insights-dashboard:<version>' = 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/insights-dashboard:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param name = 'aidmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -117,7 +134,7 @@ module insightsDashboard 'br/public:avm/ptn/azd/insights-dashboard:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -146,6 +163,26 @@ module insightsDashboard 'br/public:avm/ptn/azd/insights-dashboard:<version>' = 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/insights-dashboard:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param name = 'icmax001'
+// Non-required parameters
+param applicationType = 'web'
+param dashboardName = 'icmaxdb001'
+param kind = 'web'
+param location = '<location>'
 ```
 
 </details>

@@ -65,7 +65,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -82,6 +82,22 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/data-factory/factory:<version>'
+
+// Required parameters
+param name = 'dffmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -250,7 +266,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -435,6 +451,159 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/data-factory/factory:<version>'
+
+// Required parameters
+param name = 'dffmax001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param gitConfigureLater = true
+param globalParameters = {
+  testParameter1: {
+    type: 'String'
+    value: 'testValue1'
+  }
+}
+param integrationRuntimes = [
+  {
+    name: 'TestRuntime'
+    type: 'SelfHosted'
+  }
+  {
+    managedVirtualNetworkName: 'default'
+    name: 'IRvnetManaged'
+    type: 'Managed'
+    typeProperties: {
+      computeProperties: {
+        location: 'AutoResolve'
+      }
+    }
+  }
+]
+param linkedServices = [
+  {
+    name: 'SQLdbLinkedservice'
+    type: 'AzureSQLDatabase'
+    typeProperties: {
+      connectionString: '<connectionString>'
+    }
+  }
+  {
+    description: 'This is a description for the linked service using the IRvnetManaged integration runtime.'
+    integrationRuntimeName: 'IRvnetManaged'
+    name: 'LakeStoreLinkedservice'
+    parameters: {
+      storageAccountName: {
+        defaultValue: 'madeupstorageaccname'
+        type: 'String'
+      }
+    }
+    type: 'AzureBlobFS'
+    typeProperties: {
+      url: '<url>'
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param managedPrivateEndpoints = [
+  {
+    fqdns: [
+      '<storageAccountBlobEndpoint>'
+    ]
+    groupId: 'blob'
+    name: '<name>'
+    privateLinkResourceId: '<privateLinkResourceId>'
+  }
+]
+param managedVirtualNetworkName = 'default'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      application: 'AVM'
+      'hidden-title': 'This is visible in the resource name'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    name: '12093237-f40a-4f36-868f-accbeebf540c'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -481,7 +650,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -525,6 +694,42 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/data-factory/factory:<version>'
+
+// Required parameters
+param name = 'dffwaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param gitConfigureLater = true
+param integrationRuntimes = [
+  {
+    name: 'TestRuntime'
+    type: 'SelfHosted'
+  }
+]
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

@@ -61,15 +61,42 @@ resource keyVaultServicePermissions 'Microsoft.Authorization/roleAssignments@202
     principalType: 'ServicePrincipal'
   }
 }
-resource keyVaultDataPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault.id}-${location}-${managedIdentity.id}-KeyVault-Data-Admin-RoleAssignment')
-  scope: keyVault::key
+
+resource keyVaultAdminPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault.id}-${location}-${managedIdentity.id}-KeyVault-Admin-RoleAssignment')
+  scope: keyVault
   properties: {
     principalId: managedIdentity.properties.principalId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
-      '12338af0-0e69-4776-bea7-57ae8d297424'
-    ) // Key Vault Crypto User
+      '00482a5a-887f-4fb3-b363-3b7fe8e74483'
+    ) // Key Vault Administrator
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource keyVaultUserPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault.id}-${location}-${managedIdentity.id}-KeyVault-Crypto-User-RoleAssignment')
+  scope: keyVault
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'e147488a-f6f5-4113-8e2d-b22465e65bf6'
+    ) // Key Vault Crypto Service Encryption User
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource storageAccountPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${secondaryStorageAccount.id}-${location}-${managedIdentity.id}-StorageAccount-RoleAssignment')
+  scope: secondaryStorageAccount
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b556d68e-0be0-4f35-a333-ad7ee1ce17ea'
+    ) // Azure AI Enterprise Network Connection Approver
     principalType: 'ServicePrincipal'
   }
 }

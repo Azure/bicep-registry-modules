@@ -59,7 +59,7 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -84,6 +84,26 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/consumption/budget:<version>'
+
+// Required parameters
+param amount = 500
+param name = 'cbmin001'
+// Non-required parameters
+param contactEmails = [
+  'dummy@contoso.com'
+]
+param location = '<location>'
 ```
 
 </details>
@@ -120,7 +140,7 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -148,6 +168,27 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/consumption/budget:<version>'
+
+// Required parameters
+param amount = 500
+param name = 'cbfcst001'
+// Non-required parameters
+param contactEmails = [
+  'dummy@contoso.com'
+]
+param location = '<location>'
+param thresholdType = 'Forecasted'
 ```
 
 </details>
@@ -194,7 +235,7 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -239,6 +280,37 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/consumption/budget:<version>'
+
+// Required parameters
+param amount = 500
+param name = 'cbmax001'
+// Non-required parameters
+param contactEmails = [
+  'dummy@contoso.com'
+]
+param location = '<location>'
+param resourceGroupFilter = [
+  'rg-group1'
+  'rg-group2'
+]
+param thresholds = [
+  50
+  75
+  90
+  100
+  110
+]
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -276,7 +348,7 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -310,6 +382,33 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/consumption/budget:<version>'
+
+// Required parameters
+param amount = 500
+param name = 'cbwaf001'
+// Non-required parameters
+param contactEmails = [
+  'dummy@contoso.com'
+]
+param location = '<location>'
+param thresholds = [
+  50
+  75
+  90
+  100
+  110
+]
 ```
 
 </details>

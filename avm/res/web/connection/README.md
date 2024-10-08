@@ -65,7 +65,7 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -90,6 +90,26 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/connection:<version>'
+
+// Required parameters
+param displayName = 'azuremonitorlogs'
+param name = 'azuremonitor'
+// Non-required parameters
+param api = {
+  id: '<id>'
+}
+param location = '<location>'
 ```
 
 </details>
@@ -153,7 +173,7 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -217,6 +237,54 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/connection:<version>'
+
+// Required parameters
+param displayName = 'azuremonitorlogs'
+param name = 'azuremonitor'
+// Non-required parameters
+param api = {
+  id: '<id>'
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: '396667c8-de54-4dcb-916a-72af71359f34'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -252,7 +320,7 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -283,6 +351,31 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/connection:<version>'
+
+// Required parameters
+param displayName = 'azuremonitorlogs'
+param name = 'azuremonitor'
+// Non-required parameters
+param api = {
+  id: '<id>'
+}
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

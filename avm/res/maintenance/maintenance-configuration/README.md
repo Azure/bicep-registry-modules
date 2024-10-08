@@ -56,7 +56,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -73,6 +73,22 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/maintenance/maintenance-configuration:<version>'
+
+// Required parameters
+param name = 'mmcmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -161,7 +177,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -258,6 +274,79 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/maintenance/maintenance-configuration:<version>'
+
+// Required parameters
+param name = 'mmcmax001'
+// Non-required parameters
+param extensionProperties = {
+  InGuestPatchMode: 'User'
+}
+param installPatches = {
+  linuxParameters: {
+    classificationsToInclude: '<classificationsToInclude>'
+    packageNameMasksToExclude: '<packageNameMasksToExclude>'
+    packageNameMasksToInclude: '<packageNameMasksToInclude>'
+  }
+  rebootSetting: 'IfRequired'
+  windowsParameters: {
+    classificationsToInclude: [
+      'Critical'
+      'Security'
+    ]
+    kbNumbersToExclude: '<kbNumbersToExclude>'
+    kbNumbersToInclude: '<kbNumbersToInclude>'
+  }
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param maintenanceScope = 'InGuestPatch'
+param maintenanceWindow = {
+  duration: '03:00'
+  expirationDateTime: '9999-12-31 23:59:59'
+  recurEvery: 'Day'
+  startDateTime: '2022-12-31 13:00'
+  timeZone: 'W. Europe Standard Time'
+}
+param namespace = 'mmcmaxns'
+param roleAssignments = [
+  {
+    name: 'd78ec5f7-4692-4f43-8c17-7569466bbed5'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param visibility = 'Custom'
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -318,7 +407,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -383,6 +472,56 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/maintenance/maintenance-configuration:<version>'
+
+// Required parameters
+param name = 'mmcwaf001'
+// Non-required parameters
+param extensionProperties = {
+  InGuestPatchMode: 'User'
+}
+param installPatches = {
+  linuxParameters: {
+    classificationsToInclude: '<classificationsToInclude>'
+    packageNameMasksToExclude: '<packageNameMasksToExclude>'
+    packageNameMasksToInclude: '<packageNameMasksToInclude>'
+  }
+  rebootSetting: 'IfRequired'
+  windowsParameters: {
+    classificationsToInclude: [
+      'Critical'
+      'Security'
+    ]
+    kbNumbersToExclude: '<kbNumbersToExclude>'
+    kbNumbersToInclude: '<kbNumbersToInclude>'
+  }
+}
+param location = '<location>'
+param maintenanceScope = 'InGuestPatch'
+param maintenanceWindow = {
+  duration: '03:00'
+  expirationDateTime: '9999-12-31 23:59:59'
+  recurEvery: 'Day'
+  startDateTime: '2022-12-31 13:00'
+  timeZone: 'W. Europe Standard Time'
+}
+param namespace = 'mmcwafns'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param visibility = 'Custom'
 ```
 
 </details>

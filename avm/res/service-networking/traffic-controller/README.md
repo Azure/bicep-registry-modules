@@ -60,7 +60,7 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -77,6 +77,22 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-networking/traffic-controller:<version>'
+
+// Required parameters
+param name = 'sntcmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -164,7 +180,7 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -254,6 +270,78 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-networking/traffic-controller:<version>'
+
+// Required parameters
+param name = 'sntcmax001'
+// Non-required parameters
+param associations = [
+  {
+    name: 'association1'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param frontends = [
+  {
+    name: 'frontend1'
+  }
+  {
+    name: 'frontend2'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'a6931c52-0b79-4fe9-ad3d-72188dfff379'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -307,7 +395,7 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -358,6 +446,49 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-networking/traffic-controller:<version>'
+
+// Required parameters
+param name = 'sntcwaf001'
+// Non-required parameters
+param associations = [
+  {
+    name: 'association1'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param frontends = [
+  {
+    name: 'frontend1'
+  }
+  {
+    name: 'frontend2'
+  }
+]
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

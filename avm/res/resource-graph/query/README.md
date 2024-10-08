@@ -57,7 +57,7 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -77,6 +77,23 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resource-graph/query:<version>'
+
+// Required parameters
+param name = 'rdsmin001'
+param query = 'Resources | limit 10'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -137,7 +154,7 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -198,6 +215,51 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resource-graph/query:<version>'
+
+// Required parameters
+param name = 'rdsmax001'
+param query = '<query>'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'None'
+}
+param queryDescription = 'An example query to list first 5 subscriptions.'
+param roleAssignments = [
+  {
+    name: '9634350c-b241-4481-8c22-4166891596ab'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
@@ -234,7 +296,7 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -268,6 +330,32 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resource-graph/query:<version>'
+
+// Required parameters
+param name = 'rdswaf001'
+param query = 'resourcecontainers| where type == \'microsoft.resources/subscriptions\' | take 5'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'None'
+}
+param queryDescription = 'An example query to list first 5 subscriptions.'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

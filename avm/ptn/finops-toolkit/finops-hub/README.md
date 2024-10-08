@@ -80,7 +80,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -97,6 +97,22 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>'
+
+// Required parameters
+param hubName = 'finops-hub-finmin'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>

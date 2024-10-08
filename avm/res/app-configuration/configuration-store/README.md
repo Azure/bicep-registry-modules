@@ -65,7 +65,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -85,6 +85,23 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app-configuration/configuration-store:<version>'
+
+// Required parameters
+param name = 'accmin001'
+// Non-required parameters
+param enablePurgeProtection = false
+param location = '<location>'
 ```
 
 </details>
@@ -144,7 +161,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -203,6 +220,50 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app-configuration/configuration-store:<version>'
+
+// Required parameters
+param name = 'accencr001'
+// Non-required parameters
+param createMode = 'Default'
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param disableLocalAuth = '<disableLocalAuth>'
+param enablePurgeProtection = false
+param keyValues = [
+  {
+    contentType: 'contentType'
+    name: 'keyName'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    value: 'valueName'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param softDeleteRetentionInDays = 1
 ```
 
 </details>
@@ -319,7 +380,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -448,6 +509,107 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app-configuration/configuration-store:<version>'
+
+// Required parameters
+param name = 'accmax001'
+// Non-required parameters
+param createMode = 'Default'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAuth = '<disableLocalAuth>'
+param enablePurgeProtection = false
+param keyValues = [
+  {
+    contentType: 'contentType'
+    name: 'keyName'
+    roleAssignments: [
+      {
+        name: '56e2c190-b31e-4518-84de-170b8a5c1b24'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    value: 'valueName'
+  }
+  {
+    name: 'keyName2'
+    value: 'valueName2'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param replicaLocations = [
+  'centralus'
+  'westus'
+]
+param roleAssignments = [
+  {
+    name: '695044c2-3f1f-4843-970a-bed584b95a9a'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param softDeleteRetentionInDays = 1
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 4: _Private endpoint-enabled deployment_
 
 This instance deploys the module with private endpoints.
@@ -504,7 +666,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -564,6 +726,52 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app-configuration/configuration-store:<version>'
+
+// Required parameters
+param name = 'accpe001'
+// Non-required parameters
+param createMode = 'Default'
+param enablePurgeProtection = false
+param location = '<location>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param softDeleteRetentionInDays = 1
+```
+
+</details>
+<p>
+
 ### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -618,7 +826,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -678,6 +886,50 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app-configuration/configuration-store:<version>'
+
+// Required parameters
+param name = 'accwaf001'
+// Non-required parameters
+param createMode = 'Default'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAuth = '<disableLocalAuth>'
+param enablePurgeProtection = false
+param keyValues = [
+  {
+    contentType: 'contentType'
+    name: 'keyName'
+    value: 'valueName'
+  }
+]
+param location = '<location>'
+param replicaLocations = [
+  'centralus'
+  'westus'
+]
+param softDeleteRetentionInDays = 1
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

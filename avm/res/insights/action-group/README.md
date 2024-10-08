@@ -56,7 +56,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -76,6 +76,23 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/action-group:<version>'
+
+// Required parameters
+param groupShortName = 'agiagmin001'
+param name = 'iagmin001'
+// Non-required parameters
+param location = 'global'
 ```
 
 </details>
@@ -151,7 +168,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -227,6 +244,66 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/action-group:<version>'
+
+// Required parameters
+param groupShortName = 'agiagmax001'
+param name = 'iagmax001'
+// Non-required parameters
+param emailReceivers = [
+  {
+    emailAddress: 'test.user@testcompany.com'
+    name: 'TestUser_-EmailAction-'
+    useCommonAlertSchema: true
+  }
+  {
+    emailAddress: 'test.user2@testcompany.com'
+    name: 'TestUser2'
+    useCommonAlertSchema: true
+  }
+]
+param location = 'global'
+param roleAssignments = [
+  {
+    name: 'fc3ee4d9-d0c0-42c2-962f-082cf8d78882'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param smsReceivers = [
+  {
+    countryCode: '1'
+    name: 'TestUser_-SMSAction-'
+    phoneNumber: '2345678901'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -259,7 +336,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -285,6 +362,28 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/action-group:<version>'
+
+// Required parameters
+param groupShortName = 'agiagwaf001'
+param name = 'iagwaf001'
+// Non-required parameters
+param location = 'global'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

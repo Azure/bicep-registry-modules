@@ -74,7 +74,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -105,6 +105,34 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-rule:<version>'
+
+// Required parameters
+param dataCollectionRuleProperties = {
+  agentSettings: {
+    logs: [
+      {
+        name: 'MaxDiskQuotaInMB'
+        value: '5000'
+      }
+    ]
+  }
+  description: 'Agent Settings'
+  kind: 'AgentSettings'
+}
+param name = 'idcrags001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -219,7 +247,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -330,6 +358,105 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-rule:<version>'
+
+// Required parameters
+param dataCollectionRuleProperties = {
+  dataCollectionEndpointResourceId: '<dataCollectionEndpointResourceId>'
+  dataFlows: [
+    {
+      destinations: [
+        '<logAnalyticsWorkspaceName>'
+      ]
+      outputStream: 'Custom-CustomTableAdvanced_CL'
+      streams: [
+        'Custom-CustomTableAdvanced_CL'
+      ]
+      transformKql: 'source | extend LogFields = split(RawData, \',\') | extend EventTime = todatetime(LogFields[0]) | extend EventLevel = tostring(LogFields[1]) | extend EventCode = toint(LogFields[2]) | extend Message = tostring(LogFields[3]) | project TimeGenerated, EventTime, EventLevel, EventCode, Message'
+    }
+  ]
+  dataSources: {
+    logFiles: [
+      {
+        filePatterns: [
+          'C:\\TestLogsAdvanced\\TestLog*.log'
+        ]
+        format: 'text'
+        name: 'CustomTableAdvanced_CL'
+        samplingFrequencyInSeconds: 60
+        settings: {
+          text: {
+            recordStartTimestampFormat: 'ISO 8601'
+          }
+        }
+        streams: [
+          'Custom-CustomTableAdvanced_CL'
+        ]
+      }
+    ]
+  }
+  description: 'Collecting custom text logs with ingestion-time transformation to columns. Expected format of a log line (comma separated values): \'<DateTime>,<EventLevel>,<EventCode>,<Message>\', for example: \'2023-01-25T20:15:05Z,ERROR,404,Page not found\''
+  destinations: {
+    logAnalytics: [
+      {
+        name: '<name>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+  }
+  kind: 'Windows'
+  streamDeclarations: {
+    'Custom-CustomTableAdvanced_CL': {
+      columns: [
+        {
+          name: 'TimeGenerated'
+          type: 'datetime'
+        }
+        {
+          name: 'EventTime'
+          type: 'datetime'
+        }
+        {
+          name: 'EventLevel'
+          type: 'string'
+        }
+        {
+          name: 'EventCode'
+          type: 'int'
+        }
+        {
+          name: 'Message'
+          type: 'string'
+        }
+        {
+          name: 'RawData'
+          type: 'string'
+        }
+      ]
+    }
+  }
+}
+param name = 'idcrcusadv001'
+// Non-required parameters
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  kind: 'Windows'
+  resourceType: 'Data Collection Rules'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _Collecting custom text logs_
 
 This instance deploys the module to setup collection of custom logs.
@@ -420,7 +547,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -510,6 +637,86 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-rule:<version>'
+
+// Required parameters
+param dataCollectionRuleProperties = {
+  dataCollectionEndpointResourceId: '<dataCollectionEndpointResourceId>'
+  dataFlows: [
+    {
+      destinations: [
+        '<logAnalyticsWorkspaceName>'
+      ]
+      outputStream: 'Custom-CustomTableBasic_CL'
+      streams: [
+        'Custom-CustomTableBasic_CL'
+      ]
+      transformKql: 'source'
+    }
+  ]
+  dataSources: {
+    logFiles: [
+      {
+        filePatterns: [
+          'C:\\TestLogsBasic\\TestLog*.log'
+        ]
+        format: 'text'
+        name: 'CustomTableBasic_CL'
+        samplingFrequencyInSeconds: 60
+        settings: {
+          text: {
+            recordStartTimestampFormat: 'ISO 8601'
+          }
+        }
+        streams: [
+          'Custom-CustomTableBasic_CL'
+        ]
+      }
+    ]
+  }
+  description: 'Collecting custom text logs without ingestion-time transformation.'
+  destinations: {
+    logAnalytics: [
+      {
+        name: '<name>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+  }
+  kind: 'All'
+  streamDeclarations: {
+    'Custom-CustomTableBasic_CL': {
+      columns: [
+        {
+          name: 'TimeGenerated'
+          type: 'datetime'
+        }
+        {
+          name: 'RawData'
+          type: 'string'
+        }
+      ]
+    }
+  }
+}
+param name = 'idcrcusbas001'
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  kind: 'Windows'
+  resourceType: 'Data Collection Rules'
+}
+```
+
+</details>
+<p>
+
 ### Example 4: _Collecting IIS logs_
 
 This instance deploys the module to setup the collection of IIS logs.
@@ -579,7 +786,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -642,6 +849,65 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-rule:<version>'
+
+// Required parameters
+param dataCollectionRuleProperties = {
+  dataCollectionEndpointResourceId: '<dataCollectionEndpointResourceId>'
+  dataFlows: [
+    {
+      destinations: [
+        '<logAnalyticsWorkspaceName>'
+      ]
+      outputStream: 'Microsoft-W3CIISLog'
+      streams: [
+        'Microsoft-W3CIISLog'
+      ]
+      transformKql: 'source'
+    }
+  ]
+  dataSources: {
+    iisLogs: [
+      {
+        logDirectories: [
+          'C:\\inetpub\\logs\\LogFiles\\W3SVC1'
+        ]
+        name: 'iisLogsDataSource'
+        streams: [
+          'Microsoft-W3CIISLog'
+        ]
+      }
+    ]
+  }
+  description: 'Collecting IIS logs.'
+  destinations: {
+    logAnalytics: [
+      {
+        name: '<name>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+  }
+  kind: 'Windows'
+}
+param name = 'idcrcusiis001'
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  kind: 'Windows'
+  resourceType: 'Data Collection Rules'
 }
 ```
 
@@ -715,7 +981,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -775,6 +1041,63 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-rule:<version>'
+
+// Required parameters
+param dataCollectionRuleProperties = {
+  dataFlows: [
+    {
+      destinations: [
+        'azureMonitorMetrics-default'
+      ]
+      streams: [
+        'Microsoft-InsightsMetrics'
+      ]
+    }
+  ]
+  dataSources: {
+    performanceCounters: [
+      {
+        counterSpecifiers: [
+          '\\Process(_Total)\\Handle Count'
+          '\\Process(_Total)\\Thread Count'
+          '\\Processor Information(_Total)\\% Privileged Time'
+          '\\Processor Information(_Total)\\% Processor Time'
+          '\\Processor Information(_Total)\\% User Time'
+          '\\Processor Information(_Total)\\Processor Frequency'
+          '\\System\\Context Switches/sec'
+          '\\System\\Processes'
+          '\\System\\Processor Queue Length'
+          '\\System\\System Up Time'
+        ]
+        name: 'perfCounterDataSource60'
+        samplingFrequencyInSeconds: 60
+        streams: [
+          'Microsoft-InsightsMetrics'
+        ]
+      }
+    ]
+  }
+  destinations: {
+    azureMonitorMetrics: {
+      name: 'azureMonitorMetrics-default'
+    }
+  }
+  kind: 'Windows'
+}
+param name = 'idcrmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -962,7 +1285,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1144,6 +1467,178 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-rule:<version>'
+
+// Required parameters
+param dataCollectionRuleProperties = {
+  dataFlows: [
+    {
+      destinations: [
+        'azureMonitorMetrics-default'
+      ]
+      streams: [
+        'Microsoft-InsightsMetrics'
+      ]
+    }
+    {
+      destinations: [
+        '<logAnalyticsWorkspaceName>'
+      ]
+      streams: [
+        'Microsoft-Syslog'
+      ]
+    }
+  ]
+  dataSources: {
+    performanceCounters: [
+      {
+        counterSpecifiers: [
+          'Logical Disk(*)\\% Free Inodes'
+          'Logical Disk(*)\\% Free Space'
+          'Logical Disk(*)\\% Used Inodes'
+          'Logical Disk(*)\\% Used Space'
+          'Logical Disk(*)\\Disk Read Bytes/sec'
+          'Logical Disk(*)\\Disk Reads/sec'
+          'Logical Disk(*)\\Disk Transfers/sec'
+          'Logical Disk(*)\\Disk Write Bytes/sec'
+          'Logical Disk(*)\\Disk Writes/sec'
+          'Logical Disk(*)\\Free Megabytes'
+          'Logical Disk(*)\\Logical Disk Bytes/sec'
+          'Memory(*)\\% Available Memory'
+          'Memory(*)\\% Available Swap Space'
+          'Memory(*)\\% Used Memory'
+          'Memory(*)\\% Used Swap Space'
+          'Memory(*)\\Available MBytes Memory'
+          'Memory(*)\\Available MBytes Swap'
+          'Memory(*)\\Page Reads/sec'
+          'Memory(*)\\Page Writes/sec'
+          'Memory(*)\\Pages/sec'
+          'Memory(*)\\Used MBytes Swap Space'
+          'Memory(*)\\Used Memory MBytes'
+          'Network(*)\\Total Bytes'
+          'Network(*)\\Total Bytes Received'
+          'Network(*)\\Total Bytes Transmitted'
+          'Network(*)\\Total Collisions'
+          'Network(*)\\Total Packets Received'
+          'Network(*)\\Total Packets Transmitted'
+          'Network(*)\\Total Rx Errors'
+          'Network(*)\\Total Tx Errors'
+          'Processor(*)\\% DPC Time'
+          'Processor(*)\\% Idle Time'
+          'Processor(*)\\% Interrupt Time'
+          'Processor(*)\\% IO Wait Time'
+          'Processor(*)\\% Nice Time'
+          'Processor(*)\\% Privileged Time'
+          'Processor(*)\\% Processor Time'
+          'Processor(*)\\% User Time'
+        ]
+        name: 'perfCounterDataSource60'
+        samplingFrequencyInSeconds: 60
+        streams: [
+          'Microsoft-InsightsMetrics'
+        ]
+      }
+    ]
+    syslog: [
+      {
+        facilityNames: [
+          'auth'
+          'authpriv'
+        ]
+        logLevels: [
+          'Alert'
+          'Critical'
+          'Debug'
+          'Emergency'
+          'Error'
+          'Info'
+          'Notice'
+          'Warning'
+        ]
+        name: 'sysLogsDataSource-debugLevel'
+        streams: [
+          'Microsoft-Syslog'
+        ]
+      }
+      {
+        facilityNames: [
+          'cron'
+          'daemon'
+          'kern'
+          'local0'
+          'mark'
+        ]
+        logLevels: [
+          'Alert'
+          'Critical'
+          'Emergency'
+          'Error'
+          'Warning'
+        ]
+        name: 'sysLogsDataSource-warningLevel'
+        streams: [
+          'Microsoft-Syslog'
+        ]
+      }
+      {
+        facilityNames: [
+          'local1'
+          'local2'
+          'local3'
+          'local4'
+          'local5'
+          'local6'
+          'local7'
+          'lpr'
+          'mail'
+          'news'
+          'syslog'
+        ]
+        logLevels: [
+          'Alert'
+          'Critical'
+          'Emergency'
+          'Error'
+        ]
+        name: 'sysLogsDataSource-errLevel'
+        streams: [
+          'Microsoft-Syslog'
+        ]
+      }
+    ]
+  }
+  description: 'Collecting Linux-specific performance counters and Linux Syslog'
+  destinations: {
+    azureMonitorMetrics: {
+      name: 'azureMonitorMetrics-default'
+    }
+    logAnalytics: [
+      {
+        name: '<name>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+  }
+  kind: 'Linux'
+}
+param name = 'idcrlin001'
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  kind: 'Linux'
+  resourceType: 'Data Collection Rules'
+}
+```
+
+</details>
+<p>
+
 ### Example 7: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -1263,7 +1758,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1382,6 +1877,115 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-rule:<version>'
+
+// Required parameters
+param dataCollectionRuleProperties = {
+  dataCollectionEndpointResourceId: '<dataCollectionEndpointResourceId>'
+  dataFlows: [
+    {
+      destinations: [
+        '<logAnalyticsWorkspaceName>'
+      ]
+      outputStream: 'Custom-CustomTableBasic_CL'
+      streams: [
+        'Custom-CustomTableBasic_CL'
+      ]
+      transformKql: 'source'
+    }
+  ]
+  dataSources: {
+    logFiles: [
+      {
+        filePatterns: [
+          'C:\\TestLogsBasic\\TestLog*.log'
+        ]
+        format: 'text'
+        name: 'CustomTableBasic_CL'
+        samplingFrequencyInSeconds: 60
+        settings: {
+          text: {
+            recordStartTimestampFormat: 'ISO 8601'
+          }
+        }
+        streams: [
+          'Custom-CustomTableBasic_CL'
+        ]
+      }
+    ]
+  }
+  description: 'Collecting custom text logs without ingestion-time transformation.'
+  destinations: {
+    logAnalytics: [
+      {
+        name: '<name>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+  }
+  kind: 'Windows'
+  streamDeclarations: {
+    'Custom-CustomTableBasic_CL': {
+      columns: [
+        {
+          name: 'TimeGenerated'
+          type: 'datetime'
+        }
+        {
+          name: 'RawData'
+          type: 'string'
+        }
+      ]
+    }
+  }
+}
+param name = 'idcrmax001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param roleAssignments = [
+  {
+    name: '89a4d6fa-defb-4099-9196-173d94b91d67'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  kind: 'Windows'
+  resourceType: 'Data Collection Rules'
 }
 ```
 
@@ -1524,7 +2128,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1654,6 +2258,132 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-rule:<version>'
+
+// Required parameters
+param dataCollectionRuleProperties = {
+  dataFlows: [
+    {
+      destinations: [
+        'azureMonitorMetrics-default'
+      ]
+      streams: [
+        'Microsoft-InsightsMetrics'
+      ]
+    }
+    {
+      destinations: [
+        '<logAnalyticsWorkspaceName>'
+      ]
+      streams: [
+        'Microsoft-Event'
+      ]
+    }
+  ]
+  dataSources: {
+    performanceCounters: [
+      {
+        counterSpecifiers: [
+          '\\LogicalDisk(_Total)\\% Disk Read Time'
+          '\\LogicalDisk(_Total)\\% Disk Time'
+          '\\LogicalDisk(_Total)\\% Disk Write Time'
+          '\\LogicalDisk(_Total)\\% Free Space'
+          '\\LogicalDisk(_Total)\\% Idle Time'
+          '\\LogicalDisk(_Total)\\Avg. Disk Queue Length'
+          '\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length'
+          '\\LogicalDisk(_Total)\\Avg. Disk sec/Read'
+          '\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer'
+          '\\LogicalDisk(_Total)\\Avg. Disk sec/Write'
+          '\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length'
+          '\\LogicalDisk(_Total)\\Disk Bytes/sec'
+          '\\LogicalDisk(_Total)\\Disk Read Bytes/sec'
+          '\\LogicalDisk(_Total)\\Disk Reads/sec'
+          '\\LogicalDisk(_Total)\\Disk Transfers/sec'
+          '\\LogicalDisk(_Total)\\Disk Write Bytes/sec'
+          '\\LogicalDisk(_Total)\\Disk Writes/sec'
+          '\\LogicalDisk(_Total)\\Free Megabytes'
+          '\\Memory\\% Committed Bytes In Use'
+          '\\Memory\\Available Bytes'
+          '\\Memory\\Cache Bytes'
+          '\\Memory\\Committed Bytes'
+          '\\Memory\\Page Faults/sec'
+          '\\Memory\\Pages/sec'
+          '\\Memory\\Pool Nonpaged Bytes'
+          '\\Memory\\Pool Paged Bytes'
+          '\\Network Interface(*)\\Bytes Received/sec'
+          '\\Network Interface(*)\\Bytes Sent/sec'
+          '\\Network Interface(*)\\Bytes Total/sec'
+          '\\Network Interface(*)\\Packets Outbound Errors'
+          '\\Network Interface(*)\\Packets Received Errors'
+          '\\Network Interface(*)\\Packets Received/sec'
+          '\\Network Interface(*)\\Packets Sent/sec'
+          '\\Network Interface(*)\\Packets/sec'
+          '\\Process(_Total)\\Handle Count'
+          '\\Process(_Total)\\Thread Count'
+          '\\Process(_Total)\\Working Set'
+          '\\Process(_Total)\\Working Set - Private'
+          '\\Processor Information(_Total)\\% Privileged Time'
+          '\\Processor Information(_Total)\\% Processor Time'
+          '\\Processor Information(_Total)\\% User Time'
+          '\\Processor Information(_Total)\\Processor Frequency'
+          '\\System\\Context Switches/sec'
+          '\\System\\Processes'
+          '\\System\\Processor Queue Length'
+          '\\System\\System Up Time'
+        ]
+        name: 'perfCounterDataSource60'
+        samplingFrequencyInSeconds: 60
+        streams: [
+          'Microsoft-InsightsMetrics'
+        ]
+      }
+    ]
+    windowsEventLogs: [
+      {
+        name: 'eventLogsDataSource'
+        streams: [
+          'Microsoft-Event'
+        ]
+        xPathQueries: [
+          'Application!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
+          'Security!*[System[(band(Keywords,13510798882111488))]]'
+          'System!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
+        ]
+      }
+    ]
+  }
+  description: 'Collecting Windows-specific performance counters and Windows Event Logs'
+  destinations: {
+    azureMonitorMetrics: {
+      name: 'azureMonitorMetrics-default'
+    }
+    logAnalytics: [
+      {
+        name: '<name>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+  }
+  kind: 'Windows'
+}
+param name = 'idcrwaf001'
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  kind: 'Windows'
+  resourceType: 'Data Collection Rules'
 }
 ```
 
@@ -1796,7 +2526,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1926,6 +2656,132 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-rule:<version>'
+
+// Required parameters
+param dataCollectionRuleProperties = {
+  dataFlows: [
+    {
+      destinations: [
+        'azureMonitorMetrics-default'
+      ]
+      streams: [
+        'Microsoft-InsightsMetrics'
+      ]
+    }
+    {
+      destinations: [
+        '<logAnalyticsWorkspaceName>'
+      ]
+      streams: [
+        'Microsoft-Event'
+      ]
+    }
+  ]
+  dataSources: {
+    performanceCounters: [
+      {
+        counterSpecifiers: [
+          '\\LogicalDisk(_Total)\\% Disk Read Time'
+          '\\LogicalDisk(_Total)\\% Disk Time'
+          '\\LogicalDisk(_Total)\\% Disk Write Time'
+          '\\LogicalDisk(_Total)\\% Free Space'
+          '\\LogicalDisk(_Total)\\% Idle Time'
+          '\\LogicalDisk(_Total)\\Avg. Disk Queue Length'
+          '\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length'
+          '\\LogicalDisk(_Total)\\Avg. Disk sec/Read'
+          '\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer'
+          '\\LogicalDisk(_Total)\\Avg. Disk sec/Write'
+          '\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length'
+          '\\LogicalDisk(_Total)\\Disk Bytes/sec'
+          '\\LogicalDisk(_Total)\\Disk Read Bytes/sec'
+          '\\LogicalDisk(_Total)\\Disk Reads/sec'
+          '\\LogicalDisk(_Total)\\Disk Transfers/sec'
+          '\\LogicalDisk(_Total)\\Disk Write Bytes/sec'
+          '\\LogicalDisk(_Total)\\Disk Writes/sec'
+          '\\LogicalDisk(_Total)\\Free Megabytes'
+          '\\Memory\\% Committed Bytes In Use'
+          '\\Memory\\Available Bytes'
+          '\\Memory\\Cache Bytes'
+          '\\Memory\\Committed Bytes'
+          '\\Memory\\Page Faults/sec'
+          '\\Memory\\Pages/sec'
+          '\\Memory\\Pool Nonpaged Bytes'
+          '\\Memory\\Pool Paged Bytes'
+          '\\Network Interface(*)\\Bytes Received/sec'
+          '\\Network Interface(*)\\Bytes Sent/sec'
+          '\\Network Interface(*)\\Bytes Total/sec'
+          '\\Network Interface(*)\\Packets Outbound Errors'
+          '\\Network Interface(*)\\Packets Received Errors'
+          '\\Network Interface(*)\\Packets Received/sec'
+          '\\Network Interface(*)\\Packets Sent/sec'
+          '\\Network Interface(*)\\Packets/sec'
+          '\\Process(_Total)\\Handle Count'
+          '\\Process(_Total)\\Thread Count'
+          '\\Process(_Total)\\Working Set'
+          '\\Process(_Total)\\Working Set - Private'
+          '\\Processor Information(_Total)\\% Privileged Time'
+          '\\Processor Information(_Total)\\% Processor Time'
+          '\\Processor Information(_Total)\\% User Time'
+          '\\Processor Information(_Total)\\Processor Frequency'
+          '\\System\\Context Switches/sec'
+          '\\System\\Processes'
+          '\\System\\Processor Queue Length'
+          '\\System\\System Up Time'
+        ]
+        name: 'perfCounterDataSource60'
+        samplingFrequencyInSeconds: 60
+        streams: [
+          'Microsoft-InsightsMetrics'
+        ]
+      }
+    ]
+    windowsEventLogs: [
+      {
+        name: 'eventLogsDataSource'
+        streams: [
+          'Microsoft-Event'
+        ]
+        xPathQueries: [
+          'Application!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
+          'Security!*[System[(band(Keywords,13510798882111488))]]'
+          'System!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
+        ]
+      }
+    ]
+  }
+  description: 'Collecting Windows-specific performance counters and Windows Event Logs'
+  destinations: {
+    azureMonitorMetrics: {
+      name: 'azureMonitorMetrics-default'
+    }
+    logAnalytics: [
+      {
+        name: '<name>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+  }
+  kind: 'Windows'
+}
+param name = 'idcrwin001'
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  kind: 'Windows'
+  resourceType: 'Data Collection Rules'
 }
 ```
 

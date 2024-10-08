@@ -68,7 +68,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -93,6 +93,28 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/load-balancer:<version>'
+
+// Required parameters
+param frontendIPConfigurations = [
+  {
+    name: 'publicIPConfig1'
+    publicIPAddressId: '<publicIPAddressId>'
+  }
+]
+param name = 'nlbmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -245,7 +267,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -408,6 +430,143 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/load-balancer:<version>'
+
+// Required parameters
+param frontendIPConfigurations = [
+  {
+    name: 'publicIPConfig1'
+    publicIPAddressId: '<publicIPAddressId>'
+  }
+]
+param name = 'nlbext001'
+// Non-required parameters
+param backendAddressPools = [
+  {
+    name: 'backendAddressPool1'
+  }
+  {
+    name: 'backendAddressPool2'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param inboundNatRules = [
+  {
+    backendPort: 443
+    enableFloatingIP: false
+    enableTcpReset: false
+    frontendIPConfigurationName: 'publicIPConfig1'
+    frontendPort: 443
+    idleTimeoutInMinutes: 4
+    name: 'inboundNatRule1'
+    protocol: 'Tcp'
+  }
+  {
+    backendPort: 3389
+    frontendIPConfigurationName: 'publicIPConfig1'
+    frontendPort: 3389
+    name: 'inboundNatRule2'
+  }
+]
+param loadBalancingRules = [
+  {
+    backendAddressPoolName: 'backendAddressPool1'
+    backendPort: 80
+    disableOutboundSnat: true
+    enableFloatingIP: false
+    enableTcpReset: false
+    frontendIPConfigurationName: 'publicIPConfig1'
+    frontendPort: 80
+    idleTimeoutInMinutes: 5
+    loadDistribution: 'Default'
+    name: 'publicIPLBRule1'
+    probeName: 'probe1'
+    protocol: 'Tcp'
+  }
+  {
+    backendAddressPoolName: 'backendAddressPool2'
+    backendPort: 8080
+    frontendIPConfigurationName: 'publicIPConfig1'
+    frontendPort: 8080
+    loadDistribution: 'Default'
+    name: 'publicIPLBRule2'
+    probeName: 'probe2'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param outboundRules = [
+  {
+    allocatedOutboundPorts: 63984
+    backendAddressPoolName: 'backendAddressPool1'
+    frontendIPConfigurationName: 'publicIPConfig1'
+    name: 'outboundRule1'
+  }
+]
+param probes = [
+  {
+    intervalInSeconds: 10
+    name: 'probe1'
+    numberOfProbes: 5
+    port: 80
+    protocol: 'Http'
+    requestPath: '/http-probe'
+  }
+  {
+    name: 'probe2'
+    port: 443
+    protocol: 'Https'
+    requestPath: '/https-probe'
+  }
+]
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _Using internal load balancer parameter_
 
 This instance deploys the module with the minimum set of required parameters to deploy an internal load balancer.
@@ -511,7 +670,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -620,6 +779,99 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/load-balancer:<version>'
+
+// Required parameters
+param frontendIPConfigurations = [
+  {
+    name: 'privateIPConfig1'
+    subnetId: '<subnetId>'
+  }
+]
+param name = 'nlbint001'
+// Non-required parameters
+param backendAddressPools = [
+  {
+    name: 'servers'
+  }
+]
+param inboundNatRules = [
+  {
+    backendPort: 443
+    enableFloatingIP: false
+    enableTcpReset: false
+    frontendIPConfigurationName: 'privateIPConfig1'
+    frontendPort: 443
+    idleTimeoutInMinutes: 4
+    name: 'inboundNatRule1'
+    protocol: 'Tcp'
+  }
+  {
+    backendPort: 3389
+    frontendIPConfigurationName: 'privateIPConfig1'
+    frontendPort: 3389
+    name: 'inboundNatRule2'
+  }
+]
+param loadBalancingRules = [
+  {
+    backendAddressPoolName: 'servers'
+    backendPort: 0
+    disableOutboundSnat: true
+    enableFloatingIP: true
+    enableTcpReset: false
+    frontendIPConfigurationName: 'privateIPConfig1'
+    frontendPort: 0
+    idleTimeoutInMinutes: 4
+    loadDistribution: 'Default'
+    name: 'privateIPLBRule1'
+    probeName: 'probe1'
+    protocol: 'All'
+  }
+]
+param location = '<location>'
+param probes = [
+  {
+    intervalInSeconds: 5
+    name: 'probe1'
+    numberOfProbes: 2
+    port: '62000'
+    protocol: 'Tcp'
+  }
+]
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param skuName = 'Standard'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -779,7 +1031,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -948,6 +1200,149 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/load-balancer:<version>'
+
+// Required parameters
+param frontendIPConfigurations = [
+  {
+    name: 'publicIPConfig1'
+    publicIPAddressId: '<publicIPAddressId>'
+  }
+]
+param name = 'nlbmax001'
+// Non-required parameters
+param backendAddressPools = [
+  {
+    name: 'backendAddressPool1'
+  }
+  {
+    name: 'backendAddressPool2'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param inboundNatRules = [
+  {
+    backendPort: 443
+    enableFloatingIP: false
+    enableTcpReset: false
+    frontendIPConfigurationName: 'publicIPConfig1'
+    frontendPort: 443
+    idleTimeoutInMinutes: 4
+    name: 'inboundNatRule1'
+    protocol: 'Tcp'
+  }
+  {
+    backendPort: 3389
+    frontendIPConfigurationName: 'publicIPConfig1'
+    frontendPort: 3389
+    name: 'inboundNatRule2'
+  }
+]
+param loadBalancingRules = [
+  {
+    backendAddressPoolName: 'backendAddressPool1'
+    backendPort: 80
+    disableOutboundSnat: true
+    enableFloatingIP: false
+    enableTcpReset: false
+    frontendIPConfigurationName: 'publicIPConfig1'
+    frontendPort: 80
+    idleTimeoutInMinutes: 5
+    loadDistribution: 'Default'
+    name: 'publicIPLBRule1'
+    probeName: 'probe1'
+    protocol: 'Tcp'
+  }
+  {
+    backendAddressPoolName: 'backendAddressPool2'
+    backendPort: 8080
+    frontendIPConfigurationName: 'publicIPConfig1'
+    frontendPort: 8080
+    loadDistribution: 'Default'
+    name: 'publicIPLBRule2'
+    probeName: 'probe2'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param outboundRules = [
+  {
+    allocatedOutboundPorts: 63984
+    backendAddressPoolName: 'backendAddressPool1'
+    frontendIPConfigurationName: 'publicIPConfig1'
+    name: 'outboundRule1'
+  }
+]
+param probes = [
+  {
+    intervalInSeconds: 10
+    name: 'probe1'
+    numberOfProbes: 5
+    port: 80
+    protocol: 'Tcp'
+  }
+  {
+    name: 'probe2'
+    port: 443
+    protocol: 'Https'
+    requestPath: '/'
+  }
+]
+param roleAssignments = [
+  {
+    name: '3a5b2a4a-3584-4d6b-9cf0-ceb1e4f88a5d'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 5: _WAF-aligned_
 
 This instance deploys the module with the minimum set of required parameters to deploy a WAF-aligned internal load balancer.
@@ -1057,7 +1452,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1172,6 +1567,105 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/load-balancer:<version>'
+
+// Required parameters
+param frontendIPConfigurations = [
+  {
+    name: 'privateIPConfig1'
+    subnetId: '<subnetId>'
+    zones: [
+      1
+      2
+      3
+    ]
+  }
+]
+param name = 'nlbwaf001'
+// Non-required parameters
+param backendAddressPools = [
+  {
+    name: 'servers'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param inboundNatRules = [
+  {
+    backendPort: 443
+    enableFloatingIP: false
+    enableTcpReset: false
+    frontendIPConfigurationName: 'privateIPConfig1'
+    frontendPort: 443
+    idleTimeoutInMinutes: 4
+    name: 'inboundNatRule1'
+    protocol: 'Tcp'
+  }
+  {
+    backendAddressPoolName: 'servers'
+    backendPort: 3389
+    frontendIPConfigurationName: 'privateIPConfig1'
+    frontendPortRangeEnd: 5010
+    frontendPortRangeStart: 5000
+    loadDistribution: 'Default'
+    name: 'inboundNatRule2'
+    probeName: 'probe2'
+  }
+]
+param loadBalancingRules = [
+  {
+    backendAddressPoolName: 'servers'
+    backendPort: 0
+    disableOutboundSnat: true
+    enableFloatingIP: true
+    enableTcpReset: false
+    frontendIPConfigurationName: 'privateIPConfig1'
+    frontendPort: 0
+    idleTimeoutInMinutes: 4
+    loadDistribution: 'Default'
+    name: 'privateIPLBRule1'
+    probeName: 'probe1'
+    protocol: 'All'
+  }
+]
+param location = '<location>'
+param probes = [
+  {
+    intervalInSeconds: 5
+    name: 'probe1'
+    numberOfProbes: 2
+    port: '62000'
+    protocol: 'Tcp'
+  }
+]
+param skuName = 'Standard'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

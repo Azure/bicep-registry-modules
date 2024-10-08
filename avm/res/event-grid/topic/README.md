@@ -61,7 +61,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -78,6 +78,22 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/topic:<version>'
+
+// Required parameters
+param name = 'egtmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -219,7 +235,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -365,6 +381,132 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/topic:<version>'
+
+// Required parameters
+param name = 'egtmax001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param eventSubscriptions = [
+  {
+    destination: {
+      endpointType: 'StorageQueue'
+      properties: {
+        queueMessageTimeToLiveInSeconds: 86400
+        queueName: '<queueName>'
+        resourceId: '<resourceId>'
+      }
+    }
+    eventDeliverySchema: 'CloudEventSchemaV1_0'
+    expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+    filter: {
+      enableAdvancedFilteringOnArrays: true
+      isSubjectCaseSensitive: false
+    }
+    name: 'egtmax001'
+    retryPolicy: {
+      eventTimeToLive: '120'
+      maxDeliveryAttempts: 10
+    }
+  }
+]
+param inboundIpRules = [
+  {
+    action: 'Allow'
+    ipMask: '40.74.28.0/23'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    name: 'f80d2f24-53f6-41b3-811f-668b2273dcf8'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -456,7 +598,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -549,6 +691,87 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/topic:<version>'
+
+// Required parameters
+param name = 'egtwaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param eventSubscriptions = [
+  {
+    destination: {
+      endpointType: 'StorageQueue'
+      properties: {
+        queueMessageTimeToLiveInSeconds: 86400
+        queueName: '<queueName>'
+        resourceId: '<resourceId>'
+      }
+    }
+    eventDeliverySchema: 'CloudEventSchemaV1_0'
+    expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+    filter: {
+      enableAdvancedFilteringOnArrays: true
+      isSubjectCaseSensitive: false
+    }
+    name: 'egtwaf001'
+    retryPolicy: {
+      eventTimeToLive: '120'
+      maxDeliveryAttempts: 10
+    }
+  }
+]
+param inboundIpRules = []
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'topic'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

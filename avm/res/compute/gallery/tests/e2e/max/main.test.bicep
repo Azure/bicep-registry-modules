@@ -135,7 +135,7 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: '${namePrefix}-az-imgd-wdtl-003'
-          securityType: 'TrustedLaunch'
+          securityType: 'Standard'
           osType: 'Windows'
           osState: 'Generalized'
           hyperVGeneration: 'V2'
