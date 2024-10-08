@@ -8,7 +8,6 @@ This module deploys a Private Endpoint.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -71,7 +70,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -104,6 +103,34 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/private-endpoint:<version>'
+
+// Required parameters
+param name = 'npemin001'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param location = '<location>'
+param privateLinkServiceConnections = [
+  {
+    name: 'npemin001'
+    properties: {
+      groupIds: [
+        'vault'
+      ]
+      privateLinkServiceId: '<privateLinkServiceId>'
+    }
+  }
+]
 ```
 
 </details>
@@ -207,7 +234,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -321,6 +348,94 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/private-endpoint:<version>'
+
+// Required parameters
+param name = 'npemax001'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param applicationSecurityGroupResourceIds = [
+  '<applicationSecurityGroupResourceId>'
+]
+param customDnsConfigs = [
+  {
+    fqdn: 'abc.keyvault.com'
+    ipAddresses: [
+      '10.0.0.10'
+    ]
+  }
+]
+param customNetworkInterfaceName = 'npemax001nic'
+param ipConfigurations = [
+  {
+    name: 'myIPconfig'
+    properties: {
+      groupId: 'vault'
+      memberName: 'default'
+      privateIPAddress: '10.0.0.10'
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param privateDnsZoneGroup = {
+  name: 'default'
+  privateDnsZoneGroupConfigs: [
+    {
+      name: 'config'
+      privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+    }
+  ]
+}
+param privateLinkServiceConnections = [
+  {
+    name: 'npemax001'
+    properties: {
+      groupIds: [
+        'vault'
+      ]
+      privateLinkServiceId: '<privateLinkServiceId>'
+      requestMessage: 'Hey there'
+    }
+  }
+]
+param roleAssignments = [
+  {
+    name: '6804f270-b4e9-455f-a11b-7f2a64e38f7c'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _Using private link service_
 
 This instance deploys the module with a private link service to test the application of an empty list of string for `groupIds`.
@@ -367,7 +482,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -410,6 +525,42 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/private-endpoint:<version>'
+
+// Required parameters
+param name = 'npepls001'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param ipConfigurations = [
+  {
+    name: 'myIPconfig'
+    properties: {
+      groupId: ''
+      memberName: ''
+      privateIPAddress: '10.0.0.10'
+    }
+  }
+]
+param location = '<location>'
+param privateLinkServiceConnections = [
+  {
+    name: 'npepls001'
+    properties: {
+      groupIds: []
+      privateLinkServiceId: '<privateLinkServiceId>'
+    }
+  }
+]
 ```
 
 </details>
@@ -483,7 +634,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -563,6 +714,63 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/private-endpoint:<version>'
+
+// Required parameters
+param name = 'npewaf001'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param applicationSecurityGroupResourceIds = [
+  '<applicationSecurityGroupResourceId>'
+]
+param customNetworkInterfaceName = 'npewaf001nic'
+param ipConfigurations = [
+  {
+    name: 'myIPconfig'
+    properties: {
+      groupId: 'vault'
+      memberName: 'default'
+      privateIPAddress: '10.0.0.10'
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param privateDnsZoneGroup = {
+  privateDnsZoneGroupConfigs: [
+    {
+      privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+    }
+  ]
+}
+param privateLinkServiceConnections = [
+  {
+    name: 'npewaf001'
+    properties: {
+      groupIds: [
+        'vault'
+      ]
+      privateLinkServiceId: '<privateLinkServiceId>'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -944,6 +1152,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -1042,7 +1261,6 @@ Tags to be applied on all resources/resource groups in this deployment.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1054,10 +1272,6 @@ Tags to be applied on all resources/resource groups in this deployment.
 | `networkInterfaceIds` | array | The IDs of the network interfaces associated with the private endpoint. |
 | `resourceGroupName` | string | The resource group the private endpoint was deployed into. |
 | `resourceId` | string | The resource ID of the private endpoint. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

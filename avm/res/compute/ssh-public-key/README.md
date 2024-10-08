@@ -10,7 +10,6 @@ This module deploys a Public SSH Key.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -59,7 +58,7 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -76,6 +75,22 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/ssh-public-key:<version>'
+
+// Required parameters
+param name = 'cspkmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -137,7 +152,7 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -199,6 +214,52 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/ssh-public-key:<version>'
+
+// Required parameters
+param name = 'sshkey-cspkmax001'
+// Non-required parameters
+param enableTelemetry = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'lock'
+}
+param publicKey = '<publicKey>'
+param roleAssignments = [
+  {
+    name: '74ec0421-c3f4-46f2-acf0-b519fe6fcf1c'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -253,7 +314,7 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -313,6 +374,49 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/ssh-public-key:<version>'
+
+// Required parameters
+param name = 'sshkey-cspkwaf001'
+// Non-required parameters
+param enableTelemetry = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'lock'
+}
+param publicKey = '<publicKey>'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -405,6 +509,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -503,7 +613,6 @@ Tags of the availability set resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -512,10 +621,6 @@ Tags of the availability set resource.
 | `name` | string | The name of the Public SSH Key. |
 | `resourceGroupName` | string | The name of the Resource Group the Public SSH Key was created in. |
 | `resourceId` | string | The resource ID of the Public SSH Key. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
