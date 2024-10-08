@@ -1,4 +1,4 @@
-name: "avm.ptn.azd.acr-container-app"
+name: "avm.ptn.azd.container-apps-stack"
 
 on:
   workflow_dispatch:
@@ -28,15 +28,15 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.ptn.azd.acr-container-app.yml"
-      - "avm/ptn/azd/acr-container-app/**"
+      - ".github/workflows/avm.ptn.azd.container-apps-stack.yml"
+      - "avm/ptn/azd/container-apps-stack/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/ptn/azd/acr-container-app"
-  workflowPath: ".github/workflows/avm.ptn.azd.acr-container-app.yml"
+  modulePath: "avm/ptn/azd/container-apps-stack"
+  workflowPath: ".github/workflows/avm.ptn.azd.container-apps-stack.yml"
 
 concurrency:
   group: ${{ github.workflow }}
