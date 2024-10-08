@@ -474,6 +474,10 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     location: '<location>'
     managedIdentityResourceId: '<managedIdentityResourceId>'
     overwriteExistingImage: true
+    tags: {
+      Env: 'test'
+      'hidden-title': 'This is visible in the resource name'
+    }
     workloadProfileName: 'CAW01'
     workloadProfiles: [
       {
@@ -525,6 +529,12 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     "overwriteExistingImage": {
       "value": true
     },
+    "tags": {
+      "value": {
+        "Env": "test",
+        "hidden-title": "This is visible in the resource name"
+      }
+    },
     "workloadProfileName": {
       "value": "CAW01"
     },
@@ -562,6 +572,10 @@ param deployInVnet = true
 param location = '<location>'
 param managedIdentityResourceId = '<managedIdentityResourceId>'
 param overwriteExistingImage = true
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
 param workloadProfileName = 'CAW01'
 param workloadProfiles = [
   {

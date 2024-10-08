@@ -330,4 +330,23 @@ type lockType = {
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }
 
-import { secretType, roleAssignmentType } from 'modules/deploy_services.bicep'
+// do not import, as the PSRule test would fail (testing this)
+type secretType = {
+  @description('Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
+  identity: string?
+
+  @description('Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.')
+  @metadata({
+    example: '''https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'''
+  })
+  keyVaultUrl: string?
+
+  @description('Optional. The name of the secret.')
+  name: string?
+
+  @description('Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.')
+  @secure()
+  value: string?
+}
+
+import { roleAssignmentType } from 'modules/deploy_services.bicep'

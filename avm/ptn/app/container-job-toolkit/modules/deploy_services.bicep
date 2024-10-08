@@ -167,6 +167,23 @@ var secrets = [
     : null
 ]
 
+// https://learn.microsoft.com/en-us/azure/virtual-network/service-tags-overview#discover-service-tags-by-using-downloadable-json-files
+var regionSpecificServiceTags = {
+  francecentral: 'centralfrance'
+  francesouth: 'southfrance'
+  germanywestcentral: 'germanywc'
+  germanynorth: 'germanyn'
+  norwayeast: 'norwaye'
+  norwaywest: 'norwayw'
+  switzerlandnorth: 'switzerlandn'
+  switzerlandwest: 'switzerlandw'
+  eastusstg: 'usstagee'
+  southcentralusstg: 'usstagec'
+  brazilsoutheast: 'brazilse'
+}
+var locationLowered = toLower(resourceLocation)
+var regionServiceTag = regionSpecificServiceTags[?locationLowered] ?? locationLowered
+
 // Networking resources
 // -----------------
 module nsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (zoneRedundant) {
@@ -176,6 +193,293 @@ module nsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (zoneRe
     location: resourceLocation
     tags: tags
     lock: lock
+  }
+}
+module nsg_workload_plan 'br/public:avm/res/network/network-security-group:0.5.0' = if (zoneRedundant && !empty(workloadProfiles)) {
+  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-nsg-workload'
+  params: {
+    name: 'nsg-workload-${name}'
+    location: resourceLocation
+    tags: tags
+    lock: lock
+    securityRules: [
+      // https://learn.microsoft.com/en-us/azure/container-apps/networking
+      // no inbound rules required, as the job does not expose any ports
+      {
+        name: 'Allow-MCR-Tcp-Https'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 200
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '443'
+          destinationAddressPrefix: 'MicrosoftContainerRegistry'
+        }
+      }
+      {
+        name: 'Allow-FrontDoor-Tcp-Https'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 201
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '443'
+          destinationAddressPrefix: 'AzureFrontDoor.FirstParty'
+        }
+      }
+      {
+        name: 'Allow-Entra-Tcp-Https'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 202
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '443'
+          destinationAddressPrefix: 'AzureActiveDirectory'
+        }
+      }
+      {
+        name: 'Allow-AzureMonitor-Tcp-Https'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 203
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '443'
+          destinationAddressPrefix: 'AzureMonitor'
+        }
+      }
+      {
+        name: 'Allow-Storage-Tcp-Https'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 204
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '443'
+          destinationAddressPrefix: 'Storage.${resourceLocation}'
+        }
+      }
+      {
+        name: 'Allow-ACR-Tcp-Https'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 205
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '443'
+          destinationAddressPrefix: 'AzureContainerRegistry'
+        }
+      }
+      {
+        name: 'Allow-Subnet'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          priority: 100
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '*'
+          destinationAddressPrefix: workloadSubnetAddressPrefix
+        }
+      }
+      {
+        name: 'Allow-DNS'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 101
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '53'
+          destinationAddressPrefix: '168.63.129.16'
+        }
+      }
+    ]
+  }
+}
+module nsg_consumption_plan 'br/public:avm/res/network/network-security-group:0.5.0' = if (zoneRedundant && empty(workloadProfiles)) {
+  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-nsg-workload'
+  params: {
+    name: 'nsg-consumption-${name}'
+    location: resourceLocation
+    tags: tags
+    lock: lock
+    securityRules: [
+      // https://learn.microsoft.com/en-us/azure/container-apps/networking
+      // no inbound rules required, as the job does not expose any ports
+      {
+        name: 'Allow-MCR-Tcp-Https'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 200
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '443'
+          destinationAddressPrefix: 'MicrosoftContainerRegistry'
+        }
+      }
+      {
+        name: 'Allow-Frontdoor-Tcp-Https'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 201
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '443'
+          destinationAddressPrefix: 'AzureFrontDoor.FirstParty'
+        }
+      }
+      {
+        name: 'Allow-Subnet-AKS-Udp-1194'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 205
+          protocol: 'Udp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '1194'
+          destinationAddressPrefix: 'AzureCloud.${regionServiceTag}'
+        }
+      }
+      {
+        name: 'Allow-Subnet-AKS-Tcp-9000'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 206
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '9000'
+          destinationAddressPrefix: 'AzureCloud.${regionServiceTag}'
+        }
+      }
+      {
+        name: 'Allow-Azure-Tcp-Https'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 207
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '443'
+          destinationAddressPrefix: 'AzureCloud'
+        }
+      }
+      {
+        name: 'Allow-Udp-Ntp'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 208
+          protocol: 'Udp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '123'
+          destinationAddressPrefix: '*'
+        }
+      }
+      {
+        name: 'Allow-Subnet-All'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 209
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '*'
+          destinationAddressPrefix: workloadSubnetAddressPrefix
+        }
+      }
+      {
+        name: 'Allow-DNS'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 210
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '53'
+          destinationAddressPrefix: '168.63.129.16'
+        }
+      }
+      {
+        // You don't need to add an NSG rule for ACR when configured with private endpoints
+        name: 'Allow-ACR-Tcp-Https'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 211
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '443'
+          destinationAddressPrefix: 'AzureContainerRegistry'
+        }
+      }
+      {
+        name: 'Allow-Entra-Tcp-Https'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 212
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '443'
+          destinationAddressPrefix: 'AzureActiveDirectory'
+        }
+      }
+      {
+        name: 'Allow-Storage-Tcp-Https'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 213
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '443'
+          destinationAddressPrefix: 'Storage.${resourceLocation}'
+        }
+      }
+      {
+        name: 'Allow-AzureMonitor-Tcp-Https'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 214
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: workloadSubnetAddressPrefix
+          destinationPortRange: '443'
+          destinationAddressPrefix: 'AzureMonitor'
+        }
+      }
+    ]
   }
 }
 
@@ -202,7 +506,9 @@ module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (zoneRedundan
       {
         name: 'workload-subnet'
         addressPrefix: workloadSubnetAddressPrefix
-        networkSecurityGroupResourceId: nsg.outputs.resourceId
+        networkSecurityGroupResourceId: !empty(workloadProfiles)
+          ? nsg_workload_plan.outputs.resourceId
+          : nsg_consumption_plan.outputs.resourceId
         delegation: deployInVnet ? 'Microsoft.App/environments' : null // don't delegate if used for zoneRedundant consumption plan
       }
     ]
@@ -510,7 +816,6 @@ output platformReservedDnsIP string = platformReservedDnsIP
 // Definitions      //
 // ================ //
 
-@export()
 type secretType = {
   @description('Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
   identity: string?
