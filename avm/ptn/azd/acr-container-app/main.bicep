@@ -1,5 +1,7 @@
-metadata name = 'avm/ptn/azd/container-app'
-metadata description = 'Creates a container app in an Azure Container App environment.'
+metadata name = 'avm/ptn/azd/acr-container-app'
+metadata description = '''Creates a container app in an Azure Container App environment.
+
+**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case'''
 metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Container App.')
@@ -123,7 +125,7 @@ var normalizedIdentityType = !empty(identityName) ? 'UserAssigned' : identityTyp
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.azd-containerapp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.ptn.azd-acrcontainerapp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {

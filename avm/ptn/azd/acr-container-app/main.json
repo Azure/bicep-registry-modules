@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "17953814165342158361"
+      "version": "0.29.47.4906",
+      "templateHash": "9446767237171529141"
     },
-    "name": "avm/ptn/azd/container-app",
-    "description": "Creates a container app in an Azure Container App environment.",
+    "name": "avm/ptn/azd/acr-container-app",
+    "description": "Creates a container app in an Azure Container App environment.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -302,7 +302,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.azd-containerapp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.ptn.azd-acrcontainerapp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -1422,8 +1422,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "7849200589142860657"
+              "version": "0.29.47.4906",
+              "templateHash": "17275842659380934172"
             },
             "name": "ACR Pull permissions",
             "description": "Assigns ACR Pull permissions to access an Azure Container Registry.",

@@ -1,6 +1,8 @@
-# avm/ptn/azd/container-app `[Azd/ContainerApp]`
+# avm/ptn/azd/acr-container-app `[Azd/AcrContainerApp]`
 
 Creates a container app in an Azure Container App environment.
+
+**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case
 
 ## Navigation
 
@@ -25,7 +27,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/container-app:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/acr-container-app:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 
@@ -39,8 +41,8 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module containerApp 'br/public:avm/ptn/azd/container-app:<version>' = {
-  name: 'containerAppDeployment'
+module acrContainerApp 'br/public:avm/ptn/azd/acr-container-app:<version>' = {
+  name: 'acrContainerAppDeployment'
   params: {
     // Required parameters
     containerAppsEnvironmentName: '<containerAppsEnvironmentName>'
@@ -56,7 +58,7 @@ module containerApp 'br/public:avm/ptn/azd/container-app:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -76,6 +78,23 @@ module containerApp 'br/public:avm/ptn/azd/container-app:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/acr-container-app:<version>'
+
+// Required parameters
+param containerAppsEnvironmentName = '<containerAppsEnvironmentName>'
+param name = 'acamin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
