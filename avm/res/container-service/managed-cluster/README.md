@@ -221,10 +221,18 @@ param primaryAgentPoolProfile = [
     count: 3
     mode: 'System'
     name: 'systempool'
-    vmSize: 'Standard_DS2_v2'
+    securityProfile: {
+      sshAccess: 'Disabled'
+    }
+    vmSize: 'Standard_DS4_v2'
   }
 ]
 // Non-required parameters
+param disableLocalAccounts = true
+param enableKeyvaultSecretsProvider = true
+param enableSecretRotation = true
+param kedaAddon = true
+param kubernetesVersion = '1.28'
 param location = '<location>'
 param maintenanceConfiguration = {
   maintenanceWindow: {
@@ -246,6 +254,16 @@ param maintenanceConfiguration = {
 param managedIdentities = {
   systemAssigned: true
 }
+param nodeProvisioningProfile = {
+  mode: 'Auto'
+}
+param nodeResourceGroupProfile = {
+  restrictionLevel: 'ReadOnly'
+}
+param outboundType = 'managedNATGateway'
+param publicNetworkAccess = 'Enabled'
+param skuName = 'Automatic'
+param webApplicationRoutingEnabled = true
 ```
 
 </details>
