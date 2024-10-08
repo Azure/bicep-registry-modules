@@ -69,10 +69,8 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
     name: '<name>'
     principalId: '<principalId>'
     // Non-required parameters
-    acrSku: 'Standard'
     aksClusterRoleAssignmentName: '<aksClusterRoleAssignmentName>'
     containerRegistryRoleName: '<containerRegistryRoleName>'
-    dnsPrefix: 'dep-dns-aidmin'
     location: '<location>'
     principalType: 'ServicePrincipal'
   }
@@ -84,7 +82,7 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -108,17 +106,11 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
       "value": "<principalId>"
     },
     // Non-required parameters
-    "acrSku": {
-      "value": "Standard"
-    },
     "aksClusterRoleAssignmentName": {
       "value": "<aksClusterRoleAssignmentName>"
     },
     "containerRegistryRoleName": {
       "value": "<containerRegistryRoleName>"
-    },
-    "dnsPrefix": {
-      "value": "dep-dns-aidmin"
     },
     "location": {
       "value": "<location>"
@@ -133,9 +125,32 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/aks:<version>'
+
+// Required parameters
+param containerRegistryName = '<containerRegistryName>'
+param keyVaultName = '<keyVaultName>'
+param logAnalyticsName = '<logAnalyticsName>'
+param name = '<name>'
+param principalId = '<principalId>'
+// Non-required parameters
+param aksClusterRoleAssignmentName = '<aksClusterRoleAssignmentName>'
+param containerRegistryRoleName = '<containerRegistryRoleName>'
+param location = '<location>'
+param principalType = 'ServicePrincipal'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using only defaults_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with most of its features enabled.
 
 
 <details>
@@ -181,7 +196,7 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -249,6 +264,44 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/aks:<version>'
+
+// Required parameters
+param containerRegistryName = '<containerRegistryName>'
+param keyVaultName = '<keyVaultName>'
+param logAnalyticsName = '<logAnalyticsName>'
+param name = '<name>'
+param principalId = '<principalId>'
+// Non-required parameters
+param acrSku = 'Basic'
+param agentPools = [
+  {
+    maxPods: 30
+    maxSurge: '33%'
+    mode: 'User'
+    name: 'npuserpool'
+    osType: 'Linux'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'standard_a2'
+  }
+]
+param aksClusterRoleAssignmentName = '<aksClusterRoleAssignmentName>'
+param containerRegistryRoleName = '<containerRegistryRoleName>'
+param dnsPrefix = 'dep-dns-aidminMax'
+param location = '<location>'
+param principalType = 'ServicePrincipal'
+param skuTier = 'Free'
+param webApplicationRoutingEnabled = true
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -281,7 +334,7 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | Kubernetes Version. |
 | [`location`](#parameter-location) | string | Specifies the location of AKS cluster. It picks up Resource Group's location by default. |
-| [`monitoringWorkspaceId`](#parameter-monitoringworkspaceid) | string | Resource ID of the monitoring log analytics workspace. |
+| [`monitoringWorkspaceResourceId`](#parameter-monitoringworkspaceresourceid) | string | Resource ID of the monitoring log analytics workspace. |
 | [`networkDataplane`](#parameter-networkdataplane) | string | Network dataplane used in the Kubernetes cluster. Not compatible with kubenet network plugin. |
 | [`networkPlugin`](#parameter-networkplugin) | string | Network plugin used for building the Kubernetes network. |
 | [`networkPluginMode`](#parameter-networkpluginmode) | string | Network plugin mode used for building the Kubernetes network. Not compatible with kubenet network plugin. |
@@ -353,6 +406,7 @@ Tier of your Azure container registry.
 
 - Required: No
 - Type: string
+- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [
@@ -748,7 +802,7 @@ Specifies the DNS prefix specified when creating the managed cluster.
 
 - Required: No
 - Type: string
-- Default: `''`
+- Default: `[parameters('name')]`
 
 ### Parameter: `dnsServiceIP`
 
@@ -781,7 +835,7 @@ Specifies the location of AKS cluster. It picks up Resource Group's location by 
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `monitoringWorkspaceId`
+### Parameter: `monitoringWorkspaceResourceId`
 
 Resource ID of the monitoring log analytics workspace.
 

@@ -34,7 +34,7 @@ param networkPlugin string = 'azure'
 param networkPolicy string = 'azure'
 
 @description('Optional. Specifies the DNS prefix specified when creating the managed cluster.')
-param dnsPrefix string = ''
+param dnsPrefix string = name
 
 @description('Optional. The name of the resource group for the managed resources of the AKS cluster.')
 param nodeResourceGroupName string = ''
@@ -92,7 +92,7 @@ param aadProfileEnableAzureRBAC bool = false
 param appGatewayResourceId string?
 
 @description('Optional. Resource ID of the monitoring log analytics workspace.')
-param monitoringWorkspaceId string?
+param monitoringWorkspaceResourceId string?
 
 @description('Optional. Define one or more secondary/additional agent pools.')
 param agentPools agentPoolType
@@ -116,7 +116,7 @@ param webApplicationRoutingEnabled bool?
   'Premium'
   'Standard'
 ])
-param acrSku string?
+param acrSku string = 'Standard'
 
 @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
 param containerRegistryRoleName string?
@@ -208,7 +208,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.3.0
     aadProfileEnableAzureRBAC: aadProfileEnableAzureRBAC
     skuTier: skuTier
     appGatewayResourceId: appGatewayResourceId
-    monitoringWorkspaceId: monitoringWorkspaceId
+    monitoringWorkspaceId: monitoringWorkspaceResourceId
     managedIdentities: {
       systemAssigned: true
     }

@@ -64,8 +64,6 @@ module testDeployment '../../../main.bicep' = [
       keyVaultName: 'kv${uniqueString(deployment().name)}-${serviceShort}'
       location: resourceLocation
       principalId: nestedDependencies.outputs.identityPrincipalId
-      acrSku: 'Standard'
-      dnsPrefix: 'dep-${namePrefix}-dns-${serviceShort}'
       principalType: 'ServicePrincipal'
       containerRegistryRoleName: containerRegistryRoleName
       aksClusterRoleAssignmentName: aksClusterRoleAssignmentName
