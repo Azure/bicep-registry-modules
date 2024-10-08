@@ -111,7 +111,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -201,6 +201,50 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": true
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csauto001'
+param primaryAgentPoolProfile = [
+  {
+    count: 3
+    mode: 'System'
+    name: 'systempool'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+// Non-required parameters
+param location = '<location>'
+param maintenanceConfiguration = {
+  maintenanceWindow: {
+    durationHours: 4
+    schedule: {
+      absoluteMonthly: '<absoluteMonthly>'
+      daily: '<daily>'
+      relativeMonthly: '<relativeMonthly>'
+      weekly: {
+        dayOfWeek: 'Sunday'
+        intervalWeeks: 1
+      }
+    }
+    startDate: '2024-07-03'
+    startTime: '00:00'
+    utcOffset: '+00:00'
+  }
+}
+param managedIdentities = {
+  systemAssigned: true
 }
 ```
 
@@ -433,7 +477,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -711,6 +755,222 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csmaz001'
+param primaryAgentPoolProfile = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 1
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    mode: 'System'
+    name: 'systempool'
+    nodeTaints: [
+      'CriticalAddonsOnly=true:NoSchedule'
+    ]
+    osDiskSizeGB: 0
+    osType: 'Linux'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+    vnetSubnetID: '<vnetSubnetID>'
+  }
+]
+// Non-required parameters
+param agentPools = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 2
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    minPods: 2
+    mode: 'User'
+    name: 'userpool1'
+    nodeLabels: {}
+    osDiskSizeGB: 128
+    osType: 'Linux'
+    proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+    vnetSubnetID: '<vnetSubnetID>'
+  }
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 2
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    minPods: 2
+    mode: 'User'
+    name: 'userpool2'
+    nodeLabels: {}
+    osDiskSizeGB: 128
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+    vnetSubnetID: '<vnetSubnetID>'
+  }
+]
+param autoUpgradeProfileUpgradeChannel = 'stable'
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultNetworkAccess: 'Public'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param diskEncryptionSetResourceId = '<diskEncryptionSetResourceId>'
+param enableAzureDefender = true
+param enableAzureMonitorProfileMetrics = true
+param enableKeyvaultSecretsProvider = true
+param enableOidcIssuerProfile = true
+param enablePodSecurityPolicy = false
+param enableStorageProfileBlobCSIDriver = true
+param enableStorageProfileDiskCSIDriver = true
+param enableStorageProfileFileCSIDriver = true
+param enableStorageProfileSnapshotController = true
+param enableWorkloadIdentity = true
+param fluxExtension = {
+  configurations: [
+    {
+      gitRepository: {
+        repositoryRef: {
+          branch: 'main'
+        }
+        sshKnownHosts: ''
+        syncIntervalInSeconds: 300
+        timeoutInSeconds: 180
+        url: 'https://github.com/mspnp/aks-baseline'
+      }
+      namespace: 'flux-system'
+      scope: 'cluster'
+    }
+    {
+      gitRepository: {
+        repositoryRef: {
+          branch: 'main'
+        }
+        sshKnownHosts: ''
+        syncIntervalInSeconds: 300
+        timeoutInSeconds: 180
+        url: 'https://github.com/Azure/gitops-flux2-kustomize-helm-mt'
+      }
+      kustomizations: {
+        apps: {
+          dependsOn: [
+            'infra'
+          ]
+          path: './apps/staging'
+          prune: true
+          retryIntervalInSeconds: 120
+          syncIntervalInSeconds: 600
+          timeoutInSeconds: 600
+        }
+        infra: {
+          dependsOn: []
+          path: './infrastructure'
+          prune: true
+          syncIntervalInSeconds: 600
+          timeoutInSeconds: 600
+          validation: 'none'
+        }
+      }
+      namespace: 'flux-system-helm'
+      scope: 'cluster'
+    }
+  ]
+  configurationSettings: {
+    'helm-controller.enabled': 'true'
+    'image-automation-controller.enabled': 'false'
+    'image-reflector-controller.enabled': 'false'
+    'kustomize-controller.enabled': 'true'
+    'notification-controller.enabled': 'true'
+    'source-controller.enabled': 'true'
+  }
+}
+param identityProfile = {
+  kubeletidentity: {
+    resourceId: '<resourceId>'
+  }
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param monitoringWorkspaceId = '<monitoringWorkspaceId>'
+param networkDataplane = 'azure'
+param networkPlugin = 'azure'
+param networkPluginMode = 'overlay'
+param omsAgentEnabled = true
+param openServiceMeshEnabled = true
+param roleAssignments = [
+  {
+    name: 'ac915208-669e-4665-9792-7e2dc861f569'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -748,7 +1008,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -779,6 +1039,33 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csmin001'
+param primaryAgentPoolProfile = [
+  {
+    count: 3
+    mode: 'System'
+    name: 'systempool'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+// Non-required parameters
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
 }
 ```
 
@@ -918,7 +1205,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1061,6 +1348,129 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csmkube001'
+param primaryAgentPoolProfile = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 1
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    mode: 'System'
+    name: 'systempool'
+    nodeTaints: [
+      'CriticalAddonsOnly=true:NoSchedule'
+    ]
+    osDiskSizeGB: 0
+    osType: 'Linux'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+// Non-required parameters
+param agentPools = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 2
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    minPods: 2
+    mode: 'User'
+    name: 'userpool1'
+    nodeLabels: {}
+    osDiskSizeGB: 128
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+  }
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 2
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    minPods: 2
+    mode: 'User'
+    name: 'userpool2'
+    nodeLabels: {}
+    osDiskSizeGB: 128
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkPlugin = 'kubenet'
+param roleAssignments = [
+  {
+    name: '6acf186b-abbd-491b-8bd7-39fa199da81e'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 5: _Using Private Cluster._
 
 This instance deploys the module with a private cluster instance.
@@ -1163,7 +1573,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1274,6 +1684,98 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csmpriv001'
+param primaryAgentPoolProfile = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 1
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    mode: 'System'
+    name: 'systempool'
+    nodeTaints: [
+      'CriticalAddonsOnly=true:NoSchedule'
+    ]
+    osDiskSizeGB: 0
+    osType: 'Linux'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+    vnetSubnetID: '<vnetSubnetID>'
+  }
+]
+// Non-required parameters
+param agentPools = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 2
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    minPods: 2
+    mode: 'User'
+    name: 'userpool1'
+    nodeLabels: {}
+    osDiskSizeGB: 128
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+    vnetSubnetID: '<vnetSubnetID>'
+  }
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 2
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    minPods: 2
+    mode: 'User'
+    name: 'userpool2'
+    nodeLabels: {}
+    osDiskSizeGB: 128
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+param dnsServiceIP = '10.10.200.10'
+param enablePrivateCluster = true
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkPlugin = 'azure'
+param privateDNSZone = '<privateDNSZone>'
+param serviceCidr = '10.10.200.0/24'
+param skuTier = 'Standard'
 ```
 
 </details>
@@ -1422,7 +1924,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1589,6 +2091,139 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'cswaf001'
+param primaryAgentPoolProfile = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 3
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 50
+    minCount: 3
+    mode: 'System'
+    name: 'systempool'
+    nodeTaints: [
+      'CriticalAddonsOnly=true:NoSchedule'
+    ]
+    osDiskSizeGB: 0
+    osType: 'Linux'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+    vnetSubnetID: '<vnetSubnetID>'
+  }
+]
+// Non-required parameters
+param agentPools = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 3
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 50
+    minCount: 3
+    minPods: 2
+    mode: 'User'
+    name: 'userpool1'
+    nodeLabels: {}
+    osDiskSizeGB: 60
+    osDiskType: 'Ephemeral'
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+    vnetSubnetID: '<vnetSubnetID>'
+  }
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 3
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 50
+    minCount: 3
+    minPods: 2
+    mode: 'User'
+    name: 'userpool2'
+    nodeLabels: {}
+    osDiskSizeGB: 60
+    osDiskType: 'Ephemeral'
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+param autoUpgradeProfileUpgradeChannel = 'stable'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'kube-apiserver'
+      }
+      {
+        category: 'kube-controller-manager'
+      }
+      {
+        category: 'kube-scheduler'
+      }
+      {
+        category: 'cluster-autoscaler'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAccounts = true
+param dnsServiceIP = '10.10.200.10'
+param enableAzureDefender = true
+param enablePrivateCluster = true
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param monitoringWorkspaceId = '<monitoringWorkspaceId>'
+param networkPlugin = 'azure'
+param networkPolicy = 'azure'
+param omsAgentEnabled = true
+param privateDNSZone = '<privateDNSZone>'
+param serviceCidr = '10.10.200.0/24'
+param skuTier = 'Standard'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

@@ -71,7 +71,7 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -88,6 +88,22 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/relay/namespace:<version>'
+
+// Required parameters
+param name = 'rnmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -255,7 +271,7 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -433,6 +449,158 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/relay/namespace:<version>'
+
+// Required parameters
+param name = 'rnmax001'
+// Non-required parameters
+param authorizationRules = [
+  {
+    name: 'RootManageSharedAccessKey'
+    rights: [
+      'Listen'
+      'Manage'
+      'Send'
+    ]
+  }
+  {
+    name: 'AnotherKey'
+    rights: [
+      'Listen'
+      'Send'
+    ]
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param hybridConnections = [
+  {
+    name: 'rnmaxhc001'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    userMetadata: '[{\'key\':\'endpoint\',\'value\':\'db-server.constoso.com:1433\'}]'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param networkRuleSets = {
+  defaultAction: 'Deny'
+  ipRules: [
+    {
+      action: 'Allow'
+      ipMask: '10.0.1.0/32'
+    }
+    {
+      action: 'Allow'
+      ipMask: '10.0.2.0/32'
+    }
+  ]
+  trustedServiceAccessEnabled: true
+  virtualNetworkRules: [
+    {
+      subnet: {
+        id: '<id>'
+        ignoreMissingVnetServiceEndpoint: true
+      }
+    }
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'namespace'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    name: 'd3dff05a-96d7-4d63-82c2-0fd8ac7b859d'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param skuName = 'Standard'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param wcfRelays = [
+  {
+    name: 'rnmaxwcf001'
+    relayType: 'NetTcp'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -541,7 +709,7 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -654,6 +822,104 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/relay/namespace:<version>'
+
+// Required parameters
+param name = 'rnwaf001'
+// Non-required parameters
+param authorizationRules = [
+  {
+    name: 'RootManageSharedAccessKey'
+    rights: [
+      'Listen'
+      'Manage'
+      'Send'
+    ]
+  }
+  {
+    name: 'AnotherKey'
+    rights: [
+      'Listen'
+      'Send'
+    ]
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param hybridConnections = [
+  {
+    name: 'rnwafhc001'
+    userMetadata: '[{\'key\':\'endpoint\',\'value\':\'db-server.constoso.com:1433\'}]'
+  }
+]
+param location = '<location>'
+param networkRuleSets = {
+  defaultAction: 'Deny'
+  ipRules: [
+    {
+      action: 'Allow'
+      ipMask: '10.0.1.0/32'
+    }
+    {
+      action: 'Allow'
+      ipMask: '10.0.2.0/32'
+    }
+  ]
+  trustedServiceAccessEnabled: true
+  virtualNetworkRules: [
+    {
+      subnet: {
+        id: '<id>'
+        ignoreMissingVnetServiceEndpoint: true
+      }
+    }
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'namespace'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param wcfRelays = [
+  {
+    name: 'rnwafwcf001'
+    relayType: 'NetTcp'
+  }
+]
 ```
 
 </details>
