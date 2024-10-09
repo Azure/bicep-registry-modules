@@ -19,6 +19,7 @@ This module deploys an Azure SQL Server.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Sql/servers` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers) |
@@ -311,7 +312,115 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 4: _Deploying with a key vault reference to save secrets_
+
+This instance deploys the module saving all its secrets in a key vault.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  name: 'serverDeployment'
+  params: {
+    // Required parameters
+    name: 'sqlkvs001'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    databases: [
+      {
+        name: 'myDatabase'
+      }
+    ]
+    location: '<location>'
+    secretsExportConfiguration: {
+      keyVaultResourceId: '<keyVaultResourceId>'
+      sqlAdminPasswordSecretName: 'adminLoginPasswordKey'
+      sqlAzureConnectionStringSercretName: 'sqlConnectionStringKey'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sqlkvs001"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "databases": {
+      "value": [
+        {
+          "name": "myDatabase"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "secretsExportConfiguration": {
+      "value": {
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "sqlAdminPasswordSecretName": "adminLoginPasswordKey",
+        "sqlAzureConnectionStringSercretName": "sqlConnectionStringKey"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlkvs001'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param databases = [
+  {
+    name: 'myDatabase'
+  }
+]
+param location = '<location>'
+param secretsExportConfiguration = {
+  keyVaultResourceId: '<keyVaultResourceId>'
+  sqlAdminPasswordSecretName: 'adminLoginPasswordKey'
+  sqlAzureConnectionStringSercretName: 'sqlConnectionStringKey'
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -834,7 +943,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 5: _With a secondary database_
+### Example 6: _With a secondary database_
 
 This instance deploys the module with a secondary database.
 
@@ -957,7 +1066,7 @@ param tags = {
 </details>
 <p>
 
-### Example 6: _With vulnerability assessment_
+### Example 7: _With vulnerability assessment_
 
 This instance deploys the module with a vulnerability assessment.
 
@@ -1134,7 +1243,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 8: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -2430,9 +2539,8 @@ Key vault reference and secret settings for the module's secrets export.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`resourceGroupName`](#parameter-secretsexportconfigurationresourcegroupname) | string | Default to the resource group where this account is. The resource group name where the key vault is. |
-| [`sqlAdminPasswordSecretName`](#parameter-secretsexportconfigurationsqladminpasswordsecretname) | string | The name of sql admin login password for secret to create. |
-| [`sqlAzureConnectionStringSercretName`](#parameter-secretsexportconfigurationsqlazureconnectionstringsercretname) | string | The name of sql server connection string for secret to create. |
+| [`sqlAdminPasswordSecretName`](#parameter-secretsexportconfigurationsqladminpasswordsecretname) | string | The sqlAdminPassword secret name to create. |
+| [`sqlAzureConnectionStringSercretName`](#parameter-secretsexportconfigurationsqlazureconnectionstringsercretname) | string | The sqlAzureConnectionString secret name to create. |
 
 ### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
@@ -2441,23 +2549,16 @@ The resource ID of the key vault where to store the secrets of this module.
 - Required: Yes
 - Type: string
 
-### Parameter: `secretsExportConfiguration.resourceGroupName`
-
-Default to the resource group where this account is. The resource group name where the key vault is.
-
-- Required: No
-- Type: string
-
 ### Parameter: `secretsExportConfiguration.sqlAdminPasswordSecretName`
 
-The name of sql admin login password for secret to create.
+The sqlAdminPassword secret name to create.
 
 - Required: No
 - Type: string
 
 ### Parameter: `secretsExportConfiguration.sqlAzureConnectionStringSercretName`
 
-The name of sql server connection string for secret to create.
+The sqlAzureConnectionString secret name to create.
 
 - Required: No
 - Type: string
@@ -2497,12 +2598,12 @@ The vulnerability assessment configuration.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed SQL server. |
 | `privateEndpoints` | array | The private endpoints of the SQL server. |
 | `resourceGroupName` | string | The resource group of the deployed SQL server. |
 | `resourceId` | string | The resource ID of the deployed SQL server. |
-| `secretResourceIds` | array | The resource ID of the secrets. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules

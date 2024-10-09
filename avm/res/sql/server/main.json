@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "13031224188572751832"
+      "version": "0.30.23.60470",
+      "templateHash": "779644860652942835"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -444,29 +444,54 @@
             "description": "Required. The resource ID of the key vault where to store the secrets of this module."
           }
         },
-        "resourceGroupName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Default to the resource group where this account is. The resource group name where the key vault is."
-          }
-        },
         "sqlAdminPasswordSecretName": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name of sql admin login password for secret to create."
+            "description": "Optional. The sqlAdminPassword secret name to create."
           }
         },
         "sqlAzureConnectionStringSercretName": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name of sql server connection string for secret to create."
+            "description": "Optional. The sqlAzureConnectionString secret name to create."
           }
         }
       },
       "nullable": true
+    },
+    "secretsOutputType": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": {
+        "$ref": "#/definitions/secretSetType",
+        "metadata": {
+          "description": "An exported secret's references."
+        }
+      }
+    },
+    "secretSetType": {
+      "type": "object",
+      "properties": {
+        "secretResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resourceId of the exported secret."
+          }
+        },
+        "secretUri": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI of the exported secret."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/keyVaultExport.bicep"
+        }
+      }
     }
   },
   "parameters": {
@@ -820,8 +845,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "6019999815954957727"
+              "version": "0.30.23.60470",
+              "templateHash": "11407307502843440892"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database.",
@@ -1298,8 +1323,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "8635162595153731245"
+                      "version": "0.30.23.60470",
+                      "templateHash": "10836519140305169908"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
@@ -1400,8 +1425,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "2778016138108001251"
+                      "version": "0.30.23.60470",
+                      "templateHash": "10064519186693398262"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
@@ -1578,8 +1603,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "18037703368269722870"
+              "version": "0.30.23.60470",
+              "templateHash": "1486548652639885128"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -2560,8 +2585,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "7779473510493338097"
+              "version": "0.30.23.60470",
+              "templateHash": "6449556555046717103"
             },
             "name": "Azure SQL Server Firewall Rule",
             "description": "This module deploys an Azure SQL Server Firewall Rule.",
@@ -2666,8 +2691,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "7859066741604114060"
+              "version": "0.30.23.60470",
+              "templateHash": "4969955763304077350"
             },
             "name": "Azure SQL Server Virtual Network Rules",
             "description": "This module deploys an Azure SQL Server Virtual Network Rule.",
@@ -2774,8 +2799,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "6025191760768766090"
+              "version": "0.30.23.60470",
+              "templateHash": "15406914222375641032"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy.",
@@ -2925,8 +2950,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "5682596516926040129"
+              "version": "0.30.23.60470",
+              "templateHash": "11004049200994426011"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment.",
@@ -3028,8 +3053,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "17251889896692066430"
+                      "version": "0.30.23.60470",
+                      "templateHash": "13956215614091387428"
                     }
                   },
                   "parameters": {
@@ -3117,8 +3142,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "5863771213375512760"
+              "version": "0.30.23.60470",
+              "templateHash": "17839617504395216689"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key.",
@@ -3236,8 +3261,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "6914924378490463775"
+              "version": "0.30.23.60470",
+              "templateHash": "11473914706327458055"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector.",
@@ -3369,8 +3394,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "4165841300638093382"
+              "version": "0.30.23.60470",
+              "templateHash": "2456263707393734456"
             },
             "name": "Azure SQL Server Audit Settings",
             "description": "This module deploys an Azure SQL Server Audit Settings.",
@@ -3508,8 +3533,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "17251889896692066430"
+                      "version": "0.30.23.60470",
+                      "templateHash": "13956215614091387428"
                     }
                   },
                   "parameters": {
@@ -3569,21 +3594,24 @@
         "server"
       ]
     },
-    "server_secrets_export": {
-      "condition": "[not(empty(parameters('secretsExportConfiguration')))]",
+    "secretsExport": {
+      "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
-      "resourceGroup": "[coalesce(tryGet(parameters('secretsExportConfiguration'), 'resourceGroupName'), resourceGroup().name)]",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '////'), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
-          "keyVaultName": "[if(not(empty(parameters('secretsExportConfiguration').keyVaultResourceId)), createObject('value', last(split(parameters('secretsExportConfiguration').keyVaultResourceId, '/'))), createObject('value', ''))]",
-          "secrets": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), 'value', parameters('administratorLoginPassword'))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSercretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSercretName'), 'value', format('Server={0}; Database={1}; User={2}; Password={3}', reference('server').fullyQualifiedDomainName, if(not(empty(parameters('databases'))), parameters('databases')[0].name, ''), parameters('administratorLogin'), parameters('administratorLoginPassword')))), createArray()))]"
+          "keyVaultName": {
+            "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
+          },
+          "secretsToSet": {
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').sqlAdminPasswordSecretName, 'value', parameters('administratorLoginPassword'))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSercretName'), createArray(createObject('name', parameters('secretsExportConfiguration').sqlAzureConnectionStringSercretName, 'value', format('Server={0}; Database={1}; User={2}; Password={3}', reference('server').fullyQualifiedDomainName, if(not(empty(parameters('databases'))), parameters('databases')[0].name, ''), parameters('administratorLogin'), parameters('administratorLoginPassword')))), createArray()))]"
           }
         },
         "template": {
@@ -3593,12 +3621,32 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "4981292145166251974"
+              "version": "0.30.23.60470",
+              "templateHash": "16142913599202614386"
             }
           },
           "definitions": {
-            "secretsType": {
+            "secretSetType": {
+              "type": "object",
+              "properties": {
+                "secretResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The resourceId of the exported secret."
+                  }
+                },
+                "secretUri": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The secret URI of the exported secret."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "secretToSetType": {
               "type": "object",
               "properties": {
                 "name": {
@@ -3620,16 +3668,16 @@
             "keyVaultName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the key vault to set the secrets in."
+                "description": "Required. The name of the Key Vault to set the secrets in."
               }
             },
-            "secrets": {
+            "secretsToSet": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/secretsType"
+                "$ref": "#/definitions/secretToSetType"
               },
               "metadata": {
-                "description": "Required. The secrets to set in the key vault."
+                "description": "Required. The secrets to set in the Key Vault."
               }
             }
           },
@@ -3640,16 +3688,16 @@
               "apiVersion": "2022-07-01",
               "name": "[parameters('keyVaultName')]"
             },
-            "secret": {
+            "secrets": {
               "copy": {
-                "name": "secret",
-                "count": "[length(parameters('secrets'))]"
+                "name": "secrets",
+                "count": "[length(parameters('secretsToSet'))]"
               },
               "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2022-07-01",
-              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secrets')[copyIndex()].name)]",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
               "properties": {
-                "value": "[parameters('secrets')[copyIndex()].value]"
+                "value": "[parameters('secretsToSet')[copyIndex()].value]"
               },
               "dependsOn": [
                 "keyVault"
@@ -3657,14 +3705,20 @@
             }
           },
           "outputs": {
-            "secretResourceIds": {
+            "secretsSet": {
               "type": "array",
               "items": {
-                "type": "string"
+                "$ref": "#/definitions/secretSetType"
+              },
+              "metadata": {
+                "description": "The references to the secrets exported to the provided Key Vault."
               },
               "copy": {
-                "count": "[length(range(0, length(coalesce(parameters('secrets'), createArray()))))]",
-                "input": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secrets')[range(0, length(coalesce(parameters('secrets'), createArray())))[copyIndex()]].name)]"
+                "count": "[length(range(0, length(coalesce(parameters('secretsToSet'), createArray()))))]",
+                "input": {
+                  "secretResourceId": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretsToSet')[range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()]].name)]",
+                  "secretUri": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUri]"
+                }
               }
             }
           }
@@ -3710,6 +3764,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('server', '2023-08-01-preview', 'full').location]"
+    },
+    "exportedSecrets": {
+      "$ref": "#/definitions/secretsOutputType",
+      "metadata": {
+        "description": "A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name."
+      },
+      "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
     },
     "privateEndpoints": {
       "type": "array",
