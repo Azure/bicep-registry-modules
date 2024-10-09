@@ -6,13 +6,36 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "18013902785904421717"
+      "templateHash": "14447016685732236984"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "managedIdentitiesType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource."
+          }
+        }
+      },
+      "nullable": true
+    },
     "securityPolicyType": {
       "type": "array",
       "items": {
@@ -281,6 +304,12 @@
         "description": "Optional. Endpoint tags."
       }
     },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentitiesType",
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource."
+      }
+    },
     "lock": {
       "$ref": "#/definitions/lockType",
       "metadata": {
@@ -319,7 +348,9 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
   },
   "resources": {
     "avmTelemetry": {
@@ -347,6 +378,7 @@
       "apiVersion": "2023-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
+      "identity": "[variables('identity')]",
       "sku": {
         "name": "[parameters('sku')]"
       },
@@ -2411,6 +2443,13 @@
         "description": "The uri of the CDN profile endpoint."
       },
       "value": "[if(not(empty(parameters('endpointProperties'))), reference('profile_endpoint').outputs.uri.value, '')]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[coalesce(tryGet(tryGet(reference('profile', '2023-05-01', 'full'), 'identity'), 'principalId'), '')]"
     }
   }
 }
