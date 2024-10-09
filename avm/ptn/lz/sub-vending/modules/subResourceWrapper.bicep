@@ -322,7 +322,7 @@ var resourceProvidersFormatted = replace(string(resourceProviders), '"', '\\"')
 
 @batchSize(1)
 #disable-next-line no-deployments-resources
-resource moveSubscriptionToManagementGroupDelay 'Microsoft.Resources/deployments@2024-07-01' = [
+resource moveSubscriptionToManagementGroupDelay 'Microsoft.Resources/deployments@2024-03-01' = [
   for (cycle, i) in range(0, managementGroupAssociationDelayCount): if (subscriptionManagementGroupAssociationEnabled && !empty(subscriptionManagementGroupId)) {
     name: '${deploymentNames.moveSubscriptionToManagementGroupDelay}-${i}'
     location: virtualNetworkLocation
