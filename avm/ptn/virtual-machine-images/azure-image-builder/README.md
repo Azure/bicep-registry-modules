@@ -18,17 +18,17 @@ This module provides you with a packaged solution to create custom images using 
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/galleries` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries) |
+| `Microsoft.Compute/galleries` | [2023-07-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-03/galleries) |
 | `Microsoft.Compute/galleries/applications` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/applications) |
-| `Microsoft.Compute/galleries/images` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/images) |
+| `Microsoft.Compute/galleries/images` | [2023-07-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-03/galleries/images) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Network/virtualNetworks` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/virtualNetworkPeerings) |
+| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 | `Microsoft.Resources/resourceGroups` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2024-03-01/resourceGroups) |
 | `Microsoft.Storage/storageAccounts` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts) |
@@ -77,11 +77,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     computeGalleryImageDefinitions: [
       {
         hyperVGeneration: 'V2'
+        identifier: {
+          offer: 'devops_linux'
+          publisher: 'devops'
+          sku: 'devops_linux_az'
+        }
         name: 'sid-linux'
-        offer: 'devops_linux'
+        osState: 'Generalized'
         osType: 'Linux'
-        publisher: 'devops'
-        sku: 'devops_linux_az'
       }
     ]
     computeGalleryName: 'galapvmiaibmin'
@@ -121,11 +124,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
       "value": [
         {
           "hyperVGeneration": "V2",
+          "identifier": {
+            "offer": "devops_linux",
+            "publisher": "devops",
+            "sku": "devops_linux_az"
+          },
           "name": "sid-linux",
-          "offer": "devops_linux",
-          "osType": "Linux",
-          "publisher": "devops",
-          "sku": "devops_linux_az"
+          "osState": "Generalized",
+          "osType": "Linux"
         }
       ]
     },
@@ -173,11 +179,14 @@ param computeGalleryImageDefinitionName = '<computeGalleryImageDefinitionName>'
 param computeGalleryImageDefinitions = [
   {
     hyperVGeneration: 'V2'
+    identifier: {
+      offer: 'devops_linux'
+      publisher: 'devops'
+      sku: 'devops_linux_az'
+    }
     name: 'sid-linux'
-    offer: 'devops_linux'
+    osState: 'Generalized'
     osType: 'Linux'
-    publisher: 'devops'
-    sku: 'devops_linux_az'
   }
 ]
 param computeGalleryName = 'galapvmiaibmin'
@@ -216,11 +225,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     computeGalleryImageDefinitions: [
       {
         hyperVGeneration: 'V2'
+        identifier: {
+          offer: 'devops_linux'
+          publisher: 'devops'
+          sku: 'devops_linux_az'
+        }
         name: '<name>'
-        offer: 'devops_linux'
+        osState: 'Generalized'
         osType: 'Linux'
-        publisher: 'devops'
-        sku: 'devops_linux_az'
       }
     ]
     computeGalleryName: 'galapvmiaiba'
@@ -291,11 +303,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
       "value": [
         {
           "hyperVGeneration": "V2",
+          "identifier": {
+            "offer": "devops_linux",
+            "publisher": "devops",
+            "sku": "devops_linux_az"
+          },
           "name": "<name>",
-          "offer": "devops_linux",
-          "osType": "Linux",
-          "publisher": "devops",
-          "sku": "devops_linux_az"
+          "osState": "Generalized",
+          "osType": "Linux"
         }
       ]
     },
@@ -380,11 +395,14 @@ param computeGalleryImageDefinitionName = '<computeGalleryImageDefinitionName>'
 param computeGalleryImageDefinitions = [
   {
     hyperVGeneration: 'V2'
+    identifier: {
+      offer: 'devops_linux'
+      publisher: 'devops'
+      sku: 'devops_linux_az'
+    }
     name: '<name>'
-    offer: 'devops_linux'
+    osState: 'Generalized'
     osType: 'Linux'
-    publisher: 'devops'
-    sku: 'devops_linux_az'
   }
 ]
 param computeGalleryName = 'galapvmiaiba'
@@ -649,11 +667,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     computeGalleryImageDefinitions: [
       {
         hyperVGeneration: 'V2'
+        identifier: {
+          offer: 'devops_linux'
+          publisher: 'devops'
+          sku: 'devops_linux_az'
+        }
         name: '<name>'
-        offer: 'devops_linux'
+        osState: 'Generalized'
         osType: 'Linux'
-        publisher: 'devops'
-        sku: 'devops_linux_az'
       }
     ]
     computeGalleryName: 'galapvmiaibob'
@@ -694,11 +715,14 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
       "value": [
         {
           "hyperVGeneration": "V2",
+          "identifier": {
+            "offer": "devops_linux",
+            "publisher": "devops",
+            "sku": "devops_linux_az"
+          },
           "name": "<name>",
-          "offer": "devops_linux",
-          "osType": "Linux",
-          "publisher": "devops",
-          "sku": "devops_linux_az"
+          "osState": "Generalized",
+          "osType": "Linux"
         }
       ]
     },
@@ -749,11 +773,14 @@ param computeGalleryImageDefinitionName = '<computeGalleryImageDefinitionName>'
 param computeGalleryImageDefinitions = [
   {
     hyperVGeneration: 'V2'
+    identifier: {
+      offer: 'devops_linux'
+      publisher: 'devops'
+      sku: 'devops_linux_az'
+    }
     name: '<name>'
-    offer: 'devops_linux'
+    osState: 'Generalized'
     osType: 'Linux'
-    publisher: 'devops'
-    sku: 'devops_linux_az'
   }
 ]
 param computeGalleryName = 'galapvmiaibob'
@@ -1259,12 +1286,12 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/compute/gallery:0.4.0` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.2.2` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.1.6` | Remote reference |
-| `br/public:avm/res/resources/deployment-script:0.3.1` | Remote reference |
+| `br/public:avm/res/compute/gallery:0.7.0` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.4.0` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.4.0` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.9.1` | Remote reference |
-| `br/public:avm/res/virtual-machine-images/image-template:0.3.1` | Remote reference |
+| `br/public:avm/res/virtual-machine-images/image-template:0.4.0` | Remote reference |
 
 ## Notes
 
