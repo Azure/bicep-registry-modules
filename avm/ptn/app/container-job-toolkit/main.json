@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "8673343166118967801"
+      "templateHash": "2472076174034767414"
     },
     "name": "container-job-toolkit",
     "description": "This module deploys a container to run as a job.",
@@ -58,40 +58,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
-          }
-        }
-      }
-    },
-    "secretType": {
-      "type": "object",
-      "properties": {
-        "identity": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity."
-          }
-        },
-        "keyVaultUrl": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "example": "https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret",
-            "description": "Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null."
-          }
-        },
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the secret."
-          }
-        },
-        "value": {
-          "type": "securestring",
-          "nullable": true,
-          "metadata": {
-            "description": "Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null."
           }
         }
       }
@@ -163,6 +129,210 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. The Resource Id of the delegated managed identity resource."
+            }
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/deploy_services.bicep"
+        }
+      }
+    },
+    "secretType": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity."
+          }
+        },
+        "keyVaultUrl": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "example": "https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret",
+            "description": "Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the secret."
+          }
+        },
+        "value": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/deploy_services.bicep"
+        }
+      }
+    },
+    "securityRulesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the security rule."
+            }
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "access": {
+                "type": "string",
+                "allowedValues": [
+                  "Allow",
+                  "Deny"
+                ],
+                "metadata": {
+                  "description": "Required. Whether network traffic is allowed or denied."
+                }
+              },
+              "description": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The description of the security rule."
+                }
+              },
+              "destinationAddressPrefix": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Optional. The destination address prefix. CIDR or destination IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used."
+                }
+              },
+              "destinationAddressPrefixes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The destination address prefixes. CIDR or destination IP ranges."
+                }
+              },
+              "destinationApplicationSecurityGroupResourceIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The resource IDs of the application security groups specified as destination."
+                }
+              },
+              "destinationPortRange": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The destination port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+                }
+              },
+              "destinationPortRanges": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The destination port ranges."
+                }
+              },
+              "direction": {
+                "type": "string",
+                "allowedValues": [
+                  "Inbound",
+                  "Outbound"
+                ],
+                "metadata": {
+                  "description": "Required. The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic."
+                }
+              },
+              "priority": {
+                "type": "int",
+                "minValue": 100,
+                "maxValue": 4096,
+                "metadata": {
+                  "description": "Required. Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+                }
+              },
+              "protocol": {
+                "type": "string",
+                "allowedValues": [
+                  "*",
+                  "Ah",
+                  "Esp",
+                  "Icmp",
+                  "Tcp",
+                  "Udp"
+                ],
+                "metadata": {
+                  "description": "Required. Network protocol this rule applies to."
+                }
+              },
+              "sourceAddressPrefix": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The CIDR or source IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used. If this is an ingress rule, specifies where network traffic originates from."
+                }
+              },
+              "sourceAddressPrefixes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The CIDR or source IP ranges."
+                }
+              },
+              "sourceApplicationSecurityGroupResourceIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The resource IDs of the application security groups specified as source."
+                }
+              },
+              "sourcePortRange": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The source port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+                }
+              },
+              "sourcePortRanges": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The source port ranges."
+                }
+              }
+            },
+            "metadata": {
+              "description": "Required. The properties of the security rule."
             }
           }
         }
@@ -274,6 +444,12 @@
         "description": "Conditional. The address prefix for the virtual network needs to be at least a /16. Three subnets will be created (the first /24 will be used for private endpoints, the second /24 for service endpoints and the second /23 is used for the workload). Required if `zoneRedundant` for consumption plan is desired or `deployInVnet` is `true`."
       }
     },
+    "customNetworkSecurityGroups": {
+      "$ref": "#/definitions/securityRulesType",
+      "metadata": {
+        "description": "Optional. Network security group, that will be added to the workload subnet."
+      }
+    },
     "containerImageSource": {
       "type": "string",
       "metadata": {
@@ -325,7 +501,7 @@
       },
       "nullable": true,
       "metadata": {
-        "example": "[[\n  {\n    name: 'ENV_VAR_NAME'\n    value: 'ENV_VAR_VALUE'\n  }\n  {\n    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'\n    secretRef: 'applicationinsights-connection-string'\n  }\n]",
+        "example": "[[\r\n  {\r\n    name: 'ENV_VAR_NAME'\r\n    value: 'ENV_VAR_VALUE'\r\n  }\r\n  {\r\n    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'\r\n    secretRef: 'applicationinsights-connection-string'\r\n  }\r\n]",
         "description": "Optional. The environment variables that will be added to the Container Apps Job."
       }
     },
@@ -336,7 +512,7 @@
       },
       "nullable": true,
       "metadata": {
-        "example": "  [\n    {\n      name: 'mysecret'\n      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      name: 'mysecret'\n      identity: 'system'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      // You can do this, but you shouldn't. Use a secret reference instead.\n      name: 'mysecret'\n      value: 'mysecretvalue'\n    }\n    {\n      name: 'connection-string'\n      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value\n    }\n  ]\n  ",
+        "example": "  [\r\n    {\r\n      name: 'mysecret'\r\n      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'\r\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\r\n    }\r\n    {\r\n      name: 'mysecret'\r\n      identity: 'system'\r\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\r\n    }\r\n    {\r\n      // You can do this, but you shouldn't. Use a secret reference instead.\r\n      name: 'mysecret'\r\n      value: 'mysecretvalue'\r\n    }\r\n    {\r\n      name: 'connection-string'\r\n      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value\r\n    }\r\n  ]\r\n  ",
         "description": "Optional. The secrets of the Container App. They will be added to Key Vault and configured as secrets in the Container App Job. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set."
       }
     },
@@ -344,7 +520,7 @@
       "type": "array",
       "nullable": true,
       "metadata": {
-        "example": "[[\n    {\n      workloadProfileType: 'D4'\n      name: 'CAW01'\n      minimumCount: 0\n      maximumCount: 1\n    }\n  ]",
+        "example": "[[\r\n    {\r\n      workloadProfileType: 'D4'\r\n      name: 'CAW01'\r\n      minimumCount: 0\r\n      maximumCount: 1\r\n    }\r\n  ]",
         "description": "Optional. Workload profiles for the managed environment. Leave empty to use a consumption based profile."
       }
     },
@@ -360,7 +536,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
+        "example": "  {\r\n      key1: 'value1'\r\n      key2: 'value2'\r\n  }\r\n  ",
         "description": "Optional. Tags of the resource."
       }
     },
@@ -448,6 +624,9 @@
           "deployDnsZoneContainerRegistry": {
             "value": "[parameters('deployDnsZoneContainerRegistry')]"
           },
+          "customNetworkSecurityGroups": {
+            "value": "[parameters('customNetworkSecurityGroups')]"
+          },
           "workloadProfiles": "[if(greater(length(coalesce(parameters('workloadProfiles'), createArray())), 0), createObject('value', parameters('workloadProfiles')), createObject('value', null()))]",
           "tags": {
             "value": "[parameters('tags')]"
@@ -464,7 +643,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "14188938005595161775"
+              "templateHash": "5381232959418711425"
             }
           },
           "definitions": {
@@ -500,6 +679,9 @@
                     "description": "Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null."
                   }
                 }
+              },
+              "metadata": {
+                "__bicep_export!": true
               }
             },
             "lockType": {
@@ -601,6 +783,169 @@
               "metadata": {
                 "__bicep_export!": true
               }
+            },
+            "securityRulesType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the security rule."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "access": {
+                        "type": "string",
+                        "allowedValues": [
+                          "Allow",
+                          "Deny"
+                        ],
+                        "metadata": {
+                          "description": "Required. Whether network traffic is allowed or denied."
+                        }
+                      },
+                      "description": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The description of the security rule."
+                        }
+                      },
+                      "destinationAddressPrefix": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Optional. The destination address prefix. CIDR or destination IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used."
+                        }
+                      },
+                      "destinationAddressPrefixes": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The destination address prefixes. CIDR or destination IP ranges."
+                        }
+                      },
+                      "destinationApplicationSecurityGroupResourceIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The resource IDs of the application security groups specified as destination."
+                        }
+                      },
+                      "destinationPortRange": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The destination port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+                        }
+                      },
+                      "destinationPortRanges": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The destination port ranges."
+                        }
+                      },
+                      "direction": {
+                        "type": "string",
+                        "allowedValues": [
+                          "Inbound",
+                          "Outbound"
+                        ],
+                        "metadata": {
+                          "description": "Required. The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic."
+                        }
+                      },
+                      "priority": {
+                        "type": "int",
+                        "minValue": 100,
+                        "maxValue": 4096,
+                        "metadata": {
+                          "description": "Required. Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+                        }
+                      },
+                      "protocol": {
+                        "type": "string",
+                        "allowedValues": [
+                          "*",
+                          "Ah",
+                          "Esp",
+                          "Icmp",
+                          "Tcp",
+                          "Udp"
+                        ],
+                        "metadata": {
+                          "description": "Required. Network protocol this rule applies to."
+                        }
+                      },
+                      "sourceAddressPrefix": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The CIDR or source IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used. If this is an ingress rule, specifies where network traffic originates from."
+                        }
+                      },
+                      "sourceAddressPrefixes": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The CIDR or source IP ranges."
+                        }
+                      },
+                      "sourceApplicationSecurityGroupResourceIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The resource IDs of the application security groups specified as source."
+                        }
+                      },
+                      "sourcePortRange": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The source port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+                        }
+                      },
+                      "sourcePortRanges": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The source port ranges."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. The properties of the security rule."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
             }
           },
           "parameters": {
@@ -670,6 +1015,12 @@
               "defaultValue": "172.17.17.17",
               "metadata": {
                 "description": "Conditional. An IP address from the IP range defined by \"platformReservedCidr\" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if `zoneRedundant` for consumption plan is desired or `deployInVnet` is `true`."
+              }
+            },
+            "customNetworkSecurityGroups": {
+              "$ref": "#/definitions/securityRulesType",
+              "metadata": {
+                "description": "Optional. Network security group, that will be added to the workload subnet."
               }
             },
             "managedIdentityResourceId": {
@@ -1527,112 +1878,7 @@
                     "value": "[parameters('lock')]"
                   },
                   "securityRules": {
-                    "value": [
-                      {
-                        "name": "Allow-MCR-Tcp-Https",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 200,
-                          "protocol": "Tcp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "443",
-                          "destinationAddressPrefix": "MicrosoftContainerRegistry"
-                        }
-                      },
-                      {
-                        "name": "Allow-FrontDoor-Tcp-Https",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 201,
-                          "protocol": "Tcp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "443",
-                          "destinationAddressPrefix": "AzureFrontDoor.FirstParty"
-                        }
-                      },
-                      {
-                        "name": "Allow-Entra-Tcp-Https",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 202,
-                          "protocol": "Tcp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "443",
-                          "destinationAddressPrefix": "AzureActiveDirectory"
-                        }
-                      },
-                      {
-                        "name": "Allow-AzureMonitor-Tcp-Https",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 203,
-                          "protocol": "Tcp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "443",
-                          "destinationAddressPrefix": "AzureMonitor"
-                        }
-                      },
-                      {
-                        "name": "Allow-Storage-Tcp-Https",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 204,
-                          "protocol": "Tcp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "443",
-                          "destinationAddressPrefix": "[format('Storage.{0}', parameters('resourceLocation'))]"
-                        }
-                      },
-                      {
-                        "name": "Allow-ACR-Tcp-Https",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 205,
-                          "protocol": "Tcp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "443",
-                          "destinationAddressPrefix": "AzureContainerRegistry"
-                        }
-                      },
-                      {
-                        "name": "Allow-Subnet",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Inbound",
-                          "priority": 100,
-                          "protocol": "*",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "*",
-                          "destinationAddressPrefix": "[variables('workloadSubnetAddressPrefix')]"
-                        }
-                      },
-                      {
-                        "name": "Allow-DNS",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 101,
-                          "protocol": "Tcp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "53",
-                          "destinationAddressPrefix": "168.63.129.16"
-                        }
-                      }
-                    ]
+                    "value": "[union(createArray(createObject('name', 'Allow-MCR-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 200, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'MicrosoftContainerRegistry')), createObject('name', 'Allow-FrontDoor-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 201, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureFrontDoor.FirstParty')), createObject('name', 'Allow-Entra-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 202, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureActiveDirectory')), createObject('name', 'Allow-AzureMonitor-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 203, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureMonitor')), createObject('name', 'Allow-Storage-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 204, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', format('Storage.{0}', parameters('resourceLocation')))), createObject('name', 'Allow-ACR-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 205, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureContainerRegistry')), createObject('name', 'Allow-Subnet', 'properties', createObject('access', 'Allow', 'direction', 'Inbound', 'priority', 100, 'protocol', '*', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '*', 'destinationAddressPrefix', variables('workloadSubnetAddressPrefix'))), createObject('name', 'Allow-DNS', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 101, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '53', 'destinationAddressPrefix', '168.63.129.16'))), coalesce(parameters('customNetworkSecurityGroups'), createArray()))]"
                   }
                 },
                 "template": {
@@ -2264,164 +2510,7 @@
                     "value": "[parameters('lock')]"
                   },
                   "securityRules": {
-                    "value": [
-                      {
-                        "name": "Allow-MCR-Tcp-Https",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 200,
-                          "protocol": "Tcp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "443",
-                          "destinationAddressPrefix": "MicrosoftContainerRegistry"
-                        }
-                      },
-                      {
-                        "name": "Allow-Frontdoor-Tcp-Https",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 201,
-                          "protocol": "Tcp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "443",
-                          "destinationAddressPrefix": "AzureFrontDoor.FirstParty"
-                        }
-                      },
-                      {
-                        "name": "Allow-Subnet-AKS-Udp-1194",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 205,
-                          "protocol": "Udp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "1194",
-                          "destinationAddressPrefix": "[format('AzureCloud.{0}', variables('regionServiceTag'))]"
-                        }
-                      },
-                      {
-                        "name": "Allow-Subnet-AKS-Tcp-9000",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 206,
-                          "protocol": "Tcp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "9000",
-                          "destinationAddressPrefix": "[format('AzureCloud.{0}', variables('regionServiceTag'))]"
-                        }
-                      },
-                      {
-                        "name": "Allow-Azure-Tcp-Https",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 207,
-                          "protocol": "Tcp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "443",
-                          "destinationAddressPrefix": "AzureCloud"
-                        }
-                      },
-                      {
-                        "name": "Allow-Udp-Ntp",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 208,
-                          "protocol": "Udp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "123",
-                          "destinationAddressPrefix": "*"
-                        }
-                      },
-                      {
-                        "name": "Allow-Subnet-All",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 209,
-                          "protocol": "*",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "*",
-                          "destinationAddressPrefix": "[variables('workloadSubnetAddressPrefix')]"
-                        }
-                      },
-                      {
-                        "name": "Allow-DNS",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 210,
-                          "protocol": "Tcp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "53",
-                          "destinationAddressPrefix": "168.63.129.16"
-                        }
-                      },
-                      {
-                        "name": "Allow-ACR-Tcp-Https",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 211,
-                          "protocol": "Tcp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "443",
-                          "destinationAddressPrefix": "AzureContainerRegistry"
-                        }
-                      },
-                      {
-                        "name": "Allow-Entra-Tcp-Https",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 212,
-                          "protocol": "Tcp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "443",
-                          "destinationAddressPrefix": "AzureActiveDirectory"
-                        }
-                      },
-                      {
-                        "name": "Allow-Storage-Tcp-Https",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 213,
-                          "protocol": "Tcp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "443",
-                          "destinationAddressPrefix": "[format('Storage.{0}', parameters('resourceLocation'))]"
-                        }
-                      },
-                      {
-                        "name": "Allow-AzureMonitor-Tcp-Https",
-                        "properties": {
-                          "access": "Allow",
-                          "direction": "Outbound",
-                          "priority": 214,
-                          "protocol": "Tcp",
-                          "sourcePortRange": "*",
-                          "sourceAddressPrefix": "[variables('workloadSubnetAddressPrefix')]",
-                          "destinationPortRange": "443",
-                          "destinationAddressPrefix": "AzureMonitor"
-                        }
-                      }
-                    ]
+                    "value": "[union(createArray(createObject('name', 'Allow-MCR-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 200, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'MicrosoftContainerRegistry')), createObject('name', 'Allow-Frontdoor-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 201, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureFrontDoor.FirstParty')), createObject('name', 'Allow-Subnet-AKS-Udp-1194', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 205, 'protocol', 'Udp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '1194', 'destinationAddressPrefix', format('AzureCloud.{0}', variables('regionServiceTag')))), createObject('name', 'Allow-Subnet-AKS-Tcp-9000', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 206, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '9000', 'destinationAddressPrefix', format('AzureCloud.{0}', variables('regionServiceTag')))), createObject('name', 'Allow-Azure-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 207, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureCloud')), createObject('name', 'Allow-Udp-Ntp', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 208, 'protocol', 'Udp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '123', 'destinationAddressPrefix', '*')), createObject('name', 'Allow-Subnet-All', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 209, 'protocol', '*', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '*', 'destinationAddressPrefix', variables('workloadSubnetAddressPrefix'))), createObject('name', 'Allow-DNS', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 210, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '53', 'destinationAddressPrefix', '168.63.129.16')), createObject('name', 'Allow-ACR-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 211, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureContainerRegistry')), createObject('name', 'Allow-Entra-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 212, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureActiveDirectory')), createObject('name', 'Allow-Storage-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 213, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', format('Storage.{0}', parameters('resourceLocation')))), createObject('name', 'Allow-AzureMonitor-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 214, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureMonitor'))), coalesce(parameters('customNetworkSecurityGroups'), createArray()))]"
                   }
                 },
                 "template": {
@@ -12243,7 +12332,7 @@
             "vault": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-vault', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
+              "name": "[format('{0}-vault', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName'), subscription().subscriptionId))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -15206,7 +15295,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[uniqueString('cr', parameters('name'), parameters('resourceLocation'), parameters('resourceGroupName'))]"
+                    "value": "[uniqueString('cr', parameters('name'), parameters('resourceLocation'), parameters('resourceGroupName'), subscription().subscriptionId)]"
                   },
                   "location": {
                     "value": "[parameters('resourceLocation')]"

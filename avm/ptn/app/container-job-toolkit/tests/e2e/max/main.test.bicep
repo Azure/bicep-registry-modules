@@ -77,6 +77,21 @@ module testDeployment '../../../main.bicep' = [
       ]
       deployInVnet: true
       addressPrefix: '192.168.0.0/16'
+      customNetworkSecurityGroups: [
+        {
+          name: 'nsg1'
+          properties: {
+            access: 'Allow'
+            direction: 'Outbound'
+            protocol: 'Tcp'
+            priority: 300
+            sourcePortRange: '*'
+            sourceAddressPrefixes: ['10.10.10.0/24']
+            destinationPortRange: '80'
+            destinationAddressPrefix: '192.168.0.0/16'
+          }
+        }
+      ]
       managedIdentityName: '${namePrefix}${serviceShort}mi'
       workloadProfiles: [
         {

@@ -60,6 +60,9 @@ param deployDnsZoneContainerRegistry bool = true
 @description('Conditional. The address prefix for the virtual network needs to be at least a /16. Three subnets will be created (the first /24 will be used for private endpoints, the second /24 for service endpoints and the second /23 is used for the workload). Required if `zoneRedundant` for consumption plan is desired or `deployInVnet` is `true`.')
 param addressPrefix string = '10.50.0.0/16' // set a default value for the cidrSubnet calculation, even if not used
 
+@description('Optional. Network security group, that will be added to the workload subnet.')
+param customNetworkSecurityGroups securityRulesType
+
 // container related parameters
 // -------------------------
 @description('Required. The container image source that will be copied to the Container Registry and used to provision the job.')
@@ -200,6 +203,7 @@ module services 'modules/deploy_services.bicep' = {
     addressPrefix: addressPrefix
     deployDnsZoneKeyVault: deployDnsZoneKeyVault
     deployDnsZoneContainerRegistry: deployDnsZoneContainerRegistry
+    customNetworkSecurityGroups: customNetworkSecurityGroups
     workloadProfiles: length(workloadProfiles ?? []) > 0 ? workloadProfiles : null
     tags: tags
     lock: lock
@@ -330,23 +334,4 @@ type lockType = {
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }
 
-// do not import, as the PSRule test would fail (testing this)
-type secretType = {
-  @description('Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
-  identity: string?
-
-  @description('Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.')
-  @metadata({
-    example: '''https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'''
-  })
-  keyVaultUrl: string?
-
-  @description('Optional. The name of the secret.')
-  name: string?
-
-  @description('Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.')
-  @secure()
-  value: string?
-}
-
-import { roleAssignmentType } from 'modules/deploy_services.bicep'
+import { roleAssignmentType, securityRulesType, secretType } from 'modules/deploy_services.bicep'
