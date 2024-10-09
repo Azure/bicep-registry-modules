@@ -44,9 +44,12 @@ var computeGalleryImageDefinitionsVar = [
     hyperVGeneration: 'V2'
     name: 'sid-linux'
     osType: 'Linux'
-    publisher: 'devops'
-    offer: 'devops_linux'
-    sku: 'devops_linux_az'
+    identifier: {
+      publisher: 'devops'
+      offer: 'devops_linux'
+      sku: 'devops_linux_az'
+    }
+    osState: 'Generalized'
   }
 ]
 var assetsStorageAccountContainerName = 'aibscripts'
@@ -68,7 +71,7 @@ resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
 }
 
 // Always deployed as both an infra element & needed as a staging resource group for image building
-module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.2.4' = {
+module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.4.0' = {
   name: '${deployment().name}-image-rg'
   params: {
     name: imageTemplateResourceGroupName
@@ -77,7 +80,7 @@ module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.2.4' = {
 }
 
 // User Assigned Identity (MSI)
-module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' = {
+module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
   name: '${deployment().name}-ds-msi'
   scope: rg
   params: {
@@ -86,7 +89,7 @@ module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' =
   }
 }
 
-module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' = {
+module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
   name: '${deployment().name}-image-msi'
   scope: rg
   params: {
@@ -106,7 +109,7 @@ resource imageMSI_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 }
 
 // Azure Compute Gallery
-module azureComputeGallery 'br/public:avm/res/compute/gallery:0.4.0' = {
+module azureComputeGallery 'br/public:avm/res/compute/gallery:0.7.0' = {
   name: '${deployment().name}-acg'
   scope: rg
   params: {
@@ -117,7 +120,7 @@ module azureComputeGallery 'br/public:avm/res/compute/gallery:0.4.0' = {
 }
 
 // Image Template Virtual Network
-module vnet 'br/public:avm/res/network/virtual-network:0.1.6' = {
+module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = {
   name: '${deployment().name}-vnet'
   scope: rg
   params: {
@@ -131,9 +134,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.6' = {
         addressPrefix: cidrSubnet(addressPrefix, 24, 0)
         privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET
         serviceEndpoints: [
-          {
-            service: 'Microsoft.Storage'
-          }
+          'Microsoft.Storage'
         ]
       }
       {
@@ -141,18 +142,9 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.6' = {
         addressPrefix: cidrSubnet(addressPrefix, 24, 1)
         privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET - temp
         serviceEndpoints: [
-          {
-            service: 'Microsoft.Storage'
-          }
+          'Microsoft.Storage'
         ]
-        delegations: [
-          {
-            name: 'Microsoft.ContainerInstance.containerGroups'
-            properties: {
-              serviceName: 'Microsoft.ContainerInstance/containerGroups'
-            }
-          }
-        ]
+        delegation: 'Microsoft.ContainerInstance/containerGroups'
       }
     ]
     location: location
@@ -227,7 +219,7 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
 }
 
 // Upload storage account files
-module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.3.1' = {
+module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.4.0' = {
   name: '${deployment().name}-storage-upload-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
