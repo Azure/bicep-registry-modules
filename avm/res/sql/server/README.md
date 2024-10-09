@@ -82,7 +82,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -107,6 +107,28 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlsadmin'
+// Non-required parameters
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: 'myspn'
+  principalType: 'Application'
+  sid: '<sid>'
+}
+param location = '<location>'
 ```
 
 </details>
@@ -148,7 +170,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -188,6 +210,32 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'ssaud001'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param auditSettings = {
+  isManagedIdentityInUse: true
+  state: 'Enabled'
+  storageAccountResourceId: '<storageAccountResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -216,7 +264,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -239,6 +287,24 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'ssmin001'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param location = '<location>'
 ```
 
 </details>
@@ -270,7 +336,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         backupShortTermRetentionPolicy: {
           retentionDays: 14
         }
-        capacity: 0
         collation: 'SQL_Latin1_General_CP1_CI_AS'
         diagnosticSettings: [
           {
@@ -289,6 +354,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         licenseType: 'LicenseIncluded'
         maxSizeBytes: 34359738368
         name: 'sqlsmaxdb-001'
+        skuCapacity: 0
         skuName: 'ElasticPool'
         skuTier: 'GeneralPurpose'
       }
@@ -413,7 +479,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -438,7 +504,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "backupShortTermRetentionPolicy": {
             "retentionDays": 14
           },
-          "capacity": 0,
           "collation": "SQL_Latin1_General_CP1_CI_AS",
           "diagnosticSettings": [
             {
@@ -457,6 +522,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "licenseType": "LicenseIncluded",
           "maxSizeBytes": 34359738368,
           "name": "sqlsmaxdb-001",
+          "skuCapacity": 0,
           "skuName": "ElasticPool",
           "skuTier": "GeneralPurpose"
         }
@@ -608,6 +674,165 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlsmax'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param databases = [
+  {
+    backupLongTermRetentionPolicy: {
+      monthlyRetention: 'P6M'
+    }
+    backupShortTermRetentionPolicy: {
+      retentionDays: 14
+    }
+    collation: 'SQL_Latin1_General_CP1_CI_AS'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    elasticPoolId: '<elasticPoolId>'
+    encryptionProtectorObj: {
+      serverKeyName: '<serverKeyName>'
+      serverKeyType: 'AzureKeyVault'
+    }
+    licenseType: 'LicenseIncluded'
+    maxSizeBytes: 34359738368
+    name: 'sqlsmaxdb-001'
+    skuCapacity: 0
+    skuName: 'ElasticPool'
+    skuTier: 'GeneralPurpose'
+  }
+]
+param elasticPools = [
+  {
+    maintenanceConfigurationId: '<maintenanceConfigurationId>'
+    name: 'sqlsmax-ep-001'
+    skuCapacity: 10
+    skuName: 'GP_Gen5'
+    skuTier: 'GeneralPurpose'
+  }
+]
+param firewallRules = [
+  {
+    endIpAddress: '0.0.0.0'
+    name: 'AllowAllWindowsAzureIps'
+    startIpAddress: '0.0.0.0'
+  }
+]
+param keys = [
+  {
+    name: '<name>'
+    serverKeyType: 'AzureKeyVault'
+    uri: '<uri>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param restrictOutboundNetworkAccess = 'Disabled'
+param roleAssignments = [
+  {
+    name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param securityAlertPolicies = [
+  {
+    emailAccountAdmins: true
+    name: 'Default'
+    state: 'Enabled'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param virtualNetworkRules = [
+  {
+    ignoreMissingVnetServiceEndpoint: true
+    name: 'newVnetRule1'
+    virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+  }
+]
+param vulnerabilityAssessmentsObj = {
+  emailSubscriptionAdmins: true
+  name: 'default'
+  recurringScansEmails: [
+    'test1@contoso.com'
+    'test2@contoso.com'
+  ]
+  recurringScansIsEnabled: true
+  storageAccountResourceId: '<storageAccountResourceId>'
+}
+```
+
+</details>
+<p>
+
 ### Example 5: _With a secondary database_
 
 This instance deploys the module with a secondary database.
@@ -651,7 +876,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -692,6 +917,39 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlsec-sec'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param databases = [
+  {
+    createMode: 'Secondary'
+    maxSizeBytes: 2147483648
+    name: '<name>'
+    skuName: 'Basic'
+    skuTier: 'Basic'
+    sourceDatabaseResourceId: '<sourceDatabaseResourceId>'
+  }
+]
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -757,7 +1015,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -826,6 +1084,55 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlsvln'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param securityAlertPolicies = [
+  {
+    emailAccountAdmins: true
+    name: 'Default'
+    state: 'Enabled'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param vulnerabilityAssessmentsObj = {
+  createStorageRoleAssignment: true
+  emailSubscriptionAdmins: true
+  name: 'default'
+  recurringScansEmails: [
+    'test1@contoso.com'
+    'test2@contoso.com'
+  ]
+  recurringScansIsEnabled: true
+  storageAccountResourceId: '<storageAccountResourceId>'
+  useStorageAccountAccessKey: false
+}
+```
+
+</details>
+<p>
+
 ### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -857,7 +1164,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         backupShortTermRetentionPolicy: {
           retentionDays: 14
         }
-        capacity: 0
         collation: 'SQL_Latin1_General_CP1_CI_AS'
         diagnosticSettings: [
           {
@@ -876,6 +1182,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         licenseType: 'LicenseIncluded'
         maxSizeBytes: 34359738368
         name: 'sqlswafdb-001'
+        skuCapacity: 0
         skuName: 'ElasticPool'
         skuTier: 'GeneralPurpose'
       }
@@ -960,7 +1267,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -988,7 +1295,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "backupShortTermRetentionPolicy": {
             "retentionDays": 14
           },
-          "capacity": 0,
           "collation": "SQL_Latin1_General_CP1_CI_AS",
           "diagnosticSettings": [
             {
@@ -1007,6 +1313,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "licenseType": "LicenseIncluded",
           "maxSizeBytes": 34359738368,
           "name": "sqlswafdb-001",
+          "skuCapacity": 0,
           "skuName": "ElasticPool",
           "skuTier": "GeneralPurpose"
         }
@@ -1106,6 +1413,130 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlswaf'
+// Non-required parameters
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: 'myspn'
+  principalType: 'Application'
+  sid: '<sid>'
+  tenantId: '<tenantId>'
+}
+param databases = [
+  {
+    backupLongTermRetentionPolicy: {
+      monthlyRetention: 'P6M'
+    }
+    backupShortTermRetentionPolicy: {
+      retentionDays: 14
+    }
+    collation: 'SQL_Latin1_General_CP1_CI_AS'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    elasticPoolId: '<elasticPoolId>'
+    encryptionProtectorObj: {
+      serverKeyName: '<serverKeyName>'
+      serverKeyType: 'AzureKeyVault'
+    }
+    licenseType: 'LicenseIncluded'
+    maxSizeBytes: 34359738368
+    name: 'sqlswafdb-001'
+    skuCapacity: 0
+    skuName: 'ElasticPool'
+    skuTier: 'GeneralPurpose'
+  }
+]
+param elasticPools = [
+  {
+    maintenanceConfigurationId: '<maintenanceConfigurationId>'
+    name: 'sqlswaf-ep-001'
+    skuCapacity: 10
+    skuName: 'GP_Gen5'
+    skuTier: 'GeneralPurpose'
+  }
+]
+param keys = [
+  {
+    serverKeyType: 'AzureKeyVault'
+    uri: '<uri>'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'sqlServer'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param restrictOutboundNetworkAccess = 'Disabled'
+param securityAlertPolicies = [
+  {
+    emailAccountAdmins: true
+    name: 'Default'
+    state: 'Enabled'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param virtualNetworkRules = [
+  {
+    ignoreMissingVnetServiceEndpoint: true
+    name: 'newVnetRule1'
+    virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+  }
+]
+param vulnerabilityAssessmentsObj = {
+  emailSubscriptionAdmins: true
+  name: 'default'
+  recurringScansEmails: [
+    'test1@contoso.com'
+    'test2@contoso.com'
+  ]
+  recurringScansIsEnabled: true
+  storageAccountResourceId: '<storageAccountResourceId>'
 }
 ```
 
@@ -1722,6 +2153,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -1865,6 +2307,19 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Reservation Purchaser'`
+  - `'Role Based Access Control Administrator'`
+  - `'SQL DB Contributor'`
+  - `'SQL Managed Instance Contributor'`
+  - `'SQL Security Manager'`
+  - `'SQL Server Contributor'`
+  - `'SqlDb Migration Role'`
+  - `'SqlMI Migration Role'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

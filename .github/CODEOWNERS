@@ -19,9 +19,11 @@
 /avm/ptn/dev-ops/cicd-agents-and-runners/ @Azure/avm-ptn-devops-cicdagentsandrunners-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/finops-toolkit/finops-hub/ @Azure/avm-ptn-finopstoolkit-finopshub-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/lz/sub-vending/ @Azure/avm-ptn-lz-subvending-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/network/hub-networking/ @Azure/avm-ptn-network-hubnetworking-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/network/private-link-private-dns-zones/ @Azure/avm-ptn-network-privatelinkprivatednszones-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/policy-insights/remediation/ @Azure/avm-ptn-policyinsights-remediation-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/security/security-center/ @Azure/avm-ptn-security-securitycenter-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/virtual-machine-images/azure-image-builder/ @Azure/avm-ptn-virtualmachineimages-azureimagebuilder-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/alerts-management/action-rule/ @Azure/avm-res-alertsmanagement-actionrule-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/analysis-services/server/ @Azure/avm-res-analysisservices-server-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -60,9 +62,11 @@
 /avm/res/desktop-virtualization/host-pool/ @Azure/avm-res-desktopvirtualization-hostpool-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/desktop-virtualization/scaling-plan/ @Azure/avm-res-desktopvirtualization-scalingplan-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/desktop-virtualization/workspace/ @Azure/avm-res-desktopvirtualization-workspace-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/dev-ops-infrastructure/pool/ @Azure/avm-res-devopsinfrastructure-pool-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/dev-test-lab/lab/ @Azure/avm-res-devtestlab-lab-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/digital-twins/digital-twins-instance/ @Azure/avm-res-digitaltwins-digitaltwinsinstance-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/document-db/database-account/ @Azure/avm-res-documentdb-databaseaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/document-db/mongo-cluster/ @Azure/avm-res-documentdb-mongocluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/event-grid/domain/ @Azure/avm-res-eventgrid-domain-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/event-grid/namespace/ @Azure/avm-res-eventgrid-namespace-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/event-grid/system-topic/ @Azure/avm-res-eventgrid-systemtopic-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -143,6 +147,7 @@
 /avm/res/search/search-service/ @Azure/avm-res-search-searchservice-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/service-bus/namespace/ @Azure/avm-res-servicebus-namespace-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/service-fabric/cluster/ @Azure/avm-res-servicefabric-cluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/service-networking/traffic-controller/ @Azure/avm-res-servicenetworking-trafficcontroller-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/signal-r-service/signal-r/ @Azure/avm-res-signalrservice-signalr-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/signal-r-service/web-pub-sub/ @Azure/avm-res-signalrservice-webpubsub-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/sql/instance-pool/ @Azure/avm-res-sql-instancepool-module-owners-bicep @Azure/avm-module-reviewers-bicep
