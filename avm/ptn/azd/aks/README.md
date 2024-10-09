@@ -69,10 +69,7 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
     name: '<name>'
     principalId: '<principalId>'
     // Non-required parameters
-    aksClusterRoleAssignmentName: '<aksClusterRoleAssignmentName>'
-    containerRegistryRoleName: '<containerRegistryRoleName>'
     location: '<location>'
-    principalType: 'ServicePrincipal'
   }
 }
 ```
@@ -106,17 +103,8 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
       "value": "<principalId>"
     },
     // Non-required parameters
-    "aksClusterRoleAssignmentName": {
-      "value": "<aksClusterRoleAssignmentName>"
-    },
-    "containerRegistryRoleName": {
-      "value": "<containerRegistryRoleName>"
-    },
     "location": {
       "value": "<location>"
-    },
-    "principalType": {
-      "value": "ServicePrincipal"
     }
   }
 }
@@ -139,10 +127,7 @@ param logAnalyticsName = '<logAnalyticsName>'
 param name = '<name>'
 param principalId = '<principalId>'
 // Non-required parameters
-param aksClusterRoleAssignmentName = '<aksClusterRoleAssignmentName>'
-param containerRegistryRoleName = '<containerRegistryRoleName>'
 param location = '<location>'
-param principalType = 'ServicePrincipal'
 ```
 
 </details>

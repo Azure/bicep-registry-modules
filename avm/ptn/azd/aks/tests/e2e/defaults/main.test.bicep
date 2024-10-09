@@ -20,12 +20,6 @@ param serviceShort string = 'aidmin'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-param containerRegistryRoleName string = newGuid()
-
-@description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-param aksClusterRoleAssignmentName string = newGuid()
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -64,9 +58,6 @@ module testDeployment '../../../main.bicep' = [
       keyVaultName: 'kv${uniqueString(deployment().name)}-${serviceShort}'
       location: resourceLocation
       principalId: nestedDependencies.outputs.identityPrincipalId
-      principalType: 'ServicePrincipal'
-      containerRegistryRoleName: containerRegistryRoleName
-      aksClusterRoleAssignmentName: aksClusterRoleAssignmentName
     }
   }
 ]
