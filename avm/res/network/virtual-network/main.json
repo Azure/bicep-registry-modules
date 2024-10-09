@@ -5,7 +5,7 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.21.1.54444",
+      "version": "0.29.47.4906",
       "templateHash": "15637892116799403398"
     },
     "name": "Virtual Networks",
@@ -804,7 +804,7 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
+              "version": "0.29.47.4906",
               "templateHash": "14202991992542080933"
             },
             "name": "Virtual Network Subnets",
@@ -1183,7 +1183,7 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
+              "version": "0.29.47.4906",
               "templateHash": "13788637292245761007"
             },
             "name": "Virtual Network Peerings",
@@ -1340,7 +1340,7 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
+              "version": "0.29.47.4906",
               "templateHash": "13788637292245761007"
             },
             "name": "Virtual Network Peerings",
