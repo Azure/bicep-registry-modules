@@ -65,7 +65,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -87,6 +87,25 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network:<version>'
+
+// Required parameters
+param addressPrefixes = [
+  '10.0.0.0/16'
+]
+param name = 'nvnmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -131,7 +150,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -165,6 +184,35 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network:<version>'
+
+// Required parameters
+param addressPrefixes = [
+  '10.0.0.0/21'
+  'fd00:592b:3014::/64'
+]
+param name = 'nvnipv6001'
+// Non-required parameters
+param location = '<location>'
+param subnets = [
+  {
+    addressPrefixes: [
+      '10.0.0.0/24'
+      'fd00:592b:3014::/64'
+    ]
+    name: 'ipv6-subnet'
+  }
+]
 ```
 
 </details>
@@ -308,7 +356,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -458,6 +506,134 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network:<version>'
+
+// Required parameters
+param addressPrefixes = [
+  '<addressPrefix>'
+]
+param name = 'nvnmax001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param dnsServers = [
+  '10.0.1.4'
+  '10.0.1.5'
+]
+param flowTimeoutInMinutes = 20
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'f5c27a7b-9b18-4dc1-b002-db3c38e80b64'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param subnets = [
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'GatewaySubnet'
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'az-subnet-x-001'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    routeTableResourceId: '<routeTableResourceId>'
+    serviceEndpoints: [
+      'Microsoft.Sql'
+      'Microsoft.Storage'
+    ]
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    delegation: 'Microsoft.Netapp/volumes'
+    name: 'az-subnet-x-002'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'az-subnet-x-003'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'az-subnet-x-004'
+    natGatewayResourceId: ''
+    networkSecurityGroupResourceId: ''
+    routeTableResourceId: ''
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'AzureBastionSubnet'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'AzureFirewallSubnet'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 4: _Deploying a bi-directional peering_
 
 This instance deploys the module with both an inbound and outbound peering.
@@ -520,7 +696,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -580,6 +756,58 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network:<version>'
+
+// Required parameters
+param addressPrefixes = [
+  '10.1.0.0/24'
+]
+param name = 'nvnpeer001'
+// Non-required parameters
+param location = '<location>'
+param peerings = [
+  {
+    allowForwardedTraffic: true
+    allowGatewayTransit: false
+    allowVirtualNetworkAccess: true
+    remotePeeringAllowForwardedTraffic: true
+    remotePeeringAllowVirtualNetworkAccess: true
+    remotePeeringEnabled: true
+    remotePeeringName: 'customName'
+    remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
+    useRemoteGateways: false
+  }
+]
+param subnets = [
+  {
+    addressPrefix: '10.1.0.0/26'
+    name: 'GatewaySubnet'
+  }
+  {
+    addressPrefix: '10.1.0.64/26'
+    name: 'AzureBastionSubnet'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+  }
+  {
+    addressPrefix: '10.1.0.128/26'
+    name: 'AzureFirewallSubnet'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -684,7 +912,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -784,6 +1012,94 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network:<version>'
+
+// Required parameters
+param addressPrefixes = [
+  '<addressPrefix>'
+]
+param name = 'nvnwaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param dnsServers = [
+  '10.0.1.4'
+  '10.0.1.5'
+]
+param flowTimeoutInMinutes = 20
+param location = '<location>'
+param subnets = [
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'GatewaySubnet'
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'az-subnet-x-001'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    routeTableResourceId: '<routeTableResourceId>'
+    serviceEndpoints: [
+      'Microsoft.Sql'
+      'Microsoft.Storage'
+    ]
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    delegation: 'Microsoft.Netapp/volumes'
+    name: 'az-subnet-x-002'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'az-subnet-x-003'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'AzureBastionSubnet'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'AzureFirewallSubnet'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -1195,6 +1511,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1415,6 +1738,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

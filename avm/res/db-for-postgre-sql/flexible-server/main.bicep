@@ -377,6 +377,9 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
       principalType: administrator.principalType
       tenantId: administrator.?tenantId ?? tenant().tenantId
     }
+    dependsOn: [
+      flexibleServer_configurations
+    ]
   }
 ]
 
