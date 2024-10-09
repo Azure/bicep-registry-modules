@@ -1,4 +1,4 @@
-# avm/ptn/azd/container-apps `[Azd/ContainerApps]`
+# avm/ptn/azd/container-apps-stack `[Azd/ContainerApps]`
 
 Creates an Azure Container Registry and an Azure Container Apps environment.
 
@@ -37,7 +37,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/container-apps:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/container-apps-stack:<version>`.
 
 - [With zoneRedundant enabled](#example-1-with-zoneredundant-enabled)
 
@@ -51,7 +51,7 @@ This instance deploys the module with zoneRedundant enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
+module containerApps 'br/public:avm/ptn/azd/container-apps-stack:<version>' = {
   name: 'containerAppsDeployment'
   params: {
     // Required parameters
