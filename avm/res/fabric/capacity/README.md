@@ -56,7 +56,7 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -78,6 +78,25 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/fabric/capacity:<version>'
+
+// Required parameters
+param adminMembers = [
+  'mattschmitt@microsoft.com'
+]
+param name = 'fcmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -113,7 +132,7 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -138,6 +157,26 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/fabric/capacity:<version>'
+
+// Required parameters
+param adminMembers = [
+  'mattschmitt@microsoft.com'
+]
+param name = 'fcwaf001'
+// Non-required parameters
+param location = '<location>'
+param skuName = 'F64'
 ```
 
 </details>
