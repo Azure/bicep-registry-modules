@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.3.12046",
-      "templateHash": "12599229174633311842"
+      "version": "0.30.23.60470",
+      "templateHash": "489102920669919211"
     },
     "name": "App Service Plan",
     "description": "This module deploys an App Service Plan.",
@@ -205,7 +205,7 @@
       "type": "string",
       "defaultValue": "P1v3",
       "metadata": {
-        "example": "  'F1'\n  'B1'\n  'P1v3'\n  'I1v2'\n  ",
+        "example": "  'F1'\n  'B1'\n  'P1v3'\n  'I1v2'\n  'FC1'\n  ",
         "description": "Optional. The name of the SKU will Determine the tier, size, family of the App Service Plan. This defaults to P1v3 to leverage availability zones."
       }
     },
@@ -379,7 +379,8 @@
       "tags": "[parameters('tags')]",
       "sku": {
         "name": "[parameters('skuName')]",
-        "capacity": "[parameters('skuCapacity')]"
+        "capacity": "[if(equals(parameters('skuName'), 'FC1'), null(), parameters('skuCapacity'))]",
+        "tier": "[if(equals(parameters('skuName'), 'FC1'), 'FlexConsumption', null())]"
       },
       "properties": {
         "workerTierName": "[parameters('workerTierName')]",
