@@ -60,7 +60,7 @@ module privateLinkScope 'br/public:avm/res/insights/private-link-scope:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -77,6 +77,22 @@ module privateLinkScope 'br/public:avm/res/insights/private-link-scope:<version>
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/private-link-scope:<version>'
+
+// Required parameters
+param name = 'iplsmin001'
+// Non-required parameters
+param location = 'global'
 ```
 
 </details>
@@ -269,7 +285,7 @@ module privateLinkScope 'br/public:avm/res/insights/private-link-scope:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -464,6 +480,183 @@ module privateLinkScope 'br/public:avm/res/insights/private-link-scope:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/private-link-scope:<version>'
+
+// Required parameters
+param name = 'iplsmax001'
+// Non-required parameters
+param accessModeSettings = {
+  exclusions: [
+    {
+      ingestionAccessMode: 'PrivateOnly'
+      privateEndpointConnectionName: 'thisisatest'
+      queryAccessMode: 'PrivateOnly'
+    }
+  ]
+  ingestionAccessMode: 'Open'
+  queryAccessMode: 'Open'
+}
+param location = 'global'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param privateEndpoints = [
+  {
+    customNetworkInterfaceName: 'nic-pe-'
+    ipConfigurations: [
+      {
+        name: 'api'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: 'api'
+          privateIPAddress: '10.0.0.11'
+        }
+      }
+      {
+        name: 'globalinai'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: 'global.in.ai'
+          privateIPAddress: '10.0.0.12'
+        }
+      }
+      {
+        name: 'profiler'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: 'profiler'
+          privateIPAddress: '10.0.0.13'
+        }
+      }
+      {
+        name: 'live'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: 'live'
+          privateIPAddress: '10.0.0.14'
+        }
+      }
+      {
+        name: 'diagservicesquery'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: 'diagservicesquery'
+          privateIPAddress: '10.0.0.15'
+        }
+      }
+      {
+        name: 'snapshot'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: 'snapshot'
+          privateIPAddress: '10.0.0.16'
+        }
+      }
+      {
+        name: 'agentsolutionpackstore'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: 'agentsolutionpackstore'
+          privateIPAddress: '10.0.0.17'
+        }
+      }
+      {
+        name: 'dce-global'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: 'dce-global'
+          privateIPAddress: '10.0.0.18'
+        }
+      }
+      {
+        name: '<name>'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: '<memberName>'
+          privateIPAddress: '10.0.0.19'
+        }
+      }
+      {
+        name: '<name>'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: '<memberName>'
+          privateIPAddress: '10.0.0.20'
+        }
+      }
+      {
+        name: '<name>'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: '<memberName>'
+          privateIPAddress: '10.0.0.21'
+        }
+      }
+    ]
+    name: 'pe-'
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param roleAssignments = [
+  {
+    name: 'af62023f-9f34-4bc0-8f05-2374886daf28'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param scopedResources = [
+  {
+    linkedResourceId: '<linkedResourceId>'
+    name: 'scoped1'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -610,7 +803,7 @@ module privateLinkScope 'br/public:avm/res/insights/private-link-scope:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -758,6 +951,142 @@ module privateLinkScope 'br/public:avm/res/insights/private-link-scope:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/private-link-scope:<version>'
+
+// Required parameters
+param name = 'iplswaf001'
+// Non-required parameters
+param location = 'global'
+param privateEndpoints = [
+  {
+    customNetworkInterfaceName: 'nic-pe-'
+    ipConfigurations: [
+      {
+        name: 'api'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: 'api'
+          privateIPAddress: '10.0.0.11'
+        }
+      }
+      {
+        name: 'globalinai'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: 'global.in.ai'
+          privateIPAddress: '10.0.0.12'
+        }
+      }
+      {
+        name: 'profiler'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: 'profiler'
+          privateIPAddress: '10.0.0.13'
+        }
+      }
+      {
+        name: 'live'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: 'live'
+          privateIPAddress: '10.0.0.14'
+        }
+      }
+      {
+        name: 'diagservicesquery'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: 'diagservicesquery'
+          privateIPAddress: '10.0.0.15'
+        }
+      }
+      {
+        name: 'snapshot'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: 'snapshot'
+          privateIPAddress: '10.0.0.16'
+        }
+      }
+      {
+        name: 'agentsolutionpackstore'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: 'agentsolutionpackstore'
+          privateIPAddress: '10.0.0.17'
+        }
+      }
+      {
+        name: 'dce-global'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: 'dce-global'
+          privateIPAddress: '10.0.0.18'
+        }
+      }
+      {
+        name: '<name>'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: '<memberName>'
+          privateIPAddress: '10.0.0.19'
+        }
+      }
+      {
+        name: '<name>'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: '<memberName>'
+          privateIPAddress: '10.0.0.20'
+        }
+      }
+      {
+        name: '<name>'
+        properties: {
+          groupId: 'azuremonitor'
+          memberName: '<memberName>'
+          privateIPAddress: '10.0.0.21'
+        }
+      }
+    ]
+    name: 'pe-'
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param scopedResources = [
+  {
+    linkedResourceId: '<linkedResourceId>'
+    name: 'scoped1'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -770,7 +1099,7 @@ module privateLinkScope 'br/public:avm/res/insights/private-link-scope:<version>
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`accessModeSettings`](#parameter-accessmodesettings) | object | Specifies the access mode of ingestion or queries through associated private endpoints in scope. For security reasons, it is recommended to use PrivateOnly whenever possible to avoid data exfiltration.<p><p>  * Private Only - This mode allows the connected virtual network to reach only Private Link resources. It is the most secure mode and is set as the default when the `privateEndpoints` parameter is configured.<p>  * Open - Allows the connected virtual network to reach both Private Link resources and the resources not in the AMPLS resource. Data exfiltration cannot be prevented in this mode. |
+| [`accessModeSettings`](#parameter-accessmodesettings) | object | Specifies the access mode of ingestion or queries through associated private endpoints in scope. For security reasons, it is recommended to use PrivateOnly whenever possible to avoid data exfiltration.<p><p>* Private Only - This mode allows the connected virtual network to reach only Private Link resources. It is the most secure mode and is set as the default when the `privateEndpoints` parameter is configured.<p>* Open - Allows the connected virtual network to reach both Private Link resources and the resources not in the AMPLS resource. Data exfiltration cannot be prevented in this mode. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | The location of the private link scope. Should be global. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -788,7 +1117,7 @@ Name of the private link scope.
 
 ### Parameter: `accessModeSettings`
 
-Specifies the access mode of ingestion or queries through associated private endpoints in scope. For security reasons, it is recommended to use PrivateOnly whenever possible to avoid data exfiltration.<p><p>  * Private Only - This mode allows the connected virtual network to reach only Private Link resources. It is the most secure mode and is set as the default when the `privateEndpoints` parameter is configured.<p>  * Open - Allows the connected virtual network to reach both Private Link resources and the resources not in the AMPLS resource. Data exfiltration cannot be prevented in this mode.
+Specifies the access mode of ingestion or queries through associated private endpoints in scope. For security reasons, it is recommended to use PrivateOnly whenever possible to avoid data exfiltration.<p><p>* Private Only - This mode allows the connected virtual network to reach only Private Link resources. It is the most secure mode and is set as the default when the `privateEndpoints` parameter is configured.<p>* Open - Allows the connected virtual network to reach both Private Link resources and the resources not in the AMPLS resource. Data exfiltration cannot be prevented in this mode.
 
 - Required: No
 - Type: object
@@ -1221,6 +1550,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -1332,6 +1672,21 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Log Analytics Contributor'`
+  - `'Log Analytics Reader'`
+  - `'Logic App Contributor'`
+  - `'Monitoring Contributor'`
+  - `'Monitoring Metrics Publisher'`
+  - `'Monitoring Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'Tag Contributor'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

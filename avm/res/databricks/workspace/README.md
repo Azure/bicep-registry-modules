@@ -61,7 +61,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -78,6 +78,22 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/databricks/workspace:<version>'
+
+// Required parameters
+param name = 'dwmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -212,7 +228,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -389,6 +405,125 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/databricks/workspace:<version>'
+
+// Required parameters
+param name = 'dwmax002'
+// Non-required parameters
+param amlWorkspaceResourceId = '<amlWorkspaceResourceId>'
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param customerManagedKeyManagedDisk = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  rotationToLatestKeyVersionEnabled: true
+}
+param customPrivateSubnetName = '<customPrivateSubnetName>'
+param customPublicSubnetName = '<customPublicSubnetName>'
+param customVirtualNetworkResourceId = '<customVirtualNetworkResourceId>'
+param defaultCatalog = {
+  initialType: 'UnityCatalog'
+}
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'jobs'
+      }
+      {
+        category: 'notebook'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disablePublicIp = true
+param loadBalancerBackendPoolName = '<loadBalancerBackendPoolName>'
+param loadBalancerResourceId = '<loadBalancerResourceId>'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedResourceGroupResourceId = '<managedResourceGroupResourceId>'
+param natGatewayName = 'nat-gateway'
+param prepareEncryption = true
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'databricks_ui_api'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'browser_authentication'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicIpName = 'nat-gw-public-ip'
+param publicNetworkAccess = 'Disabled'
+param requiredNsgRules = 'NoAzureDatabricksRules'
+param requireInfrastructureEncryption = true
+param roleAssignments = [
+  {
+    name: '2754e64b-b96e-44bc-9cb2-6e39b057f515'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param skuName = 'premium'
+param storageAccountName = 'sadwmax001'
+param storageAccountSkuName = 'Standard_ZRS'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param vnetAddressPrefix = '10.100'
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -500,7 +635,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -656,6 +791,107 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/databricks/workspace:<version>'
+
+// Required parameters
+param name = 'dwwaf001'
+// Non-required parameters
+param accessConnectorResourceId = '<accessConnectorResourceId>'
+param amlWorkspaceResourceId = '<amlWorkspaceResourceId>'
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param customerManagedKeyManagedDisk = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  rotationToLatestKeyVersionEnabled: true
+}
+param customPrivateSubnetName = '<customPrivateSubnetName>'
+param customPublicSubnetName = '<customPublicSubnetName>'
+param customVirtualNetworkResourceId = '<customVirtualNetworkResourceId>'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'jobs'
+      }
+      {
+        category: 'notebook'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disablePublicIp = true
+param loadBalancerBackendPoolName = '<loadBalancerBackendPoolName>'
+param loadBalancerResourceId = '<loadBalancerResourceId>'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedResourceGroupResourceId = '<managedResourceGroupResourceId>'
+param natGatewayName = 'nat-gateway'
+param prepareEncryption = true
+param privateEndpoints = [
+  {
+    privateDnsZoneResourceIds: [
+      '<privateDNSZoneResourceId>'
+    ]
+    service: 'databricks_ui_api'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param privateStorageAccount = 'Enabled'
+param publicIpName = 'nat-gw-public-ip'
+param publicNetworkAccess = 'Disabled'
+param requiredNsgRules = 'NoAzureDatabricksRules'
+param requireInfrastructureEncryption = true
+param skuName = 'premium'
+param storageAccountName = 'sadwwaf001'
+param storageAccountPrivateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'blob'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param storageAccountSkuName = 'Standard_ZRS'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param vnetAddressPrefix = '10.100'
 ```
 
 </details>
@@ -1565,6 +1801,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1977,6 +2219,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

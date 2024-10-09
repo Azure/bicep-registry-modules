@@ -85,7 +85,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -112,6 +112,28 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'analytical'
+// Non-required parameters
+param enableAnalyticalStorage = true
+param location = '<location>'
+param sqlDatabases = [
+  {
+    name: 'no-containers-specified'
+  }
+]
 ```
 
 </details>
@@ -151,7 +173,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -189,6 +211,30 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'bounded'
+// Non-required parameters
+param defaultConsistencyLevel = 'BoundedStaleness'
+param location = '<location>'
+param maxIntervalInSeconds = 600
+param maxStalenessPrefix = 200000
+param sqlDatabases = [
+  {
+    name: 'no-containers-specified'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -215,7 +261,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -232,6 +278,22 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddamin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -367,7 +429,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -507,6 +569,126 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddagrm002'
+// Non-required parameters
+param capabilitiesToAdd = [
+  'EnableGremlin'
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param gremlinDatabases = [
+  {
+    graphs: [
+      {
+        indexingPolicy: {
+          automatic: true
+        }
+        name: 'car_collection'
+        partitionKeyPaths: [
+          '/car_id'
+        ]
+      }
+      {
+        indexingPolicy: {
+          automatic: true
+        }
+        name: 'truck_collection'
+        partitionKeyPaths: [
+          '/truck_id'
+        ]
+      }
+    ]
+    name: 'gdb-dddagrm-001'
+    throughput: 10000
+  }
+  {
+    graphs: [
+      {
+        indexingPolicy: {
+          automatic: true
+        }
+        name: 'bike_collection'
+        partitionKeyPaths: [
+          '/bike_id'
+        ]
+      }
+      {
+        indexingPolicy: {
+          automatic: true
+        }
+        name: 'bicycle_collection'
+        partitionKeyPaths: [
+          '/bicycle_id'
+        ]
+      }
+    ]
+    name: 'gdb-dddagrm-002'
+  }
+]
+param location = '<location>'
+param locations = [
+  {
+    failoverPriority: 0
+    isZoneRedundant: false
+    locationName: '<locationName>'
+  }
+  {
+    failoverPriority: 1
+    isZoneRedundant: false
+    locationName: '<locationName>'
+  }
+]
+param managedIdentities = {
+  systemAssigned: true
+}
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 5: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
@@ -544,7 +726,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -573,6 +755,33 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'kv-ref'
+// Non-required parameters
+param location = '<location>'
+param secretsExportConfiguration = {
+  keyVaultResourceId: '<keyVaultResourceId>'
+  primaryReadonlyConnectionStringSecretName: 'primaryReadonlyConnectionString'
+  primaryReadOnlyKeySecretName: 'primaryReadOnlyKey'
+  primaryWriteConnectionStringSecretName: 'primaryWriteConnectionString'
+  primaryWriteKeySecretName: 'primaryWriteKey'
+  secondaryReadonlyConnectionStringSecretName: 'secondaryReadonlyConnectionString'
+  secondaryReadonlyKeySecretName: 'secondaryReadonlyKey'
+  secondaryWriteConnectionStringSecretName: 'secondaryWriteConnectionString'
+  secondaryWriteKeySecretName: 'secondaryWriteKey'
 }
 ```
 
@@ -629,7 +838,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -674,6 +883,46 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'user-mi'
+// Non-required parameters
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
 ```
 
 </details>
@@ -943,7 +1192,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1215,6 +1464,260 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddamng001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param locations = [
+  {
+    failoverPriority: 0
+    isZoneRedundant: false
+    locationName: '<locationName>'
+  }
+  {
+    failoverPriority: 1
+    isZoneRedundant: false
+    locationName: '<locationName>'
+  }
+]
+param managedIdentities = {
+  systemAssigned: true
+}
+param mongodbDatabases = [
+  {
+    collections: [
+      {
+        indexes: [
+          {
+            key: {
+              keys: [
+                '_id'
+              ]
+            }
+          }
+          {
+            key: {
+              keys: [
+                '$**'
+              ]
+            }
+          }
+          {
+            key: {
+              keys: [
+                'car_id'
+                'car_model'
+              ]
+            }
+            options: {
+              unique: true
+            }
+          }
+          {
+            key: {
+              keys: [
+                '_ts'
+              ]
+            }
+            options: {
+              expireAfterSeconds: 2629746
+            }
+          }
+        ]
+        name: 'car_collection'
+        shardKey: {
+          car_id: 'Hash'
+        }
+        throughput: 600
+      }
+      {
+        indexes: [
+          {
+            key: {
+              keys: [
+                '_id'
+              ]
+            }
+          }
+          {
+            key: {
+              keys: [
+                '$**'
+              ]
+            }
+          }
+          {
+            key: {
+              keys: [
+                'truck_id'
+                'truck_model'
+              ]
+            }
+            options: {
+              unique: true
+            }
+          }
+          {
+            key: {
+              keys: [
+                '_ts'
+              ]
+            }
+            options: {
+              expireAfterSeconds: 2629746
+            }
+          }
+        ]
+        name: 'truck_collection'
+        shardKey: {
+          truck_id: 'Hash'
+        }
+      }
+    ]
+    name: 'mdb-dddamng-001'
+    throughput: 800
+  }
+  {
+    collections: [
+      {
+        indexes: [
+          {
+            key: {
+              keys: [
+                '_id'
+              ]
+            }
+          }
+          {
+            key: {
+              keys: [
+                '$**'
+              ]
+            }
+          }
+          {
+            key: {
+              keys: [
+                'bike_id'
+                'bike_model'
+              ]
+            }
+            options: {
+              unique: true
+            }
+          }
+          {
+            key: {
+              keys: [
+                '_ts'
+              ]
+            }
+            options: {
+              expireAfterSeconds: 2629746
+            }
+          }
+        ]
+        name: 'bike_collection'
+        shardKey: {
+          bike_id: 'Hash'
+        }
+      }
+      {
+        indexes: [
+          {
+            key: {
+              keys: [
+                '_id'
+              ]
+            }
+          }
+          {
+            key: {
+              keys: [
+                '$**'
+              ]
+            }
+          }
+          {
+            key: {
+              keys: [
+                'bicycle_id'
+                'bicycle_model'
+              ]
+            }
+            options: {
+              unique: true
+            }
+          }
+          {
+            key: {
+              keys: [
+                '_ts'
+              ]
+            }
+            options: {
+              expireAfterSeconds: 2629746
+            }
+          }
+        ]
+        name: 'bicycle_collection'
+        shardKey: {
+          bicycle_id: 'Hash'
+        }
+      }
+    ]
+    name: 'mdb-dddamng-002'
+  }
+]
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 8: _Deploying multiple regions_
 
 This instance deploys the module in multiple regions with configs specific of multi region scenarios.
@@ -1264,7 +1767,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1325,6 +1828,45 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'multi-region'
+// Non-required parameters
+param automaticFailover = false
+param backupIntervalInMinutes = 300
+param backupPolicyType = 'Periodic'
+param backupRetentionIntervalInHours = 16
+param backupStorageRedundancy = 'Zone'
+param enableMultipleWriteLocations = true
+param location = '<location>'
+param locations = [
+  {
+    failoverPriority: 0
+    isZoneRedundant: true
+    locationName: '<locationName>'
+  }
+  {
+    failoverPriority: 1
+    isZoneRedundant: true
+    locationName: '<locationName>'
+  }
+]
+param sqlDatabases = [
+  {
+    name: 'no-containers-specified'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 9: _Plain_
 
 This instance deploys the module without a Database.
@@ -1368,7 +1910,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1421,6 +1963,39 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddapln001'
+// Non-required parameters
+param backupPolicyContinuousTier = 'Continuous7Days'
+param backupPolicyType = 'Continuous'
+param defaultConsistencyLevel = 'ConsistentPrefix'
+param disableKeyBasedMetadataWriteAccess = true
+param disableLocalAuth = true
+param location = '<location>'
+param locations = [
+  {
+    failoverPriority: 0
+    isZoneRedundant: false
+    locationName: '<locationName>'
+  }
+]
+param sqlDatabases = [
+  {
+    name: 'no-containers-specified'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 10: _Public network restricted access with ACL_
 
 This instance deploys the module with public network access enabled but restricted to IPs, CIDRS or subnets.
@@ -1465,7 +2040,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1509,6 +2084,40 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddapres001'
+// Non-required parameters
+param location = '<location>'
+param networkRestrictions = {
+  ipRules: [
+    '79.0.0.0'
+    '80.0.0.0'
+  ]
+  networkAclBypass: 'AzureServices'
+  publicNetworkAccess: 'Enabled'
+  virtualNetworkRules: [
+    {
+      subnetResourceId: '<subnetResourceId>'
+    }
+  ]
+}
+param sqlDatabases = [
+  {
+    name: 'no-containers-specified'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 11: _Deploying with a sql role definision and assignment_
 
 This instance deploys the module with sql role definision and assignment
@@ -1543,7 +2152,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1572,6 +2181,30 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'role-ref'
+// Non-required parameters
+param location = '<location>'
+param sqlRoleAssignmentsPrincipalIds = [
+  '<identityPrincipalId>'
+]
+param sqlRoleDefinitions = [
+  {
+    name: 'cosmos-sql-role-test'
+  }
+]
 ```
 
 </details>
@@ -1861,7 +2494,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2147,6 +2780,280 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddasql001'
+// Non-required parameters
+param enableAnalyticalStorage = true
+param location = '<location>'
+param locations = [
+  {
+    failoverPriority: 0
+    isZoneRedundant: false
+    locationName: '<locationName>'
+  }
+]
+param sqlDatabases = [
+  {
+    containers: [
+      {
+        analyticalStorageTtl: 0
+        conflictResolutionPolicy: {
+          conflictResolutionPath: '/myCustomId'
+          mode: 'LastWriterWins'
+        }
+        defaultTtl: 1000
+        indexingPolicy: {
+          automatic: true
+        }
+        kind: 'Hash'
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+        throughput: 600
+        uniqueKeyPolicyKeys: [
+          {
+            paths: [
+              '/firstName'
+            ]
+          }
+          {
+            paths: [
+              '/lastName'
+            ]
+          }
+        ]
+      }
+    ]
+    name: 'all-configs-specified'
+  }
+  {
+    containers: [
+      {
+        indexingPolicy: {
+          automatic: true
+        }
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'automatic-indexing-policy'
+  }
+  {
+    containers: [
+      {
+        conflictResolutionPolicy: {
+          conflictResolutionPath: '/myCustomId'
+          mode: 'LastWriterWins'
+        }
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'last-writer-conflict-resolution-policy'
+  }
+  {
+    containers: [
+      {
+        analyticalStorageTtl: 1000
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'fixed-analytical-ttl'
+  }
+  {
+    containers: [
+      {
+        analyticalStorageTtl: -1
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'infinite-analytical-ttl'
+  }
+  {
+    containers: [
+      {
+        defaultTtl: 1000
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'document-ttl'
+  }
+  {
+    containers: [
+      {
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+        uniqueKeyPolicyKeys: [
+          {
+            paths: [
+              '/firstName'
+            ]
+          }
+          {
+            paths: [
+              '/lastName'
+            ]
+          }
+        ]
+      }
+    ]
+    name: 'unique-key-policy'
+  }
+  {
+    containers: [
+      {
+        name: 'container-003'
+        paths: [
+          '/myPartitionKey'
+        ]
+        throughput: 500
+      }
+    ]
+    name: 'db-and-container-fixed-throughput-level'
+    throughput: 500
+  }
+  {
+    containers: [
+      {
+        name: 'container-003'
+        paths: [
+          '/myPartitionKey'
+        ]
+        throughput: 500
+      }
+    ]
+    name: 'container-fixed-throughput-level'
+  }
+  {
+    containers: [
+      {
+        name: 'container-003'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'database-fixed-throughput-level'
+    throughput: 500
+  }
+  {
+    autoscaleSettingsMaxThroughput: 1000
+    containers: [
+      {
+        autoscaleSettingsMaxThroughput: 1000
+        name: 'container-003'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'db-and-container-autoscale-level'
+  }
+  {
+    containers: [
+      {
+        autoscaleSettingsMaxThroughput: 1000
+        name: 'container-003'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'container-autoscale-level'
+  }
+  {
+    autoscaleSettingsMaxThroughput: 1000
+    containers: [
+      {
+        name: 'container-003'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'database-autoscale-level'
+  }
+  {
+    containers: [
+      {
+        kind: 'MultiHash'
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey1'
+          '/myPartitionKey2'
+          '/myPartitionKey3'
+        ]
+      }
+      {
+        kind: 'MultiHash'
+        name: 'container-002'
+        paths: [
+          'myPartitionKey1'
+          'myPartitionKey2'
+          'myPartitionKey3'
+        ]
+      }
+      {
+        kind: 'Hash'
+        name: 'container-003'
+        paths: [
+          '/myPartitionKey1'
+        ]
+      }
+      {
+        kind: 'Hash'
+        name: 'container-004'
+        paths: [
+          'myPartitionKey1'
+        ]
+      }
+      {
+        kind: 'Hash'
+        name: 'container-005'
+        paths: [
+          'myPartitionKey1'
+        ]
+        version: 2
+      }
+    ]
+    name: 'all-partition-key-types'
+  }
+  {
+    containers: []
+    name: 'empty-containers-array'
+  }
+  {
+    name: 'no-containers-specified'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 13: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -2223,7 +3130,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2301,6 +3208,72 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddawaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableKeyBasedMetadataWriteAccess = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'Sql'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param sqlDatabases = [
+  {
+    containers: [
+      {
+        kind: 'Hash'
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey1'
+        ]
+      }
+    ]
+    name: 'sql-dddawaf-001'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -3189,6 +4162,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -3293,6 +4277,17 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Cosmos DB Account Reader Role'`
+  - `'Cosmos DB Operator'`
+  - `'CosmosBackupOperator'`
+  - `'CosmosRestoreOperator'`
+  - `'DocumentDB Account Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

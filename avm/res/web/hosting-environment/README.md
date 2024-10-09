@@ -60,7 +60,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -83,6 +83,24 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/hosting-environment:<version>'
+
+// Required parameters
+param name = 'whemin001'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param kind = 'ASEv3'
+param location = '<location>'
 ```
 
 </details>
@@ -171,7 +189,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -282,6 +300,79 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/hosting-environment:<version>'
+
+// Required parameters
+param name = 'whemax001'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param allowNewPrivateEndpointConnections = true
+param clusterSettings = [
+  {
+    name: 'DisableTls1.0'
+    value: '1'
+  }
+]
+param customDnsSuffix = 'internal.contoso.com'
+param customDnsSuffixCertificateUrl = '<customDnsSuffixCertificateUrl>'
+param customDnsSuffixKeyVaultReferenceIdentity = '<customDnsSuffixKeyVaultReferenceIdentity>'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param ftpEnabled = true
+param inboundIpAddressOverride = '10.0.0.10'
+param internalLoadBalancingMode = 'Web, Publishing'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param remoteDebugEnabled = true
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  hostingEnvironmentName: 'whemax001'
+  resourceType: 'App Service Environment'
+}
+param upgradePreference = 'Late'
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -344,7 +435,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -425,6 +516,58 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/hosting-environment:<version>'
+
+// Required parameters
+param name = 'whewaf001'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param allowNewPrivateEndpointConnections = true
+param clusterSettings = [
+  {
+    name: 'DisableTls1.0'
+    value: '1'
+  }
+]
+param customDnsSuffix = 'internal.contoso.com'
+param customDnsSuffixCertificateUrl = '<customDnsSuffixCertificateUrl>'
+param customDnsSuffixKeyVaultReferenceIdentity = '<customDnsSuffixKeyVaultReferenceIdentity>'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param ftpEnabled = true
+param inboundIpAddressOverride = '10.0.0.10'
+param internalLoadBalancingMode = 'Web, Publishing'
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param remoteDebugEnabled = true
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  hostingEnvironmentName: 'whewaf001'
+  resourceType: 'App Service Environment'
+}
+param upgradePreference = 'Late'
 ```
 
 </details>
@@ -797,6 +940,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

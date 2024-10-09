@@ -24,7 +24,7 @@ param apiDescription string
 @minLength(1)
 param apiPath string
 
-@description('Required. Absolute URL of the web frontend.')
+@description('Required. Absolute URL of web frontend.')
 param webFrontendUrl string
 
 @description('Optional. Location for all Resources.')

@@ -49,6 +49,9 @@ param ruleSets array = []
 @description('Optional. Array of AFD endpoint objects.')
 param afdEndpoints array = []
 
+@description('Optional. Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies for details).')
+param securityPolicies securityPolicyType = []
+
 @description('Optional. Endpoint tags.')
 param tags object?
 
@@ -251,6 +254,22 @@ module profile_afdEndpoints 'afdEndpoint/main.bicep' = [
   }
 ]
 
+module profile_securityPolicies 'securityPolicies/main.bicep' = [
+  for (securityPolicy, index) in securityPolicies: {
+    name: '${uniqueString(deployment().name)}-Profile-SecurityPolicy-${index}'
+    dependsOn: [
+      profile_afdEndpoints
+      profile_customDomains
+    ]
+    params: {
+      name: securityPolicy.name
+      profileName: profile.name
+      associations: securityPolicy.associations
+      wafPolicyResourceId: securityPolicy.wafPolicyResourceId
+    }
+  }
+]
+
 @description('The name of the CDN profile.')
 output name string = profile.name
 
@@ -278,6 +297,18 @@ output uri string = !empty(endpointProperties) ? profile_endpoint.outputs.uri : 
 // =============== //
 //   Definitions   //
 // =============== //
+
+import { associationsType } from 'securityPolicies/main.bicep'
+type securityPolicyType = {
+  @description('Required. Name of the security policy.')
+  name: string
+
+  @description('Required. Domain names and URL patterns to math with this association.')
+  associations: associationsType
+
+  @description('Required. Resource ID of WAF policy.')
+  wafPolicyResourceId: string
+}[]
 
 type lockType = {
   @description('Optional. Specify the name of lock.')

@@ -1590,6 +1590,15 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DevTest Labs User'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Resource Policy Contributor'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+  - `'Virtual Machine Contributor'`
 
 **Required parameters**
 

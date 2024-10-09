@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "7935494033060946539"
+      "templateHash": "1542387667896789833"
     },
     "name": "avm/ptn/azd/apim-api",
     "description": "Creates and configure an API within an API Management service instance.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
@@ -50,7 +50,7 @@
     "webFrontendUrl": {
       "type": "string",
       "metadata": {
-        "description": "Required. Absolute URL of the web frontend."
+        "description": "Required. Absolute URL of web frontend."
       }
     },
     "location": {
