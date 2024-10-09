@@ -54,7 +54,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       keyVaultName: dependencies.outputs.keyVaultName
-      userAssignedtName: '${namePrefix}${serviceShort}uai001'
+      userAssignedName: '${namePrefix}${serviceShort}uai001'
       hubResourceId: dependencies.outputs.hubResourceId
     }
   }

@@ -21,19 +21,6 @@ param storageAccountName string
 })
 param tags object?
 
-module hub 'br/public:avm/res/machine-learning-services/workspace:0.7.0' = {
-  name: '${uniqueString(deployment().name, location)}-hub'
-  params: {
-    name: hubName
-    tags: tags
-    location: location
-    sku: 'Basic'
-    kind: 'Hub'
-    associatedKeyVaultResourceId: keyvault.outputs.resourceId
-    associatedStorageAccountResourceId: storageAccount.outputs.resourceId
-  }
-}
-
 module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
   name: '${uniqueString(deployment().name, location)}-storage'
   params: {
@@ -52,8 +39,18 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.9.0' = {
   }
 }
 
-@description('The name of the AI Studio Hub Resource.')
-output hubName string = hub.outputs.name
+module hub 'br/public:avm/res/machine-learning-services/workspace:0.7.0' = {
+  name: '${uniqueString(deployment().name, location)}-hub'
+  params: {
+    name: hubName
+    tags: tags
+    location: location
+    sku: 'Basic'
+    kind: 'Hub'
+    associatedKeyVaultResourceId: keyvault.outputs.resourceId
+    associatedStorageAccountResourceId: storageAccount.outputs.resourceId
+  }
+}
 
 @description('The resource ID of the AI Studio Hub Resource.')
 output hubResourceId string = hub.outputs.resourceId

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "6769328970490435151"
+      "templateHash": "5190819527891853814"
     },
     "name": "Machine Learning workspace",
     "description": "Create a machine learning workspace, configure the key vault access policy and assign role permissions to the machine learning instance.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
@@ -130,7 +130,7 @@
         "description": "Optional. The managed identity definition for the machine learning resource. At least one identity type is required."
       }
     },
-    "userAssignedtName": {
+    "userAssignedName": {
       "type": "string",
       "metadata": {
         "description": "Required. The name of the user assigned identity."
@@ -143,7 +143,7 @@
         "ea01e6af-a1c1-4350-9563-ad00f8c72ec5"
       ],
       "metadata": {
-        "description": "Optional. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+        "description": "Optional. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. Default roles: AzureML Data Scientist, Azure Machine Learning Workspace Connection Secrets Reader."
       }
     }
   },
@@ -6930,7 +6930,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('userAssignedtName')]"
+            "value": "[parameters('userAssignedName')]"
           },
           "location": {
             "value": "[parameters('location')]"

@@ -64,12 +64,12 @@ param projectManagedIdentities managedIdentitiesType = {
 }
 
 @description('Required. The name of the user assigned identity.')
-param userAssignedtName string
+param userAssignedName string
 
-@description('Optional. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+@description('Optional. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'. Default roles: AzureML Data Scientist, Azure Machine Learning Workspace Connection Secrets Reader.')
 param roleDefinitionIdOrName array = [
-  'f6c7c914-8db3-469d-8ca1-694a8f32e121'
-  'ea01e6af-a1c1-4350-9563-ad00f8c72ec5'
+  'f6c7c914-8db3-469d-8ca1-694a8f32e121' // AzureML Data Scientist
+  'ea01e6af-a1c1-4350-9563-ad00f8c72ec5' // Azure Machine Learning Workspace Connection Secrets Reader
 ]
 
 // ============== //
@@ -109,6 +109,10 @@ module project 'br/public:avm/res/machine-learning-services/workspace:0.7.0' = {
   }
 }
 
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+  name: keyVaultName
+}
+
 module keyVaultAccess 'br/public:avm/res/key-vault/vault:0.9.0' = {
   name: '${uniqueString(deployment().name, location)}-keyvault'
   params: {
@@ -125,7 +129,7 @@ module keyVaultAccess 'br/public:avm/res/key-vault/vault:0.9.0' = {
 module mlServiceRoleAssigned 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
   name: '${uniqueString(deployment().name, location)}-roleassignment'
   params: {
-    name: userAssignedtName
+    name: userAssignedName
     location: location
     roleAssignments: [
       for id in roleDefinitionIdOrName: {
@@ -135,10 +139,6 @@ module mlServiceRoleAssigned 'br/public:avm/res/managed-identity/user-assigned-i
       }
     ]
   }
-}
-
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
-  name: keyVaultName
 }
 
 // ============ //

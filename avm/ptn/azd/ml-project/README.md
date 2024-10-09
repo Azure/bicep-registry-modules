@@ -59,7 +59,7 @@ module mlProject 'br/public:avm/ptn/azd/ml-project:<version>' = {
     hubResourceId: '<hubResourceId>'
     keyVaultName: '<keyVaultName>'
     name: 'mlpmin001'
-    userAssignedtName: 'mlpminuai001'
+    userAssignedName: 'mlpminuai001'
     // Non-required parameters
     location: '<location>'
   }
@@ -71,7 +71,7 @@ module mlProject 'br/public:avm/ptn/azd/ml-project:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -88,7 +88,7 @@ module mlProject 'br/public:avm/ptn/azd/ml-project:<version>' = {
     "name": {
       "value": "mlpmin001"
     },
-    "userAssignedtName": {
+    "userAssignedName": {
       "value": "mlpminuai001"
     },
     // Non-required parameters
@@ -97,6 +97,25 @@ module mlProject 'br/public:avm/ptn/azd/ml-project:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/ml-project:<version>'
+
+// Required parameters
+param hubResourceId = '<hubResourceId>'
+param keyVaultName = '<keyVaultName>'
+param name = 'mlpmin001'
+param userAssignedName = 'mlpminuai001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -111,7 +130,7 @@ module mlProject 'br/public:avm/ptn/azd/ml-project:<version>' = {
 | [`hubResourceId`](#parameter-hubresourceid) | string | The resource ID of the AI Studio Hub Resource where this project should be created. |
 | [`keyVaultName`](#parameter-keyvaultname) | string | The name of the key vault. |
 | [`name`](#parameter-name) | string | The name of the machine learning workspace. |
-| [`userAssignedtName`](#parameter-userassignedtname) | string | The name of the user assigned identity. |
+| [`userAssignedName`](#parameter-userassignedname) | string | The name of the user assigned identity. |
 
 **Optional parameters**
 
@@ -124,7 +143,7 @@ module mlProject 'br/public:avm/ptn/azd/ml-project:<version>' = {
 | [`projectManagedIdentities`](#parameter-projectmanagedidentities) | object | The managed identity definition for the machine learning resource. At least one identity type is required. |
 | [`projectSku`](#parameter-projectsku) | string | Specifies the SKU, also referred as 'edition' of the Azure Machine Learning workspace. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this machine learning resource. For security reasons it should be disabled. |
-| [`roleDefinitionIdOrName`](#parameter-roledefinitionidorname) | array | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleDefinitionIdOrName`](#parameter-roledefinitionidorname) | array | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. Default roles: AzureML Data Scientist, Azure Machine Learning Workspace Connection Secrets Reader. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `hubResourceId`
@@ -148,7 +167,7 @@ The name of the machine learning workspace.
 - Required: Yes
 - Type: string
 
-### Parameter: `userAssignedtName`
+### Parameter: `userAssignedName`
 
 The name of the user assigned identity.
 
@@ -264,7 +283,7 @@ Whether or not public network access is allowed for this machine learning resour
 
 ### Parameter: `roleDefinitionIdOrName`
 
-The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. Default roles: AzureML Data Scientist, Azure Machine Learning Workspace Connection Secrets Reader.
 
 - Required: No
 - Type: array
