@@ -70,7 +70,7 @@ module monitoring 'br/public:avm/ptn/azd/monitoring:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -90,6 +90,23 @@ module monitoring 'br/public:avm/ptn/azd/monitoring:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/monitoring:<version>'
+
+// Required parameters
+param applicationInsightsName = '<applicationInsightsName>'
+param logAnalyticsName = '<logAnalyticsName>'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
