@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "9210191494689145931"
+      "version": "0.30.3.12046",
+      "templateHash": "5947451992668490696"
     },
     "name": "Azure Monitor Private Link Scopes",
     "description": "This module deploys an Azure Monitor Private Link Scope.",
@@ -430,7 +430,7 @@
     "accessModeSettings": {
       "$ref": "#/definitions/accessModeType",
       "metadata": {
-        "description": "Optional. Specifies the access mode of ingestion or queries through associated private endpoints in scope. For security reasons, it is recommended to use PrivateOnly whenever possible to avoid data exfiltration.\n\n  * Private Only - This mode allows the connected virtual network to reach only Private Link resources. It is the most secure mode and is set as the default when the `privateEndpoints` parameter is configured.\n  * Open - Allows the connected virtual network to reach both Private Link resources and the resources not in the AMPLS resource. Data exfiltration cannot be prevented in this mode."
+        "description": "Optional. Specifies the access mode of ingestion or queries through associated private endpoints in scope. For security reasons, it is recommended to use PrivateOnly whenever possible to avoid data exfiltration.\n\n* Private Only - This mode allows the connected virtual network to reach only Private Link resources. It is the most secure mode and is set as the default when the `privateEndpoints` parameter is configured.\n* Open - Allows the connected virtual network to reach both Private Link resources and the resources not in the AMPLS resource. Data exfiltration cannot be prevented in this mode."
       }
     },
     "location": {
@@ -601,8 +601,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "15704480901641345186"
+              "version": "0.30.3.12046",
+              "templateHash": "16277811786602972091"
             },
             "name": "Private Link Scope Scoped Resources",
             "description": "This module deploys a Private Link Scope Scoped Resource.",
@@ -1432,7 +1432,8 @@
         }
       },
       "dependsOn": [
-        "privateLinkScope"
+        "privateLinkScope",
+        "privateLinkScope_scopedResource"
       ]
     }
   },

@@ -1,4 +1,4 @@
-# avm/ptn/azd/container-apps-stack `[Azd/ContainerApps]`
+# avm/ptn/azd/container-apps-stack `[Azd/ContainerAppsStack]`
 
 Creates an Azure Container Registry and an Azure Container Apps environment.
 
@@ -51,8 +51,8 @@ This instance deploys the module with zoneRedundant enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module containerApps 'br/public:avm/ptn/azd/container-apps-stack:<version>' = {
-  name: 'containerAppsDeployment'
+module containerAppsStack 'br/public:avm/ptn/azd/container-apps-stack:<version>' = {
+  name: 'containerAppsStackDeployment'
   params: {
     // Required parameters
     containerAppsEnvironmentName: 'acazrcae001'
@@ -85,7 +85,7 @@ module containerApps 'br/public:avm/ptn/azd/container-apps-stack:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -142,6 +142,40 @@ module containerApps 'br/public:avm/ptn/azd/container-apps-stack:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/container-apps-stack:<version>'
+
+// Required parameters
+param containerAppsEnvironmentName = 'acazrcae001'
+param containerRegistryName = 'acazrcr001'
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+// Non-required parameters
+param acrSku = 'Standard'
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
+param internal = true
+param location = '<location>'
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
+param zoneRedundant = true
 ```
 
 </details>

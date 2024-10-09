@@ -20,6 +20,7 @@ This module deploys a Cognitive Service.
 | `Microsoft.CognitiveServices/accounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts) |
 | `Microsoft.CognitiveServices/accounts/deployments` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts/deployments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -33,13 +34,14 @@ The following section provides usage examples for the module, which were used to
 
 - [Using `AIServices` with `deployments` in parameter set and private endpoints](#example-1-using-aiservices-with-deployments-in-parameter-set-and-private-endpoints)
 - [Using `AIServices` with `deployments` in parameter set](#example-2-using-aiservices-with-deployments-in-parameter-set)
-- [Using only defaults](#example-3-using-only-defaults)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-5-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
-- [As Speech Service](#example-6-as-speech-service)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-7-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-8-using-customer-managed-keys-with-user-assigned-identity)
-- [WAF-aligned](#example-9-waf-aligned)
+- [Storing keys of service in key vault](#example-3-storing-keys-of-service-in-key-vault)
+- [Using only defaults](#example-4-using-only-defaults)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-6-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
+- [As Speech Service](#example-7-as-speech-service)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-8-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-9-using-customer-managed-keys-with-user-assigned-identity)
+- [WAF-aligned](#example-10-waf-aligned)
 
 ### Example 1: _Using `AIServices` with `deployments` in parameter set and private endpoints_
 
@@ -93,7 +95,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -151,6 +153,48 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'AIServices'
+param name = 'csadp003'
+// Non-required parameters
+param customSubDomainName = 'xcsadpai'
+param deployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-35-turbo'
+      version: '0301'
+    }
+    name: 'gpt-35-turbo'
+    sku: {
+      capacity: 10
+      name: 'Standard'
+    }
+  }
+]
+param location = '<location>'
+param privateEndpoints = [
+  {
+    privateDnsZoneResourceIds: [
+      '<privateDNSZoneOpenAIResourceId>'
+      '<privateDNSZoneResourceId>'
+    ]
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using `AIServices` with `deployments` in parameter set_
 
 This instance deploys the module with the AI model deployment feature.
@@ -193,7 +237,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -237,7 +281,125 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'AIServices'
+param name = 'csad002'
+// Non-required parameters
+param customSubDomainName = 'xcsadai'
+param deployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-35-turbo'
+      version: '0301'
+    }
+    name: 'gpt-35-turbo'
+    sku: {
+      capacity: 10
+      name: 'Standard'
+    }
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 3: _Storing keys of service in key vault_
+
+This instance deploys the module and stores its keys in a key vault.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  name: 'accountDeployment'
+  params: {
+    // Required parameters
+    kind: 'SpeechServices'
+    name: 'csakv001'
+    // Non-required parameters
+    location: '<location>'
+    secretsExportConfiguration: {
+      accessKey1Name: 'csakv001-accessKey1'
+      accessKey2Name: 'csakv001-accessKey2'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "SpeechServices"
+    },
+    "name": {
+      "value": "csakv001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "secretsExportConfiguration": {
+      "value": {
+        "accessKey1Name": "csakv001-accessKey1",
+        "accessKey2Name": "csakv001-accessKey2",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'SpeechServices'
+param name = 'csakv001'
+// Non-required parameters
+param location = '<location>'
+param secretsExportConfiguration = {
+  accessKey1Name: 'csakv001-accessKey1'
+  accessKey2Name: 'csakv001-accessKey2'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -264,7 +426,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -289,7 +451,24 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'SpeechServices'
+param name = 'csamin001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -426,7 +605,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -581,7 +760,134 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 5: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'Face'
+param name = 'csamax001'
+// Non-required parameters
+param customSubDomainName = 'xcsamax'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'RequestResponse'
+      }
+      {
+        category: 'Audit'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkAcls = {
+  defaultAction: 'Deny'
+  ipRules: [
+    {
+      value: '40.74.28.0/23'
+    }
+  ]
+  virtualNetworkRules: [
+    {
+      id: '<id>'
+      ignoreMissingVnetServiceEndpoint: false
+    }
+  ]
+}
+param privateEndpoints = [
+  {
+    customDnsConfigs: [
+      {
+        fqdn: 'abc.account.com'
+        ipAddresses: [
+          '10.0.0.10'
+        ]
+      }
+    ]
+    ipConfigurations: [
+      {
+        name: 'myIPconfig'
+        properties: {
+          groupId: 'account'
+          memberName: 'default'
+          privateIPAddress: '10.0.0.10'
+        }
+      }
+    ]
+    privateDnsZoneResourceIds: [
+      '<privateDNSZoneResourceId>'
+    ]
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneResourceIds: [
+      '<privateDNSZoneResourceId>'
+    ]
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+param roleAssignments = [
+  {
+    name: 'db64fe2f-3995-4ae0-86ef-97511d5b84e3'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param sku = 'S0'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 6: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
 
 This instance deploys the module with the AI model deployment feature and private endpoint.
 
@@ -632,7 +938,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -689,7 +995,48 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 6: _As Speech Service_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'OpenAI'
+param name = 'csoai002'
+// Non-required parameters
+param customSubDomainName = 'xcsoaiai'
+param deployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-35-turbo'
+      version: '0301'
+    }
+    name: 'gpt-35-turbo'
+    sku: {
+      capacity: 10
+      name: 'Standard'
+    }
+  }
+]
+param location = '<location>'
+param privateEndpoints = [
+  {
+    privateDnsZoneResourceIds: [
+      '<privateDNSZoneResourceId>'
+    ]
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+```
+
+</details>
+<p>
+
+### Example 7: _As Speech Service_
 
 This instance deploys the module as a Speech Service.
 
@@ -742,7 +1089,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -803,7 +1150,50 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 7: _Using Customer-Managed-Keys with System-Assigned identity_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'SpeechServices'
+param name = 'csaspeech001'
+// Non-required parameters
+param customSubDomainName = 'speechdomain'
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneResourceIds: [
+      '<privateDNSZoneResourceId>'
+    ]
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param sku = 'S0'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 8: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -840,7 +1230,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -885,7 +1275,34 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 8: _Using Customer-Managed-Keys with User-Assigned identity_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'SpeechServices'
+param name = '<name>'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+param publicNetworkAccess = 'Enabled'
+param restrictOutboundNetworkAccess = false
+param sku = 'S0'
+```
+
+</details>
+<p>
+
+### Example 9: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -925,7 +1342,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -973,7 +1390,37 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
-### Example 9: _WAF-aligned_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'SpeechServices'
+param name = 'csaencr001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param publicNetworkAccess = 'Enabled'
+param restrictOutboundNetworkAccess = false
+param sku = 'S0'
+```
+
+</details>
+<p>
+
+### Example 10: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1035,7 +1482,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1109,6 +1556,58 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'Face'
+param name = 'csawaf001'
+// Non-required parameters
+param customSubDomainName = 'xcsawaf'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneResourceIds: [
+      '<privateDNSZoneResourceId>'
+    ]
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param sku = 'S0'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -1146,6 +1645,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 | [`restore`](#parameter-restore) | bool | Restore a soft-deleted cognitive service at deployment time. Will fail if no such soft-deleted resource exists. |
 | [`restrictOutboundNetworkAccess`](#parameter-restrictoutboundnetworkaccess) | bool | Restrict outbound network access. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`sku`](#parameter-sku) | string | SKU of the Cognitive Services resource. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`userOwnedStorage`](#parameter-userownedstorage) | array | The storage accounts for this resource. |
@@ -1869,6 +2369,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -2010,6 +2521,36 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Cognitive Services Contributor'`
+  - `'Cognitive Services Custom Vision Contributor'`
+  - `'Cognitive Services Custom Vision Deployment'`
+  - `'Cognitive Services Custom Vision Labeler'`
+  - `'Cognitive Services Custom Vision Reader'`
+  - `'Cognitive Services Custom Vision Trainer'`
+  - `'Cognitive Services Data Reader (Preview)'`
+  - `'Cognitive Services Face Recognizer'`
+  - `'Cognitive Services Immersive Reader User'`
+  - `'Cognitive Services Language Owner'`
+  - `'Cognitive Services Language Reader'`
+  - `'Cognitive Services Language Writer'`
+  - `'Cognitive Services LUIS Owner'`
+  - `'Cognitive Services LUIS Reader'`
+  - `'Cognitive Services LUIS Writer'`
+  - `'Cognitive Services Metrics Advisor Administrator'`
+  - `'Cognitive Services Metrics Advisor User'`
+  - `'Cognitive Services OpenAI Contributor'`
+  - `'Cognitive Services OpenAI User'`
+  - `'Cognitive Services QnA Maker Editor'`
+  - `'Cognitive Services QnA Maker Reader'`
+  - `'Cognitive Services Speech Contributor'`
+  - `'Cognitive Services Speech User'`
+  - `'Cognitive Services User'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2101,6 +2642,47 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `secretsExportConfiguration`
+
+Key vault reference and secret settings for the module's secrets export.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The key vault name where to store the keys and connection strings generated by the modules. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`accessKey1Name`](#parameter-secretsexportconfigurationaccesskey1name) | string | The name for the accessKey1 secret to create. |
+| [`accessKey2Name`](#parameter-secretsexportconfigurationaccesskey2name) | string | The name for the accessKey2 secret to create. |
+
+### Parameter: `secretsExportConfiguration.keyVaultResourceId`
+
+The key vault name where to store the keys and connection strings generated by the modules.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `secretsExportConfiguration.accessKey1Name`
+
+The name for the accessKey1 secret to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.accessKey2Name`
+
+The name for the accessKey2 secret to create.
+
+- Required: No
+- Type: string
+
 ### Parameter: `sku`
 
 SKU of the Cognitive Services resource. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
@@ -2151,6 +2733,7 @@ The storage accounts for this resource.
 | :-- | :-- | :-- |
 | `endpoint` | string | The service endpoint of the cognitive services account. |
 | `endpoints` |  | All endpoints available for the cognitive services account, types depends on the cognitive service kind. |
+| `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the cognitive services account. |
 | `resourceGroupName` | string | The resource group the cognitive services account was deployed into. |

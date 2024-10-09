@@ -59,7 +59,7 @@ module managementGroup 'br/public:avm/res/management/management-group:<version>'
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -76,6 +76,22 @@ module managementGroup 'br/public:avm/res/management/management-group:<version>'
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/management/management-group:<version>'
+
+// Required parameters
+param name = 'mmgmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -109,7 +125,7 @@ module managementGroup 'br/public:avm/res/management/management-group:<version>'
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -132,6 +148,24 @@ module managementGroup 'br/public:avm/res/management/management-group:<version>'
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/management/management-group:<version>'
+
+// Required parameters
+param name = 'mmgmax001'
+// Non-required parameters
+param displayName = 'Test MG'
+param location = '<location>'
+param parentId = '<parentId>'
 ```
 
 </details>
@@ -165,7 +199,7 @@ module managementGroup 'br/public:avm/res/management/management-group:<version>'
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -188,6 +222,24 @@ module managementGroup 'br/public:avm/res/management/management-group:<version>'
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/management/management-group:<version>'
+
+// Required parameters
+param name = 'mmgwaf001'
+// Non-required parameters
+param displayName = 'Test MG'
+param location = '<location>'
+param parentId = '<parentId>'
 ```
 
 </details>

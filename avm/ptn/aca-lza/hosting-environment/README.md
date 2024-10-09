@@ -144,7 +144,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -215,6 +215,41 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/aca-lza/hosting-environment:<version>'
+
+// Required parameters
+param applicationGatewayCertificateKeyName = 'appgwcert'
+param enableApplicationInsights = true
+param enableDaprInstrumentation = false
+param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
+param spokeInfraSubnetAddressPrefix = '10.1.0.0/23'
+param spokePrivateEndpointsSubnetAddressPrefix = '10.1.2.0/27'
+param spokeVNetAddressPrefixes = [
+  '10.1.0.0/22'
+]
+param vmAdminPassword = '<vmAdminPassword>'
+param vmAdminUsername = 'vmadmin'
+param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
+param vmLinuxSshAuthorizedKey = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
+param vmSize = 'Standard_B1s'
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  environment: 'test'
+}
+param vmAuthenticationType = 'sshPublicKey'
+param vmJumpboxOSType = 'linux'
+param workloadName = '<workloadName>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using a hub and spoke deployment._
 
 This instance deploys the module including a Hub to peer to.
@@ -267,7 +302,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -359,6 +394,48 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/aca-lza/hosting-environment:<version>'
+
+// Required parameters
+param applicationGatewayCertificateKeyName = 'appgwcert'
+param enableApplicationInsights = true
+param enableDaprInstrumentation = false
+param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
+param spokeInfraSubnetAddressPrefix = '10.1.0.0/23'
+param spokePrivateEndpointsSubnetAddressPrefix = '10.1.2.0/27'
+param spokeVNetAddressPrefixes = [
+  '10.1.0.0/22'
+]
+param vmAdminPassword = '<vmAdminPassword>'
+param vmAdminUsername = 'vmadmin'
+param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
+param vmLinuxSshAuthorizedKey = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
+param vmSize = 'Standard_B1s'
+// Non-required parameters
+param deployZoneRedundantResources = true
+param enableDdosProtection = true
+param environment = 'dev'
+param exposeContainerAppsWith = 'applicationGateway'
+param hubVirtualNetworkResourceId = '<hubVirtualNetworkResourceId>'
+param location = '<location>'
+param networkApplianceIpAddress = '<networkApplianceIpAddress>'
+param storageAccountType = 'Premium_LRS'
+param tags = {
+  environment: 'test'
+}
+param vmAuthenticationType = 'sshPublicKey'
+param vmJumpboxOSType = 'linux'
+param workloadName = '<workloadName>'
+```
+
+</details>
+<p>
+
 ### Example 3: _Using all the available options in WAF aligned values._
 
 This instance deploys the module with the all the available parameters in WAF aligned values.
@@ -409,7 +486,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -490,6 +567,46 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/aca-lza/hosting-environment:<version>'
+
+// Required parameters
+param applicationGatewayCertificateKeyName = 'appgwcert'
+param enableApplicationInsights = true
+param enableDaprInstrumentation = false
+param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
+param spokeInfraSubnetAddressPrefix = '10.1.0.0/23'
+param spokePrivateEndpointsSubnetAddressPrefix = '10.1.2.0/27'
+param spokeVNetAddressPrefixes = [
+  '10.1.0.0/22'
+]
+param vmAdminPassword = '<vmAdminPassword>'
+param vmAdminUsername = 'vmadmin'
+param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
+param vmLinuxSshAuthorizedKey = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
+param vmSize = 'Standard_B1s'
+// Non-required parameters
+param deployZoneRedundantResources = true
+param enableDdosProtection = true
+param environment = 'dev'
+param exposeContainerAppsWith = 'applicationGateway'
+param location = '<location>'
+param storageAccountType = 'Premium_LRS'
+param tags = {
+  environment: 'test'
+}
+param vmAuthenticationType = 'sshPublicKey'
+param vmJumpboxOSType = 'linux'
+param workloadName = '<workloadName>'
 ```
 
 </details>
