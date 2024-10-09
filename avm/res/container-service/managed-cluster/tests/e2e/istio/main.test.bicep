@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using Istio Service Mesh add-on'
-metadata description = 'This instance deploys the module with Istio Service Mesh add-on .'
+metadata description = 'This instance deploys the module with Istio Service Mesh add-on.'
 
 // ========== //
 // Parameters //
@@ -35,12 +35,12 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
+    rootOrganization: 'Istio'
     caOrganization: 'Istio'
     caSubjectName: 'istiod.aks-istio.system.svc'
-    cacertDeploymentScriptName:
-    keyVaultName:
-    managedIdentityName:
-    rootOrganization: 'Istio'
+    cacertDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 
@@ -72,6 +72,16 @@ module testDeployment '../../../main.bicep' = [
         rootCertObjectName: nestedDependencies.outputs.rootCertSecretName
       }
       enableKeyvaultSecretsProvider: true
+      enableSecretRotation: true
     }
   }
 ]
+
+module secretPermissions 'main.rbac.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-rbac'
+  params: {
+    keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+    principalId: testDeployment[0].outputs.keyvaultIdentityObjectId
+  }
+}
