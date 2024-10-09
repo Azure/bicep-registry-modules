@@ -102,6 +102,7 @@ param customerManagedKey customerManagedKeyType
 @description('Optional. The flag to enable dynamic throttling.')
 param dynamicThrottlingEnabled bool = false
 
+@secure()
 @description('Optional. Resource migration token.')
 param migrationToken string?
 
