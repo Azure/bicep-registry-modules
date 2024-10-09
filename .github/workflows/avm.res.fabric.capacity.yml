@@ -30,6 +30,7 @@ on:
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.fabric.capacity.yml"
       - "avm/res/fabric/capacity/**"
+      - "avm/res/fabric/capacity/topic/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
