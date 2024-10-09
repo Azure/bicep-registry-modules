@@ -24,7 +24,7 @@ on:
         required: false
   push:
     branches:
-      - main
+      - users/alsehr/container-app-disclaimer # main
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
