@@ -1,4 +1,4 @@
-name: "avm.ptn.azd.container-apps"
+name: "avm.ptn.azd.container-apps-stack"
 
 on:
   workflow_dispatch:
