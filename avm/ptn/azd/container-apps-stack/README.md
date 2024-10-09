@@ -1,6 +1,8 @@
-# avm/ptn/azd/container-apps `[Azd/ContainerApps]`
+# avm/ptn/azd/container-apps-stack `[Azd/ContainerAppsStack]`
 
 Creates an Azure Container Registry and an Azure Container Apps environment.
+
+**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case
 
 ## Navigation
 
@@ -35,7 +37,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/container-apps:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/container-apps-stack:<version>`.
 
 - [With zoneRedundant enabled](#example-1-with-zoneredundant-enabled)
 
@@ -49,12 +51,12 @@ This instance deploys the module with zoneRedundant enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
-  name: 'containerAppsDeployment'
+module containerAppsStack 'br/public:avm/ptn/azd/container-apps-stack:<version>' = {
+  name: 'containerAppsStackDeployment'
   params: {
     // Required parameters
-    containerAppsEnvironmentName: 'acazrcae001'
-    containerRegistryName: 'acazrcr001'
+    containerAppsEnvironmentName: 'acaszrcae001'
+    containerRegistryName: 'acaszrcr001'
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     // Non-required parameters
     acrSku: 'Standard'
@@ -92,10 +94,10 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
   "parameters": {
     // Required parameters
     "containerAppsEnvironmentName": {
-      "value": "acazrcae001"
+      "value": "acaszrcae001"
     },
     "containerRegistryName": {
-      "value": "acazrcr001"
+      "value": "acaszrcr001"
     },
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
@@ -150,11 +152,11 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/azd/container-apps:<version>'
+using 'br/public:avm/ptn/azd/container-apps-stack:<version>'
 
 // Required parameters
-param containerAppsEnvironmentName = 'acazrcae001'
-param containerRegistryName = 'acazrcr001'
+param containerAppsEnvironmentName = 'acaszrcae001'
+param containerRegistryName = 'acaszrcr001'
 param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 // Non-required parameters
 param acrSku = 'Standard'
