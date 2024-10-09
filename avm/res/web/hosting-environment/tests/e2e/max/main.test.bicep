@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'whemax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'anet'
 
 // ============ //
 // Dependencies //
@@ -99,6 +99,14 @@ module testDeployment '../../../main.bicep' = [
       ]
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
       internalLoadBalancingMode: 'Web, Publishing'
+      networkConfiguration: {
+        properties: {
+          allowNewPrivateEndpointConnections: true
+          ftpEnabled: true
+          inboundIpAddressOverride: '10.0.0.10'
+          remoteDebugEnabled: true
+        }
+      }
       clusterSettings: [
         {
           name: 'DisableTls1.0'
@@ -106,10 +114,6 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       zoneRedundant: true
-      allowNewPrivateEndpointConnections: true
-      ftpEnabled: true
-      inboundIpAddressOverride: '10.0.0.10'
-      remoteDebugEnabled: true
       upgradePreference: 'Late'
       diagnosticSettings: [
         {

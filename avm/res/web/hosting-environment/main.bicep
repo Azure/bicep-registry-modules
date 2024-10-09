@@ -65,7 +65,7 @@ param frontEndScaleFactor int = 15
 ])
 param internalLoadBalancingMode string = 'None'
 
-@description('Optional. Property to enable and disable new private endpoint connection creation on ASE.')
+/* @description('Optional. Property to enable and disable new private endpoint connection creation on ASE.')
 param allowNewPrivateEndpointConnections bool = false
 
 @description('Optional. Property to enable and disable FTP on ASEV3.')
@@ -75,7 +75,10 @@ param ftpEnabled bool = false
 param inboundIpAddressOverride string = ''
 
 @description('Optional. Property to enable and disable Remote Debug on ASEv3.')
-param remoteDebugEnabled bool = false
+param remoteDebugEnabled bool = false */
+
+@description(' Optional. Properties to configure additional networking features.')
+param networkConfiguration object?
 
 @description('Optional. Specify preference for when and how the planned maintenance is applied.')
 @allowed([
@@ -150,7 +153,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2022-03-01' = {
+resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2023-12-01' = {
   name: name
   kind: kind
   location: location
@@ -163,6 +166,7 @@ resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2022-03-01' = 
     frontEndScaleFactor: frontEndScaleFactor
     internalLoadBalancingMode: internalLoadBalancingMode
     upgradePreference: upgradePreference
+    networkingConfiguration: networkConfiguration
     virtualNetwork: {
       id: subnetResourceId
       subnet: last(split(subnetResourceId, '/'))
@@ -171,7 +175,7 @@ resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2022-03-01' = 
   }
 }
 
-module appServiceEnvironment_configurations_networking 'configuration--networking/main.bicep' = {
+/* module appServiceEnvironment_configurations_networking 'configuration--networking/main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-AppServiceEnv-Configurations-Networking'
   params: {
     hostingEnvironmentName: appServiceEnvironment.name
@@ -180,7 +184,7 @@ module appServiceEnvironment_configurations_networking 'configuration--networkin
     inboundIpAddressOverride: inboundIpAddressOverride
     remoteDebugEnabled: remoteDebugEnabled
   }
-}
+} */
 
 module appServiceEnvironment_configurations_customDnsSuffix 'configuration--customdnssuffix/main.bicep' = if (!empty(customDnsSuffix)) {
   name: '${uniqueString(deployment().name, location)}-AppServiceEnv-Configurations-CustomDnsSuffix'
