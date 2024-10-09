@@ -79,16 +79,16 @@ param scopeByTagsOperation string = 'All'
 param scopeByLocations array = []
 
 @description('Optional. Parameters provided to the task running before the deployment schedule.')
-param preTaskParameters object = {}
+param preTaskParameters object?
 
 @description('Optional. The source of the task running before the deployment schedule.')
-param preTaskSource string = ''
+param preTaskSource string?
 
 @description('Optional. Parameters provided to the task running after the deployment schedule.')
-param postTaskParameters object = {}
+param postTaskParameters object?
 
 @description('Optional. The source of the task running after the deployment schedule.')
-param postTaskSource string = ''
+param postTaskSource string?
 
 @description('Optional. The interval of the frequency for the deployment schedule. 1 Hour is every hour, 2 Day is every second day, etc.')
 @maxValue(100)
@@ -119,7 +119,7 @@ param nonAzureComputerNames array = []
   'Saturday'
   'Sunday'
 ])
-param weekDays array = []
+param weekDays string[]?
 
 @description('Optional. Can be used with frequency \'Month\'. Provides the specific days of the month to run the deployment schedule.')
 @allowed([
@@ -155,10 +155,10 @@ param weekDays array = []
   30
   31
 ])
-param monthDays array = []
+param monthDays int[]?
 
 @description('Optional. Can be used with frequency \'Month\'. Provides the pattern/cadence for running the deployment schedule in a month. Takes objects formed like this {occurance(int),day(string)}. Day is the name of the day to run the deployment schedule, the occurance specifies which occurance of that day to run the deployment schedule.')
-param monthlyOccurrences array = []
+param monthlyOccurrences array?
 
 @description('Optional. The start time of the deployment schedule in ISO 8601 format. To specify a specific time use YYYY-MM-DDTHH:MM:SS, 2021-12-31T23:00:00. For schedules where we want to start the deployment as soon as possible, specify the time segment only in 24 hour format, HH:MM, 22:00.')
 param startTime string = ''
@@ -232,12 +232,12 @@ resource softwareUpdateConfiguration 'Microsoft.Automation/automationAccounts/so
     }
     tasks: {
       preTask: {
-        parameters: (empty(preTaskParameters) ? null : preTaskParameters)
-        source: (empty(preTaskSource) ? null : preTaskSource)
+        parameters: preTaskParameters
+        source: preTaskSource
       }
       postTask: {
-        parameters: (empty(postTaskParameters) ? null : postTaskParameters)
-        source: (empty(postTaskSource) ? null : postTaskSource)
+        parameters: postTaskParameters
+        source: postTaskSource
       }
     }
     scheduleInfo: {
@@ -246,9 +246,9 @@ resource softwareUpdateConfiguration 'Microsoft.Automation/automationAccounts/so
       isEnabled: isEnabled
       timeZone: timeZone
       advancedSchedule: {
-        weekDays: (empty(weekDays) ? null : weekDays)
-        monthDays: (empty(monthDays) ? null : monthDays)
-        monthlyOccurrences: (empty(monthlyOccurrences) ? null : monthlyOccurrences)
+        weekDays: weekDays
+        monthDays: monthDays
+        monthlyOccurrences: monthlyOccurrences
       }
       startTime: (empty(startTime) ? dateTimeAdd(baseTime, 'PT10M') : startTime)
       expiryTime: expiryTime

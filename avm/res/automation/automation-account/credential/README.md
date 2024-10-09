@@ -20,7 +20,9 @@ This module deploys Azure Automation Account Credential.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`credentials`](#parameter-credentials) | array | The credential definition. |
+| [`name`](#parameter-name) | string | Name of the Automation Account credential. |
+| [`password`](#parameter-password) | securestring | Password of the credential. |
+| [`userName`](#parameter-username) | string | The user name associated to the credential. |
 
 **Conditional parameters**
 
@@ -28,53 +30,31 @@ This module deploys Azure Automation Account Credential.
 | :-- | :-- | :-- |
 | [`automationAccountName`](#parameter-automationaccountname) | string | The name of the parent Automation Account. Required if the template is used in a standalone deployment. |
 
-### Parameter: `credentials`
-
-The credential definition.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-credentialsname) | string | Name of the Automation Account credential. |
-| [`password`](#parameter-credentialspassword) | securestring | Password of the credential. |
-| [`userName`](#parameter-credentialsusername) | string | The user name associated to the credential. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`description`](#parameter-credentialsdescription) | string | Description of the credential. |
+| [`description`](#parameter-description) | string | Description of the credential. |
 
-### Parameter: `credentials.name`
+### Parameter: `name`
 
 Name of the Automation Account credential.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `credentials.password`
+### Parameter: `password`
 
 Password of the credential.
 
 - Required: Yes
 - Type: securestring
 
-### Parameter: `credentials.userName`
+### Parameter: `userName`
 
 The user name associated to the credential.
 
 - Required: Yes
-- Type: string
-
-### Parameter: `credentials.description`
-
-Description of the credential.
-
-- Required: No
 - Type: string
 
 ### Parameter: `automationAccountName`
@@ -84,10 +64,17 @@ The name of the parent Automation Account. Required if the template is used in a
 - Required: Yes
 - Type: string
 
+### Parameter: `description`
+
+Description of the credential.
+
+- Required: No
+- Type: string
+
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | array | The names of the credentials associated to the automation account. |
+| `name` | string | The name of the credential associated to the automation account. |
 | `resourceGroupName` | string | The resource group of the deployed credential. |
-| `resourceId` | array | The resource IDs of the credentials associated to the automation account. |
+| `resourceId` | string | The resource Id of the credential associated to the automation account. |

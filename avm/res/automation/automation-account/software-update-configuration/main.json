@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "752305553206238634"
+      "version": "0.30.23.60470",
+      "templateHash": "1633069486738674821"
     },
     "name": "Automation Account Software Update Configurations",
     "description": "This module deploys an Azure Automation Account Software Update Configuration.",
@@ -137,28 +138,28 @@
     },
     "preTaskParameters": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Parameters provided to the task running before the deployment schedule."
       }
     },
     "preTaskSource": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The source of the task running before the deployment schedule."
       }
     },
     "postTaskParameters": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Parameters provided to the task running after the deployment schedule."
       }
     },
     "postTaskSource": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The source of the task running after the deployment schedule."
       }
@@ -208,7 +209,10 @@
     },
     "weekDays": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "allowedValues": [
         "Monday",
         "Tuesday",
@@ -224,7 +228,10 @@
     },
     "monthDays": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "type": "int"
+      },
+      "nullable": true,
       "allowedValues": [
         1,
         2,
@@ -264,7 +271,7 @@
     },
     "monthlyOccurrences": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Can be used with frequency 'Month'. Provides the pattern/cadence for running the deployment schedule in a month. Takes objects formed like this {occurance(int),day(string)}. Day is the name of the day to run the deployment schedule, the occurance specifies which occurance of that day to run the deployment schedule."
       }
@@ -322,8 +329,14 @@
   "variables": {
     "updateClassificationsVar": "[replace(replace(replace(replace(string(parameters('updateClassifications')), ',', ', '), '[', ''), ']', ''), '\"', '')]"
   },
-  "resources": [
-    {
+  "resources": {
+    "automationAccount": {
+      "existing": true,
+      "type": "Microsoft.Automation/automationAccounts",
+      "apiVersion": "2022-08-08",
+      "name": "[parameters('automationAccountName')]"
+    },
+    "softwareUpdateConfiguration": {
       "type": "Microsoft.Automation/automationAccounts/softwareUpdateConfigurations",
       "apiVersion": "2019-06-01",
       "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
@@ -351,12 +364,12 @@
         },
         "tasks": {
           "preTask": {
-            "parameters": "[if(empty(parameters('preTaskParameters')), null(), parameters('preTaskParameters'))]",
-            "source": "[if(empty(parameters('preTaskSource')), null(), parameters('preTaskSource'))]"
+            "parameters": "[parameters('preTaskParameters')]",
+            "source": "[parameters('preTaskSource')]"
           },
           "postTask": {
-            "parameters": "[if(empty(parameters('postTaskParameters')), null(), parameters('postTaskParameters'))]",
-            "source": "[if(empty(parameters('postTaskSource')), null(), parameters('postTaskSource'))]"
+            "parameters": "[parameters('postTaskParameters')]",
+            "source": "[parameters('postTaskSource')]"
           }
         },
         "scheduleInfo": {
@@ -365,9 +378,9 @@
           "isEnabled": "[parameters('isEnabled')]",
           "timeZone": "[parameters('timeZone')]",
           "advancedSchedule": {
-            "weekDays": "[if(empty(parameters('weekDays')), null(), parameters('weekDays'))]",
-            "monthDays": "[if(empty(parameters('monthDays')), null(), parameters('monthDays'))]",
-            "monthlyOccurrences": "[if(empty(parameters('monthlyOccurrences')), null(), parameters('monthlyOccurrences'))]"
+            "weekDays": "[parameters('weekDays')]",
+            "monthDays": "[parameters('monthDays')]",
+            "monthlyOccurrences": "[parameters('monthlyOccurrences')]"
           },
           "startTime": "[if(empty(parameters('startTime')), dateTimeAdd(parameters('baseTime'), 'PT10M'), parameters('startTime'))]",
           "expiryTime": "[parameters('expiryTime')]",
@@ -376,9 +389,12 @@
           "nextRunOffsetMinutes": "[parameters('nextRunOffsetMinutes')]",
           "description": "[parameters('scheduleDescription')]"
         }
-      }
+      },
+      "dependsOn": [
+        "automationAccount"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

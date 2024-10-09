@@ -200,7 +200,6 @@ Can be used with frequency 'Month'. Provides the specific days of the month to r
 
 - Required: No
 - Type: array
-- Default: `[]`
 - Allowed:
   ```Bicep
   [
@@ -244,7 +243,6 @@ Can be used with frequency 'Month'. Provides the pattern/cadence for running the
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `nextRun`
 
@@ -284,7 +282,6 @@ Parameters provided to the task running after the deployment schedule.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `postTaskSource`
 
@@ -292,7 +289,6 @@ The source of the task running after the deployment schedule.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `preTaskParameters`
 
@@ -300,7 +296,6 @@ Parameters provided to the task running before the deployment schedule.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `preTaskSource`
 
@@ -308,7 +303,6 @@ The source of the task running before the deployment schedule.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `scheduleDescription`
 
@@ -412,7 +406,6 @@ Required when used with frequency 'Week'. Specified the day of the week to run t
 
 - Required: No
 - Type: array
-- Default: `[]`
 - Allowed:
   ```Bicep
   [

@@ -16,11 +16,10 @@ param location string = resourceGroup().location
 param skuName string = 'Basic'
 
 @description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType
+param customerManagedKey customerManagedKeyType?
 
-import { credentialType } from 'credential/main.bicep'
 @description('Optional. List of credentials to be created in the automation account.')
-param credentials credentialType = []
+param credentials credentialType[]?
 
 @description('Optional. List of modules to be created in the automation account.')
 param modules array = []
@@ -58,13 +57,13 @@ param publicNetworkAccess string = ''
 param disableLocalAuth bool = true
 
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
-param privateEndpoints privateEndpointType
+param privateEndpoints privateEndpointType[]?
 
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingType[]?
 
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentitiesType?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -206,13 +205,18 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' 
   }
 }
 
-module automationAccount_credentials 'credential/main.bicep' = if (!empty(credentials)) {
-  name: '${uniqueString(deployment().name, location)}-AutomationAccount-Credentials'
-  params: {
-    automationAccountName: automationAccount.name
-    credentials: credentials
+module automationAccount_credentials 'credential/main.bicep' = [
+  for (credential, index) in (credentials ?? []): {
+    name: '${uniqueString(deployment().name, location)}-AutomationAccount-Credential-${index}'
+    params: {
+      automationAccountName: automationAccount.name
+      name: credential.name
+      password: credential.password
+      userName: credential.userName
+      description: credential.?description
+    }
   }
-}
+]
 
 module automationAccount_modules 'module/main.bicep' = [
   for (module, index) in modules: {
@@ -234,13 +238,13 @@ module automationAccount_schedules 'schedule/main.bicep' = [
     params: {
       name: schedule.name
       automationAccountName: automationAccount.name
-      advancedSchedule: contains(schedule, 'advancedSchedule') ? schedule.advancedSchedule : null
-      description: contains(schedule, 'description') ? schedule.description : ''
-      expiryTime: contains(schedule, 'expiryTime') ? schedule.expiryTime : ''
-      frequency: contains(schedule, 'frequency') ? schedule.frequency : 'OneTime'
-      interval: contains(schedule, 'interval') ? schedule.interval : 0
-      startTime: contains(schedule, 'startTime') ? schedule.startTime : ''
-      timeZone: contains(schedule, 'timeZone') ? schedule.timeZone : ''
+      advancedSchedule: schedule.?advancedSchedule
+      description: schedule.?description
+      expiryTime: schedule.?expiryTime
+      frequency: schedule.?frequency
+      interval: schedule.?interval
+      startTime: schedule.?startTime
+      timeZone: schedule.?timeZone
     }
   }
 ]
@@ -252,9 +256,9 @@ module automationAccount_runbooks 'runbook/main.bicep' = [
       name: runbook.name
       automationAccountName: automationAccount.name
       type: runbook.type
-      description: contains(runbook, 'description') ? runbook.description : ''
-      uri: contains(runbook, 'uri') ? runbook.uri : ''
-      version: contains(runbook, 'version') ? runbook.version : ''
+      description: runbook.?description
+      uri: runbook.?uri
+      version: runbook.?version
       sasTokenValidityLength: runbook.?sasTokenValidityLength
       scriptStorageAccountResourceId: runbook.?scriptStorageAccountResourceId
       location: location
@@ -270,8 +274,8 @@ module automationAccount_jobSchedules 'job-schedule/main.bicep' = [
       automationAccountName: automationAccount.name
       runbookName: jobSchedule.runbookName
       scheduleName: jobSchedule.scheduleName
-      parameters: contains(jobSchedule, 'parameters') ? jobSchedule.parameters : {}
-      runOn: contains(jobSchedule, 'runOn') ? jobSchedule.runOn : ''
+      parameters: jobSchedule.?parameters
+      runOn: jobSchedule.?runOn
     }
     dependsOn: [
       automationAccount_schedules
@@ -286,9 +290,9 @@ module automationAccount_variables 'variable/main.bicep' = [
     params: {
       automationAccountName: automationAccount.name
       name: variable.name
-      description: contains(variable, 'description') ? variable.description : ''
+      description: variable.?description
       value: variable.value
-      isEncrypted: contains(variable, 'isEncrypted') ? variable.isEncrypted : true
+      isEncrypted: variable.?isEncrypted
     }
   }
 ]
@@ -313,15 +317,15 @@ module automationAccount_linkedService 'modules/linked-service.bicep' = if (!emp
   )
 }
 
-module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.1.0' = [
+module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.1.3' = [
   for (gallerySolution, index) in gallerySolutions: if (!empty(linkedWorkspaceResourceId)) {
     name: '${uniqueString(deployment().name, location)}-AutoAccount-Solution-${index}'
     params: {
       name: gallerySolution.name
       location: location
       logAnalyticsWorkspaceName: last(split(linkedWorkspaceResourceId, '/'))!
-      product: contains(gallerySolution, 'product') ? gallerySolution.product : 'OMSGallery'
-      publisher: contains(gallerySolution, 'publisher') ? gallerySolution.publisher : 'Microsoft'
+      product: gallerySolution.?product
+      publisher: gallerySolution.?publisher
       enableTelemetry: enableTelemetry
     }
     // This is to support solution to law in different subscription and resource group than the automation account.
@@ -349,74 +353,33 @@ module automationAccount_softwareUpdateConfigurations 'software-update-configura
       frequency: softwareUpdateConfiguration.frequency
       operatingSystem: softwareUpdateConfiguration.operatingSystem
       rebootSetting: softwareUpdateConfiguration.rebootSetting
-      azureVirtualMachines: contains(softwareUpdateConfiguration, 'azureVirtualMachines')
-        ? softwareUpdateConfiguration.azureVirtualMachines
-        : []
-      excludeUpdates: contains(softwareUpdateConfiguration, 'excludeUpdates')
-        ? softwareUpdateConfiguration.excludeUpdates
-        : []
-      expiryTime: contains(softwareUpdateConfiguration, 'expiryTime') ? softwareUpdateConfiguration.expiryTime : ''
-      expiryTimeOffsetMinutes: contains(softwareUpdateConfiguration, 'expiryTimeOffsetMinutes')
-        ? softwareUpdateConfiguration.expiryTimeOffsetMinute
-        : 0
-      includeUpdates: contains(softwareUpdateConfiguration, 'includeUpdates')
-        ? softwareUpdateConfiguration.includeUpdates
-        : []
-      interval: contains(softwareUpdateConfiguration, 'interval') ? softwareUpdateConfiguration.interval : 1
-      isEnabled: contains(softwareUpdateConfiguration, 'isEnabled') ? softwareUpdateConfiguration.isEnabled : true
-      maintenanceWindow: contains(softwareUpdateConfiguration, 'maintenanceWindow')
-        ? softwareUpdateConfiguration.maintenanceWindow
-        : 'PT2H'
-      monthDays: contains(softwareUpdateConfiguration, 'monthDays') ? softwareUpdateConfiguration.monthDays : []
-      monthlyOccurrences: contains(softwareUpdateConfiguration, 'monthlyOccurrences')
-        ? softwareUpdateConfiguration.monthlyOccurrences
-        : []
-      nextRun: contains(softwareUpdateConfiguration, 'nextRun') ? softwareUpdateConfiguration.nextRun : ''
-      nextRunOffsetMinutes: contains(softwareUpdateConfiguration, 'nextRunOffsetMinutes')
-        ? softwareUpdateConfiguration.nextRunOffsetMinutes
-        : 0
-      nonAzureComputerNames: contains(softwareUpdateConfiguration, 'nonAzureComputerNames')
-        ? softwareUpdateConfiguration.nonAzureComputerNames
-        : []
-      nonAzureQueries: contains(softwareUpdateConfiguration, 'nonAzureQueries')
-        ? softwareUpdateConfiguration.nonAzureQueries
-        : []
-      postTaskParameters: contains(softwareUpdateConfiguration, 'postTaskParameters')
-        ? softwareUpdateConfiguration.postTaskParameters
-        : {}
-      postTaskSource: contains(softwareUpdateConfiguration, 'postTaskSource')
-        ? softwareUpdateConfiguration.postTaskSource
-        : ''
-      preTaskParameters: contains(softwareUpdateConfiguration, 'preTaskParameters')
-        ? softwareUpdateConfiguration.preTaskParameters
-        : {}
-      preTaskSource: contains(softwareUpdateConfiguration, 'preTaskSource')
-        ? softwareUpdateConfiguration.preTaskSource
-        : ''
-      scheduleDescription: contains(softwareUpdateConfiguration, 'scheduleDescription')
-        ? softwareUpdateConfiguration.scheduleDescription
-        : ''
-      scopeByLocations: contains(softwareUpdateConfiguration, 'scopeByLocations')
-        ? softwareUpdateConfiguration.scopeByLocations
-        : []
-      scopeByResources: contains(softwareUpdateConfiguration, 'scopeByResources')
-        ? softwareUpdateConfiguration.scopeByResources
-        : [
-            subscription().id
-          ]
-      scopeByTags: contains(softwareUpdateConfiguration, 'scopeByTags') ? softwareUpdateConfiguration.scopeByTags : {}
-      scopeByTagsOperation: contains(softwareUpdateConfiguration, 'scopeByTagsOperation')
-        ? softwareUpdateConfiguration.scopeByTagsOperation
-        : 'All'
-      startTime: contains(softwareUpdateConfiguration, 'startTime') ? softwareUpdateConfiguration.startTime : ''
-      timeZone: contains(softwareUpdateConfiguration, 'timeZone') ? softwareUpdateConfiguration.timeZone : 'UTC'
-      updateClassifications: contains(softwareUpdateConfiguration, 'updateClassifications')
-        ? softwareUpdateConfiguration.updateClassifications
-        : [
-            'Critical'
-            'Security'
-          ]
-      weekDays: contains(softwareUpdateConfiguration, 'weekDays') ? softwareUpdateConfiguration.weekDays : []
+      azureVirtualMachines: softwareUpdateConfiguration.?azureVirtualMachines
+      excludeUpdates: softwareUpdateConfiguration.?excludeUpdates
+      expiryTime: softwareUpdateConfiguration.?expiryTime
+      expiryTimeOffsetMinutes: softwareUpdateConfiguration.?expiryTimeOffsetMinute
+      includeUpdates: softwareUpdateConfiguration.?includeUpdates
+      interval: softwareUpdateConfiguration.?interval
+      isEnabled: softwareUpdateConfiguration.?isEnabled
+      maintenanceWindow: softwareUpdateConfiguration.?maintenanceWindow
+      monthDays: softwareUpdateConfiguration.?monthDays
+      monthlyOccurrences: softwareUpdateConfiguration.?monthlyOccurrences
+      nextRun: softwareUpdateConfiguration.?nextRun
+      nextRunOffsetMinutes: softwareUpdateConfiguration.?nextRunOffsetMinutes
+      nonAzureComputerNames: softwareUpdateConfiguration.?nonAzureComputerNames
+      nonAzureQueries: softwareUpdateConfiguration.?nonAzureQueries
+      postTaskParameters: softwareUpdateConfiguration.?postTaskParameters
+      postTaskSource: softwareUpdateConfiguration.?postTaskSource
+      preTaskParameters: softwareUpdateConfiguration.?preTaskParameters
+      preTaskSource: softwareUpdateConfiguration.?preTaskSource
+      scheduleDescription: softwareUpdateConfiguration.?scheduleDescription
+      scopeByLocations: softwareUpdateConfiguration.?scopeByLocations
+      scopeByResources: softwareUpdateConfiguration.?scopeByResources
+      scopeByTags: softwareUpdateConfiguration.?scopeByTags
+      scopeByTagsOperation: softwareUpdateConfiguration.?scopeByTagsOperation
+      startTime: softwareUpdateConfiguration.?startTime
+      timeZone: softwareUpdateConfiguration.?timeZone
+      updateClassifications: softwareUpdateConfiguration.?updateClassifications
+      weekDays: softwareUpdateConfiguration.?weekDays
     }
     dependsOn: [
       automationAccount_solutions
@@ -566,14 +529,16 @@ output privateEndpoints array = [
 //   Definitions   //
 // =============== //
 
+@export()
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
   systemAssigned: bool?
 
   @description('Optional. The resource ID(s) to assign to the resource.')
   userAssignedResourceIds: string[]?
-}?
+}
 
+@export()
 type lockType = {
   @description('Optional. Specify the name of lock.')
   name: string?
@@ -582,6 +547,7 @@ type lockType = {
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
 
+@export()
 type roleAssignmentType = {
   @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
   name: string?
@@ -608,6 +574,7 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]?
 
+@export()
 type privateEndpointType = {
   @description('Optional. The name of the private endpoint.')
   name: string?
@@ -693,8 +660,9 @@ type privateEndpointType = {
 
   @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
   resourceGroupName: string?
-}[]?
+}
 
+@export()
 type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
@@ -737,8 +705,9 @@ type diagnosticSettingType = {
 
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
-}[]?
+}
 
+@export()
 type customerManagedKeyType = {
   @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
   keyVaultResourceId: string
@@ -751,4 +720,20 @@ type customerManagedKeyType = {
 
   @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
-}?
+}
+
+@export()
+type credentialType = {
+  @sys.description('Required. Name of the Automation Account credential.')
+  name: string
+
+  @sys.description('Required. The user name associated to the credential.')
+  userName: string
+
+  @sys.description('Required. Password of the credential.')
+  @secure()
+  password: string
+
+  @sys.description('Optional. Description of the credential.')
+  description: string?
+}
