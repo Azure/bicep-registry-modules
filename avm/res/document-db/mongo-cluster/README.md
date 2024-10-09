@@ -70,7 +70,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -102,6 +102,27 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/mongo-cluster:<version>'
+
+// Required parameters
+param administratorLogin = 'Admin001'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param name = 'ddmcdefmin001'
+param nodeCount = 2
+param sku = 'M30'
+param storage = 256
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -142,7 +163,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -179,6 +200,31 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/mongo-cluster:<version>'
+
+// Required parameters
+param administratorLogin = 'Admin002'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param name = 'kv-ref'
+param nodeCount = 2
+param sku = 'M30'
+param storage = 256
+// Non-required parameters
+param location = '<location>'
+param secretsExportConfiguration = {
+  connectionStringSecretName: 'connectionString'
+  keyVaultResourceId: '<keyVaultResourceId>'
 }
 ```
 
@@ -290,7 +336,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -415,6 +461,101 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/mongo-cluster:<version>'
+
+// Required parameters
+param administratorLogin = 'Admin003'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param name = 'ddmcmax001'
+param nodeCount = 2
+param sku = 'M30'
+param storage = 256
+// Non-required parameters
+param createMode = 'Default'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param highAvailabilityMode = false
+param location = '<location>'
+param networkAcls = {
+  allowAllIPs: true
+  allowAzureIPs: true
+  customRules: [
+    {
+      endIpAddress: '5.6.7.8'
+      firewallRuleName: 'allow-1.2.3.4-to-5.6.7.8'
+      startIpAddress: '1.2.3.4'
+    }
+  ]
+}
+param nodeType = 'Shard'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    name: '60395919-cfd3-47bf-8349-775ddebb255e'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -446,7 +587,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -478,6 +619,27 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/mongo-cluster:<version>'
+
+// Required parameters
+param administratorLogin = 'Admin001'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param name = 'ddmcwaf001'
+param nodeCount = 2
+param sku = 'M30'
+param storage = 256
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
