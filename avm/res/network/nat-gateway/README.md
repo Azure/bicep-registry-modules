@@ -63,7 +63,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -83,6 +83,23 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/nat-gateway:<version>'
+
+// Required parameters
+param name = 'nngmin001'
+param zone = 1
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -116,7 +133,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -139,6 +156,24 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/nat-gateway:<version>'
+
+// Required parameters
+param name = 'nngepip001'
+param zone = 1
+// Non-required parameters
+param location = '<location>'
+param publicIpResourceIds = '<publicIpResourceIds>'
 ```
 
 </details>
@@ -241,7 +276,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -344,6 +379,93 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/nat-gateway:<version>'
+
+// Required parameters
+param name = 'nngmax001'
+param zone = 1
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param publicIPAddressObjects = [
+  {
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    name: 'nngmax001-pip'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    skuTier: 'Regional'
+    zones: [
+      1
+      2
+      3
+    ]
+  }
+]
+param roleAssignments = [
+  {
+    name: '69d7ed51-8af4-4eed-bcea-bdadcccb1200'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 4: _Combine a generated and provided Public IP Prefix_
 
 This example shows how you can provide a Public IP Prefix to the module, while also generating one in the module.
@@ -380,7 +502,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -411,6 +533,32 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/nat-gateway:<version>'
+
+// Required parameters
+param name = 'nngcprx001'
+param zone = 0
+// Non-required parameters
+param location = '<location>'
+param publicIPPrefixObjects = [
+  {
+    name: 'nngcprx001-pippre'
+    prefixLength: 30
+    tags: {
+      'hidden-title': 'CustomTag'
+    }
+  }
+]
 ```
 
 </details>
@@ -477,7 +625,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -536,6 +684,57 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/nat-gateway:<version>'
+
+// Required parameters
+param name = 'nngwaf001'
+param zone = 1
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param publicIPAddressObjects = [
+  {
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    name: 'nngwaf001-pip'
+    skuTier: 'Regional'
+    zones: [
+      1
+      2
+      3
+    ]
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

@@ -74,7 +74,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -96,6 +96,26 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-bus/namespace:<version>'
+
+// Required parameters
+param name = 'sbnmin001'
+// Non-required parameters
+param location = '<location>'
+param skuObject = {
+  capacity: 2
+  name: 'Premium'
 }
 ```
 
@@ -143,7 +163,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -180,6 +200,37 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-bus/namespace:<version>'
+
+// Required parameters
+param name = 'sbnencr001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param skuObject = {
+  capacity: 1
+  name: 'Premium'
 }
 ```
 
@@ -442,7 +493,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -724,6 +775,252 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-bus/namespace:<version>'
+
+// Required parameters
+param name = 'sbnmax001'
+// Non-required parameters
+param authorizationRules = [
+  {
+    name: 'RootManageSharedAccessKey'
+    rights: [
+      'Listen'
+      'Manage'
+      'Send'
+    ]
+  }
+  {
+    name: 'AnotherKey'
+    rights: [
+      'Listen'
+      'Send'
+    ]
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'RuntimeAuditLogs'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'diagnosticsetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAuth = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param minimumTlsVersion = '1.2'
+param networkRuleSets = {
+  defaultAction: 'Deny'
+  ipRules: [
+    {
+      action: 'Allow'
+      ipMask: '10.0.1.0/32'
+    }
+    {
+      action: 'Allow'
+      ipMask: '10.0.2.0/32'
+    }
+  ]
+  trustedServiceAccessEnabled: true
+  virtualNetworkRules: [
+    {
+      ignoreMissingVnetServiceEndpoint: true
+      subnetResourceId: '<subnetResourceId>'
+    }
+  ]
+}
+param premiumMessagingPartitions = 1
+param privateEndpoints = [
+  {
+    customDnsConfigs: [
+      {
+        fqdn: 'abc.namespace.com'
+        ipAddresses: [
+          '10.0.0.10'
+        ]
+      }
+    ]
+    ipConfigurations: [
+      {
+        name: 'myIPconfig'
+        properties: {
+          groupId: 'namespace'
+          memberName: 'namespace'
+          privateIPAddress: '10.0.0.10'
+        }
+      }
+    ]
+    name: 'myPrivateEndpoint'
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    privateLinkServiceConnectionName: 'customLinkName'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Enabled'
+param queues = [
+  {
+    authorizationRules: [
+      {
+        name: 'RootManageSharedAccessKey'
+        rights: [
+          'Listen'
+          'Manage'
+          'Send'
+        ]
+      }
+      {
+        name: 'AnotherKey'
+        rights: [
+          'Listen'
+          'Send'
+        ]
+      }
+    ]
+    autoDeleteOnIdle: 'PT5M'
+    maxMessageSizeInKilobytes: 2048
+    name: 'sbnmaxq001'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+  }
+]
+param roleAssignments = [
+  {
+    name: '2c42f915-20bf-4094-ba42-fee1f811d374'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param skuObject = {
+  capacity: 16
+  name: 'Premium'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param topics = [
+  {
+    authorizationRules: [
+      {
+        name: 'RootManageSharedAccessKey'
+        rights: [
+          'Listen'
+          'Manage'
+          'Send'
+        ]
+      }
+      {
+        name: 'AnotherKey'
+        rights: [
+          'Listen'
+          'Send'
+        ]
+      }
+    ]
+    name: 'sbnmaxt001'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    subscriptions: [
+      {
+        name: 'subscription001'
+      }
+    ]
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
@@ -885,7 +1182,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1067,6 +1364,157 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-bus/namespace:<version>'
+
+// Required parameters
+param name = 'sbnwaf001'
+// Non-required parameters
+param authorizationRules = [
+  {
+    name: 'RootManageSharedAccessKey'
+    rights: [
+      'Listen'
+      'Manage'
+      'Send'
+    ]
+  }
+  {
+    name: 'AnotherKey'
+    rights: [
+      'Listen'
+      'Send'
+    ]
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAuth = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param minimumTlsVersion = '1.2'
+param networkRuleSets = {
+  defaultAction: 'Deny'
+  ipRules: [
+    {
+      action: 'Allow'
+      ipMask: '10.0.1.0/32'
+    }
+    {
+      action: 'Allow'
+      ipMask: '10.0.2.0/32'
+    }
+  ]
+  trustedServiceAccessEnabled: true
+  virtualNetworkRules: [
+    {
+      ignoreMissingVnetServiceEndpoint: true
+      subnetResourceId: '<subnetResourceId>'
+    }
+  ]
+}
+param premiumMessagingPartitions = 1
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'namespace'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param publicNetworkAccess = 'Enabled'
+param queues = [
+  {
+    authorizationRules: [
+      {
+        name: 'RootManageSharedAccessKey'
+        rights: [
+          'Listen'
+          'Manage'
+          'Send'
+        ]
+      }
+      {
+        name: 'AnotherKey'
+        rights: [
+          'Listen'
+          'Send'
+        ]
+      }
+    ]
+    autoDeleteOnIdle: 'PT5M'
+    maxMessageSizeInKilobytes: 2048
+    name: 'sbnwafq001'
+    roleAssignments: []
+  }
+]
+param roleAssignments = []
+param skuObject = {
+  capacity: 2
+  name: 'Premium'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param topics = [
+  {
+    authorizationRules: [
+      {
+        name: 'RootManageSharedAccessKey'
+        rights: [
+          'Listen'
+          'Manage'
+          'Send'
+        ]
+      }
+      {
+        name: 'AnotherKey'
+        rights: [
+          'Listen'
+          'Send'
+        ]
+      }
+    ]
+    name: 'sbnwaft001'
+    roleAssignments: []
+  }
+]
 ```
 
 </details>

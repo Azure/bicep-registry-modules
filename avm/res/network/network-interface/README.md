@@ -63,7 +63,7 @@ module networkInterface 'br/public:avm/res/network/network-interface:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -88,6 +88,28 @@ module networkInterface 'br/public:avm/res/network/network-interface:<version>' 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-interface:<version>'
+
+// Required parameters
+param ipConfigurations = [
+  {
+    name: 'ipconfig01'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param name = 'nnimin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -180,7 +202,7 @@ module networkInterface 'br/public:avm/res/network/network-interface:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -273,6 +295,83 @@ module networkInterface 'br/public:avm/res/network/network-interface:<version>' 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-interface:<version>'
+
+// Required parameters
+param ipConfigurations = [
+  {
+    applicationSecurityGroups: [
+      {
+        id: '<id>'
+      }
+    ]
+    loadBalancerBackendAddressPools: [
+      {
+        id: '<id>'
+      }
+    ]
+    name: 'ipconfig01'
+    subnetResourceId: '<subnetResourceId>'
+  }
+  {
+    applicationSecurityGroups: [
+      {
+        id: '<id>'
+      }
+    ]
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param name = 'nnimax001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: '026b830f-441f-469a-8cf3-c3ea9f5bcfe1'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
@@ -337,7 +436,7 @@ module networkInterface 'br/public:avm/res/network/network-interface:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -397,6 +496,60 @@ module networkInterface 'br/public:avm/res/network/network-interface:<version>' 
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/network-interface:<version>'
+
+// Required parameters
+param ipConfigurations = [
+  {
+    applicationSecurityGroups: [
+      {
+        id: '<id>'
+      }
+    ]
+    loadBalancerBackendAddressPools: [
+      {
+        id: '<id>'
+      }
+    ]
+    name: 'ipconfig01'
+    subnetResourceId: '<subnetResourceId>'
+  }
+  {
+    applicationSecurityGroups: [
+      {
+        id: '<id>'
+      }
+    ]
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param name = 'nniwaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
