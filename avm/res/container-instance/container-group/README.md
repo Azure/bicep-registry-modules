@@ -8,7 +8,6 @@ This module deploys a Container Instance Container Group.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -84,7 +83,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -131,6 +130,48 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-instance/container-group:<version>'
+
+// Required parameters
+param containers = [
+  {
+    name: 'az-aci-x-001'
+    properties: {
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 2
+        }
+      }
+    }
+  }
+]
+param ipAddressPorts = [
+  {
+    port: 443
+    protocol: 'Tcp'
+  }
+]
+param name = 'cicgmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -206,7 +247,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         protocol: 'Tcp'
       }
     ]
-    name: 'cicgenc001'
+    name: 'cicgencr001'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -233,7 +274,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -302,7 +343,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       ]
     },
     "name": {
-      "value": "cicgenc001"
+      "value": "cicgencr001"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -330,6 +371,93 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-instance/container-group:<version>'
+
+// Required parameters
+param containers = [
+  {
+    name: 'az-aci-x-001'
+    properties: {
+      command: []
+      environmentVariables: []
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 80
+          protocol: 'Tcp'
+        }
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 2
+        }
+      }
+    }
+  }
+  {
+    name: 'az-aci-x-002'
+    properties: {
+      command: []
+      environmentVariables: []
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 8080
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 2
+        }
+      }
+    }
+  }
+]
+param ipAddressPorts = [
+  {
+    port: 80
+    protocol: 'Tcp'
+  }
+  {
+    port: 443
+    protocol: 'Tcp'
+  }
+]
+param name = 'cicgencr001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 ```
 
@@ -442,7 +570,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -554,6 +682,102 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-instance/container-group:<version>'
+
+// Required parameters
+param containers = [
+  {
+    name: 'az-aci-x-001'
+    properties: {
+      command: []
+      environmentVariables: [
+        {
+          name: 'CLIENT_ID'
+          value: 'TestClientId'
+        }
+        {
+          name: 'CLIENT_SECRET'
+          secureValue: 'TestSecret'
+        }
+      ]
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 80
+          protocol: 'Tcp'
+        }
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 2
+        }
+      }
+    }
+  }
+  {
+    name: 'az-aci-x-002'
+    properties: {
+      command: []
+      environmentVariables: []
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 8080
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 2
+        }
+      }
+    }
+  }
+]
+param ipAddressPorts = [
+  {
+    port: 80
+    protocol: 'Tcp'
+  }
+  {
+    port: 443
+    protocol: 'Tcp'
+  }
+]
+param name = 'cicgmax001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 4: _Using private network_
 
 This instance deploys the module within a virtual network.
@@ -646,7 +870,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -744,6 +968,88 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-instance/container-group:<version>'
+
+// Required parameters
+param containers = [
+  {
+    name: 'az-aci-x-001'
+    properties: {
+      command: []
+      environmentVariables: []
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 80
+          protocol: 'Tcp'
+        }
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 4
+        }
+      }
+    }
+  }
+  {
+    name: 'az-aci-x-002'
+    properties: {
+      command: []
+      environmentVariables: []
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 8080
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 2
+        }
+      }
+    }
+  }
+]
+param ipAddressPorts = [
+  {
+    port: 80
+    protocol: 'Tcp'
+  }
+  {
+    port: 443
+    protocol: 'Tcp'
+  }
+  {
+    port: 8080
+    protocol: 'Tcp'
+  }
+]
+param name = 'cicgprivate001'
+// Non-required parameters
+param ipAddressType = 'Private'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param subnetId = '<subnetId>'
+```
+
+</details>
+<p>
+
 ### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -835,7 +1141,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -930,6 +1236,86 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-instance/container-group:<version>'
+
+// Required parameters
+param containers = [
+  {
+    name: 'az-aci-x-001'
+    properties: {
+      command: []
+      environmentVariables: []
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 80
+          protocol: 'Tcp'
+        }
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 2
+        }
+      }
+    }
+  }
+  {
+    name: 'az-aci-x-002'
+    properties: {
+      command: []
+      environmentVariables: []
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 8080
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: 2
+        }
+      }
+    }
+  }
+]
+param ipAddressPorts = [
+  {
+    port: 80
+    protocol: 'Tcp'
+  }
+  {
+    port: 443
+    protocol: 'Tcp'
+  }
+]
+param name = 'cicgwaf001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -1728,7 +2114,6 @@ Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to yo
 - Required: No
 - Type: array
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1739,10 +2124,6 @@ Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to yo
 | `resourceGroupName` | string | The resource group the container group was deployed into. |
 | `resourceId` | string | The resource ID of the container group. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

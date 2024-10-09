@@ -2,14 +2,14 @@ metadata name = 'Virtual Network Peerings'
 metadata description = 'This module deploys a Virtual Network Peering.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Optional. The Name of Vnet Peering resource. If not provided, default value will be localVnetName-remoteVnetName.')
-param name string = '${localVnetName}-${last(split(remoteVirtualNetworkId, '/'))}'
+@description('Optional. The Name of VNET Peering resource. If not provided, default value will be localVnetName-remoteVnetName.')
+param name string = 'peer-${localVnetName}-${last(split(remoteVirtualNetworkResourceId, '/'))}'
 
 @description('Conditional. The name of the parent Virtual Network to add the peering to. Required if the template is used in a standalone deployment.')
 param localVnetName string
 
 @description('Required. The Resource ID of the VNet that is this Local VNet is being peered to. Should be in the format of a Resource ID.')
-param remoteVirtualNetworkId string
+param remoteVirtualNetworkResourceId string
 
 @description('Optional. Whether the forwarded traffic from the VMs in the local virtual network will be allowed/disallowed in remote virtual network. Default is true.')
 param allowForwardedTraffic bool = true
@@ -30,7 +30,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' existing 
   name: localVnetName
 }
 
-resource virtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2023-11-01' = {
+resource virtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2024-01-01' = {
   name: name
   parent: virtualNetwork
   properties: {
@@ -40,7 +40,7 @@ resource virtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetwork
     doNotVerifyRemoteGateways: doNotVerifyRemoteGateways
     useRemoteGateways: useRemoteGateways
     remoteVirtualNetwork: {
-      id: remoteVirtualNetworkId
+      id: remoteVirtualNetworkResourceId
     }
   }
 }

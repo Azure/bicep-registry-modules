@@ -8,14 +8,13 @@ This module deploys a Container App Job.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/jobs` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/jobs) |
+| `Microsoft.App/jobs` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-03-01/jobs) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -67,7 +66,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -101,6 +100,31 @@ module job 'br/public:avm/res/app/job:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/job:<version>'
+
+// Required parameters
+param containers = [
+  {
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'ajcon001'
+param triggerType = 'Manual'
+// Non-required parameters
+param location = '<location>'
+param manualTriggerConfig = {}
 ```
 
 </details>
@@ -145,7 +169,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -183,6 +207,35 @@ module job 'br/public:avm/res/app/job:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/job:<version>'
+
+// Required parameters
+param containers = [
+  {
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+    resources: {
+      cpu: '0.25'
+      memory: '0.5Gi'
+    }
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'ajmin001'
+param triggerType = 'Manual'
+// Non-required parameters
+param location = '<location>'
+param manualTriggerConfig = {}
 ```
 
 </details>
@@ -307,11 +360,13 @@ module job 'br/public:avm/res/app/job:<version>' = {
     }
     roleAssignments: [
       {
+        name: 'be1bb251-6a44-49f7-8658-d836d0049fc4'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -348,7 +403,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -478,11 +533,13 @@ module job 'br/public:avm/res/app/job:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "be1bb251-6a44-49f7-8658-d836d0049fc4",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -521,6 +578,158 @@ module job 'br/public:avm/res/app/job:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/job:<version>'
+
+// Required parameters
+param containers = [
+  {
+    env: [
+      {
+        name: 'AZURE_STORAGE_QUEUE_NAME'
+        value: '<value>'
+      }
+      {
+        name: 'AZURE_STORAGE_CONNECTION_STRING'
+        secretRef: 'connection-string'
+      }
+    ]
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+    probes: [
+      {
+        httpGet: {
+          httpHeaders: [
+            {
+              name: 'Custom-Header'
+              value: 'Awesome'
+            }
+          ]
+          path: '/health'
+          port: 8080
+        }
+        initialDelaySeconds: 3
+        periodSeconds: 3
+        type: 'Liveness'
+      }
+    ]
+    resources: {
+      cpu: '1.25'
+      memory: '1.5Gi'
+    }
+    volumeMounts: [
+      {
+        mountPath: '/mnt/data'
+        volumeName: 'ajmaxemptydir'
+      }
+    ]
+  }
+  {
+    args: [
+      'arg1'
+      'arg2'
+    ]
+    command: [
+      '-c'
+      '/bin/bash'
+      'echo hello'
+      'sleep 100000'
+    ]
+    env: [
+      {
+        name: 'SOME_ENV_VAR'
+        value: 'some-value'
+      }
+    ]
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'second-simple-container'
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'ajmax001'
+param triggerType = 'Event'
+// Non-required parameters
+param eventTriggerConfig = {
+  parallelism: 1
+  replicaCompletionCount: 1
+  scale: {
+    maxExecutions: 1
+    minExecutions: 1
+    pollingInterval: 55
+    rules: [
+      {
+        auth: [
+          {
+            secretRef: 'connectionString'
+            triggerParameter: 'connection'
+          }
+        ]
+        metadata: {
+          queueName: '<queueName>'
+          storageAccountResourceId: '<storageAccountResourceId>'
+        }
+        name: 'queue'
+        type: 'azure-queue'
+      }
+    ]
+  }
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param roleAssignments = [
+  {
+    name: 'be1bb251-6a44-49f7-8658-d836d0049fc4'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param secrets = [
+  {
+    name: 'connection-string'
+    value: '<value>'
+  }
+]
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+param volumes = [
+  {
+    name: 'ajmaxemptydir'
+    storageType: 'EmptyDir'
+  }
+]
+param workloadProfileName = '<workloadProfileName>'
 ```
 
 </details>
@@ -589,7 +798,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -660,6 +869,58 @@ module job 'br/public:avm/res/app/job:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/job:<version>'
+
+// Required parameters
+param containers = [
+  {
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+    probes: [
+      {
+        httpGet: {
+          httpHeaders: [
+            {
+              name: 'Custom-Header'
+              value: 'Awesome'
+            }
+          ]
+          path: '/health'
+          port: 8080
+        }
+        initialDelaySeconds: 3
+        periodSeconds: 3
+        type: 'Liveness'
+      }
+    ]
+    resources: {
+      cpu: '0.25'
+      memory: '0.5Gi'
+    }
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'ajwaf001'
+param triggerType = 'Schedule'
+// Non-required parameters
+param location = '<location>'
+param scheduleTriggerConfig = {
+  cronExpression: '0 0 * * *'
+}
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+param workloadProfileName = '<workloadProfileName>'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -1739,6 +2000,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'ContainerApp Reader'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1755,6 +2023,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1801,6 +2070,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -2009,7 +2285,6 @@ The name of the workload profile to use. Leave empty to use a consumption based 
 - Required: No
 - Type: string
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -2019,10 +2294,6 @@ The name of the workload profile to use. Leave empty to use a consumption based 
 | `resourceGroupName` | string | The name of the resource group the Container App Job was deployed into. |
 | `resourceId` | string | The resource ID of the Container App Job. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

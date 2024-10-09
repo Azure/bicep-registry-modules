@@ -54,7 +54,7 @@ function Clear-SubscriptionDeploymentHistory {
         Method  = 'GET'
         Uri     = "https://management.azure.com/subscriptions/$subscriptionId/providers/Microsoft.Resources/deployments?api-version=2020-06-01"
         Headers = @{
-            Authorization = 'Bearer {0}' -f (Get-AzAccessToken).Token
+            Authorization = 'Bearer {0}' -f ((Get-AzAccessToken -AsSecureString).Token | ConvertFrom-SecureString -AsPlainText)
         }
     }
     $response = Invoke-RestMethod @getInputObject
@@ -107,7 +107,7 @@ function Clear-SubscriptionDeploymentHistory {
             Method  = 'POST'
             Uri     = 'https://management.azure.com/batch?api-version=2020-06-01'
             Headers = @{
-                Authorization  = 'Bearer {0}' -f (Get-AzAccessToken).Token
+                Authorization  = 'Bearer {0}' -f ((Get-AzAccessToken -AsSecureString).Token | ConvertFrom-SecureString -AsPlainText)
                 'Content-Type' = 'application/json'
             }
             Body    = @{
