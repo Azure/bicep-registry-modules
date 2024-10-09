@@ -104,6 +104,7 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.7.0
     dockerBridgeCidr: dockerBridgeCidr
     platformReservedCidr: platformReservedCidr
     platformReservedDnsIP: platformReservedDnsIP
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -118,6 +119,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' =
     acrAdminUserEnabled: acrAdminUserEnabled
     tags: tags
     acrSku: acrSku
+    enableTelemetry: enableTelemetry
   }
 }
 
