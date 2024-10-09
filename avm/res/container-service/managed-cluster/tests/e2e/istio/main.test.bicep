@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using Istio Service Mesh add-on'
-metadata description = 'This instance deploys the module with Istio Service Mesh add-on.'
+metadata description = 'This instance deploys the module with Istio Service Mesh add-on and plug a Certificate Authority from Key Vault.'
 
 // ========== //
 // Parameters //

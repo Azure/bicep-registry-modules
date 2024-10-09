@@ -1177,9 +1177,36 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csmin001'
+param primaryAgentPoolProfile = [
+  {
+    count: 3
+    mode: 'System'
+    name: 'systempool'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+// Non-required parameters
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+```
+
+</details>
+<p>
+
 ### Example 4: _Using Istio Service Mesh add-on_
 
-This instance deploys the module with Istio Service Mesh add-on .
+This instance deploys the module with Istio Service Mesh add-on and plug a Certificate Authority from Key Vault.
 
 
 <details>
@@ -1201,6 +1228,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     // Non-required parameters
+    enableKeyvaultSecretsProvider: true
+    enableSecretRotation: true
+    istioServiceMeshCertificateAuthority: {
+      certChainObjectName: '<certChainObjectName>'
+      certObjectName: '<certObjectName>'
+      keyObjectName: '<keyObjectName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      rootCertObjectName: '<rootCertObjectName>'
+    }
     istioServiceMeshEnabled: true
     location: '<location>'
     managedIdentities: {
@@ -1215,7 +1251,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1237,6 +1273,21 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     },
     // Non-required parameters
+    "enableKeyvaultSecretsProvider": {
+      "value": true
+    },
+    "enableSecretRotation": {
+      "value": true
+    },
+    "istioServiceMeshCertificateAuthority": {
+      "value": {
+        "certChainObjectName": "<certChainObjectName>",
+        "certObjectName": "<certObjectName>",
+        "keyObjectName": "<keyObjectName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "rootCertObjectName": "<rootCertObjectName>"
+      }
+    },
     "istioServiceMeshEnabled": {
       "value": true
     },
@@ -1249,6 +1300,43 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csist001'
+param primaryAgentPoolProfile = [
+  {
+    count: 3
+    mode: 'System'
+    name: 'systempool'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+// Non-required parameters
+param enableKeyvaultSecretsProvider = true
+param enableSecretRotation = true
+param istioServiceMeshCertificateAuthority = {
+  certChainObjectName: '<certChainObjectName>'
+  certObjectName: '<certObjectName>'
+  keyObjectName: '<keyObjectName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  rootCertObjectName: '<rootCertObjectName>'
+}
+param istioServiceMeshEnabled = true
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
 }
 ```
 
@@ -1531,6 +1619,129 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csmkube001'
+param primaryAgentPoolProfile = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 1
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    mode: 'System'
+    name: 'systempool'
+    nodeTaints: [
+      'CriticalAddonsOnly=true:NoSchedule'
+    ]
+    osDiskSizeGB: 0
+    osType: 'Linux'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+// Non-required parameters
+param agentPools = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 2
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    minPods: 2
+    mode: 'User'
+    name: 'userpool1'
+    nodeLabels: {}
+    osDiskSizeGB: 128
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+  }
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 2
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    minPods: 2
+    mode: 'User'
+    name: 'userpool2'
+    nodeLabels: {}
+    osDiskSizeGB: 128
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkPlugin = 'kubenet'
+param roleAssignments = [
+  {
+    name: '6acf186b-abbd-491b-8bd7-39fa199da81e'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 6: _Using Private Cluster._
 
 This instance deploys the module with a private cluster instance.
@@ -1744,6 +1955,98 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csmpriv001'
+param primaryAgentPoolProfile = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 1
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    mode: 'System'
+    name: 'systempool'
+    nodeTaints: [
+      'CriticalAddonsOnly=true:NoSchedule'
+    ]
+    osDiskSizeGB: 0
+    osType: 'Linux'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+    vnetSubnetID: '<vnetSubnetID>'
+  }
+]
+// Non-required parameters
+param agentPools = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 2
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    minPods: 2
+    mode: 'User'
+    name: 'userpool1'
+    nodeLabels: {}
+    osDiskSizeGB: 128
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+    vnetSubnetID: '<vnetSubnetID>'
+  }
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 2
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    minPods: 2
+    mode: 'User'
+    name: 'userpool2'
+    nodeLabels: {}
+    osDiskSizeGB: 128
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+param dnsServiceIP = '10.10.200.10'
+param enablePrivateCluster = true
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkPlugin = 'azure'
+param privateDNSZone = '<privateDNSZone>'
+param serviceCidr = '10.10.200.0/24'
+param skuTier = 'Standard'
 ```
 
 </details>
