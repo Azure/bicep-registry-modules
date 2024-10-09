@@ -168,6 +168,7 @@ body:
         - "avm/res/network/virtual-network-gateway"
         - "avm/res/network/virtual-wan"
         - "avm/res/network/vpn-gateway"
+        - "avm/res/network/vpn-server-configuration"
         - "avm/res/network/vpn-site"
         - "avm/res/operational-insights/workspace"
         - "avm/res/operations-management/solution"
