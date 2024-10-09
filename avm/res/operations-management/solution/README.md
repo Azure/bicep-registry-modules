@@ -56,7 +56,7 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -76,6 +76,23 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operations-management/solution:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
+param name = 'Updates'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -110,7 +127,7 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -136,6 +153,25 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operations-management/solution:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
+param name = 'AzureAutomation'
+// Non-required parameters
+param location = '<location>'
+param product = 'OMSGallery'
+param publisher = 'Microsoft'
 ```
 
 </details>
@@ -170,7 +206,7 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -196,6 +232,25 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operations-management/solution:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
+param name = 'omsnonms001'
+// Non-required parameters
+param location = '<location>'
+param product = 'nonmsTestSolutionProduct'
+param publisher = 'nonmsTestSolutionPublisher'
 ```
 
 </details>
@@ -230,7 +285,7 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -256,6 +311,25 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operations-management/solution:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
+param name = 'AzureAutomation'
+// Non-required parameters
+param location = '<location>'
+param product = 'OMSGallery'
+param publisher = 'Microsoft'
 ```
 
 </details>
