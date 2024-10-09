@@ -858,9 +858,13 @@ param natGatewayName = 'nat-gateway'
 param prepareEncryption = true
 param privateEndpoints = [
   {
-    privateDnsZoneResourceIds: [
-      '<privateDNSZoneResourceId>'
-    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
     service: 'databricks_ui_api'
     subnetResourceId: '<subnetResourceId>'
     tags: {
