@@ -42,6 +42,9 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'dep-${namePrefix}-test-${serviceShort}'
+      managedIdentities: {
+        systemAssigned: true
+      }
       location: 'global'
       originResponseTimeoutSeconds: 60
       sku: 'Standard_AzureFrontDoor'
