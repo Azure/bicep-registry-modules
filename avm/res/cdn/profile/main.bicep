@@ -49,6 +49,9 @@ param ruleSets array = []
 @description('Optional. Array of AFD endpoint objects.')
 param afdEndpoints array = []
 
+@description('Optional. Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies for details).')
+param securityPolicies securityPolicyType = []
+
 @description('Optional. Endpoint tags.')
 param tags object?
 
@@ -81,7 +84,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -251,6 +254,22 @@ module profile_afdEndpoints 'afdEndpoint/main.bicep' = [
   }
 ]
 
+module profile_securityPolicies 'securityPolicies/main.bicep' = [
+  for (securityPolicy, index) in securityPolicies: {
+    name: '${uniqueString(deployment().name)}-Profile-SecurityPolicy-${index}'
+    dependsOn: [
+      profile_afdEndpoints
+      profile_customDomains
+    ]
+    params: {
+      name: securityPolicy.name
+      profileName: profile.name
+      associations: securityPolicy.associations
+      wafPolicyResourceId: securityPolicy.wafPolicyResourceId
+    }
+  }
+]
+
 @description('The name of the CDN profile.')
 output name string = profile.name
 
@@ -278,6 +297,18 @@ output uri string = !empty(endpointProperties) ? profile_endpoint.outputs.uri : 
 // =============== //
 //   Definitions   //
 // =============== //
+
+import { associationsType } from 'securityPolicies/main.bicep'
+type securityPolicyType = {
+  @description('Required. Name of the security policy.')
+  name: string
+
+  @description('Required. Domain names and URL patterns to math with this association.')
+  associations: associationsType
+
+  @description('Required. Resource ID of WAF policy.')
+  wafPolicyResourceId: string
+}[]
 
 type lockType = {
   @description('Optional. Specify the name of lock.')

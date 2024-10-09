@@ -43,6 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    fwPolicyName: 'dep-${namePrefix}-fwp-${serviceShort}'
     publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     certDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
@@ -79,11 +80,6 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       enableTelemetry: enableTelemetry
       name: appGWName
-      zones: [
-        '1'
-        '2'
-        '3'
-      ]
       backendAddressPools: [
         {
           name: 'appServiceBackendPool'
@@ -169,9 +165,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       privateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           service: 'public'
           subnetResourceId: nestedDependencies.outputs.privateLinkSubnetResourceId
           tags: {
@@ -467,15 +467,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      webApplicationFirewallConfiguration: {
-        enabled: true
-        fileUploadLimitInMb: 100
-        firewallMode: 'Prevention'
-        maxRequestBodySizeInKb: 128
-        requestBodyCheck: true
-        ruleSetType: 'OWASP'
-        ruleSetVersion: '3.0'
-      }
+      firewallPolicyResourceId: nestedDependencies.outputs.fwPolicyResourceId
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

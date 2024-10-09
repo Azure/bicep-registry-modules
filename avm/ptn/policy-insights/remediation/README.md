@@ -8,7 +8,6 @@ This module deploys a Policy Insights Remediation.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -60,7 +59,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -83,6 +82,24 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/policy-insights/remediation:<version>'
+
+// Required parameters
+param name = 'pirmgmin001'
+param policyAssignmentId = '<policyAssignmentId>'
+// Non-required parameters
+param location = '<location>'
+param policyDefinitionReferenceId = 'Prerequisite_DeployExtensionWindows'
 ```
 
 </details>
@@ -120,7 +137,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -160,6 +177,28 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/policy-insights/remediation:<version>'
+
+// Required parameters
+param name = 'pirmgmax001'
+param policyAssignmentId = '<policyAssignmentId>'
+// Non-required parameters
+param failureThresholdPercentage = '0.5'
+param filtersLocations = []
+param location = '<location>'
+param parallelDeployments = 1
+param policyDefinitionReferenceId = 'Prerequisite_DeployExtensionWindows'
+param resourceCount = 10
+```
+
+</details>
+<p>
+
 ### Example 3: _Policy Remediation (Resource Group scope)_
 
 This module runs a Policy remediation task at Resource Group scope using minimal parameters.
@@ -190,7 +229,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -219,6 +258,26 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/policy-insights/remediation:<version>'
+
+// Required parameters
+param name = 'pirrgmin001'
+param policyAssignmentId = '<policyAssignmentId>'
+// Non-required parameters
+param location = '<location>'
+param policyDefinitionReferenceId = 'Prerequisite_DeployExtensionWindows'
+param resourceGroupName = '<resourceGroupName>'
+param subscriptionId = '<subscriptionId>'
 ```
 
 </details>
@@ -259,7 +318,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -308,6 +367,31 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/policy-insights/remediation:<version>'
+
+// Required parameters
+param name = 'pirrgmax001'
+param policyAssignmentId = '<policyAssignmentId>'
+// Non-required parameters
+param failureThresholdPercentage = '0.5'
+param filtersLocations = []
+param location = '<location>'
+param parallelDeployments = 1
+param policyDefinitionReferenceId = 'Prerequisite_DeployExtensionWindows'
+param resourceCount = 10
+param resourceDiscoveryMode = 'ReEvaluateCompliance'
+param resourceGroupName = '<resourceGroupName>'
+param subscriptionId = '<subscriptionId>'
+```
+
+</details>
+<p>
+
 ### Example 5: _Policy Remediation (Subscription scope)_
 
 This module runs a Policy remediation task at subscription scope using minimal parameters.
@@ -337,7 +421,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -363,6 +447,25 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/policy-insights/remediation:<version>'
+
+// Required parameters
+param name = 'pirsubmin001'
+param policyAssignmentId = '<policyAssignmentId>'
+// Non-required parameters
+param location = '<location>'
+param policyDefinitionReferenceId = 'Prerequisite_DeployExtensionWindows'
+param subscriptionId = '<subscriptionId>'
 ```
 
 </details>
@@ -402,7 +505,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -448,6 +551,29 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/policy-insights/remediation:<version>'
+
+// Required parameters
+param name = 'pirsubmax001'
+param policyAssignmentId = '<policyAssignmentId>'
+// Non-required parameters
+param failureThresholdPercentage = '0.5'
+param filtersLocations = []
+param location = '<location>'
+param parallelDeployments = 1
+param policyDefinitionReferenceId = 'Prerequisite_DeployExtensionWindows'
+param resourceCount = 10
+param resourceDiscoveryMode = 'ReEvaluateCompliance'
+param subscriptionId = '<subscriptionId>'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -583,7 +709,6 @@ The target scope for the remediation. The subscription ID of the subscription fo
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -591,10 +716,6 @@ The target scope for the remediation. The subscription ID of the subscription fo
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the remediation. |
 | `resourceId` | string | The resource ID of the remediation. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

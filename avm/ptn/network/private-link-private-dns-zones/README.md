@@ -63,7 +63,7 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -71,6 +71,19 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
   "contentVersion": "1.0.0.0",
   "parameters": {}
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>'
+
+
 ```
 
 </details>
@@ -106,7 +119,7 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -129,6 +142,26 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>'
+
+param location = '<location>'
+param privateLinkPrivateDnsZones = [
+  'testpdnszone1.int'
+  'testpdnszone2.local'
+]
+param virtualNetworkResourceIdsToLinkTo = [
+  '<vnetResourceId>'
+]
 ```
 
 </details>
@@ -159,7 +192,7 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -178,6 +211,20 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>'
+
+param virtualNetworkResourceIdsToLinkTo = [
+  '<vnetResourceId>'
+]
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -301,7 +348,6 @@ An array of Virtual Network Resource IDs to link to the Private Link Private DNS
 - Required: No
 - Type: array
 - Default: `[]`
-
 
 ## Outputs
 

@@ -8,15 +8,14 @@ This module deploys an App Managed Environment (also known as a Container App En
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/managedEnvironments` | [2023-11-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-11-02-preview/managedEnvironments) |
-| `Microsoft.App/managedEnvironments/storages` | [2023-11-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-11-02-preview/managedEnvironments/storages) |
+| `Microsoft.App/managedEnvironments` | [2024-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-02-02-preview/managedEnvironments) |
+| `Microsoft.App/managedEnvironments/storages` | [2024-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-02-02-preview/managedEnvironments/storages) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -73,7 +72,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -126,6 +125,37 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/managed-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param name = 'amemin001'
+// Non-required parameters
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetId = '<infrastructureSubnetId>'
+param internal = true
+param location = '<location>'
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -171,6 +201,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         ]
       }
     }
+    peerTrafficEncryption: true
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     roleAssignments: [
@@ -227,7 +258,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -287,6 +318,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
           ]
         }
       }
+    },
+    "peerTrafficEncryption": {
+      "value": true
     },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
@@ -349,6 +383,98 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/managed-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param name = 'amemax001'
+// Non-required parameters
+param appInsightsConnectionString = '<appInsightsConnectionString>'
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetId = '<infrastructureSubnetId>'
+param internal = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param openTelemetryConfiguration = {
+  logsConfiguration: {
+    destinations: [
+      'appInsights'
+    ]
+  }
+  tracesConfiguration: {
+    destinations: [
+      'appInsights'
+    ]
+  }
+}
+param peerTrafficEncryption = true
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param roleAssignments = [
+  {
+    name: '43fc5250-f111-472b-8722-f1cb4a0e754b'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param storages = [
+  {
+    accessMode: 'ReadWrite'
+    kind: 'SMB'
+    shareName: 'smbfileshare'
+    storageAccountName: '<storageAccountName>'
+  }
+  {
+    accessMode: 'ReadWrite'
+    kind: 'NFS'
+    shareName: 'nfsfileshare'
+    storageAccountName: '<storageAccountName>'
+  }
+]
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
 ```
 
 </details>
@@ -420,7 +546,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -504,6 +630,61 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/managed-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param name = 'amewaf001'
+// Non-required parameters
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetId = '<infrastructureSubnetId>'
+param internal = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -542,6 +723,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 | [`logsDestination`](#parameter-logsdestination) | string | Logs destination. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`openTelemetryConfiguration`](#parameter-opentelemetryconfiguration) | object | Open Telemetry configuration. |
+| [`peerTrafficEncryption`](#parameter-peertrafficencryption) | bool | Whether or not to encrypt peer traffic. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`storages`](#parameter-storages) | array | The list of storages to mount on the environment. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -761,12 +943,26 @@ Open Telemetry configuration.
 - Type: object
 - Default: `{}`
 
+### Parameter: `peerTrafficEncryption`
+
+Whether or not to encrypt peer traffic.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -931,7 +1127,6 @@ Whether or not this Managed Environment is zone-redundant.
 - Type: bool
 - Default: `True`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -943,10 +1138,6 @@ Whether or not this Managed Environment is zone-redundant.
 | `resourceId` | string | The resource ID of the Managed Environment. |
 | `staticIp` | string | The IP address of the Managed Environment. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

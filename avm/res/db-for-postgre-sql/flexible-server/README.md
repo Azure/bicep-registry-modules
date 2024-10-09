@@ -8,7 +8,6 @@ This module deploys a DBforPostgreSQL Flexible Server.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -53,12 +52,18 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   params: {
     // Required parameters
     name: 'dfpsfsmin001'
-    skuName: 'Standard_B2s'
-    tier: 'Burstable'
+    skuName: 'Standard_D2s_v3'
+    tier: 'GeneralPurpose'
     // Non-required parameters
-    administratorLogin: 'adminUserName'
-    administratorLoginPassword: '<administratorLoginPassword>'
+    administrators: [
+      {
+        objectId: '<objectId>'
+        principalName: '<principalName>'
+        principalType: 'ServicePrincipal'
+      }
+    ]
     geoRedundantBackup: 'Enabled'
+    highAvailability: 'ZoneRedundant'
     location: '<location>'
   }
 }
@@ -69,7 +74,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -81,26 +86,59 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": "dfpsfsmin001"
     },
     "skuName": {
-      "value": "Standard_B2s"
+      "value": "Standard_D2s_v3"
     },
     "tier": {
-      "value": "Burstable"
+      "value": "GeneralPurpose"
     },
     // Non-required parameters
-    "administratorLogin": {
-      "value": "adminUserName"
-    },
-    "administratorLoginPassword": {
-      "value": "<administratorLoginPassword>"
+    "administrators": {
+      "value": [
+        {
+          "objectId": "<objectId>",
+          "principalName": "<principalName>",
+          "principalType": "ServicePrincipal"
+        }
+      ]
     },
     "geoRedundantBackup": {
       "value": "Enabled"
+    },
+    "highAvailability": {
+      "value": "ZoneRedundant"
     },
     "location": {
       "value": "<location>"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
+
+// Required parameters
+param name = 'dfpsfsmin001'
+param skuName = 'Standard_D2s_v3'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administrators = [
+  {
+    objectId: '<objectId>'
+    principalName: '<principalName>'
+    principalType: 'ServicePrincipal'
+  }
+]
+param geoRedundantBackup = 'Enabled'
+param highAvailability = 'ZoneRedundant'
+param location = '<location>'
 ```
 
 </details>
@@ -146,7 +184,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -188,6 +226,36 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
+
+// Required parameters
+param name = 'dfpsfse001'
+param skuName = 'Standard_D2s_v3'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 ```
 
@@ -285,7 +353,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -390,6 +458,87 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
+
+// Required parameters
+param name = 'dfpsfspvt001'
+param skuName = 'Standard_D2s_v3'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param configurations = [
+  {
+    name: 'log_min_messages'
+    source: 'user-override'
+    value: 'INFO'
+  }
+  {
+    name: 'autovacuum_naptime'
+    source: 'user-override'
+    value: '80'
+  }
+]
+param databases = [
+  {
+    charset: 'UTF8'
+    collation: 'en_US.utf8'
+    name: 'testdb1'
+  }
+  {
+    name: 'testdb2'
+  }
+]
+param delegatedSubnetResourceId = '<delegatedSubnetResourceId>'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param geoRedundantBackup = 'Enabled'
+param location = '<location>'
+param privateDnsZoneArmResourceId = '<privateDnsZoneArmResourceId>'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -506,7 +655,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -640,6 +789,106 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
+
+// Required parameters
+param name = 'dfpsfsp001'
+param skuName = 'Standard_D2s_v3'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administrators = [
+  {
+    objectId: '<objectId>'
+    principalName: '<principalName>'
+    principalType: 'ServicePrincipal'
+  }
+]
+param backupRetentionDays = 20
+param configurations = [
+  {
+    name: 'log_min_messages'
+    source: 'user-override'
+    value: 'INFO'
+  }
+]
+param databases = [
+  {
+    charset: 'UTF8'
+    collation: 'en_US.utf8'
+    name: 'testdb1'
+  }
+  {
+    name: 'testdb2'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param firewallRules = [
+  {
+    endIpAddress: '0.0.0.0'
+    name: 'AllowAllWindowsAzureIps'
+    startIpAddress: '0.0.0.0'
+  }
+  {
+    endIpAddress: '10.10.10.10'
+    name: 'test-rule1'
+    startIpAddress: '10.10.10.1'
+  }
+  {
+    endIpAddress: '100.100.100.10'
+    name: 'test-rule2'
+    startIpAddress: '100.100.100.1'
+  }
+]
+param geoRedundantBackup = 'Disabled'
+param highAvailability = 'SameZone'
+param location = '<location>'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param storageSizeGB = 1024
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param version = '14'
+```
+
+</details>
+<p>
+
 ### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -697,7 +946,14 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       }
     ]
     geoRedundantBackup: 'Enabled'
+    highAvailability: 'ZoneRedundant'
     location: '<location>'
+    maintenanceWindow: {
+      customWindow: 'Enabled'
+      dayOfWeek: 0
+      startHour: 1
+      startMinute: 0
+    }
     privateDnsZoneArmResourceId: '<privateDnsZoneArmResourceId>'
     tags: {
       Environment: 'Non-Prod'
@@ -713,7 +969,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -782,8 +1038,19 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     "geoRedundantBackup": {
       "value": "Enabled"
     },
+    "highAvailability": {
+      "value": "ZoneRedundant"
+    },
     "location": {
       "value": "<location>"
+    },
+    "maintenanceWindow": {
+      "value": {
+        "customWindow": "Enabled",
+        "dayOfWeek": 0,
+        "startHour": 1,
+        "startMinute": 0
+      }
     },
     "privateDnsZoneArmResourceId": {
       "value": "<privateDnsZoneArmResourceId>"
@@ -802,6 +1069,75 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
+
+// Required parameters
+param name = 'dfpsfswaf001'
+param skuName = 'Standard_D2s_v3'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administrators = [
+  {
+    objectId: '<objectId>'
+    principalName: '<principalName>'
+    principalType: 'ServicePrincipal'
+  }
+]
+param configurations = [
+  {
+    name: 'log_min_messages'
+    source: 'user-override'
+    value: 'INFO'
+  }
+  {
+    name: 'autovacuum_naptime'
+    source: 'user-override'
+    value: '80'
+  }
+]
+param databases = [
+  {
+    charset: 'UTF8'
+    collation: 'en_US.utf8'
+    name: 'testdb1'
+  }
+  {
+    name: 'testdb2'
+  }
+]
+param delegatedSubnetResourceId = '<delegatedSubnetResourceId>'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param geoRedundantBackup = 'Enabled'
+param highAvailability = 'ZoneRedundant'
+param location = '<location>'
+param maintenanceWindow = {
+  customWindow: 'Enabled'
+  dayOfWeek: 0
+  startHour: 1
+  startMinute: 0
+}
+param privateDnsZoneArmResourceId = '<privateDnsZoneArmResourceId>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -1254,7 +1590,7 @@ The mode for high availability.
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
+- Default: `'ZoneRedundant'`
 - Allowed:
   ```Bicep
   [
@@ -1314,7 +1650,15 @@ Properties for the maintenence window. If provided, 'customWindow' property must
 
 - Required: No
 - Type: object
-- Default: `{}`
+- Default:
+  ```Bicep
+  {
+      customWindow: 'Enabled'
+      dayOfWeek: 0
+      startHour: 1
+      startMinute: 0
+  }
+  ```
 
 ### Parameter: `passwordAuth`
 
@@ -1345,6 +1689,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1361,6 +1711,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1407,6 +1758,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1472,7 +1830,7 @@ PostgreSQL Server version.
 
 - Required: No
 - Type: string
-- Default: `'15'`
+- Default: `'16'`
 - Allowed:
   ```Bicep
   [
@@ -1481,9 +1839,9 @@ PostgreSQL Server version.
     '13'
     '14'
     '15'
+    '16'
   ]
   ```
-
 
 ## Outputs
 
@@ -1494,10 +1852,6 @@ PostgreSQL Server version.
 | `name` | string | The name of the deployed PostgreSQL Flexible server. |
 | `resourceGroupName` | string | The resource group of the deployed PostgreSQL Flexible server. |
 | `resourceId` | string | The resource ID of the deployed PostgreSQL Flexible server. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
