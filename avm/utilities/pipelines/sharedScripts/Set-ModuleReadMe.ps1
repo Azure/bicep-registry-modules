@@ -1609,13 +1609,15 @@ function Set-UsageExamplesSection {
             $bicepExample = ConvertTo-FormattedBicep @conversionInputObject
 
             # [6/6] Convert the Bicep format to a Bicep parameters file format
-            $bicepParamBlockArray = $bicepExample -split '\r?\n'
-            $topLevelParamIndent = ([regex]::Match($bicepParamBlockArray[0], '^(\s+).*')).Captures.Groups[1].Value.Length
-            $bicepParametersFileExample = $bicepParamBlockArray | ForEach-Object {
-                $line = $_
-                $line = $line -replace "^(\s{$topLevelParamIndent})([a-zA-Z]*)(:)(.*)", 'param $2 =$4' # Update any [    xyz: abc] to [param xyz = abc]
-                $line = $line -replace "^\s{$topLevelParamIndent}", '' # Update any [    xyz: abc] to [xyz: abc]
-                $line
+            if ($bicepExample.length -gt 0) {
+                $bicepParamBlockArray = $bicepExample -split '\r?\n'
+                $topLevelParamIndent = ([regex]::Match($bicepParamBlockArray[0], '^(\s+).*')).Captures.Groups[1].Value.Length
+                $bicepParametersFileExample = $bicepParamBlockArray | ForEach-Object {
+                    $line = $_
+                    $line = $line -replace "^(\s{$topLevelParamIndent})([a-zA-Z]*)(:)(.*)", 'param $2 =$4' # Update any [    xyz: abc] to [param xyz = abc]
+                    $line = $line -replace "^\s{$topLevelParamIndent}", '' # Update any [    xyz: abc] to [xyz: abc]
+                    $line
+                }
             }
 
             # --------------------- #

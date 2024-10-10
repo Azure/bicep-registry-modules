@@ -134,7 +134,7 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
         targetDnsServers: [
           {
             ipAddress: '192.168.0.1'
-            port: '53'
+            port: 53
           }
         ]
       }
@@ -209,7 +209,7 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
           "targetDnsServers": [
             {
               "ipAddress": "192.168.0.1",
-              "port": "53"
+              "port": 53
             }
           ]
         }
@@ -288,7 +288,7 @@ param forwardingRules = [
     targetDnsServers: [
       {
         ipAddress: '192.168.0.1'
-        port: '53'
+        port: 53
       }
     ]
   }
@@ -530,7 +530,7 @@ The target DNS servers to forward to.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`ipAddress`](#parameter-forwardingrulestargetdnsserversipaddress) | string | The IP address of the target DNS server. |
-| [`port`](#parameter-forwardingrulestargetdnsserversport) | string | The port of the target DNS server. |
+| [`port`](#parameter-forwardingrulestargetdnsserversport) | int | The port of the target DNS server. |
 
 ### Parameter: `forwardingRules.targetDnsServers.ipAddress`
 
@@ -544,7 +544,7 @@ The IP address of the target DNS server.
 The port of the target DNS server.
 
 - Required: Yes
-- Type: string
+- Type: int
 
 ### Parameter: `forwardingRules.forwardingRuleState`
 

@@ -31,7 +31,7 @@ param proximityPlacementGroupName string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-@description('Required. The object ID of the Backup Management Service Enterprise Application. Required for Customer-Managed-Keys.')
+@description('Required. The object ID of the Backup Management Service Enterprise Application.')
 param backupManagementServiceApplicationObjectId string
 
 @description('Required. The name of the data collection rule.')
