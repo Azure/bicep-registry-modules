@@ -95,7 +95,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module project 'br/public:avm/res/machine-learning-services/workspace:0.7.0' = if (enableTelemetry) {
+module project 'br/public:avm/res/machine-learning-services/workspace:0.7.0' = {
   name: '${uniqueString(deployment().name, location)}-project'
   params: {
     name: name
@@ -106,6 +106,7 @@ module project 'br/public:avm/res/machine-learning-services/workspace:0.7.0' = i
     hbiWorkspace: hbiWorkspace
     publicNetworkAccess: publicNetworkAccess
     hubResourceId: hubResourceId
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -113,7 +114,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
 }
 
-module keyVaultAccess 'br/public:avm/res/key-vault/vault:0.9.0' = if (enableTelemetry) {
+module keyVaultAccess 'br/public:avm/res/key-vault/vault:0.9.0' = {
   name: '${uniqueString(deployment().name, location)}-keyvault'
   params: {
     name: keyVault.name
@@ -123,10 +124,11 @@ module keyVaultAccess 'br/public:avm/res/key-vault/vault:0.9.0' = if (enableTele
         permissions: { secrets: [ 'get', 'list' ] }
       }
     ]
+    enableTelemetry: enableTelemetry
   }
 }
 
-module mlServiceRoleAssigned 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = if (enableTelemetry) {
+module mlServiceRoleAssigned 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
   name: '${uniqueString(deployment().name, location)}-roleassignment'
   params: {
     name: userAssignedName
@@ -138,6 +140,7 @@ module mlServiceRoleAssigned 'br/public:avm/res/managed-identity/user-assigned-i
         principalType: 'ServicePrincipal'
       }
     ]
+    enableTelemetry: enableTelemetry
   }
 }
 

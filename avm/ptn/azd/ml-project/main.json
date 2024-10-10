@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "4669214822822825931"
+      "templateHash": "12979908494001456774"
     },
     "name": "Azd Machine Learning workspace",
     "description": "Create a machine learning workspace, configure the key vault access policy and assign role permissions to the machine learning instance.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
@@ -175,7 +175,6 @@
       "name": "[parameters('keyVaultName')]"
     },
     "project": {
-      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-project', uniqueString(deployment().name, parameters('location')))]",
@@ -208,6 +207,9 @@
           },
           "hubResourceId": {
             "value": "[parameters('hubResourceId')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -3978,7 +3980,6 @@
       }
     },
     "keyVaultAccess": {
-      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-keyvault', uniqueString(deployment().name, parameters('location')))]",
@@ -4003,6 +4004,9 @@
                 }
               }
             ]
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -6922,7 +6926,6 @@
       ]
     },
     "mlServiceRoleAssigned": {
-      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-roleassignment', uniqueString(deployment().name, parameters('location')))]",
@@ -6946,6 +6949,9 @@
                 "input": "[createObject('principalId', reference('project').outputs.systemAssignedMIPrincipalId.value, 'roleDefinitionIdOrName', parameters('roleDefinitionIdOrName')[copyIndex('value')], 'principalType', 'ServicePrincipal')]"
               }
             ]
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
