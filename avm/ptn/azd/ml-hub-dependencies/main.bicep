@@ -292,7 +292,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module keyVault 'br/public:avm/res/key-vault/vault:0.7.1' = if (enableTelemetry) {
+module keyVault 'br/public:avm/res/key-vault/vault:0.7.1' = {
   name: '${uniqueString(deployment().name, location)}-keyvault'
   params: {
     name: keyVaultName
@@ -303,10 +303,11 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.7.1' = if (enableTelemetry)
     enableVaultForTemplateDeployment: enableVaultForTemplateDeployment
     enablePurgeProtection: enablePurgeProtection
     sku: keyVaultSku
+    enableTelemetry: enableTelemetry
   }
 }
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (enableTelemetry) {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
   name: '${uniqueString(deployment().name, location)}-storage'
   params: {
     name: storageAccountName
@@ -320,10 +321,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (en
     fileServices: fileServices
     queueServices: queueServices
     tableServices: tableServices
+    enableTelemetry: enableTelemetry
   }
 }
 
-module cognitiveServices 'br/public:avm/res/cognitive-services/account:0.7.0' = if (enableTelemetry) {
+module cognitiveServices 'br/public:avm/res/cognitive-services/account:0.7.0' = {
   name: '${uniqueString(deployment().name, location)}-cognitive'
   params: {
     name: cognitiveServicesName
@@ -336,10 +338,11 @@ module cognitiveServices 'br/public:avm/res/cognitive-services/account:0.7.0' = 
     disableLocalAuth: cognitiveServicesDisableLocalAuth
     sku: cognitiveServicesSku
     deployments: cognitiveServicesDeployments
+    enableTelemetry: enableTelemetry
   }
 }
 
-module logAnalytics 'br/public:avm/res/operational-insights/workspace:0.6.0' = if (!empty(logAnalyticsName) && enableTelemetry) {
+module logAnalytics 'br/public:avm/res/operational-insights/workspace:0.6.0' = if (!empty(logAnalyticsName)) {
   name: '${uniqueString(deployment().name, location)}-loganalytics'
   params: {
     name: logAnalyticsName
@@ -347,10 +350,11 @@ module logAnalytics 'br/public:avm/res/operational-insights/workspace:0.6.0' = i
     tags: tags
     dataRetention: dataRetention
     skuName: logAnalyticsSkuName
+    enableTelemetry: enableTelemetry
   }
 }
 
-module applicationInsights 'br/public:avm/ptn/azd/insights-dashboard:0.1.0' = if (!empty(applicationInsightsName) && !empty(logAnalyticsName) && enableTelemetry) {
+module applicationInsights 'br/public:avm/ptn/azd/insights-dashboard:0.1.0' = if (!empty(applicationInsightsName) && !empty(logAnalyticsName)) {
   name: '${uniqueString(deployment().name, location)}-insights'
   params: {
     location: location
@@ -358,10 +362,11 @@ module applicationInsights 'br/public:avm/ptn/azd/insights-dashboard:0.1.0' = if
     name: applicationInsightsName
     dashboardName: applicationInsightsDashboardName
     logAnalyticsWorkspaceResourceId: !empty(logAnalyticsName) ? logAnalytics.outputs.resourceId : ''
+    enableTelemetry: enableTelemetry
   }
 }
 
-module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' = if (!empty(containerRegistryName) && enableTelemetry) {
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' = if (!empty(containerRegistryName)) {
   name: '${uniqueString(deployment().name, location)}-registry'
   params: {
     name: containerRegistryName
@@ -369,10 +374,11 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' =
     tags: tags
     location: location
     publicNetworkAccess: registryPublicNetworkAccess
+    enableTelemetry: enableTelemetry
   }
 }
 
-module searchService 'br/public:avm/res/search/search-service:0.6.0' = if (!empty(searchServiceName) && enableTelemetry) {
+module searchService 'br/public:avm/res/search/search-service:0.6.0' = if (!empty(searchServiceName)) {
   name: '${uniqueString(deployment().name, location)}-searchservice'
   params: {
     name: searchServiceName
@@ -389,6 +395,7 @@ module searchService 'br/public:avm/res/search/search-service:0.6.0' = if (!empt
     semanticSearch: semanticSearch
     sku: searchServiceSku
     managedIdentities: managedIdentities
+    enableTelemetry: enableTelemetry
   }
 }
 
