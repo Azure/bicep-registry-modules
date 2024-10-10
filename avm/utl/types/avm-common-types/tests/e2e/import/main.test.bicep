@@ -9,12 +9,26 @@ metadata description = 'This example imports all available types of the given mo
 
 // Triggering comme
 
-import * as types from '../../../main.bicep'
+import {
+  customerManagedKeyType
+  diagnosticSettingFullType
+  diagnosticSettingLogsOnlyType
+  diagnosticSettingMetricsOnlyType
+  roleAssignmentType
+  lockType
+  managedIdentitiesAllType
+  managedIdentitiesOnlySysAssignedType
+  managedIdentitiesOnlyUserAssignedType
+  privateEndpointMultiServiceType
+  privateEndpointSingleServiceType
+  secretToSetType
+  secretSetType
+} from '../../../main.bicep'
 
 //  ====================== //
 //   Diagnostic Settings   //
 //  ====================== //
-output diagnosticFull types.diagnosticSettingFullType[] = [
+output diagnosticFull diagnosticSettingFullType[] = [
   {
     eventHubAuthorizationRuleResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.EventHub/namespaces/myNamespace/eventhubs/myHub/authorizationRules/myRule'
     eventHubName: 'myHub'
@@ -47,7 +61,7 @@ output diagnosticFull types.diagnosticSettingFullType[] = [
     workspaceResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myLaw'
   }
 ]
-output diagnosticMetricsOnly types.diagnosticSettingMetricsOnlyType = {
+output diagnosticMetricsOnly diagnosticSettingMetricsOnlyType = {
   eventHubAuthorizationRuleResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.EventHub/namespaces/myNamespace/eventhubs/myHub/authorizationRules/myRule'
   eventHubName: 'myHub'
   logAnalyticsDestinationType: 'AzureDiagnostics'
@@ -61,7 +75,7 @@ output diagnosticMetricsOnly types.diagnosticSettingMetricsOnlyType = {
   storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Storage/storageAccounts/myStorageAccount'
   workspaceResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myLaw'
 }
-output diagnosticLogsOnly types.diagnosticSettingLogsOnlyType = {
+output diagnosticLogsOnly diagnosticSettingLogsOnlyType = {
   eventHubAuthorizationRuleResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.EventHub/namespaces/myNamespace/eventhubs/myHub/authorizationRules/myRule'
   eventHubName: 'myHub'
   logAnalyticsDestinationType: 'AzureDiagnostics'
@@ -85,7 +99,7 @@ output diagnosticLogsOnly types.diagnosticSettingLogsOnlyType = {
 //  =================== //
 //   Role Assignments   //
 //  =================== //
-output roleAssignments types.roleAssignmentType[] = [
+output roleAssignments roleAssignmentType[] = [
   {
     principalId: '11111111-1111-1111-1111-111111111111'
     roleDefinitionIdOrName: subscriptionResourceId(
@@ -114,7 +128,7 @@ output roleAssignments types.roleAssignmentType[] = [
 // ========= //
 //   Locks   //
 // ========= //
-output locks types.lockType = {
+output locks lockType = {
   kind: 'CanNotDelete'
   name: 'myLock'
 }
@@ -122,16 +136,16 @@ output locks types.lockType = {
 // ====================== //
 //   Managed Idenitites   //
 // ====================== //
-output managedIdentitiesFull types.managedIdentitiesAllType = {
+output managedIdentitiesFull managedIdentitiesAllType = {
   systemAssigned: true
   userAssignedResourceIds: [
     '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity'
   ]
 }
-output managedIdentitiesOnlySysAssigned types.managedIdentitiesOnlySysAssignedType = {
+output managedIdentitiesOnlySysAssigned managedIdentitiesOnlySysAssignedType = {
   systemAssigned: true
 }
-output managedIdentitiesOnlyUserAssigned types.managedIdentitiesOnlyUserAssignedType = {
+output managedIdentitiesOnlyUserAssigned managedIdentitiesOnlyUserAssignedType = {
   userAssignedResourceIds: [
     '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity'
   ]
@@ -140,7 +154,7 @@ output managedIdentitiesOnlyUserAssigned types.managedIdentitiesOnlyUserAssigned
 // ===================== //
 //   Private Endpoints   //
 // ===================== //
-output privateEndpointMultiService types.privateEndpointMultiServiceType = {
+output privateEndpointMultiService privateEndpointMultiServiceType = {
   lock: {
     kind: 'CanNotDelete'
     name: 'myLock'
@@ -197,20 +211,20 @@ output privateEndpointMultiService types.privateEndpointMultiServiceType = {
   }
 }
 
-output privateEndpointSingleService types.privateEndpointSingleServiceType = {
+output privateEndpointSingleService privateEndpointSingleServiceType = {
   subnetResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Network/virtualNetworks/myVnet/subnets/defaultSubnet'
 }
 
 // ======================== //
 //   Customer-Managed Keys  //
 // ======================== //
-output customerManagedKeyFull types.customerManagedKeyType = {
+output customerManagedKeyFull customerManagedKeyType = {
   keyName: 'myKey'
   keyVaultResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.KeyVault/vaults/myVault'
   keyVersion: '2f4783701d724537a4e0c2d473c31846'
   userAssignedIdentityResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity'
 }
-output customerManagedKeyDefaults types.customerManagedKeyType = {
+output customerManagedKeyDefaults customerManagedKeyType = {
   keyName: 'myKey'
   keyVaultResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.KeyVault/vaults/myVault'
 }
@@ -218,11 +232,11 @@ output customerManagedKeyDefaults types.customerManagedKeyType = {
 // ================== //
 //   Secrets Export   //
 // ================== //
-output secretSet types.secretToSetType = {
+output secretSet secretToSetType = {
   name: 'mySecret'
   value: 'definitelyAValue'
 }
-output secretToSet types.secretSetType = {
+output secretToSet secretSetType = {
   secretResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.KeyVault/vaults/myVault/secrets/mySecret'
   secretUri: 'https://myVault.${az.environment().suffixes.keyvaultDns}/secrets/mySecret'
   secretUriWithVersion: 'https://myVault.${az.environment().suffixes.keyvaultDns}/secrets/mySecret/2f4783701d724537a4e0c2d473c31846'
