@@ -5,10 +5,10 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "6799127393431161652"
+      "version": "0.30.23.60470",
+      "templateHash": "2430791769444524518"
     },
-    "name": "Azure Machine Learning Dependencies",
+    "name": "Azd Azure Machine Learning Dependencies",
     "description": "Creates all the dependencies required for a Machine Learning Service.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
     "owner": "Azure/module-maintainers"
   },
@@ -500,6 +500,7 @@
       }
     },
     "keyVault": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-keyvault', uniqueString(deployment().name, parameters('location')))]",
@@ -3304,6 +3305,7 @@
       }
     },
     "storageAccount": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-storage', uniqueString(deployment().name, parameters('location')))]",
@@ -7984,6 +7986,7 @@
       }
     },
     "cognitiveServices": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-cognitive', uniqueString(deployment().name, parameters('location')))]",
@@ -9775,7 +9778,7 @@
       }
     },
     "logAnalytics": {
-      "condition": "[not(empty(parameters('logAnalyticsName')))]",
+      "condition": "[and(not(empty(parameters('logAnalyticsName'))), parameters('enableTelemetry'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-loganalytics', uniqueString(deployment().name, parameters('location')))]",
@@ -11831,7 +11834,7 @@
       }
     },
     "applicationInsights": {
-      "condition": "[and(not(empty(parameters('applicationInsightsName'))), not(empty(parameters('logAnalyticsName'))))]",
+      "condition": "[and(and(not(empty(parameters('applicationInsightsName'))), not(empty(parameters('logAnalyticsName')))), parameters('enableTelemetry'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-insights', uniqueString(deployment().name, parameters('location')))]",
@@ -14245,7 +14248,7 @@
       ]
     },
     "containerRegistry": {
-      "condition": "[not(empty(parameters('containerRegistryName')))]",
+      "condition": "[and(not(empty(parameters('containerRegistryName'))), parameters('enableTelemetry'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-registry', uniqueString(deployment().name, parameters('location')))]",
@@ -16755,7 +16758,7 @@
       }
     },
     "searchService": {
-      "condition": "[not(empty(parameters('searchServiceName')))]",
+      "condition": "[and(not(empty(parameters('searchServiceName'))), parameters('enableTelemetry'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-searchservice', uniqueString(deployment().name, parameters('location')))]",

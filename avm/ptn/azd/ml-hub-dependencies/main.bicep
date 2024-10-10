@@ -1,4 +1,4 @@
-metadata name = 'Azure Machine Learning Dependencies'
+metadata name = 'Azd Azure Machine Learning Dependencies'
 metadata description = '''Creates all the dependencies required for a Machine Learning Service.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.'''
@@ -292,7 +292,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module keyVault 'br/public:avm/res/key-vault/vault:0.7.1' = {
+module keyVault 'br/public:avm/res/key-vault/vault:0.7.1' = if (enableTelemetry) {
   name: '${uniqueString(deployment().name, location)}-keyvault'
   params: {
     name: keyVaultName
@@ -306,7 +306,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.7.1' = {
   }
 }
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (enableTelemetry) {
   name: '${uniqueString(deployment().name, location)}-storage'
   params: {
     name: storageAccountName
@@ -323,7 +323,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
   }
 }
 
-module cognitiveServices 'br/public:avm/res/cognitive-services/account:0.7.0' = {
+module cognitiveServices 'br/public:avm/res/cognitive-services/account:0.7.0' = if (enableTelemetry) {
   name: '${uniqueString(deployment().name, location)}-cognitive'
   params: {
     name: cognitiveServicesName
@@ -339,7 +339,7 @@ module cognitiveServices 'br/public:avm/res/cognitive-services/account:0.7.0' = 
   }
 }
 
-module logAnalytics 'br/public:avm/res/operational-insights/workspace:0.6.0' = if (!empty(logAnalyticsName)) {
+module logAnalytics 'br/public:avm/res/operational-insights/workspace:0.6.0' = if (!empty(logAnalyticsName) && enableTelemetry) {
   name: '${uniqueString(deployment().name, location)}-loganalytics'
   params: {
     name: logAnalyticsName
@@ -350,7 +350,7 @@ module logAnalytics 'br/public:avm/res/operational-insights/workspace:0.6.0' = i
   }
 }
 
-module applicationInsights 'br/public:avm/ptn/azd/insights-dashboard:0.1.0' = if (!empty(applicationInsightsName) && !empty(logAnalyticsName)) {
+module applicationInsights 'br/public:avm/ptn/azd/insights-dashboard:0.1.0' = if (!empty(applicationInsightsName) && !empty(logAnalyticsName) && enableTelemetry) {
   name: '${uniqueString(deployment().name, location)}-insights'
   params: {
     location: location
@@ -361,7 +361,7 @@ module applicationInsights 'br/public:avm/ptn/azd/insights-dashboard:0.1.0' = if
   }
 }
 
-module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' = if (!empty(containerRegistryName)) {
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' = if (!empty(containerRegistryName) && enableTelemetry) {
   name: '${uniqueString(deployment().name, location)}-registry'
   params: {
     name: containerRegistryName
@@ -372,7 +372,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' =
   }
 }
 
-module searchService 'br/public:avm/res/search/search-service:0.6.0' = if (!empty(searchServiceName)) {
+module searchService 'br/public:avm/res/search/search-service:0.6.0' = if (!empty(searchServiceName) && enableTelemetry) {
   name: '${uniqueString(deployment().name, location)}-searchservice'
   params: {
     name: searchServiceName

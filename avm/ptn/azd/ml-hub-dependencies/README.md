@@ -1,4 +1,4 @@
-# Azure Machine Learning Dependencies `[Azd/MlHubDependencies]`
+# Azd Azure Machine Learning Dependencies `[Azd/MlHubDependencies]`
 
 Creates all the dependencies required for a Machine Learning Service.
 
