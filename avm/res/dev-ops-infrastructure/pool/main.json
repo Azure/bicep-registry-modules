@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "3502193398932835678"
+      "templateHash": "14560645908978883645"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource.",
@@ -57,6 +57,9 @@
             "description": "Optional. The secret management settings of the machines in the pool."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "storageProfileType": {
@@ -127,44 +130,48 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "imageType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "aliases": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. List of aliases to reference the image by."
-            }
+      "type": "object",
+      "properties": {
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
           },
-          "buffer": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The percentage of the buffer to be allocated to this image."
-            }
-          },
-          "wellKnownImageName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The image to use from a well-known set of images made available to customers."
-            }
-          },
-          "resourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The resource id of the image."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of aliases to reference the image by."
+          }
+        },
+        "buffer": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The percentage of the buffer to be allocated to this image."
+          }
+        },
+        "wellKnownImageName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The image to use from a well-known set of images made available to customers. Required if `resourceId` is not set."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The specific resource id of the marketplace or compute gallery image. Required if `wellKnownImageName` is not set."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "organizationProfileType": {
@@ -255,6 +262,9 @@
             "description": "Required. The list of Azure DevOps organizations the pool should be present in.."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "dataDiskType": {
@@ -304,7 +314,10 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "resourcePredictionsProfileAutomaticType": {
       "type": "object",
@@ -331,6 +344,9 @@
             "description": "Required. Determines the balance between cost and performance."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "resourcePredictionsProfileManualType": {
@@ -345,6 +361,9 @@
             "description": "Required. Customer provides the stand-by agent scheme."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "agentStatefulType": {
@@ -396,6 +415,9 @@
             "description": "Optional. Determines how the stand-by scheme should be provided."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "agentStatelessType": {
@@ -454,6 +476,9 @@
             "description": "Optional. Determines how the stand-by scheme should be provided."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "agentProfileType": {
@@ -468,6 +493,9 @@
             "$ref": "#/definitions/agentStatelessType"
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "roleAssignmentType": {
@@ -541,7 +569,10 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "lockType": {
       "type": "object",
@@ -566,7 +597,10 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "diagnosticSettingType": {
       "type": "array",
@@ -686,7 +720,10 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "managedIdentitiesType": {
       "type": "object",
@@ -709,7 +746,10 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     }
   },
   "parameters": {
@@ -734,7 +774,10 @@
       }
     },
     "images": {
-      "$ref": "#/definitions/imageType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/imageType"
+      },
       "metadata": {
         "description": "Required. The VM images of the machines in the pool."
       }

@@ -810,11 +810,12 @@ The VM images of the machines in the pool.
 - Required: Yes
 - Type: array
 
-**Required parameters**
+**Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`wellKnownImageName`](#parameter-imageswellknownimagename) | string | The image to use from a well-known set of images made available to customers. |
+| [`resourceId`](#parameter-imagesresourceid) | string | The specific resource id of the marketplace or compute gallery image. Required if `wellKnownImageName` is not set. |
+| [`wellKnownImageName`](#parameter-imageswellknownimagename) | string | The image to use from a well-known set of images made available to customers. Required if `resourceId` is not set. |
 
 **Optional parameters**
 
@@ -822,13 +823,19 @@ The VM images of the machines in the pool.
 | :-- | :-- | :-- |
 | [`aliases`](#parameter-imagesaliases) | array | List of aliases to reference the image by. |
 | [`buffer`](#parameter-imagesbuffer) | string | The percentage of the buffer to be allocated to this image. |
-| [`resourceId`](#parameter-imagesresourceid) | string | The resource id of the image. |
+
+### Parameter: `images.resourceId`
+
+The specific resource id of the marketplace or compute gallery image. Required if `wellKnownImageName` is not set.
+
+- Required: No
+- Type: string
 
 ### Parameter: `images.wellKnownImageName`
 
-The image to use from a well-known set of images made available to customers.
+The image to use from a well-known set of images made available to customers. Required if `resourceId` is not set.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `images.aliases`
@@ -841,13 +848,6 @@ List of aliases to reference the image by.
 ### Parameter: `images.buffer`
 
 The percentage of the buffer to be allocated to this image.
-
-- Required: No
-- Type: string
-
-### Parameter: `images.resourceId`
-
-The resource id of the image.
 
 - Required: No
 - Type: string
