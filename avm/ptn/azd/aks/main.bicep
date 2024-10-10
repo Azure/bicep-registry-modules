@@ -134,8 +134,6 @@ var acrPullRole = subscriptionResourceId(
   '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 )
 
-var systemPoolSpec = nodePoolPresets
-
 var nodePoolPresets = {
   vmSize: 'Standard_DS2_v2'
   count: 3
@@ -159,7 +157,7 @@ var nodePoolBase = {
 }
 
 var primaryAgentPoolProfile = [
-  union({ name: 'npsystem', mode: 'System' }, nodePoolBase, systemPoolSpec)
+  union({ name: 'npsystem', mode: 'System' }, nodePoolBase, nodePoolPresets)
 ]
 
 // ============== //
@@ -189,7 +187,7 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-12-01-previ
   name: logAnalyticsName
 }
 
-module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.3.0' = {
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.3.0' = if (enableTelemetry) {
   name: '${uniqueString(deployment().name, location)}-managed-cluster'
   params: {
     name: name
@@ -256,7 +254,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.3.0
   }
 }
 
-module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' = {
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' = if (enableTelemetry) {
   name: '${uniqueString(deployment().name, location)}-container-registry'
   params: {
     name: containerRegistryName
@@ -296,7 +294,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' =
   }
 }
 
-module keyVault 'br/public:avm/res/key-vault/vault:0.7.1' = {
+module keyVault 'br/public:avm/res/key-vault/vault:0.7.1' = if (enableTelemetry) {
   name: '${uniqueString(deployment().name, location)}-key-vault'
   params: {
     name: keyVaultName
@@ -342,7 +340,7 @@ output containerRegistryLoginServer string = containerRegistry.outputs.loginServ
 
 type agentPoolType = {
   @description('Required. The name of the agent pool.')
-  name: string?
+  name: string
 
   @description('Optional. The availability zones of the agent pool.')
   availabilityZones: string[]?

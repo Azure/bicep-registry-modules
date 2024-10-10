@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "16441564731833752491"
+      "templateHash": "9268168150648447469"
     },
     "name": "avm/ptn/azd/aks",
     "description": "Creates an Azure Kubernetes Service (AKS) cluster with a system agent pool as well as an additional user agent pool.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
@@ -20,7 +20,6 @@
         "properties": {
           "name": {
             "type": "string",
-            "nullable": true,
             "metadata": {
               "description": "Required. The name of the agent pool."
             }
@@ -606,7 +605,6 @@
   "variables": {
     "aksClusterAdminRole": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b1ff04bb-8a4e-4dc4-8eb5-8693973ce19b')]",
     "acrPullRole": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]",
-    "systemPoolSpec": "[variables('nodePoolPresets')]",
     "nodePoolPresets": {
       "vmSize": "Standard_DS2_v2",
       "count": 3,
@@ -628,7 +626,7 @@
       }
     },
     "primaryAgentPoolProfile": [
-      "[union(createObject('name', 'npsystem', 'mode', 'System'), variables('nodePoolBase'), variables('systemPoolSpec'))]"
+      "[union(createObject('name', 'npsystem', 'mode', 'System'), variables('nodePoolBase'), variables('nodePoolPresets'))]"
     ]
   },
   "resources": {
@@ -660,6 +658,7 @@
       "name": "[parameters('logAnalyticsName')]"
     },
     "managedCluster": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-managed-cluster', uniqueString(deployment().name, parameters('location')))]",
@@ -3755,6 +3754,7 @@
       ]
     },
     "containerRegistry": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-container-registry', uniqueString(deployment().name, parameters('location')))]",
@@ -6303,6 +6303,7 @@
       ]
     },
     "keyVault": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-key-vault', uniqueString(deployment().name, parameters('location')))]",

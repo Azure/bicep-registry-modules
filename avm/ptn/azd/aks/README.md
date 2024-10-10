@@ -167,7 +167,7 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
     ]
     aksClusterRoleAssignmentName: '<aksClusterRoleAssignmentName>'
     containerRegistryRoleName: '<containerRegistryRoleName>'
-    dnsPrefix: 'dep-dns-aidminMax'
+    dnsPrefix: 'dep-dns-paamax'
     location: '<location>'
     principalType: 'ServicePrincipal'
     skuTier: 'Free'
@@ -228,7 +228,7 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
       "value": "<containerRegistryRoleName>"
     },
     "dnsPrefix": {
-      "value": "dep-dns-aidminMax"
+      "value": "dep-dns-paamax"
     },
     "location": {
       "value": "<location>"
@@ -277,7 +277,7 @@ param agentPools = [
 ]
 param aksClusterRoleAssignmentName = '<aksClusterRoleAssignmentName>'
 param containerRegistryRoleName = '<containerRegistryRoleName>'
-param dnsPrefix = 'dep-dns-aidminMax'
+param dnsPrefix = 'dep-dns-paamax'
 param location = '<location>'
 param principalType = 'ServicePrincipal'
 param skuTier = 'Free'
@@ -459,7 +459,7 @@ Define one or more secondary/additional agent pools.
 
 The name of the agent pool.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `agentPools.availabilityZones`
