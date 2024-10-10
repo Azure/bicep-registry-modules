@@ -535,7 +535,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
     agentPoolProfiles: map(primaryAgentPoolProfiles, profile => {
       name: profile.name
       count: profile.count ?? 1
-      availabilityZones: map(profile.availabilityZones ?? [], zone => '${zone}')
+      availabilityZones: map(profile.?availabilityZones ?? [], zone => '${zone}')
       creationData: !empty(profile.?sourceResourceId)
         ? {
             #disable-next-line use-resource-id-functions // Not possible to reference as nested
