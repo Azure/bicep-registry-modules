@@ -8,12 +8,15 @@ param containerRegistryName string
 @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
 param principalId string
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 var acrPullRole = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
   '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 )
 
-module aksAcrPull 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.1' = {
+module aksAcrPull 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.1' = if (enableTelemetry) {
   name: 'acrpullrole-deployment'
   params: {
     principalId: principalId

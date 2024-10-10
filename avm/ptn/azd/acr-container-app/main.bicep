@@ -142,7 +142,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module containerApp 'br/public:avm/res/app/container-app:0.10.0' = {
+module containerApp 'br/public:avm/res/app/container-app:0.10.0' = if (enableTelemetry) {
   name: '${uniqueString(deployment().name, location)}-container-app'
   params: {
     name: name
@@ -204,6 +204,7 @@ module containerRegistryAccess 'modules/registry-access.bicep' = if (usePrivateR
   params: {
     containerRegistryName: containerRegistryName
     principalId: usePrivateRegistry ? principalId : ''
+    enableTelemetry: enableTelemetry
   }
 }
 

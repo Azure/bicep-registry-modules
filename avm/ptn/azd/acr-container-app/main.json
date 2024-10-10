@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "9446767237171529141"
+      "templateHash": "12398968024615841645"
     },
     "name": "avm/ptn/azd/acr-container-app",
     "description": "Creates a container app in an Azure Container App environment.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case",
@@ -325,6 +325,7 @@
       "name": "[parameters('containerAppsEnvironmentName')]"
     },
     "containerApp": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-container-app', uniqueString(deployment().name, parameters('location')))]",
@@ -1414,7 +1415,10 @@
           "containerRegistryName": {
             "value": "[parameters('containerRegistryName')]"
           },
-          "principalId": "[if(variables('usePrivateRegistry'), createObject('value', parameters('principalId')), createObject('value', ''))]"
+          "principalId": "[if(variables('usePrivateRegistry'), createObject('value', parameters('principalId')), createObject('value', ''))]",
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1423,7 +1427,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "17275842659380934172"
+              "templateHash": "14537091117657864271"
             },
             "name": "ACR Pull permissions",
             "description": "Assigns ACR Pull permissions to access an Azure Container Registry.",
@@ -1441,6 +1445,13 @@
               "metadata": {
                 "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -1448,6 +1459,7 @@
           },
           "resources": [
             {
+              "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "acrpullrole-deployment",
