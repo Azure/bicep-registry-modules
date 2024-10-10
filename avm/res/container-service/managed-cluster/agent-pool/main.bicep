@@ -9,7 +9,7 @@ param managedClusterName string
 param name string
 
 @description('Optional. The list of Availability zones to use for nodes. This can only be specified if the AgentPoolType property is "VirtualMachineScaleSets".')
-param availabilityZones int[]?
+param availabilityZones int[] = [1, 2, 3]
 
 @description('Optional. Desired Number of agents (VMs) specified to host docker containers. Allowed values must be in the range of 0 to 1000 (inclusive) for user pools and in the range of 1 to 1000 (inclusive) for system pools. The default value is 1.')
 @minValue(0)
