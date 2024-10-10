@@ -142,7 +142,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module containerApp 'br/public:avm/res/app/container-app:0.10.0' = if (enableTelemetry) {
+module containerApp 'br/public:avm/res/app/container-app:0.10.0' = {
   name: '${uniqueString(deployment().name, location)}-container-app'
   params: {
     name: name
@@ -195,6 +195,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.10.0' = if (enableTel
     ]
     scaleMaxReplicas: containerMaxReplicas
     scaleMinReplicas: containerMinReplicas
+    enableTelemetry: enableTelemetry
   }
   dependsOn: usePrivateRegistry ? [containerRegistryAccess] : []
 }

@@ -16,13 +16,14 @@ var acrPullRole = subscriptionResourceId(
   '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 )
 
-module aksAcrPull 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.1' = if (enableTelemetry) {
+module aksAcrPull 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.1' = {
   name: 'acrpullrole-deployment'
   params: {
     principalId: principalId
     resourceId: containerRegistry.id
     roleDefinitionId: acrPullRole
     principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
   }
 }
 
