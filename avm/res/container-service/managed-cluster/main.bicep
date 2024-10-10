@@ -12,7 +12,7 @@ param location string = resourceGroup().location
 param dnsPrefix string = name
 
 @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentitiesType?
 
 @description('Optional. Network dataplane used in the Kubernetes cluster. Not compatible with kubenet network plugin.')
 @allowed([
@@ -110,7 +110,7 @@ param aadProfileServerAppSecret string?
 param aadProfileTenantId string = subscription().tenantId
 
 @description('Optional. Specifies the AAD group object IDs that will have admin role of the cluster.')
-param aadProfileAdminGroupObjectIDs array?
+param aadProfileAdminGroupObjectIDs string[]?
 
 @description('Optional. Specifies whether to enable managed AAD integration.')
 param aadProfileManaged bool = true
@@ -128,7 +128,7 @@ param disableLocalAccounts bool = false
 param nodeResourceGroup string = '${resourceGroup().name}_aks_${name}_nodes'
 
 @description('Optional. IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer.')
-param authorizedIPRanges array?
+param authorizedIPRanges string[]?
 
 @description('Optional. Whether to disable run command for the cluster or not.')
 param disableRunCommand bool = false
@@ -150,14 +150,11 @@ param enablePrivateClusterPublicFQDN bool = false
 @description('Optional. Private DNS Zone configuration. Set to \'system\' and AKS will create a private DNS zone in the node resource group. Set to \'\' to disable private DNS Zone creation and use public DNS. Supply the resource ID here of an existing Private DNS zone to use an existing zone.')
 param privateDNSZone string?
 
-@description('Required. Properties of the primary agent pool.')
-param primaryAgentPoolProfile array
-
-@description('Optional. Define one or more secondary/additional agent pools.')
-param agentPools agentPoolType
+@description('Required. Properties of the agent pools. Must contain at least one primary/system pool.')
+param agentPools agentPoolType[]
 
 @description('Optional. Whether or not to use AKS Automatic mode.')
-param maintenanceConfiguration maintenanceConfigurationType
+param maintenanceConfiguration maintenanceConfigurationType?
 
 @description('Optional. Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed.')
 param costAnalysisEnabled bool = false
@@ -225,7 +222,7 @@ param autoScalerProfileScaleDownUnreadyTime string = '20m'
 param autoScalerProfileUtilizationThreshold string = '0.5'
 
 @description('Optional. Specifies the max graceful termination time interval in seconds for the auto-scaler of the AKS cluster.')
-param autoScalerProfileMaxGracefulTerminationSec string = '600'
+param autoScalerProfileMaxGracefulTerminationSec int = 600
 
 @description('Optional. Specifies the balance of similar node groups for the auto-scaler of the AKS cluster.')
 param autoScalerProfileBalanceSimilarNodeGroups bool = false
@@ -240,19 +237,19 @@ param autoScalerProfileBalanceSimilarNodeGroups bool = false
 param autoScalerProfileExpander string = 'random'
 
 @description('Optional. Specifies the maximum empty bulk delete for the auto-scaler of the AKS cluster.')
-param autoScalerProfileMaxEmptyBulkDelete string = '10'
+param autoScalerProfileMaxEmptyBulkDelete int = 10
 
 @description('Optional. Specifies the maximum node provisioning time for the auto-scaler of the AKS cluster. Values must be an integer followed by an "m". No unit of time other than minutes (m) is supported.')
 param autoScalerProfileMaxNodeProvisionTime string = '15m'
 
 @description('Optional. Specifies the mximum total unready percentage for the auto-scaler of the AKS cluster. The maximum is 100 and the minimum is 0.')
-param autoScalerProfileMaxTotalUnreadyPercentage string = '45'
+param autoScalerProfileMaxTotalUnreadyPercentage int = 45
 
 @description('Optional. For scenarios like burst/batch scale where you do not want CA to act before the kubernetes scheduler could schedule all the pods, you can tell CA to ignore unscheduled pods before they are a certain age. Values must be an integer followed by a unit ("s" for seconds, "m" for minutes, "h" for hours, etc).')
 param autoScalerProfileNewPodScaleUpDelay string = '0s'
 
 @description('Optional. Specifies the OK total unready count for the auto-scaler of the AKS cluster.')
-param autoScalerProfileOkTotalUnreadyCount string = '3'
+param autoScalerProfileOkTotalUnreadyCount int = 3
 
 @description('Optional. Specifies if nodes with local storage should be skipped for the auto-scaler of the AKS cluster.')
 param autoScalerProfileSkipNodesWithLocalStorage bool = true
@@ -321,13 +318,13 @@ param enableStorageProfileSnapshotController bool = false
 param supportPlan string = 'KubernetesOfficial'
 
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingType[]?
 
 @description('Optional. Specifies whether the OMS agent is enabled.')
 param omsAgentEnabled bool = true
 
 @description('Optional. Resource ID of the monitoring log analytics workspace.')
-param monitoringWorkspaceId string?
+param monitoringWorkspaceResourceId string?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -345,7 +342,7 @@ param tags object?
 param diskEncryptionSetResourceId string?
 
 @description('Optional. Settings and configurations for the flux extension.')
-param fluxExtension extensionType
+param fluxExtension extensionType?
 
 @description('Optional. Configurations for provisioning the cluster with HTTP proxy servers.')
 param httpProxyConfig object?
@@ -360,7 +357,7 @@ param kedaAddon bool = false
 param vpaAddon bool = false
 
 @description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType
+param customerManagedKey customerManagedKeyType?
 
 @description('Optional. Whether the metric state of the kubenetes cluster is enabled.')
 param enableAzureMonitorProfileMetrics bool = false
@@ -537,7 +534,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
     diskEncryptionSetID: diskEncryptionSetResourceId
     kubernetesVersion: kubernetesVersion
     dnsPrefix: dnsPrefix
-    agentPoolProfiles: primaryAgentPoolProfile
+    // agentPoolProfiles: primaryAgentPoolProfile
     linuxProfile: !empty(sshPublicKey)
       ? {
           adminUsername: adminUsername
@@ -581,11 +578,10 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
           : null
       }
       omsagent: {
-        enabled: omsAgentEnabled && !empty(monitoringWorkspaceId)
-        #disable-next-line BCP321 // Value will not be used if null or empty
-        config: omsAgentEnabled && !empty(monitoringWorkspaceId)
+        enabled: omsAgentEnabled && !empty(monitoringWorkspaceResourceId)
+        config: omsAgentEnabled && !empty(monitoringWorkspaceResourceId)
           ? {
-              logAnalyticsWorkspaceResourceID: monitoringWorkspaceId
+              logAnalyticsWorkspaceResourceID: monitoringWorkspaceResourceId!
             }
           : null
       }
@@ -666,12 +662,12 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
     autoScalerProfile: {
       'balance-similar-node-groups': toLower(string(autoScalerProfileBalanceSimilarNodeGroups))
       expander: autoScalerProfileExpander
-      'max-empty-bulk-delete': autoScalerProfileMaxEmptyBulkDelete
-      'max-graceful-termination-sec': autoScalerProfileMaxGracefulTerminationSec
+      'max-empty-bulk-delete': '${autoScalerProfileMaxEmptyBulkDelete}'
+      'max-graceful-termination-sec': '${autoScalerProfileMaxGracefulTerminationSec}'
       'max-node-provision-time': autoScalerProfileMaxNodeProvisionTime
-      'max-total-unready-percentage': autoScalerProfileMaxTotalUnreadyPercentage
+      'max-total-unready-percentage': '${autoScalerProfileMaxTotalUnreadyPercentage}'
       'new-pod-scale-up-delay': autoScalerProfileNewPodScaleUpDelay
-      'ok-total-unready-count': autoScalerProfileOkTotalUnreadyCount
+      'ok-total-unready-count': '${autoScalerProfileOkTotalUnreadyCount}'
       'scale-down-delay-after-add': autoScalerProfileScaleDownDelayAfterAdd
       'scale-down-delay-after-delete': autoScalerProfileScaleDownDelayAfterDelete
       'scale-down-delay-after-failure': autoScalerProfileScaleDownDelayAfterFailure
@@ -696,7 +692,9 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       containerInsights: enableContainerInsights
         ? {
             enabled: enableContainerInsights
-            logAnalyticsWorkspaceResourceId: !empty(monitoringWorkspaceId) ? monitoringWorkspaceId : null
+            logAnalyticsWorkspaceResourceId: !empty(monitoringWorkspaceResourceId)
+              ? monitoringWorkspaceResourceId
+              : null
             disableCustomMetrics: disableCustomMetrics
             disablePrometheusMetricsScraping: disablePrometheusMetricsScraping
             syslogPort: syslogPort
@@ -724,7 +722,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
             securityMonitoring: {
               enabled: enableAzureDefender
             }
-            logAnalyticsWorkspaceResourceId: monitoringWorkspaceId
+            logAnalyticsWorkspaceResourceId: monitoringWorkspaceResourceId
           }
         : null
       workloadIdentity: enableWorkloadIdentity
@@ -786,7 +784,7 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       minCount: agentPool.?minCount
       mode: agentPool.?mode
       nodeLabels: agentPool.?nodeLabels
-      nodePublicIpPrefixId: agentPool.?nodePublicIpPrefixId
+      nodePublicIpPrefixResourceId: agentPool.?nodePublicIpPrefixResourceId
       nodeTaints: agentPool.?nodeTaints
       orchestratorVersion: agentPool.?orchestratorVersion ?? kubernetesVersion
       osDiskSizeGB: agentPool.?osDiskSizeGB
@@ -803,7 +801,7 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       type: agentPool.?type
       maxSurge: agentPool.?maxSurge
       vmSize: agentPool.?vmSize
-      vnetSubnetId: agentPool.?vnetSubnetId
+      vnetSubnetResourceId: agentPool.?vnetSubnetResourceId
       workloadRuntime: agentPool.?workloadRuntime
     }
   }
@@ -957,12 +955,13 @@ output webAppRoutingIdentityObjectId string = managedCluster.properties.?ingress
 //   Definitions   //
 // =============== //
 
+@export()
 type agentPoolType = {
   @description('Required. The name of the agent pool.')
-  name: string?
+  name: string
 
   @description('Optional. The availability zones of the agent pool.')
-  availabilityZones: string[]?
+  availabilityZones: int[]?
 
   @description('Optional. The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).')
   count: int?
@@ -1010,7 +1009,7 @@ type agentPoolType = {
   nodeLabels: object?
 
   @description('Optional. The node public IP prefix ID of the agent pool.')
-  nodePublicIpPrefixId: string?
+  nodePublicIpPrefixResourceId: string?
 
   @description('Optional. The node taints of the agent pool.')
   nodeTaints: string[]?
@@ -1061,23 +1060,25 @@ type agentPoolType = {
   vmSize: string?
 
   @description('Optional. The VNet subnet ID of the agent pool.')
-  vnetSubnetID: string?
+  vnetSubnetResourceId: string?
 
   @description('Optional. The workload runtime of the agent pool.')
   workloadRuntime: string?
 
   @description('Optional. The enable default telemetry of the agent pool.')
   enableDefaultTelemetry: bool?
-}[]?
+}
 
+@export()
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
   systemAssigned: bool?
 
   @description('Optional. The resource ID(s) to assign to the resource.')
   userAssignedResourcesIds: string[]?
-}?
+}
 
+@export()
 type lockType = {
   @description('Optional. Specify the name of lock.')
   name: string?
@@ -1086,6 +1087,7 @@ type lockType = {
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
 
+@export()
 type roleAssignmentType = {
   @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
   name: string?
@@ -1112,6 +1114,7 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]?
 
+@export()
 type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
@@ -1154,13 +1157,15 @@ type diagnosticSettingType = {
 
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
-}[]?
+}
 
+@export()
 type fluxConfigurationProtectedSettingsType = {
   @description('Optional. The SSH private key to use for Git authentication.')
   sshPrivateKey: string?
-}?
+}
 
+@export()
 type extensionType = {
   @description('Required. The name of the extension.')
   name: string?
@@ -1185,8 +1190,9 @@ type extensionType = {
 
   @description('Optional. The flux configurations of the extension.')
   configurations: array?
-}?
+}
 
+@export()
 type customerManagedKeyType = {
   @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
   keyVaultResourceId: string
@@ -1199,9 +1205,10 @@ type customerManagedKeyType = {
 
   @description('Required. Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public.')
   keyVaultNetworkAccess: ('Private' | 'Public')
-}?
+}
 
+@export()
 type maintenanceConfigurationType = {
   @description('Required. Maintenance window for the maintenance configuration.')
   maintenanceWindow: object
-}?
+}

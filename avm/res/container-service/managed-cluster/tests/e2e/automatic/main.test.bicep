@@ -59,8 +59,7 @@ module testDeployment '../../../main.bicep' = [
       managedIdentities: {
         systemAssigned: true
       }
-
-      primaryAgentPoolProfile: [
+      agentPools: [
         {
           name: 'systempool'
           count: 3

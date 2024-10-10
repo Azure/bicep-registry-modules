@@ -67,10 +67,10 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      primaryAgentPoolProfile: [
+      agentPools: [
         {
           availabilityZones: [
-            '3'
+            3
           ]
           count: 1
           enableAutoScaling: true
@@ -87,11 +87,9 @@ module testDeployment '../../../main.bicep' = [
           type: 'VirtualMachineScaleSets'
           vmSize: 'Standard_DS2_v2'
         }
-      ]
-      agentPools: [
         {
           availabilityZones: [
-            '3'
+            3
           ]
           count: 2
           enableAutoScaling: true
@@ -111,7 +109,7 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           availabilityZones: [
-            '3'
+            3
           ]
           count: 2
           enableAutoScaling: true
