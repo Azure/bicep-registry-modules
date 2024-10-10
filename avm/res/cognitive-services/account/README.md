@@ -1638,7 +1638,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`migrationToken`](#parameter-migrationtoken) | string | Resource migration token. |
+| [`migrationToken`](#parameter-migrationtoken) | securestring | Resource migration token. |
 | [`networkAcls`](#parameter-networkacls) | object | A collection of rules governing the accessibility from specific network locations. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
