@@ -105,6 +105,9 @@ param vulnerabilityAssessmentsObj object = {}
 @description('Optional. The audit settings configuration.')
 param auditSettings auditSettingsType?
 
+@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
+param secretsExportConfiguration secretsExportConfigurationType?
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -491,6 +494,36 @@ module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSetti
   }
 }
 
+module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
+  name: '${uniqueString(deployment().name, location)}-secrets-kv'
+  scope: resourceGroup(
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+  )
+  params: {
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    secretsToSet: union(
+      [],
+      contains(secretsExportConfiguration!, 'sqlAdminPasswordSecretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.sqlAdminPasswordSecretName
+              value: administratorLoginPassword
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'sqlAzureConnectionStringSercretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.sqlAzureConnectionStringSercretName
+              value: 'Server=${server.properties.fullyQualifiedDomainName}; Database=${!empty(databases) ? databases[0].name : ''}; User=${administratorLogin}; Password=${administratorLoginPassword}'
+            }
+          ]
+        : []
+    )
+  }
+}
+
 @description('The name of the deployed SQL server.')
 output name string = server.name
 
@@ -505,6 +538,11 @@ output systemAssignedMIPrincipalId string = server.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = server.location
+
+@description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
+output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
+  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  : {}
 
 @description('The private endpoints of the SQL server.')
 output privateEndpoints array = [
@@ -680,4 +718,21 @@ type auditSettingsType = {
 
   @description('Optional. Specifies the identifier key of the auditing storage account.')
   storageAccountResourceId: string?
+}
+
+type secretsExportConfigurationType = {
+  @description('Required. The resource ID of the key vault where to store the secrets of this module.')
+  keyVaultResourceId: string
+
+  @description('Optional. The sqlAdminPassword secret name to create.')
+  sqlAdminPasswordSecretName: string?
+
+  @description('Optional. The sqlAzureConnectionString secret name to create.')
+  sqlAzureConnectionStringSercretName: string?
+}?
+
+import { secretSetType } from 'modules/keyVaultExport.bicep'
+type secretsOutputType = {
+  @description('An exported secret\'s references.')
+  *: secretSetType
 }
