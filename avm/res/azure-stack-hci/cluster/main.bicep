@@ -197,6 +197,7 @@ resource clusterExisting 'Microsoft.AzureStackHCI/clusters@2024-04-01' existing 
 module deploymentSetting 'deployment-settings/main.bicep' = {
   name: 'deploymentSettings'
   params: {
+    cloudId: cluster.properties.cloudId
     clusterName: name
     clusterNodeNames: clusterNodeNames
     clusterWitnessStorageAccountName: clusterWitnessStorageAccountName

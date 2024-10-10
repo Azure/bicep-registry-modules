@@ -105,6 +105,16 @@ param clusterWitnessStorageAccountName string
 @description('Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster.')
 param keyVaultName string
 
+@description('Optional. If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource.')
+param cloudId string?
+
+var deploymentSecretEceNames = [
+  'LocalAdminCredential'
+  'AzureStackLCMUserCredential'
+  'DefaultARBApplication'
+  'WitnessStorageKey'
+]
+
 var arcNodeResourceIds = [
   for (nodeName, index) in clusterNodeNames: resourceId('Microsoft.HybridCompute/machines', nodeName)
 ]
@@ -198,6 +208,15 @@ resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings
             optionalServices: {
               customLocation: customLocationName
             }
+            secrets: [
+              for secretName in deploymentSecretEceNames: {
+                secretName: empty(cloudId) ? secretName : '${clusterName}-${secretName}-${cloudId}'
+                eceSecretName: secretName
+                secretLocation: empty(cloudId)
+                  ? 'https://kbmtbchi02.vault.azure.net/secrets/${secretName}'
+                  : 'https://kbmtbchi02.vault.azure.net/secrets/${clusterName}-${secretName}-${cloudId}'
+              }
+            ]
           }
         }
       ]

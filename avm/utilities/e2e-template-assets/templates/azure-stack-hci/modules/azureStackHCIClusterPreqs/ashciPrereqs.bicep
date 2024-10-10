@@ -24,12 +24,18 @@ param arbDeploymentServicePrincipalSecret string
 param vnetSubnetId string?
 param allowIPtoStorageAndKeyVault string?
 param usingArcGW bool = false
+param clusterName string?
+param cloudId string?
 
-// secret names for the Azure Key Vault - these cannot be changed
-var localAdminSecretName = 'LocalAdminCredential'
-var domainAdminSecretName = 'AzureStackLCMUserCredential'
-var arbDeploymentServicePrincipalName = 'DefaultARBApplication'
-var storageWitnessName = 'WitnessStorageKey'
+// secret names for the Azure Key Vault - these cannot be changed.
+var localAdminSecretName = (empty(cloudId)) ? 'LocalAdminCredential' : '${clusterName}-LocalAdminCredential-${cloudId}'
+var domainAdminSecretName = (empty(cloudId))
+  ? 'AzureStackLCMUserCredential'
+  : '${clusterName}-AzureStackLCMUserCredential-${cloudId}'
+var arbDeploymentServicePrincipalName = (empty(cloudId))
+  ? 'DefaultARBApplication'
+  : '${clusterName}-DefaultARBApplication-${cloudId}'
+var storageWitnessName = (empty(cloudId)) ? 'WitnessStorageKey' : '${clusterName}-WitnessStorageKey-${cloudId}'
 
 // create base64 encoded secret values to be stored in the Azure Key Vault
 var deploymentUserSecretValue = base64('${deploymentUsername}:${deploymentUserPassword}')
