@@ -1,4 +1,4 @@
-metadata name = 'Machine Learning workspace'
+metadata name = 'Azd Machine Learning workspace'
 metadata description = '''Create a machine learning workspace, configure the key vault access policy and assign role permissions to the machine learning instance.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.'''
@@ -95,7 +95,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module project 'br/public:avm/res/machine-learning-services/workspace:0.7.0' = {
+module project 'br/public:avm/res/machine-learning-services/workspace:0.7.0' = if (enableTelemetry) {
   name: '${uniqueString(deployment().name, location)}-project'
   params: {
     name: name
@@ -113,7 +113,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
 }
 
-module keyVaultAccess 'br/public:avm/res/key-vault/vault:0.9.0' = {
+module keyVaultAccess 'br/public:avm/res/key-vault/vault:0.9.0' = if (enableTelemetry) {
   name: '${uniqueString(deployment().name, location)}-keyvault'
   params: {
     name: keyVault.name
@@ -126,7 +126,7 @@ module keyVaultAccess 'br/public:avm/res/key-vault/vault:0.9.0' = {
   }
 }
 
-module mlServiceRoleAssigned 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
+module mlServiceRoleAssigned 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = if (enableTelemetry) {
   name: '${uniqueString(deployment().name, location)}-roleassignment'
   params: {
     name: userAssignedName

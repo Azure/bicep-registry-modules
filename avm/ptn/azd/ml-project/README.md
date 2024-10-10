@@ -1,4 +1,4 @@
-# Machine Learning workspace `[Azd/MlProject]`
+# Azd Machine Learning workspace `[Azd/MlProject]`
 
 Create a machine learning workspace, configure the key vault access policy and assign role permissions to the machine learning instance.
 
