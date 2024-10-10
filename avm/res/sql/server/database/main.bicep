@@ -211,12 +211,8 @@ module database_backupShortTermRetentionPolicy 'backup-short-term-retention-poli
   params: {
     serverName: serverName
     databaseName: database.name
-    diffBackupIntervalInHours: contains(backupShortTermRetentionPolicy, 'diffBackupIntervalInHours')
-      ? backupShortTermRetentionPolicy.diffBackupIntervalInHours
-      : 24
-    retentionDays: contains(backupShortTermRetentionPolicy, 'retentionDays')
-      ? backupShortTermRetentionPolicy.retentionDays
-      : 7
+    diffBackupIntervalInHours: backupShortTermRetentionPolicy.?diffBackupIntervalInHours ?? 24
+    retentionDays: backupShortTermRetentionPolicy.?retentionDays ?? 7
   }
 }
 
@@ -225,16 +221,10 @@ module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy
   params: {
     serverName: serverName
     databaseName: database.name
-    weeklyRetention: contains(backupLongTermRetentionPolicy, 'weeklyRetention')
-      ? backupLongTermRetentionPolicy.weeklyRetention
-      : ''
-    monthlyRetention: contains(backupLongTermRetentionPolicy, 'monthlyRetention')
-      ? backupLongTermRetentionPolicy.monthlyRetention
-      : ''
-    yearlyRetention: contains(backupLongTermRetentionPolicy, 'yearlyRetention')
-      ? backupLongTermRetentionPolicy.yearlyRetention
-      : ''
-    weekOfYear: contains(backupLongTermRetentionPolicy, 'weekOfYear') ? backupLongTermRetentionPolicy.weekOfYear : 1
+    weeklyRetention: backupLongTermRetentionPolicy.?weeklyRetention ?? ''
+    monthlyRetention: backupLongTermRetentionPolicy.?monthlyRetention ?? ''
+    yearlyRetention: backupLongTermRetentionPolicy.?yearlyRetention ?? ''
+    weekOfYear: backupLongTermRetentionPolicy.?weekOfYear ?? 1
   }
 }
 
