@@ -154,7 +154,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -275,6 +275,107 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cdn/profile:<version>'
+
+// Required parameters
+param name = 'dep-test-cdnpafdp'
+param sku = 'Premium_AzureFrontDoor'
+// Non-required parameters
+param afdEndpoints = [
+  {
+    name: 'dep-test-cdnpafdp-afd-endpoint'
+    routes: [
+      {
+        customDomainNames: [
+          'dep-test-cdnpafdp-custom-domain'
+        ]
+        name: 'dep-test-cdnpafdp-afd-route'
+        originGroupName: 'dep-test-cdnpafdp-origin-group'
+        ruleSets: [
+          {
+            name: 'deptestcdnpafdpruleset'
+          }
+        ]
+      }
+    ]
+  }
+]
+param customDomains = [
+  {
+    certificateType: 'ManagedCertificate'
+    hostName: 'dep-test-cdnpafdp-custom-domain.azurewebsites.net'
+    name: 'dep-test-cdnpafdp-custom-domain'
+  }
+]
+param location = 'global'
+param originGroups = [
+  {
+    loadBalancingSettings: {
+      additionalLatencyInMilliseconds: 50
+      sampleSize: 4
+      successfulSamplesRequired: 3
+    }
+    name: 'dep-test-cdnpafdp-origin-group'
+    origins: [
+      {
+        hostName: 'dep-test-cdnpafdp-origin.azurewebsites.net'
+        name: 'dep-test-cdnpafdp-origin'
+      }
+    ]
+  }
+]
+param originResponseTimeoutSeconds = 60
+param ruleSets = [
+  {
+    name: 'deptestcdnpafdpruleset'
+    rules: [
+      {
+        actions: [
+          {
+            name: 'UrlRedirect'
+            parameters: {
+              customHostname: 'dev-etradefd.trade.azure.defra.cloud'
+              customPath: '/test123'
+              destinationProtocol: 'Https'
+              redirectType: 'PermanentRedirect'
+              typeName: 'DeliveryRuleUrlRedirectActionParameters'
+            }
+          }
+        ]
+        name: 'deptestcdnpafdprule'
+        order: 1
+      }
+    ]
+  }
+]
+param securityPolicies = [
+  {
+    associations: [
+      {
+        domains: [
+          {
+            id: '<id>'
+          }
+        ]
+        patternsToMatch: [
+          '/*'
+        ]
+      }
+    ]
+    name: 'deptestcdnpafdpsecpol'
+    wafPolicyResourceId: '<wafPolicyResourceId>'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 2: _As Azure Front Door_
 
 This instance deploys the module as Azure Front Door.
@@ -319,6 +420,9 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       }
     ]
     location: 'global'
+    managedIdentities: {
+      systemAssigned: true
+    }
     originGroups: [
       {
         loadBalancingSettings: {
@@ -368,7 +472,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -415,6 +519,11 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     },
     "location": {
       "value": "global"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
     },
     "originGroups": {
       "value": [
@@ -469,6 +578,92 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cdn/profile:<version>'
+
+// Required parameters
+param name = 'dep-test-cdnpafd'
+param sku = 'Standard_AzureFrontDoor'
+// Non-required parameters
+param afdEndpoints = [
+  {
+    name: 'dep-test-cdnpafd-afd-endpoint'
+    routes: [
+      {
+        customDomainNames: [
+          'dep-test-cdnpafd-custom-domain'
+        ]
+        name: 'dep-test-cdnpafd-afd-route'
+        originGroupName: 'dep-test-cdnpafd-origin-group'
+        ruleSets: [
+          {
+            name: 'deptestcdnpafdruleset'
+          }
+        ]
+      }
+    ]
+  }
+]
+param customDomains = [
+  {
+    certificateType: 'ManagedCertificate'
+    hostName: 'dep-test-cdnpafd-custom-domain.azurewebsites.net'
+    name: 'dep-test-cdnpafd-custom-domain'
+  }
+]
+param location = 'global'
+param managedIdentities = {
+  systemAssigned: true
+}
+param originGroups = [
+  {
+    loadBalancingSettings: {
+      additionalLatencyInMilliseconds: 50
+      sampleSize: 4
+      successfulSamplesRequired: 3
+    }
+    name: 'dep-test-cdnpafd-origin-group'
+    origins: [
+      {
+        hostName: 'dep-test-cdnpafd-origin.azurewebsites.net'
+        name: 'dep-test-cdnpafd-origin'
+      }
+    ]
+  }
+]
+param originResponseTimeoutSeconds = 60
+param ruleSets = [
+  {
+    name: 'deptestcdnpafdruleset'
+    rules: [
+      {
+        actions: [
+          {
+            name: 'UrlRedirect'
+            parameters: {
+              customHostname: 'dev-etradefd.trade.azure.defra.cloud'
+              customPath: '/test123'
+              destinationProtocol: 'Https'
+              redirectType: 'PermanentRedirect'
+              typeName: 'DeliveryRuleUrlRedirectActionParameters'
+            }
+          }
+        ]
+        name: 'deptestcdnpafdrule'
+        order: 1
+      }
+    ]
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -496,7 +691,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -516,6 +711,23 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cdn/profile:<version>'
+
+// Required parameters
+param name = 'dep-test-cdnpmin'
+param sku = 'Standard_Microsoft'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -602,7 +814,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -689,6 +901,77 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cdn/profile:<version>'
+
+// Required parameters
+param name = 'dep-test-cdnpmax'
+param sku = 'Standard_Verizon'
+// Non-required parameters
+param endpointProperties = {
+  contentTypesToCompress: [
+    'application/javascript'
+    'application/json'
+    'application/x-javascript'
+    'application/xml'
+    'text/css'
+    'text/html'
+    'text/javascript'
+    'text/plain'
+  ]
+  geoFilters: []
+  isCompressionEnabled: true
+  isHttpAllowed: true
+  isHttpsAllowed: true
+  originGroups: []
+  originHostHeader: '<originHostHeader>'
+  origins: [
+    {
+      name: 'dep-cdn-endpoint01'
+      properties: {
+        enabled: true
+        hostName: '<hostName>'
+        httpPort: 80
+        httpsPort: 443
+      }
+    }
+  ]
+  queryStringCachingBehavior: 'IgnoreQueryString'
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param originResponseTimeoutSeconds = 60
+param roleAssignments = [
+  {
+    name: '50362c78-6910-43c3-8639-9cae123943bb'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -747,7 +1030,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -807,6 +1090,54 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cdn/profile:<version>'
+
+// Required parameters
+param name = 'dep-test-cdnpwaf'
+param sku = 'Standard_Verizon'
+// Non-required parameters
+param endpointProperties = {
+  contentTypesToCompress: [
+    'application/javascript'
+    'application/json'
+    'application/x-javascript'
+    'application/xml'
+    'text/css'
+    'text/html'
+    'text/javascript'
+    'text/plain'
+  ]
+  geoFilters: []
+  isCompressionEnabled: true
+  isHttpAllowed: true
+  isHttpsAllowed: true
+  originGroups: []
+  originHostHeader: '<originHostHeader>'
+  origins: [
+    {
+      name: 'dep-cdn-endpoint01'
+      properties: {
+        enabled: true
+        hostName: '<hostName>'
+        httpPort: 80
+        httpsPort: 443
+      }
+    }
+  ]
+  queryStringCachingBehavior: 'IgnoreQueryString'
+}
+param location = '<location>'
+param originResponseTimeoutSeconds = 60
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -833,6 +1164,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 | [`endpointProperties`](#parameter-endpointproperties) | object | Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details). |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`originResponseTimeoutSeconds`](#parameter-originresponsetimeoutseconds) | int | Send and receive timeout on forwarding request to the origin. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`ruleSets`](#parameter-rulesets) | array | Array of rule set objects. |
@@ -960,6 +1292,34 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource.
+
+- Required: No
+- Type: array
 
 ### Parameter: `originResponseTimeoutSeconds`
 
@@ -1181,6 +1541,7 @@ Endpoint tags.
 | `profileType` | string | The type of the CDN profile. |
 | `resourceGroupName` | string | The resource group where the CDN profile is deployed. |
 | `resourceId` | string | The resource ID of the CDN profile. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 | `uri` | string | The uri of the CDN profile endpoint. |
 
 ## Data Collection

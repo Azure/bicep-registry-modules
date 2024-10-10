@@ -1,5 +1,7 @@
-metadata name = 'avm/ptn/azd/container-apps'
-metadata description = 'Creates an Azure Container Registry and an Azure Container Apps environment.'
+metadata name = 'avm/ptn/azd/container-apps-stack'
+metadata description = '''Creates an Azure Container Registry and an Azure Container Apps environment.
+
+**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case'''
 metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Location for all Resources.')
@@ -51,7 +53,7 @@ param dockerBridgeCidr string = ''
 @description('Conditional. Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param infrastructureSubnetResourceId string = ''
 
-@description('Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.')
+@description('Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if \'zoneRedundant\' is set to true to make the resource WAF compliant.')
 param internal bool = false
 
 @description('Conditional. IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant.')
@@ -68,7 +70,7 @@ param infrastructureResourceGroupName string = take('ME_${containerAppsEnvironme
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.azd-containerapps.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.ptn.azd-containerappsstack.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -102,6 +104,7 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.7.0
     dockerBridgeCidr: dockerBridgeCidr
     platformReservedCidr: platformReservedCidr
     platformReservedDnsIP: platformReservedDnsIP
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -116,6 +119,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' =
     acrAdminUserEnabled: acrAdminUserEnabled
     tags: tags
     acrSku: acrSku
+    enableTelemetry: enableTelemetry
   }
 }
 

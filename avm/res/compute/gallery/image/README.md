@@ -432,6 +432,8 @@ The security type of the image. Requires a hyperVGeneration V2.
     'ConfidentialVMSupported'
     'Standard'
     'TrustedLaunch'
+    'TrustedLaunchAndConfidentialVmSupported'
+    'TrustedLaunchSupported'
   ]
   ```
 
