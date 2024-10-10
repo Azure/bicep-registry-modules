@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "4552759122514680729"
+      "version": "0.30.3.12046",
+      "templateHash": "17022862459992031093"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server.",
@@ -817,8 +817,12 @@
           "flexibleServerName": {
             "value": "[parameters('name')]"
           },
-          "collation": "[if(contains(parameters('databases')[copyIndex()], 'collation'), createObject('value', parameters('databases')[copyIndex()].collation), createObject('value', ''))]",
-          "charset": "[if(contains(parameters('databases')[copyIndex()], 'charset'), createObject('value', parameters('databases')[copyIndex()].charset), createObject('value', ''))]"
+          "collation": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'collation'), '')]"
+          },
+          "charset": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'charset'), '')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -826,8 +830,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "11351866916144767840"
+              "version": "0.30.3.12046",
+              "templateHash": "15491679806037869848"
             },
             "name": "DBforMySQL Flexible Server Databases",
             "description": "This module deploys a DBforMySQL Flexible Server Database.",
@@ -934,8 +938,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "17406464450077393680"
+              "version": "0.30.3.12046",
+              "templateHash": "10498063087675421166"
             },
             "name": "DBforMySQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule.",
@@ -1033,7 +1037,9 @@
           "identityResourceId": {
             "value": "[parameters('administrators')[copyIndex()].identityResourceId]"
           },
-          "tenantId": "[if(contains(parameters('administrators')[copyIndex()], 'tenantId'), createObject('value', parameters('administrators')[copyIndex()].tenantId), createObject('value', tenant().tenantId))]"
+          "tenantId": {
+            "value": "[coalesce(tryGet(parameters('administrators')[copyIndex()], 'tenantId'), tenant().tenantId)]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1041,8 +1047,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "166868353165081250"
+              "version": "0.30.3.12046",
+              "templateHash": "17380647846007156110"
             },
             "name": "DBforMySQL Flexible Server Administrators",
             "description": "This module deploys a DBforMySQL Flexible Server Administrator.",
