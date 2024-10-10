@@ -66,7 +66,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -100,6 +100,31 @@ module job 'br/public:avm/res/app/job:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/job:<version>'
+
+// Required parameters
+param containers = [
+  {
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'ajcon001'
+param triggerType = 'Manual'
+// Non-required parameters
+param location = '<location>'
+param manualTriggerConfig = {}
 ```
 
 </details>
@@ -144,7 +169,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -182,6 +207,35 @@ module job 'br/public:avm/res/app/job:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/job:<version>'
+
+// Required parameters
+param containers = [
+  {
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+    resources: {
+      cpu: '0.25'
+      memory: '0.5Gi'
+    }
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'ajmin001'
+param triggerType = 'Manual'
+// Non-required parameters
+param location = '<location>'
+param manualTriggerConfig = {}
 ```
 
 </details>
@@ -349,7 +403,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -529,6 +583,158 @@ module job 'br/public:avm/res/app/job:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/job:<version>'
+
+// Required parameters
+param containers = [
+  {
+    env: [
+      {
+        name: 'AZURE_STORAGE_QUEUE_NAME'
+        value: '<value>'
+      }
+      {
+        name: 'AZURE_STORAGE_CONNECTION_STRING'
+        secretRef: 'connection-string'
+      }
+    ]
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+    probes: [
+      {
+        httpGet: {
+          httpHeaders: [
+            {
+              name: 'Custom-Header'
+              value: 'Awesome'
+            }
+          ]
+          path: '/health'
+          port: 8080
+        }
+        initialDelaySeconds: 3
+        periodSeconds: 3
+        type: 'Liveness'
+      }
+    ]
+    resources: {
+      cpu: '1.25'
+      memory: '1.5Gi'
+    }
+    volumeMounts: [
+      {
+        mountPath: '/mnt/data'
+        volumeName: 'ajmaxemptydir'
+      }
+    ]
+  }
+  {
+    args: [
+      'arg1'
+      'arg2'
+    ]
+    command: [
+      '-c'
+      '/bin/bash'
+      'echo hello'
+      'sleep 100000'
+    ]
+    env: [
+      {
+        name: 'SOME_ENV_VAR'
+        value: 'some-value'
+      }
+    ]
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'second-simple-container'
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'ajmax001'
+param triggerType = 'Event'
+// Non-required parameters
+param eventTriggerConfig = {
+  parallelism: 1
+  replicaCompletionCount: 1
+  scale: {
+    maxExecutions: 1
+    minExecutions: 1
+    pollingInterval: 55
+    rules: [
+      {
+        auth: [
+          {
+            secretRef: 'connectionString'
+            triggerParameter: 'connection'
+          }
+        ]
+        metadata: {
+          queueName: '<queueName>'
+          storageAccountResourceId: '<storageAccountResourceId>'
+        }
+        name: 'queue'
+        type: 'azure-queue'
+      }
+    ]
+  }
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param roleAssignments = [
+  {
+    name: 'be1bb251-6a44-49f7-8658-d836d0049fc4'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param secrets = [
+  {
+    name: 'connection-string'
+    value: '<value>'
+  }
+]
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+param volumes = [
+  {
+    name: 'ajmaxemptydir'
+    storageType: 'EmptyDir'
+  }
+]
+param workloadProfileName = '<workloadProfileName>'
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -592,7 +798,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -658,6 +864,59 @@ module job 'br/public:avm/res/app/job:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/job:<version>'
+
+// Required parameters
+param containers = [
+  {
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'simple-hello-world-container'
+    probes: [
+      {
+        httpGet: {
+          httpHeaders: [
+            {
+              name: 'Custom-Header'
+              value: 'Awesome'
+            }
+          ]
+          path: '/health'
+          port: 8080
+        }
+        initialDelaySeconds: 3
+        periodSeconds: 3
+        type: 'Liveness'
+      }
+    ]
+    resources: {
+      cpu: '0.25'
+      memory: '0.5Gi'
+    }
+  }
+]
+param environmentResourceId = '<environmentResourceId>'
+param name = 'ajwaf001'
+param triggerType = 'Schedule'
+// Non-required parameters
+param location = '<location>'
+param scheduleTriggerConfig = {
+  cronExpression: '0 0 * * *'
+}
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+param workloadProfileName = '<workloadProfileName>'
 ```
 
 </details>

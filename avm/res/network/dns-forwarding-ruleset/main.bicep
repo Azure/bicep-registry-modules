@@ -235,5 +235,5 @@ type targetDnsServers = {
   ipAddress: string
 
   @description('Required. The port of the target DNS server.')
-  port: string
+  port: int
 }[]
