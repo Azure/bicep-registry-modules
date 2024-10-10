@@ -26,7 +26,6 @@ on:
   push:
     branches:
       - main
-      - avm-ptn-acalza-hostingenvironment
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
