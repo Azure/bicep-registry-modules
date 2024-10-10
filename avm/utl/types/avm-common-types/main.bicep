@@ -171,7 +171,7 @@ type lockType = {
 }
 
 // ====================== //
-//   Managed Idenitites   //
+//   Managed Identities   //
 // ====================== //
 
 // Type with all properties available
