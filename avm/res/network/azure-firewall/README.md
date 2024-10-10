@@ -1323,13 +1323,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     location: '<location>'
     managementIPAddressObject: {
       publicIPAllocationMethod: 'Static'
-      roleAssignments: [
-        {
-          principalId: '<principalId>'
-          principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: 'Reader'
-        }
-      ]
     }
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
   }
@@ -1372,14 +1365,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     },
     "managementIPAddressObject": {
       "value": {
-        "publicIPAllocationMethod": "Static",
-        "roleAssignments": [
-          {
-            "principalId": "<principalId>",
-            "principalType": "ServicePrincipal",
-            "roleDefinitionIdOrName": "Reader"
-          }
-        ]
+        "publicIPAllocationMethod": "Static"
       }
     },
     "virtualNetworkResourceId": {
@@ -1413,13 +1399,6 @@ param enableForcedTunneling = true
 param location = '<location>'
 param managementIPAddressObject = {
   publicIPAllocationMethod: 'Static'
-  roleAssignments: [
-    {
-      principalId: '<principalId>'
-      principalType: 'ServicePrincipal'
-      roleDefinitionIdOrName: 'Reader'
-    }
-  ]
 }
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 ```

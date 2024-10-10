@@ -38,7 +38,6 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 
@@ -65,13 +64,6 @@ module testDeployment '../../../main.bicep' = [
       enableForcedTunneling: true
       managementIPAddressObject: {
         publicIPAllocationMethod: 'Static'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
       }
     }
   }
