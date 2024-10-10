@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "17479703443253656975"
+      "version": "0.30.3.12046",
+      "templateHash": "1443306495474212036"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -975,7 +975,7 @@
     },
     "vm": {
       "type": "Microsoft.Compute/virtualMachines",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2024-07-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
@@ -1047,10 +1047,10 @@
               "count": "[length(parameters('nicConfigurations'))]",
               "input": {
                 "properties": {
-                  "deleteOption": "[if(contains(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'deleteOption'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].deleteOption, 'Delete')]",
+                  "deleteOption": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'deleteOption'), 'Delete')]",
                   "primary": "[if(equals(copyIndex('networkInterfaces'), 0), true(), false())]"
                 },
-                "id": "[resourceId('Microsoft.Network/networkInterfaces', if(contains(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'name'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].name, format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].nicSuffix)))]"
+                "id": "[resourceId('Microsoft.Network/networkInterfaces', coalesce(tryGet(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'name'), format('{0}{1}', parameters('name'), tryGet(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'nicSuffix'))))]"
               }
             }
           ]
@@ -1110,14 +1110,14 @@
       "name": "[format('shutdown-computevm-{0}', parameters('name'))]",
       "location": "[parameters('location')]",
       "properties": {
-        "status": "[if(contains(parameters('autoShutdownConfig'), 'status'), parameters('autoShutdownConfig').status, 'Disabled')]",
+        "status": "[coalesce(tryGet(parameters('autoShutdownConfig'), 'status'), 'Disabled')]",
         "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]",
         "taskType": "ComputeVmShutdownTask",
         "dailyRecurrence": {
-          "time": "[if(contains(parameters('autoShutdownConfig'), 'dailyRecurrenceTime'), parameters('autoShutdownConfig').dailyRecurrenceTime, '19:00')]"
+          "time": "[coalesce(tryGet(parameters('autoShutdownConfig'), 'dailyRecurrenceTime'), '19:00')]"
         },
-        "timeZoneId": "[if(contains(parameters('autoShutdownConfig'), 'timeZone'), parameters('autoShutdownConfig').timeZone, 'UTC')]",
-        "notificationSettings": "[if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), createObject('status', if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), parameters('autoShutdownConfig').notificationStatus, 'Disabled'), 'emailRecipient', if(contains(parameters('autoShutdownConfig'), 'notificationEmail'), parameters('autoShutdownConfig').notificationEmail, ''), 'notificationLocale', if(contains(parameters('autoShutdownConfig'), 'notificationLocale'), parameters('autoShutdownConfig').notificationLocale, 'en'), 'webhookUrl', if(contains(parameters('autoShutdownConfig'), 'notificationWebhookUrl'), parameters('autoShutdownConfig').notificationWebhookUrl, ''), 'timeInMinutes', if(contains(parameters('autoShutdownConfig'), 'notificationTimeInMinutes'), parameters('autoShutdownConfig').notificationTimeInMinutes, 30)), null())]"
+        "timeZoneId": "[coalesce(tryGet(parameters('autoShutdownConfig'), 'timeZone'), 'UTC')]",
+        "notificationSettings": "[if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), createObject('status', coalesce(tryGet(parameters('autoShutdownConfig'), 'notificationStatus'), 'Disabled'), 'emailRecipient', coalesce(tryGet(parameters('autoShutdownConfig'), 'notificationEmail'), ''), 'notificationLocale', coalesce(tryGet(parameters('autoShutdownConfig'), 'notificationLocale'), 'en'), 'webhookUrl', coalesce(tryGet(parameters('autoShutdownConfig'), 'notificationWebhookUrl'), ''), 'timeInMinutes', coalesce(tryGet(parameters('autoShutdownConfig'), 'notificationTimeInMinutes'), 30)), null())]"
       },
       "dependsOn": [
         "vm"
@@ -1206,17 +1206,25 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "networkInterfaceName": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'name'), createObject('value', parameters('nicConfigurations')[copyIndex()].name), createObject('value', format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex()].nicSuffix)))]",
+          "networkInterfaceName": {
+            "value": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex()], 'name'), format('{0}{1}', parameters('name'), tryGet(parameters('nicConfigurations')[copyIndex()], 'nicSuffix')))]"
+          },
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
           "location": {
             "value": "[parameters('location')]"
           },
-          "enableIPForwarding": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'enableIPForwarding'), createObject('value', parameters('nicConfigurations')[copyIndex()].enableIPForwarding), createObject('value', false()))]",
-          "enableAcceleratedNetworking": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'enableAcceleratedNetworking'), createObject('value', parameters('nicConfigurations')[copyIndex()].enableAcceleratedNetworking), createObject('value', true()))]",
+          "enableIPForwarding": {
+            "value": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex()], 'enableIPForwarding'), false())]"
+          },
+          "enableAcceleratedNetworking": {
+            "value": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex()], 'enableAcceleratedNetworking'), true())]"
+          },
           "dnsServers": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'dnsServers'), if(not(empty(parameters('nicConfigurations')[copyIndex()].dnsServers)), createObject('value', parameters('nicConfigurations')[copyIndex()].dnsServers), createObject('value', createArray())), createObject('value', createArray()))]",
-          "networkSecurityGroupResourceId": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'networkSecurityGroupResourceId'), createObject('value', parameters('nicConfigurations')[copyIndex()].networkSecurityGroupResourceId), createObject('value', ''))]",
+          "networkSecurityGroupResourceId": {
+            "value": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex()], 'networkSecurityGroupResourceId'), '')]"
+          },
           "ipConfigurations": {
             "value": "[parameters('nicConfigurations')[copyIndex()].ipConfigurations]"
           },
@@ -1243,8 +1251,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "1517797599230349789"
+              "version": "0.30.3.12046",
+              "templateHash": "191716886366421622"
             }
           },
           "definitions": {
@@ -1533,7 +1541,7 @@
                 "name": "networkInterface_publicIPAddresses",
                 "count": "[length(parameters('ipConfigurations'))]"
               },
-              "condition": "[contains(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration')]",
+              "condition": "[and(contains(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), not(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPAddressResourceId')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-publicIP-{1}', deployment().name, copyIndex())]",
@@ -1543,7 +1551,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "name": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'name'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.name), createObject('value', format('{0}{1}', parameters('virtualMachineName'), parameters('ipConfigurations')[copyIndex()].pipConfiguration.publicIpNameSuffix)))]",
+                  "name": {
+                    "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'name'), format('{0}{1}', parameters('virtualMachineName'), tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIpNameSuffix')))]"
+                  },
                   "diagnosticSettings": {
                     "value": "[tryGet(parameters('ipConfigurations')[copyIndex()], 'diagnosticSettings')]"
                   },
@@ -1562,16 +1572,30 @@
                   "dnsSettings": {
                     "value": "[tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'dnsSettings')]"
                   },
-                  "publicIPAddressVersion": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPAddressVersion'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.publicIPAddressVersion), createObject('value', 'IPv4'))]",
-                  "publicIPAllocationMethod": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPAllocationMethod'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.publicIPAllocationMethod), createObject('value', 'Static'))]",
-                  "publicIpPrefixResourceId": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPPrefixResourceId'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.publicIPPrefixResourceId), createObject('value', ''))]",
-                  "roleAssignments": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'roleAssignments'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.roleAssignments), createObject('value', createArray()))]",
-                  "skuName": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'skuName'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.skuName), createObject('value', 'Standard'))]",
-                  "skuTier": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'skuTier'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.skuTier), createObject('value', 'Regional'))]",
+                  "publicIPAddressVersion": {
+                    "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPAddressVersion'), 'IPv4')]"
+                  },
+                  "publicIPAllocationMethod": {
+                    "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPAllocationMethod'), 'Static')]"
+                  },
+                  "publicIpPrefixResourceId": {
+                    "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPPrefixResourceId'), '')]"
+                  },
+                  "roleAssignments": {
+                    "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'roleAssignments'), createArray())]"
+                  },
+                  "skuName": {
+                    "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'skuName'), 'Standard')]"
+                  },
+                  "skuTier": {
+                    "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'skuTier'), 'Regional')]"
+                  },
                   "tags": {
                     "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()], 'tags'), parameters('tags'))]"
                   },
-                  "zones": "[if(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'zones'), createObject('value', parameters('ipConfigurations')[copyIndex()].pipConfiguration.zones), createObject('value', createArray(1, 2, 3)))]",
+                  "zones": {
+                    "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'zones'), createArray(1, 2, 3))]"
+                  },
                   "enableTelemetry": {
                     "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
                   }
@@ -1583,8 +1607,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.27.1.19265",
-                      "templateHash": "10356333973104369631"
+                      "version": "0.29.47.4906",
+                      "templateHash": "16693645977675862540"
                     },
                     "name": "Public IP Addresses",
                     "description": "This module deploys a Public IP Address.",
@@ -1596,6 +1620,13 @@
                       "items": {
                         "type": "object",
                         "properties": {
+                          "name": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                            }
+                          },
                           "roleDefinitionIdOrName": {
                             "type": "string",
                             "metadata": {
@@ -2009,6 +2040,13 @@
                     }
                   },
                   "variables": {
+                    "copy": [
+                      {
+                        "name": "formattedRoleAssignments",
+                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                      }
+                    ],
                     "builtInRoleNames": {
                       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                       "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
@@ -2019,15 +2057,15 @@
                       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                       "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
                       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+                      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
                     }
                   },
                   "resources": {
                     "avmTelemetry": {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2023-07-01",
-                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.6.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -2081,20 +2119,20 @@
                     "publicIpAddress_roleAssignments": {
                       "copy": {
                         "name": "publicIpAddress_roleAssignments",
-                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
                       },
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
                       "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', parameters('name'))]",
-                      "name": "[guid(resourceId('Microsoft.Network/publicIPAddresses', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/publicIPAddresses', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                       "properties": {
-                        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-                        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-                        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-                        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
                       },
                       "dependsOn": [
                         "publicIpAddress"
@@ -2200,7 +2238,7 @@
                       {
                         "name": "value",
                         "count": "[length(parameters('ipConfigurations'))]",
-                        "input": "[createObject('name', if(not(empty(parameters('ipConfigurations')[copyIndex('value')].name)), parameters('ipConfigurations')[copyIndex('value')].name, null()), 'primary', equals(copyIndex('value'), 0), 'privateIPAllocationMethod', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAllocationMethod'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod)), parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod, null()), null()), 'privateIPAddress', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddress'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAddress)), parameters('ipConfigurations')[copyIndex('value')].privateIPAddress, null()), null()), 'publicIPAddressResourceId', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration'), resourceId('Microsoft.Network/publicIPAddresses', if(contains(parameters('ipConfigurations')[copyIndex('value')].pipConfiguration, 'name'), parameters('ipConfigurations')[copyIndex('value')].pipConfiguration.name, format('{0}{1}', parameters('virtualMachineName'), parameters('ipConfigurations')[copyIndex('value')].pipConfiguration.publicIpNameSuffix))), null()), 'subnetResourceId', parameters('ipConfigurations')[copyIndex('value')].subnetResourceId, 'loadBalancerBackendAddressPools', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerBackendAddressPools'), parameters('ipConfigurations')[copyIndex('value')].loadBalancerBackendAddressPools, null()), 'applicationSecurityGroups', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'applicationSecurityGroups'), parameters('ipConfigurations')[copyIndex('value')].applicationSecurityGroups, null()), 'applicationGatewayBackendAddressPools', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'applicationGatewayBackendAddressPools'), parameters('ipConfigurations')[copyIndex('value')].applicationGatewayBackendAddressPools, null()), 'gatewayLoadBalancer', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'gatewayLoadBalancer'), parameters('ipConfigurations')[copyIndex('value')].gatewayLoadBalancer, null()), 'loadBalancerInboundNatRules', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerInboundNatRules'), parameters('ipConfigurations')[copyIndex('value')].loadBalancerInboundNatRules, null()), 'privateIPAddressVersion', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddressVersion'), parameters('ipConfigurations')[copyIndex('value')].privateIPAddressVersion, null()), 'virtualNetworkTaps', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'virtualNetworkTaps'), parameters('ipConfigurations')[copyIndex('value')].virtualNetworkTaps, null()))]"
+                        "input": "[createObject('name', if(not(empty(parameters('ipConfigurations')[copyIndex('value')].name)), parameters('ipConfigurations')[copyIndex('value')].name, null()), 'primary', equals(copyIndex('value'), 0), 'privateIPAllocationMethod', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAllocationMethod'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod)), parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod, null()), null()), 'privateIPAddress', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddress'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAddress)), parameters('ipConfigurations')[copyIndex('value')].privateIPAddress, null()), null()), 'publicIPAddressResourceId', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration'), if(not(contains(parameters('ipConfigurations')[copyIndex('value')].pipConfiguration, 'publicIPAddressResourceId')), resourceId('Microsoft.Network/publicIPAddresses', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')].pipConfiguration, 'name'), format('{0}{1}', parameters('virtualMachineName'), tryGet(parameters('ipConfigurations')[copyIndex('value')].pipConfiguration, 'publicIpNameSuffix')))), parameters('ipConfigurations')[copyIndex('value')].pipConfiguration.publicIPAddressResourceId), null()), 'subnetResourceId', parameters('ipConfigurations')[copyIndex('value')].subnetResourceId, 'loadBalancerBackendAddressPools', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerBackendAddressPools'), null()), 'applicationSecurityGroups', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'applicationSecurityGroups'), null()), 'applicationGatewayBackendAddressPools', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'applicationGatewayBackendAddressPools'), null()), 'gatewayLoadBalancer', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'gatewayLoadBalancer'), null()), 'loadBalancerInboundNatRules', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerInboundNatRules'), null()), 'privateIPAddressVersion', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddressVersion'), null()), 'virtualNetworkTaps', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'virtualNetworkTaps'), null()))]"
                       }
                     ]
                   },
@@ -2236,8 +2274,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "1612343535299711142"
+                      "version": "0.29.47.4906",
+                      "templateHash": "9226998037927576702"
                     },
                     "name": "Network Interface",
                     "description": "This module deploys a Network Interface.",
@@ -2369,6 +2407,13 @@
                       "items": {
                         "type": "object",
                         "properties": {
+                          "name": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                            }
+                          },
                           "roleDefinitionIdOrName": {
                             "type": "string",
                             "metadata": {
@@ -2571,6 +2616,13 @@
                     }
                   },
                   "variables": {
+                    "copy": [
+                      {
+                        "name": "formattedRoleAssignments",
+                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                      }
+                    ],
                     "builtInRoleNames": {
                       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                       "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
@@ -2579,15 +2631,15 @@
                       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                       "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
                       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+                      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
                     }
                   },
                   "resources": {
                     "avmTelemetry": {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2023-07-01",
-                      "name": "[format('46d3xbcp.res.network-networkinterface.{0}.{1}', replace('0.2.4', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.network-networkinterface.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -2693,20 +2745,20 @@
                     "networkInterface_roleAssignments": {
                       "copy": {
                         "name": "networkInterface_roleAssignments",
-                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
                       },
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
                       "scope": "[format('Microsoft.Network/networkInterfaces/{0}', parameters('name'))]",
-                      "name": "[guid(resourceId('Microsoft.Network/networkInterfaces', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/networkInterfaces', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                       "properties": {
-                        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-                        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-                        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-                        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
                       },
                       "dependsOn": [
                         "networkInterface"
@@ -2777,10 +2829,18 @@
             "value": "Microsoft.Azure.ActiveDirectory"
           },
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AADLoginForWindows'), createObject('value', 'AADSSHLoginforLinux'))]",
-          "typeHandlerVersion": "[if(contains(parameters('extensionAadJoinConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionAadJoinConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '2.0'), createObject('value', '1.0')))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionAadJoinConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionAadJoinConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionAadJoinConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionAadJoinConfig').enableAutomaticUpgrade), createObject('value', false()))]",
-          "settings": "[if(contains(parameters('extensionAadJoinConfig'), 'settings'), createObject('value', parameters('extensionAadJoinConfig').settings), createObject('value', createObject()))]",
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'typeHandlerVersion'), if(equals(parameters('osType'), 'Windows'), '2.0', '1.0'))]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'enableAutomaticUpgrade'), false())]"
+          },
+          "settings": {
+            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'settings'), createObject())]"
+          },
           "supressFailures": {
             "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'supressFailures'), false())]"
           },
@@ -2795,8 +2855,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10657605324993327332"
+              "version": "0.30.3.12046",
+              "templateHash": "1742015474710386242"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -2979,9 +3039,15 @@
           "type": {
             "value": "JsonADDomainExtension"
           },
-          "typeHandlerVersion": "[if(contains(parameters('extensionDomainJoinConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionDomainJoinConfig').typeHandlerVersion), createObject('value', '1.3'))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionDomainJoinConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionDomainJoinConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionDomainJoinConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDomainJoinConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'typeHandlerVersion'), '1.3')]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'enableAutomaticUpgrade'), false())]"
+          },
           "settings": {
             "value": "[parameters('extensionDomainJoinConfig').settings]"
           },
@@ -3004,8 +3070,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10657605324993327332"
+              "version": "0.30.3.12046",
+              "templateHash": "1742015474710386242"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3189,9 +3255,15 @@
           "type": {
             "value": "IaaSAntimalware"
           },
-          "typeHandlerVersion": "[if(contains(parameters('extensionAntiMalwareConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionAntiMalwareConfig').typeHandlerVersion), createObject('value', '1.3'))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionAntiMalwareConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionAntiMalwareConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionAntiMalwareConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionAntiMalwareConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'typeHandlerVersion'), '1.3')]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'enableAutomaticUpgrade'), false())]"
+          },
           "settings": {
             "value": "[parameters('extensionAntiMalwareConfig').settings]"
           },
@@ -3209,8 +3281,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10657605324993327332"
+              "version": "0.30.3.12046",
+              "templateHash": "1742015474710386242"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3415,8 +3487,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10657605324993327332"
+              "version": "0.30.3.12046",
+              "templateHash": "1742015474710386242"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3598,12 +3670,18 @@
             "value": "Microsoft.Azure.Monitoring.DependencyAgent"
           },
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'DependencyAgentWindows'), createObject('value', 'DependencyAgentLinux'))]",
-          "typeHandlerVersion": "[if(contains(parameters('extensionDependencyAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionDependencyAgentConfig').typeHandlerVersion), createObject('value', '9.10'))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionDependencyAgentConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionDependencyAgentConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionDependencyAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDependencyAgentConfig').enableAutomaticUpgrade), createObject('value', true()))]",
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'typeHandlerVersion'), '9.10')]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'enableAutomaticUpgrade'), true())]"
+          },
           "settings": {
             "value": {
-              "enableAMA": "[if(contains(parameters('extensionDependencyAgentConfig'), 'enableAMA'), parameters('extensionDependencyAgentConfig').enableAMA, true())]"
+              "enableAMA": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'enableAMA'), true())]"
             }
           },
           "supressFailures": {
@@ -3620,8 +3698,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10657605324993327332"
+              "version": "0.30.3.12046",
+              "templateHash": "1742015474710386242"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3803,9 +3881,15 @@
             "value": "Microsoft.Azure.NetworkWatcher"
           },
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'NetworkWatcherAgentWindows'), createObject('value', 'NetworkWatcherAgentLinux'))]",
-          "typeHandlerVersion": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').typeHandlerVersion), createObject('value', '1.4'))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionNetworkWatcherAgentConfig'), 'typeHandlerVersion'), '1.4')]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionNetworkWatcherAgentConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionNetworkWatcherAgentConfig'), 'enableAutomaticUpgrade'), false())]"
+          },
           "supressFailures": {
             "value": "[coalesce(tryGet(parameters('extensionNetworkWatcherAgentConfig'), 'supressFailures'), false())]"
           },
@@ -3820,8 +3904,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10657605324993327332"
+              "version": "0.30.3.12046",
+              "templateHash": "1742015474710386242"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -4005,17 +4089,27 @@
           "type": {
             "value": "DSC"
           },
-          "typeHandlerVersion": "[if(contains(parameters('extensionDSCConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionDSCConfig').typeHandlerVersion), createObject('value', '2.77'))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionDSCConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionDSCConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionDSCConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDSCConfig').enableAutomaticUpgrade), createObject('value', false()))]",
-          "settings": "[if(contains(parameters('extensionDSCConfig'), 'settings'), createObject('value', parameters('extensionDSCConfig').settings), createObject('value', createObject()))]",
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'typeHandlerVersion'), '2.77')]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'enableAutomaticUpgrade'), false())]"
+          },
+          "settings": {
+            "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'settings'), createObject())]"
+          },
           "supressFailures": {
             "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'supressFailures'), false())]"
           },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'tags'), parameters('tags'))]"
           },
-          "protectedSettings": "[if(contains(parameters('extensionDSCConfig'), 'protectedSettings'), createObject('value', parameters('extensionDSCConfig').protectedSettings), createObject('value', createObject()))]"
+          "protectedSettings": {
+            "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'protectedSettings'), createObject())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -4024,8 +4118,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10657605324993327332"
+              "version": "0.30.3.12046",
+              "templateHash": "1742015474710386242"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -4205,9 +4299,15 @@
           },
           "publisher": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'Microsoft.Compute'), createObject('value', 'Microsoft.Azure.Extensions'))]",
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'CustomScriptExtension'), createObject('value', 'CustomScript'))]",
-          "typeHandlerVersion": "[if(contains(parameters('extensionCustomScriptConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionCustomScriptConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '1.10'), createObject('value', '2.1')))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionCustomScriptConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionCustomScriptConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionCustomScriptConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionCustomScriptConfig').enableAutomaticUpgrade), createObject('value', false()))]",
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'typeHandlerVersion'), if(equals(parameters('osType'), 'Windows'), '1.10', '2.1'))]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'enableAutomaticUpgrade'), false())]"
+          },
           "settings": {
             "value": {
               "copy": [
@@ -4236,8 +4336,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10657605324993327332"
+              "version": "0.30.3.12046",
+              "templateHash": "1742015474710386242"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -4419,10 +4519,18 @@
             "value": "Microsoft.Azure.Security"
           },
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AzureDiskEncryption'), createObject('value', 'AzureDiskEncryptionForLinux'))]",
-          "typeHandlerVersion": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '2.2'), createObject('value', '1.1')))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').enableAutomaticUpgrade), createObject('value', false()))]",
-          "forceUpdateTag": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'forceUpdateTag'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').forceUpdateTag), createObject('value', '1.0'))]",
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'typeHandlerVersion'), if(equals(parameters('osType'), 'Windows'), '2.2', '1.1'))]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'enableAutomaticUpgrade'), false())]"
+          },
+          "forceUpdateTag": {
+            "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'forceUpdateTag'), '1.0')]"
+          },
           "settings": {
             "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'settings'), createObject())]"
           },
@@ -4440,8 +4548,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10657605324993327332"
+              "version": "0.30.3.12046",
+              "templateHash": "1742015474710386242"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -4625,9 +4733,15 @@
           "type": {
             "value": "NvidiaGpuDriverWindows"
           },
-          "typeHandlerVersion": "[if(contains(parameters('extensionNvidiaGpuDriverWindows'), 'typeHandlerVersion'), createObject('value', parameters('extensionNvidiaGpuDriverWindows').typeHandlerVersion), createObject('value', '1.4'))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionNvidiaGpuDriverWindows'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionNvidiaGpuDriverWindows').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionNvidiaGpuDriverWindows'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionNvidiaGpuDriverWindows').enableAutomaticUpgrade), createObject('value', false()))]",
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionNvidiaGpuDriverWindows'), 'typeHandlerVersion'), '1.4')]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionNvidiaGpuDriverWindows'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionNvidiaGpuDriverWindows'), 'enableAutomaticUpgrade'), false())]"
+          },
           "supressFailures": {
             "value": "[coalesce(tryGet(parameters('extensionNvidiaGpuDriverWindows'), 'supressFailures'), false())]"
           },
@@ -4642,8 +4756,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10657605324993327332"
+              "version": "0.30.3.12046",
+              "templateHash": "1742015474710386242"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -4827,9 +4941,15 @@
           "type": {
             "value": "DSC"
           },
-          "typeHandlerVersion": "[if(contains(parameters('extensionHostPoolRegistration'), 'typeHandlerVersion'), createObject('value', parameters('extensionHostPoolRegistration').typeHandlerVersion), createObject('value', '2.77'))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionHostPoolRegistration'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionHostPoolRegistration').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionHostPoolRegistration'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionHostPoolRegistration').enableAutomaticUpgrade), createObject('value', false()))]",
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionHostPoolRegistration'), 'typeHandlerVersion'), '2.77')]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionHostPoolRegistration'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionHostPoolRegistration'), 'enableAutomaticUpgrade'), false())]"
+          },
           "settings": {
             "value": {
               "modulesUrl": "[parameters('extensionHostPoolRegistration').modulesUrl]",
@@ -4853,8 +4973,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10657605324993327332"
+              "version": "0.30.3.12046",
+              "templateHash": "1742015474710386242"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -5034,11 +5154,21 @@
             "value": "Microsoft.GuestConfiguration"
           },
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'ConfigurationforWindows'), createObject('value', 'ConfigurationForLinux'))]",
-          "typeHandlerVersion": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'typeHandlerVersion'), createObject('value', parameters('extensionGuestConfigurationExtension').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '1.0'), createObject('value', '1.0')))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionGuestConfigurationExtension').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionGuestConfigurationExtension').enableAutomaticUpgrade), createObject('value', true()))]",
-          "forceUpdateTag": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'forceUpdateTag'), createObject('value', parameters('extensionGuestConfigurationExtension').forceUpdateTag), createObject('value', '1.0'))]",
-          "settings": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'settings'), createObject('value', parameters('extensionGuestConfigurationExtension').settings), createObject('value', createObject()))]",
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionGuestConfigurationExtension'), 'typeHandlerVersion'), if(equals(parameters('osType'), 'Windows'), '1.0', '1.0'))]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionGuestConfigurationExtension'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionGuestConfigurationExtension'), 'enableAutomaticUpgrade'), true())]"
+          },
+          "forceUpdateTag": {
+            "value": "[coalesce(tryGet(parameters('extensionGuestConfigurationExtension'), 'forceUpdateTag'), '1.0')]"
+          },
+          "settings": {
+            "value": "[coalesce(tryGet(parameters('extensionGuestConfigurationExtension'), 'settings'), createObject())]"
+          },
           "supressFailures": {
             "value": "[coalesce(tryGet(parameters('extensionGuestConfigurationExtension'), 'supressFailures'), false())]"
           },
@@ -5056,8 +5186,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10657605324993327332"
+              "version": "0.30.3.12046",
+              "templateHash": "1742015474710386242"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -5255,8 +5385,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "4676289166883418684"
+              "version": "0.30.3.12046",
+              "templateHash": "18427642917647797213"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
@@ -5390,14 +5520,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('vm', '2024-03-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('vm', '2024-07-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('vm', '2024-03-01', 'full').location]"
+      "value": "[reference('vm', '2024-07-01', 'full').location]"
     }
   }
 }

@@ -65,7 +65,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -82,6 +82,22 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/private-dns-zone:<version>'
+
+// Required parameters
+param name = 'npdzmin001.com'
+// Non-required parameters
+param location = 'global'
 ```
 
 </details>
@@ -362,7 +378,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -657,6 +673,271 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/private-dns-zone:<version>'
+
+// Required parameters
+param name = 'npdzmax001.com'
+// Non-required parameters
+param a = [
+  {
+    aRecords: [
+      {
+        ipv4Address: '10.240.4.4'
+      }
+    ]
+    name: 'A_10.240.4.4'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    ttl: 3600
+  }
+]
+param aaaa = [
+  {
+    aaaaRecords: [
+      {
+        ipv6Address: '2001:0db8:85a3:0000:0000:8a2e:0370:7334'
+      }
+    ]
+    name: 'AAAA_2001_0db8_85a3_0000_0000_8a2e_0370_7334'
+    ttl: 3600
+  }
+]
+param cname = [
+  {
+    cnameRecord: {
+      cname: 'test'
+    }
+    name: 'CNAME_test'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    ttl: 3600
+  }
+]
+param location = 'global'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param mx = [
+  {
+    mxRecords: [
+      {
+        exchange: 'contoso.com'
+        preference: 100
+      }
+    ]
+    name: 'MX_contoso'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    ttl: 3600
+  }
+]
+param ptr = [
+  {
+    name: 'PTR_contoso'
+    ptrRecords: [
+      {
+        ptrdname: 'contoso.com'
+      }
+    ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    ttl: 3600
+  }
+]
+param roleAssignments = [
+  {
+    name: '8001f03c-2ca1-4dab-ab69-4dbaa3635af1'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param soa = [
+  {
+    name: '@'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    soaRecord: {
+      email: 'azureprivatedns-host.microsoft.com'
+      expireTime: 2419200
+      host: 'azureprivatedns.net'
+      minimumTtl: 10
+      refreshTime: 3600
+      retryTime: 300
+      serialNumber: 1
+    }
+    ttl: 3600
+  }
+]
+param srv = [
+  {
+    name: 'SRV_contoso'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    srvRecords: [
+      {
+        port: 9332
+        priority: 0
+        target: 'test.contoso.com'
+        weight: 0
+      }
+    ]
+    ttl: 3600
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param txt = [
+  {
+    name: 'TXT_test'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    ttl: 3600
+    txtRecords: [
+      {
+        value: [
+          'test'
+        ]
+      }
+    ]
+  }
+]
+param virtualNetworkLinks = [
+  {
+    registrationEnabled: true
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
@@ -692,7 +973,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -721,6 +1002,31 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/private-dns-zone:<version>'
+
+// Required parameters
+param name = 'npdzwaf001.com'
+// Non-required parameters
+param location = 'global'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

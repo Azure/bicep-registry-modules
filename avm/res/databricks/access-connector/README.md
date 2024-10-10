@@ -56,7 +56,7 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:<version>'
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -73,6 +73,22 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:<version>'
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/databricks/access-connector:<version>'
+
+// Required parameters
+param name = 'dacmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -138,7 +154,7 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:<version>'
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -202,6 +218,56 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:<version>'
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/databricks/access-connector:<version>'
+
+// Required parameters
+param name = 'dacmax001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param roleAssignments = [
+  {
+    name: 'e9143a6b-a031-419c-a597-cc4ac9bd39ed'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -240,7 +306,7 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:<version>'
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -274,6 +340,34 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:<version>'
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/databricks/access-connector:<version>'
+
+// Required parameters
+param name = 'dacwaf001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
