@@ -251,32 +251,3 @@ type networkIntent = {
   }
   trafficType: string[]
 }
-
-// define custom type for storage adapter IP info for 3-node switchless deployments
-type storageAdapterIPInfoType = {
-  physicalNode: string
-  ipv4Address: string
-  subnetMask: string
-}
-
-// define custom type for storage network objects
-type storageNetworksType = {
-  adapterName: string
-  vlan: string
-  storageAdapterIPInfo: storageAdapterIPInfoType[]? // optional for non-switchless deployments
-}
-type storageNetworksArrayType = storageNetworksType[]
-
-// cluster security configuration settings
-type securityConfigurationType = {
-  hvciProtection: bool
-  drtmProtection: bool
-  driftControlEnforced: bool
-  credentialGuardEnforced: bool
-  smbSigningEnforced: bool
-  smbClusterEncryption: bool
-  sideChannelMitigationEnforced: bool
-  bitlockerBootVolume: bool
-  bitlockerDataVolumes: bool
-  wdacEnforced: bool
-}
