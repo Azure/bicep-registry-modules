@@ -62,7 +62,7 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -91,6 +91,28 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/webtest:<version>'
+
+// Required parameters
+param appInsightResourceId = '<appInsightResourceId>'
+param name = 'iwtmin001'
+param request = {
+  HttpVerb: 'GET'
+  RequestUrl: 'https://learn.microsoft.com/en-us/'
+}
+param webTestName = 'wt$iwtmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -162,7 +184,7 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -240,6 +262,62 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/webtest:<version>'
+
+// Required parameters
+param appInsightResourceId = '<appInsightResourceId>'
+param name = 'iwtmax001'
+param request = {
+  HttpVerb: 'GET'
+  RequestUrl: 'https://learn.microsoft.com/en-us/'
+}
+param webTestName = 'wt$iwtmax001'
+// Non-required parameters
+param location = '<location>'
+param locations = [
+  {
+    Id: 'emea-nl-ams-azr'
+  }
+]
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: '86bf66a0-940f-438d-977e-624c00ccb2d8'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param syntheticMonitorId = 'iwtmax001'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -281,7 +359,7 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -324,6 +402,37 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/webtest:<version>'
+
+// Required parameters
+param appInsightResourceId = '<appInsightResourceId>'
+param name = 'iwtwaf001'
+param request = {
+  HttpVerb: 'GET'
+  RequestUrl: 'https://learn.microsoft.com/en-us/'
+}
+param webTestName = 'wt$iwtwaf001'
+// Non-required parameters
+param location = '<location>'
+param locations = [
+  {
+    Id: 'emea-nl-ams-azr'
+  }
+]
+param syntheticMonitorId = 'iwtwaf001'
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
 }
 ```
 

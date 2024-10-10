@@ -55,7 +55,7 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -89,6 +89,26 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/resource-role-assignment:<version>'
+
+// Required parameters
+param principalId = '<principalId>'
+param resourceId = '<resourceId>'
+param roleDefinitionId = '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
+// Non-required parameters
+param description = 'Assign Storage Blob Data Reader role to the managed identity on the storage account.'
+param principalType = 'ServicePrincipal'
+param roleName = 'Storage Blob Data Reader'
+```
+
+</details>
+<p>
+
 ### Example 2: _Resource Role Assignments_
 
 This module deploys a Resource Role Assignment using minimal parameters.
@@ -117,7 +137,7 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -140,6 +160,24 @@ module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-ass
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/resource-role-assignment:<version>'
+
+// Required parameters
+param principalId = '<principalId>'
+param resourceId = '<resourceId>'
+param roleDefinitionId = '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
+// Non-required parameters
+param principalType = 'ServicePrincipal'
 ```
 
 </details>
