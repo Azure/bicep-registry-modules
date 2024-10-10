@@ -71,7 +71,7 @@ module testDeployment '../../../main.bicep' = [
           targetDnsServers: [
             {
               ipAddress: '192.168.0.1'
-              port: '53'
+              port: 53
             }
           ]
         }
