@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module with existing resources
 param resourceGroupName string = 'dep-${namePrefix}-app-containerjob-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'acjmax'
@@ -25,7 +25,7 @@ param namePrefix string = '#_namePrefix_#'
 // ============ //
 
 module dependencies './dependencies.bicep' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dependencies'
+  name: '${uniqueString(deployment().name, location)}-test-dependencies'
   scope: resourceGroup
   params: {
     lawName: 'dep${namePrefix}law${serviceShort}'
@@ -38,7 +38,7 @@ module dependencies './dependencies.bicep' = {
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: location
 }
 
 // ============== //
@@ -49,10 +49,10 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+      location: location
       containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
       newContainerImageName: 'application/frontend:latest'
       logAnalyticsWorkspaceResourceId: dependencies.outputs.logAnalyticsResourceId
@@ -60,7 +60,7 @@ module testDeployment '../../../main.bicep' = [
       overwriteExistingImage: true
       appInsightsConnectionString: dependencies.outputs.appInsightsConnectionString
       // with 'kv' in the uniqueString the name can start with a number, which is an invalid name for Key Vault
-      keyVaultName: 'kv${uniqueString('${namePrefix}${serviceShort}001', resourceLocation, resourceGroupName)}'
+      keyVaultName: 'kv${uniqueString('${namePrefix}${serviceShort}001', location, resourceGroupName)}'
       keyVaultRoleAssignments: [
         {
           roleDefinitionIdOrName: 'Key Vault Secrets Officer'
@@ -114,7 +114,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'secretkey1'
           // the Key Vault name needs to be known here. Not using the output of the dependencies to show the usage.
-          keyVaultUrl: 'https://kv${uniqueString('cjob', resourceLocation, resourceGroupName)}${environment().suffixes.keyvaultDns}/secrets/key1'
+          keyVaultUrl: 'https://kv${uniqueString('cjob', location, resourceGroupName)}${environment().suffixes.keyvaultDns}/secrets/key1'
           identity: dependencies.outputs.userIdentityResourceId
         }
       ]

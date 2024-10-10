@@ -1,5 +1,8 @@
 @description('Optional. The location for the resources.')
-param resourceLocation string = resourceGroup().location
+param location string = resourceGroup().location
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 @description('Optional. The name of the resource group for the resources.')
 param resourceGroupName string = resourceGroup().name
@@ -184,25 +187,27 @@ var regionSpecificServiceTags = {
   southcentralusstg: 'usstagec'
   brazilsoutheast: 'brazilse'
 }
-var locationLowered = toLower(resourceLocation)
+var locationLowered = toLower(location)
 var regionServiceTag = regionSpecificServiceTags[?locationLowered] ?? locationLowered
 
 // Networking resources
 // -----------------
 module nsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (zoneRedundant) {
-  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-nsg'
+  name: '${uniqueString(deployment().name, location, resourceGroupName)}-nsg'
   params: {
     name: 'nsg-${name}'
-    location: resourceLocation
+    location: location
+    enableTelemetry: enableTelemetry
     tags: tags
     lock: lock
   }
 }
 module nsg_workload_plan 'br/public:avm/res/network/network-security-group:0.5.0' = if (zoneRedundant && !empty(workloadProfiles)) {
-  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-nsg-workload'
+  name: '${uniqueString(deployment().name, location, resourceGroupName)}-nsg-workload'
   params: {
     name: 'nsg-workload-${name}'
-    location: resourceLocation
+    location: location
+    enableTelemetry: enableTelemetry
     tags: tags
     lock: lock
     securityRules: union(
@@ -271,7 +276,7 @@ module nsg_workload_plan 'br/public:avm/res/network/network-security-group:0.5.0
             sourcePortRange: '*'
             sourceAddressPrefix: workloadSubnetAddressPrefix
             destinationPortRange: '443'
-            destinationAddressPrefix: 'Storage.${resourceLocation}'
+            destinationAddressPrefix: 'Storage.${location}'
           }
         }
         {
@@ -319,10 +324,11 @@ module nsg_workload_plan 'br/public:avm/res/network/network-security-group:0.5.0
   }
 }
 module nsg_consumption_plan 'br/public:avm/res/network/network-security-group:0.5.0' = if (zoneRedundant && empty(workloadProfiles)) {
-  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-nsg-workload'
+  name: '${uniqueString(deployment().name, location, resourceGroupName)}-nsg-workload'
   params: {
     name: 'nsg-consumption-${name}'
-    location: resourceLocation
+    location: location
+    enableTelemetry: enableTelemetry
     tags: tags
     lock: lock
     securityRules: union(
@@ -470,7 +476,7 @@ module nsg_consumption_plan 'br/public:avm/res/network/network-security-group:0.
             sourcePortRange: '*'
             sourceAddressPrefix: workloadSubnetAddressPrefix
             destinationPortRange: '443'
-            destinationAddressPrefix: 'Storage.${resourceLocation}'
+            destinationAddressPrefix: 'Storage.${location}'
           }
         }
         {
@@ -493,9 +499,10 @@ module nsg_consumption_plan 'br/public:avm/res/network/network-security-group:0.
 }
 
 module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (zoneRedundant) {
-  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-vnet'
+  name: '${uniqueString(deployment().name, location, resourceGroupName)}-vnet'
   params: {
     name: 'vnet-${name}'
+    enableTelemetry: enableTelemetry
     addressPrefixes: [
       addressPrefix
     ]
@@ -521,16 +528,17 @@ module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (zoneRedundan
         delegation: deployInVnet ? 'Microsoft.App/environments' : null // don't delegate if used for zoneRedundant consumption plan
       }
     ]
-    location: resourceLocation
+    location: location
     tags: tags
     lock: lock
   }
 }
 
 module dnsZoneKeyVault_new 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (deployInVnet && deployDnsZoneKeyVault) {
-  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-dnsZoneKeyVault'
+  name: '${uniqueString(deployment().name, location, resourceGroupName)}-dnsZoneKeyVault'
   params: {
     name: 'privatelink.vaultcore.azure.net'
+    enableTelemetry: enableTelemetry
     tags: tags
     lock: lock
     virtualNetworkLinks: [
@@ -558,9 +566,10 @@ resource dnsZoneKeyVault_vnetLink 'Microsoft.Network/privateDnsZones/virtualNetw
 }
 
 module dnsZoneContainerRegistry_new 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (deployInVnet && deployDnsZoneContainerRegistry) {
-  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-dnsZoneContainerRegistry'
+  name: '${uniqueString(deployment().name, location, resourceGroupName)}-dnsZoneContainerRegistry'
   params: {
     name: 'privatelink.azurecr.io'
+    enableTelemetry: enableTelemetry
     tags: tags
     lock: lock
     virtualNetworkLinks: [
@@ -588,12 +597,13 @@ resource dnsZoneContainerRegistry_vnetLink 'Microsoft.Network/privateDnsZones/vi
 }
 
 module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.8.0' = if (deployInVnet) {
-  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-privateEndpoint_KeyVault'
+  name: '${uniqueString(deployment().name, location, resourceGroupName)}-privateEndpoint_KeyVault'
   params: {
     name: 'pe-KeyVault-${name}'
+    enableTelemetry: enableTelemetry
     subnetResourceId: vnet.outputs.subnetResourceIds[0] // first subnet is the private endpoint subnet
     customNetworkInterfaceName: 'pe-KeyVault-nic-${name}'
-    location: resourceLocation
+    location: location
     tags: tags
     lock: lock
     privateDnsZoneGroup: {
@@ -620,12 +630,13 @@ module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.8.
   }
 }
 module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endpoint:0.8.0' = if (deployInVnet) {
-  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-privateEndpoint_ContainerRegistry'
+  name: '${uniqueString(deployment().name, location, resourceGroupName)}-privateEndpoint_ContainerRegistry'
   params: {
     name: 'pe-ContainerRegistry-${name}'
+    enableTelemetry: enableTelemetry
     subnetResourceId: vnet.outputs.subnetResourceIds[0] // first subnet is the private endpoint subnet
     customNetworkInterfaceName: 'pe-ContainerRegistry-nic-${name}'
-    location: resourceLocation
+    location: location
     tags: tags
     lock: lock
     privateDnsZoneGroup: {
@@ -656,7 +667,7 @@ module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endp
 // -----------------
 resource userIdentity_new 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = if (managedIdentityResourceId == null) {
   name: managedIdentityName ?? 'jobsUserIdentity-${name}'
-  location: resourceLocation
+  location: location
 }
 resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (managedIdentityResourceId != null) {
   name: !empty(managedIdentityResourceId)
@@ -671,12 +682,13 @@ resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities
 // supporting resources
 // -----------------
 module vault 'br/public:avm/res/key-vault/vault:0.9.0' = {
-  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName, subscription().subscriptionId)}-vault'
+  name: '${uniqueString(deployment().name, location, resourceGroupName, subscription().subscriptionId)}-vault'
   params: {
     name: keyVaultName
+    enableTelemetry: enableTelemetry
     enablePurgeProtection: false
     enableRbacAuthorization: true
-    location: resourceLocation
+    location: location
     sku: 'standard'
     tags: union(tags, { 'used-by': 'container-job' })
     lock: lock
@@ -710,11 +722,12 @@ module vault 'br/public:avm/res/key-vault/vault:0.9.0' = {
 }
 
 module registry 'br/public:avm/res/container-registry/registry:0.5.1' = {
-  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-registry'
+  name: '${uniqueString(deployment().name, location, resourceGroupName)}-registry'
   params: {
     #disable-next-line BCP334
-    name: uniqueString('cr', name, resourceLocation, resourceGroupName, subscription().subscriptionId)
-    location: resourceLocation
+    name: uniqueString('cr', name, location, resourceGroupName, subscription().subscriptionId)
+    location: location
+    enableTelemetry: enableTelemetry
     acrSku: deployInVnet ? 'Premium' : 'Standard' // Private Endpoint needs Premium tier
     retentionPolicyDays: 30
     retentionPolicyStatus: 'enabled'
@@ -730,8 +743,9 @@ module registry 'br/public:avm/res/container-registry/registry:0.5.1' = {
 }
 module registry_rbac 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.1' = [
   for registryRole in registryRbacRoles: {
-    name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-registry-rbac-${registryRole}'
+    name: '${uniqueString(deployment().name, location, resourceGroupName)}-registry-rbac-${registryRole}'
     params: {
+      enableTelemetry: enableTelemetry
       principalId: managedIdentityResourceId != null
         ? userIdentity_existing.properties.principalId
         : userIdentity_new.properties.principalId
@@ -743,10 +757,11 @@ module registry_rbac 'br/public:avm/ptn/authorization/resource-role-assignment:0
 ]
 
 module storage 'br/public:avm/res/storage/storage-account:0.14.1' = if (deployInVnet) {
-  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-storage'
+  name: '${uniqueString(deployment().name, location, resourceGroupName)}-storage'
   params: {
-    name: uniqueString('sa', name, resourceLocation, resourceGroupName)
-    location: resourceLocation
+    name: uniqueString('sa', name, location, resourceGroupName)
+    location: location
+    enableTelemetry: enableTelemetry
     tags: union(tags, { 'used-by': 'deployment-script' })
     lock: lock
     kind: 'StorageV2'
@@ -779,11 +794,12 @@ module storage 'br/public:avm/res/storage/storage-account:0.14.1' = if (deployIn
 // Managed Environment
 // -------------------
 module managedEnvironment 'br/public:avm/res/app/managed-environment:0.8.0' = {
-  name: '${uniqueString(deployment().name, resourceLocation, resourceGroupName)}-managedEnvironment'
+  name: '${uniqueString(deployment().name, location, resourceGroupName)}-managedEnvironment'
   params: {
     name: 'container-apps-environment-${name}'
+    enableTelemetry: enableTelemetry
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
-    location: resourceLocation
+    location: location
     tags: tags
     lock: lock
     workloadProfiles: !empty(workloadProfiles) ? workloadProfiles : null
@@ -808,6 +824,9 @@ output managedEnvironmentId string = managedEnvironment.outputs.resourceId
 output userManagedIdentityResourceId string = managedIdentityResourceId == null
   ? userIdentity_new.id
   : userIdentity_existing.id
+output userManagedIdentityPrincipalId string = managedIdentityResourceId == null
+  ? userIdentity_new.properties.principalId
+  : userIdentity_existing.properties.principalId
 output storageAccountResourceId string = deployInVnet ? storage.outputs.resourceId : ''
 
 output vnetResourceId string = deployInVnet ? vnet.outputs.resourceId : ''

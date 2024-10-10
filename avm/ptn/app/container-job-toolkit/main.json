@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "2472076174034767414"
+      "templateHash": "3321948021652997679"
     },
     "name": "container-job-toolkit",
     "description": "This module deploys a container to run as a job.",
@@ -501,7 +501,7 @@
       },
       "nullable": true,
       "metadata": {
-        "example": "[[\r\n  {\r\n    name: 'ENV_VAR_NAME'\r\n    value: 'ENV_VAR_VALUE'\r\n  }\r\n  {\r\n    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'\r\n    secretRef: 'applicationinsights-connection-string'\r\n  }\r\n]",
+        "example": "[[\n  {\n    name: 'ENV_VAR_NAME'\n    value: 'ENV_VAR_VALUE'\n  }\n  {\n    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'\n    secretRef: 'applicationinsights-connection-string'\n  }\n]",
         "description": "Optional. The environment variables that will be added to the Container Apps Job."
       }
     },
@@ -512,7 +512,7 @@
       },
       "nullable": true,
       "metadata": {
-        "example": "  [\r\n    {\r\n      name: 'mysecret'\r\n      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'\r\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\r\n    }\r\n    {\r\n      name: 'mysecret'\r\n      identity: 'system'\r\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\r\n    }\r\n    {\r\n      // You can do this, but you shouldn't. Use a secret reference instead.\r\n      name: 'mysecret'\r\n      value: 'mysecretvalue'\r\n    }\r\n    {\r\n      name: 'connection-string'\r\n      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value\r\n    }\r\n  ]\r\n  ",
+        "example": "  [\n    {\n      name: 'mysecret'\n      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      name: 'mysecret'\n      identity: 'system'\n      keyVaultUrl: 'https://myvault${environment().suffixes.keyvaultDns}/secrets/mysecret'\n    }\n    {\n      // You can do this, but you shouldn't. Use a secret reference instead.\n      name: 'mysecret'\n      value: 'mysecretvalue'\n    }\n    {\n      name: 'connection-string'\n      value: listKeys('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/myStorageAccount', '2023-04-01').keys[0].value\n    }\n  ]\n  ",
         "description": "Optional. The secrets of the Container App. They will be added to Key Vault and configured as secrets in the Container App Job. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set."
       }
     },
@@ -520,7 +520,7 @@
       "type": "array",
       "nullable": true,
       "metadata": {
-        "example": "[[\r\n    {\r\n      workloadProfileType: 'D4'\r\n      name: 'CAW01'\r\n      minimumCount: 0\r\n      maximumCount: 1\r\n    }\r\n  ]",
+        "example": "[[\n    {\n      workloadProfileType: 'D4'\n      name: 'CAW01'\n      minimumCount: 0\n      maximumCount: 1\n    }\n  ]",
         "description": "Optional. Workload profiles for the managed environment. Leave empty to use a consumption based profile."
       }
     },
@@ -536,7 +536,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "example": "  {\r\n      key1: 'value1'\r\n      key2: 'value2'\r\n  }\r\n  ",
+        "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
         "description": "Optional. Tags of the resource."
       }
     },
@@ -582,7 +582,7 @@
           "name": {
             "value": "[parameters('name')]"
           },
-          "resourceLocation": {
+          "location": {
             "value": "[parameters('location')]"
           },
           "resourceGroupName": {
@@ -633,6 +633,9 @@
           },
           "lock": {
             "value": "[parameters('lock')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -643,7 +646,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "5381232959418711425"
+              "templateHash": "3125777785940338300"
             }
           },
           "definitions": {
@@ -949,11 +952,18 @@
             }
           },
           "parameters": {
-            "resourceLocation": {
+            "location": {
               "type": "string",
               "defaultValue": "[resourceGroup().location]",
               "metadata": {
                 "description": "Optional. The location for the resources."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
               }
             },
             "resourceGroupName": {
@@ -1159,7 +1169,7 @@
               "southcentralusstg": "usstagec",
               "brazilsoutheast": "brazilse"
             },
-            "locationLowered": "[toLower(parameters('resourceLocation'))]",
+            "locationLowered": "[toLower(parameters('location'))]",
             "regionServiceTag": "[coalesce(tryGet(variables('regionSpecificServiceTags'), variables('locationLowered')), variables('locationLowered'))]"
           },
           "resources": {
@@ -1216,7 +1226,7 @@
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
               "apiVersion": "2023-01-31",
               "name": "[coalesce(parameters('managedIdentityName'), format('jobsUserIdentity-{0}', parameters('name')))]",
-              "location": "[parameters('resourceLocation')]"
+              "location": "[parameters('location')]"
             },
             "userIdentity_existing": {
               "condition": "[not(equals(parameters('managedIdentityResourceId'), null()))]",
@@ -1229,7 +1239,7 @@
               "condition": "[variables('zoneRedundant')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-nsg', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
+              "name": "[format('{0}-nsg', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -1240,7 +1250,10 @@
                     "value": "[format('nsg-{0}', parameters('name'))]"
                   },
                   "location": {
-                    "value": "[parameters('resourceLocation')]"
+                    "value": "[parameters('location')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -1858,7 +1871,7 @@
               "condition": "[and(variables('zoneRedundant'), not(empty(parameters('workloadProfiles'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-nsg-workload', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
+              "name": "[format('{0}-nsg-workload', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -1869,7 +1882,10 @@
                     "value": "[format('nsg-workload-{0}', parameters('name'))]"
                   },
                   "location": {
-                    "value": "[parameters('resourceLocation')]"
+                    "value": "[parameters('location')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -1878,7 +1894,7 @@
                     "value": "[parameters('lock')]"
                   },
                   "securityRules": {
-                    "value": "[union(createArray(createObject('name', 'Allow-MCR-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 200, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'MicrosoftContainerRegistry')), createObject('name', 'Allow-FrontDoor-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 201, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureFrontDoor.FirstParty')), createObject('name', 'Allow-Entra-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 202, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureActiveDirectory')), createObject('name', 'Allow-AzureMonitor-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 203, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureMonitor')), createObject('name', 'Allow-Storage-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 204, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', format('Storage.{0}', parameters('resourceLocation')))), createObject('name', 'Allow-ACR-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 205, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureContainerRegistry')), createObject('name', 'Allow-Subnet', 'properties', createObject('access', 'Allow', 'direction', 'Inbound', 'priority', 100, 'protocol', '*', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '*', 'destinationAddressPrefix', variables('workloadSubnetAddressPrefix'))), createObject('name', 'Allow-DNS', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 101, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '53', 'destinationAddressPrefix', '168.63.129.16'))), coalesce(parameters('customNetworkSecurityGroups'), createArray()))]"
+                    "value": "[union(createArray(createObject('name', 'Allow-MCR-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 200, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'MicrosoftContainerRegistry')), createObject('name', 'Allow-FrontDoor-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 201, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureFrontDoor.FirstParty')), createObject('name', 'Allow-Entra-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 202, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureActiveDirectory')), createObject('name', 'Allow-AzureMonitor-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 203, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureMonitor')), createObject('name', 'Allow-Storage-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 204, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', format('Storage.{0}', parameters('location')))), createObject('name', 'Allow-ACR-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 205, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureContainerRegistry')), createObject('name', 'Allow-Subnet', 'properties', createObject('access', 'Allow', 'direction', 'Inbound', 'priority', 100, 'protocol', '*', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '*', 'destinationAddressPrefix', variables('workloadSubnetAddressPrefix'))), createObject('name', 'Allow-DNS', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 101, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '53', 'destinationAddressPrefix', '168.63.129.16'))), coalesce(parameters('customNetworkSecurityGroups'), createArray()))]"
                   }
                 },
                 "template": {
@@ -2490,7 +2506,7 @@
               "condition": "[and(variables('zoneRedundant'), empty(parameters('workloadProfiles')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-nsg-workload', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
+              "name": "[format('{0}-nsg-workload', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -2501,7 +2517,10 @@
                     "value": "[format('nsg-consumption-{0}', parameters('name'))]"
                   },
                   "location": {
-                    "value": "[parameters('resourceLocation')]"
+                    "value": "[parameters('location')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -2510,7 +2529,7 @@
                     "value": "[parameters('lock')]"
                   },
                   "securityRules": {
-                    "value": "[union(createArray(createObject('name', 'Allow-MCR-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 200, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'MicrosoftContainerRegistry')), createObject('name', 'Allow-Frontdoor-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 201, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureFrontDoor.FirstParty')), createObject('name', 'Allow-Subnet-AKS-Udp-1194', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 205, 'protocol', 'Udp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '1194', 'destinationAddressPrefix', format('AzureCloud.{0}', variables('regionServiceTag')))), createObject('name', 'Allow-Subnet-AKS-Tcp-9000', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 206, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '9000', 'destinationAddressPrefix', format('AzureCloud.{0}', variables('regionServiceTag')))), createObject('name', 'Allow-Azure-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 207, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureCloud')), createObject('name', 'Allow-Udp-Ntp', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 208, 'protocol', 'Udp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '123', 'destinationAddressPrefix', '*')), createObject('name', 'Allow-Subnet-All', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 209, 'protocol', '*', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '*', 'destinationAddressPrefix', variables('workloadSubnetAddressPrefix'))), createObject('name', 'Allow-DNS', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 210, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '53', 'destinationAddressPrefix', '168.63.129.16')), createObject('name', 'Allow-ACR-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 211, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureContainerRegistry')), createObject('name', 'Allow-Entra-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 212, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureActiveDirectory')), createObject('name', 'Allow-Storage-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 213, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', format('Storage.{0}', parameters('resourceLocation')))), createObject('name', 'Allow-AzureMonitor-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 214, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureMonitor'))), coalesce(parameters('customNetworkSecurityGroups'), createArray()))]"
+                    "value": "[union(createArray(createObject('name', 'Allow-MCR-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 200, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'MicrosoftContainerRegistry')), createObject('name', 'Allow-Frontdoor-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 201, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureFrontDoor.FirstParty')), createObject('name', 'Allow-Subnet-AKS-Udp-1194', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 205, 'protocol', 'Udp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '1194', 'destinationAddressPrefix', format('AzureCloud.{0}', variables('regionServiceTag')))), createObject('name', 'Allow-Subnet-AKS-Tcp-9000', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 206, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '9000', 'destinationAddressPrefix', format('AzureCloud.{0}', variables('regionServiceTag')))), createObject('name', 'Allow-Azure-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 207, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureCloud')), createObject('name', 'Allow-Udp-Ntp', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 208, 'protocol', 'Udp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '123', 'destinationAddressPrefix', '*')), createObject('name', 'Allow-Subnet-All', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 209, 'protocol', '*', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '*', 'destinationAddressPrefix', variables('workloadSubnetAddressPrefix'))), createObject('name', 'Allow-DNS', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 210, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '53', 'destinationAddressPrefix', '168.63.129.16')), createObject('name', 'Allow-ACR-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 211, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureContainerRegistry')), createObject('name', 'Allow-Entra-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 212, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureActiveDirectory')), createObject('name', 'Allow-Storage-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 213, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', format('Storage.{0}', parameters('location')))), createObject('name', 'Allow-AzureMonitor-Tcp-Https', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 214, 'protocol', 'Tcp', 'sourcePortRange', '*', 'sourceAddressPrefix', variables('workloadSubnetAddressPrefix'), 'destinationPortRange', '443', 'destinationAddressPrefix', 'AzureMonitor'))), coalesce(parameters('customNetworkSecurityGroups'), createArray()))]"
                   }
                 },
                 "template": {
@@ -3122,7 +3141,7 @@
               "condition": "[variables('zoneRedundant')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-vnet', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
+              "name": "[format('{0}-vnet', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -3131,6 +3150,9 @@
                 "parameters": {
                   "name": {
                     "value": "[format('vnet-{0}', parameters('name'))]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "addressPrefixes": {
                     "value": [
@@ -3162,7 +3184,7 @@
                     ]
                   },
                   "location": {
-                    "value": "[parameters('resourceLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -4685,7 +4707,7 @@
               "condition": "[and(parameters('deployInVnet'), parameters('deployDnsZoneKeyVault'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-dnsZoneKeyVault', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
+              "name": "[format('{0}-dnsZoneKeyVault', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -4694,6 +4716,9 @@
                 "parameters": {
                   "name": {
                     "value": "privatelink.vaultcore.azure.net"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -7741,7 +7766,7 @@
               "condition": "[and(parameters('deployInVnet'), parameters('deployDnsZoneContainerRegistry'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-dnsZoneContainerRegistry', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
+              "name": "[format('{0}-dnsZoneContainerRegistry', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -7750,6 +7775,9 @@
                 "parameters": {
                   "name": {
                     "value": "privatelink.azurecr.io"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -10797,7 +10825,7 @@
               "condition": "[parameters('deployInVnet')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-privateEndpoint_KeyVault', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
+              "name": "[format('{0}-privateEndpoint_KeyVault', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -10807,6 +10835,9 @@
                   "name": {
                     "value": "[format('pe-KeyVault-{0}', parameters('name'))]"
                   },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "subnetResourceId": {
                     "value": "[reference('vnet').outputs.subnetResourceIds.value[0]]"
                   },
@@ -10814,7 +10845,7 @@
                     "value": "[format('pe-KeyVault-nic-{0}', parameters('name'))]"
                   },
                   "location": {
-                    "value": "[parameters('resourceLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -11565,7 +11596,7 @@
               "condition": "[parameters('deployInVnet')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-privateEndpoint_ContainerRegistry', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
+              "name": "[format('{0}-privateEndpoint_ContainerRegistry', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -11575,6 +11606,9 @@
                   "name": {
                     "value": "[format('pe-ContainerRegistry-{0}', parameters('name'))]"
                   },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "subnetResourceId": {
                     "value": "[reference('vnet').outputs.subnetResourceIds.value[0]]"
                   },
@@ -11582,7 +11616,7 @@
                     "value": "[format('pe-ContainerRegistry-nic-{0}', parameters('name'))]"
                   },
                   "location": {
-                    "value": "[parameters('resourceLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -12332,7 +12366,7 @@
             "vault": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-vault', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName'), subscription().subscriptionId))]",
+              "name": "[format('{0}-vault', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName'), subscription().subscriptionId))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -12342,6 +12376,9 @@
                   "name": {
                     "value": "[parameters('keyVaultName')]"
                   },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "enablePurgeProtection": {
                     "value": false
                   },
@@ -12349,7 +12386,7 @@
                     "value": true
                   },
                   "location": {
-                    "value": "[parameters('resourceLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "sku": {
                     "value": "standard"
@@ -15287,7 +15324,7 @@
             "registry": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-registry', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
+              "name": "[format('{0}-registry', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -15295,10 +15332,13 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[uniqueString('cr', parameters('name'), parameters('resourceLocation'), parameters('resourceGroupName'), subscription().subscriptionId)]"
+                    "value": "[uniqueString('cr', parameters('name'), parameters('location'), parameters('resourceGroupName'), subscription().subscriptionId)]"
                   },
                   "location": {
-                    "value": "[parameters('resourceLocation')]"
+                    "value": "[parameters('location')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "acrSku": "[if(parameters('deployInVnet'), createObject('value', 'Premium'), createObject('value', 'Standard'))]",
                   "retentionPolicyDays": {
@@ -17961,13 +18001,16 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-registry-rbac-{1}', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')), variables('registryRbacRoles')[copyIndex()])]",
+              "name": "[format('{0}-registry-rbac-{1}', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')), variables('registryRbacRoles')[copyIndex()])]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "principalId": "[if(not(equals(parameters('managedIdentityResourceId'), null())), createObject('value', reference('userIdentity_existing').principalId), createObject('value', reference('userIdentity_new').principalId))]",
                   "principalType": {
                     "value": "ServicePrincipal"
@@ -18209,7 +18252,7 @@
               "condition": "[parameters('deployInVnet')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-storage', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
+              "name": "[format('{0}-storage', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -18217,10 +18260,13 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[uniqueString('sa', parameters('name'), parameters('resourceLocation'), parameters('resourceGroupName'))]"
+                    "value": "[uniqueString('sa', parameters('name'), parameters('location'), parameters('resourceGroupName'))]"
                   },
                   "location": {
-                    "value": "[parameters('resourceLocation')]"
+                    "value": "[parameters('location')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "tags": {
                     "value": "[union(parameters('tags'), createObject('used-by', 'deployment-script'))]"
@@ -23375,7 +23421,7 @@
             "managedEnvironment": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-managedEnvironment', uniqueString(deployment().name, parameters('resourceLocation'), parameters('resourceGroupName')))]",
+              "name": "[format('{0}-managedEnvironment', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -23385,11 +23431,14 @@
                   "name": {
                     "value": "[format('container-apps-environment-{0}', parameters('name'))]"
                   },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "logAnalyticsWorkspaceResourceId": {
                     "value": "[parameters('logAnalyticsWorkspaceResourceId')]"
                   },
                   "location": {
-                    "value": "[parameters('resourceLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -23993,6 +24042,10 @@
             "userManagedIdentityResourceId": {
               "type": "string",
               "value": "[if(equals(parameters('managedIdentityResourceId'), null()), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), format('jobsUserIdentity-{0}', parameters('name')))), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', if(not(empty(parameters('managedIdentityResourceId'))), last(split(parameters('managedIdentityResourceId'), '/')), 'dummy-for-deployment-validation')))]"
+            },
+            "userManagedIdentityPrincipalId": {
+              "type": "string",
+              "value": "[if(equals(parameters('managedIdentityResourceId'), null()), reference('userIdentity_new').principalId, reference('userIdentity_existing').principalId)]"
             },
             "storageAccountResourceId": {
               "type": "string",
@@ -26193,6 +26246,13 @@
         "description": "The name of the Resource Group the resource was deployed into."
       },
       "value": "[resourceGroup().name]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the user assigned managed identity."
+      },
+      "value": "[reference('services').outputs.userManagedIdentityPrincipalId.value]"
     },
     "vnetResourceId": {
       "type": "string",

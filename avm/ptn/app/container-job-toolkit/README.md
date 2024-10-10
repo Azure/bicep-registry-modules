@@ -1420,6 +1420,7 @@ Workload profiles for the managed environment. Leave empty to use a consumption 
 | `privateEndpointSubnetAddressPrefix` | string | Conditional. The address prefix for the private endpoint subnet, if a virtual network was deployed. If `deployInVnet` is `false`, this output will be empty. |
 | `resourceGroupName` | string | The name of the Resource Group the resource was deployed into. |
 | `resourceId` | string | The resource ID of the container job. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the user assigned managed identity. |
 | `vnetResourceId` | string | Conditional. The virtual network resourceId, if a virtual network was deployed. If `deployInVnet` is `false`, this output will be empty. |
 | `workloadSubnetAddressPrefix` | string | Conditional. The address prefix for the workload subnet, if a virtual network was deployed. If `addressPrefix` is empty, this output will be empty. |
 

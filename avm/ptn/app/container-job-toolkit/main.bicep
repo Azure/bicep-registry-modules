@@ -189,7 +189,7 @@ module services 'modules/deploy_services.bicep' = {
   name: '${name}-services'
   params: {
     name: name
-    resourceLocation: location
+    location: location
     resourceGroupName: resourceGroup().name
     managedIdentityResourceId: managedIdentityResourceId
     managedIdentityName: managedIdentityName
@@ -207,6 +207,7 @@ module services 'modules/deploy_services.bicep' = {
     workloadProfiles: length(workloadProfiles ?? []) > 0 ? workloadProfiles : null
     tags: tags
     lock: lock
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -296,6 +297,9 @@ output name string = job.name
 
 @description('The name of the Resource Group the resource was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The principal ID of the user assigned managed identity.')
+output systemAssignedMIPrincipalId string = services.outputs.userManagedIdentityPrincipalId
 
 @description('Conditional. The virtual network resourceId, if a virtual network was deployed. If `deployInVnet` is `false`, this output will be empty.')
 output vnetResourceId string = services.outputs.vnetResourceId
