@@ -56,19 +56,8 @@ param enablePartitioning bool = false
 @description('Optional. A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium.')
 param enableExpress bool = false
 
-@description('Optional. Authorization Rules for the Service Bus Topic.')
-param authorizationRules array = [
-  {
-    name: 'RootManageSharedAccessKey'
-    properties: {
-      rights: [
-        'Listen'
-        'Manage'
-        'Send'
-      ]
-    }
-  }
-]
+@description('Optional. Authorization Rules for the Service Bus Queue.')
+param authorizationRules array = []
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
