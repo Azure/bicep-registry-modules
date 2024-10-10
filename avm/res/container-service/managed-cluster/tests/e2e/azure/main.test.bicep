@@ -76,7 +76,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      agentPools: [
+      primaryAgentPoolProfiles: [
         {
           availabilityZones: [
             3
@@ -97,6 +97,8 @@ module testDeployment '../../../main.bicep' = [
           vmSize: 'Standard_DS2_v2'
           vnetSubnetResourceId: nestedDependencies.outputs.subnetResourceIds[0]
         }
+      ]
+      agentPools: [
         {
           availabilityZones: [
             3

@@ -67,7 +67,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      agentPools: [
+      primaryAgentPoolProfiles: [
         {
           availabilityZones: [
             3
@@ -87,6 +87,8 @@ module testDeployment '../../../main.bicep' = [
           type: 'VirtualMachineScaleSets'
           vmSize: 'Standard_DS2_v2'
         }
+      ]
+      agentPools: [
         {
           availabilityZones: [
             3

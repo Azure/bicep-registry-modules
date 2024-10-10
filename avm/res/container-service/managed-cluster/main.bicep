@@ -150,8 +150,11 @@ param enablePrivateClusterPublicFQDN bool = false
 @description('Optional. Private DNS Zone configuration. Set to \'system\' and AKS will create a private DNS zone in the node resource group. Set to \'\' to disable private DNS Zone creation and use public DNS. Supply the resource ID here of an existing Private DNS zone to use an existing zone.')
 param privateDNSZone string?
 
-@description('Required. Properties of the agent pools. Must contain at least one primary/system pool.')
-param agentPools agentPoolType[]
+@description('Required. Properties of the primary agent pool.')
+param primaryAgentPoolProfiles agentPoolType[]
+
+@description('Optional. Define one or more secondary/additional agent pools.')
+param agentPools agentPoolType[]?
 
 @description('Optional. Whether or not to use AKS Automatic mode.')
 param maintenanceConfiguration maintenanceConfigurationType?
@@ -529,12 +532,58 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
     tier: skuTier
   }
   properties: {
+    agentPoolProfiles: map(primaryAgentPoolProfiles, profile => {
+      name: profile.name
+      count: profile.count ?? 1
+      availabilityZones: map(profile.availabilityZones ?? [], zone => '${zone}')
+      creationData: !empty(profile.?sourceResourceId)
+        ? {
+            #disable-next-line use-resource-id-functions // Not possible to reference as nested
+            sourceResourceId: profile.sourceResourceId
+          }
+        : null
+      enableAutoScaling: profile.?enableAutoScaling ?? false
+      enableEncryptionAtHost: profile.?enableEncryptionAtHost ?? false
+      enableFIPS: profile.?enableFIPS ?? false
+      enableNodePublicIP: profile.?enableNodePublicIP ?? false
+      enableUltraSSD: profile.?enableUltraSSD ?? false
+      gpuInstanceProfile: profile.?gpuInstanceProfile
+      kubeletDiskType: profile.?kubeletDiskType
+      maxCount: profile.?maxCount
+      maxPods: profile.?maxPods
+      minCount: profile.?minCount
+      mode: profile.?mode
+      nodeLabels: profile.?nodeLabels
+      #disable-next-line use-resource-id-functions // Not possible to reference as nested
+      nodePublicIPPrefixID: profile.?nodePublicIpPrefixResourceId
+      nodeTaints: profile.?nodeTaints
+      orchestratorVersion: profile.?orchestratorVersion
+      osDiskSizeGB: profile.?osDiskSizeGB
+      osDiskType: profile.?osDiskType
+      osType: profile.?osType ?? 'Linux'
+      #disable-next-line use-resource-id-functions // Not possible to reference as nested
+      podSubnetID: profile.?podSubnetResourceId
+      #disable-next-line use-resource-id-functions // Not possible to reference as nested
+      proximityPlacementGroupID: profile.?proximityPlacementGroupResourceId
+      scaleDownMode: profile.?scaleDownMode ?? 'Delete'
+      scaleSetEvictionPolicy: profile.?scaleSetEvictionPolicy ?? 'Delete'
+      scaleSetPriority: profile.?scaleSetPriority
+      spotMaxPrice: profile.?spotMaxPrice
+      tags: profile.?tags
+      type: profile.?type
+      upgradeSettings: {
+        maxSurge: profile.?maxSurge
+      }
+      vmSize: profile.?vmSize ?? 'Standard_D2s_v3'
+      #disable-next-line use-resource-id-functions // Not possible to reference as nested
+      vnetSubnetID: profile.?vnetSubnetResourceId
+      workloadRuntime: profile.?workloadRuntime
+    })
     httpProxyConfig: httpProxyConfig
     identityProfile: identityProfile
     diskEncryptionSetID: diskEncryptionSetResourceId
     kubernetesVersion: kubernetesVersion
     dnsPrefix: dnsPrefix
-    // agentPoolProfiles: primaryAgentPoolProfile
     linuxProfile: !empty(sshPublicKey)
       ? {
           adminUsername: adminUsername
@@ -791,7 +840,7 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       osDiskType: agentPool.?osDiskType
       osSku: agentPool.?osSku
       osType: agentPool.?osType
-      podSubnetId: agentPool.?podSubnetId
+      podSubnetResourceId: agentPool.?podSubnetResourceId
       proximityPlacementGroupResourceId: agentPool.?proximityPlacementGroupResourceId
       scaleDownMode: agentPool.?scaleDownMode
       scaleSetEvictionPolicy: agentPool.?scaleSetEvictionPolicy
@@ -1030,7 +1079,7 @@ type agentPoolType = {
   osType: ('Linux' | 'Windows')?
 
   @description('Optional. The pod subnet ID of the agent pool.')
-  podSubnetId: string?
+  podSubnetResourceId: string?
 
   @description('Optional. The proximity placement group resource ID of the agent pool.')
   proximityPlacementGroupResourceId: string?

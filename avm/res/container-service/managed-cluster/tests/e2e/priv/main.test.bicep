@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       enablePrivateCluster: true
-      agentPools: [
+      primaryAgentPoolProfiles: [
         {
           availabilityZones: [
             3
@@ -76,6 +76,8 @@ module testDeployment '../../../main.bicep' = [
           vmSize: 'Standard_DS2_v2'
           vnetSubnetResourceId: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
         }
+      ]
+      agentPools: [
         {
           availabilityZones: [
             3

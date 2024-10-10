@@ -98,8 +98,8 @@ param osSku string?
 ])
 param osType string = 'Linux'
 
-@description('Optional. Subnet ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.')
-param podSubnetId string?
+@description('Optional. Subnet resource ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.')
+param podSubnetResourceId string?
 
 @description('Optional. The ID for the Proximity Placement Group.')
 param proximityPlacementGroupResourceId string?
@@ -180,7 +180,7 @@ resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2023-0
     osDiskType: osDiskType
     osSKU: osSku
     osType: osType
-    podSubnetID: podSubnetId
+    podSubnetID: podSubnetResourceId
     proximityPlacementGroupID: proximityPlacementGroupResourceId
     scaleDownMode: scaleDownMode
     scaleSetEvictionPolicy: scaleSetEvictionPolicy
