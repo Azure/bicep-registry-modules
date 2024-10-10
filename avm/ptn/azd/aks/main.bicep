@@ -187,7 +187,7 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-12-01-previ
   name: logAnalyticsName
 }
 
-module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.3.0' = if (enableTelemetry) {
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.3.0' = {
   name: '${uniqueString(deployment().name, location)}-managed-cluster'
   params: {
     name: name
@@ -243,6 +243,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.3.0
     primaryAgentPoolProfile: primaryAgentPoolProfile
     dnsPrefix: dnsPrefix
     agentPools: agentPools
+    enableTelemetry: enableTelemetry
     roleAssignments: [
       {
         name: aksClusterRoleAssignmentName
@@ -254,7 +255,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.3.0
   }
 }
 
-module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' = if (enableTelemetry) {
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' = {
   name: '${uniqueString(deployment().name, location)}-container-registry'
   params: {
     name: containerRegistryName
@@ -263,6 +264,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' =
     publicNetworkAccess: publicNetworkAccess
     scopeMaps: scopeMaps
     acrSku: acrSku
+    enableTelemetry: enableTelemetry
     diagnosticSettings: [
       {
         logCategoriesAndGroups: [
@@ -294,10 +296,11 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' =
   }
 }
 
-module keyVault 'br/public:avm/res/key-vault/vault:0.7.1' = if (enableTelemetry) {
+module keyVault 'br/public:avm/res/key-vault/vault:0.7.1' = {
   name: '${uniqueString(deployment().name, location)}-key-vault'
   params: {
     name: keyVaultName
+    enableTelemetry: enableTelemetry
     accessPolicies: [
       {
         objectId: managedCluster.outputs.kubeletIdentityObjectId

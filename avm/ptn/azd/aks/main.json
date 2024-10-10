@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "9268168150648447469"
+      "templateHash": "10134981888043380746"
     },
     "name": "avm/ptn/azd/aks",
     "description": "Creates an Azure Kubernetes Service (AKS) cluster with a system agent pool as well as an additional user agent pool.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
@@ -658,7 +658,6 @@
       "name": "[parameters('logAnalyticsName')]"
     },
     "managedCluster": {
-      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-managed-cluster', uniqueString(deployment().name, parameters('location')))]",
@@ -766,6 +765,9 @@
           },
           "agentPools": {
             "value": "[parameters('agentPools')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "roleAssignments": {
             "value": [
@@ -3754,7 +3756,6 @@
       ]
     },
     "containerRegistry": {
-      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-container-registry', uniqueString(deployment().name, parameters('location')))]",
@@ -3781,6 +3782,9 @@
           },
           "acrSku": {
             "value": "[parameters('acrSku')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "diagnosticSettings": {
             "value": [
@@ -6303,7 +6307,6 @@
       ]
     },
     "keyVault": {
-      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-key-vault', uniqueString(deployment().name, parameters('location')))]",
@@ -6315,6 +6318,9 @@
         "parameters": {
           "name": {
             "value": "[parameters('keyVaultName')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "accessPolicies": {
             "value": [
