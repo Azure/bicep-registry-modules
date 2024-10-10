@@ -41,45 +41,6 @@ param backupEnabled bool = false
 @description('Optional. The name of the backup policy.')
 param backupPolicyName string = 'backupPolicy'
 
-@description('Optional. The location of the backup policy.')
-param backupPolicyLocation string = resourceGroup().location
-
-@description('Optional. The daily backups to keep.')
-param dailyBackupsToKeep int
-
-@description('Optional. The monthly backups to keep.')
-param monthlyBackupsToKeep int
-
-@description('Optional. The weekly backups to keep.')
-param weeklyBackupsToKeep int
-
-@description('Optional. The name of the backup vault.')
-param backupVaultName string = 'vault'
-
-@description('Optional. The location of the backup vault.')
-param backupVaultLocation string = resourceGroup().location
-
-@description('Optional. The name of the backup.')
-param backupName string
-
-@description('Optional. The label of the backup.')
-param backupLabel string
-
-@description('Optional. Indicates whether to use an existing snapshot.')
-param useExistingSnapshot bool
-
-@description('Optional. The name of the snapshot.')
-param snapshotName string
-
-@description('Optional. Snapshot Policy ResourceId.')
-param snapshotPolicyId string
-
-@description('Optional. The name of the snapshot policy.')
-param snapshotPolicyName string
-
-@description('Optional. The location of the snapshot policy.')
-param snapshotPolicyLocation string = resourceGroup().location
-
 @description('Optional. The daily snapshot hour.')
 param dailyHour int
 
@@ -132,7 +93,40 @@ param weeklySnapshotsToKeep int
 param weeklyUsedBytes int
 
 @description('Optional. Indicates whether the snapshot policy is enabled.')
-param snapEnabled bool = false
+param snapEnabled bool = true
+
+@description('Optional. The name of the snapshot policy.')
+param snapshotPolicyName string
+
+@description('Optional. The daily backups to keep.')
+param dailyBackupsToKeep int
+
+@description('Optional. The monthly backups to keep.')
+param monthlyBackupsToKeep int
+
+@description('Optional. The weekly backups to keep.')
+param weeklyBackupsToKeep int
+
+@description('Optional. The name of the backup vault.')
+param backupVaultName string = 'vault'
+
+@description('Optional. The location of the backup vault.')
+param backupVaultLocation string = resourceGroup().location
+
+@description('Optional. The name of the backup.')
+param backupName string
+
+@description('Optional. The label of the backup.')
+param backupLabel string
+
+@description('Optional. Indicates whether to use an existing snapshot.')
+param useExistingSnapshot bool
+
+@description('Optional. The name of the snapshot.')
+param snapshotName string
+
+@description('Optional. The snapshot Policy id.')
+param snapshotPolicyId string
 
 @description('Optional. The resource ID of the volume.')
 param volumeResourceId string
@@ -148,6 +142,15 @@ param location string = resourceGroup().location
 
 @description('Optional. Zone where the volume will be placed.')
 param zones array = ['1']
+
+@description('Optional. If Backup policy is enforced.')
+param policyEnforced bool = false
+
+@description('Optional. The backup policy location.')
+param backupPolicyLocation string
+
+@description('Optional. The location of snashot policies.')
+param snapshotPolicyLocation string
 
 @description('Optional. The pool service level. Must match the one of the parent capacity pool.')
 @allowed([
@@ -184,6 +187,12 @@ param exportPolicyRules array = []
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
+
+@description('Optional. The Id of the Backup Vault.')
+param backupVaultId string
+
+@description('Optional. Boolean to enable replication.')
+param replicationEnabled bool = true
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -222,6 +231,10 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
   name: name
   parent: netAppAccount::capacityPool
   location: location
+  dependsOn: [
+    backupVaults
+    backupPolicies
+  ]
   properties: {
     coolAccess: coolAccess
     coolAccessRetrievalPolicy: coolAccessRetrievalPolicy
@@ -236,15 +249,27 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
       ? {
           volumeType: volumeType
           dataProtection: {
-            replication: {
-              endpointType: endpointType
-              remoteVolumeRegion: remoteVolumeRegion
-              remoteVolumeResourceId: remoteVolumeResourceId
-              replicationSchedule: replicationSchedule
-            }
-            snapshot: {
-              snapshotPolicyId: snapshotPolicyId
-            }
+            replication: replicationEnabled
+              ? {
+                  endpointType: endpointType
+                  remoteVolumeRegion: remoteVolumeRegion
+                  remoteVolumeResourceId: remoteVolumeResourceId
+                  replicationSchedule: replicationSchedule
+                }
+              : {}
+
+            backup: backupEnabled
+              ? {
+                  backupPolicyId: backupPolicies.outputs.resourceId
+                  policyEnforced: policyEnforced
+                  backupVaultId: backupVaultId
+                }
+              : {}
+            snapshot: snapEnabled
+              ? {
+                  snapshotPolicyId: snapshotPolicies.outputs.resourceId
+                }
+              : {}
           }
         }
       : {})
@@ -263,49 +288,41 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-03-0
   zones: zones
 }
 
-resource snapshotPolicies 'Microsoft.NetApp/netAppAccounts/snapshotPolicies@2024-03-01' = if (snapEnabled) {
-  name: snapshotPolicyName
-  parent: netAppAccount
-  location: snapshotPolicyLocation
-  properties: {
-    enabled: snapEnabled
-    dailySchedule: {
-      hour: dailyHour
-      minute: dailyMinute
-      snapshotsToKeep: dailySnapshotsToKeep
-      usedBytes: dailyUsedBytes
-    }
-    hourlySchedule: {
-      minute: hourlyMinute
-      snapshotsToKeep: hourlySnapshotsToKeep
-      usedBytes: hourlyUsedBytes
-    }
-    monthlySchedule: {
-      daysOfMonth: daysOfMonth
-      hour: monthlyHour
-      minute: monthlyMinute
-      snapshotsToKeep: monthlySnapshotsToKeep
-      usedBytes: monthlyUsedBytes
-    }
-    weeklySchedule: {
-      day: weeklyDay
-      hour: weeklyHour
-      minute: weeklyMinute
-      snapshotsToKeep: weeklySnapshotsToKeep
-      usedBytes: weeklyUsedBytes
-    }
+module backupPolicies '../../backup-policies/main.bicep' = if (backupEnabled) {
+  name: backupPolicyName
+  params: {
+    dailyBackupsToKeep: dailyBackupsToKeep
+    monthlyBackupsToKeep: monthlyBackupsToKeep
+    netAppAccountName: netAppAccountName
+    weeklyBackupsToKeep: weeklyBackupsToKeep
+    backupEnabled: backupEnabled
+    backupPolicyLocation: backupPolicyLocation
   }
 }
 
-resource backupPolicies 'Microsoft.NetApp/netAppAccounts/backupPolicies@2024-03-01' = if (backupEnabled) {
-  name: backupPolicyName
-  parent: netAppAccount
-  location: backupPolicyLocation
-  properties: {
-    dailyBackupsToKeep: dailyBackupsToKeep
-    enabled: backupEnabled
-    monthlyBackupsToKeep: monthlyBackupsToKeep
-    weeklyBackupsToKeep: weeklyBackupsToKeep
+module snapshotPolicies '../../snapshot-policies/main.bicep' = if (snapEnabled) {
+  name: uniqueString(snapshotPolicyName)
+  params: {
+    dailyHour: dailyHour
+    dailyMinute: dailyMinute
+    dailySnapshotsToKeep: dailySnapshotsToKeep
+    dailyUsedBytes: dailyUsedBytes
+    daysOfMonth: daysOfMonth
+    hourlyMinute: hourlyMinute
+    hourlySnapshotsToKeep: hourlySnapshotsToKeep
+    hourlyUsedBytes: hourlyUsedBytes
+    monthlyHour: monthlyHour
+    monthlyMinute: monthlyMinute
+    monthlySnapshotsToKeep: monthlySnapshotsToKeep
+    monthlyUsedBytes: monthlyUsedBytes
+    netAppAccountName: netAppAccountName
+    snapshotPolicyName: snapshotPolicyName
+    weeklyDay: weeklyDay
+    weeklyHour: weeklyHour
+    weeklyMinute: weeklyMinute
+    weeklySnapshotsToKeep: weeklySnapshotsToKeep
+    weeklyUsedBytes: weeklyUsedBytes
+    snapshotPolicyLocation: snapshotPolicyLocation
   }
 }
 
@@ -319,6 +336,9 @@ resource backupVaults 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-03-01' 
 resource backups 'Microsoft.NetApp/netAppAccounts/backupVaults/backups@2024-03-01' = if (backupEnabled) {
   name: backupName
   parent: backupVaults
+  dependsOn: [
+    volume
+  ]
   properties: backupEnabled
     ? {
         label: backupLabel

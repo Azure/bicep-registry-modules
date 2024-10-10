@@ -7,6 +7,7 @@ This module deploys an Azure NetApp Files Capacity Pool.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -268,3 +269,12 @@ List of volumnes to create in the capacity pool.
 | `resourceGroupName` | string | The name of the Resource Group the Capacity Pool was created in. |
 | `resourceId` | string | The resource ID of the Capacity Pool. |
 | `volumeResourceId` | string | The resource IDs of the volume created in the capacity pool. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `res/net-app/net-app-account/backup-policies` | Local reference |
+| `res/net-app/net-app-account/snapshot-policies` | Local reference |
