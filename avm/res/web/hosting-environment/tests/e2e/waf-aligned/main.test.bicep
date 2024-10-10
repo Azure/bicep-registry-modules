@@ -73,7 +73,6 @@ module testDeployment '../../../main.bicep' = [
         resourceType: 'App Service Environment'
         hostingEnvironmentName: '${namePrefix}${serviceShort}001'
       }
-      zoneRedundant: true
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
       internalLoadBalancingMode: 'Web, Publishing'
       clusterSettings: [
@@ -82,10 +81,13 @@ module testDeployment '../../../main.bicep' = [
           value: '1'
         }
       ]
-      allowNewPrivateEndpointConnections: true
-      ftpEnabled: true
-      inboundIpAddressOverride: '10.0.0.10'
-      remoteDebugEnabled: true
+      networkConfiguration: {
+        properties: {
+          allowNewPrivateEndpointConnections: true
+          ftpEnabled: true
+          remoteDebugEnabled: true
+        }
+      }
       upgradePreference: 'Late'
       diagnosticSettings: [
         {

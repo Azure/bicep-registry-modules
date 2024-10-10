@@ -68,6 +68,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceGroup.location
+      kind: 'ASEv3'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         resourceType: 'App Service Environment'

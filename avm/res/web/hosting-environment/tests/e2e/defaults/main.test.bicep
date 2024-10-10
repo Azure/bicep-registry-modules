@@ -54,9 +54,7 @@ module testDeployment '../../../main.bicep' = [
       // You parameters go here
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      kind: 'ASEv3'
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
-      zoneRedundant: true
     }
   }
 ]
