@@ -24,10 +24,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/authorization/policy-exemption:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Waf-Aligned](#example-2-waf-aligned)
+- [Mg.Defaults](#example-1-mgdefaults)
+- [Mg.Max](#example-2-mgmax)
+- [Rg.Defaults](#example-3-rgdefaults)
+- [Rg.Max](#example-4-rgmax)
+- [Sub.Defaults](#example-5-subdefaults)
+- [Sub.Max](#example-6-submax)
 
-### Example 1: _Defaults_
+### Example 1: _Mg.Defaults_
 
 <details>
 
@@ -38,8 +42,146 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
   name: 'policyExemptionDeployment'
   params: {
     // Required parameters
-    name: 'apedef001'
+    assignmentScopeValidation: 'Default'
+    exemptionCategory: 'Mitigated'
+    expiresOn: '2023-10-05T14:48:00Z'
+    name: 'apemgmin001'
+    policyAssignmentId: 'test'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "assignmentScopeValidation": {
+      "value": "Default"
+    },
+    "exemptionCategory": {
+      "value": "Mitigated"
+    },
+    "expiresOn": {
+      "value": "2023-10-05T14:48:00Z"
+    },
+    "name": {
+      "value": "apemgmin001"
+    },
+    "policyAssignmentId": {
+      "value": "test"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
+
+// Required parameters
+param assignmentScopeValidation = 'Default'
+param exemptionCategory = 'Mitigated'
+param expiresOn = '2023-10-05T14:48:00Z'
+param name = 'apemgmin001'
+param policyAssignmentId = 'test'
+```
+
+</details>
+<p>
+
+### Example 2: _Mg.Max_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
+  name: 'policyExemptionDeployment'
+  params: {
+    // Required parameters
+    // Non-required parameters
+    name: 'apamgmax001'
+    description: '[Description] Policy Assignment at the management group scope'
+    displayName: '[Display Name] Policy Assignment at the management group scope'
+    enforcementMode: 'DoNotEnforce'
+    identity: 'SystemAssigned'
     location: '<location>'
+    managementGroupId: '<managementGroupId>'
+    metadata: {
+      assignedBy: 'Bicep'
+      category: 'Security'
+      version: '1.0'
+    }
+    nonComplianceMessages: [
+      {
+        message: 'Violated Policy Assignment - This is a Non Compliance Message'
+      }
+    ]
+    notScopes: [
+      '/subscriptions/<value>/resourceGroups/validation-rg'
+    ]
+    overrides: [
+      {
+        kind: 'policyEffect'
+        selectors: [
+          {
+            in: [
+              'ASC_DeployAzureDefenderForSqlAdvancedThreatProtectionWindowsAgent'
+              'ASC_DeployAzureDefenderForSqlVulnerabilityAssessmentWindowsAgent'
+            ]
+            kind: 'policyDefinitionReferenceId'
+          }
+        ]
+        value: 'Disabled'
+      }
+    ]
+    parameters: {
+      effect: {
+        value: 'Disabled'
+      }
+      enableCollectionOfSqlQueriesForSecurityResearch: {
+        value: false
+      }
+    }
+    policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
+    resourceSelectors: [
+      {
+        name: 'resourceSelector-test'
+        selectors: [
+          {
+            in: [
+              'Microsoft.Compute/virtualMachines'
+            ]
+            kind: 'resourceType'
+          }
+          {
+            in: [
+              'westeurope'
+            ]
+            kind: 'resourceLocation'
+          }
+        ]
+      }
+    ]
+    roleDefinitionIds: [
+      '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ]
   }
 }
 ```
@@ -58,10 +200,101 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apedef001"
+      "value": "apamgmax001"
+    },
+    // Non-required parameters
+    "description": {
+      "value": "[Description] Policy Assignment at the management group scope"
+    },
+    "displayName": {
+      "value": "[Display Name] Policy Assignment at the management group scope"
+    },
+    "enforcementMode": {
+      "value": "DoNotEnforce"
+    },
+    "identity": {
+      "value": "SystemAssigned"
     },
     "location": {
       "value": "<location>"
+    },
+    "managementGroupId": {
+      "value": "<managementGroupId>"
+    },
+    "metadata": {
+      "value": {
+        "assignedBy": "Bicep",
+        "category": "Security",
+        "version": "1.0"
+      }
+    },
+    "nonComplianceMessages": {
+      "value": [
+        {
+          "message": "Violated Policy Assignment - This is a Non Compliance Message"
+        }
+      ]
+    },
+    "notScopes": {
+      "value": [
+        "/subscriptions/<value>/resourceGroups/validation-rg"
+      ]
+    },
+    "overrides": {
+      "value": [
+        {
+          "kind": "policyEffect",
+          "selectors": [
+            {
+              "in": [
+                "ASC_DeployAzureDefenderForSqlAdvancedThreatProtectionWindowsAgent",
+                "ASC_DeployAzureDefenderForSqlVulnerabilityAssessmentWindowsAgent"
+              ],
+              "kind": "policyDefinitionReferenceId"
+            }
+          ],
+          "value": "Disabled"
+        }
+      ]
+    },
+    "parameters": {
+      "value": {
+        "effect": {
+          "value": "Disabled"
+        },
+        "enableCollectionOfSqlQueriesForSecurityResearch": {
+          "value": false
+        }
+      }
+    },
+    "policyDefinitionId": {
+      "value": "/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611"
+    },
+    "resourceSelectors": {
+      "value": [
+        {
+          "name": "resourceSelector-test",
+          "selectors": [
+            {
+              "in": [
+                "Microsoft.Compute/virtualMachines"
+              ],
+              "kind": "resourceType"
+            },
+            {
+              "in": [
+                "westeurope"
+              ],
+              "kind": "resourceLocation"
+            }
+          ]
+        }
+      ]
+    },
+    "roleDefinitionIds": {
+      "value": [
+        "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+      ]
     }
   }
 }
@@ -78,14 +311,79 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
 using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
 
 // Required parameters
-param name = 'apedef001'
+// Non-required parameters
+param name = 'apamgmax001'
+param description = '[Description] Policy Assignment at the management group scope'
+param displayName = '[Display Name] Policy Assignment at the management group scope'
+param enforcementMode = 'DoNotEnforce'
+param identity = 'SystemAssigned'
 param location = '<location>'
+param managementGroupId = '<managementGroupId>'
+param metadata = {
+  assignedBy: 'Bicep'
+  category: 'Security'
+  version: '1.0'
+}
+param nonComplianceMessages = [
+  {
+    message: 'Violated Policy Assignment - This is a Non Compliance Message'
+  }
+]
+param notScopes = [
+  '/subscriptions/<value>/resourceGroups/validation-rg'
+]
+param overrides = [
+  {
+    kind: 'policyEffect'
+    selectors: [
+      {
+        in: [
+          'ASC_DeployAzureDefenderForSqlAdvancedThreatProtectionWindowsAgent'
+          'ASC_DeployAzureDefenderForSqlVulnerabilityAssessmentWindowsAgent'
+        ]
+        kind: 'policyDefinitionReferenceId'
+      }
+    ]
+    value: 'Disabled'
+  }
+]
+param parameters = {
+  effect: {
+    value: 'Disabled'
+  }
+  enableCollectionOfSqlQueriesForSecurityResearch: {
+    value: false
+  }
+}
+param policyDefinitionId = '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
+param resourceSelectors = [
+  {
+    name: 'resourceSelector-test'
+    selectors: [
+      {
+        in: [
+          'Microsoft.Compute/virtualMachines'
+        ]
+        kind: 'resourceType'
+      }
+      {
+        in: [
+          'westeurope'
+        ]
+        kind: 'resourceLocation'
+      }
+    ]
+  }
+]
+param roleDefinitionIds = [
+  '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+]
 ```
 
 </details>
 <p>
 
-### Example 2: _Waf-Aligned_
+### Example 3: _Rg.Defaults_
 
 <details>
 
@@ -96,8 +394,15 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
   name: 'policyExemptionDeployment'
   params: {
     // Required parameters
-    name: 'apewaf001'
+    // Non-required parameters
+    name: 'apargmin001'
     location: '<location>'
+    metadata: {
+      assignedBy: 'Bicep'
+    }
+    policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
+    resourceGroupName: '<resourceGroupName>'
+    subscriptionId: '<subscriptionId>'
   }
 }
 ```
@@ -116,10 +421,25 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apewaf001"
+      "value": "apargmin001"
     },
+    // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "metadata": {
+      "value": {
+        "assignedBy": "Bicep"
+      }
+    },
+    "policyDefinitionId": {
+      "value": "/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d"
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
+    },
+    "subscriptionId": {
+      "value": "<subscriptionId>"
     }
   }
 }
@@ -136,8 +456,673 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
 using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
 
 // Required parameters
-param name = 'apewaf001'
+// Non-required parameters
+param name = 'apargmin001'
 param location = '<location>'
+param metadata = {
+  assignedBy: 'Bicep'
+}
+param policyDefinitionId = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
+param resourceGroupName = '<resourceGroupName>'
+param subscriptionId = '<subscriptionId>'
+```
+
+</details>
+<p>
+
+### Example 4: _Rg.Max_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
+  name: 'policyExemptionDeployment'
+  params: {
+    // Required parameters
+    // Non-required parameters
+    name: 'apargmax001'
+    description: '[Description] Policy Assignment at the resource group scope'
+    displayName: '[Display Name] Policy Assignment at the resource group scope'
+    enforcementMode: 'DoNotEnforce'
+    identity: 'UserAssigned'
+    location: '<location>'
+    metadata: {
+      assignedBy: 'Bicep'
+      category: 'Security'
+      version: '1.0'
+    }
+    nonComplianceMessages: [
+      {
+        message: 'Violated Policy Assignment - This is a Non Compliance Message'
+      }
+    ]
+    notScopes: [
+      '<keyVaultResourceId>'
+    ]
+    overrides: [
+      {
+        kind: 'policyEffect'
+        selectors: [
+          {
+            in: [
+              'ASC_DeployAzureDefenderForSqlAdvancedThreatProtectionWindowsAgent'
+              'ASC_DeployAzureDefenderForSqlVulnerabilityAssessmentWindowsAgent'
+            ]
+            kind: 'policyDefinitionReferenceId'
+          }
+        ]
+        value: 'Disabled'
+      }
+    ]
+    parameters: {
+      effect: {
+        value: 'Disabled'
+      }
+      enableCollectionOfSqlQueriesForSecurityResearch: {
+        value: false
+      }
+    }
+    policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
+    resourceGroupName: '<resourceGroupName>'
+    resourceSelectors: [
+      {
+        name: 'resourceSelector-test'
+        selectors: [
+          {
+            in: [
+              'Microsoft.Compute/virtualMachines'
+            ]
+            kind: 'resourceType'
+          }
+          {
+            in: [
+              'westeurope'
+            ]
+            kind: 'resourceLocation'
+          }
+        ]
+      }
+    ]
+    roleDefinitionIds: [
+      '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ]
+    subscriptionId: '<subscriptionId>'
+    userAssignedIdentityId: '<userAssignedIdentityId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "apargmax001"
+    },
+    // Non-required parameters
+    "description": {
+      "value": "[Description] Policy Assignment at the resource group scope"
+    },
+    "displayName": {
+      "value": "[Display Name] Policy Assignment at the resource group scope"
+    },
+    "enforcementMode": {
+      "value": "DoNotEnforce"
+    },
+    "identity": {
+      "value": "UserAssigned"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "metadata": {
+      "value": {
+        "assignedBy": "Bicep",
+        "category": "Security",
+        "version": "1.0"
+      }
+    },
+    "nonComplianceMessages": {
+      "value": [
+        {
+          "message": "Violated Policy Assignment - This is a Non Compliance Message"
+        }
+      ]
+    },
+    "notScopes": {
+      "value": [
+        "<keyVaultResourceId>"
+      ]
+    },
+    "overrides": {
+      "value": [
+        {
+          "kind": "policyEffect",
+          "selectors": [
+            {
+              "in": [
+                "ASC_DeployAzureDefenderForSqlAdvancedThreatProtectionWindowsAgent",
+                "ASC_DeployAzureDefenderForSqlVulnerabilityAssessmentWindowsAgent"
+              ],
+              "kind": "policyDefinitionReferenceId"
+            }
+          ],
+          "value": "Disabled"
+        }
+      ]
+    },
+    "parameters": {
+      "value": {
+        "effect": {
+          "value": "Disabled"
+        },
+        "enableCollectionOfSqlQueriesForSecurityResearch": {
+          "value": false
+        }
+      }
+    },
+    "policyDefinitionId": {
+      "value": "/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611"
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
+    },
+    "resourceSelectors": {
+      "value": [
+        {
+          "name": "resourceSelector-test",
+          "selectors": [
+            {
+              "in": [
+                "Microsoft.Compute/virtualMachines"
+              ],
+              "kind": "resourceType"
+            },
+            {
+              "in": [
+                "westeurope"
+              ],
+              "kind": "resourceLocation"
+            }
+          ]
+        }
+      ]
+    },
+    "roleDefinitionIds": {
+      "value": [
+        "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+      ]
+    },
+    "subscriptionId": {
+      "value": "<subscriptionId>"
+    },
+    "userAssignedIdentityId": {
+      "value": "<userAssignedIdentityId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
+
+// Required parameters
+// Non-required parameters
+param name = 'apargmax001'
+param description = '[Description] Policy Assignment at the resource group scope'
+param displayName = '[Display Name] Policy Assignment at the resource group scope'
+param enforcementMode = 'DoNotEnforce'
+param identity = 'UserAssigned'
+param location = '<location>'
+param metadata = {
+  assignedBy: 'Bicep'
+  category: 'Security'
+  version: '1.0'
+}
+param nonComplianceMessages = [
+  {
+    message: 'Violated Policy Assignment - This is a Non Compliance Message'
+  }
+]
+param notScopes = [
+  '<keyVaultResourceId>'
+]
+param overrides = [
+  {
+    kind: 'policyEffect'
+    selectors: [
+      {
+        in: [
+          'ASC_DeployAzureDefenderForSqlAdvancedThreatProtectionWindowsAgent'
+          'ASC_DeployAzureDefenderForSqlVulnerabilityAssessmentWindowsAgent'
+        ]
+        kind: 'policyDefinitionReferenceId'
+      }
+    ]
+    value: 'Disabled'
+  }
+]
+param parameters = {
+  effect: {
+    value: 'Disabled'
+  }
+  enableCollectionOfSqlQueriesForSecurityResearch: {
+    value: false
+  }
+}
+param policyDefinitionId = '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
+param resourceGroupName = '<resourceGroupName>'
+param resourceSelectors = [
+  {
+    name: 'resourceSelector-test'
+    selectors: [
+      {
+        in: [
+          'Microsoft.Compute/virtualMachines'
+        ]
+        kind: 'resourceType'
+      }
+      {
+        in: [
+          'westeurope'
+        ]
+        kind: 'resourceLocation'
+      }
+    ]
+  }
+]
+param roleDefinitionIds = [
+  '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+]
+param subscriptionId = '<subscriptionId>'
+param userAssignedIdentityId = '<userAssignedIdentityId>'
+```
+
+</details>
+<p>
+
+### Example 5: _Sub.Defaults_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
+  name: 'policyExemptionDeployment'
+  params: {
+    // Required parameters
+    name: 'apasubmin001'
+    location: '<location>'
+    metadata: {
+      assignedBy: 'Bicep'
+      category: 'Security'
+      version: '1.0'
+    }
+    policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
+    subscriptionId: '<subscriptionId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "apasubmin001"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "metadata": {
+      "value": {
+        "assignedBy": "Bicep",
+        "category": "Security",
+        "version": "1.0"
+      }
+    },
+    "policyDefinitionId": {
+      "value": "/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d"
+    },
+    "subscriptionId": {
+      "value": "<subscriptionId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
+
+// Required parameters
+param name = 'apasubmin001'
+param location = '<location>'
+param metadata = {
+  assignedBy: 'Bicep'
+  category: 'Security'
+  version: '1.0'
+}
+param policyDefinitionId = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
+param subscriptionId = '<subscriptionId>'
+```
+
+</details>
+<p>
+
+### Example 6: _Sub.Max_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
+  name: 'policyExemptionDeployment'
+  params: {
+    // Required parameters
+    // Non-required parameters
+    name: 'apasubmax001'
+    description: '[Description] Policy Assignment at the subscription scope'
+    displayName: '[Display Name] Policy Assignment at the subscription scope'
+    enforcementMode: 'DoNotEnforce'
+    identity: 'UserAssigned'
+    location: '<location>'
+    metadata: {
+      assignedBy: 'Bicep'
+      category: 'Security'
+      version: '1.0'
+    }
+    nonComplianceMessages: [
+      {
+        message: 'Violated Policy Assignment - This is a Non Compliance Message'
+      }
+    ]
+    notScopes: [
+      '/subscriptions/<value>/resourceGroups/validation-rg'
+    ]
+    overrides: [
+      {
+        kind: 'policyEffect'
+        selectors: [
+          {
+            in: [
+              'ASC_DeployAzureDefenderForSqlAdvancedThreatProtectionWindowsAgent'
+              'ASC_DeployAzureDefenderForSqlVulnerabilityAssessmentWindowsAgent'
+            ]
+            kind: 'policyDefinitionReferenceId'
+          }
+        ]
+        value: 'Disabled'
+      }
+    ]
+    parameters: {
+      effect: {
+        value: 'Disabled'
+      }
+      enableCollectionOfSqlQueriesForSecurityResearch: {
+        value: false
+      }
+    }
+    policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
+    resourceSelectors: [
+      {
+        name: 'resourceSelector-test'
+        selectors: [
+          {
+            in: [
+              'Microsoft.Compute/virtualMachines'
+            ]
+            kind: 'resourceType'
+          }
+          {
+            in: [
+              'westeurope'
+            ]
+            kind: 'resourceLocation'
+          }
+        ]
+      }
+    ]
+    roleDefinitionIds: [
+      '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ]
+    subscriptionId: '<subscriptionId>'
+    userAssignedIdentityId: '<userAssignedIdentityId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "apasubmax001"
+    },
+    // Non-required parameters
+    "description": {
+      "value": "[Description] Policy Assignment at the subscription scope"
+    },
+    "displayName": {
+      "value": "[Display Name] Policy Assignment at the subscription scope"
+    },
+    "enforcementMode": {
+      "value": "DoNotEnforce"
+    },
+    "identity": {
+      "value": "UserAssigned"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "metadata": {
+      "value": {
+        "assignedBy": "Bicep",
+        "category": "Security",
+        "version": "1.0"
+      }
+    },
+    "nonComplianceMessages": {
+      "value": [
+        {
+          "message": "Violated Policy Assignment - This is a Non Compliance Message"
+        }
+      ]
+    },
+    "notScopes": {
+      "value": [
+        "/subscriptions/<value>/resourceGroups/validation-rg"
+      ]
+    },
+    "overrides": {
+      "value": [
+        {
+          "kind": "policyEffect",
+          "selectors": [
+            {
+              "in": [
+                "ASC_DeployAzureDefenderForSqlAdvancedThreatProtectionWindowsAgent",
+                "ASC_DeployAzureDefenderForSqlVulnerabilityAssessmentWindowsAgent"
+              ],
+              "kind": "policyDefinitionReferenceId"
+            }
+          ],
+          "value": "Disabled"
+        }
+      ]
+    },
+    "parameters": {
+      "value": {
+        "effect": {
+          "value": "Disabled"
+        },
+        "enableCollectionOfSqlQueriesForSecurityResearch": {
+          "value": false
+        }
+      }
+    },
+    "policyDefinitionId": {
+      "value": "/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611"
+    },
+    "resourceSelectors": {
+      "value": [
+        {
+          "name": "resourceSelector-test",
+          "selectors": [
+            {
+              "in": [
+                "Microsoft.Compute/virtualMachines"
+              ],
+              "kind": "resourceType"
+            },
+            {
+              "in": [
+                "westeurope"
+              ],
+              "kind": "resourceLocation"
+            }
+          ]
+        }
+      ]
+    },
+    "roleDefinitionIds": {
+      "value": [
+        "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+      ]
+    },
+    "subscriptionId": {
+      "value": "<subscriptionId>"
+    },
+    "userAssignedIdentityId": {
+      "value": "<userAssignedIdentityId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
+
+// Required parameters
+// Non-required parameters
+param name = 'apasubmax001'
+param description = '[Description] Policy Assignment at the subscription scope'
+param displayName = '[Display Name] Policy Assignment at the subscription scope'
+param enforcementMode = 'DoNotEnforce'
+param identity = 'UserAssigned'
+param location = '<location>'
+param metadata = {
+  assignedBy: 'Bicep'
+  category: 'Security'
+  version: '1.0'
+}
+param nonComplianceMessages = [
+  {
+    message: 'Violated Policy Assignment - This is a Non Compliance Message'
+  }
+]
+param notScopes = [
+  '/subscriptions/<value>/resourceGroups/validation-rg'
+]
+param overrides = [
+  {
+    kind: 'policyEffect'
+    selectors: [
+      {
+        in: [
+          'ASC_DeployAzureDefenderForSqlAdvancedThreatProtectionWindowsAgent'
+          'ASC_DeployAzureDefenderForSqlVulnerabilityAssessmentWindowsAgent'
+        ]
+        kind: 'policyDefinitionReferenceId'
+      }
+    ]
+    value: 'Disabled'
+  }
+]
+param parameters = {
+  effect: {
+    value: 'Disabled'
+  }
+  enableCollectionOfSqlQueriesForSecurityResearch: {
+    value: false
+  }
+}
+param policyDefinitionId = '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
+param resourceSelectors = [
+  {
+    name: 'resourceSelector-test'
+    selectors: [
+      {
+        in: [
+          'Microsoft.Compute/virtualMachines'
+        ]
+        kind: 'resourceType'
+      }
+      {
+        in: [
+          'westeurope'
+        ]
+        kind: 'resourceLocation'
+      }
+    ]
+  }
+]
+param roleDefinitionIds = [
+  '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+]
+param subscriptionId = '<subscriptionId>'
+param userAssignedIdentityId = '<userAssignedIdentityId>'
 ```
 
 </details>

@@ -13,7 +13,7 @@ param name string
   'DoNotValidate'
   'Default'
 ])
-param assignmentScopeValidation string
+param assignmentScopeValidation string = 'Default'
 
 @sys.description('Optional. This message will be part of response in case of policy violation.')
 param description string = ''
@@ -30,9 +30,9 @@ param displayName string = ''
 param exemptionCategory string
 
 @sys.description('Optional. The expiration date and time (in UTC ISO 8601 format yyyy-MM-ddTHH:mm:ssZ) of the policy exemption.')
-@maxLength(32)
-@minLength(32)
-param expiresOn string
+@maxLength(20)
+@minLength(20)
+param expiresOn string?
 
 @sys.description('Optional. The policy exemption metadata. Metadata is an open ended object and is typically a collection of key-value pairs.')
 param metadata object = {}
@@ -92,7 +92,7 @@ module policyExemption_mg 'modules/management-group.bicep' = if (empty(subscript
     displayName: !empty(displayName) ? displayName : null
     assignmentScopeValidation: assignmentScopeValidation
     exemptionCategory: exemptionCategory
-    expiresOn: !empty(expiresOn) ? expiresOn : ''
+    expiresOn: expiresOn
     metadata: !empty(metadata) ? metadata : null
     policyAssignmentId: policyAssignmentId
     policyDefinitionReferenceIds: !empty(policyDefinitionReferenceIds) ? policyDefinitionReferenceIds : null
@@ -109,7 +109,7 @@ module policyExemption_sub 'modules/subscription.bicep' = if (!empty(subscriptio
     displayName: !empty(displayName) ? displayName : null
     assignmentScopeValidation: assignmentScopeValidation
     exemptionCategory: exemptionCategory
-    expiresOn: !empty(expiresOn) ? expiresOn : ''
+    expiresOn: expiresOn
     metadata: !empty(metadata) ? metadata : null
     policyAssignmentId: policyAssignmentId
     policyDefinitionReferenceIds: !empty(policyDefinitionReferenceIds) ? policyDefinitionReferenceIds : null
@@ -126,7 +126,7 @@ module policyExemption_rg 'modules/resource-group.bicep' = if (!empty(resourceGr
     displayName: !empty(displayName) ? displayName : null
     assignmentScopeValidation: assignmentScopeValidation
     exemptionCategory: exemptionCategory
-    expiresOn: !empty(expiresOn) ? expiresOn : ''
+    expiresOn: expiresOn
     metadata: !empty(metadata) ? metadata : null
     policyAssignmentId: policyAssignmentId
     policyDefinitionReferenceIds: !empty(policyDefinitionReferenceIds) ? policyDefinitionReferenceIds : null
