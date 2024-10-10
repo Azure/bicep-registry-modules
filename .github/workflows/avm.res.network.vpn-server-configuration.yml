@@ -1,4 +1,4 @@
-name: "avm.ptn.azd.container-apps"
+name: "avm.res.network.vpn-server-configuration"
 
 on:
   workflow_dispatch:
@@ -28,15 +28,15 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.ptn.azd.container-apps.yml"
-      - "avm/ptn/azd/container-apps/**"
+      - ".github/workflows/avm.res.network.vpn-server-configuration.yml"
+      - "avm/res/network/vpn-server-configuration/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/ptn/azd/container-apps"
-  workflowPath: ".github/workflows/avm.ptn.azd.container-apps.yml"
+  modulePath: "avm/res/network/vpn-server-configuration"
+  workflowPath: ".github/workflows/avm.res.network.vpn-server-configuration.yml"
 
 concurrency:
   group: ${{ github.workflow }}
