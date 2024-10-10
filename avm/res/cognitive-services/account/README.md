@@ -2114,7 +2114,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 Resource migration token.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `networkAcls`
 
