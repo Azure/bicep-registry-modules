@@ -39,6 +39,11 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      disableLocalAccounts: true
+      enableKeyvaultSecretsProvider: true
+      enableSecretRotation: true
+      kedaAddon: true
+      kubernetesVersion: '1.28'
       maintenanceConfiguration: {
         maintenanceWindow: {
           schedule: {
@@ -59,15 +64,27 @@ module testDeployment '../../../main.bicep' = [
       managedIdentities: {
         systemAssigned: true
       }
-
+      nodeProvisioningProfile: {
+        mode: 'Auto'
+      }
+      nodeResourceGroupProfile: {
+        restrictionLevel: 'ReadOnly'
+      }
+      outboundType: 'managedNATGateway'
       primaryAgentPoolProfile: [
         {
           name: 'systempool'
           count: 3
-          vmSize: 'Standard_DS2_v2'
+          vmSize: 'Standard_DS4_v2'
           mode: 'System'
+          securityProfile: {
+            sshAccess: 'Disabled'
+          }
         }
       ]
+      publicNetworkAccess: 'Enabled'
+      skuName: 'Automatic'
+      webApplicationRoutingEnabled: true
     }
   }
 ]

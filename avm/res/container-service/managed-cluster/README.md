@@ -59,10 +59,18 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         count: 3
         mode: 'System'
         name: 'systempool'
-        vmSize: 'Standard_DS2_v2'
+        securityProfile: {
+          sshAccess: 'Disabled'
+        }
+        vmSize: 'Standard_DS4_v2'
       }
     ]
     // Non-required parameters
+    disableLocalAccounts: true
+    enableKeyvaultSecretsProvider: true
+    enableSecretRotation: true
+    kedaAddon: true
+    kubernetesVersion: '1.28'
     location: '<location>'
     maintenanceConfiguration: {
       maintenanceWindow: {
@@ -84,6 +92,16 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     managedIdentities: {
       systemAssigned: true
     }
+    nodeProvisioningProfile: {
+      mode: 'Auto'
+    }
+    nodeResourceGroupProfile: {
+      restrictionLevel: 'ReadOnly'
+    }
+    outboundType: 'managedNATGateway'
+    publicNetworkAccess: 'Enabled'
+    skuName: 'Automatic'
+    webApplicationRoutingEnabled: true
   }
 }
 ```
@@ -110,11 +128,29 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "count": 3,
           "mode": "System",
           "name": "systempool",
-          "vmSize": "Standard_DS2_v2"
+          "securityProfile": {
+            "sshAccess": "Disabled"
+          },
+          "vmSize": "Standard_DS4_v2"
         }
       ]
     },
     // Non-required parameters
+    "disableLocalAccounts": {
+      "value": true
+    },
+    "enableKeyvaultSecretsProvider": {
+      "value": true
+    },
+    "enableSecretRotation": {
+      "value": true
+    },
+    "kedaAddon": {
+      "value": true
+    },
+    "kubernetesVersion": {
+      "value": "1.28"
+    },
     "location": {
       "value": "<location>"
     },
@@ -141,6 +177,28 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": {
         "systemAssigned": true
       }
+    },
+    "nodeProvisioningProfile": {
+      "value": {
+        "mode": "Auto"
+      }
+    },
+    "nodeResourceGroupProfile": {
+      "value": {
+        "restrictionLevel": "ReadOnly"
+      }
+    },
+    "outboundType": {
+      "value": "managedNATGateway"
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
+    "skuName": {
+      "value": "Automatic"
+    },
+    "webApplicationRoutingEnabled": {
+      "value": true
     }
   }
 }
@@ -163,10 +221,18 @@ param primaryAgentPoolProfile = [
     count: 3
     mode: 'System'
     name: 'systempool'
-    vmSize: 'Standard_DS2_v2'
+    securityProfile: {
+      sshAccess: 'Disabled'
+    }
+    vmSize: 'Standard_DS4_v2'
   }
 ]
 // Non-required parameters
+param disableLocalAccounts = true
+param enableKeyvaultSecretsProvider = true
+param enableSecretRotation = true
+param kedaAddon = true
+param kubernetesVersion = '1.28'
 param location = '<location>'
 param maintenanceConfiguration = {
   maintenanceWindow: {
@@ -188,6 +254,16 @@ param maintenanceConfiguration = {
 param managedIdentities = {
   systemAssigned: true
 }
+param nodeProvisioningProfile = {
+  mode: 'Auto'
+}
+param nodeResourceGroupProfile = {
+  restrictionLevel: 'ReadOnly'
+}
+param outboundType = 'managedNATGateway'
+param publicNetworkAccess = 'Enabled'
+param skuName = 'Automatic'
+param webApplicationRoutingEnabled = true
 ```
 
 </details>
@@ -2275,7 +2351,9 @@ param tags = {
 | [`networkPlugin`](#parameter-networkplugin) | string | Specifies the network plugin used for building Kubernetes network. |
 | [`networkPluginMode`](#parameter-networkpluginmode) | string | Network plugin mode used for building the Kubernetes network. Not compatible with kubenet network plugin. |
 | [`networkPolicy`](#parameter-networkpolicy) | string | Specifies the network policy used for building Kubernetes network. - calico or azure. |
+| [`nodeProvisioningProfile`](#parameter-nodeprovisioningprofile) | object | Node provisioning settings that apply to the whole cluster. |
 | [`nodeResourceGroup`](#parameter-noderesourcegroup) | string | Name of the resource group containing agent pool nodes. |
+| [`nodeResourceGroupProfile`](#parameter-noderesourcegroupprofile) | object | The node resource group configuration profile. |
 | [`omsAgentEnabled`](#parameter-omsagentenabled) | bool | Specifies whether the OMS agent is enabled. |
 | [`openServiceMeshEnabled`](#parameter-openservicemeshenabled) | bool | Specifies whether the openServiceMesh add-on is enabled or not. |
 | [`outboundType`](#parameter-outboundtype) | string | Specifies outbound (egress) routing method. |
@@ -2288,6 +2366,7 @@ param tags = {
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Allow or deny public network access for AKS. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceCidr`](#parameter-servicecidr) | string | A CIDR notation IP range from which to assign service cluster IPs. It must not overlap with any Subnet IP ranges. |
+| [`skuName`](#parameter-skuname) | string | Name of a managed cluster SKU. |
 | [`skuTier`](#parameter-skutier) | string | Tier of a managed cluster SKU. |
 | [`sshPublicKey`](#parameter-sshpublickey) | string | Specifies the SSH RSA public key string for the Linux nodes. |
 | [`supportPlan`](#parameter-supportplan) | string | The support plan for the Managed Cluster. |
@@ -3722,6 +3801,13 @@ Specifies the network policy used for building Kubernetes network. - calico or a
   ]
   ```
 
+### Parameter: `nodeProvisioningProfile`
+
+Node provisioning settings that apply to the whole cluster.
+
+- Required: No
+- Type: object
+
 ### Parameter: `nodeResourceGroup`
 
 Name of the resource group containing agent pool nodes.
@@ -3729,6 +3815,13 @@ Name of the resource group containing agent pool nodes.
 - Required: No
 - Type: string
 - Default: `[format('{0}_aks_{1}_nodes', resourceGroup().name, parameters('name'))]`
+
+### Parameter: `nodeResourceGroupProfile`
+
+The node resource group configuration profile.
+
+- Required: No
+- Type: object
 
 ### Parameter: `omsAgentEnabled`
 
@@ -3946,6 +4039,21 @@ A CIDR notation IP range from which to assign service cluster IPs. It must not o
 
 - Required: No
 - Type: string
+
+### Parameter: `skuName`
+
+Name of a managed cluster SKU.
+
+- Required: No
+- Type: string
+- Default: `'Base'`
+- Allowed:
+  ```Bicep
+  [
+    'Automatic'
+    'Base'
+  ]
+  ```
 
 ### Parameter: `skuTier`
 
