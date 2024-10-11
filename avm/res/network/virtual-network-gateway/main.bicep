@@ -8,7 +8,7 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. The Public IP resource ID to associate to the Virtual Network Gateway. If empty, then the Public IP that is created as part of this module will be applied to the Virtual Network Gateway.')
+@description('Optional. The Public IP resource ID to associate to the Virtual Network Gateway. If empty, then a new Public IP will be created and applied to the Virtual Network Gateway.')
 param existingFirstPipResourceId string = ''
 
 @description('Optional. Specifies the name of the Public IP to be created for the Virtual Network Gateway. This will only take effect if no existing Public IP is provided. If neither an existing Public IP nor this parameter is specified, a new Public IP will be created with a default name, using the gateway\'s name with the \'-pip1\' suffix.')
