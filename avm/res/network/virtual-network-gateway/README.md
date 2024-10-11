@@ -858,7 +858,7 @@ param vpnType = 'RouteBased'
 
 ### Example 6: _VPN Active Passive with BGP settings using existing Public IP_
 
-This instance deploys the module with the VPN Active Passive with APIPA BGP settings.
+This instance deploys the module with the VPN Active Passive with APIPA BGP settings and existing primary public IP.
 
 
 <details>
@@ -2459,7 +2459,7 @@ param vpnType = 'RouteBased'
 | [`enableDnsForwarding`](#parameter-enablednsforwarding) | bool | Whether DNS forwarding is enabled or not and is only supported for Express Route Gateways. The DNS forwarding feature flag must be enabled on the current subscription. |
 | [`enablePrivateIpAddress`](#parameter-enableprivateipaddress) | bool | Whether private IP needs to be enabled on this gateway for connections or not. Used for configuring a Site-to-Site VPN connection over ExpressRoute private peering. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`existingFirstPipResourceId`](#parameter-existingfirstpipresourceid) | string | The Public IP resource ID to associate to the Virtual Network Gateway. If empty, then the Public IP that is created as part of this module will be applied to the Virtual Network Gateway. |
+| [`existingFirstPipResourceId`](#parameter-existingfirstpipresourceid) | string | The Public IP resource ID to associate to the Virtual Network Gateway. If empty, then a new Public IP will be created and applied to the Virtual Network Gateway. |
 | [`firstPipName`](#parameter-firstpipname) | string | Specifies the name of the Public IP to be created for the Virtual Network Gateway. This will only take effect if no existing Public IP is provided. If neither an existing Public IP nor this parameter is specified, a new Public IP will be created with a default name, using the gateway's name with the '-pip1' suffix. |
 | [`gatewayDefaultSiteLocalNetworkGatewayId`](#parameter-gatewaydefaultsitelocalnetworkgatewayid) | string | The reference to the LocalNetworkGateway resource which represents local network site having default routes. Assign Null value in case of removing existing default site setting. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -2767,7 +2767,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `existingFirstPipResourceId`
 
-The Public IP resource ID to associate to the Virtual Network Gateway. If empty, then the Public IP that is created as part of this module will be applied to the Virtual Network Gateway.
+The Public IP resource ID to associate to the Virtual Network Gateway. If empty, then a new Public IP will be created and applied to the Virtual Network Gateway.
 
 - Required: No
 - Type: string
@@ -3001,7 +3001,14 @@ Specifies the zones of the Public IP address. Basic IP SKU does not support Avai
 
 - Required: No
 - Type: array
-- Default: `[]`
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
