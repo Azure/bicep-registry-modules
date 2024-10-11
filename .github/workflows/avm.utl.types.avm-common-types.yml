@@ -26,7 +26,6 @@ on:
   push:
     branches:
       # - main
-      - users/alsehr/1396_commonTypes
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
