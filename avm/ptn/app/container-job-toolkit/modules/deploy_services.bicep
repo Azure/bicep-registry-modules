@@ -133,9 +133,7 @@ var vaultBuiltInRoleNames = {
   )
 }
 var registryRbacRoles = ['7f951dda-4ed3-4680-a7ca-43fe172d538d', '8311e382-0749-4cb8-b61a-304f252e45ec'] // ArcPull, AcrPush
-var storageAccountRbacRoles = [
-  '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
-]
+var storageAccountRbacRoles = ['69566ab7-960f-475b-8e7c-b3118f30c6bd'] // Storage File Data Privileged Contributor
 var formattedVaultRoleAssignments = [
   for (roleAssignment, index) in (keyVaultRoleAssignments ?? []): union(roleAssignment, {
     roleDefinitionId: vaultBuiltInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
@@ -166,7 +164,7 @@ var zoneRedundant = deployInVnet || (!empty(addressPrefix) && empty(workloadProf
 var secrets = [
   for secret in keyVaultSecrets ?? []: (secret.keyVaultUrl != null)
     ? {
-        name: last(split(secret.keyVaultUrl, '/'))
+        name: last(split(secret.keyVaultUrl ?? 'dummy-for-deployment-validation', '/'))
         identity: secret.identity
         value: 'dummy' // dummy needed to pass the validation
       }
@@ -668,6 +666,7 @@ module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endp
 resource userIdentity_new 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = if (managedIdentityResourceId == null) {
   name: managedIdentityName ?? 'jobsUserIdentity-${name}'
   location: location
+  tags: union(tags, { 'used-by': 'container-job-toolkit' })
 }
 resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (managedIdentityResourceId != null) {
   name: last(split(managedIdentityResourceId! ?? 'dummyMsi', '/'))
@@ -793,6 +792,7 @@ module storage 'br/public:avm/res/storage/storage-account:0.14.1' = if (deployIn
 resource law 'Microsoft.OperationalInsights/workspaces@2023-09-01' = if (empty(logAnalyticsWorkspaceResourceId)) {
   name: '${name}-law'
   location: location
+  tags: union(tags, { 'used-by': 'container-job-toolkit' })
 }
 
 // Managed Environment
@@ -804,7 +804,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.8.0' = {
     enableTelemetry: enableTelemetry
     logAnalyticsWorkspaceResourceId: !empty(logAnalyticsWorkspaceResourceId) ? logAnalyticsWorkspaceResourceId! : law.id
     location: location
-    tags: tags
+    tags: union(tags, { 'used-by': 'container-job-toolkit' })
     lock: lock
     workloadProfiles: !empty(workloadProfiles) ? workloadProfiles : null
     zoneRedundant: !empty(workloadProfiles) || !empty(addressPrefix) ? true : false

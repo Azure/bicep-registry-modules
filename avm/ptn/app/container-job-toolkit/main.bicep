@@ -190,10 +190,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 // provision required services
 module services 'modules/deploy_services.bicep' = {
-  name: '${name}-services'
+  name: '${uniqueString(deployment().name, location)}-services'
   params: {
     name: name
     location: location
+    enableTelemetry: enableTelemetry
     resourceGroupName: resourceGroup().name
     managedIdentityResourceId: managedIdentityResourceId
     managedIdentityName: managedIdentityName
@@ -211,7 +212,6 @@ module services 'modules/deploy_services.bicep' = {
     workloadProfiles: length(workloadProfiles ?? []) > 0 ? workloadProfiles : null
     tags: tags
     lock: lock
-    enableTelemetry: enableTelemetry
   }
 }
 
@@ -221,6 +221,7 @@ module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.3
   params: {
     name: '${name}-import-image'
     location: location
+    enableTelemetry: enableTelemetry
     acrName: services.outputs.registryName
     image: containerImageSource
     newImageName: newContainerImageName
@@ -240,11 +241,12 @@ module job 'br/public:avm/res/app/job:0.5.0' = {
   name: '${uniqueString(deployment().name, location)}-${resourceGroup().name}-appjob'
   params: {
     name: '${name}-container-job'
+    location: location
+    enableTelemetry: enableTelemetry
     tags: tags
     lock: lock
     environmentResourceId: services.outputs.managedEnvironmentId
     workloadProfileName: workloadProfileName
-    location: location
     managedIdentities: {
       userAssignedResourceIds: [services.outputs.userManagedIdentityResourceId]
     }

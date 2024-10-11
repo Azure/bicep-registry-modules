@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "6341006870720569364"
+      "templateHash": "1098238664214686753"
     },
     "name": "container-job-toolkit",
     "description": "This module deploys a container to run as a job.",
@@ -577,7 +577,7 @@
     "services": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-services', parameters('name'))]",
+      "name": "[format('{0}-services', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -589,6 +589,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "resourceGroupName": {
             "value": "[resourceGroup().name]"
@@ -638,9 +641,6 @@
           },
           "lock": {
             "value": "[parameters('lock')]"
-          },
-          "enableTelemetry": {
-            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -651,7 +651,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "16600143947344704638"
+              "templateHash": "16633300586433860568"
             }
           },
           "definitions": {
@@ -1131,7 +1131,7 @@
               {
                 "name": "secrets",
                 "count": "[length(coalesce(parameters('keyVaultSecrets'), createArray()))]",
-                "input": "[if(not(equals(coalesce(parameters('keyVaultSecrets'), createArray())[copyIndex('secrets')].keyVaultUrl, null())), createObject('name', last(split(coalesce(parameters('keyVaultSecrets'), createArray())[copyIndex('secrets')].keyVaultUrl, '/')), 'identity', coalesce(parameters('keyVaultSecrets'), createArray())[copyIndex('secrets')].identity, 'value', 'dummy'), null())]"
+                "input": "[if(not(equals(coalesce(parameters('keyVaultSecrets'), createArray())[copyIndex('secrets')].keyVaultUrl, null())), createObject('name', last(split(coalesce(coalesce(parameters('keyVaultSecrets'), createArray())[copyIndex('secrets')].keyVaultUrl, 'dummy-for-deployment-validation'), '/')), 'identity', coalesce(parameters('keyVaultSecrets'), createArray())[copyIndex('secrets')].identity, 'value', 'dummy'), null())]"
               }
             ],
             "vaultBuiltInRoleNames": {
@@ -1232,7 +1232,8 @@
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
               "apiVersion": "2023-01-31",
               "name": "[coalesce(parameters('managedIdentityName'), format('jobsUserIdentity-{0}', parameters('name')))]",
-              "location": "[parameters('location')]"
+              "location": "[parameters('location')]",
+              "tags": "[union(parameters('tags'), createObject('used-by', 'container-job-toolkit'))]"
             },
             "userIdentity_existing": {
               "condition": "[not(equals(parameters('managedIdentityResourceId'), null()))]",
@@ -1248,7 +1249,8 @@
               "type": "Microsoft.OperationalInsights/workspaces",
               "apiVersion": "2023-09-01",
               "name": "[format('{0}-law', parameters('name'))]",
-              "location": "[parameters('location')]"
+              "location": "[parameters('location')]",
+              "tags": "[union(parameters('tags'), createObject('used-by', 'container-job-toolkit'))]"
             },
             "nsg": {
               "condition": "[variables('zoneRedundant')]",
@@ -23454,7 +23456,7 @@
                     "value": "[parameters('location')]"
                   },
                   "tags": {
-                    "value": "[parameters('tags')]"
+                    "value": "[union(parameters('tags'), createObject('used-by', 'container-job-toolkit'))]"
                   },
                   "lock": {
                     "value": "[parameters('lock')]"
@@ -24120,6 +24122,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "acrName": {
             "value": "[reference('services').outputs.registryName.value]"
@@ -25093,6 +25098,12 @@
           "name": {
             "value": "[format('{0}-container-job', parameters('name'))]"
           },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "tags": {
             "value": "[parameters('tags')]"
           },
@@ -25104,9 +25115,6 @@
           },
           "workloadProfileName": {
             "value": "[parameters('workloadProfileName')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
           },
           "managedIdentities": {
             "value": {
