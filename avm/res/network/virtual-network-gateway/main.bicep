@@ -210,12 +210,8 @@ var ipConfiguration = isActiveActive
           }
           publicIPAddress: {
             id: isActiveActive
-              ? !empty(existingSecondPipResourceIdVar)
-                ? existingSecondPipResourceIdVar
-                : az.resourceId('Microsoft.Network/publicIPAddresses', secondPipNameVar)
-              : !empty(existingFirstPipResourceId)
-                ? existingFirstPipResourceId
-                : az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
+              ? existingSecondPipResourceIdVar ?? az.resourceId('Microsoft.Network/publicIPAddresses', secondPipNameVar)
+              : existingFirstPipResourceId ?? az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
           }
         }
         name: 'vNetGatewayConfig2'
@@ -229,9 +225,7 @@ var ipConfiguration = isActiveActive
             id: '${vNetResourceId}/subnets/GatewaySubnet'
           }
           publicIPAddress: {
-            id: !empty(existingFirstPipResourceId)
-              ? existingFirstPipResourceId
-              : az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
+            id: existingFirstPipResourceId ?? az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
           }
         }
         name: 'vNetGatewayConfig1'
@@ -580,7 +574,7 @@ type activeActiveNoBgpType = {
   
   clusterMode: 'activeActiveNoBgp'
 
-  @description('Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then the secondary Public IP that is created as part of this module will be applied to the Virtual Network Gateway.')
+  @description('Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway.')
   existingSecondPipResourceId: string?
   
   @description('Optional. Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway\'s name with the \'-pip2\' suffix.')
@@ -595,7 +589,7 @@ type activePassiveBgpType = {
   @description('Optional. The Autonomous System Number value. If it\'s not provided, a default \'65515\' value will be assigned to the ASN.')
   @minValue(0)
   @maxValue(4294967295)
-  asn: int? 
+  asn: int?
 
   @description('Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
   customBgpIpAddresses: string[]?
@@ -605,7 +599,7 @@ type activeActiveBgpType = {
   
   clusterMode: 'activeActiveBgp'
 
-  @description('Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then the secondary Public IP that is created as part of this module will be applied to the Virtual Network Gateway.')
+  @description('Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway.')
   existingSecondPipResourceId: string?
   
   @description('Optional. Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway\'s name with the \'-pip2\' suffix.')
@@ -614,7 +608,7 @@ type activeActiveBgpType = {
   @description('Optional. The Autonomous System Number value. If it\'s not provided, a default \'65515\' value will be assigned to the ASN.')
   @minValue(0)
   @maxValue(4294967295)
-  asn: int? 
+  asn: int?
 
   @description('Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
   customBgpIpAddresses: string[]?
