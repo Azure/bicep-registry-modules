@@ -264,19 +264,19 @@ module nsg_workload_plan 'br/public:avm/res/network/network-security-group:0.5.0
             destinationAddressPrefix: 'AzureMonitor'
           }
         }
-        {
-          name: 'Allow-Storage-Tcp-Https'
-          properties: {
-            access: 'Allow'
-            direction: 'Outbound'
-            priority: 204
-            protocol: 'Tcp'
-            sourcePortRange: '*'
-            sourceAddressPrefix: workloadSubnetAddressPrefix
-            destinationPortRange: '443'
-            destinationAddressPrefix: 'Storage.${location}'
-          }
-        }
+        // {
+        //   name: 'Allow-Storage-Tcp-Https'
+        //   properties: {
+        //     access: 'Allow'
+        //     direction: 'Outbound'
+        //     priority: 204
+        //     protocol: 'Tcp'
+        //     sourcePortRange: '*'
+        //     sourceAddressPrefix: workloadSubnetAddressPrefix
+        //     destinationPortRange: '443'
+        //     destinationAddressPrefix: 'Storage.${location}'
+        //   }
+        // }
         {
           name: 'Allow-ACR-Tcp-Https'
           properties: {
@@ -359,32 +359,32 @@ module nsg_consumption_plan 'br/public:avm/res/network/network-security-group:0.
             destinationAddressPrefix: 'AzureFrontDoor.FirstParty'
           }
         }
-        {
-          name: 'Allow-Subnet-AKS-Udp-1194'
-          properties: {
-            access: 'Allow'
-            direction: 'Outbound'
-            priority: 205
-            protocol: 'Udp'
-            sourcePortRange: '*'
-            sourceAddressPrefix: workloadSubnetAddressPrefix
-            destinationPortRange: '1194'
-            destinationAddressPrefix: 'AzureCloud.${regionServiceTag}'
-          }
-        }
-        {
-          name: 'Allow-Subnet-AKS-Tcp-9000'
-          properties: {
-            access: 'Allow'
-            direction: 'Outbound'
-            priority: 206
-            protocol: 'Tcp'
-            sourcePortRange: '*'
-            sourceAddressPrefix: workloadSubnetAddressPrefix
-            destinationPortRange: '9000'
-            destinationAddressPrefix: 'AzureCloud.${regionServiceTag}'
-          }
-        }
+        // {
+        //   name: 'Allow-Subnet-AKS-Udp-1194'
+        //   properties: {
+        //     access: 'Allow'
+        //     direction: 'Outbound'
+        //     priority: 205
+        //     protocol: 'Udp'
+        //     sourcePortRange: '*'
+        //     sourceAddressPrefix: workloadSubnetAddressPrefix
+        //     destinationPortRange: '1194'
+        //     destinationAddressPrefix: 'AzureCloud.${regionServiceTag}'
+        //   }
+        // }
+        // {
+        //   name: 'Allow-Subnet-AKS-Tcp-9000'
+        //   properties: {
+        //     access: 'Allow'
+        //     direction: 'Outbound'
+        //     priority: 206
+        //     protocol: 'Tcp'
+        //     sourcePortRange: '*'
+        //     sourceAddressPrefix: workloadSubnetAddressPrefix
+        //     destinationPortRange: '9000'
+        //     destinationAddressPrefix: 'AzureCloud.${regionServiceTag}'
+        //   }
+        // }
         {
           name: 'Allow-Azure-Tcp-Https'
           properties: {
@@ -464,19 +464,19 @@ module nsg_consumption_plan 'br/public:avm/res/network/network-security-group:0.
             destinationAddressPrefix: 'AzureActiveDirectory'
           }
         }
-        {
-          name: 'Allow-Storage-Tcp-Https'
-          properties: {
-            access: 'Allow'
-            direction: 'Outbound'
-            priority: 213
-            protocol: 'Tcp'
-            sourcePortRange: '*'
-            sourceAddressPrefix: workloadSubnetAddressPrefix
-            destinationPortRange: '443'
-            destinationAddressPrefix: 'Storage.${location}'
-          }
-        }
+        // {
+        //   name: 'Allow-Storage-Tcp-Https'
+        //   properties: {
+        //     access: 'Allow'
+        //     direction: 'Outbound'
+        //     priority: 213
+        //     protocol: 'Tcp'
+        //     sourcePortRange: '*'
+        //     sourceAddressPrefix: workloadSubnetAddressPrefix
+        //     destinationPortRange: '443'
+        //     destinationAddressPrefix: 'Storage.${location}'
+        //   }
+        // }
         {
           name: 'Allow-AzureMonitor-Tcp-Https'
           properties: {
