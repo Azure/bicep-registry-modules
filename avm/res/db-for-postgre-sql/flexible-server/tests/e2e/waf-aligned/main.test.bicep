@@ -111,18 +111,18 @@ module testDeployment '../../../main.bicep' = [
       ]
       geoRedundantBackup: 'Enabled'
       privateDnsZoneArmResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-      highAvailability: 'ZoneRedundant'
-      maintenanceWindow: {
-        customWindow: 'Enabled'
-        dayOfWeek: '0'
-        startHour: '1'
-        startMinute: '0'
-      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
+      maintenanceWindow: {
+        customWindow: 'Enabled'
+        dayOfWeek: 0
+        startHour: 1
+        startMinute: 0
+      }
+      highAvailability: 'ZoneRedundant'
     }
     dependsOn: [
       nestedDependencies

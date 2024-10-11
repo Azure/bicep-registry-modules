@@ -8,7 +8,6 @@ This module deploys a Firewall Policy.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -56,7 +55,7 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -73,6 +72,22 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/firewall-policy:<version>'
+
+// Required parameters
+param name = 'nfpmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -156,7 +171,7 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -244,6 +259,74 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/firewall-policy:<version>'
+
+// Required parameters
+param name = 'nfpmax001'
+// Non-required parameters
+param allowSqlRedirect = true
+param autoLearnPrivateRanges = 'Enabled'
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param mode = 'Alert'
+param ruleCollectionGroups = [
+  {
+    name: 'rule-001'
+    priority: 5000
+    ruleCollections: [
+      {
+        action: {
+          type: 'Allow'
+        }
+        name: 'collection002'
+        priority: 5555
+        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+        rules: [
+          {
+            destinationAddresses: [
+              '*'
+            ]
+            destinationFqdns: []
+            destinationIpGroups: []
+            destinationPorts: [
+              '80'
+            ]
+            ipProtocols: [
+              'TCP'
+              'UDP'
+            ]
+            name: 'rule002'
+            ruleType: 'NetworkRule'
+            sourceAddresses: [
+              '*'
+            ]
+            sourceIpGroups: []
+          }
+        ]
+      }
+    ]
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param tier = 'Premium'
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -316,7 +399,7 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -394,6 +477,67 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/firewall-policy:<version>'
+
+// Required parameters
+param name = 'nfpwaf001'
+// Non-required parameters
+param allowSqlRedirect = true
+param autoLearnPrivateRanges = 'Enabled'
+param location = '<location>'
+param ruleCollectionGroups = [
+  {
+    name: 'rule-001'
+    priority: 5000
+    ruleCollections: [
+      {
+        action: {
+          type: 'Allow'
+        }
+        name: 'collection002'
+        priority: 5555
+        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+        rules: [
+          {
+            destinationAddresses: [
+              '*'
+            ]
+            destinationFqdns: []
+            destinationIpGroups: []
+            destinationPorts: [
+              '80'
+            ]
+            ipProtocols: [
+              'TCP'
+              'UDP'
+            ]
+            name: 'rule002'
+            ruleType: 'NetworkRule'
+            sourceAddresses: [
+              '*'
+            ]
+            sourceIpGroups: []
+          }
+        ]
+      }
+    ]
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param threatIntelMode = 'Deny'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -662,7 +806,6 @@ List of workspaces for Firewall Policy Insights.
 - Required: No
 - Type: array
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -671,10 +814,6 @@ List of workspaces for Firewall Policy Insights.
 | `name` | string | The name of the deployed firewall policy. |
 | `resourceGroupName` | string | The resource group of the deployed firewall policy. |
 | `resourceId` | string | The resource ID of the deployed firewall policy. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

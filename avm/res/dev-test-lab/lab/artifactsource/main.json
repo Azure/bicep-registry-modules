@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "15552685312013632487"
+      "templateHash": "13904061272597362111"
     },
     "name": "DevTest Lab Artifact Sources",
-    "description": "This module deploys a DevTest Lab Artifact Source.\n\nAn artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services.",
+    "description": "This module deploys a DevTest Lab Artifact Source.\r\n\r\nAn artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services.",
     "owner": "Azure/module-maintainers"
   },
   "parameters": {
@@ -41,37 +41,36 @@
     },
     "branchRef": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The artifact source's branch reference (e.g. main or master)."
       }
     },
     "folderPath": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The folder containing artifacts. At least one folder path is required. Required if \"armTemplateFolderPath\" is empty."
       }
     },
     "armTemplateFolderPath": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The folder containing Azure Resource Manager templates. Required if \"folderPath\" is empty."
       }
     },
     "securityToken": {
       "type": "securestring",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The security token to authenticate to the artifact source."
       }
     },
     "sourceType": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
-        "",
         "GitHub",
         "StorageAccount",
         "VsoGit"
@@ -112,11 +111,11 @@
       "tags": "[parameters('tags')]",
       "properties": {
         "displayName": "[parameters('displayName')]",
-        "branchRef": "[if(not(empty(parameters('branchRef'))), parameters('branchRef'), null())]",
-        "folderPath": "[if(not(empty(parameters('folderPath'))), parameters('folderPath'), null())]",
-        "armTemplateFolderPath": "[if(not(empty(parameters('armTemplateFolderPath'))), parameters('armTemplateFolderPath'), null())]",
-        "securityToken": "[if(not(empty(parameters('securityToken'))), parameters('securityToken'), null())]",
-        "sourceType": "[if(not(empty(parameters('sourceType'))), parameters('sourceType'), null())]",
+        "branchRef": "[parameters('branchRef')]",
+        "folderPath": "[parameters('folderPath')]",
+        "armTemplateFolderPath": "[parameters('armTemplateFolderPath')]",
+        "securityToken": "[parameters('securityToken')]",
+        "sourceType": "[parameters('sourceType')]",
         "status": "[parameters('status')]",
         "uri": "[parameters('uri')]"
       },
