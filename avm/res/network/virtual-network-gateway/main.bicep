@@ -199,9 +199,6 @@ var ipConfiguration = isActiveActive
           publicIPAddress: {
             id: existingFirstPipResourceId ?? az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
           }
-
-
-
         }
         name: 'vNetGatewayConfig1'
       }
