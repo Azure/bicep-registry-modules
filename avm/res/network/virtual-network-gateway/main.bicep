@@ -612,7 +612,6 @@ type activeActiveBgpType = {
 
   @description('Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
   customBgpIpAddresses: string[]?
-  
   @description('Optional. The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.')
   secondCustomBgpIpAddresses: string[]?
 }
