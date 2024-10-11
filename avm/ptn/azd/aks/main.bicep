@@ -1,4 +1,4 @@
-metadata name = 'avm/ptn/azd/aks'
+metadata name = 'Azd AKS'
 metadata description = '''Creates an Azure Kubernetes Service (AKS) cluster with a system agent pool as well as an additional user agent pool.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.'''
