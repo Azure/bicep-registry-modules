@@ -757,7 +757,7 @@ module registry_rbac 'br/public:avm/ptn/authorization/resource-role-assignment:0
 module storage 'br/public:avm/res/storage/storage-account:0.14.1' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-storage'
   params: {
-    name: uniqueString('sa', name, location, resourceGroupName)
+    name: uniqueString('sa', name, location, resourceGroupName, subscription().subscriptionId)
     location: location
     enableTelemetry: enableTelemetry
     tags: union(tags, { 'used-by': 'deployment-script' })

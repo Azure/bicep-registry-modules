@@ -16,7 +16,6 @@ This module deploys a container to run as a job.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/jobs` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-03-01/jobs) |
 | `Microsoft.App/managedEnvironments` | [2024-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-02-02-preview/managedEnvironments) |
 | `Microsoft.App/managedEnvironments/storages` | [2024-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-02-02-preview/managedEnvironments/storages) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
@@ -31,8 +30,8 @@ This module deploys a container to run as a job.
 | `Microsoft.KeyVault/vaults` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults) |
 | `Microsoft.KeyVault/vaults/accessPolicies` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/accessPolicies) |
 | `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
 | `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
 | `Microsoft.Network/privateDnsZones` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones) |
@@ -175,8 +174,6 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     // Non-required parameters
     addressPrefix: '192.168.0.0/16'
     appInsightsConnectionString: '<appInsightsConnectionString>'
-    cpu: '2'
-    cronExpression: '0 * * * *'
     customNetworkSecurityGroups: [
       {
         name: 'nsg1'
@@ -197,16 +194,6 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     deployDnsZoneContainerRegistry: false
     deployDnsZoneKeyVault: false
     deployInVnet: true
-    environmentVariables: [
-      {
-        name: 'key1'
-        value: 'value1'
-      }
-      {
-        name: 'key2'
-        secretRef: 'secretkey1'
-      }
-    ]
     keyVaultName: '<keyVaultName>'
     keyVaultRoleAssignments: [
       {
@@ -223,7 +210,6 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     managedIdentityName: 'acjmaxmi'
     managedIdentityResourceId: '<managedIdentityResourceId>'
-    memory: '8Gi'
     newContainerImageName: 'application/frontend:latest'
     overwriteExistingImage: true
     registryRoleAssignments: [
@@ -243,7 +229,6 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     tags: {
       environment: 'test'
     }
-    workloadProfileName: 'CAW01'
     workloadProfiles: [
       {
         maximumCount: 1
@@ -282,12 +267,6 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     "appInsightsConnectionString": {
       "value": "<appInsightsConnectionString>"
     },
-    "cpu": {
-      "value": "2"
-    },
-    "cronExpression": {
-      "value": "0 * * * *"
-    },
     "customNetworkSecurityGroups": {
       "value": [
         {
@@ -315,18 +294,6 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     },
     "deployInVnet": {
       "value": true
-    },
-    "environmentVariables": {
-      "value": [
-        {
-          "name": "key1",
-          "value": "value1"
-        },
-        {
-          "name": "key2",
-          "secretRef": "secretkey1"
-        }
-      ]
     },
     "keyVaultName": {
       "value": "<keyVaultName>"
@@ -358,9 +325,6 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     "managedIdentityResourceId": {
       "value": "<managedIdentityResourceId>"
     },
-    "memory": {
-      "value": "8Gi"
-    },
     "newContainerImageName": {
       "value": "application/frontend:latest"
     },
@@ -389,9 +353,6 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
       "value": {
         "environment": "test"
       }
-    },
-    "workloadProfileName": {
-      "value": "CAW01"
     },
     "workloadProfiles": {
       "value": [
@@ -423,8 +384,6 @@ param name = 'acjmax001'
 // Non-required parameters
 param addressPrefix = '192.168.0.0/16'
 param appInsightsConnectionString = '<appInsightsConnectionString>'
-param cpu = '2'
-param cronExpression = '0 * * * *'
 param customNetworkSecurityGroups = [
   {
     name: 'nsg1'
@@ -445,16 +404,6 @@ param customNetworkSecurityGroups = [
 param deployDnsZoneContainerRegistry = false
 param deployDnsZoneKeyVault = false
 param deployInVnet = true
-param environmentVariables = [
-  {
-    name: 'key1'
-    value: 'value1'
-  }
-  {
-    name: 'key2'
-    secretRef: 'secretkey1'
-  }
-]
 param keyVaultName = '<keyVaultName>'
 param keyVaultRoleAssignments = [
   {
@@ -471,7 +420,6 @@ param lock = {
 param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param managedIdentityName = 'acjmaxmi'
 param managedIdentityResourceId = '<managedIdentityResourceId>'
-param memory = '8Gi'
 param newContainerImageName = 'application/frontend:latest'
 param overwriteExistingImage = true
 param registryRoleAssignments = [
@@ -491,7 +439,6 @@ param secrets = [
 param tags = {
   environment: 'test'
 }
-param workloadProfileName = 'CAW01'
 param workloadProfiles = [
   {
     maximumCount: 1
@@ -532,7 +479,6 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
     }
-    workloadProfileName: 'CAW01'
     workloadProfiles: [
       {
         maximumCount: 6
@@ -589,9 +535,6 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
         "hidden-title": "This is visible in the resource name"
       }
     },
-    "workloadProfileName": {
-      "value": "CAW01"
-    },
     "workloadProfiles": {
       "value": [
         {
@@ -630,7 +573,6 @@ param tags = {
   Env: 'test'
   'hidden-title': 'This is visible in the resource name'
 }
-param workloadProfileName = 'CAW01'
 param workloadProfiles = [
   {
     maximumCount: 6
@@ -666,12 +608,9 @@ param workloadProfiles = [
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`appInsightsConnectionString`](#parameter-appinsightsconnectionstring) | string | The connection string for the Application Insights instance that will be added to Key Vault as `applicationinsights-connection-string` and can be used by the Job. |
-| [`cpu`](#parameter-cpu) | string | The CPU resources that will be allocated to the Container Apps Job. |
-| [`cronExpression`](#parameter-cronexpression) | string | The cron expression that will be used to schedule the job. |
 | [`customNetworkSecurityGroups`](#parameter-customnetworksecuritygroups) | array | Network security group, that will be added to the workload subnet. |
 | [`deployInVnet`](#parameter-deployinvnet) | bool | Deploy resources in a virtual network and use it for private endpoints. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`environmentVariables`](#parameter-environmentvariables) | array | The environment variables that will be added to the Container Apps Job. |
 | [`keyVaultName`](#parameter-keyvaultname) | string | The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets. |
 | [`keyVaultRoleAssignments`](#parameter-keyvaultroleassignments) | array | The permissions that will be assigned to the Key Vault. The managed Identity will be assigned the permissions to get and list secrets. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -679,13 +618,11 @@ param workloadProfiles = [
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created. |
 | [`managedIdentityName`](#parameter-managedidentityname) | string | The name of the managed identity to create. If not provided, a name will be generated automatically as `jobsUserIdentity-$\{name\}`. |
 | [`managedIdentityResourceId`](#parameter-managedidentityresourceid) | string | Use an existing managed identity to import the container image and run the job. If not provided, a new managed identity will be created. |
-| [`memory`](#parameter-memory) | string | The memory resources that will be allocated to the Container Apps Job. |
 | [`newContainerImageName`](#parameter-newcontainerimagename) | string | The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline. You should skip the registry name when specifying a custom value, as it is added automatically. If you leave this empty, the original name will be used (with the new registry name). |
 | [`overwriteExistingImage`](#parameter-overwriteexistingimage) | bool | The flag that indicates whether the existing image in the Container Registry should be overwritten. |
 | [`registryRoleAssignments`](#parameter-registryroleassignments) | array | The permissions that will be assigned to the Container Registry. The managed Identity will be assigned the permissions to get and list images. |
 | [`secrets`](#parameter-secrets) | array | The secrets of the Container App. They will be added to Key Vault and configured as secrets in the Container App Job. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`workloadProfileName`](#parameter-workloadprofilename) | string |  The name of the workload profile to use. Leave empty to use a consumption based profile. |
 | [`workloadProfiles`](#parameter-workloadprofiles) | array | Workload profiles for the managed environment. Leave empty to use a consumption based profile. |
 
 ### Parameter: `containerImageSource`
@@ -734,22 +671,6 @@ The connection string for the Application Insights instance that will be added t
 - Required: No
 - Type: string
 - Example: `InstrumentationKey=<00000000-0000-0000-0000-000000000000>;IngestionEndpoint=https://germanywestcentral-1.in.applicationinsights.azure.com/;LiveEndpoint=https://germanywestcentral.livediagnostics.monitor.azure.com/;ApplicationId=<00000000-0000-0000-0000-000000000000>`
-
-### Parameter: `cpu`
-
-The CPU resources that will be allocated to the Container Apps Job.
-
-- Required: No
-- Type: string
-- Default: `'1'`
-
-### Parameter: `cronExpression`
-
-The cron expression that will be used to schedule the job.
-
-- Required: No
-- Type: string
-- Default: `'0 0 * * *'`
 
 ### Parameter: `customNetworkSecurityGroups`
 
@@ -950,60 +871,6 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `environmentVariables`
-
-The environment variables that will be added to the Container Apps Job.
-
-- Required: No
-- Type: array
-- Example:
-  ```Bicep
-  [[
-    {
-      name: 'ENV_VAR_NAME'
-      value: 'ENV_VAR_VALUE'
-    }
-    {
-      name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-      secretRef: 'applicationinsights-connection-string'
-    }
-  ]
-  ```
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-environmentvariablesname) | string | The environment variable name. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`secretRef`](#parameter-environmentvariablessecretref) | string | The name of the Container App secret from which to pull the envrionment variable value. Required if `value` is null. |
-| [`value`](#parameter-environmentvariablesvalue) | string | The environment variable value. Required if `secretRef` is null. |
-
-### Parameter: `environmentVariables.name`
-
-The environment variable name.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `environmentVariables.secretRef`
-
-The name of the Container App secret from which to pull the envrionment variable value. Required if `value` is null.
-
-- Required: No
-- Type: string
-
-### Parameter: `environmentVariables.value`
-
-The environment variable value. Required if `secretRef` is null.
-
-- Required: No
-- Type: string
-
 ### Parameter: `keyVaultName`
 
 The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets.
@@ -1176,14 +1043,6 @@ Use an existing managed identity to import the container image and run the job. 
 - Required: No
 - Type: string
 - Example: `/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity`
-
-### Parameter: `memory`
-
-The memory resources that will be allocated to the Container Apps Job.
-
-- Required: No
-- Type: string
-- Default: `'2Gi'`
 
 ### Parameter: `newContainerImageName`
 
@@ -1386,14 +1245,6 @@ Tags of the resource.
   }
   ```
 
-### Parameter: `workloadProfileName`
-
- The name of the workload profile to use. Leave empty to use a consumption based profile.
-
-- Required: No
-- Type: string
-- Example: `CAW01`
-
 ### Parameter: `workloadProfiles`
 
 Workload profiles for the managed environment. Leave empty to use a consumption based profile.
@@ -1434,7 +1285,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/ptn/authorization/resource-role-assignment:0.1.1` | Remote reference |
 | `br/public:avm/ptn/deployment-script/import-image-to-acr:0.3.2` | Remote reference |
-| `br/public:avm/res/app/job:0.5.0` | Remote reference |
 | `br/public:avm/res/app/managed-environment:0.8.0` | Remote reference |
 | `br/public:avm/res/container-registry/registry:0.5.1` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.9.0` | Remote reference |

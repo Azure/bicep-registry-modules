@@ -80,30 +80,30 @@ param newContainerImageName string?
 @description('Optional. The flag that indicates whether the existing image in the Container Registry should be overwritten.')
 param overwriteExistingImage bool = false
 
-@description('Optional. The cron expression that will be used to schedule the job.')
-@metadata({ default: '0 0 * * * // every day at midnight' })
-param cronExpression string = '0 0 * * *'
+// @description('Optional. The cron expression that will be used to schedule the job.')
+// @metadata({ default: '0 0 * * * // every day at midnight' })
+// param cronExpression string = '0 0 * * *'
 
-@description('Optional. The CPU resources that will be allocated to the Container Apps Job.')
-param cpu string = '1'
+// @description('Optional. The CPU resources that will be allocated to the Container Apps Job.')
+// param cpu string = '1'
 
-@description('Optional. The memory resources that will be allocated to the Container Apps Job.')
-param memory string = '2Gi'
+// @description('Optional. The memory resources that will be allocated to the Container Apps Job.')
+// param memory string = '2Gi'
 
-@description('Optional. The environment variables that will be added to the Container Apps Job.')
-@metadata({
-  example: '''[
-  {
-    name: 'ENV_VAR_NAME'
-    value: 'ENV_VAR_VALUE'
-  }
-  {
-    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-    secretRef: 'applicationinsights-connection-string'
-  }
-]'''
-})
-param environmentVariables environmentVariablesType[]?
+// @description('Optional. The environment variables that will be added to the Container Apps Job.')
+// @metadata({
+//   example: '''[
+//   {
+//     name: 'ENV_VAR_NAME'
+//     value: 'ENV_VAR_VALUE'
+//   }
+//   {
+//     name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+//     secretRef: 'applicationinsights-connection-string'
+//   }
+// ]'''
+// })
+// param environmentVariables environmentVariablesType[]?
 
 @description('Optional. The secrets of the Container App. They will be added to Key Vault and configured as secrets in the Container App Job. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set.')
 @metadata({
@@ -147,9 +147,9 @@ param secrets secretType[]?
 })
 param workloadProfiles array?
 
-@description('Optional.  The name of the workload profile to use. Leave empty to use a consumption based profile.')
-@metadata({ example: 'CAW01' })
-param workloadProfileName string?
+// @description('Optional.  The name of the workload profile to use. Leave empty to use a consumption based profile.')
+// @metadata({ example: 'CAW01' })
+// param workloadProfileName string?
 
 @description('Optional. Tags of the resource.')
 @metadata({
@@ -237,66 +237,66 @@ module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.3
   }
 }
 
-module job 'br/public:avm/res/app/job:0.5.0' = {
-  name: '${uniqueString(deployment().name, location)}-${resourceGroup().name}-appjob'
-  params: {
-    name: '${name}-container-job'
-    location: location
-    enableTelemetry: enableTelemetry
-    tags: tags
-    lock: lock
-    environmentResourceId: services.outputs.managedEnvironmentId
-    workloadProfileName: workloadProfileName
-    managedIdentities: {
-      userAssignedResourceIds: [services.outputs.userManagedIdentityResourceId]
-    }
-    secrets: union(
-      // add Application Insights connection string as secret if provided
-      !empty(services.outputs.keyVaultAppInsightsConnectionStringUrl)
-        ? [
-            {
-              name: 'applicationinsightsconnectionstring'
-              identity: services.outputs.userManagedIdentityResourceId
-              keyVaultUrl: 'https://${services.outputs.vaultName}${environment().suffixes.keyvaultDns}/secrets/applicationinsights-connection-string'
-            }
-          ]
-        : [],
-      // add passed secrets to the job. It uses the Managed Identity to access the secrets.
-      secrets ?? []
-    )
-    triggerType: 'Schedule'
-    scheduleTriggerConfig: {
-      cronExpression: cronExpression
-    }
-    registries: [
-      {
-        identity: services.outputs.userManagedIdentityResourceId
-        server: services.outputs.registryLoginServer
-      }
-    ]
-    containers: [
-      {
-        name: '${name}-scheduled-job'
-        image: import_image.outputs.importedImage.acrHostedImage
-        env: environmentVariables
-        resources: {
-          cpu: cpu
-          memory: memory
-        }
-      }
-    ]
-  }
-}
+// module job 'br/public:avm/res/app/job:0.5.0' = {
+//   name: '${uniqueString(deployment().name, location)}-${resourceGroup().name}-appjob'
+//   params: {
+//     name: '${name}-container-job'
+//     location: location
+//     enableTelemetry: enableTelemetry
+//     tags: tags
+//     lock: lock
+//     environmentResourceId: services.outputs.managedEnvironmentId
+//     workloadProfileName: workloadProfileName
+//     managedIdentities: {
+//       userAssignedResourceIds: [services.outputs.userManagedIdentityResourceId]
+//     }
+//     secrets: union(
+//       // add Application Insights connection string as secret if provided
+//       !empty(services.outputs.keyVaultAppInsightsConnectionStringUrl)
+//         ? [
+//             {
+//               name: 'applicationinsightsconnectionstring'
+//               identity: services.outputs.userManagedIdentityResourceId
+//               keyVaultUrl: 'https://${services.outputs.vaultName}${environment().suffixes.keyvaultDns}/secrets/applicationinsights-connection-string'
+//             }
+//           ]
+//         : [],
+//       // add passed secrets to the job. It uses the Managed Identity to access the secrets.
+//       secrets ?? []
+//     )
+//     triggerType: 'Schedule'
+//     scheduleTriggerConfig: {
+//       cronExpression: cronExpression
+//     }
+//     registries: [
+//       {
+//         identity: services.outputs.userManagedIdentityResourceId
+//         server: services.outputs.registryLoginServer
+//       }
+//     ]
+//     containers: [
+//       {
+//         name: '${name}-scheduled-job'
+//         image: import_image.outputs.importedImage.acrHostedImage
+//         env: environmentVariables
+//         resources: {
+//           cpu: cpu
+//           memory: memory
+//         }
+//       }
+//     ]
+//   }
+// }
 
 // ============ //
 // Outputs      //
 // ============ //
 
 @description('The resource ID of the container job.')
-output resourceId string = job.outputs.resourceId
+output resourceId string = services.outputs.userManagedIdentityResourceId // job.outputs.resourceId
 
 @description('The name of the container job.')
-output name string = job.name
+output name string = name // job.name
 
 @description('The name of the Resource Group the resource was deployed into.')
 output resourceGroupName string = resourceGroup().name

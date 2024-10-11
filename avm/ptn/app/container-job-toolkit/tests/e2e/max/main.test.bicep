@@ -101,15 +101,15 @@ module testDeployment '../../../main.bicep' = [
           maximumCount: 1
         }
       ]
-      workloadProfileName: 'CAW01'
+      // workloadProfileName: 'CAW01'
       managedIdentityResourceId: dependencies.outputs.userIdentityResourceId
-      cpu: '2'
-      memory: '8Gi'
-      cronExpression: '0 * * * *'
-      environmentVariables: [
-        { name: 'key1', value: 'value1' }
-        { name: 'key2', secretRef: 'secretkey1' }
-      ]
+      // cpu: '2'
+      // memory: '8Gi'
+      // cronExpression: '0 * * * *'
+      // environmentVariables: [
+      //   { name: 'key1', value: 'value1' }
+      //   { name: 'key2', secretRef: 'secretkey1' }
+      // ]
       secrets: [
         {
           name: 'secretkey1'

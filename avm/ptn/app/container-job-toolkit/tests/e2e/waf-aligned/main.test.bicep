@@ -67,7 +67,7 @@ module testDeployment '../../../main.bicep' = [
           maximumCount: 6
         }
       ]
-      workloadProfileName: 'CAW01'
+      // workloadProfileName: 'CAW01'
       managedIdentityResourceId: dependencies.outputs.userIdentityResourceId
       tags: {
         'hidden-title': 'This is visible in the resource name'
