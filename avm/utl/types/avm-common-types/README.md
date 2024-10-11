@@ -28,10 +28,7 @@ The following section provides usage examples for the module, which were used to
 
 ### Example 1: _Import_
 
-This example imports all available types of the given module.'
-
-Note: When using the published module, you should import the types via the Public Bicep Registry using the following syntax: `br/public:avm/utl/types/avm-common-types:<version>`
-
+This example imports all available types of the given module.
 
 
 <details>
@@ -42,17 +39,11 @@ Note: When using the published module, you should import the types via the Publi
 targetScope = 'subscription'
 
 metadata name = 'Import'
-metadata description = '''
-This example imports all available types of the given module.'
-
-Note: When using the published module, you should import the types via the Public Bicep Registry using the following syntax: br/public:avm/utl/types/avm-common-types:<version>
-'''
+metadata description = 'This example imports all available types of the given module.'
 
 // ============== //
 // Test Execution //
 // ============== //
-
-// Triggering comme
 
 import {
   customerManagedKeyType
@@ -68,7 +59,7 @@ import {
   privateEndpointSingleServiceType
   secretToSetType
   secretSetType
-} from '../../../main.bicep'
+} from '../../../main.bicep' // Would be: br/public:avm/utl/types/avm-common-types:<version>
 
 //  ====================== //
 //   Diagnostic Settings   //
