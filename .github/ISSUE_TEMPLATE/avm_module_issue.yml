@@ -52,6 +52,7 @@ body:
         - "avm/ptn/azd/container-apps-stack"
         - "avm/ptn/azd/insights-dashboard"
         - "avm/ptn/azd/ml-hub-dependencies"
+        - "avm/ptn/azd/monitoring"
         - "avm/ptn/deployment-script/import-image-to-acr"
         - "avm/ptn/dev-ops/cicd-agents-and-runners"
         - "avm/ptn/finops-toolkit/finops-hub"
