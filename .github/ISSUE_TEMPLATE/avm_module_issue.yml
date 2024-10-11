@@ -51,6 +51,7 @@ body:
         - "avm/ptn/azd/apim-api"
         - "avm/ptn/azd/container-apps-stack"
         - "avm/ptn/azd/insights-dashboard"
+        - "avm/ptn/azd/ml-project"
         - "avm/ptn/azd/ml-hub-dependencies"
         - "avm/ptn/azd/monitoring"
         - "avm/ptn/deployment-script/import-image-to-acr"
