@@ -142,7 +142,7 @@ param location = '<location>'
 | [`projectKind`](#parameter-projectkind) | string | The type of Azure Machine Learning workspace to create. |
 | [`projectManagedIdentities`](#parameter-projectmanagedidentities) | object | The managed identity definition for the machine learning resource. At least one identity type is required. |
 | [`projectSku`](#parameter-projectsku) | string | Specifies the SKU, also referred as 'edition' of the Azure Machine Learning workspace. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this machine learning resource. For security reasons it should be disabled. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this machine learning workspace. For security reasons it should be disabled. |
 | [`roleDefinitionIdOrName`](#parameter-roledefinitionidorname) | array | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. Default roles: AzureML Data Scientist, Azure Machine Learning Workspace Connection Secrets Reader. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
@@ -268,7 +268,7 @@ Specifies the SKU, also referred as 'edition' of the Azure Machine Learning work
 
 ### Parameter: `publicNetworkAccess`
 
-Whether or not public network access is allowed for this machine learning resource. For security reasons it should be disabled.
+Whether or not public network access is allowed for this machine learning workspace. For security reasons it should be disabled.
 
 - Required: No
 - Type: string
