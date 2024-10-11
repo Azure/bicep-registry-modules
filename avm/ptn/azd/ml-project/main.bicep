@@ -171,4 +171,3 @@ type managedIdentitiesType = {
   @description('Optional. The resource ID(s) to assign to the resource.')
   userAssignedResourceIds: string[]?
 }
-
