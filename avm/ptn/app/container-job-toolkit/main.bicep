@@ -64,8 +64,8 @@ param deployDnsZoneContainerRegistry bool = true
 @description('Conditional. The address prefix for the virtual network needs to be at least a /16. Three subnets will be created (the first /24 will be used for private endpoints, the second /24 for service endpoints and the second /23 is used for the workload). Required if `zoneRedundant` for consumption plan is desired or `deployInVnet` is `true`.')
 param addressPrefix string = '10.50.0.0/16' // set a default value for the cidrSubnet calculation, even if not used
 
-@description('Optional. Network security group, that will be added to the workload subnet.')
-param customNetworkSecurityGroups securityRulesType
+// @description('Optional. Network security group, that will be added to the workload subnet.')
+// param customNetworkSecurityGroups securityRulesType
 
 // container related parameters
 // -------------------------
@@ -208,7 +208,7 @@ module services 'modules/deploy_services.bicep' = {
     addressPrefix: addressPrefix
     deployDnsZoneKeyVault: deployDnsZoneKeyVault
     deployDnsZoneContainerRegistry: deployDnsZoneContainerRegistry
-    customNetworkSecurityGroups: customNetworkSecurityGroups
+    // customNetworkSecurityGroups: customNetworkSecurityGroups
     workloadProfiles: length(workloadProfiles ?? []) > 0 ? workloadProfiles : null
     tags: tags
     lock: lock

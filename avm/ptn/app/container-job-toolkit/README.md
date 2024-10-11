@@ -177,23 +177,6 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     appInsightsConnectionString: '<appInsightsConnectionString>'
     cpu: '2'
     cronExpression: '0 * * * *'
-    customNetworkSecurityGroups: [
-      {
-        name: 'nsg1'
-        properties: {
-          access: 'Allow'
-          destinationAddressPrefix: '192.168.0.0/16'
-          destinationPortRange: '80'
-          direction: 'Outbound'
-          priority: 300
-          protocol: 'Tcp'
-          sourceAddressPrefixes: [
-            '10.10.10.0/24'
-          ]
-          sourcePortRange: '*'
-        }
-      }
-    ]
     deployDnsZoneContainerRegistry: false
     deployDnsZoneKeyVault: false
     deployInVnet: true
@@ -287,25 +270,6 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     },
     "cronExpression": {
       "value": "0 * * * *"
-    },
-    "customNetworkSecurityGroups": {
-      "value": [
-        {
-          "name": "nsg1",
-          "properties": {
-            "access": "Allow",
-            "destinationAddressPrefix": "192.168.0.0/16",
-            "destinationPortRange": "80",
-            "direction": "Outbound",
-            "priority": 300,
-            "protocol": "Tcp",
-            "sourceAddressPrefixes": [
-              "10.10.10.0/24"
-            ],
-            "sourcePortRange": "*"
-          }
-        }
-      ]
     },
     "deployDnsZoneContainerRegistry": {
       "value": false
@@ -425,23 +389,6 @@ param addressPrefix = '192.168.0.0/16'
 param appInsightsConnectionString = '<appInsightsConnectionString>'
 param cpu = '2'
 param cronExpression = '0 * * * *'
-param customNetworkSecurityGroups = [
-  {
-    name: 'nsg1'
-    properties: {
-      access: 'Allow'
-      destinationAddressPrefix: '192.168.0.0/16'
-      destinationPortRange: '80'
-      direction: 'Outbound'
-      priority: 300
-      protocol: 'Tcp'
-      sourceAddressPrefixes: [
-        '10.10.10.0/24'
-      ]
-      sourcePortRange: '*'
-    }
-  }
-]
 param deployDnsZoneContainerRegistry = false
 param deployDnsZoneKeyVault = false
 param deployInVnet = true
@@ -668,7 +615,6 @@ param workloadProfiles = [
 | [`appInsightsConnectionString`](#parameter-appinsightsconnectionstring) | string | The connection string for the Application Insights instance that will be added to Key Vault as `applicationinsights-connection-string` and can be used by the Job. |
 | [`cpu`](#parameter-cpu) | string | The CPU resources that will be allocated to the Container Apps Job. |
 | [`cronExpression`](#parameter-cronexpression) | string | The cron expression that will be used to schedule the job. |
-| [`customNetworkSecurityGroups`](#parameter-customnetworksecuritygroups) | array | Network security group, that will be added to the workload subnet. |
 | [`deployInVnet`](#parameter-deployinvnet) | bool | Deploy resources in a virtual network and use it for private endpoints. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`environmentVariables`](#parameter-environmentvariables) | array | The environment variables that will be added to the Container Apps Job. |
@@ -750,189 +696,6 @@ The cron expression that will be used to schedule the job.
 - Required: No
 - Type: string
 - Default: `'0 0 * * *'`
-
-### Parameter: `customNetworkSecurityGroups`
-
-Network security group, that will be added to the workload subnet.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-customnetworksecuritygroupsname) | string | The name of the security rule. |
-| [`properties`](#parameter-customnetworksecuritygroupsproperties) | object | The properties of the security rule. |
-
-### Parameter: `customNetworkSecurityGroups.name`
-
-The name of the security rule.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `customNetworkSecurityGroups.properties`
-
-The properties of the security rule.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`access`](#parameter-customnetworksecuritygroupspropertiesaccess) | string | Whether network traffic is allowed or denied. |
-| [`direction`](#parameter-customnetworksecuritygroupspropertiesdirection) | string | The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic. |
-| [`priority`](#parameter-customnetworksecuritygroupspropertiespriority) | int | Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule. |
-| [`protocol`](#parameter-customnetworksecuritygroupspropertiesprotocol) | string | Network protocol this rule applies to. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`description`](#parameter-customnetworksecuritygroupspropertiesdescription) | string | The description of the security rule. |
-| [`destinationAddressPrefix`](#parameter-customnetworksecuritygroupspropertiesdestinationaddressprefix) | string | Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. |
-| [`destinationAddressPrefixes`](#parameter-customnetworksecuritygroupspropertiesdestinationaddressprefixes) | array | The destination address prefixes. CIDR or destination IP ranges. |
-| [`destinationApplicationSecurityGroupResourceIds`](#parameter-customnetworksecuritygroupspropertiesdestinationapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as destination. |
-| [`destinationPortRange`](#parameter-customnetworksecuritygroupspropertiesdestinationportrange) | string | The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
-| [`destinationPortRanges`](#parameter-customnetworksecuritygroupspropertiesdestinationportranges) | array | The destination port ranges. |
-| [`sourceAddressPrefix`](#parameter-customnetworksecuritygroupspropertiessourceaddressprefix) | string | The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from. |
-| [`sourceAddressPrefixes`](#parameter-customnetworksecuritygroupspropertiessourceaddressprefixes) | array | The CIDR or source IP ranges. |
-| [`sourceApplicationSecurityGroupResourceIds`](#parameter-customnetworksecuritygroupspropertiessourceapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as source. |
-| [`sourcePortRange`](#parameter-customnetworksecuritygroupspropertiessourceportrange) | string | The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
-| [`sourcePortRanges`](#parameter-customnetworksecuritygroupspropertiessourceportranges) | array | The source port ranges. |
-
-### Parameter: `customNetworkSecurityGroups.properties.access`
-
-Whether network traffic is allowed or denied.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Allow'
-    'Deny'
-  ]
-  ```
-
-### Parameter: `customNetworkSecurityGroups.properties.direction`
-
-The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Inbound'
-    'Outbound'
-  ]
-  ```
-
-### Parameter: `customNetworkSecurityGroups.properties.priority`
-
-Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `customNetworkSecurityGroups.properties.protocol`
-
-Network protocol this rule applies to.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '*'
-    'Ah'
-    'Esp'
-    'Icmp'
-    'Tcp'
-    'Udp'
-  ]
-  ```
-
-### Parameter: `customNetworkSecurityGroups.properties.description`
-
-The description of the security rule.
-
-- Required: No
-- Type: string
-
-### Parameter: `customNetworkSecurityGroups.properties.destinationAddressPrefix`
-
-Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.
-
-- Required: No
-- Type: string
-
-### Parameter: `customNetworkSecurityGroups.properties.destinationAddressPrefixes`
-
-The destination address prefixes. CIDR or destination IP ranges.
-
-- Required: No
-- Type: array
-
-### Parameter: `customNetworkSecurityGroups.properties.destinationApplicationSecurityGroupResourceIds`
-
-The resource IDs of the application security groups specified as destination.
-
-- Required: No
-- Type: array
-
-### Parameter: `customNetworkSecurityGroups.properties.destinationPortRange`
-
-The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.
-
-- Required: No
-- Type: string
-
-### Parameter: `customNetworkSecurityGroups.properties.destinationPortRanges`
-
-The destination port ranges.
-
-- Required: No
-- Type: array
-
-### Parameter: `customNetworkSecurityGroups.properties.sourceAddressPrefix`
-
-The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from.
-
-- Required: No
-- Type: string
-
-### Parameter: `customNetworkSecurityGroups.properties.sourceAddressPrefixes`
-
-The CIDR or source IP ranges.
-
-- Required: No
-- Type: array
-
-### Parameter: `customNetworkSecurityGroups.properties.sourceApplicationSecurityGroupResourceIds`
-
-The resource IDs of the application security groups specified as source.
-
-- Required: No
-- Type: array
-
-### Parameter: `customNetworkSecurityGroups.properties.sourcePortRange`
-
-The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.
-
-- Required: No
-- Type: string
-
-### Parameter: `customNetworkSecurityGroups.properties.sourcePortRanges`
-
-The source port ranges.
-
-- Required: No
-- Type: array
 
 ### Parameter: `deployInVnet`
 
