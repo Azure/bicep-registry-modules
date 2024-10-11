@@ -32,7 +32,7 @@ param skuName string = 'F2'
 param skuTier string = 'Fabric'
 
 @description('Required. List of admin members. Format: ["something@domain.com"].')
-param adminMembers array
+param adminMembers array = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
