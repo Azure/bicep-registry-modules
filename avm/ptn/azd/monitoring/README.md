@@ -1,4 +1,4 @@
-# Azure Monitoring `[Azd/Monitoring]`
+# Azd Azure Monitoring `[Azd/Monitoring]`
 
 Creates an Application Insights instance and a Log Analytics workspace.
 

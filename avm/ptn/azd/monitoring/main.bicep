@@ -1,4 +1,4 @@
-metadata name = 'Azure Monitoring'
+metadata name = 'Azd Azure Monitoring'
 metadata description = '''Creates an Application Insights instance and a Log Analytics workspace.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.'''
@@ -60,6 +60,7 @@ module logAnalytics 'br/public:avm/res/operational-insights/workspace:0.7.0' = {
     location: location
     tags: tags
     dataRetention: 30
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -71,6 +72,7 @@ module applicationInsights 'br/public:avm/ptn/azd/insights-dashboard:0.1.0' = {
     location: location
     tags: tags
     dashboardName: applicationInsightsDashboardName
+    enableTelemetry: enableTelemetry
   }
 }
 
