@@ -1,6 +1,8 @@
-# avm/ptn/azd/container-app-upsert `[Azd/ContainerAppUpsert]`
+# Azd Container App Upsert `[Azd/ContainerAppUpsert]`
 
 Creates or updates an existing Azure Container App.
+
+**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case
 
 ## Navigation
 
@@ -57,7 +59,7 @@ module containerAppUpsert 'br/public:avm/ptn/azd/container-app-upsert:<version>'
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -77,6 +79,23 @@ module containerAppUpsert 'br/public:avm/ptn/azd/container-app-upsert:<version>'
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/container-app-upsert:<version>'
+
+// Required parameters
+param containerAppsEnvironmentName = '<containerAppsEnvironmentName>'
+param name = 'acaumin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -143,7 +162,7 @@ module containerAppUpsert 'br/public:avm/ptn/azd/container-app-upsert:<version>'
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -217,6 +236,57 @@ module containerAppUpsert 'br/public:avm/ptn/azd/container-app-upsert:<version>'
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/container-app-upsert:<version>'
+
+// Required parameters
+param containerAppsEnvironmentName = '<containerAppsEnvironmentName>'
+param name = '<name>'
+// Non-required parameters
+param containerRegistryName = '<containerRegistryName>'
+param daprEnabled = true
+param env = [
+  {
+    name: 'ContainerAppStoredSecretName'
+    secretRef: 'containerappstoredsecret'
+  }
+  {
+    name: 'ContainerAppKeyVaultStoredSecretName'
+    secretRef: 'keyvaultstoredsecret'
+  }
+]
+param exists = true
+param identityName = '<identityName>'
+param identityPrincipalId = '<identityPrincipalId>'
+param identityType = 'UserAssigned'
+param location = '<location>'
+param secrets = {
+  secureList: [
+    {
+      name: 'containerappstoredsecret'
+      value: '<value>'
+    }
+    {
+      identity: '<identity>'
+      keyVaultUrl: '<keyVaultUrl>'
+      name: 'keyvaultstoredsecret'
+    }
+  ]
+}
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+param userAssignedIdentityResourceId = '<userAssignedIdentityResourceId>'
 ```
 
 </details>
@@ -539,9 +609,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `ptn/azd/container-app` | Local reference |
-| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.1` | Remote reference |
-| `br/public:avm/res/app/container-app:0.10.0` | Remote reference |
+| `br/public:avm/ptn/azd/acr-container-app:0.1.0` | Remote reference |
 
 ## Data Collection
 

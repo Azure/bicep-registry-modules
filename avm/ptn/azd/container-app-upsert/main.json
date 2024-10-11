@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "658508160785656461"
+      "templateHash": "610733373146441190"
     },
-    "name": "avm/ptn/azd/container-app-upsert",
-    "description": "Creates or updates an existing Azure Container App.",
+    "name": "Azd Container App Upsert",
+    "description": "Creates or updates an existing Azure Container App.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -348,7 +348,10 @@
             "value": "[parameters('serviceBinds')]"
           },
           "principalId": "[if(and(not(empty(parameters('identityName'))), not(empty(parameters('containerRegistryName')))), createObject('value', parameters('identityPrincipalId')), createObject('value', ''))]",
-          "userAssignedIdentityResourceId": "[if(and(not(empty(parameters('identityName'))), not(empty(parameters('containerRegistryName')))), createObject('value', parameters('userAssignedIdentityResourceId')), createObject('value', ''))]"
+          "userAssignedIdentityResourceId": "[if(and(not(empty(parameters('identityName'))), not(empty(parameters('containerRegistryName')))), createObject('value', parameters('userAssignedIdentityResourceId')), createObject('value', ''))]",
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -357,11 +360,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "3598083316856085363"
+              "version": "0.30.23.60470",
+              "templateHash": "1832494856594008897"
             },
-            "name": "avm/ptn/azd/container-app",
-            "description": "Creates a container app in an Azure Container App environment.",
+            "name": "Azd ACR Linked Container App",
+            "description": "Creates a container app in an Azure Container App environment.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
@@ -654,7 +657,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.ptn.azd-containerapp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.ptn.azd-acrcontainerapp.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -759,6 +762,9 @@
                   },
                   "scaleMinReplicas": {
                     "value": "[parameters('containerMinReplicas')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -1766,7 +1772,10 @@
                   "containerRegistryName": {
                     "value": "[parameters('containerRegistryName')]"
                   },
-                  "principalId": "[if(variables('usePrivateRegistry'), createObject('value', parameters('principalId')), createObject('value', ''))]"
+                  "principalId": "[if(variables('usePrivateRegistry'), createObject('value', parameters('principalId')), createObject('value', ''))]",
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1774,8 +1783,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "17275842659380934172"
+                      "version": "0.30.23.60470",
+                      "templateHash": "11140098273900072819"
                     },
                     "name": "ACR Pull permissions",
                     "description": "Assigns ACR Pull permissions to access an Azure Container Registry.",
@@ -1792,6 +1801,13 @@
                       "type": "string",
                       "metadata": {
                         "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
                       }
                     }
                   },
@@ -1820,6 +1836,9 @@
                           },
                           "principalType": {
                             "value": "ServicePrincipal"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
                           }
                         },
                         "template": {
