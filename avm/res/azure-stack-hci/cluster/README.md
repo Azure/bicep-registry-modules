@@ -185,11 +185,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    clusterNodeNames: [
-      'hcinode1'
-      'hcinode2'
-      'hcinode3'
-    ]
+    clusterNodeNames: '<clusterNodeNames>'
     clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
     customLocationName: '<customLocationName>'
     defaultGateway: '<defaultGateway>'
@@ -225,11 +221,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "clusterNodeNames": {
-      "value": [
-        "hcinode1",
-        "hcinode2",
-        "hcinode3"
-      ]
+      "value": "<clusterNodeNames>"
     },
     "clusterWitnessStorageAccountName": {
       "value": "<clusterWitnessStorageAccountName>"
@@ -297,11 +289,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
 using 'br/public:avm/res/azure-stack-hci/cluster:<version>'
 
 // Required parameters
-param clusterNodeNames = [
-  'hcinode1'
-  'hcinode2'
-  'hcinode3'
-]
+param clusterNodeNames = '<clusterNodeNames>'
 param clusterWitnessStorageAccountName = '<clusterWitnessStorageAccountName>'
 param customLocationName = '<customLocationName>'
 param defaultGateway = '<defaultGateway>'
@@ -326,7 +314,7 @@ param subnetMask = '<subnetMask>'
 
 ### Example 3: _Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration WAF aligned_
 
-This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster, validates the cluster configuration, and then deploys the cluster. WAF aligned.
+This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster, validates the cluster configuration, and then deploys the cluster WAF aligned.
 
 
 <details>

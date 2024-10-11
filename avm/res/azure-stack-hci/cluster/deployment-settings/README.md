@@ -43,6 +43,7 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`cloudId`](#parameter-cloudid) | string | If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource. |
 | [`episodicDataUpload`](#parameter-episodicdataupload) | bool | The diagnostic data for deploying a HCI cluster. |
 | [`isEuropeanUnionLocation`](#parameter-iseuropeanunionlocation) | bool | The location data for deploying a HCI cluster. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -183,6 +184,13 @@ An array of JSON objects that define the storage network configuration for the c
 The subnet mask pf the Management Network for the HCI cluster - ex: 255.255.252.0.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `cloudId`
+
+If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource.
+
+- Required: No
 - Type: string
 
 ### Parameter: `episodicDataUpload`

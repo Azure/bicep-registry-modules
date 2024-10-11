@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "14432220259159867333"
+      "templateHash": "10123607740126918191"
     },
     "name": "Azure Stack HCI Cluster Deployment Settings",
     "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource.",
@@ -194,6 +194,13 @@
       "metadata": {
         "description": "Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster."
       }
+    },
+    "cloudId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource."
+      }
     }
   },
   "variables": {
@@ -213,6 +220,12 @@
           "storageAdapterIPInfo": "[tryGet(parameters('storageNetworks')[copyIndex('storageNetworkList')], 'storageAdapterIPInfo')]"
         }
       }
+    ],
+    "deploymentSecretEceNames": [
+      "LocalAdminCredential",
+      "AzureStackLCMUserCredential",
+      "DefaultARBApplication",
+      "WitnessStorageKey"
     ]
   },
   "resources": {
@@ -241,6 +254,15 @@
                     "input": {
                       "name": "[reference(variables('arcNodeResourceIds')[copyIndex('physicalNodes')], '2022-12-27', 'Full').properties.displayName]",
                       "ipv4Address": "[filter(reference(format('{0}/providers/microsoft.azurestackhci/edgeDevices/default', variables('arcNodeResourceIds')[copyIndex('physicalNodes')]), '2024-01-01', 'Full').properties.deviceConfiguration.nicDetails, lambda('nic', not(equals(tryGet(lambdaVariables('nic'), 'defaultGateway'), null()))))[0].ip4Address]"
+                    }
+                  },
+                  {
+                    "name": "secrets",
+                    "count": "[length(variables('deploymentSecretEceNames'))]",
+                    "input": {
+                      "secretName": "[if(empty(parameters('cloudId')), variables('deploymentSecretEceNames')[copyIndex('secrets')], format('{0}-{1}-{2}', parameters('clusterName'), variables('deploymentSecretEceNames')[copyIndex('secrets')], parameters('cloudId')))]",
+                      "eceSecretName": "[variables('deploymentSecretEceNames')[copyIndex('secrets')]]",
+                      "secretLocation": "[if(empty(parameters('cloudId')), format('https://{0}{1}/secrets/{2}', parameters('keyVaultName'), environment().suffixes.keyvaultDns, variables('deploymentSecretEceNames')[copyIndex('secrets')]), format('https://{0}{1}/secrets/{2}-{3}-{4}', parameters('keyVaultName'), environment().suffixes.keyvaultDns, parameters('clusterName'), variables('deploymentSecretEceNames')[copyIndex('secrets')], parameters('cloudId')))]"
                     }
                   }
                 ],

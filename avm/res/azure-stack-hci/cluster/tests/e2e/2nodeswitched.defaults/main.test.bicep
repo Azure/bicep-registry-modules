@@ -64,7 +64,7 @@ var dnsServers = ['172.20.0.1']
 var customLocationName = '${serviceShort}-location'
 var enableStorageAutoIp = true
 var clusterWitnessStorageAccountName = 'dep${namePrefix}${serviceShort}wit'
-var keyVaultName = 'dep-dkkv' //'dep-${namePrefix}${serviceShort}kv'
+var keyVaultName = 'dep-${namePrefix}${serviceShort}kv'
 var hciISODownloadURL = 'https://azurestackreleases.download.prss.microsoft.com/dbazure/AzureStackHCI/OS-Composition/10.2408.0.3061/AZURESTACKHci23H2.25398.469.LCM.10.2408.0.3061.x64.en-us.iso'
 var networkIntents = [
   {

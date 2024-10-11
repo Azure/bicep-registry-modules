@@ -213,8 +213,8 @@ resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings
                 secretName: empty(cloudId) ? secretName : '${clusterName}-${secretName}-${cloudId}'
                 eceSecretName: secretName
                 secretLocation: empty(cloudId)
-                  ? 'https://kbmtbchi02.vault.azure.net/secrets/${secretName}'
-                  : 'https://kbmtbchi02.vault.azure.net/secrets/${clusterName}-${secretName}-${cloudId}'
+                  ? 'https://${keyVaultName}${environment().suffixes.keyvaultDns}/secrets/${secretName}'
+                  : 'https://${keyVaultName}${environment().suffixes.keyvaultDns}/secrets/${clusterName}-${secretName}-${cloudId}'
               }
             ]
           }
