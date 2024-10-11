@@ -31,7 +31,7 @@ param skuName string = 'F2'
 @description('Optional. SKU name of the Fabric resource.')
 param skuTier string = 'Fabric'
 
-@description('Required. List of admin members. Format: ["something@domain.com"].')
+@description('Optional. List of admin members. Format: ["something@domain.com"].')
 param adminMembers array = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')

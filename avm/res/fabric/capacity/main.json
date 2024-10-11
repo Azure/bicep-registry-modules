@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.3.12046",
-      "templateHash": "11718641793898572278"
+      "version": "0.28.1.47646",
+      "templateHash": "5720576912207868580"
     },
     "name": "Fabric Capacities",
     "description": "This module deploys Fabric capacities, which provide the compute resources for all the experiences in Fabric.",
@@ -65,8 +65,9 @@
     },
     "adminMembers": {
       "type": "array",
+      "defaultValue": [],
       "metadata": {
-        "description": "Required. List of admin members. Format: [\"something@domain.com\"]."
+        "description": "Optional. List of admin members. Format: [\"something@domain.com\"]."
       }
     },
     "enableTelemetry": {
