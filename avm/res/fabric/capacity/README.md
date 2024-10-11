@@ -41,6 +41,9 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
   name: 'capacityDeployment'
   params: {
     // Required parameters
+    adminMembers: [
+      '<fabricCapacityAdminEmail>'
+    ]
     name: 'fcmin001'
     // Non-required parameters
     location: '<location>'
@@ -61,6 +64,11 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "adminMembers": {
+      "value": [
+        "<fabricCapacityAdminEmail>"
+      ]
+    },
     "name": {
       "value": "fcmin001"
     },
@@ -83,6 +91,9 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
 using 'br/public:avm/res/fabric/capacity:<version>'
 
 // Required parameters
+param adminMembers = [
+  '<fabricCapacityAdminEmail>'
+]
 param name = 'fcmin001'
 // Non-required parameters
 param location = '<location>'
@@ -105,11 +116,11 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
   name: 'capacityDeployment'
   params: {
     // Required parameters
+    adminMembers: [
+      '<fabricCapacityAdminEmail>'
+    ]
     name: 'fcwaf001'
     // Non-required parameters
-    adminMembers: [
-      '<adminEmail>'
-    ]
     location: '<location>'
     skuName: 'F64'
   }
@@ -129,15 +140,15 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "adminMembers": {
+      "value": [
+        "<fabricCapacityAdminEmail>"
+      ]
+    },
     "name": {
       "value": "fcwaf001"
     },
     // Non-required parameters
-    "adminMembers": {
-      "value": [
-        "<adminEmail>"
-      ]
-    },
     "location": {
       "value": "<location>"
     },
@@ -159,11 +170,11 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
 using 'br/public:avm/res/fabric/capacity:<version>'
 
 // Required parameters
+param adminMembers = [
+  '<fabricCapacityAdminEmail>'
+]
 param name = 'fcwaf001'
 // Non-required parameters
-param adminMembers = [
-  '<adminEmail>'
-]
 param location = '<location>'
 param skuName = 'F64'
 ```
@@ -183,12 +194,17 @@ param skuName = 'F64'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`adminMembers`](#parameter-adminmembers) | array | List of admin members. Format: ["something@domain.com"]. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`skuName`](#parameter-skuname) | string | SKU tier of the Fabric resource. |
 | [`skuTier`](#parameter-skutier) | string | SKU name of the Fabric resource. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+
+**Rquired parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`adminMembers`](#parameter-adminmembers) | array | List of admin members. Format: ["something@domain.com"]. |
 
 ### Parameter: `name`
 
@@ -196,14 +212,6 @@ Name of the resource to create.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `adminMembers`
-
-List of admin members. Format: ["something@domain.com"].
-
-- Required: No
-- Type: array
-- Default: `[]`
 
 ### Parameter: `enableTelemetry`
 
@@ -265,6 +273,13 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `adminMembers`
+
+List of admin members. Format: ["something@domain.com"].
+
+- Required: Yes
+- Type: array
 
 ## Outputs
 

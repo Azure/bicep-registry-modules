@@ -20,6 +20,10 @@ param serviceShort string = 'fcmin'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Required. The admin e-mail for the fabric capacity. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-fabricCapacityAdminEmail\'.')
+@secure()
+param fabricCapacityAdminEmail string = ''
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -43,6 +47,9 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      adminMembers: [
+        fabricCapacityAdminEmail
+      ]
     }
   }
 ]

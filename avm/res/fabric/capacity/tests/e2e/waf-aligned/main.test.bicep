@@ -20,9 +20,9 @@ param serviceShort string = 'fcwaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Required. The admin e-mail for the fabric capacity. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-adminEmail\'.')
+@description('Required. The admin e-mail for the fabric capacity. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-fabricCapacityAdminEmail\'.')
 @secure()
-param adminEmail string = ''
+param fabricCapacityAdminEmail string = ''
 
 // ============ //
 // Dependencies //
@@ -49,7 +49,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       skuName: 'F64'
       adminMembers: [
-        adminEmail
+        fabricCapacityAdminEmail
       ]
     }
   }
