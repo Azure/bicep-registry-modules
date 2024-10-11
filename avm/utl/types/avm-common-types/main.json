@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "5266443159177431002"
+      "templateHash": "10024062925042985041"
     },
     "name": "Default interface types for AVM modules",
     "description": "This module provides you with all common variants for AVM interfaces to be used in AVM modules.\n\nDetails for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/bicep/interfaces).\n"
@@ -410,7 +410,7 @@
         "__bicep_export!": true
       }
     },
-    "managedIdentitiesAllType": {
+    "managedIdentityAllType": {
       "type": "object",
       "properties": {
         "systemAssigned": {
@@ -435,7 +435,7 @@
         "__bicep_export!": true
       }
     },
-    "managedIdentitiesOnlySysAssignedType": {
+    "managedIdentityOnlySysAssignedType": {
       "type": "object",
       "properties": {
         "systemAssigned": {
@@ -450,7 +450,7 @@
         "__bicep_export!": true
       }
     },
-    "managedIdentitiesOnlyUserAssignedType": {
+    "managedIdentityOnlyUserAssignedType": {
       "type": "object",
       "properties": {
         "userAssignedResourceIds": {

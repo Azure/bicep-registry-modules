@@ -1,7 +1,11 @@
 targetScope = 'subscription'
 
-metadata name = 'Import'
-metadata description = 'This example imports all available types of the given module.'
+metadata name = 'Import all'
+metadata description = '''
+This example imports all available types of the given module.
+
+Note: In your module you would import only the types you need.
+'''
 
 // ============== //
 // Test Execution //
@@ -14,9 +18,9 @@ import {
   diagnosticSettingMetricsOnlyType
   roleAssignmentType
   lockType
-  managedIdentitiesAllType
-  managedIdentitiesOnlySysAssignedType
-  managedIdentitiesOnlyUserAssignedType
+  managedIdentityAllType
+  managedIdentityOnlySysAssignedType
+  managedIdentityOnlyUserAssignedType
   privateEndpointMultiServiceType
   privateEndpointSingleServiceType
   secretToSetType
@@ -26,7 +30,7 @@ import {
 //  ====================== //
 //   Diagnostic Settings   //
 //  ====================== //
-output diagnosticFull diagnosticSettingFullType[] = [
+param diagnosticFull diagnosticSettingFullType[] = [
   {
     eventHubAuthorizationRuleResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.EventHub/namespaces/myNamespace/eventhubs/myHub/authorizationRules/myRule'
     eventHubName: 'myHub'
@@ -59,45 +63,54 @@ output diagnosticFull diagnosticSettingFullType[] = [
     workspaceResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myLaw'
   }
 ]
-output diagnosticMetricsOnly diagnosticSettingMetricsOnlyType = {
-  eventHubAuthorizationRuleResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.EventHub/namespaces/myNamespace/eventhubs/myHub/authorizationRules/myRule'
-  eventHubName: 'myHub'
-  logAnalyticsDestinationType: 'AzureDiagnostics'
-  marketplacePartnerResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Datadog/monitors/dd1'
-  metricCategories: [
-    {
-      category: 'AllMetrics'
-    }
-  ]
-  name: 'mySettings'
-  storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Storage/storageAccounts/myStorageAccount'
-  workspaceResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myLaw'
-}
-output diagnosticLogsOnly diagnosticSettingLogsOnlyType = {
-  eventHubAuthorizationRuleResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.EventHub/namespaces/myNamespace/eventhubs/myHub/authorizationRules/myRule'
-  eventHubName: 'myHub'
-  logAnalyticsDestinationType: 'AzureDiagnostics'
-  logCategoriesAndGroups: [
-    {
-      categoryGroup: 'allLogs'
-    }
-    {
-      category: 'jobs'
-    }
-    {
-      category: 'notebook'
-    }
-  ]
-  marketplacePartnerResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Datadog/monitors/dd1'
-  name: 'mySettings'
-  storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Storage/storageAccounts/myStorageAccount'
-  workspaceResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myLaw'
-}
+output diagnosticFullOutput diagnosticSettingFullType[] = diagnosticFull
+
+param diagnosticMetricsOnly diagnosticSettingMetricsOnlyType[] = [
+  {
+    eventHubAuthorizationRuleResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.EventHub/namespaces/myNamespace/eventhubs/myHub/authorizationRules/myRule'
+    eventHubName: 'myHub'
+    logAnalyticsDestinationType: 'AzureDiagnostics'
+    marketplacePartnerResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Datadog/monitors/dd1'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'mySettings'
+    storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Storage/storageAccounts/myStorageAccount'
+    workspaceResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myLaw'
+  }
+]
+output diagnosticMetricsOnlyOutput diagnosticSettingFullType[] = diagnosticMetricsOnly
+
+param diagnosticLogsOnly diagnosticSettingLogsOnlyType[] = [
+  {
+    eventHubAuthorizationRuleResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.EventHub/namespaces/myNamespace/eventhubs/myHub/authorizationRules/myRule'
+    eventHubName: 'myHub'
+    logAnalyticsDestinationType: 'AzureDiagnostics'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+      {
+        category: 'jobs'
+      }
+      {
+        category: 'notebook'
+      }
+    ]
+    marketplacePartnerResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Datadog/monitors/dd1'
+    name: 'mySettings'
+    storageAccountResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Storage/storageAccounts/myStorageAccount'
+    workspaceResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myLaw'
+  }
+]
+output diagnosticLogsOnlyOutput diagnosticSettingFullType[] = diagnosticLogsOnly
 
 //  =================== //
 //   Role Assignments   //
 //  =================== //
-output roleAssignments roleAssignmentType[] = [
+param roleAssignments roleAssignmentType[] = [
   {
     principalId: '11111111-1111-1111-1111-111111111111'
     roleDefinitionIdOrName: subscriptionResourceId(
@@ -122,120 +135,144 @@ output roleAssignments roleAssignmentType[] = [
     principalType: 'ServicePrincipal'
   }
 ]
+output roleAssignmentsOutput roleAssignmentType[] = roleAssignments
 
 // ========= //
 //   Locks   //
 // ========= //
-output locks lockType = {
+param lock lockType = {
   kind: 'CanNotDelete'
   name: 'myLock'
 }
+output lockOutput lockType = lock
 
 // ====================== //
 //   Managed Idenitites   //
 // ====================== //
-output managedIdentitiesFull managedIdentitiesAllType = {
+param managedIdentityFull managedIdentityAllType = {
   systemAssigned: true
   userAssignedResourceIds: [
     '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity'
   ]
 }
-output managedIdentitiesOnlySysAssigned managedIdentitiesOnlySysAssignedType = {
+output managedIdentityFullOutput managedIdentityAllType = managedIdentityFull
+
+param managedIdentityOnlySysAssigned managedIdentityOnlySysAssignedType = {
   systemAssigned: true
 }
-output managedIdentitiesOnlyUserAssigned managedIdentitiesOnlyUserAssignedType = {
+output managedIdentityOnlySysAssignedOutput managedIdentityAllType = managedIdentityOnlySysAssigned
+
+param managedIdentityOnlyUserAssigned managedIdentityOnlyUserAssignedType = {
   userAssignedResourceIds: [
     '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity'
   ]
 }
+output managedIdentityOnlyUserAssignedOutput managedIdentityAllType = managedIdentityOnlyUserAssigned
 
 // ===================== //
 //   Private Endpoints   //
 // ===================== //
-output privateEndpointMultiService privateEndpointMultiServiceType = {
-  lock: {
-    kind: 'CanNotDelete'
-    name: 'myLock'
-  }
-  roleAssignments: [
-    {
-      principalId: '11111111-1111-1111-1111-111111111111'
-      roleDefinitionIdOrName: subscriptionResourceId(
-        'Microsoft.Authorization/roleDefinitions',
-        'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-      ) // Reader
+param privateEndpointMultiService privateEndpointMultiServiceType[] = [
+  {
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myLock'
     }
-  ]
-  subnetResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Network/virtualNetworks/myVnet/subnets/defaultSubnet'
-  service: 'blob'
-  applicationSecurityGroupResourceIds: [
-    '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Network/applicationSecurityGroups/myAsg'
-  ]
-  customDnsConfigs: [
-    {
-      ipAddresses: [
-        '1.2.3.4'
-      ]
-    }
-  ]
-  customNetworkInterfaceName: 'myInterface'
-  ipConfigurations: [
-    {
-      name: 'myIpConfig'
-      properties: {
-        groupId: 'blob'
-        memberName: 'blob'
-        privateIPAddress: '1.2.3.4'
-      }
-    }
-  ]
-  isManualConnection: false
-  location: 'WestEurope'
-  manualConnectionRequestMessage: 'Please approve this connection.'
-  name: 'myPrivateEndpoint'
-  privateDnsZoneGroup: {
-    privateDnsZoneGroupConfigs: [
+    roleAssignments: [
       {
-        privateDnsZoneResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Network/privateDnsZones/myZone'
-        name: 'myConfig'
+        principalId: '11111111-1111-1111-1111-111111111111'
+        roleDefinitionIdOrName: subscriptionResourceId(
+          'Microsoft.Authorization/roleDefinitions',
+          'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+        ) // Reader
       }
     ]
+    subnetResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Network/virtualNetworks/myVnet/subnets/defaultSubnet'
+    service: 'blob'
+    applicationSecurityGroupResourceIds: [
+      '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Network/applicationSecurityGroups/myAsg'
+    ]
+    customDnsConfigs: [
+      {
+        ipAddresses: [
+          '1.2.3.4'
+        ]
+      }
+    ]
+    customNetworkInterfaceName: 'myInterface'
+    ipConfigurations: [
+      {
+        name: 'myIpConfig'
+        properties: {
+          groupId: 'blob'
+          memberName: 'blob'
+          privateIPAddress: '1.2.3.4'
+        }
+      }
+    ]
+    isManualConnection: false
+    location: 'WestEurope'
+    manualConnectionRequestMessage: 'Please approve this connection.'
+    name: 'myPrivateEndpoint'
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Network/privateDnsZones/myZone'
+          name: 'myConfig'
+        }
+      ]
+    }
+    privateLinkServiceConnectionName: 'myConnection'
+    resourceGroupName: 'myResourceGroup'
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
-  privateLinkServiceConnectionName: 'myConnection'
-  resourceGroupName: 'myResourceGroup'
-  tags: {
-    Environment: 'Non-Prod'
-    Role: 'DeploymentValidation'
-  }
-}
+]
+output privateEndpointMultiServiceOutput privateEndpointMultiServiceType[] = privateEndpointMultiService
 
-output privateEndpointSingleService privateEndpointSingleServiceType = {
-  subnetResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Network/virtualNetworks/myVnet/subnets/defaultSubnet'
-}
+param privateEndpointSingleService privateEndpointSingleServiceType[] = [
+  {
+    subnetResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Network/virtualNetworks/myVnet/subnets/defaultSubnet'
+  }
+]
+output privateEndpointSingleServiceOutput privateEndpointSingleServiceType[] = privateEndpointSingleService
 
 // ======================== //
 //   Customer-Managed Keys  //
 // ======================== //
-output customerManagedKeyFull customerManagedKeyType = {
+param customerManagedKeyFull customerManagedKeyType = {
   keyName: 'myKey'
   keyVaultResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.KeyVault/vaults/myVault'
   keyVersion: '2f4783701d724537a4e0c2d473c31846'
   userAssignedIdentityResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity'
 }
-output customerManagedKeyDefaults customerManagedKeyType = {
+output customerManagedKeyFullOutput customerManagedKeyType = customerManagedKeyFull
+
+param customerManagedKeyDefaults customerManagedKeyType = {
   keyName: 'myKey'
   keyVaultResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.KeyVault/vaults/myVault'
 }
+output customerManagedKeyDefaultsOutput customerManagedKeyType = customerManagedKeyDefaults
 
 // ================== //
 //   Secrets Export   //
 // ================== //
-output secretSet secretToSetType = {
-  name: 'mySecret'
-  value: 'definitelyAValue'
-}
-output secretToSet secretSetType = {
-  secretResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.KeyVault/vaults/myVault/secrets/mySecret'
-  secretUri: 'https://myVault.${az.environment().suffixes.keyvaultDns}/secrets/mySecret'
-  secretUriWithVersion: 'https://myVault.${az.environment().suffixes.keyvaultDns}/secrets/mySecret/2f4783701d724537a4e0c2d473c31846'
-}
+param secretToSet secretToSetType[] = [
+  {
+    name: 'mySecret'
+    value: 'definitelyAValue'
+  }
+]
+#disable-next-line outputs-should-not-contain-secrets // Does not contain a secret
+output secretToSetOutput secretToSetType[] = secretToSet
+
+param secretSet secretSetType[] = [
+  {
+    secretResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.KeyVault/vaults/myVault/secrets/mySecret'
+    secretUri: 'https://myVault.${az.environment().suffixes.keyvaultDns}/secrets/mySecret'
+    secretUriWithVersion: 'https://myVault.${az.environment().suffixes.keyvaultDns}/secrets/mySecret/2f4783701d724537a4e0c2d473c31846'
+  }
+]
+output secretSetOutput secretSetType[] = secretSet

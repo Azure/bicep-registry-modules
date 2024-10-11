@@ -176,7 +176,7 @@ type lockType = {
 
 // Type with all properties available
 @export()
-type managedIdentitiesAllType = {
+type managedIdentityAllType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
   systemAssigned: bool?
 
@@ -186,14 +186,14 @@ type managedIdentitiesAllType = {
 
 // Type with only system-assigned identities available
 @export()
-type managedIdentitiesOnlySysAssignedType = {
+type managedIdentityOnlySysAssignedType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
   systemAssigned: bool?
 }
 
 // Type with only user-assigned identities available
 @export()
-type managedIdentitiesOnlyUserAssignedType = {
+type managedIdentityOnlyUserAssignedType = {
   @description('Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.')
   userAssignedResourceIds: string[]?
 }
