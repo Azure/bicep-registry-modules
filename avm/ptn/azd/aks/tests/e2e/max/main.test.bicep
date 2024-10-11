@@ -70,7 +70,7 @@ module testDeployment '../../../main.bicep' = [
           maxPods: 30
           type: 'VirtualMachineScaleSets'
           maxSurge: '33%'
-          vmSize: 'standard_a2'
+          vmSize: 'standard_a2_v2'
         }
       ]
       logAnalyticsName: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId

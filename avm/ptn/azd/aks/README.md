@@ -70,6 +70,7 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
     principalId: '<principalId>'
     // Non-required parameters
     location: '<location>'
+    principalType: 'ServicePrincipal'
   }
 }
 ```
@@ -105,6 +106,9 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "principalType": {
+      "value": "ServicePrincipal"
     }
   }
 }
@@ -128,6 +132,7 @@ param name = '<name>'
 param principalId = '<principalId>'
 // Non-required parameters
 param location = '<location>'
+param principalType = 'ServicePrincipal'
 ```
 
 </details>
@@ -162,7 +167,7 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
         name: 'npuserpool'
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'standard_a2'
+        vmSize: 'standard_a2_v2'
       }
     ]
     aksClusterRoleAssignmentName: '<aksClusterRoleAssignmentName>'
@@ -217,7 +222,7 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
           "name": "npuserpool",
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "standard_a2"
+          "vmSize": "standard_a2_v2"
         }
       ]
     },
@@ -272,7 +277,7 @@ param agentPools = [
     name: 'npuserpool'
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'standard_a2'
+    vmSize: 'standard_a2_v2'
   }
 ]
 param aksClusterRoleAssignmentName = '<aksClusterRoleAssignmentName>'
