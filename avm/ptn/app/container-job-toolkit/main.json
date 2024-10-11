@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "3321948021652997679"
+      "templateHash": "15481808816915887218"
     },
     "name": "container-job-toolkit",
     "description": "This module deploys a container to run as a job.",
@@ -25092,7 +25092,6 @@
           },
           "managedIdentities": {
             "value": {
-              "systemAssigned": "[if(equals(parameters('managedIdentityResourceId'), null()), true(), false())]",
               "userAssignedResourceIds": [
                 "[reference('services').outputs.userManagedIdentityResourceId.value]"
               ]

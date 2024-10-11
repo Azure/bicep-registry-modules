@@ -242,9 +242,6 @@ module job 'br/public:avm/res/app/job:0.5.0' = {
     workloadProfileName: workloadProfileName
     location: location
     managedIdentities: {
-      // if managedIdentityName is not provided, the job will use a system assigned identity
-      systemAssigned: managedIdentityResourceId == null ? true : false
-      // this is either the provided managed identity or the system assigned identity
       userAssignedResourceIds: [services.outputs.userManagedIdentityResourceId]
     }
     secrets: union(
