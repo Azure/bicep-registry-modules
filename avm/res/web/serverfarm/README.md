@@ -851,6 +851,7 @@ The name of the SKU will Determine the tier, size, family of the App Service Pla
   'B1'
   'P1v3'
   'I1v2'
+  'FC1'
   ```
 
 ### Parameter: `tags`
