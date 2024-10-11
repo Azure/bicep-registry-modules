@@ -1,6 +1,8 @@
-# avm/ptn/azd/container-apps `[Azd/ContainerApps]`
+# avm/ptn/azd/container-apps-stack `[Azd/ContainerAppsStack]`
 
 Creates an Azure Container Registry and an Azure Container Apps environment.
+
+**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case
 
 ## Navigation
 
@@ -35,7 +37,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/container-apps:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/container-apps-stack:<version>`.
 
 - [With zoneRedundant enabled](#example-1-with-zoneredundant-enabled)
 
@@ -49,12 +51,12 @@ This instance deploys the module with zoneRedundant enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
-  name: 'containerAppsDeployment'
+module containerAppsStack 'br/public:avm/ptn/azd/container-apps-stack:<version>' = {
+  name: 'containerAppsStackDeployment'
   params: {
     // Required parameters
-    containerAppsEnvironmentName: 'acazrcae001'
-    containerRegistryName: 'acazrcr001'
+    containerAppsEnvironmentName: 'acaszrcae001'
+    containerRegistryName: 'acaszrcr001'
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     // Non-required parameters
     acrSku: 'Standard'
@@ -92,10 +94,10 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
   "parameters": {
     // Required parameters
     "containerAppsEnvironmentName": {
-      "value": "acazrcae001"
+      "value": "acaszrcae001"
     },
     "containerRegistryName": {
-      "value": "acazrcr001"
+      "value": "acaszrcr001"
     },
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
@@ -150,11 +152,11 @@ module containerApps 'br/public:avm/ptn/azd/container-apps:<version>' = {
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/azd/container-apps:<version>'
+using 'br/public:avm/ptn/azd/container-apps-stack:<version>'
 
 // Required parameters
-param containerAppsEnvironmentName = 'acazrcae001'
-param containerRegistryName = 'acazrcr001'
+param containerAppsEnvironmentName = 'acaszrcae001'
+param containerRegistryName = 'acaszrcr001'
 param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 // Non-required parameters
 param acrSku = 'Standard'
@@ -195,7 +197,7 @@ param zoneRedundant = true
 | :-- | :-- | :-- |
 | [`dockerBridgeCidr`](#parameter-dockerbridgecidr) | string | CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`infrastructureSubnetResourceId`](#parameter-infrastructuresubnetresourceid) | string | Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant. |
-| [`internal`](#parameter-internal) | bool | Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`internal`](#parameter-internal) | bool | Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if 'zoneRedundant' is set to true to make the resource WAF compliant. |
 | [`platformReservedCidr`](#parameter-platformreservedcidr) | string | IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant. |
 | [`platformReservedDnsIP`](#parameter-platformreserveddnsip) | string | An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`workloadProfiles`](#parameter-workloadprofiles) | array | Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant. |
@@ -254,7 +256,7 @@ Resource ID of a subnet for infrastructure components. This is used to deploy th
 
 ### Parameter: `internal`
 
-Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.
+Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if 'zoneRedundant' is set to true to make the resource WAF compliant.
 
 - Required: No
 - Type: bool
