@@ -197,9 +197,7 @@ var ipConfiguration = isActiveActive
           }
           // Use existing Public IP, new Public IP created in this module
           publicIPAddress: {
-            id: !empty(existingFirstPipResourceId)
-              ? existingFirstPipResourceId
-              : az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
+            id: existingFirstPipResourceId ?? az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
           }
 
 
