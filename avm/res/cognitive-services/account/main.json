@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "325704537018634474"
+      "templateHash": "4946778004284930976"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -668,7 +668,7 @@
         "TextTranslation"
       ],
       "metadata": {
-        "description": "Required. Kind of the Cognitive Services. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region."
+        "description": "Required. Kind of the Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region."
       }
     },
     "sku": {
@@ -694,7 +694,7 @@
         "S9"
       ],
       "metadata": {
-        "description": "Optional. SKU of the Cognitive Services resource. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region."
+        "description": "Optional. SKU of the Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region."
       }
     },
     "location": {
