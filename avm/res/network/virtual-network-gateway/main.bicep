@@ -195,7 +195,7 @@ var ipConfiguration = isActiveActive
           subnet: {
             id: '${vNetResourceId}/subnets/GatewaySubnet'
           }
-          //Use existing Public IP, new Public IP created in this module
+          // Use existing Public IP, new Public IP created in this module
           publicIPAddress: {
             id: !empty(existingFirstPipResourceId)
               ? existingFirstPipResourceId
