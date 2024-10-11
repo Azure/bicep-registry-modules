@@ -619,5 +619,3 @@ type activeActiveBgpType = {
 
 @discriminator('clusterMode')
 type clusterSettingType = activeActiveNoBgpType | activeActiveBgpType | activePassiveBgpType | activePassiveNoBgpType
-
-
