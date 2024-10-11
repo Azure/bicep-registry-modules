@@ -108,7 +108,7 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
     name: 'fcwaf001'
     // Non-required parameters
     adminMembers: [
-      'mattschmitt@microsoft.com'
+      '<adminEmail>'
     ]
     location: '<location>'
     skuName: 'F64'
@@ -135,7 +135,7 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
     // Non-required parameters
     "adminMembers": {
       "value": [
-        "mattschmitt@microsoft.com"
+        "<adminEmail>"
       ]
     },
     "location": {
@@ -162,7 +162,7 @@ using 'br/public:avm/res/fabric/capacity:<version>'
 param name = 'fcwaf001'
 // Non-required parameters
 param adminMembers = [
-  'mattschmitt@microsoft.com'
+  '<adminEmail>'
 ]
 param location = '<location>'
 param skuName = 'F64'
