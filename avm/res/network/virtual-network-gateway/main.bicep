@@ -186,8 +186,7 @@ var bgpSettingsVar = isActiveActive
       ]
     }
 
-
-// Potential IP configurations (Active-Active vs active-passive)
+// Potential IP configurations (Active-Active vs Active-Passive)
 var ipConfiguration = isActiveActive
   ? [
       {
