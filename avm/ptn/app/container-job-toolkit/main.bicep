@@ -22,13 +22,15 @@ param enableTelemetry bool = true
 param managedIdentityResourceId string?
 
 @description('Optional. The name of the managed identity to create. If not provided, a name will be generated automatically as `jobsUserIdentity-$\\{name\\}`.')
+@minLength(3)
+@maxLength(128)
 param managedIdentityName string?
 
 @description('Optional. The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created.')
 @metadata({
   example: '/subscriptions/<00000000-0000-0000-0000-000000000000>/resourceGroups/<rg-name>/providers/Microsoft.OperationalInsights/workspaces/<workspace-name>'
 })
-param logAnalyticsWorkspaceResourceId string
+param logAnalyticsWorkspaceResourceId string?
 
 @description('Optional. The connection string for the Application Insights instance that will be added to Key Vault as `applicationinsights-connection-string` and can be used by the Job.')
 @metadata({
@@ -38,6 +40,8 @@ param appInsightsConnectionString string?
 
 @description('Optional. The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets.')
 @metadata({ example: '''kv${uniqueString(name, location, resourceGroup().name)})''' })
+@minLength(3)
+@maxLength(24)
 param keyVaultName string = 'kv${uniqueString(name, location, resourceGroup().name)}'
 
 @description('Optional. The permissions that will be assigned to the Key Vault. The managed Identity will be assigned the permissions to get and list secrets.')
@@ -294,6 +298,9 @@ output name string = job.name
 
 @description('The name of the Resource Group the resource was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The resouce ID of the Log Analytics Workspace (passed as parameter value or from the newly created Log Analytics Workspace).')
+output logAnalyticsResourceId string = services.outputs.logAnalyticsResourceId
 
 @description('The principal ID of the user assigned managed identity.')
 output systemAssignedMIPrincipalId string = services.outputs.userManagedIdentityPrincipalId

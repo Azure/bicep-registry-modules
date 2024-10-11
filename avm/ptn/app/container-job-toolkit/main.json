@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "15481808816915887218"
+      "templateHash": "6341006870720569364"
     },
     "name": "container-job-toolkit",
     "description": "This module deploys a container to run as a job.",
@@ -377,12 +377,15 @@
     "managedIdentityName": {
       "type": "string",
       "nullable": true,
+      "minLength": 3,
+      "maxLength": 128,
       "metadata": {
         "description": "Optional. The name of the managed identity to create. If not provided, a name will be generated automatically as `jobsUserIdentity-$\\{name\\}`."
       }
     },
     "logAnalyticsWorkspaceResourceId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "example": "/subscriptions/<00000000-0000-0000-0000-000000000000>/resourceGroups/<rg-name>/providers/Microsoft.OperationalInsights/workspaces/<workspace-name>",
         "description": "Optional. The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created."
@@ -402,7 +405,9 @@
       "metadata": {
         "example": "kv${uniqueString(name, location, resourceGroup().name)})",
         "description": "Optional. The name of the Key Vault that will be created to store the Application Insights connection string and be used for your secrets."
-      }
+      },
+      "minLength": 3,
+      "maxLength": 24
     },
     "keyVaultRoleAssignments": {
       "$ref": "#/definitions/roleAssignmentType",
@@ -646,7 +651,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "3125777785940338300"
+              "templateHash": "16600143947344704638"
             }
           },
           "definitions": {
@@ -1049,6 +1054,7 @@
             },
             "logAnalyticsWorkspaceResourceId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created."
               }
@@ -1233,7 +1239,16 @@
               "existing": true,
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
               "apiVersion": "2023-01-31",
-              "name": "[if(not(empty(parameters('managedIdentityResourceId'))), last(split(parameters('managedIdentityResourceId'), '/')), 'dummy-for-deployment-validation')]"
+              "subscriptionId": "[split(coalesce(parameters('managedIdentityResourceId'), '//'), '/')[2]]",
+              "resourceGroup": "[split(coalesce(parameters('managedIdentityResourceId'), '////'), '/')[4]]",
+              "name": "[last(split(coalesce(parameters('managedIdentityResourceId'), 'dummyMsi'), '/'))]"
+            },
+            "law": {
+              "condition": "[empty(parameters('logAnalyticsWorkspaceResourceId'))]",
+              "type": "Microsoft.OperationalInsights/workspaces",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}-law', parameters('name'))]",
+              "location": "[parameters('location')]"
             },
             "nsg": {
               "condition": "[variables('zoneRedundant')]",
@@ -12392,7 +12407,7 @@
                     "value": "standard"
                   },
                   "tags": {
-                    "value": "[union(parameters('tags'), createObject('used-by', 'container-job'))]"
+                    "value": "[union(parameters('tags'), createObject('used-by', 'container-job-toolkit'))]"
                   },
                   "lock": {
                     "value": "[parameters('lock')]"
@@ -15354,7 +15369,7 @@
                     "value": "disabled"
                   },
                   "tags": {
-                    "value": "[union(parameters('tags'), createObject('used-by', 'container-job'))]"
+                    "value": "[union(parameters('tags'), createObject('used-by', 'container-job-toolkit'))]"
                   },
                   "lock": {
                     "value": "[parameters('lock')]"
@@ -23434,9 +23449,7 @@
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   },
-                  "logAnalyticsWorkspaceResourceId": {
-                    "value": "[parameters('logAnalyticsWorkspaceResourceId')]"
-                  },
+                  "logAnalyticsWorkspaceResourceId": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), createObject('value', parameters('logAnalyticsWorkspaceResourceId')), createObject('value', resourceId('Microsoft.OperationalInsights/workspaces', format('{0}-law', parameters('name')))))]",
                   "location": {
                     "value": "[parameters('location')]"
                   },
@@ -24014,11 +24027,16 @@
                 }
               },
               "dependsOn": [
+                "law",
                 "vnet"
               ]
             }
           },
           "outputs": {
+            "logAnalyticsResourceId": {
+              "type": "string",
+              "value": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), parameters('logAnalyticsWorkspaceResourceId'), resourceId('Microsoft.OperationalInsights/workspaces', format('{0}-law', parameters('name'))))]"
+            },
             "vaultName": {
               "type": "string",
               "value": "[reference('vault').outputs.name.value]"
@@ -24041,7 +24059,7 @@
             },
             "userManagedIdentityResourceId": {
               "type": "string",
-              "value": "[if(equals(parameters('managedIdentityResourceId'), null()), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), format('jobsUserIdentity-{0}', parameters('name')))), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', if(not(empty(parameters('managedIdentityResourceId'))), last(split(parameters('managedIdentityResourceId'), '/')), 'dummy-for-deployment-validation')))]"
+              "value": "[if(equals(parameters('managedIdentityResourceId'), null()), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), format('jobsUserIdentity-{0}', parameters('name')))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('managedIdentityResourceId'), '//'), '/')[2], split(coalesce(parameters('managedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(parameters('managedIdentityResourceId'), 'dummyMsi'), '/'))))]"
             },
             "userManagedIdentityPrincipalId": {
               "type": "string",
@@ -26245,6 +26263,13 @@
         "description": "The name of the Resource Group the resource was deployed into."
       },
       "value": "[resourceGroup().name]"
+    },
+    "logAnalyticsResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resouce ID of the Log Analytics Workspace (passed as parameter value or from the newly created Log Analytics Workspace)."
+      },
+      "value": "[reference('services').outputs.logAnalyticsResourceId.value]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",

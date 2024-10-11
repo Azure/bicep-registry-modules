@@ -31,8 +31,8 @@ This module deploys a container to run as a job.
 | `Microsoft.KeyVault/vaults` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults) |
 | `Microsoft.KeyVault/vaults/accessPolicies` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/accessPolicies) |
 | `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
-| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
 | `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
 | `Microsoft.Network/privateDnsZones` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones) |
@@ -50,6 +50,7 @@ This module deploys a container to run as a job.
 | `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/virtualNetworkPeerings) |
+| `Microsoft.OperationalInsights/workspaces` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces) |
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 | `Microsoft.Storage/storageAccounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-05-01/storageAccounts) |
 | `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
@@ -91,10 +92,10 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
   params: {
     // Required parameters
     containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'acjmin001'
     // Non-required parameters
     location: '<location>'
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     overwriteExistingImage: true
   }
 }
@@ -116,15 +117,15 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     "containerImageSource": {
       "value": "mcr.microsoft.com/k8se/quickstart-jobs:latest"
     },
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
     "name": {
       "value": "acjmin001"
     },
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
     },
     "overwriteExistingImage": {
       "value": true
@@ -145,10 +146,10 @@ using 'br/public:avm/ptn/app/container-job-toolkit:<version>'
 
 // Required parameters
 param containerImageSource = 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'acjmin001'
 // Non-required parameters
 param location = '<location>'
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param overwriteExistingImage = true
 ```
 
@@ -170,7 +171,6 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
   params: {
     // Required parameters
     containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'acjmax001'
     // Non-required parameters
     addressPrefix: '192.168.0.0/16'
@@ -220,6 +220,7 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
       kind: 'None'
       name: 'No lock for testing'
     }
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     managedIdentityName: 'acjmaxmi'
     managedIdentityResourceId: '<managedIdentityResourceId>'
     memory: '8Gi'
@@ -270,9 +271,6 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     // Required parameters
     "containerImageSource": {
       "value": "mcr.microsoft.com/k8se/quickstart-jobs:latest"
-    },
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
     },
     "name": {
       "value": "acjmax001"
@@ -351,6 +349,9 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
         "name": "No lock for testing"
       }
     },
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
     "managedIdentityName": {
       "value": "acjmaxmi"
     },
@@ -418,7 +419,6 @@ using 'br/public:avm/ptn/app/container-job-toolkit:<version>'
 
 // Required parameters
 param containerImageSource = 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'acjmax001'
 // Non-required parameters
 param addressPrefix = '192.168.0.0/16'
@@ -468,6 +468,7 @@ param lock = {
   kind: 'None'
   name: 'No lock for testing'
 }
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param managedIdentityName = 'acjmaxmi'
 param managedIdentityResourceId = '<managedIdentityResourceId>'
 param memory = '8Gi'
@@ -519,12 +520,12 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
   params: {
     // Required parameters
     containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'acjwaf001'
     // Non-required parameters
     appInsightsConnectionString: '<appInsightsConnectionString>'
     deployInVnet: true
     location: '<location>'
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     managedIdentityResourceId: '<managedIdentityResourceId>'
     overwriteExistingImage: true
     tags: {
@@ -560,9 +561,6 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     "containerImageSource": {
       "value": "mcr.microsoft.com/k8se/quickstart-jobs:latest"
     },
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
     "name": {
       "value": "acjwaf001"
     },
@@ -575,6 +573,9 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     },
     "location": {
       "value": "<location>"
+    },
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
     },
     "managedIdentityResourceId": {
       "value": "<managedIdentityResourceId>"
@@ -617,12 +618,12 @@ using 'br/public:avm/ptn/app/container-job-toolkit:<version>'
 
 // Required parameters
 param containerImageSource = 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'acjwaf001'
 // Non-required parameters
 param appInsightsConnectionString = '<appInsightsConnectionString>'
 param deployInVnet = true
 param location = '<location>'
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param managedIdentityResourceId = '<managedIdentityResourceId>'
 param overwriteExistingImage = true
 param tags = {
@@ -1157,7 +1158,7 @@ Specify the name of lock.
 
 The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Example: `/subscriptions/<00000000-0000-0000-0000-000000000000>/resourceGroups/<rg-name>/providers/Microsoft.OperationalInsights/workspaces/<workspace-name>`
 
@@ -1416,6 +1417,7 @@ Workload profiles for the managed environment. Leave empty to use a consumption 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `deploymentscriptSubnetAddressPrefix` | string | Conditional. The address prefix for the service endpoint subnet, if a virtual network was deployed. If `deployInVnet` is `false`, this output will be empty. |
+| `logAnalyticsResourceId` | string | The resouce ID of the Log Analytics Workspace (passed as parameter value or from the newly created Log Analytics Workspace). |
 | `name` | string | The name of the container job. |
 | `privateEndpointSubnetAddressPrefix` | string | Conditional. The address prefix for the private endpoint subnet, if a virtual network was deployed. If `deployInVnet` is `false`, this output will be empty. |
 | `resourceGroupName` | string | The name of the Resource Group the resource was deployed into. |

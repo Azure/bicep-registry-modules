@@ -45,7 +45,7 @@ param managedIdentityName string?
 // infrastructure parameters
 // -------------------------
 @sys.description('Optional. The Log Analytics Resource ID for the Container Apps Environment to use for the job. If not provided, a new Log Analytics workspace will be created.')
-param logAnalyticsWorkspaceResourceId string
+param logAnalyticsWorkspaceResourceId string?
 
 @sys.description('Optional. The connection string for the Application Insights instance that will be used by the Job.')
 param appInsightsConnectionString string?
@@ -670,13 +670,12 @@ resource userIdentity_new 'Microsoft.ManagedIdentity/userAssignedIdentities@2023
   location: location
 }
 resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (managedIdentityResourceId != null) {
-  name: !empty(managedIdentityResourceId)
-    ? last(split(managedIdentityResourceId!, '/'))
-    : 'dummy-for-deployment-validation'
+  name: last(split(managedIdentityResourceId! ?? 'dummyMsi', '/'))
   // get the resource group from the managed identity, as it could be in another resource group
-  scope: !empty(managedIdentityResourceId)
-    ? resourceGroup(split(managedIdentityResourceId!, '/')[2], split(managedIdentityResourceId!, '/')[4])
-    : resourceGroup()
+  scope: resourceGroup(
+    split(managedIdentityResourceId! ?? '//', '/')[2],
+    split(managedIdentityResourceId! ?? '////', '/')[4]
+  )
 }
 
 // supporting resources
@@ -690,7 +689,7 @@ module vault 'br/public:avm/res/key-vault/vault:0.9.0' = {
     enableRbacAuthorization: true
     location: location
     sku: 'standard'
-    tags: union(tags, { 'used-by': 'container-job' })
+    tags: union(tags, { 'used-by': 'container-job-toolkit' })
     lock: lock
     secrets: union(
       !empty(appInsightsConnectionString ?? '')
@@ -733,7 +732,7 @@ module registry 'br/public:avm/res/container-registry/registry:0.5.1' = {
     retentionPolicyStatus: 'enabled'
     softDeletePolicyDays: 7
     softDeletePolicyStatus: 'disabled'
-    tags: union(tags, { 'used-by': 'container-job' })
+    tags: union(tags, { 'used-by': 'container-job-toolkit' })
     lock: lock
     acrAdminUserEnabled: false
     roleAssignments: formattedRegistryRoleAssignments
@@ -791,6 +790,11 @@ module storage 'br/public:avm/res/storage/storage-account:0.14.1' = if (deployIn
   }
 }
 
+resource law 'Microsoft.OperationalInsights/workspaces@2023-09-01' = if (empty(logAnalyticsWorkspaceResourceId)) {
+  name: '${name}-law'
+  location: location
+}
+
 // Managed Environment
 // -------------------
 module managedEnvironment 'br/public:avm/res/app/managed-environment:0.8.0' = {
@@ -798,7 +802,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.8.0' = {
   params: {
     name: 'container-apps-environment-${name}'
     enableTelemetry: enableTelemetry
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
+    logAnalyticsWorkspaceResourceId: !empty(logAnalyticsWorkspaceResourceId) ? logAnalyticsWorkspaceResourceId! : law.id
     location: location
     tags: tags
     lock: lock
@@ -814,6 +818,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.8.0' = {
   }
 }
 
+output logAnalyticsResourceId string = !empty(logAnalyticsWorkspaceResourceId)
+  ? logAnalyticsWorkspaceResourceId!
+  : law.id
 output vaultName string = vault.outputs.name
 output keyVaultAppInsightsConnectionStringUrl string = !empty(appInsightsConnectionString ?? '')
   ? '${vault.outputs.uri}/secrets/applicationinsights-connection-string'
