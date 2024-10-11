@@ -1,4 +1,4 @@
-name: "avm.ptn.types.avm-common-types"
+name: "avm.utl.types.avm-common-types"
 
 on:
   workflow_dispatch:
