@@ -1,4 +1,4 @@
-metadata name = 'Azure Machine Learning Dependencies'
+metadata name = 'Azd Azure Machine Learning Dependencies'
 metadata description = '''Creates all the dependencies required for a Machine Learning Service.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.'''
@@ -303,6 +303,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.7.1' = {
     enableVaultForTemplateDeployment: enableVaultForTemplateDeployment
     enablePurgeProtection: enablePurgeProtection
     sku: keyVaultSku
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -320,6 +321,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
     fileServices: fileServices
     queueServices: queueServices
     tableServices: tableServices
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -336,6 +338,7 @@ module cognitiveServices 'br/public:avm/res/cognitive-services/account:0.7.0' = 
     disableLocalAuth: cognitiveServicesDisableLocalAuth
     sku: cognitiveServicesSku
     deployments: cognitiveServicesDeployments
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -347,6 +350,7 @@ module logAnalytics 'br/public:avm/res/operational-insights/workspace:0.6.0' = i
     tags: tags
     dataRetention: dataRetention
     skuName: logAnalyticsSkuName
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -358,6 +362,7 @@ module applicationInsights 'br/public:avm/ptn/azd/insights-dashboard:0.1.0' = if
     name: applicationInsightsName
     dashboardName: applicationInsightsDashboardName
     logAnalyticsWorkspaceResourceId: !empty(logAnalyticsName) ? logAnalytics.outputs.resourceId : ''
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -369,6 +374,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' =
     tags: tags
     location: location
     publicNetworkAccess: registryPublicNetworkAccess
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -389,6 +395,7 @@ module searchService 'br/public:avm/res/search/search-service:0.6.0' = if (!empt
     semanticSearch: semanticSearch
     sku: searchServiceSku
     managedIdentities: managedIdentities
+    enableTelemetry: enableTelemetry
   }
 }
 

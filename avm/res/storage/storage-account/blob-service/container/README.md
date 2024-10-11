@@ -34,6 +34,7 @@ This module deploys a Storage Account Blob Container.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`blobServiceName`](#parameter-blobservicename) | string | The name of the parent Blob Service. Required if the template is used in a standalone deployment. |
 | [`defaultEncryptionScope`](#parameter-defaultencryptionscope) | string | Default the container to use specified encryption scope for all writes. |
 | [`denyEncryptionScopeOverride`](#parameter-denyencryptionscopeoverride) | bool | Block override of encryption scope from the container default. |
 | [`enableNfsV3AllSquash`](#parameter-enablenfsv3allsquash) | bool | Enable NFSv3 all squash on blob container. |
@@ -58,6 +59,14 @@ The name of the parent Storage Account. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
+
+### Parameter: `blobServiceName`
+
+The name of the parent Blob Service. Required if the template is used in a standalone deployment.
+
+- Required: No
+- Type: string
+- Default: `'default'`
 
 ### Parameter: `defaultEncryptionScope`
 
@@ -144,6 +153,20 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Reader and Data Access'`
+  - `'Role Based Access Control Administrator'`
+  - `'Storage Account Backup Contributor'`
+  - `'Storage Account Contributor'`
+  - `'Storage Account Key Operator Service Role'`
+  - `'Storage Blob Data Contributor'`
+  - `'Storage Blob Data Owner'`
+  - `'Storage Blob Data Reader'`
+  - `'Storage Blob Delegator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

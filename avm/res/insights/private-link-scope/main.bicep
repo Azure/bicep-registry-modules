@@ -203,6 +203,9 @@ module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endp
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
       customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
     }
+    dependsOn: [
+      privateLinkScope_scopedResource
+    ]
   }
 ]
 
