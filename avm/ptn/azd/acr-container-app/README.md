@@ -1,4 +1,4 @@
-# avm/ptn/azd/acr-container-app `[Azd/AcrContainerApp]`
+# Azd ACR Linked Container App `[Azd/AcrContainerApp]`
 
 Creates a container app in an Azure Container App environment.
 
