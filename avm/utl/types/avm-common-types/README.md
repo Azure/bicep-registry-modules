@@ -28,7 +28,10 @@ The following section provides usage examples for the module, which were used to
 
 ### Example 1: _Import_
 
-This example imports all available types of the given module.
+This example imports all available types of the given module.'
+
+Note: When using the published module, you should import the types via the Public Bicep Registry using the following syntax: `br/public:avm/utl/types/avm-common-types:<version>`
+
 
 
 <details>
@@ -39,7 +42,11 @@ This example imports all available types of the given module.
 targetScope = 'subscription'
 
 metadata name = 'Import'
-metadata description = 'This example imports all available types of the given module.'
+metadata description = '''
+This example imports all available types of the given module.'
+
+Note: When using the published module, you should import the types via the Public Bicep Registry using the following syntax: br/public:avm/utl/types/avm-common-types:<version>
+'''
 
 // ============== //
 // Test Execution //
