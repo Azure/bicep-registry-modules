@@ -161,7 +161,7 @@ var arrayPipNameVar = isActiveActive
         : [firstPipName]
     )
 
-// Potential BGP configurations (Active-Active vs active-passive)
+// Potential BGP configurations (Active-Active vs Active-Passive)
 var bgpSettingsVar = isActiveActive
   ? {
       asn: clusterSettings.?asn ?? 65515
