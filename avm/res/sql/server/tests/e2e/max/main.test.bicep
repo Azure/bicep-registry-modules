@@ -79,11 +79,13 @@ module testDeployment '../../../main.bicep' = {
     location: resourceLocation
     roleAssignments: [
       {
+        name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
         roleDefinitionIdOrName: 'Owner'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
       {
+        name: guid('Custom seed ${namePrefix}${serviceShort}')
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
@@ -123,7 +125,7 @@ module testDeployment '../../../main.bicep' = {
         collation: 'SQL_Latin1_General_CP1_CI_AS'
         skuTier: 'GeneralPurpose'
         skuName: 'ElasticPool'
-        capacity: 0
+        skuCapacity: 0
         maxSizeBytes: 34359738368
         licenseType: 'LicenseIncluded'
         diagnosticSettings: [
@@ -178,9 +180,13 @@ module testDeployment '../../../main.bicep' = {
     privateEndpoints: [
       {
         subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+            }
+          ]
+        }
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
@@ -189,9 +195,13 @@ module testDeployment '../../../main.bicep' = {
       }
       {
         subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+            }
+          ]
+        }
       }
     ]
     virtualNetworkRules: [

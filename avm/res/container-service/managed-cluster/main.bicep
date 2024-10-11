@@ -156,6 +156,9 @@ param primaryAgentPoolProfile array
 @description('Optional. Define one or more secondary/additional agent pools.')
 param agentPools agentPoolType
 
+@description('Optional. Whether or not to use AKS Automatic mode.')
+param maintenanceConfiguration maintenanceConfigurationType
+
 @description('Optional. Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed.')
 param costAnalysisEnabled bool = false
 
@@ -353,6 +356,9 @@ param identityProfile object?
 @description('Optional. Enables Kubernetes Event-driven Autoscaling (KEDA).')
 param kedaAddon bool = false
 
+@description('Optional. Whether to enable VPA add-on in cluster. Default value is false.')
+param vpaAddon bool = false
+
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
@@ -465,6 +471,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 // ============ //
 // Dependencies //
@@ -612,6 +629,9 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       keda: {
         enabled: kedaAddon
       }
+      verticalPodAutoscaler: {
+        enabled: vpaAddon
+      }
     }
     networkProfile: {
       networkDataplane: networkDataplane
@@ -737,6 +757,14 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
   }
 }
 
+module managedCluster_maintenanceConfigurations 'maintenance-configurations/main.bicep' = if (!empty(maintenanceConfiguration)) {
+  name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfigurations'
+  params: {
+    maintenanceWindow: maintenanceConfiguration!.maintenanceWindow
+    managedClusterName: managedCluster.name
+  }
+}
+
 module managedCluster_agentPools 'agent-pool/main.bicep' = [
   for (agentPool, index) in (agentPools ?? []): {
     name: '${uniqueString(deployment().name, location)}-ManagedCluster-AgentPool-${index}'
@@ -839,14 +867,10 @@ resource managedCluster_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
 ]
 
 resource managedCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(managedCluster.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(managedCluster.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -1063,6 +1087,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -1172,4 +1199,9 @@ type customerManagedKeyType = {
 
   @description('Required. Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public.')
   keyVaultNetworkAccess: ('Private' | 'Public')
+}?
+
+type maintenanceConfigurationType = {
+  @description('Required. Maintenance window for the maintenance configuration.')
+  maintenanceWindow: object
 }?

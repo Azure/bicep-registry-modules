@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "6889435067791947905"
+      "version": "0.29.47.4906",
+      "templateHash": "7926803681315745584"
     },
     "name": "DocumentDB Database Account Gremlin Databases",
     "description": "This module deploys a Gremlin Database within a CosmosDB Account.",
@@ -99,7 +99,9 @@
           "databaseAccountName": {
             "value": "[parameters('databaseAccountName')]"
           },
-          "indexingPolicy": "[if(contains(parameters('graphs')[copyIndex()], 'indexingPolicy'), createObject('value', parameters('graphs')[copyIndex()].indexingPolicy), createObject('value', true()))]",
+          "indexingPolicy": {
+            "value": "[tryGet(parameters('graphs')[copyIndex()], 'indexingPolicy')]"
+          },
           "partitionKeyPaths": "[if(not(empty(parameters('graphs')[copyIndex()].partitionKeyPaths)), createObject('value', parameters('graphs')[copyIndex()].partitionKeyPaths), createObject('value', createArray()))]"
         },
         "template": {
@@ -109,8 +111,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "3987394297554402770"
+              "version": "0.29.47.4906",
+              "templateHash": "9917502444704809829"
             },
             "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
             "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph.",

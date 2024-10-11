@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "9012434638514265083"
+      "version": "0.30.23.60470",
+      "templateHash": "13657670923843039959"
     },
     "name": "Front Door Web Application Firewall (WAF) Policies",
     "description": "This module deploys a Front Door Web Application Firewall (WAF) Policy.",
@@ -43,6 +43,13 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            }
+          },
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
@@ -103,6 +110,148 @@
         }
       },
       "nullable": true
+    },
+    "managedRulesType": {
+      "type": "object",
+      "properties": {
+        "managedRuleSets": {
+          "$ref": "#/definitions/managedRuleSetsType",
+          "metadata": {
+            "description": "Optional. List of rule sets."
+          }
+        }
+      }
+    },
+    "managedRuleSetsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ruleSetType": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Defines the rule set type to use."
+            }
+          },
+          "ruleSetVersion": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Defines the version of the rule set to use."
+            }
+          },
+          "ruleGroupOverrides": {
+            "type": "array",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Defines the rule group overrides to apply to the rule set."
+            }
+          },
+          "exclusions": {
+            "type": "array",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Describes the exclusions that are applied to all rules in the set."
+            }
+          },
+          "ruleSetAction": {
+            "type": "string",
+            "allowedValues": [
+              "Block",
+              "Log",
+              "Redirect"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Defines the rule set action."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "customRulesType": {
+      "type": "object",
+      "properties": {
+        "rules": {
+          "$ref": "#/definitions/customRulesRuleType",
+          "metadata": {
+            "description": "Optional. List of rules."
+          }
+        }
+      }
+    },
+    "customRulesRuleType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "allowedValues": [
+              "Allow",
+              "Block",
+              "Log",
+              "Redirect"
+            ],
+            "metadata": {
+              "description": "Required. Describes what action to be applied when rule matches."
+            }
+          },
+          "enabledState": {
+            "type": "string",
+            "allowedValues": [
+              "Disabled",
+              "Enabled"
+            ],
+            "metadata": {
+              "description": "Required. Describes if the custom rule is in enabled or disabled state."
+            }
+          },
+          "matchConditions": {
+            "type": "array",
+            "metadata": {
+              "description": "Required. List of match conditions. See https://learn.microsoft.com/en-us/azure/templates/microsoft.network/frontdoorwebapplicationfirewallpolicies#matchcondition for details."
+            }
+          },
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Describes the name of the rule."
+            }
+          },
+          "priority": {
+            "type": "int",
+            "metadata": {
+              "description": "Required. Describes priority of the rule. Rules with a lower value will be evaluated before rules with a higher value."
+            }
+          },
+          "rateLimitDurationInMinutes": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Time window for resetting the rate limit count. Default is 1 minute."
+            }
+          },
+          "rateLimitThreshold": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Number of allowed requests per client within the time window."
+            }
+          },
+          "ruleType": {
+            "type": "string",
+            "allowedValues": [
+              "MatchRule",
+              "RateLimitRule"
+            ],
+            "metadata": {
+              "description": "Required. Describes type of rule."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -147,7 +296,7 @@
       }
     },
     "managedRules": {
-      "type": "object",
+      "$ref": "#/definitions/managedRulesType",
       "defaultValue": {
         "managedRuleSets": [
           {
@@ -170,7 +319,7 @@
       }
     },
     "customRules": {
-      "type": "object",
+      "$ref": "#/definitions/customRulesType",
       "defaultValue": {
         "rules": [
           {
@@ -220,11 +369,18 @@
     }
   },
   "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
@@ -233,7 +389,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.network-frontdoorwebappfirewallpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.network-frontdoorwebappfwpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -251,7 +407,7 @@
     },
     "frontDoorWAFPolicy": {
       "type": "Microsoft.Network/FrontDoorWebApplicationFirewallPolicies",
-      "apiVersion": "2022-05-01",
+      "apiVersion": "2024-02-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -281,20 +437,20 @@
     "frontDoorWAFPolicy_roleAssignments": {
       "copy": {
         "name": "frontDoorWAFPolicy_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.Network/FrontDoorWebApplicationFirewallPolicies', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/FrontDoorWebApplicationFirewallPolicies', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "frontDoorWAFPolicy"
@@ -328,7 +484,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('frontDoorWAFPolicy', '2022-05-01', 'full').location]"
+      "value": "[reference('frontDoorWAFPolicy', '2024-02-01', 'full').location]"
     }
   }
 }

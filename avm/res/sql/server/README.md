@@ -1,10 +1,5 @@
 # Azure SQL Servers `[Microsoft.Sql/servers]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an Azure SQL Server.
 
 ## Navigation
@@ -24,8 +19,8 @@ This module deploys an Azure SQL Server.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Sql/servers` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers) |
 | `Microsoft.Sql/servers/auditingSettings` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/auditingSettings) |
 | `Microsoft.Sql/servers/databases` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/databases) |
@@ -87,7 +82,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -112,6 +107,28 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlsadmin'
+// Non-required parameters
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: 'myspn'
+  principalType: 'Application'
+  sid: '<sid>'
+}
+param location = '<location>'
 ```
 
 </details>
@@ -153,7 +170,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -193,6 +210,32 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'ssaud001'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param auditSettings = {
+  isManagedIdentityInUse: true
+  state: 'Enabled'
+  storageAccountResourceId: '<storageAccountResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -221,7 +264,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -244,6 +287,24 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'ssmin001'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param location = '<location>'
 ```
 
 </details>
@@ -275,7 +336,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         backupShortTermRetentionPolicy: {
           retentionDays: 14
         }
-        capacity: 0
         collation: 'SQL_Latin1_General_CP1_CI_AS'
         diagnosticSettings: [
           {
@@ -294,6 +354,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         licenseType: 'LicenseIncluded'
         maxSizeBytes: 34359738368
         name: 'sqlsmaxdb-001'
+        skuCapacity: 0
         skuName: 'ElasticPool'
         skuTier: 'GeneralPurpose'
       }
@@ -335,9 +396,13 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -346,20 +411,26 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         subnetResourceId: '<subnetResourceId>'
       }
     ]
     restrictOutboundNetworkAccess: 'Disabled'
     roleAssignments: [
       {
+        name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -408,7 +479,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -433,7 +504,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "backupShortTermRetentionPolicy": {
             "retentionDays": 14
           },
-          "capacity": 0,
           "collation": "SQL_Latin1_General_CP1_CI_AS",
           "diagnosticSettings": [
             {
@@ -452,6 +522,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "licenseType": "LicenseIncluded",
           "maxSizeBytes": 34359738368,
           "name": "sqlsmaxdb-001",
+          "skuCapacity": 0,
           "skuName": "ElasticPool",
           "skuTier": "GeneralPurpose"
         }
@@ -509,9 +580,13 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -520,9 +595,13 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -533,11 +612,13 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -593,6 +674,165 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlsmax'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param databases = [
+  {
+    backupLongTermRetentionPolicy: {
+      monthlyRetention: 'P6M'
+    }
+    backupShortTermRetentionPolicy: {
+      retentionDays: 14
+    }
+    collation: 'SQL_Latin1_General_CP1_CI_AS'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    elasticPoolId: '<elasticPoolId>'
+    encryptionProtectorObj: {
+      serverKeyName: '<serverKeyName>'
+      serverKeyType: 'AzureKeyVault'
+    }
+    licenseType: 'LicenseIncluded'
+    maxSizeBytes: 34359738368
+    name: 'sqlsmaxdb-001'
+    skuCapacity: 0
+    skuName: 'ElasticPool'
+    skuTier: 'GeneralPurpose'
+  }
+]
+param elasticPools = [
+  {
+    maintenanceConfigurationId: '<maintenanceConfigurationId>'
+    name: 'sqlsmax-ep-001'
+    skuCapacity: 10
+    skuName: 'GP_Gen5'
+    skuTier: 'GeneralPurpose'
+  }
+]
+param firewallRules = [
+  {
+    endIpAddress: '0.0.0.0'
+    name: 'AllowAllWindowsAzureIps'
+    startIpAddress: '0.0.0.0'
+  }
+]
+param keys = [
+  {
+    name: '<name>'
+    serverKeyType: 'AzureKeyVault'
+    uri: '<uri>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param restrictOutboundNetworkAccess = 'Disabled'
+param roleAssignments = [
+  {
+    name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param securityAlertPolicies = [
+  {
+    emailAccountAdmins: true
+    name: 'Default'
+    state: 'Enabled'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param virtualNetworkRules = [
+  {
+    ignoreMissingVnetServiceEndpoint: true
+    name: 'newVnetRule1'
+    virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+  }
+]
+param vulnerabilityAssessmentsObj = {
+  emailSubscriptionAdmins: true
+  name: 'default'
+  recurringScansEmails: [
+    'test1@contoso.com'
+    'test2@contoso.com'
+  ]
+  recurringScansIsEnabled: true
+  storageAccountResourceId: '<storageAccountResourceId>'
+}
+```
+
+</details>
+<p>
+
 ### Example 5: _With a secondary database_
 
 This instance deploys the module with a secondary database.
@@ -636,7 +876,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -677,6 +917,39 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlsec-sec'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param databases = [
+  {
+    createMode: 'Secondary'
+    maxSizeBytes: 2147483648
+    name: '<name>'
+    skuName: 'Basic'
+    skuTier: 'Basic'
+    sourceDatabaseResourceId: '<sourceDatabaseResourceId>'
+  }
+]
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -742,7 +1015,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -811,6 +1084,55 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlsvln'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param securityAlertPolicies = [
+  {
+    emailAccountAdmins: true
+    name: 'Default'
+    state: 'Enabled'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param vulnerabilityAssessmentsObj = {
+  createStorageRoleAssignment: true
+  emailSubscriptionAdmins: true
+  name: 'default'
+  recurringScansEmails: [
+    'test1@contoso.com'
+    'test2@contoso.com'
+  ]
+  recurringScansIsEnabled: true
+  storageAccountResourceId: '<storageAccountResourceId>'
+  useStorageAccountAccessKey: false
+}
+```
+
+</details>
+<p>
+
 ### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -842,7 +1164,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         backupShortTermRetentionPolicy: {
           retentionDays: 14
         }
-        capacity: 0
         collation: 'SQL_Latin1_General_CP1_CI_AS'
         diagnosticSettings: [
           {
@@ -861,6 +1182,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         licenseType: 'LicenseIncluded'
         maxSizeBytes: 34359738368
         name: 'sqlswafdb-001'
+        skuCapacity: 0
         skuName: 'ElasticPool'
         skuTier: 'GeneralPurpose'
       }
@@ -890,9 +1212,13 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'sqlServer'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -941,7 +1267,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -969,7 +1295,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "backupShortTermRetentionPolicy": {
             "retentionDays": 14
           },
-          "capacity": 0,
           "collation": "SQL_Latin1_General_CP1_CI_AS",
           "diagnosticSettings": [
             {
@@ -988,6 +1313,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "licenseType": "LicenseIncluded",
           "maxSizeBytes": 34359738368,
           "name": "sqlswafdb-001",
+          "skuCapacity": 0,
           "skuName": "ElasticPool",
           "skuTier": "GeneralPurpose"
         }
@@ -1029,9 +1355,13 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "sqlServer",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -1089,6 +1419,129 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlswaf'
+// Non-required parameters
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: 'myspn'
+  principalType: 'Application'
+  sid: '<sid>'
+  tenantId: '<tenantId>'
+}
+param databases = [
+  {
+    backupLongTermRetentionPolicy: {
+      monthlyRetention: 'P6M'
+    }
+    backupShortTermRetentionPolicy: {
+      retentionDays: 14
+    }
+    collation: 'SQL_Latin1_General_CP1_CI_AS'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    elasticPoolId: '<elasticPoolId>'
+    encryptionProtectorObj: {
+      serverKeyName: '<serverKeyName>'
+      serverKeyType: 'AzureKeyVault'
+    }
+    licenseType: 'LicenseIncluded'
+    maxSizeBytes: 34359738368
+    name: 'sqlswafdb-001'
+    skuCapacity: 0
+    skuName: 'ElasticPool'
+    skuTier: 'GeneralPurpose'
+  }
+]
+param elasticPools = [
+  {
+    maintenanceConfigurationId: '<maintenanceConfigurationId>'
+    name: 'sqlswaf-ep-001'
+    skuCapacity: 10
+    skuName: 'GP_Gen5'
+    skuTier: 'GeneralPurpose'
+  }
+]
+param keys = [
+  {
+    serverKeyType: 'AzureKeyVault'
+    uri: '<uri>'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'sqlServer'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param restrictOutboundNetworkAccess = 'Disabled'
+param securityAlertPolicies = [
+  {
+    emailAccountAdmins: true
+    name: 'Default'
+    state: 'Enabled'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param virtualNetworkRules = [
+  {
+    ignoreMissingVnetServiceEndpoint: true
+    name: 'newVnetRule1'
+    virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+  }
+]
+param vulnerabilityAssessmentsObj = {
+  emailSubscriptionAdmins: true
+  name: 'default'
+  recurringScansEmails: [
+    'test1@contoso.com'
+    'test2@contoso.com'
+  ]
+  recurringScansIsEnabled: true
+  storageAccountResourceId: '<storageAccountResourceId>'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -1437,8 +1890,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
@@ -1622,19 +2074,64 @@ The name of the private endpoint.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneGroupName`
+### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
-The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
+The private DNS zone group to configure for the private endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneResourceIds`
+### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
-The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
+The name of the Private DNS Zone Group.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -1656,6 +2153,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -1672,6 +2180,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-privateendpointsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-privateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `privateEndpoints.roleAssignments.principalId`
@@ -1718,6 +2227,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1791,6 +2307,19 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Reservation Purchaser'`
+  - `'Role Based Access Control Administrator'`
+  - `'SQL DB Contributor'`
+  - `'SQL Managed Instance Contributor'`
+  - `'SQL Security Manager'`
+  - `'SQL Server Contributor'`
+  - `'SqlDb Migration Role'`
+  - `'SqlMI Migration Role'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1807,6 +2336,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1853,6 +2383,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1905,13 +2442,13 @@ The vulnerability assessment configuration.
 - Type: object
 - Default: `{}`
 
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed SQL server. |
+| `privateEndpoints` | array | The private endpoints of the SQL server. |
 | `resourceGroupName` | string | The resource group of the deployed SQL server. |
 | `resourceId` | string | The resource ID of the deployed SQL server. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
@@ -1922,7 +2459,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
 
 ## Notes
 

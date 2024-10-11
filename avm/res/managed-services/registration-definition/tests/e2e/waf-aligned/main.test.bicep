@@ -20,6 +20,10 @@ param resourceLocation string = deployment().location
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Required. The tenant Id of the lighthouse tenant. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-LighthouseManagedByTenantId\'.')
+@secure()
+param lighthouseManagedByTenantId string = ''
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -54,7 +58,7 @@ module testDeployment '../../../main.bicep' = [
           roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
         }
       ]
-      managedByTenantId: '449fbe1d-9c99-4509-9014-4fd5cf25b014'
+      managedByTenantId: lighthouseManagedByTenantId
     }
   }
 ]

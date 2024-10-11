@@ -187,6 +187,15 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
+      {
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'sendingDiagnosticSettingsToSelf'
+        useThisWorkspace: true
+      }
     ]
     gallerySolutions: [
       {
@@ -325,7 +334,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    useDeployedWorkspaceForDiagnosticSettings: true
     useResourcePermissions: true
   }
 }
@@ -336,7 +344,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -484,6 +492,15 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           "name": "customSetting",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
+        },
+        {
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "sendingDiagnosticSettingsToSelf",
+          "useThisWorkspace": true
         }
       ]
     },
@@ -646,14 +663,304 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         "Role": "DeploymentValidation"
       }
     },
-    "useDeployedWorkspaceForDiagnosticSettings": {
-      "value": true
-    },
     "useResourcePermissions": {
       "value": true
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwadv001'
+// Non-required parameters
+param dailyQuotaGb = 10
+param dataExports = [
+  {
+    destination: {
+      metaData: {
+        eventHubName: '<eventHubName>'
+      }
+      resourceId: '<resourceId>'
+    }
+    enable: true
+    name: 'eventHubExport'
+    tableNames: [
+      'Alert'
+      'InsightsMetrics'
+    ]
+  }
+  {
+    destination: {
+      resourceId: '<resourceId>'
+    }
+    enable: true
+    name: 'storageAccountExport'
+    tableNames: [
+      'Operation'
+    ]
+  }
+]
+param dataSources = [
+  {
+    eventLogName: 'Application'
+    eventTypes: [
+      {
+        eventType: 'Error'
+      }
+      {
+        eventType: 'Warning'
+      }
+      {
+        eventType: 'Information'
+      }
+    ]
+    kind: 'WindowsEvent'
+    name: 'applicationEvent'
+  }
+  {
+    counterName: '% Processor Time'
+    instanceName: '*'
+    intervalSeconds: 60
+    kind: 'WindowsPerformanceCounter'
+    name: 'windowsPerfCounter1'
+    objectName: 'Processor'
+  }
+  {
+    kind: 'IISLogs'
+    name: 'sampleIISLog1'
+    state: 'OnPremiseEnabled'
+  }
+  {
+    kind: 'LinuxSyslog'
+    name: 'sampleSyslog1'
+    syslogName: 'kern'
+    syslogSeverities: [
+      {
+        severity: 'emerg'
+      }
+      {
+        severity: 'alert'
+      }
+      {
+        severity: 'crit'
+      }
+      {
+        severity: 'err'
+      }
+      {
+        severity: 'warning'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxSyslogCollection'
+    name: 'sampleSyslogCollection1'
+    state: 'Enabled'
+  }
+  {
+    instanceName: '*'
+    intervalSeconds: 10
+    kind: 'LinuxPerformanceObject'
+    name: 'sampleLinuxPerf1'
+    objectName: 'Logical Disk'
+    syslogSeverities: [
+      {
+        counterName: '% Used Inodes'
+      }
+      {
+        counterName: 'Free Megabytes'
+      }
+      {
+        counterName: '% Used Space'
+      }
+      {
+        counterName: 'Disk Transfers/sec'
+      }
+      {
+        counterName: 'Disk Reads/sec'
+      }
+      {
+        counterName: 'Disk Writes/sec'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxPerformanceCollection'
+    name: 'sampleLinuxPerfCollection1'
+    state: 'Enabled'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+  {
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'sendingDiagnosticSettingsToSelf'
+    useThisWorkspace: true
+  }
+]
+param gallerySolutions = [
+  {
+    name: 'AzureAutomation'
+    product: 'OMSGallery'
+    publisher: 'Microsoft'
+  }
+]
+param linkedServices = [
+  {
+    name: 'Automation'
+    resourceId: '<resourceId>'
+  }
+]
+param linkedStorageAccounts = [
+  {
+    name: 'Query'
+    resourceId: '<resourceId>'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param publicNetworkAccessForIngestion = 'Disabled'
+param publicNetworkAccessForQuery = 'Disabled'
+param savedSearches = [
+  {
+    category: 'VDC Saved Searches'
+    displayName: 'VMSS Instance Count2'
+    name: 'VMSSQueries'
+    query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
+  }
+]
+param storageInsightsConfigs = [
+  {
+    storageAccountResourceId: '<storageAccountResourceId>'
+    tables: [
+      'LinuxsyslogVer2v0'
+      'WADETWEventTable'
+      'WADServiceFabric*EventTable'
+      'WADWindowsEventLogsTable'
+    ]
+  }
+]
+param tables = [
+  {
+    name: 'CustomTableBasic_CL'
+    retentionInDays: 60
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    schema: {
+      columns: [
+        {
+          name: 'TimeGenerated'
+          type: 'DateTime'
+        }
+        {
+          name: 'RawData'
+          type: 'String'
+        }
+      ]
+      name: 'CustomTableBasic_CL'
+    }
+    totalRetentionInDays: 90
+  }
+  {
+    name: 'CustomTableAdvanced_CL'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    schema: {
+      columns: [
+        {
+          name: 'TimeGenerated'
+          type: 'DateTime'
+        }
+        {
+          name: 'EventTime'
+          type: 'DateTime'
+        }
+        {
+          name: 'EventLevel'
+          type: 'String'
+        }
+        {
+          name: 'EventCode'
+          type: 'Int'
+        }
+        {
+          name: 'Message'
+          type: 'String'
+        }
+        {
+          name: 'RawData'
+          type: 'String'
+        }
+      ]
+      name: 'CustomTableAdvanced_CL'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param useResourcePermissions = true
 ```
 
 </details>
@@ -685,7 +992,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -702,6 +1009,22 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -859,11 +1182,13 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     publicNetworkAccessForQuery: 'Disabled'
     roleAssignments: [
       {
+        name: 'c3d53092-840c-4025-9c02-9bcb7895789c'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -1004,7 +1329,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1175,11 +1500,13 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "roleAssignments": {
       "value": [
         {
+          "name": "c3d53092-840c-4025-9c02-9bcb7895789c",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -1324,6 +1651,295 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwmax001'
+// Non-required parameters
+param dailyQuotaGb = 10
+param dataSources = [
+  {
+    eventLogName: 'Application'
+    eventTypes: [
+      {
+        eventType: 'Error'
+      }
+      {
+        eventType: 'Warning'
+      }
+      {
+        eventType: 'Information'
+      }
+    ]
+    kind: 'WindowsEvent'
+    name: 'applicationEvent'
+  }
+  {
+    counterName: '% Processor Time'
+    instanceName: '*'
+    intervalSeconds: 60
+    kind: 'WindowsPerformanceCounter'
+    name: 'windowsPerfCounter1'
+    objectName: 'Processor'
+  }
+  {
+    kind: 'IISLogs'
+    name: 'sampleIISLog1'
+    state: 'OnPremiseEnabled'
+  }
+  {
+    kind: 'LinuxSyslog'
+    name: 'sampleSyslog1'
+    syslogName: 'kern'
+    syslogSeverities: [
+      {
+        severity: 'emerg'
+      }
+      {
+        severity: 'alert'
+      }
+      {
+        severity: 'crit'
+      }
+      {
+        severity: 'err'
+      }
+      {
+        severity: 'warning'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxSyslogCollection'
+    name: 'sampleSyslogCollection1'
+    state: 'Enabled'
+  }
+  {
+    instanceName: '*'
+    intervalSeconds: 10
+    kind: 'LinuxPerformanceObject'
+    name: 'sampleLinuxPerf1'
+    objectName: 'Logical Disk'
+    syslogSeverities: [
+      {
+        counterName: '% Used Inodes'
+      }
+      {
+        counterName: 'Free Megabytes'
+      }
+      {
+        counterName: '% Used Space'
+      }
+      {
+        counterName: 'Disk Transfers/sec'
+      }
+      {
+        counterName: 'Disk Reads/sec'
+      }
+      {
+        counterName: 'Disk Writes/sec'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxPerformanceCollection'
+    name: 'sampleLinuxPerfCollection1'
+    state: 'Enabled'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param gallerySolutions = [
+  {
+    name: 'AzureAutomation'
+    product: 'OMSGallery'
+    publisher: 'Microsoft'
+  }
+]
+param linkedServices = [
+  {
+    name: 'Automation'
+    resourceId: '<resourceId>'
+  }
+]
+param linkedStorageAccounts = [
+  {
+    name: 'Query'
+    resourceId: '<resourceId>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param publicNetworkAccessForIngestion = 'Disabled'
+param publicNetworkAccessForQuery = 'Disabled'
+param roleAssignments = [
+  {
+    name: 'c3d53092-840c-4025-9c02-9bcb7895789c'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param savedSearches = [
+  {
+    category: 'VDC Saved Searches'
+    displayName: 'VMSS Instance Count2'
+    name: 'VMSSQueries'
+    query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
+    tags: [
+      {
+        Name: 'Environment'
+        Value: 'Non-Prod'
+      }
+      {
+        Name: 'Role'
+        Value: 'DeploymentValidation'
+      }
+    ]
+  }
+]
+param storageInsightsConfigs = [
+  {
+    storageAccountResourceId: '<storageAccountResourceId>'
+    tables: [
+      'LinuxsyslogVer2v0'
+      'WADETWEventTable'
+      'WADServiceFabric*EventTable'
+      'WADWindowsEventLogsTable'
+    ]
+  }
+]
+param tables = [
+  {
+    name: 'CustomTableBasic_CL'
+    retentionInDays: 60
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    schema: {
+      columns: [
+        {
+          name: 'TimeGenerated'
+          type: 'DateTime'
+        }
+        {
+          name: 'RawData'
+          type: 'String'
+        }
+      ]
+      name: 'CustomTableBasic_CL'
+    }
+    totalRetentionInDays: 90
+  }
+  {
+    name: 'CustomTableAdvanced_CL'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    schema: {
+      columns: [
+        {
+          name: 'TimeGenerated'
+          type: 'DateTime'
+        }
+        {
+          name: 'EventTime'
+          type: 'DateTime'
+        }
+        {
+          name: 'EventLevel'
+          type: 'String'
+        }
+        {
+          name: 'EventCode'
+          type: 'Int'
+        }
+        {
+          name: 'Message'
+          type: 'String'
+        }
+        {
+          name: 'RawData'
+          type: 'String'
+        }
+      ]
+      name: 'CustomTableAdvanced_CL'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param useResourcePermissions = true
 ```
 
 </details>
@@ -1495,7 +2111,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1681,6 +2297,161 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwwaf001'
+// Non-required parameters
+param dailyQuotaGb = 10
+param dataSources = [
+  {
+    eventLogName: 'Application'
+    eventTypes: [
+      {
+        eventType: 'Error'
+      }
+      {
+        eventType: 'Warning'
+      }
+      {
+        eventType: 'Information'
+      }
+    ]
+    kind: 'WindowsEvent'
+    name: 'applicationEvent'
+  }
+  {
+    counterName: '% Processor Time'
+    instanceName: '*'
+    intervalSeconds: 60
+    kind: 'WindowsPerformanceCounter'
+    name: 'windowsPerfCounter1'
+    objectName: 'Processor'
+  }
+  {
+    kind: 'IISLogs'
+    name: 'sampleIISLog1'
+    state: 'OnPremiseEnabled'
+  }
+  {
+    kind: 'LinuxSyslog'
+    name: 'sampleSyslog1'
+    syslogName: 'kern'
+    syslogSeverities: [
+      {
+        severity: 'emerg'
+      }
+      {
+        severity: 'alert'
+      }
+      {
+        severity: 'crit'
+      }
+      {
+        severity: 'err'
+      }
+      {
+        severity: 'warning'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxSyslogCollection'
+    name: 'sampleSyslogCollection1'
+    state: 'Enabled'
+  }
+  {
+    instanceName: '*'
+    intervalSeconds: 10
+    kind: 'LinuxPerformanceObject'
+    name: 'sampleLinuxPerf1'
+    objectName: 'Logical Disk'
+    syslogSeverities: [
+      {
+        counterName: '% Used Inodes'
+      }
+      {
+        counterName: 'Free Megabytes'
+      }
+      {
+        counterName: '% Used Space'
+      }
+      {
+        counterName: 'Disk Transfers/sec'
+      }
+      {
+        counterName: 'Disk Reads/sec'
+      }
+      {
+        counterName: 'Disk Writes/sec'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxPerformanceCollection'
+    name: 'sampleLinuxPerfCollection1'
+    state: 'Enabled'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param gallerySolutions = [
+  {
+    name: 'AzureAutomation'
+    product: 'OMSGallery'
+    publisher: 'Microsoft'
+  }
+]
+param linkedServices = [
+  {
+    name: 'Automation'
+    resourceId: '<resourceId>'
+  }
+]
+param linkedStorageAccounts = [
+  {
+    name: 'Query'
+    resourceId: '<resourceId>'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+param publicNetworkAccessForIngestion = 'Disabled'
+param publicNetworkAccessForQuery = 'Disabled'
+param storageInsightsConfigs = [
+  {
+    storageAccountResourceId: '<storageAccountResourceId>'
+    tables: [
+      'LinuxsyslogVer2v0'
+      'WADETWEventTable'
+      'WADServiceFabric*EventTable'
+      'WADWindowsEventLogsTable'
+    ]
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param useResourcePermissions = true
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -1721,7 +2492,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 | [`storageInsightsConfigs`](#parameter-storageinsightsconfigs) | array | List of storage accounts to be read by the workspace. |
 | [`tables`](#parameter-tables) | array | LAW custom tables to be deployed. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`useDeployedWorkspaceForDiagnosticSettings`](#parameter-usedeployedworkspacefordiagnosticsettings) | bool | Instead of using an external reference, use the deployed instance as the target for its diagnostic settings. |
 | [`useResourcePermissions`](#parameter-useresourcepermissions) | bool | Set to 'true' to use resource or workspace permissions and 'false' (or leave empty) to require workspace permissions. |
 
 ### Parameter: `name`
@@ -1790,6 +2560,7 @@ The diagnostic settings of the service.
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
 | [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`useThisWorkspace`](#parameter-diagnosticsettingsusethisworkspace) | bool | Instead of using an external reference, use the deployed instance as the target for its diagnostic settings. If set to `true`, the `workspaceResourceId` property is ignored. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
 ### Parameter: `diagnosticSettings.eventHubAuthorizationRuleResourceId`
@@ -1909,6 +2680,13 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+
+### Parameter: `diagnosticSettings.useThisWorkspace`
+
+Instead of using an external reference, use the deployed instance as the target for its diagnostic settings. If set to `true`, the `workspaceResourceId` property is ignored.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -2057,6 +2835,18 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Log Analytics Contributor'`
+  - `'Log Analytics Reader'`
+  - `'Monitoring Contributor'`
+  - `'Monitoring Reader'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'Security Admin'`
+  - `'Security Reader'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2073,6 +2863,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -2119,6 +2910,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -2200,14 +2998,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-### Parameter: `useDeployedWorkspaceForDiagnosticSettings`
-
-Instead of using an external reference, use the deployed instance as the target for its diagnostic settings.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `useResourcePermissions`
 
 Set to 'true' to use resource or workspace permissions and 'false' (or leave empty) to require workspace permissions.
@@ -2215,7 +3005,6 @@ Set to 'true' to use resource or workspace permissions and 'false' (or leave emp
 - Required: No
 - Type: bool
 - Default: `False`
-
 
 ## Outputs
 

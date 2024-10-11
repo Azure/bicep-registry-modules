@@ -8,7 +8,6 @@ This module deploys an Operations Management Solution.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -57,7 +56,7 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -77,6 +76,23 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operations-management/solution:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
+param name = 'Updates'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -111,7 +127,7 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -137,6 +153,25 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operations-management/solution:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
+param name = 'AzureAutomation'
+// Non-required parameters
+param location = '<location>'
+param product = 'OMSGallery'
+param publisher = 'Microsoft'
 ```
 
 </details>
@@ -171,7 +206,7 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -197,6 +232,25 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operations-management/solution:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
+param name = 'omsnonms001'
+// Non-required parameters
+param location = '<location>'
+param product = 'nonmsTestSolutionProduct'
+param publisher = 'nonmsTestSolutionPublisher'
 ```
 
 </details>
@@ -231,7 +285,7 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -262,6 +316,24 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operations-management/solution:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
+param name = 'AzureAutomation'
+// Non-required parameters
+param location = '<location>'
+param product = 'OMSGallery'
+param publisher = 'Microsoft'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -327,7 +399,6 @@ The publisher name of the deployed solution. For Microsoft published gallery sol
 - Type: string
 - Default: `'Microsoft'`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -336,10 +407,6 @@ The publisher name of the deployed solution. For Microsoft published gallery sol
 | `name` | string | The name of the deployed solution. |
 | `resourceGroupName` | string | The resource group where the solution is deployed. |
 | `resourceId` | string | The resource ID of the deployed solution. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 
