@@ -178,8 +178,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-// cluster resource is created when deploymentMode is set to 'Validate'
-resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = if (deploymentMode == 'Validate') {
+resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   name: name
   identity: {
     type: 'SystemAssigned'
@@ -187,11 +186,6 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = if (deploymentM
   location: location
   properties: {}
   tags: tags
-}
-
-// existing cluster resource is used when deploymentMode is set to 'Deploy'
-resource clusterExisting 'Microsoft.AzureStackHCI/clusters@2024-04-01' existing = if (deploymentMode == 'Deploy') {
-  name: name
 }
 
 module deploymentSetting 'deployment-settings/main.bicep' = {
@@ -222,9 +216,6 @@ module deploymentSetting 'deployment-settings/main.bicep' = {
     streamingDataClient: streamingDataClient
     subnetMask: subnetMask
   }
-  dependsOn: [
-    cluster
-  ]
 }
 
 resource cluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
@@ -244,23 +235,15 @@ resource cluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
 ]
 
 @description('The name of the cluster.')
-output name string = (deploymentMode == 'Validate')
-  ? cluster.name
-  : (deploymentMode == 'Deploy') ? clusterExisting.name : ''
+output name string = cluster.name
 @description('The ID of the cluster.')
-output resourceId string = (deploymentMode == 'Validate')
-  ? cluster.id
-  : (deploymentMode == 'Deploy') ? clusterExisting.id : ''
+output resourceId string = cluster.id
 @description('The resource group of the cluster.')
 output resourceGroupName string = resourceGroup().name
 @description('The managed identity of the cluster.')
-output systemAssignedMIPrincipalId string = (deploymentMode == 'Validate')
-  ? cluster.identity.principalId
-  : (deploymentMode == 'Deploy') ? clusterExisting.identity.principalId : ''
+output systemAssignedMIPrincipalId string = cluster.identity.principalId
 @description('The location of the cluster.')
-output location string = (deploymentMode == 'Validate')
-  ? cluster.location
-  : (deploymentMode == 'Deploy') ? clusterExisting.location : ''
+output location string = cluster.location
 
 // =============== //
 //   Definitions   //
