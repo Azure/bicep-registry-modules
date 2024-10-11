@@ -1646,7 +1646,7 @@ param tags = {
 | [`restrictOutboundNetworkAccess`](#parameter-restrictoutboundnetworkaccess) | bool | Restrict outbound network access. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
-| [`sku`](#parameter-sku) | string | SKU of the Cognitive Services resource. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
+| [`sku`](#parameter-sku) | string | SKU of the Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`userOwnedStorage`](#parameter-userownedstorage) | array | The storage accounts for this resource. |
 
@@ -2685,7 +2685,7 @@ The name for the accessKey2 secret to create.
 
 ### Parameter: `sku`
 
-SKU of the Cognitive Services resource. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
+SKU of the Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
 
 - Required: No
 - Type: string

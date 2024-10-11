@@ -45,7 +45,7 @@ param projectKind string = 'Project'
 @description('Optional. The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service.')
 param hbiWorkspace bool = false
 
-@description('Optional. Whether or not public network access is allowed for this machine learning resource. For security reasons it should be disabled.')
+@description('Optional. Whether or not public network access is allowed for this machine learning workspace. For security reasons it should be disabled.')
 @allowed([
   'Enabled'
   'Disabled'
@@ -121,7 +121,7 @@ module keyVaultAccess 'br/public:avm/res/key-vault/vault:0.9.0' = {
     accessPolicies: [
       {
         objectId: project.outputs.systemAssignedMIPrincipalId
-        permissions: { secrets: [ 'get', 'list' ] }
+        permissions: { secrets: ['get', 'list'] }
       }
     ]
     enableTelemetry: enableTelemetry
