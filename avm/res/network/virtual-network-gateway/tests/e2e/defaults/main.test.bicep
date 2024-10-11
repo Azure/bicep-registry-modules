@@ -62,6 +62,9 @@ module testDeployment '../../../main.bicep' = [
         2
         3
       ]
+      clusterSettings: {
+        clusterMode:'activeActiveNoBgp'
+      }
     }
     dependsOn: [
       nestedDependencies
