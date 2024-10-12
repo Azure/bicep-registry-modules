@@ -1,4 +1,4 @@
-metadata name = 'Azure Machine Learning Environment'
+metadata name = 'Azd Azure Machine Learning Environment'
 metadata description = '''Create Azure Machine Learning workspaces of type 'Hub' and 'Project' and their required dependencies.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.'''
@@ -88,8 +88,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module hubDependencies '../ml-hub-dependencies/main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-dependencies'
+module hubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:0.1.0' = {
+  name: 'mlHubDependenciesDeployment'
   params: {
     location: location
     tags: tags
@@ -102,6 +102,7 @@ module hubDependencies '../ml-hub-dependencies/main.bicep' = {
     cognitiveServicesDeployments: cognitiveServicesDeployments
     searchServiceName: searchServiceName
     replicaCount: replicaCount
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -122,13 +123,14 @@ module hub './modules/hub.bicep' = {
   }
 }
 
-module project '../ml-project/main.bicep' = {
+module project 'br/public:avm/ptn/azd/ml-project:0.1.0' = {
   name: '${uniqueString(deployment().name, location)}-project'
   params: {
     name: projectName
     hubResourceId: hub.outputs.resourceId
     keyVaultName: hubDependencies.outputs.keyVaultName
-    userAssignedtName: userAssignedtName
+    userAssignedName: userAssignedtName
+    enableTelemetry: enableTelemetry
   }
 }
 

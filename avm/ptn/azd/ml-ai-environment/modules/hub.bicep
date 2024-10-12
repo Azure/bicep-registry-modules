@@ -49,6 +49,14 @@ param tags object = {}
 // Resources        //
 // ================ //
 
+resource openAi 'Microsoft.CognitiveServices/accounts@2023-05-01' existing = {
+  name: openAiName
+}
+
+resource search 'Microsoft.Search/searchServices@2021-04-01-preview' existing = if (!empty(aiSearchName)) {
+  name: aiSearchName
+}
+
 resource hub 'Microsoft.MachineLearningServices/workspaces@2024-04-01' = {
   name: name
   location: location
@@ -124,14 +132,6 @@ resource hub 'Microsoft.MachineLearningServices/workspaces@2024-04-01' = {
       }
     }
   }
-}
-
-resource openAi 'Microsoft.CognitiveServices/accounts@2023-05-01' existing = {
-  name: openAiName
-}
-
-resource search 'Microsoft.Search/searchServices@2021-04-01-preview' existing = if (!empty(aiSearchName)) {
-  name: aiSearchName
 }
 
 // ================ //

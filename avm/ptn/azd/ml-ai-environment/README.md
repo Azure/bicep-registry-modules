@@ -1,4 +1,4 @@
-# Azure Machine Learning Environment `[Azd/MlAiEnvironment]`
+# Azd Azure Machine Learning Environment `[Azd/MlAiEnvironment]`
 
 Create Azure Machine Learning workspaces of type 'Hub' and 'Project' and their required dependencies.
 
@@ -61,14 +61,14 @@ Create Azure Machine Learning workspaces of type 'Hub' and 'Project' and their r
 | `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
-| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/fileServices) |
+| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/fileServices) |
 | `Microsoft.Storage/storageAccounts/fileServices/shares` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/fileServices/shares) |
-| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/localUsers) |
+| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/localUsers) |
 | `Microsoft.Storage/storageAccounts/managementPolicies` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/managementPolicies) |
-| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices) |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices/queues) |
-| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices) |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices/tables) |
+| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices) |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices/queues) |
+| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices) |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices/tables) |
 
 ## Usage examples
 
@@ -114,7 +114,7 @@ module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -152,6 +152,29 @@ module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/ml-ai-environment:<version>'
+
+// Required parameters
+param cognitiveServicesName = 'maemincs001'
+param hubName = 'maeminhub001'
+param keyVaultName = 'maeminkv00'
+param openAiConnectionName = 'maeminai001-connection'
+param projectName = 'maeminpro001'
+param searchConnectionName = 'maeminsearch001-connection'
+param storageAccountName = 'maeminsa001'
+param userAssignedtName = 'maeminua001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -208,7 +231,7 @@ module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -274,6 +297,47 @@ module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/ml-ai-environment:<version>'
+
+// Required parameters
+param cognitiveServicesName = 'maemaxcs001'
+param hubName = 'maemaxhub001'
+param keyVaultName = 'maemaxkv001'
+param openAiConnectionName = 'maemaxai001-connection'
+param projectName = 'maemaxpro001'
+param searchConnectionName = 'maemaxsearch001-connection'
+param storageAccountName = 'maemaxsta001'
+param userAssignedtName = 'maemaxua001'
+// Non-required parameters
+param applicationInsightsName = 'maemaxappin001'
+param cognitiveServicesDeployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-35-turbo'
+      version: '0613'
+    }
+    name: 'gpt-35-turbo'
+    sku: {
+      capacity: 20
+      name: 'Standard'
+    }
+  }
+]
+param containerRegistryName = 'maemaxcr001'
+param location = '<location>'
+param logAnalyticsName = 'maemaxla001'
+param searchServiceName = 'maemaxsearch001'
 ```
 
 </details>
@@ -474,18 +538,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `ptn/azd/ml-hub-dependencies` | Local reference |
-| `ptn/azd/ml-project` | Local reference |
-| `br/public:avm/ptn/azd/insights-dashboard:0.1.0` | Remote reference |
-| `br/public:avm/res/cognitive-services/account:0.7.0` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.4.0` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.7.1` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.9.0` | Remote reference |
-| `br/public:avm/res/machine-learning-services/workspace:0.7.0` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.6.0` | Remote reference |
-| `br/public:avm/res/search/search-service:0.6.0` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.9.1` | Remote reference |
+| `br/public:avm/ptn/azd/ml-hub-dependencies:0.1.0` | Remote reference |
+| `br/public:avm/ptn/azd/ml-project:0.1.0` | Remote reference |
 
 ## Data Collection
 

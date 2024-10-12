@@ -5,10 +5,10 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "9652571987002611788"
+      "version": "0.30.23.60470",
+      "templateHash": "2342180666516940242"
     },
-    "name": "Azure Machine Learning Environment",
+    "name": "Azd Azure Machine Learning Environment",
     "description": "Create Azure Machine Learning workspaces of type 'Hub' and 'Project' and their required dependencies.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
     "owner": "Azure/module-maintainers"
   },
@@ -152,7 +152,7 @@
     "hubDependencies": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-dependencies', uniqueString(deployment().name, parameters('location')))]",
+      "name": "mlHubDependenciesDeployment",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -191,6 +191,9 @@
           },
           "replicaCount": {
             "value": "[parameters('replicaCount')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -200,10 +203,10 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "6799127393431161652"
+              "version": "0.30.23.60470",
+              "templateHash": "11541059920638838548"
             },
-            "name": "Azure Machine Learning Dependencies",
+            "name": "Azd Azure Machine Learning Dependencies",
             "description": "Creates all the dependencies required for a Machine Learning Service.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
             "owner": "Azure/module-maintainers"
           },
@@ -678,7 +681,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.ptn.azd-mlhubdependencies.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.ptn.azd-mlhubdependencies.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -727,6 +730,9 @@
                   },
                   "sku": {
                     "value": "[parameters('keyVaultSku')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -3540,6 +3546,9 @@
                   },
                   "tableServices": {
                     "value": "[parameters('tableServices')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -8217,6 +8226,9 @@
                   },
                   "deployments": {
                     "value": "[parameters('cognitiveServicesDeployments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -9994,6 +10006,9 @@
                   },
                   "skuName": {
                     "value": "[parameters('logAnalyticsSkuName')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -12048,7 +12063,10 @@
                   "dashboardName": {
                     "value": "[parameters('applicationInsightsDashboardName')]"
                   },
-                  "logAnalyticsWorkspaceResourceId": "[if(not(empty(parameters('logAnalyticsName'))), createObject('value', reference('logAnalytics').outputs.resourceId.value), createObject('value', ''))]"
+                  "logAnalyticsWorkspaceResourceId": "[if(not(empty(parameters('logAnalyticsName'))), createObject('value', reference('logAnalytics').outputs.resourceId.value), createObject('value', ''))]",
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -14464,6 +14482,9 @@
                   },
                   "publicNetworkAccess": {
                     "value": "[parameters('registryPublicNetworkAccess')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -17001,6 +17022,9 @@
                   },
                   "managedIdentities": {
                     "value": "[parameters('managedIdentities')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -18962,8 +18986,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "1067386930679309754"
+              "version": "0.30.23.60470",
+              "templateHash": "14638884902534515717"
             }
           },
           "parameters": {
@@ -19209,8 +19233,11 @@
           "keyVaultName": {
             "value": "[reference('hubDependencies').outputs.keyVaultName.value]"
           },
-          "userAssignedtName": {
+          "userAssignedName": {
             "value": "[parameters('userAssignedtName')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -19220,10 +19247,10 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "8421874757119193320"
+              "version": "0.30.23.60470",
+              "templateHash": "11662488567540742511"
             },
-            "name": "Machine Learning workspace",
+            "name": "Azd Machine Learning workspace",
             "description": "Create a machine learning workspace, configure the key vault access policy and assign role permissions to the machine learning instance.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
             "owner": "Azure/module-maintainers"
           },
@@ -19321,7 +19348,7 @@
                 "Disabled"
               ],
               "metadata": {
-                "description": "Optional. Whether or not public network access is allowed for this machine learning resource. For security reasons it should be disabled."
+                "description": "Optional. Whether or not public network access is allowed for this machine learning workspace. For security reasons it should be disabled."
               }
             },
             "hubResourceId": {
@@ -19345,10 +19372,10 @@
                 "description": "Optional. The managed identity definition for the machine learning resource. At least one identity type is required."
               }
             },
-            "userAssignedtName": {
+            "userAssignedName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The User Assigned Identity resource name."
+                "description": "Required. The name of the user assigned identity."
               }
             },
             "roleDefinitionIdOrName": {
@@ -19358,7 +19385,7 @@
                 "ea01e6af-a1c1-4350-9563-ad00f8c72ec5"
               ],
               "metadata": {
-                "description": "Optional. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                "description": "Optional. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. Default roles: AzureML Data Scientist, Azure Machine Learning Workspace Connection Secrets Reader."
               }
             }
           },
@@ -19367,7 +19394,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.ptn.azd-mlproject.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.ptn.azd-mlproject.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -19422,6 +19449,9 @@
                   },
                   "hubResourceId": {
                     "value": "[parameters('hubResourceId')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -23216,6 +23246,9 @@
                         }
                       }
                     ]
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -26145,7 +26178,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[parameters('userAssignedtName')]"
+                    "value": "[parameters('userAssignedName')]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -26158,6 +26191,9 @@
                         "input": "[createObject('principalId', reference('project').outputs.systemAssignedMIPrincipalId.value, 'roleDefinitionIdOrName', parameters('roleDefinitionIdOrName')[copyIndex('value')], 'principalType', 'ServicePrincipal')]"
                       }
                     ]
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
