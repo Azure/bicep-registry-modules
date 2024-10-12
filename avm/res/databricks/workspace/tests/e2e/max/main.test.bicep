@@ -192,6 +192,7 @@ module testDeployment '../../../main.bicep' = [
         //initialName: '' Cannot be set to anything other than an empty string. {"code":"InvalidInitialCatalogName","message":"Currently custom initial catalog name is not supported. This capability will be added in future."}
         initialType: 'UnityCatalog' // Choose between 'HiveCatalog' OR 'UnityCatalog'
       }
+      automaticClusterUpdateSwitch: 'Enabled'
     }
     dependsOn: [
       nestedDependencies
