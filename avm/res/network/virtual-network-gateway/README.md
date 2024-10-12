@@ -1852,6 +1852,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     location: '<location>'
+    publicIpZones: []
     skuName: 'VpnGw1'
   }
 }
@@ -1888,6 +1889,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "location": {
       "value": "<location>"
     },
+    "publicIpZones": {
+      "value": []
+    },
     "skuName": {
       "value": "VpnGw1"
     }
@@ -1914,6 +1918,7 @@ param name = 'nvgnaz001'
 param vNetResourceId = '<vNetResourceId>'
 // Non-required parameters
 param location = '<location>'
+param publicIpZones = []
 param skuName = 'VpnGw1'
 ```
 
