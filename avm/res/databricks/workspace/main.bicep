@@ -122,7 +122,7 @@ param defaultCatalog defaultCatalogType?
   'Disabled'
   ''
 ])
-param automaticClusterUpdateSwitch string = ''
+param automaticClusterUpdateSwitch string = 'Enabled'
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -351,7 +351,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
     !empty(automaticClusterUpdateSwitch)
       ? {
           enhancedSecurityCompliance: {
-            automaticClusterUpdate: automaticClusterUpdateSwitch
+            automaticClusterUpdate: 'Enabled' //automaticClusterUpdateSwitch
           }
         }
       : {}
