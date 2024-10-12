@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "1805182723135951408"
+      "templateHash": "18021918128213514276"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database.",
@@ -355,7 +355,7 @@
     },
     "maintenanceConfigurationId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Maintenance configuration ID assigned to the database. This configuration defines the period when the maintenance updates will occur."
       }
@@ -404,7 +404,7 @@
         "highAvailabilityReplicaCount": "[parameters('highAvailabilityReplicaCount')]",
         "requestedBackupStorageRedundancy": "[parameters('requestedBackupStorageRedundancy')]",
         "isLedgerOn": "[parameters('isLedgerOn')]",
-        "maintenanceConfigurationId": "[if(not(empty(parameters('maintenanceConfigurationId'))), parameters('maintenanceConfigurationId'), null())]",
+        "maintenanceConfigurationId": "[parameters('maintenanceConfigurationId')]",
         "elasticPoolId": "[parameters('elasticPoolId')]",
         "createMode": "[parameters('createMode')]",
         "sourceDatabaseId": "[if(not(empty(parameters('sourceDatabaseResourceId'))), parameters('sourceDatabaseResourceId'), null())]",

@@ -112,7 +112,7 @@ param requestedBackupStorageRedundancy string = ''
 param isLedgerOn bool = false
 
 @description('Optional. Maintenance configuration ID assigned to the database. This configuration defines the period when the maintenance updates will occur.')
-param maintenanceConfigurationId string = ''
+param maintenanceConfigurationId string?
 
 @description('Optional. The short term backup retention policy to create for the database.')
 param backupShortTermRetentionPolicy object = {}
@@ -164,7 +164,7 @@ resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
     highAvailabilityReplicaCount: highAvailabilityReplicaCount
     requestedBackupStorageRedundancy: any(requestedBackupStorageRedundancy)
     isLedgerOn: isLedgerOn
-    maintenanceConfigurationId: !empty(maintenanceConfigurationId) ? maintenanceConfigurationId : null
+    maintenanceConfigurationId: maintenanceConfigurationId
     elasticPoolId: elasticPoolId
     createMode: createMode
     sourceDatabaseId: !empty(sourceDatabaseResourceId) ? sourceDatabaseResourceId : null

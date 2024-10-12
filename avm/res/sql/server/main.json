@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "1365532594151189303"
+      "templateHash": "6390074077912506549"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -787,7 +787,7 @@
             "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'licenseType'), '')]"
           },
           "maintenanceConfigurationId": {
-            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'maintenanceConfigurationId'), '')]"
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'maintenanceConfigurationId')]"
           },
           "minCapacity": {
             "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'minCapacity'), '')]"
@@ -843,7 +843,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "1805182723135951408"
+              "templateHash": "18021918128213514276"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database.",
@@ -1596,7 +1596,7 @@
             "value": "[coalesce(tryGet(parameters('elasticPools')[copyIndex()], 'licenseType'), 'LicenseIncluded')]"
           },
           "maintenanceConfigurationId": {
-            "value": "[coalesce(tryGet(parameters('elasticPools')[copyIndex()], 'maintenanceConfigurationId'), '')]"
+            "value": "[tryGet(parameters('elasticPools')[copyIndex()], 'maintenanceConfigurationId')]"
           },
           "maxSizeBytes": {
             "value": "[coalesce(tryGet(parameters('elasticPools')[copyIndex()], 'maxSizeBytes'), json('34359738368'))]"
@@ -1631,7 +1631,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "6463131563806269913"
+              "templateHash": "17774091526328280898"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -1767,7 +1767,7 @@
               "properties": {
                 "highAvailabilityReplicaCount": "[parameters('highAvailabilityReplicaCount')]",
                 "licenseType": "[parameters('licenseType')]",
-                "maintenanceConfigurationId": "[if(not(empty(parameters('maintenanceConfigurationId'))), parameters('maintenanceConfigurationId'), null())]",
+                "maintenanceConfigurationId": "[parameters('maintenanceConfigurationId')]",
                 "maxSizeBytes": "[parameters('maxSizeBytes')]",
                 "minCapacity": "[parameters('minCapacity')]",
                 "perDatabaseSettings": {

@@ -324,7 +324,6 @@ Maintenance configuration ID assigned to the database. This configuration define
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `maxSizeBytes`
 

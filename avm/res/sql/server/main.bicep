@@ -263,7 +263,7 @@ module server_databases 'database/main.bicep' = [
       isLedgerOn: database.?isLedgerOn ?? false
       location: location
       licenseType: database.?licenseType ?? ''
-      maintenanceConfigurationId: database.?maintenanceConfigurationId ?? ''
+      maintenanceConfigurationId: database.?maintenanceConfigurationId
       minCapacity: database.?minCapacity ?? ''
       highAvailabilityReplicaCount: database.?highAvailabilityReplicaCount ?? 0
       readScale: database.?readScale ?? 'Disabled'
@@ -296,7 +296,7 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
       databaseMinCapacity: elasticPool.?databaseMinCapacity ?? 0
       highAvailabilityReplicaCount: elasticPool.?highAvailabilityReplicaCount
       licenseType: elasticPool.?licenseType ?? 'LicenseIncluded'
-      maintenanceConfigurationId: elasticPool.?maintenanceConfigurationId ?? ''
+      maintenanceConfigurationId: elasticPool.?maintenanceConfigurationId
       maxSizeBytes: elasticPool.?maxSizeBytes ?? 34359738368
       minCapacity: elasticPool.?minCapacity
       skuCapacity: elasticPool.?skuCapacity ?? 2
