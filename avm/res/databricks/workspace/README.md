@@ -116,7 +116,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     name: 'dwmax002'
     // Non-required parameters
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
-    automaticClusterUpdateSwitch: 'Enabled'
+    automaticClusterUpdate: 'Enabled'
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -150,6 +150,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
       }
     ]
     disablePublicIp: true
+    enhancedSecurityMonitoring: 'Enabled'
     loadBalancerBackendPoolName: '<loadBalancerBackendPoolName>'
     loadBalancerResourceId: '<loadBalancerResourceId>'
     location: '<location>'
@@ -244,7 +245,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     "amlWorkspaceResourceId": {
       "value": "<amlWorkspaceResourceId>"
     },
-    "automaticClusterUpdateSwitch": {
+    "automaticClusterUpdate": {
       "value": "Enabled"
     },
     "customerManagedKey": {
@@ -295,6 +296,9 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     },
     "disablePublicIp": {
       "value": true
+    },
+    "enhancedSecurityMonitoring": {
+      "value": "Enabled"
     },
     "loadBalancerBackendPoolName": {
       "value": "<loadBalancerBackendPoolName>"
@@ -420,7 +424,7 @@ using 'br/public:avm/res/databricks/workspace:<version>'
 param name = 'dwmax002'
 // Non-required parameters
 param amlWorkspaceResourceId = '<amlWorkspaceResourceId>'
-param automaticClusterUpdateSwitch = 'Enabled'
+param automaticClusterUpdate = 'Enabled'
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
@@ -454,6 +458,7 @@ param diagnosticSettings = [
   }
 ]
 param disablePublicIp = true
+param enhancedSecurityMonitoring = 'Enabled'
 param loadBalancerBackendPoolName = '<loadBalancerBackendPoolName>'
 param loadBalancerResourceId = '<loadBalancerResourceId>'
 param location = '<location>'
@@ -921,7 +926,8 @@ param vnetAddressPrefix = '10.100'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`amlWorkspaceResourceId`](#parameter-amlworkspaceresourceid) | string | The resource ID of a Azure Machine Learning workspace to link with Databricks workspace. |
-| [`automaticClusterUpdateSwitch`](#parameter-automaticclusterupdateswitch) | string | Set enhancedSecurityCompliance to either Disabled or Enabled. |
+| [`automaticClusterUpdate`](#parameter-automaticclusterupdate) | string | Set enhancedSecurityCompliance to either Disabled or Enabled. |
+| [`complianceSecurityProfile`](#parameter-compliancesecurityprofile) | object | TODO workspace. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition to use for the managed service. |
 | [`customerManagedKeyManagedDisk`](#parameter-customermanagedkeymanageddisk) | object | The customer managed key definition to use for the managed disk. |
 | [`customPrivateSubnetName`](#parameter-customprivatesubnetname) | string | The name of the Private Subnet within the Virtual Network. |
@@ -931,6 +937,7 @@ param vnetAddressPrefix = '10.100'
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disablePublicIp`](#parameter-disablepublicip) | bool | Disable Public IP. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`enhancedSecurityMonitoring`](#parameter-enhancedsecuritymonitoring) | string | TODO wrkspace. |
 | [`loadBalancerBackendPoolName`](#parameter-loadbalancerbackendpoolname) | string | Name of the outbound Load Balancer Backend Pool for Secure Cluster Connectivity (No Public IP). |
 | [`loadBalancerResourceId`](#parameter-loadbalancerresourceid) | string | Resource URI of Outbound Load balancer for Secure Cluster Connectivity (No Public IP) workspace. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -975,7 +982,7 @@ The resource ID of a Azure Machine Learning workspace to link with Databricks wo
 - Type: string
 - Default: `''`
 
-### Parameter: `automaticClusterUpdateSwitch`
+### Parameter: `automaticClusterUpdate`
 
 Set enhancedSecurityCompliance to either Disabled or Enabled.
 
@@ -989,6 +996,22 @@ Set enhancedSecurityCompliance to either Disabled or Enabled.
     'Disabled'
     'Enabled'
   ]
+  ```
+
+### Parameter: `complianceSecurityProfile`
+
+TODO workspace.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      complianceStandards: [
+        'HIPAA'
+      ]
+      value: 'HIPAA'
+  }
   ```
 
 ### Parameter: `customerManagedKey`
@@ -1275,6 +1298,14 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `enhancedSecurityMonitoring`
+
+TODO wrkspace.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `loadBalancerBackendPoolName`
 

@@ -122,7 +122,17 @@ param defaultCatalog defaultCatalogType?
   'Disabled'
   ''
 ])
-param automaticClusterUpdateSwitch string = 'Enabled'
+param automaticClusterUpdate string = ''
+
+@description('Optional. TODO workspace.')
+param complianceSecurityProfile object = {
+  value: 'HIPAA'
+  complianceStandards: [
+    'HIPAA'
+  ]
+}
+@description('Optional. TODO wrkspace.')
+param enhancedSecurityMonitoring string = ''
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -330,6 +340,28 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
             }
           }
         : null
+      enhancedSecurityCompliance: !empty(automaticClusterUpdate) || !empty(complianceSecurityProfile) || !empty(enhancedSecurityMonitoring)
+        ? {
+            automaticClusterUpdate: !empty(automaticClusterUpdate)
+              ? {
+                  value: automaticClusterUpdate
+                }
+              : null
+            complianceSecurityProfile: !empty(complianceSecurityProfile)
+              ? {
+                  complianceStandards: !empty(complianceSecurityProfile.complianceStandards)
+                    ? complianceSecurityProfile.complianceStandards
+                    : null
+                  value: complianceSecurityProfile.value
+                }
+              : null
+            enhancedSecurityMonitoring: !empty(enhancedSecurityMonitoring)
+              ? {
+                  value: enhancedSecurityMonitoring
+                }
+              : null
+          }
+        : null
     },
     !empty(privateStorageAccount)
       ? {
@@ -345,13 +377,6 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
           defaultCatalog: {
             initialName: ''
             initialType: defaultCatalog.?initialType
-          }
-        }
-      : {},
-    !empty(automaticClusterUpdateSwitch)
-      ? {
-          enhancedSecurityCompliance: {
-            automaticClusterUpdate: 'Enabled' //automaticClusterUpdateSwitch
           }
         }
       : {}
