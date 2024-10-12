@@ -18,11 +18,7 @@ param firstPipName string = '${name}-pip1'
 param publicIPPrefixResourceId string = ''
 
 @description('Optional. Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones.')
-param publicIpZones array = [
-  1
-  2
-  3
-]
+param publicIpZones array = []
 
 @description('Optional. DNS name(s) of the Public IP resource(s). If you enabled Active-Active mode, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com.')
 param domainNameLabel array = []
@@ -201,9 +197,7 @@ var ipConfiguration = isActiveActive
           }
           // Use existing Public IP, new Public IP created in this module
           publicIPAddress: {
-            id: !empty(existingFirstPipResourceId)
-              ? existingFirstPipResourceId
-              : az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
+            id: existingFirstPipResourceId ?? az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
           }
         }
         name: 'vNetGatewayConfig1'
@@ -216,12 +210,8 @@ var ipConfiguration = isActiveActive
           }
           publicIPAddress: {
             id: isActiveActive
-            ? !empty(existingSecondPipResourceIdVar)
-              ? existingSecondPipResourceIdVar
-              : az.resourceId('Microsoft.Network/publicIPAddresses', secondPipNameVar)
-            : !empty(existingFirstPipResourceId)
-              ? existingFirstPipResourceId
-              : az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
+              ? existingSecondPipResourceIdVar ?? az.resourceId('Microsoft.Network/publicIPAddresses', secondPipNameVar)
+              : existingFirstPipResourceId ?? az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
           }
         }
         name: 'vNetGatewayConfig2'
@@ -235,9 +225,7 @@ var ipConfiguration = isActiveActive
             id: '${vNetResourceId}/subnets/GatewaySubnet'
           }
           publicIPAddress: {
-            id: !empty(existingFirstPipResourceId)
-              ? existingFirstPipResourceId
-              : az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
+            id: existingFirstPipResourceId ?? az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
           }
         }
         name: 'vNetGatewayConfig1'
