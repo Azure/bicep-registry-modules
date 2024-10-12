@@ -34,7 +34,7 @@ param highAvailabilityReplicaCount int?
 param licenseType string = 'LicenseIncluded'
 
 @description('Optional. Maintenance configuration resource ID assigned to the elastic pool. This configuration defines the period when the maintenance updates will will occur.')
-param maintenanceConfigurationId string = ''
+param maintenanceConfigurationId string?
 
 @description('Optional. The storage limit for the database elastic pool in bytes.')
 param maxSizeBytes int = 34359738368
@@ -68,7 +68,7 @@ resource elasticPool 'Microsoft.Sql/servers/elasticPools@2023-08-01-preview' = {
   properties: {
     highAvailabilityReplicaCount: highAvailabilityReplicaCount
     licenseType: licenseType
-    maintenanceConfigurationId: maintenanceConfigurationId
+    maintenanceConfigurationId: !empty(maintenanceConfigurationId) ? maintenanceConfigurationId : null
     maxSizeBytes: maxSizeBytes
     minCapacity: minCapacity
     perDatabaseSettings: {
