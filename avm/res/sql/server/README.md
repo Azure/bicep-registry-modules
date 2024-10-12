@@ -1296,6 +1296,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     ]
     elasticPools: [
       {
+        maintenanceConfigurationId: '<maintenanceConfigurationId>'
         name: 'sqlswaf-ep-001'
         skuCapacity: 10
         skuName: 'GP_Gen5'
@@ -1428,6 +1429,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "elasticPools": {
       "value": [
         {
+          "maintenanceConfigurationId": "<maintenanceConfigurationId>",
           "name": "sqlswaf-ep-001",
           "skuCapacity": 10,
           "skuName": "GP_Gen5",
@@ -1574,6 +1576,7 @@ param databases = [
 ]
 param elasticPools = [
   {
+    maintenanceConfigurationId: '<maintenanceConfigurationId>'
     name: 'sqlswaf-ep-001'
     skuCapacity: 10
     skuName: 'GP_Gen5'
