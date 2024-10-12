@@ -201,7 +201,9 @@ var ipConfiguration = isActiveActive
           }
           // Use existing Public IP, new Public IP created in this module
           publicIPAddress: {
-            id: existingFirstPipResourceId ?? az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
+            id: !empty(existingFirstPipResourceId)
+              ? existingFirstPipResourceId
+              : az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
           }
         }
         name: 'vNetGatewayConfig1'
@@ -214,8 +216,12 @@ var ipConfiguration = isActiveActive
           }
           publicIPAddress: {
             id: isActiveActive
-              ? existingSecondPipResourceIdVar ?? az.resourceId('Microsoft.Network/publicIPAddresses', secondPipNameVar)
-              : existingFirstPipResourceId ?? az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
+            ? !empty(existingSecondPipResourceIdVar)
+              ? existingSecondPipResourceIdVar
+              : az.resourceId('Microsoft.Network/publicIPAddresses', secondPipNameVar)
+            : !empty(existingFirstPipResourceId)
+              ? existingFirstPipResourceId
+              : az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
           }
         }
         name: 'vNetGatewayConfig2'
@@ -229,7 +235,9 @@ var ipConfiguration = isActiveActive
             id: '${vNetResourceId}/subnets/GatewaySubnet'
           }
           publicIPAddress: {
-            id: existingFirstPipResourceId ?? az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
+            id: !empty(existingFirstPipResourceId)
+              ? existingFirstPipResourceId
+              : az.resourceId('Microsoft.Network/publicIPAddresses', firstPipName)
           }
         }
         name: 'vNetGatewayConfig1'
