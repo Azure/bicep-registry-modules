@@ -116,6 +116,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     name: 'dwmax002'
     // Non-required parameters
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
+    automaticClusterUpdateSwitch: 'Enabled'
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -242,6 +243,9 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     // Non-required parameters
     "amlWorkspaceResourceId": {
       "value": "<amlWorkspaceResourceId>"
+    },
+    "automaticClusterUpdateSwitch": {
+      "value": "Enabled"
     },
     "customerManagedKey": {
       "value": {
@@ -416,6 +420,7 @@ using 'br/public:avm/res/databricks/workspace:<version>'
 param name = 'dwmax002'
 // Non-required parameters
 param amlWorkspaceResourceId = '<amlWorkspaceResourceId>'
+param automaticClusterUpdateSwitch = 'Enabled'
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
@@ -916,6 +921,7 @@ param vnetAddressPrefix = '10.100'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`amlWorkspaceResourceId`](#parameter-amlworkspaceresourceid) | string | The resource ID of a Azure Machine Learning workspace to link with Databricks workspace. |
+| [`automaticClusterUpdateSwitch`](#parameter-automaticclusterupdateswitch) | string | Set enhancedSecurityCompliance to either Disabled or Enabled. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition to use for the managed service. |
 | [`customerManagedKeyManagedDisk`](#parameter-customermanagedkeymanageddisk) | object | The customer managed key definition to use for the managed disk. |
 | [`customPrivateSubnetName`](#parameter-customprivatesubnetname) | string | The name of the Private Subnet within the Virtual Network. |
@@ -968,6 +974,22 @@ The resource ID of a Azure Machine Learning workspace to link with Databricks wo
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `automaticClusterUpdateSwitch`
+
+Set enhancedSecurityCompliance to either Disabled or Enabled.
+
+- Required: No
+- Type: string
+- Default: `''`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `customerManagedKey`
 
