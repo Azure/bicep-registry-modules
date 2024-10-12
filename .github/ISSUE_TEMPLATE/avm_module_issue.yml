@@ -50,6 +50,7 @@ body:
         - "avm/ptn/azd/acr-container-app"
         - "avm/ptn/azd/aks"
         - "avm/ptn/azd/apim-api"
+        - "avm/ptn/azd/container-app-upsert"
         - "avm/ptn/azd/container-apps-stack"
         - "avm/ptn/azd/insights-dashboard"
         - "avm/ptn/azd/ml-hub-dependencies"
