@@ -91,6 +91,7 @@ module testDeployment '../../../main.bicep' = {
         skuName: 'GP_Gen5'
         skuTier: 'GeneralPurpose'
         skuCapacity: 10
+        maintenanceConfigurationId: '${subscription().id}/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_${enforcedLocation}_DB_1'
       }
     ]
     databases: [
