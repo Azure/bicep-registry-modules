@@ -18,7 +18,11 @@ param firstPipName string = '${name}-pip1'
 param publicIPPrefixResourceId string = ''
 
 @description('Optional. Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones.')
-param publicIpZones array = []
+param publicIpZones array = [
+  1
+  2
+  3
+]
 
 @description('Optional. DNS name(s) of the Public IP resource(s). If you enabled Active-Active mode, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com.')
 param domainNameLabel array = []
