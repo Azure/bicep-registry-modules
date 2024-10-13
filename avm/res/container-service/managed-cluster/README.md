@@ -64,23 +64,26 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     // Non-required parameters
     location: '<location>'
-    maintenanceConfiguration: {
-      maintenanceWindow: {
-        durationHours: 4
-        schedule: {
-          absoluteMonthly: '<absoluteMonthly>'
-          daily: '<daily>'
-          relativeMonthly: '<relativeMonthly>'
-          weekly: {
-            dayOfWeek: 'Sunday'
-            intervalWeeks: 1
+    maintenanceConfigurations: [
+      {
+        maintenanceWindow: {
+          durationHours: 4
+          schedule: {
+            absoluteMonthly: '<absoluteMonthly>'
+            daily: '<daily>'
+            relativeMonthly: '<relativeMonthly>'
+            weekly: {
+              dayOfWeek: 'Sunday'
+              intervalWeeks: 1
+            }
           }
+          startDate: '2024-07-03'
+          startTime: '00:00'
+          utcOffset: '+00:00'
         }
-        startDate: '2024-07-03'
-        startTime: '00:00'
-        utcOffset: '+00:00'
+        name: 'aksManagedAutoUpgradeSchedule'
       }
-    }
+    ]
     managedIdentities: {
       systemAssigned: true
     }
@@ -93,7 +96,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -118,24 +121,27 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "location": {
       "value": "<location>"
     },
-    "maintenanceConfiguration": {
-      "value": {
-        "maintenanceWindow": {
-          "durationHours": 4,
-          "schedule": {
-            "absoluteMonthly": "<absoluteMonthly>",
-            "daily": "<daily>",
-            "relativeMonthly": "<relativeMonthly>",
-            "weekly": {
-              "dayOfWeek": "Sunday",
-              "intervalWeeks": 1
-            }
+    "maintenanceConfigurations": {
+      "value": [
+        {
+          "maintenanceWindow": {
+            "durationHours": 4,
+            "schedule": {
+              "absoluteMonthly": "<absoluteMonthly>",
+              "daily": "<daily>",
+              "relativeMonthly": "<relativeMonthly>",
+              "weekly": {
+                "dayOfWeek": "Sunday",
+                "intervalWeeks": 1
+              }
+            },
+            "startDate": "2024-07-03",
+            "startTime": "00:00",
+            "utcOffset": "+00:00"
           },
-          "startDate": "2024-07-03",
-          "startTime": "00:00",
-          "utcOffset": "+00:00"
+          "name": "aksManagedAutoUpgradeSchedule"
         }
-      }
+      ]
     },
     "managedIdentities": {
       "value": {
@@ -143,6 +149,53 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csauto001'
+param primaryAgentPoolProfile = [
+  {
+    count: 3
+    mode: 'System'
+    name: 'systempool'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+// Non-required parameters
+param location = '<location>'
+param maintenanceConfigurations = [
+  {
+    maintenanceWindow: {
+      durationHours: 4
+      schedule: {
+        absoluteMonthly: '<absoluteMonthly>'
+        daily: '<daily>'
+        relativeMonthly: '<relativeMonthly>'
+        weekly: {
+          dayOfWeek: 'Sunday'
+          intervalWeeks: 1
+        }
+      }
+      startDate: '2024-07-03'
+      startTime: '00:00'
+      utcOffset: '+00:00'
+    }
+    name: 'aksManagedAutoUpgradeSchedule'
+  }
+]
+param managedIdentities = {
+  systemAssigned: true
 }
 ```
 
@@ -232,6 +285,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         vnetSubnetID: '<vnetSubnetID>'
       }
     ]
+    autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
     autoUpgradeProfileUpgradeChannel: 'stable'
     customerManagedKey: {
       keyName: '<keyName>'
@@ -331,6 +385,38 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    maintenanceConfigurations: [
+      {
+        maintenanceWindow: {
+          durationHours: 4
+          schedule: {
+            weekly: {
+              dayOfWeek: 'Sunday'
+              intervalWeeks: 1
+            }
+          }
+          startDate: '2024-07-15'
+          startTime: '00:00'
+          utcOffset: '+00:00'
+        }
+        name: 'aksManagedAutoUpgradeSchedule'
+      }
+      {
+        maintenanceWindow: {
+          durationHours: 4
+          schedule: {
+            weekly: {
+              dayOfWeek: 'Sunday'
+              intervalWeeks: 1
+            }
+          }
+          startDate: '2024-07-15'
+          startTime: '00:00'
+          utcOffset: '+00:00'
+        }
+        name: 'aksManagedNodeOSUpgradeSchedule'
+      }
+    ]
     managedIdentities: {
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
@@ -375,7 +461,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -457,6 +543,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "vnetSubnetID": "<vnetSubnetID>"
         }
       ]
+    },
+    "autoNodeOsUpgradeProfileUpgradeChannel": {
+      "value": "Unmanaged"
     },
     "autoUpgradeProfileUpgradeChannel": {
       "value": "stable"
@@ -593,6 +682,40 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         "name": "myCustomLockName"
       }
     },
+    "maintenanceConfigurations": {
+      "value": [
+        {
+          "maintenanceWindow": {
+            "durationHours": 4,
+            "schedule": {
+              "weekly": {
+                "dayOfWeek": "Sunday",
+                "intervalWeeks": 1
+              }
+            },
+            "startDate": "2024-07-15",
+            "startTime": "00:00",
+            "utcOffset": "+00:00"
+          },
+          "name": "aksManagedAutoUpgradeSchedule"
+        },
+        {
+          "maintenanceWindow": {
+            "durationHours": 4,
+            "schedule": {
+              "weekly": {
+                "dayOfWeek": "Sunday",
+                "intervalWeeks": 1
+              }
+            },
+            "startDate": "2024-07-15",
+            "startTime": "00:00",
+            "utcOffset": "+00:00"
+          },
+          "name": "aksManagedNodeOSUpgradeSchedule"
+        }
+      ]
+    },
     "managedIdentities": {
       "value": {
         "userAssignedResourcesIds": [
@@ -653,6 +776,255 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csmaz001'
+param primaryAgentPoolProfile = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 1
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    mode: 'System'
+    name: 'systempool'
+    nodeTaints: [
+      'CriticalAddonsOnly=true:NoSchedule'
+    ]
+    osDiskSizeGB: 0
+    osType: 'Linux'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+    vnetSubnetID: '<vnetSubnetID>'
+  }
+]
+// Non-required parameters
+param agentPools = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 2
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    minPods: 2
+    mode: 'User'
+    name: 'userpool1'
+    nodeLabels: {}
+    osDiskSizeGB: 128
+    osType: 'Linux'
+    proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+    vnetSubnetID: '<vnetSubnetID>'
+  }
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 2
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    minPods: 2
+    mode: 'User'
+    name: 'userpool2'
+    nodeLabels: {}
+    osDiskSizeGB: 128
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+    vnetSubnetID: '<vnetSubnetID>'
+  }
+]
+param autoNodeOsUpgradeProfileUpgradeChannel = 'Unmanaged'
+param autoUpgradeProfileUpgradeChannel = 'stable'
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultNetworkAccess: 'Public'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param diskEncryptionSetResourceId = '<diskEncryptionSetResourceId>'
+param enableAzureDefender = true
+param enableAzureMonitorProfileMetrics = true
+param enableKeyvaultSecretsProvider = true
+param enableOidcIssuerProfile = true
+param enablePodSecurityPolicy = false
+param enableStorageProfileBlobCSIDriver = true
+param enableStorageProfileDiskCSIDriver = true
+param enableStorageProfileFileCSIDriver = true
+param enableStorageProfileSnapshotController = true
+param enableWorkloadIdentity = true
+param fluxExtension = {
+  configurations: [
+    {
+      gitRepository: {
+        repositoryRef: {
+          branch: 'main'
+        }
+        sshKnownHosts: ''
+        syncIntervalInSeconds: 300
+        timeoutInSeconds: 180
+        url: 'https://github.com/mspnp/aks-baseline'
+      }
+      namespace: 'flux-system'
+      scope: 'cluster'
+    }
+    {
+      gitRepository: {
+        repositoryRef: {
+          branch: 'main'
+        }
+        sshKnownHosts: ''
+        syncIntervalInSeconds: 300
+        timeoutInSeconds: 180
+        url: 'https://github.com/Azure/gitops-flux2-kustomize-helm-mt'
+      }
+      kustomizations: {
+        apps: {
+          dependsOn: [
+            'infra'
+          ]
+          path: './apps/staging'
+          prune: true
+          retryIntervalInSeconds: 120
+          syncIntervalInSeconds: 600
+          timeoutInSeconds: 600
+        }
+        infra: {
+          dependsOn: []
+          path: './infrastructure'
+          prune: true
+          syncIntervalInSeconds: 600
+          timeoutInSeconds: 600
+          validation: 'none'
+        }
+      }
+      namespace: 'flux-system-helm'
+      scope: 'cluster'
+    }
+  ]
+  configurationSettings: {
+    'helm-controller.enabled': 'true'
+    'image-automation-controller.enabled': 'false'
+    'image-reflector-controller.enabled': 'false'
+    'kustomize-controller.enabled': 'true'
+    'notification-controller.enabled': 'true'
+    'source-controller.enabled': 'true'
+  }
+}
+param identityProfile = {
+  kubeletidentity: {
+    resourceId: '<resourceId>'
+  }
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param maintenanceConfigurations = [
+  {
+    maintenanceWindow: {
+      durationHours: 4
+      schedule: {
+        weekly: {
+          dayOfWeek: 'Sunday'
+          intervalWeeks: 1
+        }
+      }
+      startDate: '2024-07-15'
+      startTime: '00:00'
+      utcOffset: '+00:00'
+    }
+    name: 'aksManagedAutoUpgradeSchedule'
+  }
+  {
+    maintenanceWindow: {
+      durationHours: 4
+      schedule: {
+        weekly: {
+          dayOfWeek: 'Sunday'
+          intervalWeeks: 1
+        }
+      }
+      startDate: '2024-07-15'
+      startTime: '00:00'
+      utcOffset: '+00:00'
+    }
+    name: 'aksManagedNodeOSUpgradeSchedule'
+  }
+]
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param monitoringWorkspaceId = '<monitoringWorkspaceId>'
+param networkDataplane = 'azure'
+param networkPlugin = 'azure'
+param networkPluginMode = 'overlay'
+param omsAgentEnabled = true
+param openServiceMeshEnabled = true
+param roleAssignments = [
+  {
+    name: 'ac915208-669e-4665-9792-7e2dc861f569'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -690,7 +1062,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -721,6 +1093,33 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csmin001'
+param primaryAgentPoolProfile = [
+  {
+    count: 3
+    mode: 'System'
+    name: 'systempool'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+// Non-required parameters
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
 }
 ```
 
@@ -860,7 +1259,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1003,6 +1402,129 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csmkube001'
+param primaryAgentPoolProfile = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 1
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    mode: 'System'
+    name: 'systempool'
+    nodeTaints: [
+      'CriticalAddonsOnly=true:NoSchedule'
+    ]
+    osDiskSizeGB: 0
+    osType: 'Linux'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+// Non-required parameters
+param agentPools = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 2
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    minPods: 2
+    mode: 'User'
+    name: 'userpool1'
+    nodeLabels: {}
+    osDiskSizeGB: 128
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+  }
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 2
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    minPods: 2
+    mode: 'User'
+    name: 'userpool2'
+    nodeLabels: {}
+    osDiskSizeGB: 128
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkPlugin = 'kubenet'
+param roleAssignments = [
+  {
+    name: '6acf186b-abbd-491b-8bd7-39fa199da81e'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 5: _Using Private Cluster._
 
 This instance deploys the module with a private cluster instance.
@@ -1105,7 +1627,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1221,6 +1743,98 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csmpriv001'
+param primaryAgentPoolProfile = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 1
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    mode: 'System'
+    name: 'systempool'
+    nodeTaints: [
+      'CriticalAddonsOnly=true:NoSchedule'
+    ]
+    osDiskSizeGB: 0
+    osType: 'Linux'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+    vnetSubnetID: '<vnetSubnetID>'
+  }
+]
+// Non-required parameters
+param agentPools = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 2
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    minPods: 2
+    mode: 'User'
+    name: 'userpool1'
+    nodeLabels: {}
+    osDiskSizeGB: 128
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+    vnetSubnetID: '<vnetSubnetID>'
+  }
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 2
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 30
+    minCount: 1
+    minPods: 2
+    mode: 'User'
+    name: 'userpool2'
+    nodeLabels: {}
+    osDiskSizeGB: 128
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+param dnsServiceIP = '10.10.200.10'
+param enablePrivateCluster = true
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkPlugin = 'azure'
+param privateDNSZone = '<privateDNSZone>'
+param serviceCidr = '10.10.200.0/24'
+param skuTier = 'Standard'
+```
+
+</details>
+<p>
+
 ### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
@@ -1304,6 +1918,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         vmSize: 'Standard_DS2_v2'
       }
     ]
+    autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
     autoUpgradeProfileUpgradeChannel: 'stable'
     diagnosticSettings: [
       {
@@ -1338,6 +1953,38 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     enableAzureDefender: true
     enablePrivateCluster: true
     location: '<location>'
+    maintenanceConfigurations: [
+      {
+        maintenanceWindow: {
+          durationHours: 4
+          schedule: {
+            weekly: {
+              dayOfWeek: 'Sunday'
+              intervalWeeks: 1
+            }
+          }
+          startDate: '2024-07-15'
+          startTime: '00:00'
+          utcOffset: '+00:00'
+        }
+        name: 'aksManagedAutoUpgradeSchedule'
+      }
+      {
+        maintenanceWindow: {
+          durationHours: 4
+          schedule: {
+            weekly: {
+              dayOfWeek: 'Sunday'
+              intervalWeeks: 1
+            }
+          }
+          startDate: '2024-07-15'
+          startTime: '00:00'
+          utcOffset: '+00:00'
+        }
+        name: 'aksManagedNodeOSUpgradeSchedule'
+      }
+    ]
     managedIdentities: {
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
@@ -1364,7 +2011,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1447,6 +2094,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         }
       ]
     },
+    "autoNodeOsUpgradeProfileUpgradeChannel": {
+      "value": "Unmanaged"
+    },
     "autoUpgradeProfileUpgradeChannel": {
       "value": "stable"
     },
@@ -1495,6 +2145,40 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "location": {
       "value": "<location>"
     },
+    "maintenanceConfigurations": {
+      "value": [
+        {
+          "maintenanceWindow": {
+            "durationHours": 4,
+            "schedule": {
+              "weekly": {
+                "dayOfWeek": "Sunday",
+                "intervalWeeks": 1
+              }
+            },
+            "startDate": "2024-07-15",
+            "startTime": "00:00",
+            "utcOffset": "+00:00"
+          },
+          "name": "aksManagedAutoUpgradeSchedule"
+        },
+        {
+          "maintenanceWindow": {
+            "durationHours": 4,
+            "schedule": {
+              "weekly": {
+                "dayOfWeek": "Sunday",
+                "intervalWeeks": 1
+              }
+            },
+            "startDate": "2024-07-15",
+            "startTime": "00:00",
+            "utcOffset": "+00:00"
+          },
+          "name": "aksManagedNodeOSUpgradeSchedule"
+        }
+      ]
+    },
     "managedIdentities": {
       "value": {
         "userAssignedResourcesIds": [
@@ -1537,6 +2221,172 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'cswaf001'
+param primaryAgentPoolProfile = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 3
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 50
+    minCount: 3
+    mode: 'System'
+    name: 'systempool'
+    nodeTaints: [
+      'CriticalAddonsOnly=true:NoSchedule'
+    ]
+    osDiskSizeGB: 0
+    osType: 'Linux'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+    vnetSubnetID: '<vnetSubnetID>'
+  }
+]
+// Non-required parameters
+param agentPools = [
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 3
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 50
+    minCount: 3
+    minPods: 2
+    mode: 'User'
+    name: 'userpool1'
+    nodeLabels: {}
+    osDiskSizeGB: 60
+    osDiskType: 'Ephemeral'
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+    vnetSubnetID: '<vnetSubnetID>'
+  }
+  {
+    availabilityZones: [
+      '3'
+    ]
+    count: 3
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 50
+    minCount: 3
+    minPods: 2
+    mode: 'User'
+    name: 'userpool2'
+    nodeLabels: {}
+    osDiskSizeGB: 60
+    osDiskType: 'Ephemeral'
+    osType: 'Linux'
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
+param autoNodeOsUpgradeProfileUpgradeChannel = 'Unmanaged'
+param autoUpgradeProfileUpgradeChannel = 'stable'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'kube-apiserver'
+      }
+      {
+        category: 'kube-controller-manager'
+      }
+      {
+        category: 'kube-scheduler'
+      }
+      {
+        category: 'cluster-autoscaler'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAccounts = true
+param dnsServiceIP = '10.10.200.10'
+param enableAzureDefender = true
+param enablePrivateCluster = true
+param location = '<location>'
+param maintenanceConfigurations = [
+  {
+    maintenanceWindow: {
+      durationHours: 4
+      schedule: {
+        weekly: {
+          dayOfWeek: 'Sunday'
+          intervalWeeks: 1
+        }
+      }
+      startDate: '2024-07-15'
+      startTime: '00:00'
+      utcOffset: '+00:00'
+    }
+    name: 'aksManagedAutoUpgradeSchedule'
+  }
+  {
+    maintenanceWindow: {
+      durationHours: 4
+      schedule: {
+        weekly: {
+          dayOfWeek: 'Sunday'
+          intervalWeeks: 1
+        }
+      }
+      startDate: '2024-07-15'
+      startTime: '00:00'
+      utcOffset: '+00:00'
+    }
+    name: 'aksManagedNodeOSUpgradeSchedule'
+  }
+]
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param monitoringWorkspaceId = '<monitoringWorkspaceId>'
+param networkPlugin = 'azure'
+param networkPolicy = 'azure'
+param omsAgentEnabled = true
+param privateDNSZone = '<privateDNSZone>'
+param serviceCidr = '10.10.200.0/24'
+param skuTier = 'Standard'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -1568,6 +2418,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`adminUsername`](#parameter-adminusername) | string | Specifies the administrator username of Linux virtual machines. |
 | [`agentPools`](#parameter-agentpools) | array | Define one or more secondary/additional agent pools. |
 | [`authorizedIPRanges`](#parameter-authorizedipranges) | array | IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer. |
+| [`autoNodeOsUpgradeProfileUpgradeChannel`](#parameter-autonodeosupgradeprofileupgradechannel) | string | Auto-upgrade channel on the Node Os. |
 | [`autoScalerProfileBalanceSimilarNodeGroups`](#parameter-autoscalerprofilebalancesimilarnodegroups) | bool | Specifies the balance of similar node groups for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileExpander`](#parameter-autoscalerprofileexpander) | string | Specifies the expand strategy for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileMaxEmptyBulkDelete`](#parameter-autoscalerprofilemaxemptybulkdelete) | string | Specifies the maximum empty bulk delete for the auto-scaler of the AKS cluster. |
@@ -1630,7 +2481,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`loadBalancerSku`](#parameter-loadbalancersku) | string | Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools. |
 | [`location`](#parameter-location) | string | Specifies the location of AKS cluster. It picks up Resource Group's location by default. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`maintenanceConfiguration`](#parameter-maintenanceconfiguration) | object | Whether or not to use AKS Automatic mode. |
+| [`maintenanceConfigurations`](#parameter-maintenanceconfigurations) | array | Maintenance Window for Cluster auto upgrade and node OS upgrade. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
 | [`managedOutboundIPCount`](#parameter-managedoutboundipcount) | int | Outbound IP Count for the Load balancer. |
 | [`metricAnnotationsAllowList`](#parameter-metricannotationsallowlist) | string | A comma-separated list of Kubernetes cluster metrics annotations. |
@@ -2129,6 +2980,23 @@ IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is 
 
 - Required: No
 - Type: array
+
+### Parameter: `autoNodeOsUpgradeProfileUpgradeChannel`
+
+Auto-upgrade channel on the Node Os.
+
+- Required: No
+- Type: string
+- Default: `'Unmanaged'`
+- Allowed:
+  ```Bicep
+  [
+    'NodeImage'
+    'None'
+    'SecurityPatch'
+    'Unmanaged'
+  ]
+  ```
 
 ### Parameter: `autoScalerProfileBalanceSimilarNodeGroups`
 
@@ -2953,25 +3821,40 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `maintenanceConfiguration`
+### Parameter: `maintenanceConfigurations`
 
-Whether or not to use AKS Automatic mode.
+Maintenance Window for Cluster auto upgrade and node OS upgrade.
 
 - Required: No
-- Type: object
+- Type: array
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`maintenanceWindow`](#parameter-maintenanceconfigurationmaintenancewindow) | object | Maintenance window for the maintenance configuration. |
+| [`maintenanceWindow`](#parameter-maintenanceconfigurationsmaintenancewindow) | object | Maintenance window for the maintenance configuration. |
+| [`name`](#parameter-maintenanceconfigurationsname) | string | Name of maintenance window. |
 
-### Parameter: `maintenanceConfiguration.maintenanceWindow`
+### Parameter: `maintenanceConfigurations.maintenanceWindow`
 
 Maintenance window for the maintenance configuration.
 
 - Required: Yes
 - Type: object
+
+### Parameter: `maintenanceConfigurations.name`
+
+Name of maintenance window.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'aksManagedAutoUpgradeSchedule'
+    'aksManagedNodeOSUpgradeSchedule'
+  ]
+  ```
 
 ### Parameter: `managedIdentities`
 

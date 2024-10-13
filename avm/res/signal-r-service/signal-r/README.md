@@ -64,7 +64,7 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -81,6 +81,22 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/signal-r-service/signal-r:<version>'
+
+// Required parameters
+param name = 'srsdrmin-001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -196,7 +212,7 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -326,6 +342,106 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/signal-r-service/signal-r:<version>'
+
+// Required parameters
+param name = 'srssrmax-001'
+// Non-required parameters
+param capacity = 2
+param clientCertEnabled = false
+param disableAadAuth = false
+param disableLocalAuth = true
+param kind = 'SignalR'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param networkAcls = {
+  defaultAction: 'Allow'
+  privateEndpoints: [
+    {
+      allow: []
+      deny: [
+        'ServerConnection'
+        'Trace'
+      ]
+      name: 'pe-srssrmax-001'
+    }
+  ]
+  publicNetwork: {
+    allow: []
+    deny: [
+      'RESTAPI'
+      'Trace'
+    ]
+  }
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param resourceLogConfigurationsToEnable = [
+  'ConnectivityLogs'
+]
+param roleAssignments = [
+  {
+    name: 'd8c98876-5377-4b49-98ae-41a8b5537761'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param sku = 'Standard_S1'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -403,7 +519,7 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -490,6 +606,73 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/signal-r-service/signal-r:<version>'
+
+// Required parameters
+param name = 'srssrwaf-001'
+// Non-required parameters
+param capacity = 2
+param clientCertEnabled = false
+param disableAadAuth = false
+param disableLocalAuth = true
+param kind = 'SignalR'
+param location = '<location>'
+param networkAcls = {
+  defaultAction: 'Allow'
+  privateEndpoints: [
+    {
+      allow: []
+      deny: [
+        'ServerConnection'
+        'Trace'
+      ]
+      name: 'pe-srssrwaf-001'
+    }
+  ]
+  publicNetwork: {
+    allow: []
+    deny: [
+      'RESTAPI'
+      'Trace'
+    ]
+  }
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param resourceLogConfigurationsToEnable = [
+  'ConnectivityLogs'
+]
+param sku = 'Standard_S1'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
