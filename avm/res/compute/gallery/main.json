@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "16056066182123599311"
+      "version": "0.30.23.60470",
+      "templateHash": "17783194818453553981"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -35,6 +35,9 @@
             "description": "Optional. Specify the type of lock."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "roleAssignmentType": {
@@ -107,6 +110,9 @@
             }
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "imageType": {
@@ -184,7 +190,9 @@
             "ConfidentialVM",
             "ConfidentialVMSupported",
             "Standard",
-            "TrustedLaunch"
+            "TrustedLaunch",
+            "TrustedLaunchAndConfidentialVmSupported",
+            "TrustedLaunchSupported"
           ],
           "nullable": true,
           "metadata": {
@@ -261,6 +269,9 @@
             "description": "Optional. Describes the disallowed disk types."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "identifierType": {
@@ -573,8 +584,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "7960057132021914503"
+              "version": "0.30.23.60470",
+              "templateHash": "13081960860160182257"
             },
             "name": "Compute Galleries Applications",
             "description": "This module deploys an Azure Compute Gallery Application.",
@@ -934,8 +945,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "17284709546040050431"
+              "version": "0.30.23.60470",
+              "templateHash": "5984025187928110337"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -1204,7 +1215,9 @@
                 "ConfidentialVM",
                 "ConfidentialVMSupported",
                 "Standard",
-                "TrustedLaunch"
+                "TrustedLaunch",
+                "TrustedLaunchAndConfidentialVmSupported",
+                "TrustedLaunchSupported"
               ],
               "nullable": true,
               "metadata": {
@@ -1328,7 +1341,7 @@
                 },
                 "endOfLifeDate": "[parameters('endOfLifeDate')]",
                 "eula": "[parameters('eula')]",
-                "features": "[union(createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', format('{0}', parameters('isAcceleratedNetworkSupported')))), if(not(equals(parameters('securityType'), null())), createArray(createObject('name', 'SecurityType', 'value', format('{0}', parameters('securityType')))), createArray()), if(not(equals(parameters('isHibernateSupported'), null())), createArray(createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), createArray()))]",
+                "features": "[union(createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', format('{0}', parameters('isAcceleratedNetworkSupported')))), if(and(not(equals(parameters('securityType'), null())), not(equals(parameters('securityType'), 'Standard'))), createArray(createObject('name', 'SecurityType', 'value', format('{0}', parameters('securityType')))), createArray()), if(not(equals(parameters('isHibernateSupported'), null())), createArray(createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), createArray()))]",
                 "hyperVGeneration": "[coalesce(parameters('hyperVGeneration'), if(not(empty(coalesce(parameters('securityType'), ''))), 'V2', 'V1'))]",
                 "identifier": {
                   "publisher": "[parameters('identifier').publisher]",
