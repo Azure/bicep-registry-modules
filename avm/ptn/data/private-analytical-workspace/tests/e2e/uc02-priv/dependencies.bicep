@@ -1,17 +1,10 @@
 @description('Optional. The location to deploy to.')
 param location string
 
-@description('Required. The name of the Virtual Network to create.')
-param virtualNetworkName string
-
-@description('Required. The name of the subnet 01.')
-param subnetName01 string
-
-@description('Required. The name of the subnet 02.')
-param subnetName02 string
-
-@description('Required. The name of the subnet 03.')
-param subnetName03 string
+var virtualNetworkName = 'paw-vnet'
+var subnetName01 = 'private-link-subnet'
+var subnetName02 = 'dbw-frontend-subnet'
+var subnetName03 = 'dbw-backend-subnet'
 
 var vnetAddressPrefix = '10.0.0.0/20'
 
@@ -223,3 +216,6 @@ module nsgDbwBackend 'br/public:avm/res/network/network-security-group:0.4.0' = 
 
 @description('The resource ID of the created Virtual Network.')
 output virtualNetworkResourceId string = vnet.outputs.resourceId
+
+@description('The resource IDs of the deployed subnets.')
+output subnetResourceIds array = vnet.outputs.subnetResourceIds

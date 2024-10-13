@@ -24,32 +24,19 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
-var subnetName01 = 'private-link-subnet'
-var subnetName02 = 'dbw-frontend-subnet'
-var subnetName03 = 'dbw-backend-subnet'
-
-resource resourceGroupVnet 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: '${resourceGroupName}-vnet'
-  location: resourceLocation
-}
-
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroupVnet
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  params: {
-    location: resourceLocation
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    subnetName01: subnetName01
-    subnetName02: subnetName02
-    subnetName03: subnetName03
-  }
-}
-
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: resourceLocation
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    location: resourceLocation
+  }
 }
 
 // ============== //
@@ -72,11 +59,11 @@ module testDeployment '../../../main.bicep' = [
       advancedOptions: {
         networkAcls: { ipRules: ['104.43.16.94'] }
         virtualNetwork: {
-          subnetNamePrivateLink: 'private-link-subnet'
+          subnetNamePrivateLink: nestedDependencies.outputs.subnetResourceIds[0]
         }
         databricks: {
-          subnetNameFrontend: 'dbw-frontend-subnet'
-          subnetNameBackend: 'dbw-backend-subnet'
+          subnetNameFrontend: nestedDependencies.outputs.subnetResourceIds[1]
+          subnetNameBackend: nestedDependencies.outputs.subnetResourceIds[2]
         }
       }
     }
