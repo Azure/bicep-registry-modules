@@ -1,0 +1,404 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.30.23.60470",
+      "templateHash": "17638255215829732671"
+    },
+    "name": "VPN Server Configuration",
+    "description": "This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "vpnClientIpsecPoliciesType": {
+      "type": "object",
+      "properties": {
+        "dhGroup": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Diffie-Hellman group used in IKE phase 1. Required if using IKEv2."
+          }
+        },
+        "ikeEncryption": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The encryption algorithm used in IKE phase 1. Required if using IKEv2."
+          }
+        },
+        "ikeIntegrity": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The integrity algorithm used in IKE phase 1. Required if using IKEv2."
+          }
+        },
+        "ipsecEncryption": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The encryption algorithm used in IKE phase 2. Required if using IKEv2."
+          }
+        },
+        "ipsecIntegrity": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The integrity algorithm used in IKE phase 2. Required if using IKEv2."
+          }
+        },
+        "pfsGroup": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Perfect Forward Secrecy (PFS) group used in IKE phase 2. Required if using IKEv2."
+          }
+        },
+        "saDataSizeKilobytes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The size of the SA data in kilobytes. Required if using IKEv2."
+          }
+        },
+        "salfetimeSeconds": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The lifetime of the SA in seconds. Required if using IKEv2."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the user VPN configuration."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location where all resources will be created."
+      }
+    },
+    "aadAudience": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication."
+      }
+    },
+    "aadIssuer": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The issuer for the AAD/Entra authentication. Required if configuring Entra ID authentication."
+      }
+    },
+    "aadTenant": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The audience for the AAD/Entra authentication. Required if configuring Entra ID authentication."
+      }
+    },
+    "p2sConfigurationPolicyGroups": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The P2S configuration policy groups for the configuration."
+      }
+    },
+    "radiusClientRootCertificates": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The revoked RADIUS client certificates for the configuration."
+      }
+    },
+    "radiusServerAddress": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The address of the RADIUS server. Required if configuring a single RADIUS."
+      }
+    },
+    "radiusServerRootCertificates": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The root certificates of the RADIUS server."
+      }
+    },
+    "radiusServers": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The list of RADIUS servers. Required if configuring multiple RADIUS servers."
+      }
+    },
+    "radiusServerSecret": {
+      "type": "securestring",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The RADIUS server secret. Required if configuring a single RADIUS server."
+      }
+    },
+    "vpnAuthenticationTypes": {
+      "type": "array",
+      "defaultValue": [],
+      "allowedValues": [
+        "AAD",
+        "Certificate",
+        "Radius"
+      ],
+      "metadata": {
+        "description": "Optional. The authentication types for the VPN configuration."
+      }
+    },
+    "vpnClientIpsecPolicies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/vpnClientIpsecPoliciesType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The IPsec policies for the configuration."
+      }
+    },
+    "vpnClientRevokedCertificates": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The revoked VPN Client certificate thumbprints for the configuration."
+      }
+    },
+    "vpnClientRootCertificates": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Conditional. The VPN Client root certificate public keys for the configuration. Required if using certificate authentication."
+      }
+    },
+    "vpnProtocols": {
+      "type": "array",
+      "defaultValue": [],
+      "allowedValues": [
+        "IkeV2",
+        "OpenVPN"
+      ],
+      "metadata": {
+        "description": "Optional. The allowed VPN protocols for the configuration."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[take(format('46d3xbcp.res.network-vpnserverconfiguration.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "vpnServerConfig": {
+      "type": "Microsoft.Network/vpnServerConfigurations",
+      "apiVersion": "2023-11-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "copy": [
+          {
+            "name": "configurationPolicyGroups",
+            "count": "[length(coalesce(parameters('p2sConfigurationPolicyGroups'), createArray()))]",
+            "input": {
+              "name": "[coalesce(parameters('p2sConfigurationPolicyGroups'), createArray())[copyIndex('configurationPolicyGroups')].userVPNPolicyGroupName]",
+              "properties": {
+                "isDefault": "[coalesce(parameters('p2sConfigurationPolicyGroups'), createArray())[copyIndex('configurationPolicyGroups')].isDefault]",
+                "policyMembers": "[coalesce(parameters('p2sConfigurationPolicyGroups'), createArray())[copyIndex('configurationPolicyGroups')].policyMembers]",
+                "priority": "[coalesce(parameters('p2sConfigurationPolicyGroups'), createArray())[copyIndex('configurationPolicyGroups')].priority]"
+              }
+            }
+          },
+          {
+            "name": "radiusClientRootCertificates",
+            "count": "[length(coalesce(parameters('radiusClientRootCertificates'), createArray()))]",
+            "input": {
+              "name": "[coalesce(parameters('radiusClientRootCertificates'), createArray())[copyIndex('radiusClientRootCertificates')].name]",
+              "thumbprint": "[coalesce(parameters('radiusClientRootCertificates'), createArray())[copyIndex('radiusClientRootCertificates')].thumbprint]"
+            }
+          },
+          {
+            "name": "radiusServerRootCertificates",
+            "count": "[length(coalesce(parameters('radiusServerRootCertificates'), createArray()))]",
+            "input": {
+              "name": "[coalesce(parameters('radiusServerRootCertificates'), createArray())[copyIndex('radiusServerRootCertificates')].name]",
+              "publicCertData": "[coalesce(parameters('radiusServerRootCertificates'), createArray())[copyIndex('radiusServerRootCertificates')].publicCertData]"
+            }
+          },
+          {
+            "name": "radiusServers",
+            "count": "[length(coalesce(parameters('radiusServers'), createArray()))]",
+            "input": {
+              "radiusServerAddress": "[coalesce(parameters('radiusServers'), createArray())[copyIndex('radiusServers')].radiusServerAddress]",
+              "radiusServerScore": "[coalesce(parameters('radiusServers'), createArray())[copyIndex('radiusServers')].radiusServerScore]",
+              "radiusServerSecret": "[coalesce(parameters('radiusServers'), createArray())[copyIndex('radiusServers')].radiusServerSecret]"
+            }
+          },
+          {
+            "name": "vpnClientIpsecPolicies",
+            "count": "[length(coalesce(parameters('vpnClientIpsecPolicies'), createArray()))]",
+            "input": {
+              "dhGroup": "[coalesce(parameters('vpnClientIpsecPolicies'), createArray())[copyIndex('vpnClientIpsecPolicies')].dhGroup]",
+              "ikeEncryption": "[coalesce(parameters('vpnClientIpsecPolicies'), createArray())[copyIndex('vpnClientIpsecPolicies')].ikeEncryption]",
+              "ikeIntegrity": "[coalesce(parameters('vpnClientIpsecPolicies'), createArray())[copyIndex('vpnClientIpsecPolicies')].ikeIntegrity]",
+              "ipsecEncryption": "[coalesce(parameters('vpnClientIpsecPolicies'), createArray())[copyIndex('vpnClientIpsecPolicies')].ipsecEncryption]",
+              "ipsecIntegrity": "[coalesce(parameters('vpnClientIpsecPolicies'), createArray())[copyIndex('vpnClientIpsecPolicies')].ipsecIntegrity]",
+              "pfsGroup": "[coalesce(parameters('vpnClientIpsecPolicies'), createArray())[copyIndex('vpnClientIpsecPolicies')].pfsGroup]",
+              "saDataSizeKilobytes": "[coalesce(parameters('vpnClientIpsecPolicies'), createArray())[copyIndex('vpnClientIpsecPolicies')].saDataSizeKilobytes]",
+              "saLifeTimeSeconds": "[coalesce(parameters('vpnClientIpsecPolicies'), createArray())[copyIndex('vpnClientIpsecPolicies')].saLifeTimeSeconds]"
+            }
+          },
+          {
+            "name": "vpnClientRevokedCertificates",
+            "count": "[length(coalesce(parameters('vpnClientRevokedCertificates'), createArray()))]",
+            "input": {
+              "name": "[coalesce(parameters('vpnClientRevokedCertificates'), createArray())[copyIndex('vpnClientRevokedCertificates')].name]",
+              "thumbprint": "[coalesce(parameters('vpnClientRevokedCertificates'), createArray())[copyIndex('vpnClientRevokedCertificates')].thumbprint]"
+            }
+          },
+          {
+            "name": "vpnClientRootCertificates",
+            "count": "[length(coalesce(parameters('vpnClientRootCertificates'), createArray()))]",
+            "input": {
+              "name": "[coalesce(parameters('vpnClientRootCertificates'), createArray())[copyIndex('vpnClientRootCertificates')].name]",
+              "publicCertData": "[coalesce(parameters('vpnClientRootCertificates'), createArray())[copyIndex('vpnClientRootCertificates')].publicCertData]"
+            }
+          }
+        ],
+        "aadAuthenticationParameters": {
+          "aadAudience": "[parameters('aadAudience')]",
+          "aadIssuer": "[parameters('aadIssuer')]",
+          "aadTenant": "[parameters('aadTenant')]"
+        },
+        "radiusServerAddress": "[parameters('radiusServerAddress')]",
+        "radiusServerSecret": "[parameters('radiusServerSecret')]",
+        "vpnAuthenticationTypes": "[parameters('vpnAuthenticationTypes')]",
+        "vpnProtocols": "[parameters('vpnProtocols')]"
+      }
+    },
+    "vpnGateway_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Network/vpnServerConfigurations/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "vpnServerConfig"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the user VPN configuration."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the user VPN configuration."
+      },
+      "value": "[resourceId('Microsoft.Network/vpnServerConfigurations', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the user VPN configuration was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('vpnServerConfig', '2023-11-01', 'full').location]"
+    }
+  }
+}

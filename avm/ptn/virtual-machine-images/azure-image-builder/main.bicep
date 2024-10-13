@@ -164,7 +164,7 @@ resource imageTemplateRg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (d
 }
 
 // User Assigned Identity (MSI)
-module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-ds-msi'
   scope: rg
   params: {
@@ -174,7 +174,7 @@ module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' =
   }
 }
 
-module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-image-msi'
   scope: rg
   params: {
@@ -186,7 +186,6 @@ module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2
 
 // MSI Subscription contributor assignment
 resource imageMSI_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
-  // name: guid(subscription().subscriptionId, imageManagedIdentityName, contributorRole.id)
   name: guid(
     subscription().id,
     '${subscription().id}/resourceGroups/${resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${imageManagedIdentityName}',
@@ -203,7 +202,7 @@ resource imageMSI_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = if
 }
 
 // Azure Compute Gallery
-module azureComputeGallery 'br/public:avm/res/compute/gallery:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module azureComputeGallery 'br/public:avm/res/compute/gallery:0.7.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-acg'
   scope: rg
   params: {
@@ -215,7 +214,7 @@ module azureComputeGallery 'br/public:avm/res/compute/gallery:0.4.0' = if (deplo
 }
 
 // Image Template Virtual Network
-module vnet 'br/public:avm/res/network/virtual-network:0.1.6' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-vnet'
   scope: rg
   params: {
@@ -229,9 +228,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.6' = if (deploymentsT
         addressPrefix: virtualNetworkSubnetAddressPrefix
         privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET
         serviceEndpoints: [
-          {
-            service: 'Microsoft.Storage'
-          }
+          'Microsoft.Storage'
         ]
       }
       {
@@ -239,18 +236,9 @@ module vnet 'br/public:avm/res/network/virtual-network:0.1.6' = if (deploymentsT
         addressPrefix: virtualNetworkDeploymentScriptSubnetAddressPrefix
         privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET - temp
         serviceEndpoints: [
-          {
-            service: 'Microsoft.Storage'
-          }
+          'Microsoft.Storage'
         ]
-        delegations: [
-          {
-            name: 'Microsoft.ContainerInstance.containerGroups'
-            properties: {
-              serviceName: 'Microsoft.ContainerInstance/containerGroups'
-            }
-          }
-        ]
+        delegation: 'Microsoft.ContainerInstance/containerGroups'
       }
     ]
     location: location
@@ -363,7 +351,7 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (
 // ============================== //
 
 // Upload storage account files
-module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.3.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base' || deploymentsToPerform == 'Only assets & image') {
+module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base' || deploymentsToPerform == 'Only assets & image') {
   name: '${deployment().name}-storage-upload-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -382,13 +370,6 @@ module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.3.
       ]
     }
     scriptContent: loadTextContent('../../../utilities/e2e-template-assets/scripts/Set-StorageContainerContentByEnvVar.ps1')
-    // environmentVariables: [
-    //   map(range(0, length(storageAccountFilesToUpload ?? [])), index => {
-    //     name: '__SCRIPT__${storageAccountFilesToUpload![index].name}'
-    //     value: storageAccountFilesToUpload![index].?value
-    //     secureValue: storageAccountFilesToUpload![index].?secureValue
-    //   })
-    // ]
     environmentVariables: map(storageAccountFilesToUpload ?? [], file => {
       name: '__SCRIPT__${replace(replace(file.name, '-', '__'), '.', '_') }' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Install__LinuxPowerShell_sh will be Install-LinuxPowerShell.sh
       value: file.?value
@@ -438,7 +419,7 @@ resource dsMsi_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-0
   scope: resourceGroup(resourceGroupName)
 }
 
-module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.3.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
+module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
   name: '${deployment().name}-it'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -501,7 +482,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
 }
 
 // Deployment script to trigger image build
-module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.3.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
+module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
   name: '${deployment().name}-imageTemplate-trigger-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -555,7 +536,7 @@ module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.3.
   ]
 }
 
-module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.3.1' = if (waitForImageBuild && (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image')) {
+module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.4.0' = if (waitForImageBuild && (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image')) {
   name: '${deployment().name}-imageTemplate-wait-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -611,7 +592,7 @@ module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.3.1' 
 // =============== //
 //   Definitions   //
 // =============== //
-
+@export()
 type storageAccountFilesToUploadType = {
   @description('Required. The name of the environment variable.')
   name: string

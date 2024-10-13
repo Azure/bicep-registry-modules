@@ -300,6 +300,9 @@ param resourceProviders object = {
   'Microsoft.Web': []
 }
 
+@sys.description('Optional. The number of blank ARM deployments to create sequentially to introduce a delay to the Subscription being moved to the target Management Group being, if set, to allow for background platform RBAC inheritance to occur.')
+param managementGroupAssociationDelayCount int = 15
+
 // VARIABLES
 
 var existingSubscriptionIDEmptyCheck = empty(existingSubscriptionId)
@@ -358,6 +361,7 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     subscriptionId: (subscriptionAliasEnabled && empty(existingSubscriptionId))
       ? createSubscription.outputs.subscriptionId
       : existingSubscriptionId
+    managementGroupAssociationDelayCount: managementGroupAssociationDelayCount
     subscriptionManagementGroupAssociationEnabled: subscriptionManagementGroupAssociationEnabled
     subscriptionManagementGroupId: subscriptionManagementGroupId
     subscriptionTags: subscriptionTags
