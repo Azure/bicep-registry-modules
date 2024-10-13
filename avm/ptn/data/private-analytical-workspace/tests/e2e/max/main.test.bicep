@@ -43,21 +43,11 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      //solutionAdministrators: [
-      //  {
-      //    principalId: '<EntraGroupId>'
-      //    principalType: 'Group'
-      //  }
-      //]
       tags: {
         Owner: 'Contoso MAX Team'
         CostCenter: '123459876'
       }
-      enableTelemetry: true
       enableDatabricks: true
-      //virtualNetworkResourceId: null
-      //logAnalyticsWorkspaceResourceId: null
-      //keyVaultResourceId: null
       advancedOptions: {
         networkAcls: { ipRules: ['104.43.16.94'] }
         logAnalyticsWorkspace: { dataRetention: 35, dailyQuotaGb: 1 }
