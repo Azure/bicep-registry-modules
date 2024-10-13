@@ -117,6 +117,11 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     // Non-required parameters
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
     automaticClusterUpdate: 'Enabled'
+    complianceSecurityProfileValue: 'Enabled'
+    complianceStandards: [
+      'HIPAA'
+      'PCI_DSS'
+    ]
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -247,6 +252,15 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     },
     "automaticClusterUpdate": {
       "value": "Enabled"
+    },
+    "complianceSecurityProfileValue": {
+      "value": "Enabled"
+    },
+    "complianceStandards": {
+      "value": [
+        "HIPAA",
+        "PCI_DSS"
+      ]
     },
     "customerManagedKey": {
       "value": {
@@ -425,6 +439,11 @@ param name = 'dwmax002'
 // Non-required parameters
 param amlWorkspaceResourceId = '<amlWorkspaceResourceId>'
 param automaticClusterUpdate = 'Enabled'
+param complianceSecurityProfileValue = 'Enabled'
+param complianceStandards = [
+  'HIPAA'
+  'PCI_DSS'
+]
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
@@ -926,8 +945,9 @@ param vnetAddressPrefix = '10.100'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`amlWorkspaceResourceId`](#parameter-amlworkspaceresourceid) | string | The resource ID of a Azure Machine Learning workspace to link with Databricks workspace. |
-| [`automaticClusterUpdate`](#parameter-automaticclusterupdate) | string | Set enhancedSecurityCompliance to either Disabled or Enabled. |
-| [`complianceSecurityProfile`](#parameter-compliancesecurityprofile) | object | TODO workspace. |
+| [`automaticClusterUpdate`](#parameter-automaticclusterupdate) | string | The value for enabling automatic cluster updates in enhanced security compliance. |
+| [`complianceSecurityProfileValue`](#parameter-compliancesecurityprofilevalue) | string | The value for the compliance security profile, indicating the selected profile or compliance type. |
+| [`complianceStandards`](#parameter-compliancestandards) | array | The compliance standards array for the security profile. Should be a list of compliance standards like "ISO27001" or "SOC2". |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition to use for the managed service. |
 | [`customerManagedKeyManagedDisk`](#parameter-customermanagedkeymanageddisk) | object | The customer managed key definition to use for the managed disk. |
 | [`customPrivateSubnetName`](#parameter-customprivatesubnetname) | string | The name of the Private Subnet within the Virtual Network. |
@@ -937,7 +957,7 @@ param vnetAddressPrefix = '10.100'
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disablePublicIp`](#parameter-disablepublicip) | bool | Disable Public IP. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`enhancedSecurityMonitoring`](#parameter-enhancedsecuritymonitoring) | string | TODO wrkspace. |
+| [`enhancedSecurityMonitoring`](#parameter-enhancedsecuritymonitoring) | string | The value for enabling or configuring enhanced security monitoring. |
 | [`loadBalancerBackendPoolName`](#parameter-loadbalancerbackendpoolname) | string | Name of the outbound Load Balancer Backend Pool for Secure Cluster Connectivity (No Public IP). |
 | [`loadBalancerResourceId`](#parameter-loadbalancerresourceid) | string | Resource URI of Outbound Load balancer for Secure Cluster Connectivity (No Public IP) workspace. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -984,35 +1004,27 @@ The resource ID of a Azure Machine Learning workspace to link with Databricks wo
 
 ### Parameter: `automaticClusterUpdate`
 
-Set enhancedSecurityCompliance to either Disabled or Enabled.
+The value for enabling automatic cluster updates in enhanced security compliance.
 
 - Required: No
 - Type: string
 - Default: `''`
-- Allowed:
-  ```Bicep
-  [
-    ''
-    'Disabled'
-    'Enabled'
-  ]
-  ```
 
-### Parameter: `complianceSecurityProfile`
+### Parameter: `complianceSecurityProfileValue`
 
-TODO workspace.
+The value for the compliance security profile, indicating the selected profile or compliance type.
 
 - Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      complianceStandards: [
-        'HIPAA'
-      ]
-      value: 'HIPAA'
-  }
-  ```
+- Type: string
+- Default: `''`
+
+### Parameter: `complianceStandards`
+
+The compliance standards array for the security profile. Should be a list of compliance standards like "ISO27001" or "SOC2".
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `customerManagedKey`
 
@@ -1301,7 +1313,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `enhancedSecurityMonitoring`
 
-TODO wrkspace.
+The value for enabling or configuring enhanced security monitoring.
 
 - Required: No
 - Type: string
