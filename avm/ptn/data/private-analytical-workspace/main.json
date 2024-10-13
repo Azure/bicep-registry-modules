@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "11124694674592747011"
+      "templateHash": "3882517201901229902"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -327,6 +327,10 @@
     ],
     "diagnosticSettingsName": "avm-diagnostic-settings",
     "vnetName": "[format('{0}-vnet', parameters('name'))]",
+    "vnetDefaultAddressPrefix": "192.168.224.0/19",
+    "subnetPrivateLinkDefaultAddressPrefix": "[cidrSubnet(variables('vnetDefaultAddressPrefix'), 24, 0)]",
+    "subnetDbwFrontendDefaultAddressPrefix": "[cidrSubnet(variables('vnetDefaultAddressPrefix'), 23, 2)]",
+    "subnetDbwBackendDefaultAddressPrefix": "[cidrSubnet(variables('vnetDefaultAddressPrefix'), 23, 3)]",
     "privateDnsZoneNameSaBlob": "[format('privatelink.blob.{0}', environment().suffixes.storage)]",
     "privateDnsZoneNameKv": "privatelink.vaultcore.azure.net",
     "privateDnsZoneNameDbw": "privatelink.azuredatabricks.net",
@@ -568,7 +572,7 @@
         "parameters": {
           "addressPrefixes": {
             "value": [
-              "192.168.224.0/19"
+              "[variables('vnetDefaultAddressPrefix')]"
             ]
           },
           "name": {
@@ -606,7 +610,7 @@
             "value": "[parameters('lock')]"
           },
           "subnets": {
-            "value": "[concat(createArray(createObject('name', variables('subnetNamePrivateLink'), 'addressPrefix', '192.168.224.0/24', 'networkSecurityGroupResourceId', reference('nsgPrivateLink').outputs.resourceId.value)), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwFrontend'), 'addressPrefix', '192.168.228.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwFrontend').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwBackend'), 'addressPrefix', '192.168.230.0/23', 'networkSecurityGroupResourceId', reference('nsgDbwBackend').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray()))]"
+            "value": "[concat(createArray(createObject('name', variables('subnetNamePrivateLink'), 'addressPrefix', variables('subnetPrivateLinkDefaultAddressPrefix'), 'networkSecurityGroupResourceId', reference('nsgPrivateLink').outputs.resourceId.value)), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwFrontend'), 'addressPrefix', variables('subnetDbwFrontendDefaultAddressPrefix'), 'networkSecurityGroupResourceId', reference('nsgDbwFrontend').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwBackend'), 'addressPrefix', variables('subnetDbwBackendDefaultAddressPrefix'), 'networkSecurityGroupResourceId', reference('nsgDbwBackend').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray()))]"
           },
           "tags": {
             "value": "[parameters('tags')]"

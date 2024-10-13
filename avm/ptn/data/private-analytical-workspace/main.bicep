@@ -40,7 +40,14 @@ param advancedOptions advancedOptionsType?
 // ============== //
 
 var diagnosticSettingsName = 'avm-diagnostic-settings'
+
 var vnetName = '${name}-vnet'
+var vnetDefaultAddressPrefix = '192.168.224.0/19'
+var subnetPrivateLinkDefaultAddressPrefix = cidrSubnet(vnetDefaultAddressPrefix, 24, 0) // 192.168.224.0/24
+// DBW - 192.168.228.0/22
+var subnetDbwFrontendDefaultAddressPrefix = cidrSubnet(vnetDefaultAddressPrefix, 23, 2) // 192.168.228.0/23
+var subnetDbwBackendDefaultAddressPrefix = cidrSubnet(vnetDefaultAddressPrefix, 23, 3) // 192.168.230.0/23
+
 var privateDnsZoneNameSaBlob = 'privatelink.blob.${environment().suffixes.storage}'
 var privateDnsZoneNameKv = 'privatelink.vaultcore.azure.net'
 var privateDnsZoneNameDbw = 'privatelink.azuredatabricks.net'
@@ -250,7 +257,7 @@ var dbwIpRules = [
 var privateLinkSubnet = [
   {
     name: subnetNamePrivateLink
-    addressPrefix: '192.168.224.0/24'
+    addressPrefix: subnetPrivateLinkDefaultAddressPrefix
     networkSecurityGroupResourceId: nsgPrivateLink.outputs.resourceId
   }
 ]
@@ -260,11 +267,10 @@ var subnets = concat(
   // Subnets for service typically in the /22 chunk
   enableDatabricks
     ? [
-        // DBW - 192.168.228.0/22
         {
           // a host subnet (sometimes called the public subnet)
           name: subnetNameDbwFrontend
-          addressPrefix: '192.168.228.0/23'
+          addressPrefix: subnetDbwFrontendDefaultAddressPrefix
           networkSecurityGroupResourceId: nsgDbwFrontend.outputs.resourceId
           delegations: [
             {
@@ -278,7 +284,7 @@ var subnets = concat(
         {
           // a container subnet (sometimes called the private subnet)
           name: subnetNameDbwBackend
-          addressPrefix: '192.168.230.0/23'
+          addressPrefix: subnetDbwBackendDefaultAddressPrefix
           networkSecurityGroupResourceId: nsgDbwBackend.outputs.resourceId
           delegations: [
             {
@@ -364,7 +370,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.2.0' = if (createNewVNE
   params: {
     // Required parameters
     addressPrefixes: [
-      '192.168.224.0/19'
+      vnetDefaultAddressPrefix
     ]
     name: vnetName
     // Non-required parameters
