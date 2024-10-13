@@ -116,22 +116,16 @@ param accessConnectorResourceId string = ''
 @description('Optional. The default catalog configuration for the Databricks workspace.')
 param defaultCatalog defaultCatalogType?
 
-@description('Optional. Set enhancedSecurityCompliance to either Disabled or Enabled.')
-@allowed([
-  'Enabled'
-  'Disabled'
-  ''
-])
+@description('Optional. The value for enabling automatic cluster updates in enhanced security compliance.')
 param automaticClusterUpdate string = ''
 
-@description('Optional. TODO workspace.')
-param complianceSecurityProfile object = {
-  value: 'HIPAA'
-  complianceStandards: [
-    'HIPAA'
-  ]
-}
-@description('Optional. TODO wrkspace.')
+@description('Optional. The compliance standards array for the security profile. Should be a list of compliance standards like "ISO27001" or "SOC2".')
+param complianceStandards array = []
+
+@description('Optional. The value for the compliance security profile, indicating the selected profile or compliance type.')
+param complianceSecurityProfileValue string = ''
+
+@description('Optional. The value for enabling or configuring enhanced security monitoring.')
 param enhancedSecurityMonitoring string = ''
 
 var builtInRoleNames = {
@@ -340,28 +334,6 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
             }
           }
         : null
-      enhancedSecurityCompliance: !empty(automaticClusterUpdate) || !empty(complianceSecurityProfile) || !empty(enhancedSecurityMonitoring)
-        ? {
-            automaticClusterUpdate: !empty(automaticClusterUpdate)
-              ? {
-                  value: automaticClusterUpdate
-                }
-              : null
-            complianceSecurityProfile: !empty(complianceSecurityProfile)
-              ? {
-                  complianceStandards: !empty(complianceSecurityProfile.complianceStandards)
-                    ? complianceSecurityProfile.complianceStandards
-                    : null
-                  value: complianceSecurityProfile.value
-                }
-              : null
-            enhancedSecurityMonitoring: !empty(enhancedSecurityMonitoring)
-              ? {
-                  value: enhancedSecurityMonitoring
-                }
-              : null
-          }
-        : null
     },
     !empty(privateStorageAccount)
       ? {
@@ -377,6 +349,22 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
           defaultCatalog: {
             initialName: ''
             initialType: defaultCatalog.?initialType
+          }
+        }
+      : {},
+    !empty(automaticClusterUpdate) || !empty(complianceStandards) || !empty(enhancedSecurityMonitoring)
+      ? {
+          enhancedSecurityCompliance: {
+            automaticClusterUpdate: {
+              value: automaticClusterUpdate
+            }
+            complianceSecurityProfile: {
+              complianceStandards: complianceStandards
+              value: complianceSecurityProfileValue
+            }
+            enhancedSecurityMonitoring: {
+              value: enhancedSecurityMonitoring
+            }
           }
         }
       : {}
