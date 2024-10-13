@@ -409,7 +409,7 @@ param metricAnnotationsAllowList string = ''
 param istioServiceMeshEnabled bool = false
 
 @description('Optional. The list of revisions of the Istio control plane. When an upgrade is not in progress, this holds one value. When canary upgrade is in progress, this can only hold two consecutive values.')
-param istioServiceMeshRevisions array?
+param istioServiceMeshRevisions array = ['asm-1-23']
 
 @description('Optional. Specifies whether the Istio Ingress Gateway is enabled or not.')
 param istioServiceMeshIngressGatewayEnabled bool = false

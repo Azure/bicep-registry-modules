@@ -36,9 +36,6 @@ param(
     [string] $CertSubjectName
 )
 
-# Install open-ssl if not available
-apt-get install openssl
-
 $rootKeyFile = 'root-key.pem'
 $rootKeySize = 4096
 
