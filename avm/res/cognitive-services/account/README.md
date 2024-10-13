@@ -78,16 +78,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     location: '<location>'
     privateEndpoints: [
       {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-            }
-            {
-              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-            }
-          ]
-        }
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneOpenAIResourceId>'
+          '<privateDNSZoneResourceId>'
+        ]
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -141,16 +135,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneGroup": {
-            "privateDnsZoneGroupConfigs": [
-              {
-                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
-              },
-              {
-                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
-              }
-            ]
-          },
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneOpenAIResourceId>",
+            "<privateDNSZoneResourceId>"
+          ],
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -194,16 +182,10 @@ param deployments = [
 param location = '<location>'
 param privateEndpoints = [
   {
-    privateDnsZoneGroup: {
-      privateDnsZoneGroupConfigs: [
-        {
-          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-        }
-        {
-          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-        }
-      ]
-    }
+    privateDnsZoneResourceIds: [
+      '<privateDNSZoneOpenAIResourceId>'
+      '<privateDNSZoneResourceId>'
+    ]
     subnetResourceId: '<subnetResourceId>'
   }
 ]
@@ -571,13 +553,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
             }
           }
         ]
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-            }
-          ]
-        }
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -586,13 +564,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
       }
       {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-            }
-          ]
-        }
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -727,13 +701,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
               }
             }
           ],
-          "privateDnsZoneGroup": {
-            "privateDnsZoneGroupConfigs": [
-              {
-                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
-              }
-            ]
-          },
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -742,13 +712,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
           }
         },
         {
-          "privateDnsZoneGroup": {
-            "privateDnsZoneGroupConfigs": [
-              {
-                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
-              }
-            ]
-          },
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -873,13 +839,9 @@ param privateEndpoints = [
         }
       }
     ]
-    privateDnsZoneGroup: {
-      privateDnsZoneGroupConfigs: [
-        {
-          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-        }
-      ]
-    }
+    privateDnsZoneResourceIds: [
+      '<privateDNSZoneResourceId>'
+    ]
     subnetResourceId: '<subnetResourceId>'
     tags: {
       Environment: 'Non-Prod'
@@ -888,13 +850,9 @@ param privateEndpoints = [
     }
   }
   {
-    privateDnsZoneGroup: {
-      privateDnsZoneGroupConfigs: [
-        {
-          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-        }
-      ]
-    }
+    privateDnsZoneResourceIds: [
+      '<privateDNSZoneResourceId>'
+    ]
     subnetResourceId: '<subnetResourceId>'
   }
 ]
@@ -964,13 +922,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     location: '<location>'
     privateEndpoints: [
       {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-            }
-          ]
-        }
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -1024,13 +978,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneGroup": {
-            "privateDnsZoneGroupConfigs": [
-              {
-                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
-              }
-            ]
-          },
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -1074,13 +1024,9 @@ param deployments = [
 param location = '<location>'
 param privateEndpoints = [
   {
-    privateDnsZoneGroup: {
-      privateDnsZoneGroupConfigs: [
-        {
-          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-        }
-      ]
-    }
+    privateDnsZoneResourceIds: [
+      '<privateDNSZoneResourceId>'
+    ]
     subnetResourceId: '<subnetResourceId>'
   }
 ]
@@ -1117,13 +1063,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     }
     privateEndpoints: [
       {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-            }
-          ]
-        }
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -1179,13 +1121,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneGroup": {
-            "privateDnsZoneGroupConfigs": [
-              {
-                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
-              }
-            ]
-          },
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -1233,13 +1171,9 @@ param managedIdentities = {
 }
 param privateEndpoints = [
   {
-    privateDnsZoneGroup: {
-      privateDnsZoneGroupConfigs: [
-        {
-          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-        }
-      ]
-    }
+    privateDnsZoneResourceIds: [
+      '<privateDNSZoneResourceId>'
+    ]
     subnetResourceId: '<subnetResourceId>'
     tags: {
       Environment: 'Non-Prod'
@@ -1522,13 +1456,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     }
     privateEndpoints: [
       {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-            }
-          ]
-        }
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -1597,13 +1527,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneGroup": {
-            "privateDnsZoneGroupConfigs": [
-              {
-                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
-              }
-            ]
-          },
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -1660,13 +1586,9 @@ param managedIdentities = {
 }
 param privateEndpoints = [
   {
-    privateDnsZoneGroup: {
-      privateDnsZoneGroupConfigs: [
-        {
-          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-        }
-      ]
-    }
+    privateDnsZoneResourceIds: [
+      '<privateDNSZoneResourceId>'
+    ]
     subnetResourceId: '<subnetResourceId>'
     tags: {
       Environment: 'Non-Prod'
@@ -1692,7 +1614,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-kind) | string | Kind of the Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
+| [`kind`](#parameter-kind) | string | Kind of the Cognitive Services. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
 | [`name`](#parameter-name) | string | The name of Cognitive Services account. |
 
 **Conditional parameters**
@@ -1716,7 +1638,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`migrationToken`](#parameter-migrationtoken) | securestring | Resource migration token. |
+| [`migrationToken`](#parameter-migrationtoken) | string | Resource migration token. |
 | [`networkAcls`](#parameter-networkacls) | object | A collection of rules governing the accessibility from specific network locations. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
@@ -1724,13 +1646,13 @@ param tags = {
 | [`restrictOutboundNetworkAccess`](#parameter-restrictoutboundnetworkaccess) | bool | Restrict outbound network access. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
-| [`sku`](#parameter-sku) | string | SKU of the Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
+| [`sku`](#parameter-sku) | string | SKU of the Cognitive Services resource. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`userOwnedStorage`](#parameter-userownedstorage) | array | The storage accounts for this resource. |
 
 ### Parameter: `kind`
 
-Kind of the Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
+Kind of the Cognitive Services. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
 
 - Required: Yes
 - Type: string
@@ -2192,7 +2114,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 Resource migration token.
 
 - Required: No
-- Type: securestring
+- Type: string
 
 ### Parameter: `networkAcls`
 
@@ -2228,7 +2150,8 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
+| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
+| [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
@@ -2412,64 +2335,19 @@ The name of the private endpoint.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneGroup`
+### Parameter: `privateEndpoints.privateDnsZoneGroupName`
 
-The private DNS zone group to configure for the private endpoint.
+The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
 
 - Required: No
-- Type: object
+- Type: string
 
-**Required parameters**
+### Parameter: `privateEndpoints.privateDnsZoneResourceIds`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
-
-### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
-
-The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
-
-- Required: Yes
+- Required: No
 - Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`privateDnsZoneResourceId`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
-
-### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
-
-The resource id of the private DNS zone.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
-
-The name of the private DNS zone group config.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
-
-The name of the Private DNS Zone Group.
-
-- Required: No
-- Type: string
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -2501,7 +2379,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -2671,7 +2549,7 @@ Array of role assignments to create.
   - `'Contributor'`
   - `'Owner'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator'`
+  - `'Role Based Access Control Administrator (Preview)'`
   - `'User Access Administrator'`
 
 **Required parameters**
@@ -2807,7 +2685,7 @@ The name for the accessKey2 secret to create.
 
 ### Parameter: `sku`
 
-SKU of the Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
+SKU of the Cognitive Services resource. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
 
 - Required: No
 - Type: string
@@ -2858,7 +2736,6 @@ The storage accounts for this resource.
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the cognitive services account. |
-| `privateEndpoints` | array | The private endpoints of the congitive services account. |
 | `resourceGroupName` | string | The resource group the cognitive services account was deployed into. |
 | `resourceId` | string | The resource ID of the cognitive services account. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
@@ -2869,7 +2746,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.8.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.6.1` | Remote reference |
 
 ## Data Collection
 
