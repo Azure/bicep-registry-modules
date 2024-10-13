@@ -41,6 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -71,13 +72,9 @@ module testDeployment '../../../main.bicep' = [
       publicNetworkAccess: 'Disabled'
       privateEndpoints: [
         {
-          privateDnsZoneGroup: {
-            privateDnsZoneGroupConfigs: [
-              {
-                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-              }
-            ]
-          }
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
