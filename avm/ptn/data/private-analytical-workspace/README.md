@@ -86,12 +86,25 @@ This instance deploys the module with the minimum set of required parameters.
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
   name: 'privateAnalyticalWorkspaceDeployment'
   params: {
-    // Required parameters
     name: 'dpawmin001'
-    // Non-required parameters
-    tags: {
-      CostCenter: '123-456-789'
-      Owner: 'Contoso'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "dpawmin001"
     }
   }
 }
@@ -102,26 +115,12 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via Bicep parameters file</summary>
 
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "dpawmin001"
-    },
-    // Non-required parameters
-    "tags": {
-      "value": {
-        "CostCenter": "123-456-789",
-        "Owner": "Contoso"
-      }
-    }
-  }
-}
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+param name = 'dpawmin001'
 ```
 
 </details>
@@ -162,7 +161,6 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
       }
     }
     enableDatabricks: true
-    enableTelemetry: true
     location: '<location>'
     tags: {
       CostCenter: '123459876'
@@ -177,7 +175,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -212,9 +210,6 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     "enableDatabricks": {
       "value": true
     },
-    "enableTelemetry": {
-      "value": true
-    },
     "location": {
       "value": "<location>"
     },
@@ -225,6 +220,45 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawmax001'
+// Non-required parameters
+param advancedOptions = {
+  keyVault: {
+    createMode: 'default'
+    enablePurgeProtection: true
+    enableSoftDelete: false
+    sku: 'standard'
+    softDeleteRetentionInDays: 7
+  }
+  logAnalyticsWorkspace: {
+    dailyQuotaGb: 1
+    dataRetention: 35
+  }
+  networkAcls: {
+    ipRules: [
+      '104.43.16.94'
+    ]
+  }
+}
+param enableDatabricks = true
+param location = '<location>'
+param tags = {
+  CostCenter: '123459876'
+  Owner: 'Contoso MAX Team'
 }
 ```
 
@@ -261,7 +295,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -283,6 +317,26 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawminpriv001'
+// Non-required parameters
+param enableDatabricks = false
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
 }
 ```
 
@@ -326,7 +380,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -363,6 +417,33 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawminpub001'
+// Non-required parameters
+param advancedOptions = {
+  networkAcls: {
+    ipRules: [
+      '104.43.16.94'
+    ]
+  }
+}
+param enableDatabricks = false
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
+```
+
+</details>
+<p>
+
 ### Example 5: _Use Case 1 - fully private_
 
 Isolated network deployment - fully private.
@@ -393,7 +474,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -415,6 +496,26 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawuc01priv001'
+// Non-required parameters
+param enableDatabricks = true
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
 }
 ```
 
@@ -458,7 +559,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -489,6 +590,33 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawuc01pub001'
+// Non-required parameters
+param advancedOptions = {
+  networkAcls: {
+    ipRules: [
+      '104.43.16.94'
+    ]
+  }
+}
+param enableDatabricks = true
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
 }
 ```
 
@@ -535,7 +663,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -572,6 +700,36 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawuc02priv001'
+// Non-required parameters
+param advancedOptions = {
+  databricks: {
+    subnetNameBackend: 'dbw-backend-subnet'
+    subnetNameFrontend: 'dbw-frontend-subnet'
+  }
+  virtualNetwork: {
+    subnetNamePrivateLink: 'private-link-subnet'
+  }
+}
+param enableDatabricks = true
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 ```
 
 </details>
@@ -622,7 +780,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -664,6 +822,41 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawuc02pub001'
+// Non-required parameters
+param advancedOptions = {
+  databricks: {
+    subnetNameBackend: 'dbw-backend-subnet'
+    subnetNameFrontend: 'dbw-frontend-subnet'
+  }
+  networkAcls: {
+    ipRules: [
+      '104.43.16.94'
+    ]
+  }
+  virtualNetwork: {
+    subnetNamePrivateLink: 'private-link-subnet'
+  }
+}
+param enableDatabricks = true
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 ```
 
 </details>
@@ -711,7 +904,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -754,6 +947,38 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawuc03priv001'
+// Non-required parameters
+param advancedOptions = {
+  databricks: {
+    subnetNameBackend: 'dbw-backend-subnet'
+    subnetNameFrontend: 'dbw-frontend-subnet'
+  }
+  virtualNetwork: {
+    subnetNamePrivateLink: 'private-link-subnet'
+  }
+}
+param enableDatabricks = true
+param keyVaultResourceId = '<keyVaultResourceId>'
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 ```
 
 </details>
@@ -806,7 +1031,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -859,6 +1084,43 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawuc03pub001'
+// Non-required parameters
+param advancedOptions = {
+  databricks: {
+    subnetNameBackend: 'dbw-backend-subnet'
+    subnetNameFrontend: 'dbw-frontend-subnet'
+  }
+  networkAcls: {
+    ipRules: [
+      '104.43.16.94'
+    ]
+  }
+  virtualNetwork: {
+    subnetNamePrivateLink: 'private-link-subnet'
+  }
+}
+param enableDatabricks = true
+param keyVaultResourceId = '<keyVaultResourceId>'
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+```
+
+</details>
+<p>
+
 ### Example 11: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -905,7 +1167,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -949,6 +1211,42 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawwaf001'
+// Non-required parameters
+param advancedOptions = {
+  keyVault: {
+    createMode: 'default'
+    enablePurgeProtection: true
+    enableSoftDelete: true
+    sku: 'standard'
+    softDeleteRetentionInDays: 90
+  }
+  logAnalyticsWorkspace: {
+    dailyQuotaGb: 1
+    dataRetention: 35
+  }
+}
+param enableDatabricks = true
+param enableTelemetry = true
+param location = '<location>'
+param tags = {
+  CostCenter: '123-456-789'
+  'hidden-title': 'This is visible in the resource name'
+  Owner: 'Contoso'
 }
 ```
 
