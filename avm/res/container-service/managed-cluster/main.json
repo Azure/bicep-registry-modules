@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "11060933229117405363"
+      "templateHash": "12912869574538798536"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -684,6 +684,16 @@
     "maintenanceConfigurationType": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "aksManagedAutoUpgradeSchedule",
+            "aksManagedNodeOSUpgradeSchedule"
+          ],
+          "metadata": {
+            "description": "Required. Name of maintenance window."
+          }
+        },
         "maintenanceWindow": {
           "type": "object",
           "metadata": {
@@ -1012,8 +1022,11 @@
         "description": "Optional. Define one or more secondary/additional agent pools."
       }
     },
-    "maintenanceConfiguration": {
-      "$ref": "#/definitions/maintenanceConfigurationType",
+    "maintenanceConfigurations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/maintenanceConfigurationType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Whether or not to use AKS Automatic mode."
@@ -1254,6 +1267,19 @@
       ],
       "metadata": {
         "description": "Optional. Auto-upgrade channel on the AKS cluster."
+      }
+    },
+    "autoNodeOsUpgradeProfileUpgradeChannel": {
+      "type": "string",
+      "defaultValue": "Unmanaged",
+      "allowedValues": [
+        "NodeImage",
+        "None",
+        "SecurityPatch",
+        "Unmanaged"
+      ],
+      "metadata": {
+        "description": "Optional. Auto-upgrade channel on the Node Os."
       }
     },
     "podIdentityProfileAllowNetworkPluginKubenet": {
@@ -1710,7 +1736,8 @@
           "skip-nodes-with-system-pods": "[toLower(string(parameters('autoScalerProfileSkipNodesWithSystemPods')))]"
         },
         "autoUpgradeProfile": {
-          "upgradeChannel": "[parameters('autoUpgradeProfileUpgradeChannel')]"
+          "upgradeChannel": "[parameters('autoUpgradeProfileUpgradeChannel')]",
+          "nodeOSUpgradeChannel": "[parameters('autoNodeOsUpgradeProfileUpgradeChannel')]"
         },
         "apiServerAccessProfile": {
           "authorizedIPRanges": "[parameters('authorizedIPRanges')]",
@@ -1852,18 +1879,24 @@
       ]
     },
     "managedCluster_maintenanceConfigurations": {
-      "condition": "[not(empty(parameters('maintenanceConfiguration')))]",
+      "copy": {
+        "name": "managedCluster_maintenanceConfigurations",
+        "count": "[length(coalesce(parameters('maintenanceConfigurations'), createArray()))]"
+      },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-ManagedCluster-MaintenanceConfigurations', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-ManagedCluster-MaintenanceConfiguration-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('maintenanceConfigurations'), createArray())[copyIndex()].name]"
+          },
           "maintenanceWindow": {
-            "value": "[parameters('maintenanceConfiguration').maintenanceWindow]"
+            "value": "[coalesce(parameters('maintenanceConfigurations'), createArray())[copyIndex()].maintenanceWindow]"
           },
           "managedClusterName": {
             "value": "[parameters('name')]"

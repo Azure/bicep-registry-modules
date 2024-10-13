@@ -157,7 +157,7 @@ param primaryAgentPoolProfiles agentPoolType[]
 param agentPools agentPoolType[]?
 
 @description('Optional. Whether or not to use AKS Automatic mode.')
-param maintenanceConfiguration maintenanceConfigurationType?
+param maintenanceConfigurations maintenanceConfigurationType[]?
 
 @description('Optional. Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed.')
 param costAnalysisEnabled bool = false
@@ -269,6 +269,15 @@ param autoScalerProfileSkipNodesWithSystemPods bool = true
 ])
 @description('Optional. Auto-upgrade channel on the AKS cluster.')
 param autoUpgradeProfileUpgradeChannel string = 'stable'
+
+@allowed([
+  'NodeImage'
+  'None'
+  'SecurityPatch'
+  'Unmanaged'
+])
+@description('Optional. Auto-upgrade channel on the Node Os.')
+param autoNodeOsUpgradeProfileUpgradeChannel string = 'Unmanaged'
 
 @description('Optional. Running in Kubenet is disabled by default due to the security related nature of AAD Pod Identity and the risks of IP spoofing.')
 param podIdentityProfileAllowNetworkPluginKubenet bool = false
@@ -729,6 +738,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
     }
     autoUpgradeProfile: {
       upgradeChannel: autoUpgradeProfileUpgradeChannel
+      nodeOSUpgradeChannel: autoNodeOsUpgradeProfileUpgradeChannel
     }
     apiServerAccessProfile: {
       authorizedIPRanges: authorizedIPRanges
@@ -804,13 +814,16 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
   }
 }
 
-module managedCluster_maintenanceConfigurations 'maintenance-configurations/main.bicep' = if (!empty(maintenanceConfiguration)) {
-  name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfigurations'
-  params: {
-    maintenanceWindow: maintenanceConfiguration!.maintenanceWindow
-    managedClusterName: managedCluster.name
+module managedCluster_maintenanceConfigurations 'maintenance-configurations/main.bicep' = [
+  for (maintenanceConfiguration, index) in (maintenanceConfigurations ?? []): {
+    name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfiguration-${index}'
+    params: {
+      name: maintenanceConfiguration!.name
+      maintenanceWindow: maintenanceConfiguration!.maintenanceWindow
+      managedClusterName: managedCluster.name
+    }
   }
-}
+]
 
 module managedCluster_agentPools 'agent-pool/main.bicep' = [
   for (agentPool, index) in (agentPools ?? []): {
@@ -1258,6 +1271,9 @@ type customerManagedKeyType = {
 
 @export()
 type maintenanceConfigurationType = {
+  @description('Required. Name of maintenance window.')
+  name: ('aksManagedAutoUpgradeSchedule' | 'aksManagedNodeOSUpgradeSchedule')
+
   @description('Required. Maintenance window for the maintenance configuration.')
   maintenanceWindow: object
 }

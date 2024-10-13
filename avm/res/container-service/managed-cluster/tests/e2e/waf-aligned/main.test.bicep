@@ -139,6 +139,39 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       autoUpgradeProfileUpgradeChannel: 'stable'
+      autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
+      maintenanceConfigurations: [
+        {
+          name: 'aksManagedAutoUpgradeSchedule'
+          maintenanceWindow: {
+            schedule: {
+              weekly: {
+                intervalWeeks: 1
+                dayOfWeek: 'Sunday'
+              }
+            }
+            durationHours: 4
+            utcOffset: '+00:00'
+            startDate: '2024-07-15'
+            startTime: '00:00'
+          }
+        }
+        {
+          name: 'aksManagedNodeOSUpgradeSchedule'
+          maintenanceWindow: {
+            schedule: {
+              weekly: {
+                intervalWeeks: 1
+                dayOfWeek: 'Sunday'
+              }
+            }
+            durationHours: 4
+            utcOffset: '+00:00'
+            startDate: '2024-07-15'
+            startTime: '00:00'
+          }
+        }
+      ]
       networkPlugin: 'azure'
       networkPolicy: 'azure'
       skuTier: 'Standard'
