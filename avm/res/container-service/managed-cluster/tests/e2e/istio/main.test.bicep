@@ -64,24 +64,26 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       istioServiceMeshEnabled: true
-      istioServiceMeshCertificateAuthority: {
-        certChainObjectName: nestedDependencies.outputs.certChainSecretName
-        certObjectName: nestedDependencies.outputs.caCertSecretName
-        keyObjectName: nestedDependencies.outputs.caKeySecretName
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        rootCertObjectName: nestedDependencies.outputs.rootCertSecretName
-      }
+      istioServiceMeshIngressGatewayEnabled: true
+      istioServiceMeshIngressGatewayType: 'External'
+      // istioServiceMeshCertificateAuthority: {
+      //   certChainObjectName: nestedDependencies.outputs.certChainSecretName
+      //   certObjectName: nestedDependencies.outputs.caCertSecretName
+      //   keyObjectName: nestedDependencies.outputs.caKeySecretName
+      //   keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+      //   rootCertObjectName: nestedDependencies.outputs.rootCertSecretName
+      // }
       enableKeyvaultSecretsProvider: true
       enableSecretRotation: true
     }
   }
 ]
 
-module secretPermissions 'main.rbac.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-rbac'
-  params: {
-    keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-    principalId: testDeployment[0].outputs.keyvaultIdentityObjectId
-  }
-}
+// module secretPermissions 'main.rbac.bicep' = {
+//   scope: resourceGroup
+//   name: '${uniqueString(deployment().name, resourceLocation)}-rbac'
+//   params: {
+//     keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+//     principalId: testDeployment[0].outputs.keyvaultIdentityObjectId
+//   }
+// }
