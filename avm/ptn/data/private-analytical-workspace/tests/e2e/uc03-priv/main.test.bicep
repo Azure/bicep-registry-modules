@@ -64,14 +64,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      // You parameters go here
       name: '${namePrefix}${serviceShort}001'
-      //solutionAdministrators: [
-      //  {
-      //    principalId: '<EntraGroupId>'
-      //    principalType: 'Group'
-      //  }
-      //]
       tags: {
         Owner: 'Contoso'
         CostCenter: '123-456-789'
@@ -81,7 +74,6 @@ module testDeployment '../../../main.bicep' = [
       logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       advancedOptions: {
-        //  networkAcls: { ipRules: ['104.43.16.94'] }
         virtualNetwork: {
           subnetNamePrivateLink: 'private-link-subnet'
         }

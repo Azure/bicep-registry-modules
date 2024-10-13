@@ -41,16 +41,8 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      // You parameters go here
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      //solutionAdministrators: [
-      //  {
-      //    principalId: '<EntraGroupId>'
-      //    principalType: 'Group'
-      //  }
-      //]
-
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Owner: 'Contoso'
@@ -58,11 +50,7 @@ module testDeployment '../../../main.bicep' = [
       }
       enableTelemetry: true
       enableDatabricks: true
-      //virtualNetworkResourceId: null
-      //logAnalyticsWorkspaceResourceId: null
-      //keyVaultResourceId: null
       advancedOptions: {
-        //networkAcls: { ipRules: [<AllowedPublicIPAddress>] }
         logAnalyticsWorkspace: { dataRetention: 35, dailyQuotaGb: 1 }
         keyVault: {
           createMode: 'default'
