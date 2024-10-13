@@ -39,6 +39,9 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      managedIdentities: {
+        systemAssigned: true
+      }
       primaryAgentPoolProfiles: [
         {
           name: 'systempool'

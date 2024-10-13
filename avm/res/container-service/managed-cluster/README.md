@@ -1050,6 +1050,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     // Non-required parameters
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
   }
 }
 ```
@@ -1083,6 +1086,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
     }
   }
 }
@@ -1110,6 +1118,9 @@ param primaryAgentPoolProfiles = [
 ]
 // Non-required parameters
 param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
 ```
 
 </details>
