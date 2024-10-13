@@ -330,7 +330,7 @@ param enableStorageProfileSnapshotController bool = false
 param supportPlan string = 'KubernetesOfficial'
 
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType[]?
+param diagnosticSettings diagnosticSettingType
 
 @description('Optional. Specifies whether the OMS agent is enabled.')
 param omsAgentEnabled bool = true
@@ -1219,7 +1219,7 @@ type diagnosticSettingType = {
 
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
-}
+}[]?
 
 @export()
 type fluxConfigurationProtectedSettingsType = {
