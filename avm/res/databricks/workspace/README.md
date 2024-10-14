@@ -117,7 +117,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     // Non-required parameters
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
     automaticClusterUpdate: 'Enabled'
-    complianceSecurityProfileValue: 'Disabled'
+    complianceSecurityProfileValue: 'Enabled'
     complianceStandards: [
       'HIPAA'
       'PCI_DSS'
@@ -254,7 +254,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
       "value": "Enabled"
     },
     "complianceSecurityProfileValue": {
-      "value": "Disabled"
+      "value": "Enabled"
     },
     "complianceStandards": {
       "value": [
@@ -439,7 +439,7 @@ param name = 'dwmax002'
 // Non-required parameters
 param amlWorkspaceResourceId = '<amlWorkspaceResourceId>'
 param automaticClusterUpdate = 'Enabled'
-param complianceSecurityProfileValue = 'Disabled'
+param complianceSecurityProfileValue = 'Enabled'
 param complianceStandards = [
   'HIPAA'
   'PCI_DSS'
@@ -571,6 +571,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     // Non-required parameters
     accessConnectorResourceId: '<accessConnectorResourceId>'
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
+    automaticClusterUpdate: 'Enabled'
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -601,6 +602,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
       }
     ]
     disablePublicIp: true
+    enhancedSecurityMonitoring: 'Enabled'
     loadBalancerBackendPoolName: '<loadBalancerBackendPoolName>'
     loadBalancerResourceId: '<loadBalancerResourceId>'
     location: '<location>'
@@ -682,6 +684,9 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     "amlWorkspaceResourceId": {
       "value": "<amlWorkspaceResourceId>"
     },
+    "automaticClusterUpdate": {
+      "value": "Enabled"
+    },
     "customerManagedKey": {
       "value": {
         "keyName": "<keyName>",
@@ -725,6 +730,9 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     },
     "disablePublicIp": {
       "value": true
+    },
+    "enhancedSecurityMonitoring": {
+      "value": "Enabled"
     },
     "loadBalancerBackendPoolName": {
       "value": "<loadBalancerBackendPoolName>"
@@ -837,6 +845,7 @@ param name = 'dwwaf001'
 // Non-required parameters
 param accessConnectorResourceId = '<accessConnectorResourceId>'
 param amlWorkspaceResourceId = '<amlWorkspaceResourceId>'
+param automaticClusterUpdate = 'Enabled'
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
@@ -867,6 +876,7 @@ param diagnosticSettings = [
   }
 ]
 param disablePublicIp = true
+param enhancedSecurityMonitoring = 'Enabled'
 param loadBalancerBackendPoolName = '<loadBalancerBackendPoolName>'
 param loadBalancerResourceId = '<loadBalancerResourceId>'
 param location = '<location>'
