@@ -119,7 +119,7 @@ param defaultCatalog defaultCatalogType?
 @description('Optional. The value for enabling automatic cluster updates in enhanced security compliance.')
 param automaticClusterUpdate string = ''
 
-@description('Optional. The compliance standards array for the security profile. Should be a list of compliance standards like "ISO27001" or "SOC2".')
+@description('Optional. The compliance standards array for the security profile. Should be a list of compliance standards like "HIPAA", "NONE" or "PCI_DSS".')
 param complianceStandards array = []
 
 @description('Optional. The value for the compliance security profile, indicating the selected profile or compliance type.')

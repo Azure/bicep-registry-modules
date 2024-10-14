@@ -117,7 +117,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     // Non-required parameters
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
     automaticClusterUpdate: 'Enabled'
-    complianceSecurityProfileValue: 'Enabled'
+    complianceSecurityProfileValue: 'Disabled'
     complianceStandards: [
       'HIPAA'
       'PCI_DSS'
@@ -254,7 +254,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
       "value": "Enabled"
     },
     "complianceSecurityProfileValue": {
-      "value": "Enabled"
+      "value": "Disabled"
     },
     "complianceStandards": {
       "value": [
@@ -439,7 +439,7 @@ param name = 'dwmax002'
 // Non-required parameters
 param amlWorkspaceResourceId = '<amlWorkspaceResourceId>'
 param automaticClusterUpdate = 'Enabled'
-param complianceSecurityProfileValue = 'Enabled'
+param complianceSecurityProfileValue = 'Disabled'
 param complianceStandards = [
   'HIPAA'
   'PCI_DSS'
@@ -947,7 +947,7 @@ param vnetAddressPrefix = '10.100'
 | [`amlWorkspaceResourceId`](#parameter-amlworkspaceresourceid) | string | The resource ID of a Azure Machine Learning workspace to link with Databricks workspace. |
 | [`automaticClusterUpdate`](#parameter-automaticclusterupdate) | string | The value for enabling automatic cluster updates in enhanced security compliance. |
 | [`complianceSecurityProfileValue`](#parameter-compliancesecurityprofilevalue) | string | The value for the compliance security profile, indicating the selected profile or compliance type. |
-| [`complianceStandards`](#parameter-compliancestandards) | array | The compliance standards array for the security profile. Should be a list of compliance standards like "ISO27001" or "SOC2". |
+| [`complianceStandards`](#parameter-compliancestandards) | array | The compliance standards array for the security profile. Should be a list of compliance standards like "HIPAA", "NONE" or "PCI_DSS". |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition to use for the managed service. |
 | [`customerManagedKeyManagedDisk`](#parameter-customermanagedkeymanageddisk) | object | The customer managed key definition to use for the managed disk. |
 | [`customPrivateSubnetName`](#parameter-customprivatesubnetname) | string | The name of the Private Subnet within the Virtual Network. |
@@ -1020,7 +1020,7 @@ The value for the compliance security profile, indicating the selected profile o
 
 ### Parameter: `complianceStandards`
 
-The compliance standards array for the security profile. Should be a list of compliance standards like "ISO27001" or "SOC2".
+The compliance standards array for the security profile. Should be a list of compliance standards like "HIPAA", "NONE" or "PCI_DSS".
 
 - Required: No
 - Type: array

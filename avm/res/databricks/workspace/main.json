@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "7074042503718105348"
+      "templateHash": "15092214400348368446"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace.",
@@ -758,7 +758,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. The compliance standards array for the security profile. Should be a list of compliance standards like \"ISO27001\" or \"SOC2\"."
+        "description": "Optional. The compliance standards array for the security profile. Should be a list of compliance standards like \"HIPAA\", \"NONE\" or \"PCI_DSS\"."
       }
     },
     "complianceSecurityProfileValue": {
