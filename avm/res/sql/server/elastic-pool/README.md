@@ -112,7 +112,6 @@ Maintenance configuration resource ID assigned to the elastic pool. This configu
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `maxSizeBytes`
 
