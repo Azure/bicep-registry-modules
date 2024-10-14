@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "13031224188572751832"
+      "templateHash": "12721468399061919493"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -434,6 +434,64 @@
           }
         }
       }
+    },
+    "secretsExportConfigurationType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the key vault where to store the secrets of this module."
+          }
+        },
+        "sqlAdminPasswordSecretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The sqlAdminPassword secret name to create."
+          }
+        },
+        "sqlAzureConnectionStringSercretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The sqlAzureConnectionString secret name to create."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "secretsOutputType": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": {
+        "$ref": "#/definitions/secretSetType",
+        "metadata": {
+          "description": "An exported secret's references."
+        }
+      }
+    },
+    "secretSetType": {
+      "type": "object",
+      "properties": {
+        "secretResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resourceId of the exported secret."
+          }
+        },
+        "secretUri": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI of the exported secret."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/keyVaultExport.bicep"
+        }
+      }
     }
   },
   "parameters": {
@@ -558,10 +616,22 @@
       "allowedValues": [
         "1.0",
         "1.1",
-        "1.2"
+        "1.2",
+        "1.3"
       ],
       "metadata": {
         "description": "Optional. Minimal TLS version allowed."
+      }
+    },
+    "isIPv6Enabled": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Optional. Whether or not to enable IPv6 support for this server."
       }
     },
     "privateEndpoints": {
@@ -576,7 +646,8 @@
       "allowedValues": [
         "",
         "Enabled",
-        "Disabled"
+        "Disabled",
+        "SecuredByPerimeter"
       ],
       "metadata": {
         "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and neither firewall rules nor virtual network rules are set."
@@ -613,6 +684,13 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. The audit settings configuration."
+      }
+    },
+    "secretsExportConfiguration": {
+      "$ref": "#/definitions/secretsExportConfigurationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Key vault reference and secret settings for the module's secrets export."
       }
     }
   },
@@ -677,7 +755,8 @@
         "minimalTlsVersion": "[parameters('minimalTlsVersion')]",
         "primaryUserAssignedIdentityId": "[if(not(empty(parameters('primaryUserAssignedIdentityId'))), parameters('primaryUserAssignedIdentityId'), null())]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(and(not(empty(parameters('privateEndpoints'))), empty(parameters('firewallRules'))), empty(parameters('virtualNetworkRules'))), 'Disabled', null()))]",
-        "restrictOutboundNetworkAccess": "[if(not(empty(parameters('restrictOutboundNetworkAccess'))), parameters('restrictOutboundNetworkAccess'), null())]"
+        "restrictOutboundNetworkAccess": "[if(not(empty(parameters('restrictOutboundNetworkAccess'))), parameters('restrictOutboundNetworkAccess'), null())]",
+        "isIPv6Enabled": "[parameters('isIPv6Enabled')]"
       }
     },
     "server_lock": {
@@ -736,42 +815,90 @@
           "serverName": {
             "value": "[parameters('name')]"
           },
-          "skuTier": "[if(contains(parameters('databases')[copyIndex()], 'skuTier'), createObject('value', parameters('databases')[copyIndex()].skuTier), createObject('value', 'GeneralPurpose'))]",
-          "skuName": "[if(contains(parameters('databases')[copyIndex()], 'skuName'), createObject('value', parameters('databases')[copyIndex()].skuName), createObject('value', 'GP_Gen5_2'))]",
+          "skuTier": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'skuTier'), 'GeneralPurpose')]"
+          },
+          "skuName": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'skuName'), 'GP_Gen5_2')]"
+          },
           "skuCapacity": {
             "value": "[tryGet(parameters('databases')[copyIndex()], 'skuCapacity')]"
           },
-          "skuFamily": "[if(contains(parameters('databases')[copyIndex()], 'skuFamily'), createObject('value', parameters('databases')[copyIndex()].skuFamily), createObject('value', ''))]",
-          "skuSize": "[if(contains(parameters('databases')[copyIndex()], 'skuSize'), createObject('value', parameters('databases')[copyIndex()].skuSize), createObject('value', ''))]",
-          "collation": "[if(contains(parameters('databases')[copyIndex()], 'collation'), createObject('value', parameters('databases')[copyIndex()].collation), createObject('value', 'SQL_Latin1_General_CP1_CI_AS'))]",
-          "maxSizeBytes": "[if(contains(parameters('databases')[copyIndex()], 'maxSizeBytes'), createObject('value', parameters('databases')[copyIndex()].maxSizeBytes), createObject('value', json('34359738368')))]",
-          "autoPauseDelay": "[if(contains(parameters('databases')[copyIndex()], 'autoPauseDelay'), createObject('value', parameters('databases')[copyIndex()].autoPauseDelay), createObject('value', 0))]",
+          "skuFamily": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'skuFamily'), '')]"
+          },
+          "skuSize": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'skuSize'), '')]"
+          },
+          "collation": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'collation'), 'SQL_Latin1_General_CP1_CI_AS')]"
+          },
+          "maxSizeBytes": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'maxSizeBytes'), json('34359738368'))]"
+          },
+          "autoPauseDelay": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'autoPauseDelay'), 0)]"
+          },
           "diagnosticSettings": {
             "value": "[tryGet(parameters('databases')[copyIndex()], 'diagnosticSettings')]"
           },
-          "isLedgerOn": "[if(contains(parameters('databases')[copyIndex()], 'isLedgerOn'), createObject('value', parameters('databases')[copyIndex()].isLedgerOn), createObject('value', false()))]",
+          "isLedgerOn": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'isLedgerOn'), false())]"
+          },
           "location": {
             "value": "[parameters('location')]"
           },
-          "licenseType": "[if(contains(parameters('databases')[copyIndex()], 'licenseType'), createObject('value', parameters('databases')[copyIndex()].licenseType), createObject('value', ''))]",
-          "maintenanceConfigurationId": "[if(contains(parameters('databases')[copyIndex()], 'maintenanceConfigurationId'), createObject('value', parameters('databases')[copyIndex()].maintenanceConfigurationId), createObject('value', ''))]",
-          "minCapacity": "[if(contains(parameters('databases')[copyIndex()], 'minCapacity'), createObject('value', parameters('databases')[copyIndex()].minCapacity), createObject('value', ''))]",
-          "highAvailabilityReplicaCount": "[if(contains(parameters('databases')[copyIndex()], 'highAvailabilityReplicaCount'), createObject('value', parameters('databases')[copyIndex()].highAvailabilityReplicaCount), createObject('value', 0))]",
-          "readScale": "[if(contains(parameters('databases')[copyIndex()], 'readScale'), createObject('value', parameters('databases')[copyIndex()].readScale), createObject('value', 'Disabled'))]",
-          "requestedBackupStorageRedundancy": "[if(contains(parameters('databases')[copyIndex()], 'requestedBackupStorageRedundancy'), createObject('value', parameters('databases')[copyIndex()].requestedBackupStorageRedundancy), createObject('value', ''))]",
-          "sampleName": "[if(contains(parameters('databases')[copyIndex()], 'sampleName'), createObject('value', parameters('databases')[copyIndex()].sampleName), createObject('value', ''))]",
+          "licenseType": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'licenseType'), '')]"
+          },
+          "maintenanceConfigurationId": {
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'maintenanceConfigurationId')]"
+          },
+          "minCapacity": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'minCapacity'), '')]"
+          },
+          "highAvailabilityReplicaCount": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'highAvailabilityReplicaCount'), 0)]"
+          },
+          "readScale": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'readScale'), 'Disabled')]"
+          },
+          "requestedBackupStorageRedundancy": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'requestedBackupStorageRedundancy'), '')]"
+          },
+          "sampleName": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'sampleName'), '')]"
+          },
           "tags": {
             "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "zoneRedundant": "[if(contains(parameters('databases')[copyIndex()], 'zoneRedundant'), createObject('value', parameters('databases')[copyIndex()].zoneRedundant), createObject('value', true()))]",
-          "elasticPoolId": "[if(contains(parameters('databases')[copyIndex()], 'elasticPoolId'), createObject('value', parameters('databases')[copyIndex()].elasticPoolId), createObject('value', ''))]",
-          "backupShortTermRetentionPolicy": "[if(contains(parameters('databases')[copyIndex()], 'backupShortTermRetentionPolicy'), createObject('value', parameters('databases')[copyIndex()].backupShortTermRetentionPolicy), createObject('value', createObject()))]",
-          "backupLongTermRetentionPolicy": "[if(contains(parameters('databases')[copyIndex()], 'backupLongTermRetentionPolicy'), createObject('value', parameters('databases')[copyIndex()].backupLongTermRetentionPolicy), createObject('value', createObject()))]",
-          "createMode": "[if(contains(parameters('databases')[copyIndex()], 'createMode'), createObject('value', parameters('databases')[copyIndex()].createMode), createObject('value', 'Default'))]",
-          "sourceDatabaseResourceId": "[if(contains(parameters('databases')[copyIndex()], 'sourceDatabaseResourceId'), createObject('value', parameters('databases')[copyIndex()].sourceDatabaseResourceId), createObject('value', ''))]",
-          "sourceDatabaseDeletionDate": "[if(contains(parameters('databases')[copyIndex()], 'sourceDatabaseDeletionDate'), createObject('value', parameters('databases')[copyIndex()].sourceDatabaseDeletionDate), createObject('value', ''))]",
-          "recoveryServicesRecoveryPointResourceId": "[if(contains(parameters('databases')[copyIndex()], 'recoveryServicesRecoveryPointResourceId'), createObject('value', parameters('databases')[copyIndex()].recoveryServicesRecoveryPointResourceId), createObject('value', ''))]",
-          "restorePointInTime": "[if(contains(parameters('databases')[copyIndex()], 'restorePointInTime'), createObject('value', parameters('databases')[copyIndex()].restorePointInTime), createObject('value', ''))]"
+          "zoneRedundant": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'zoneRedundant'), true())]"
+          },
+          "elasticPoolId": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'elasticPoolId'), '')]"
+          },
+          "backupShortTermRetentionPolicy": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'backupShortTermRetentionPolicy'), createObject())]"
+          },
+          "backupLongTermRetentionPolicy": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'backupLongTermRetentionPolicy'), createObject())]"
+          },
+          "createMode": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'createMode'), 'Default')]"
+          },
+          "sourceDatabaseResourceId": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'sourceDatabaseResourceId'), '')]"
+          },
+          "sourceDatabaseDeletionDate": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'sourceDatabaseDeletionDate'), '')]"
+          },
+          "recoveryServicesRecoveryPointResourceId": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'recoveryServicesRecoveryPointResourceId'), '')]"
+          },
+          "restorePointInTime": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'restorePointInTime'), '')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -781,7 +908,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "6019999815954957727"
+              "templateHash": "18021918128213514276"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database.",
@@ -1130,7 +1257,7 @@
             },
             "maintenanceConfigurationId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Maintenance configuration ID assigned to the database. This configuration defines the period when the maintenance updates will occur."
               }
@@ -1179,7 +1306,7 @@
                 "highAvailabilityReplicaCount": "[parameters('highAvailabilityReplicaCount')]",
                 "requestedBackupStorageRedundancy": "[parameters('requestedBackupStorageRedundancy')]",
                 "isLedgerOn": "[parameters('isLedgerOn')]",
-                "maintenanceConfigurationId": "[if(not(empty(parameters('maintenanceConfigurationId'))), parameters('maintenanceConfigurationId'), null())]",
+                "maintenanceConfigurationId": "[parameters('maintenanceConfigurationId')]",
                 "elasticPoolId": "[parameters('elasticPoolId')]",
                 "createMode": "[parameters('createMode')]",
                 "sourceDatabaseId": "[if(not(empty(parameters('sourceDatabaseResourceId'))), parameters('sourceDatabaseResourceId'), null())]",
@@ -1249,8 +1376,12 @@
                   "databaseName": {
                     "value": "[parameters('name')]"
                   },
-                  "diffBackupIntervalInHours": "[if(contains(parameters('backupShortTermRetentionPolicy'), 'diffBackupIntervalInHours'), createObject('value', parameters('backupShortTermRetentionPolicy').diffBackupIntervalInHours), createObject('value', 24))]",
-                  "retentionDays": "[if(contains(parameters('backupShortTermRetentionPolicy'), 'retentionDays'), createObject('value', parameters('backupShortTermRetentionPolicy').retentionDays), createObject('value', 7))]"
+                  "diffBackupIntervalInHours": {
+                    "value": "[coalesce(tryGet(parameters('backupShortTermRetentionPolicy'), 'diffBackupIntervalInHours'), 24)]"
+                  },
+                  "retentionDays": {
+                    "value": "[coalesce(tryGet(parameters('backupShortTermRetentionPolicy'), 'retentionDays'), 7)]"
+                  }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1349,10 +1480,18 @@
                   "databaseName": {
                     "value": "[parameters('name')]"
                   },
-                  "weeklyRetention": "[if(contains(parameters('backupLongTermRetentionPolicy'), 'weeklyRetention'), createObject('value', parameters('backupLongTermRetentionPolicy').weeklyRetention), createObject('value', ''))]",
-                  "monthlyRetention": "[if(contains(parameters('backupLongTermRetentionPolicy'), 'monthlyRetention'), createObject('value', parameters('backupLongTermRetentionPolicy').monthlyRetention), createObject('value', ''))]",
-                  "yearlyRetention": "[if(contains(parameters('backupLongTermRetentionPolicy'), 'yearlyRetention'), createObject('value', parameters('backupLongTermRetentionPolicy').yearlyRetention), createObject('value', ''))]",
-                  "weekOfYear": "[if(contains(parameters('backupLongTermRetentionPolicy'), 'weekOfYear'), createObject('value', parameters('backupLongTermRetentionPolicy').weekOfYear), createObject('value', 1))]"
+                  "weeklyRetention": {
+                    "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPolicy'), 'weeklyRetention'), '')]"
+                  },
+                  "monthlyRetention": {
+                    "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPolicy'), 'monthlyRetention'), '')]"
+                  },
+                  "yearlyRetention": {
+                    "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPolicy'), 'yearlyRetention'), '')]"
+                  },
+                  "weekOfYear": {
+                    "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPolicy'), 'weekOfYear'), 1)]"
+                  }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1509,21 +1648,39 @@
           "serverName": {
             "value": "[parameters('name')]"
           },
-          "databaseMaxCapacity": "[if(contains(parameters('elasticPools')[copyIndex()], 'databaseMaxCapacity'), createObject('value', parameters('elasticPools')[copyIndex()].databaseMaxCapacity), createObject('value', 2))]",
-          "databaseMinCapacity": "[if(contains(parameters('elasticPools')[copyIndex()], 'databaseMinCapacity'), createObject('value', parameters('elasticPools')[copyIndex()].databaseMinCapacity), createObject('value', 0))]",
+          "databaseMaxCapacity": {
+            "value": "[coalesce(tryGet(parameters('elasticPools')[copyIndex()], 'databaseMaxCapacity'), 2)]"
+          },
+          "databaseMinCapacity": {
+            "value": "[coalesce(tryGet(parameters('elasticPools')[copyIndex()], 'databaseMinCapacity'), 0)]"
+          },
           "highAvailabilityReplicaCount": {
             "value": "[tryGet(parameters('elasticPools')[copyIndex()], 'highAvailabilityReplicaCount')]"
           },
-          "licenseType": "[if(contains(parameters('elasticPools')[copyIndex()], 'licenseType'), createObject('value', parameters('elasticPools')[copyIndex()].licenseType), createObject('value', 'LicenseIncluded'))]",
-          "maintenanceConfigurationId": "[if(contains(parameters('elasticPools')[copyIndex()], 'maintenanceConfigurationId'), createObject('value', parameters('elasticPools')[copyIndex()].maintenanceConfigurationId), createObject('value', ''))]",
-          "maxSizeBytes": "[if(contains(parameters('elasticPools')[copyIndex()], 'maxSizeBytes'), createObject('value', parameters('elasticPools')[copyIndex()].maxSizeBytes), createObject('value', json('34359738368')))]",
+          "licenseType": {
+            "value": "[coalesce(tryGet(parameters('elasticPools')[copyIndex()], 'licenseType'), 'LicenseIncluded')]"
+          },
+          "maintenanceConfigurationId": {
+            "value": "[tryGet(parameters('elasticPools')[copyIndex()], 'maintenanceConfigurationId')]"
+          },
+          "maxSizeBytes": {
+            "value": "[coalesce(tryGet(parameters('elasticPools')[copyIndex()], 'maxSizeBytes'), json('34359738368'))]"
+          },
           "minCapacity": {
             "value": "[tryGet(parameters('elasticPools')[copyIndex()], 'minCapacity')]"
           },
-          "skuCapacity": "[if(contains(parameters('elasticPools')[copyIndex()], 'skuCapacity'), createObject('value', parameters('elasticPools')[copyIndex()].skuCapacity), createObject('value', 2))]",
-          "skuName": "[if(contains(parameters('elasticPools')[copyIndex()], 'skuName'), createObject('value', parameters('elasticPools')[copyIndex()].skuName), createObject('value', 'GP_Gen5'))]",
-          "skuTier": "[if(contains(parameters('elasticPools')[copyIndex()], 'skuTier'), createObject('value', parameters('elasticPools')[copyIndex()].skuTier), createObject('value', 'GeneralPurpose'))]",
-          "zoneRedundant": "[if(contains(parameters('elasticPools')[copyIndex()], 'zoneRedundant'), createObject('value', parameters('elasticPools')[copyIndex()].zoneRedundant), createObject('value', true()))]",
+          "skuCapacity": {
+            "value": "[coalesce(tryGet(parameters('elasticPools')[copyIndex()], 'skuCapacity'), 2)]"
+          },
+          "skuName": {
+            "value": "[coalesce(tryGet(parameters('elasticPools')[copyIndex()], 'skuName'), 'GP_Gen5')]"
+          },
+          "skuTier": {
+            "value": "[coalesce(tryGet(parameters('elasticPools')[copyIndex()], 'skuTier'), 'GeneralPurpose')]"
+          },
+          "zoneRedundant": {
+            "value": "[coalesce(tryGet(parameters('elasticPools')[copyIndex()], 'zoneRedundant'), true())]"
+          },
           "location": {
             "value": "[parameters('location')]"
           },
@@ -1539,7 +1696,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "18037703368269722870"
+              "templateHash": "17774091526328280898"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -1613,7 +1770,7 @@
             },
             "maintenanceConfigurationId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Maintenance configuration resource ID assigned to the elastic pool. This configuration defines the period when the maintenance updates will will occur."
               }
@@ -2511,8 +2668,12 @@
           "serverName": {
             "value": "[parameters('name')]"
           },
-          "endIpAddress": "[if(contains(parameters('firewallRules')[copyIndex()], 'endIpAddress'), createObject('value', parameters('firewallRules')[copyIndex()].endIpAddress), createObject('value', '0.0.0.0'))]",
-          "startIpAddress": "[if(contains(parameters('firewallRules')[copyIndex()], 'startIpAddress'), createObject('value', parameters('firewallRules')[copyIndex()].startIpAddress), createObject('value', '0.0.0.0'))]"
+          "endIpAddress": {
+            "value": "[coalesce(tryGet(parameters('firewallRules')[copyIndex()], 'endIpAddress'), '0.0.0.0')]"
+          },
+          "startIpAddress": {
+            "value": "[coalesce(tryGet(parameters('firewallRules')[copyIndex()], 'startIpAddress'), '0.0.0.0')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2615,7 +2776,9 @@
           "serverName": {
             "value": "[parameters('name')]"
           },
-          "ignoreMissingVnetServiceEndpoint": "[if(contains(parameters('virtualNetworkRules')[copyIndex()], 'ignoreMissingVnetServiceEndpoint'), createObject('value', parameters('virtualNetworkRules')[copyIndex()].ignoreMissingVnetServiceEndpoint), createObject('value', false()))]",
+          "ignoreMissingVnetServiceEndpoint": {
+            "value": "[coalesce(tryGet(parameters('virtualNetworkRules')[copyIndex()], 'ignoreMissingVnetServiceEndpoint'), false())]"
+          },
           "virtualNetworkSubnetId": {
             "value": "[parameters('virtualNetworkRules')[copyIndex()].virtualNetworkSubnetId]"
           }
@@ -2720,13 +2883,27 @@
           "serverName": {
             "value": "[parameters('name')]"
           },
-          "disabledAlerts": "[if(contains(parameters('securityAlertPolicies')[copyIndex()], 'disabledAlerts'), createObject('value', parameters('securityAlertPolicies')[copyIndex()].disabledAlerts), createObject('value', createArray()))]",
-          "emailAccountAdmins": "[if(contains(parameters('securityAlertPolicies')[copyIndex()], 'emailAccountAdmins'), createObject('value', parameters('securityAlertPolicies')[copyIndex()].emailAccountAdmins), createObject('value', false()))]",
-          "emailAddresses": "[if(contains(parameters('securityAlertPolicies')[copyIndex()], 'emailAddresses'), createObject('value', parameters('securityAlertPolicies')[copyIndex()].emailAddresses), createObject('value', createArray()))]",
-          "retentionDays": "[if(contains(parameters('securityAlertPolicies')[copyIndex()], 'retentionDays'), createObject('value', parameters('securityAlertPolicies')[copyIndex()].retentionDays), createObject('value', 0))]",
-          "state": "[if(contains(parameters('securityAlertPolicies')[copyIndex()], 'state'), createObject('value', parameters('securityAlertPolicies')[copyIndex()].state), createObject('value', 'Disabled'))]",
-          "storageAccountAccessKey": "[if(contains(parameters('securityAlertPolicies')[copyIndex()], 'storageAccountAccessKey'), createObject('value', parameters('securityAlertPolicies')[copyIndex()].storageAccountAccessKey), createObject('value', ''))]",
-          "storageEndpoint": "[if(contains(parameters('securityAlertPolicies')[copyIndex()], 'storageEndpoint'), createObject('value', parameters('securityAlertPolicies')[copyIndex()].storageEndpoint), createObject('value', ''))]"
+          "disabledAlerts": {
+            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'disabledAlerts'), createArray())]"
+          },
+          "emailAccountAdmins": {
+            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'emailAccountAdmins'), false())]"
+          },
+          "emailAddresses": {
+            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'emailAddresses'), createArray())]"
+          },
+          "retentionDays": {
+            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'retentionDays'), 0)]"
+          },
+          "state": {
+            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'state'), 'Disabled')]"
+          },
+          "storageAccountAccessKey": {
+            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'storageAccountAccessKey'), '')]"
+          },
+          "storageEndpoint": {
+            "value": "[coalesce(tryGet(parameters('securityAlertPolicies')[copyIndex()], 'storageEndpoint'), '')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2870,14 +3047,24 @@
           "name": {
             "value": "[parameters('vulnerabilityAssessmentsObj').name]"
           },
-          "recurringScansEmails": "[if(contains(parameters('vulnerabilityAssessmentsObj'), 'recurringScansEmails'), createObject('value', parameters('vulnerabilityAssessmentsObj').recurringScansEmails), createObject('value', createArray()))]",
-          "recurringScansEmailSubscriptionAdmins": "[if(contains(parameters('vulnerabilityAssessmentsObj'), 'recurringScansEmailSubscriptionAdmins'), createObject('value', parameters('vulnerabilityAssessmentsObj').recurringScansEmailSubscriptionAdmins), createObject('value', false()))]",
-          "recurringScansIsEnabled": "[if(contains(parameters('vulnerabilityAssessmentsObj'), 'recurringScansIsEnabled'), createObject('value', parameters('vulnerabilityAssessmentsObj').recurringScansIsEnabled), createObject('value', false()))]",
+          "recurringScansEmails": {
+            "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), 'recurringScansEmails'), createArray())]"
+          },
+          "recurringScansEmailSubscriptionAdmins": {
+            "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), 'recurringScansEmailSubscriptionAdmins'), false())]"
+          },
+          "recurringScansIsEnabled": {
+            "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), 'recurringScansIsEnabled'), false())]"
+          },
           "storageAccountResourceId": {
             "value": "[parameters('vulnerabilityAssessmentsObj').storageAccountResourceId]"
           },
-          "useStorageAccountAccessKey": "[if(contains(parameters('vulnerabilityAssessmentsObj'), 'useStorageAccountAccessKey'), createObject('value', parameters('vulnerabilityAssessmentsObj').useStorageAccountAccessKey), createObject('value', false()))]",
-          "createStorageRoleAssignment": "[if(contains(parameters('vulnerabilityAssessmentsObj'), 'createStorageRoleAssignment'), createObject('value', parameters('vulnerabilityAssessmentsObj').createStorageRoleAssignment), createObject('value', true()))]"
+          "useStorageAccountAccessKey": {
+            "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), 'useStorageAccountAccessKey'), false())]"
+          },
+          "createStorageRoleAssignment": {
+            "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), 'createStorageRoleAssignment'), true())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -3067,8 +3254,12 @@
           "serverName": {
             "value": "[parameters('name')]"
           },
-          "serverKeyType": "[if(contains(parameters('keys')[copyIndex()], 'serverKeyType'), createObject('value', parameters('keys')[copyIndex()].serverKeyType), createObject('value', 'ServiceManaged'))]",
-          "uri": "[if(contains(parameters('keys')[copyIndex()], 'uri'), createObject('value', parameters('keys')[copyIndex()].uri), createObject('value', ''))]"
+          "serverKeyType": {
+            "value": "[coalesce(tryGet(parameters('keys')[copyIndex()], 'serverKeyType'), 'ServiceManaged')]"
+          },
+          "uri": {
+            "value": "[coalesce(tryGet(parameters('keys')[copyIndex()], 'uri'), '')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -3187,8 +3378,12 @@
           "serverKeyName": {
             "value": "[parameters('encryptionProtectorObj').serverKeyName]"
           },
-          "serverKeyType": "[if(contains(parameters('encryptionProtectorObj'), 'serverKeyType'), createObject('value', parameters('encryptionProtectorObj').serverKeyType), createObject('value', 'ServiceManaged'))]",
-          "autoRotationEnabled": "[if(contains(parameters('encryptionProtectorObj'), 'autoRotationEnabled'), createObject('value', parameters('encryptionProtectorObj').autoRotationEnabled), createObject('value', true()))]"
+          "serverKeyType": {
+            "value": "[coalesce(tryGet(parameters('encryptionProtectorObj'), 'serverKeyType'), 'ServiceManaged')]"
+          },
+          "autoRotationEnabled": {
+            "value": "[coalesce(tryGet(parameters('encryptionProtectorObj'), 'autoRotationEnabled'), true())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -3528,6 +3723,140 @@
       "dependsOn": [
         "server"
       ]
+    },
+    "secretsExport": {
+      "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '////'), '/')[4]]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyVaultName": {
+            "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
+          },
+          "secretsToSet": {
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').sqlAdminPasswordSecretName, 'value', parameters('administratorLoginPassword'))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSercretName'), createArray(createObject('name', parameters('secretsExportConfiguration').sqlAzureConnectionStringSercretName, 'value', format('Server={0}; Database={1}; User={2}; Password={3}', reference('server').fullyQualifiedDomainName, if(not(empty(parameters('databases'))), parameters('databases')[0].name, ''), parameters('administratorLogin'), parameters('administratorLoginPassword')))), createArray()))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "594547303316002116"
+            }
+          },
+          "definitions": {
+            "secretSetType": {
+              "type": "object",
+              "properties": {
+                "secretResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The resourceId of the exported secret."
+                  }
+                },
+                "secretUri": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The secret URI of the exported secret."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "secretToSetType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the secret to set."
+                  }
+                },
+                "value": {
+                  "type": "securestring",
+                  "metadata": {
+                    "description": "Required. The value of the secret to set."
+                  }
+                }
+              }
+            }
+          },
+          "parameters": {
+            "keyVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Key Vault to set the secrets in."
+              }
+            },
+            "secretsToSet": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/secretToSetType"
+              },
+              "metadata": {
+                "description": "Required. The secrets to set in the Key Vault."
+              }
+            }
+          },
+          "resources": {
+            "keyVault": {
+              "existing": true,
+              "type": "Microsoft.KeyVault/vaults",
+              "apiVersion": "2022-07-01",
+              "name": "[parameters('keyVaultName')]"
+            },
+            "secrets": {
+              "copy": {
+                "name": "secrets",
+                "count": "[length(parameters('secretsToSet'))]"
+              },
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
+              "properties": {
+                "value": "[parameters('secretsToSet')[copyIndex()].value]"
+              },
+              "dependsOn": [
+                "keyVault"
+              ]
+            }
+          },
+          "outputs": {
+            "secretsSet": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/secretSetType"
+              },
+              "metadata": {
+                "description": "The references to the secrets exported to the provided Key Vault."
+              },
+              "copy": {
+                "count": "[length(range(0, length(coalesce(parameters('secretsToSet'), createArray()))))]",
+                "input": {
+                  "secretResourceId": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretsToSet')[range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()]].name)]",
+                  "secretUri": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUri]"
+                }
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "server"
+      ]
     }
   },
   "outputs": {
@@ -3565,6 +3894,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('server', '2023-08-01-preview', 'full').location]"
+    },
+    "exportedSecrets": {
+      "$ref": "#/definitions/secretsOutputType",
+      "metadata": {
+        "description": "A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name."
+      },
+      "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
     },
     "privateEndpoints": {
       "type": "array",
