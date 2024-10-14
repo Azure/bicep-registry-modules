@@ -364,7 +364,7 @@ param searchServiceName = 'maemaxsearch001'
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`logAnalyticsName`](#parameter-loganalyticsname) | string | The Log Analytics resource name. |
 | [`openAiConnectionName`](#parameter-openaiconnectionname) | string | The Open AI connection name. |
-| [`replicaCount`](#parameter-replicacount) | int | The number of replicas in the search service. If specified, it must be a value between 1 and 12 inclusive for standard SKUs or between 1 and 3 inclusive for basic SKU. |
+| [`replicaCount`](#parameter-replicacount) | int | The number of replicas in the search service. If specified, it must be a value between 1 and 12 inclusive for standard SKUs, or between 1 and 3 inclusive for basic SKU. |
 | [`searchConnectionName`](#parameter-searchconnectionname) | string | The Azure Search connection name. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`userAssignedtName`](#parameter-userassignedtname) | string | The User Assigned Identity resource name. |
@@ -467,7 +467,7 @@ The Open AI connection name.
 
 ### Parameter: `replicaCount`
 
-The number of replicas in the search service. If specified, it must be a value between 1 and 12 inclusive for standard SKUs or between 1 and 3 inclusive for basic SKU.
+The number of replicas in the search service. If specified, it must be a value between 1 and 12 inclusive for standard SKUs, or between 1 and 3 inclusive for basic SKU.
 
 - Required: No
 - Type: int
