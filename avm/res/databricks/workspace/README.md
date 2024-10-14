@@ -572,6 +572,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     accessConnectorResourceId: '<accessConnectorResourceId>'
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
     automaticClusterUpdate: 'Enabled'
+    complianceSecurityProfileValue: 'Disabled'
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -686,6 +687,9 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     },
     "automaticClusterUpdate": {
       "value": "Enabled"
+    },
+    "complianceSecurityProfileValue": {
+      "value": "Disabled"
     },
     "customerManagedKey": {
       "value": {
@@ -846,6 +850,7 @@ param name = 'dwwaf001'
 param accessConnectorResourceId = '<accessConnectorResourceId>'
 param amlWorkspaceResourceId = '<amlWorkspaceResourceId>'
 param automaticClusterUpdate = 'Enabled'
+param complianceSecurityProfileValue = 'Disabled'
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
