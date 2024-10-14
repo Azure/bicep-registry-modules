@@ -34,7 +34,7 @@ param highAvailabilityReplicaCount int?
 param licenseType string = 'LicenseIncluded'
 
 @description('Optional. Maintenance configuration resource ID assigned to the elastic pool. This configuration defines the period when the maintenance updates will will occur.')
-param maintenanceConfigurationId string = ''
+param maintenanceConfigurationId string?
 
 @description('Optional. The storage limit for the database elastic pool in bytes.')
 param maxSizeBytes int = 34359738368

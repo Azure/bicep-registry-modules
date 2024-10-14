@@ -58,9 +58,17 @@ param administrators object = {}
   '1.0'
   '1.1'
   '1.2'
+  '1.3'
 ])
 @description('Optional. Minimal TLS version allowed.')
 param minimalTlsVersion string = '1.2'
+
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+@description('Optional. Whether or not to enable IPv6 support for this server.')
+param isIPv6Enabled string = 'Disabled'
 
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType
@@ -70,6 +78,7 @@ param privateEndpoints privateEndpointType
   ''
   'Enabled'
   'Disabled'
+  'SecuredByPerimeter'
 ])
 param publicNetworkAccess string = ''
 
@@ -104,6 +113,9 @@ param vulnerabilityAssessmentsObj object = {}
 
 @description('Optional. The audit settings configuration.')
 param auditSettings auditSettingsType?
+
+@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
+param secretsExportConfiguration secretsExportConfigurationType?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -199,9 +211,10 @@ resource server 'Microsoft.Sql/servers@2023-08-01-preview' = {
     minimalTlsVersion: minimalTlsVersion
     primaryUserAssignedIdentityId: !empty(primaryUserAssignedIdentityId) ? primaryUserAssignedIdentityId : null
     publicNetworkAccess: !empty(publicNetworkAccess)
-      ? any(publicNetworkAccess)
+      ? publicNetworkAccess
       : (!empty(privateEndpoints) && empty(firewallRules) && empty(virtualNetworkRules) ? 'Disabled' : null)
     restrictOutboundNetworkAccess: !empty(restrictOutboundNetworkAccess) ? restrictOutboundNetworkAccess : null
+    isIPv6Enabled: isIPv6Enabled
   }
 }
 
@@ -238,48 +251,34 @@ module server_databases 'database/main.bicep' = [
     params: {
       name: database.name
       serverName: server.name
-      skuTier: contains(database, 'skuTier') ? database.skuTier : 'GeneralPurpose'
-      skuName: contains(database, 'skuName') ? database.skuName : 'GP_Gen5_2'
+      skuTier: database.?skuTier ?? 'GeneralPurpose'
+      skuName: database.?skuName ?? 'GP_Gen5_2'
       skuCapacity: database.?skuCapacity
-      skuFamily: contains(database, 'skuFamily') ? database.skuFamily : ''
-      skuSize: contains(database, 'skuSize') ? database.skuSize : ''
-      collation: contains(database, 'collation') ? database.collation : 'SQL_Latin1_General_CP1_CI_AS'
-      maxSizeBytes: contains(database, 'maxSizeBytes') ? database.maxSizeBytes : 34359738368
-      autoPauseDelay: contains(database, 'autoPauseDelay') ? database.autoPauseDelay : 0
+      skuFamily: database.?skuFamily ?? ''
+      skuSize: database.?skuSize ?? ''
+      collation: database.?collation ?? 'SQL_Latin1_General_CP1_CI_AS'
+      maxSizeBytes: database.?maxSizeBytes ?? 34359738368
+      autoPauseDelay: database.?autoPauseDelay ?? 0
       diagnosticSettings: database.?diagnosticSettings
-      isLedgerOn: contains(database, 'isLedgerOn') ? database.isLedgerOn : false
+      isLedgerOn: database.?isLedgerOn ?? false
       location: location
-      licenseType: contains(database, 'licenseType') ? database.licenseType : ''
-      maintenanceConfigurationId: contains(database, 'maintenanceConfigurationId')
-        ? database.maintenanceConfigurationId
-        : ''
-      minCapacity: contains(database, 'minCapacity') ? database.minCapacity : ''
-      highAvailabilityReplicaCount: contains(database, 'highAvailabilityReplicaCount')
-        ? database.highAvailabilityReplicaCount
-        : 0
-      readScale: contains(database, 'readScale') ? database.readScale : 'Disabled'
-      requestedBackupStorageRedundancy: contains(database, 'requestedBackupStorageRedundancy')
-        ? database.requestedBackupStorageRedundancy
-        : ''
-      sampleName: contains(database, 'sampleName') ? database.sampleName : ''
+      licenseType: database.?licenseType ?? ''
+      maintenanceConfigurationId: database.?maintenanceConfigurationId
+      minCapacity: database.?minCapacity ?? ''
+      highAvailabilityReplicaCount: database.?highAvailabilityReplicaCount ?? 0
+      readScale: database.?readScale ?? 'Disabled'
+      requestedBackupStorageRedundancy: database.?requestedBackupStorageRedundancy ?? ''
+      sampleName: database.?sampleName ?? ''
       tags: database.?tags ?? tags
-      zoneRedundant: contains(database, 'zoneRedundant') ? database.zoneRedundant : true
-      elasticPoolId: contains(database, 'elasticPoolId') ? database.elasticPoolId : ''
-      backupShortTermRetentionPolicy: contains(database, 'backupShortTermRetentionPolicy')
-        ? database.backupShortTermRetentionPolicy
-        : {}
-      backupLongTermRetentionPolicy: contains(database, 'backupLongTermRetentionPolicy')
-        ? database.backupLongTermRetentionPolicy
-        : {}
-      createMode: contains(database, 'createMode') ? database.createMode : 'Default'
-      sourceDatabaseResourceId: contains(database, 'sourceDatabaseResourceId') ? database.sourceDatabaseResourceId : ''
-      sourceDatabaseDeletionDate: contains(database, 'sourceDatabaseDeletionDate')
-        ? database.sourceDatabaseDeletionDate
-        : ''
-      recoveryServicesRecoveryPointResourceId: contains(database, 'recoveryServicesRecoveryPointResourceId')
-        ? database.recoveryServicesRecoveryPointResourceId
-        : ''
-      restorePointInTime: contains(database, 'restorePointInTime') ? database.restorePointInTime : ''
+      zoneRedundant: database.?zoneRedundant ?? true
+      elasticPoolId: database.?elasticPoolId ?? ''
+      backupShortTermRetentionPolicy: database.?backupShortTermRetentionPolicy ?? {}
+      backupLongTermRetentionPolicy: database.?backupLongTermRetentionPolicy ?? {}
+      createMode: database.?createMode ?? 'Default'
+      sourceDatabaseResourceId: database.?sourceDatabaseResourceId ?? ''
+      sourceDatabaseDeletionDate: database.?sourceDatabaseDeletionDate ?? ''
+      recoveryServicesRecoveryPointResourceId: database.?recoveryServicesRecoveryPointResourceId ?? ''
+      restorePointInTime: database.?restorePointInTime ?? ''
     }
     dependsOn: [
       server_elasticPools // Enables us to add databases to existing elastic pools
@@ -293,19 +292,17 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
     params: {
       name: elasticPool.name
       serverName: server.name
-      databaseMaxCapacity: contains(elasticPool, 'databaseMaxCapacity') ? elasticPool.databaseMaxCapacity : 2
-      databaseMinCapacity: contains(elasticPool, 'databaseMinCapacity') ? elasticPool.databaseMinCapacity : 0
+      databaseMaxCapacity: elasticPool.?databaseMaxCapacity ?? 2
+      databaseMinCapacity: elasticPool.?databaseMinCapacity ?? 0
       highAvailabilityReplicaCount: elasticPool.?highAvailabilityReplicaCount
-      licenseType: contains(elasticPool, 'licenseType') ? elasticPool.licenseType : 'LicenseIncluded'
-      maintenanceConfigurationId: contains(elasticPool, 'maintenanceConfigurationId')
-        ? elasticPool.maintenanceConfigurationId
-        : ''
-      maxSizeBytes: contains(elasticPool, 'maxSizeBytes') ? elasticPool.maxSizeBytes : 34359738368
+      licenseType: elasticPool.?licenseType ?? 'LicenseIncluded'
+      maintenanceConfigurationId: elasticPool.?maintenanceConfigurationId
+      maxSizeBytes: elasticPool.?maxSizeBytes ?? 34359738368
       minCapacity: elasticPool.?minCapacity
-      skuCapacity: contains(elasticPool, 'skuCapacity') ? elasticPool.skuCapacity : 2
-      skuName: contains(elasticPool, 'skuName') ? elasticPool.skuName : 'GP_Gen5'
-      skuTier: contains(elasticPool, 'skuTier') ? elasticPool.skuTier : 'GeneralPurpose'
-      zoneRedundant: contains(elasticPool, 'zoneRedundant') ? elasticPool.zoneRedundant : true
+      skuCapacity: elasticPool.?skuCapacity ?? 2
+      skuName: elasticPool.?skuName ?? 'GP_Gen5'
+      skuTier: elasticPool.?skuTier ?? 'GeneralPurpose'
+      zoneRedundant: elasticPool.?zoneRedundant ?? true
       location: location
       tags: elasticPool.?tags ?? tags
     }
@@ -370,8 +367,8 @@ module server_firewallRules 'firewall-rule/main.bicep' = [
     params: {
       name: firewallRule.name
       serverName: server.name
-      endIpAddress: contains(firewallRule, 'endIpAddress') ? firewallRule.endIpAddress : '0.0.0.0'
-      startIpAddress: contains(firewallRule, 'startIpAddress') ? firewallRule.startIpAddress : '0.0.0.0'
+      endIpAddress: firewallRule.?endIpAddress ?? '0.0.0.0'
+      startIpAddress: firewallRule.?startIpAddress ?? '0.0.0.0'
     }
   }
 ]
@@ -382,9 +379,7 @@ module server_virtualNetworkRules 'virtual-network-rule/main.bicep' = [
     params: {
       name: virtualNetworkRule.name
       serverName: server.name
-      ignoreMissingVnetServiceEndpoint: contains(virtualNetworkRule, 'ignoreMissingVnetServiceEndpoint')
-        ? virtualNetworkRule.ignoreMissingVnetServiceEndpoint
-        : false
+      ignoreMissingVnetServiceEndpoint: virtualNetworkRule.?ignoreMissingVnetServiceEndpoint ?? false
       virtualNetworkSubnetId: virtualNetworkRule.virtualNetworkSubnetId
     }
   }
@@ -396,17 +391,13 @@ module server_securityAlertPolicies 'security-alert-policy/main.bicep' = [
     params: {
       name: securityAlertPolicy.name
       serverName: server.name
-      disabledAlerts: contains(securityAlertPolicy, 'disabledAlerts') ? securityAlertPolicy.disabledAlerts : []
-      emailAccountAdmins: contains(securityAlertPolicy, 'emailAccountAdmins')
-        ? securityAlertPolicy.emailAccountAdmins
-        : false
-      emailAddresses: contains(securityAlertPolicy, 'emailAddresses') ? securityAlertPolicy.emailAddresses : []
-      retentionDays: contains(securityAlertPolicy, 'retentionDays') ? securityAlertPolicy.retentionDays : 0
-      state: contains(securityAlertPolicy, 'state') ? securityAlertPolicy.state : 'Disabled'
-      storageAccountAccessKey: contains(securityAlertPolicy, 'storageAccountAccessKey')
-        ? securityAlertPolicy.storageAccountAccessKey
-        : ''
-      storageEndpoint: contains(securityAlertPolicy, 'storageEndpoint') ? securityAlertPolicy.storageEndpoint : ''
+      disabledAlerts: securityAlertPolicy.?disabledAlerts ?? []
+      emailAccountAdmins: securityAlertPolicy.?emailAccountAdmins ?? false
+      emailAddresses: securityAlertPolicy.?emailAddresses ?? []
+      retentionDays: securityAlertPolicy.?retentionDays ?? 0
+      state: securityAlertPolicy.?state ?? 'Disabled'
+      storageAccountAccessKey: securityAlertPolicy.?storageAccountAccessKey ?? ''
+      storageEndpoint: securityAlertPolicy.?storageEndpoint ?? ''
     }
   }
 ]
@@ -416,25 +407,12 @@ module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if
   params: {
     serverName: server.name
     name: vulnerabilityAssessmentsObj.name
-    recurringScansEmails: contains(vulnerabilityAssessmentsObj, 'recurringScansEmails')
-      ? vulnerabilityAssessmentsObj.recurringScansEmails
-      : []
-    recurringScansEmailSubscriptionAdmins: contains(
-        vulnerabilityAssessmentsObj,
-        'recurringScansEmailSubscriptionAdmins'
-      )
-      ? vulnerabilityAssessmentsObj.recurringScansEmailSubscriptionAdmins
-      : false
-    recurringScansIsEnabled: contains(vulnerabilityAssessmentsObj, 'recurringScansIsEnabled')
-      ? vulnerabilityAssessmentsObj.recurringScansIsEnabled
-      : false
+    recurringScansEmails: vulnerabilityAssessmentsObj.?recurringScansEmails ?? []
+    recurringScansEmailSubscriptionAdmins: vulnerabilityAssessmentsObj.?recurringScansEmailSubscriptionAdmins ?? false
+    recurringScansIsEnabled: vulnerabilityAssessmentsObj.?recurringScansIsEnabled ?? false
     storageAccountResourceId: vulnerabilityAssessmentsObj.storageAccountResourceId
-    useStorageAccountAccessKey: contains(vulnerabilityAssessmentsObj, 'useStorageAccountAccessKey')
-      ? vulnerabilityAssessmentsObj.useStorageAccountAccessKey
-      : false
-    createStorageRoleAssignment: contains(vulnerabilityAssessmentsObj, 'createStorageRoleAssignment')
-      ? vulnerabilityAssessmentsObj.createStorageRoleAssignment
-      : true
+    useStorageAccountAccessKey: vulnerabilityAssessmentsObj.?useStorageAccountAccessKey ?? false
+    createStorageRoleAssignment: vulnerabilityAssessmentsObj.?createStorageRoleAssignment ?? true
   }
   dependsOn: [
     server_securityAlertPolicies
@@ -447,8 +425,8 @@ module server_keys 'key/main.bicep' = [
     params: {
       name: key.?name
       serverName: server.name
-      serverKeyType: contains(key, 'serverKeyType') ? key.serverKeyType : 'ServiceManaged'
-      uri: contains(key, 'uri') ? key.uri : ''
+      serverKeyType: key.?serverKeyType ?? 'ServiceManaged'
+      uri: key.?uri ?? ''
     }
   }
 ]
@@ -458,12 +436,8 @@ module server_encryptionProtector 'encryption-protector/main.bicep' = if (!empty
   params: {
     sqlServerName: server.name
     serverKeyName: encryptionProtectorObj.serverKeyName
-    serverKeyType: contains(encryptionProtectorObj, 'serverKeyType')
-      ? encryptionProtectorObj.serverKeyType
-      : 'ServiceManaged'
-    autoRotationEnabled: contains(encryptionProtectorObj, 'autoRotationEnabled')
-      ? encryptionProtectorObj.autoRotationEnabled
-      : true
+    serverKeyType: encryptionProtectorObj.?serverKeyType ?? 'ServiceManaged'
+    autoRotationEnabled: encryptionProtectorObj.?autoRotationEnabled ?? true
   }
   dependsOn: [
     server_keys
@@ -491,6 +465,36 @@ module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSetti
   }
 }
 
+module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
+  name: '${uniqueString(deployment().name, location)}-secrets-kv'
+  scope: resourceGroup(
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+  )
+  params: {
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    secretsToSet: union(
+      [],
+      contains(secretsExportConfiguration!, 'sqlAdminPasswordSecretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.sqlAdminPasswordSecretName
+              value: administratorLoginPassword
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'sqlAzureConnectionStringSercretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.sqlAzureConnectionStringSercretName
+              value: 'Server=${server.properties.fullyQualifiedDomainName}; Database=${!empty(databases) ? databases[0].name : ''}; User=${administratorLogin}; Password=${administratorLoginPassword}'
+            }
+          ]
+        : []
+    )
+  }
+}
+
 @description('The name of the deployed SQL server.')
 output name string = server.name
 
@@ -505,6 +509,11 @@ output systemAssignedMIPrincipalId string = server.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = server.location
+
+@description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
+output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
+  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  : {}
 
 @description('The private endpoints of the SQL server.')
 output privateEndpoints array = [
@@ -680,4 +689,21 @@ type auditSettingsType = {
 
   @description('Optional. Specifies the identifier key of the auditing storage account.')
   storageAccountResourceId: string?
+}
+
+type secretsExportConfigurationType = {
+  @description('Required. The resource ID of the key vault where to store the secrets of this module.')
+  keyVaultResourceId: string
+
+  @description('Optional. The sqlAdminPassword secret name to create.')
+  sqlAdminPasswordSecretName: string?
+
+  @description('Optional. The sqlAzureConnectionString secret name to create.')
+  sqlAzureConnectionStringSercretName: string?
+}?
+
+import { secretSetType } from 'modules/keyVaultExport.bicep'
+type secretsOutputType = {
+  @description('An exported secret\'s references.')
+  *: secretSetType
 }
