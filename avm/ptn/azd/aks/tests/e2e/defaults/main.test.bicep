@@ -58,6 +58,7 @@ module testDeployment '../../../main.bicep' = [
       keyVaultName: 'kv${uniqueString(deployment().name)}-${serviceShort}'
       location: resourceLocation
       principalId: nestedDependencies.outputs.identityPrincipalId
+      principalType: 'ServicePrincipal'
     }
   }
 ]

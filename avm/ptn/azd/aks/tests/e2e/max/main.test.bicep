@@ -11,9 +11,6 @@ metadata description = 'This instance deploys the module with most of its featur
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-azd-aks-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'paamax'
 
@@ -26,6 +23,10 @@ param containerRegistryRoleName string = newGuid()
 @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
 param aksClusterRoleAssignmentName string = newGuid()
 
+// Enforced location als not all regions have quota available
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'northeurope'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -34,14 +35,14 @@ param aksClusterRoleAssignmentName string = newGuid()
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dependencies'
   scope: resourceGroup
   params: {
-    location: resourceLocation
+    location: enforcedLocation
     appName: 'dep-${namePrefix}-app-${serviceShort}'
     appServicePlanName: 'dep-${namePrefix}-apps-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
@@ -56,10 +57,10 @@ module nestedDependencies 'dependencies.bicep' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'mc${uniqueString(deployment().name)}-${serviceShort}'
-      containerRegistryName: '${uniqueString(deployment().name, resourceLocation)}testcontainerregistry${serviceShort}'
+      containerRegistryName: '${uniqueString(deployment().name, enforcedLocation)}testcontainerregistry${serviceShort}'
       skuTier: 'Free'
       webApplicationRoutingEnabled: true
       agentPools: [
@@ -70,12 +71,12 @@ module testDeployment '../../../main.bicep' = [
           maxPods: 30
           type: 'VirtualMachineScaleSets'
           maxSurge: '33%'
-          vmSize: 'standard_a2'
+          vmSize: 'standard_a2_v2'
         }
       ]
       logAnalyticsName: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       keyVaultName: 'kv${uniqueString(deployment().name)}-${serviceShort}'
-      location: resourceLocation
+      location: enforcedLocation
       principalId: nestedDependencies.outputs.identityPrincipalId
       acrSku: 'Basic'
       dnsPrefix: 'dep-${namePrefix}-dns-${serviceShort}'
