@@ -42,7 +42,7 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
   params: {
     // Required parameters
     adminMembers: [
-      'mattschmitt@microsoft.com'
+      '<adminMembersSecret>'
     ]
     name: 'fcmin001'
     // Non-required parameters
@@ -66,7 +66,7 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
     // Required parameters
     "adminMembers": {
       "value": [
-        "mattschmitt@microsoft.com"
+        "<adminMembersSecret>"
       ]
     },
     "name": {
@@ -92,7 +92,7 @@ using 'br/public:avm/res/fabric/capacity:<version>'
 
 // Required parameters
 param adminMembers = [
-  'mattschmitt@microsoft.com'
+  '<adminMembersSecret>'
 ]
 param name = 'fcmin001'
 // Non-required parameters
@@ -117,7 +117,7 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
   params: {
     // Required parameters
     adminMembers: [
-      'mattschmitt@microsoft.com'
+      '<adminMembersSecret>'
     ]
     name: 'fcwaf001'
     // Non-required parameters
@@ -142,7 +142,7 @@ module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
     // Required parameters
     "adminMembers": {
       "value": [
-        "mattschmitt@microsoft.com"
+        "<adminMembersSecret>"
       ]
     },
     "name": {
@@ -171,7 +171,7 @@ using 'br/public:avm/res/fabric/capacity:<version>'
 
 // Required parameters
 param adminMembers = [
-  'mattschmitt@microsoft.com'
+  '<adminMembersSecret>'
 ]
 param name = 'fcwaf001'
 // Non-required parameters
@@ -196,7 +196,7 @@ param skuName = 'F64'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`location`](#parameter-location) | string | Location for all Resources. |
+| [`location`](#parameter-location) | string | Location for all resources. |
 | [`skuName`](#parameter-skuname) | string | SKU tier of the Fabric resource. |
 | [`skuTier`](#parameter-skutier) | string | SKU name of the Fabric resource. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -225,7 +225,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `location`
 
-Location for all Resources.
+Location for all resources.
 
 - Required: No
 - Type: string
