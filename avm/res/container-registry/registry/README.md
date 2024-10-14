@@ -1138,7 +1138,7 @@ Tier of your Azure container registry.
 
 - Required: No
 - Type: string
-- Default: `'Basic'`
+- Default: `'Premium'`
 - Allowed:
   ```Bicep
   [
@@ -2194,7 +2194,7 @@ Whether or not zone redundancy is enabled for this container registry.
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
+- Default: `'Enabled'`
 - Allowed:
   ```Bicep
   [

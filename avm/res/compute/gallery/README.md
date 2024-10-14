@@ -206,7 +206,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           product: 'testProduct'
           publisher: 'testPublisher'
         }
-        securityType: 'TrustedLaunch'
+        securityType: 'Standard'
         vCPUs: {
           max: 8
           min: 2
@@ -436,7 +436,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
             "product": "testProduct",
             "publisher": "testPublisher"
           },
-          "securityType": "TrustedLaunch",
+          "securityType": "Standard",
           "vCPUs": {
             "max": 8,
             "min": 2
@@ -668,7 +668,7 @@ param images = [
       product: 'testProduct'
       publisher: 'testPublisher'
     }
-    securityType: 'TrustedLaunch'
+    securityType: 'Standard'
     vCPUs: {
       max: 8
       min: 2
@@ -1243,6 +1243,8 @@ The security type of the image. Requires a hyperVGeneration V2. Defaults to `Sta
     'ConfidentialVMSupported'
     'Standard'
     'TrustedLaunch'
+    'TrustedLaunchAndConfidentialVmSupported'
+    'TrustedLaunchSupported'
   ]
   ```
 
