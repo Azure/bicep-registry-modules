@@ -52,7 +52,15 @@ param securityAlertPolicies array = []
 param keys array = []
 
 @description('Conditional. The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided.')
-param administrators object = {}
+param administrators ServerExternalAdministratorType?
+
+@description('Optional. The Client id used for cross tenant CMK scenario')
+@minLength(36)
+@maxLength(36)
+param federatedClientId string?
+
+@description('Optional. A CMK URI of the key to use for encryption.')
+param keyId string?
 
 @allowed([
   '1.0'
@@ -197,16 +205,10 @@ resource server 'Microsoft.Sql/servers@2023-08-01-preview' = {
   properties: {
     administratorLogin: !empty(administratorLogin) ? administratorLogin : null
     administratorLoginPassword: !empty(administratorLoginPassword) ? administratorLoginPassword : null
-    administrators: !empty(administrators)
-      ? {
-          administratorType: 'ActiveDirectory'
-          azureADOnlyAuthentication: administrators.azureADOnlyAuthentication
-          login: administrators.login
-          principalType: administrators.principalType
-          sid: administrators.sid
-          tenantId: administrators.?tenantId ?? tenant().tenantId
-        }
-      : null
+    administrators: administrators
+    federatedClientId: federatedClientId
+    isIPv6Enabled: isIPv6Enabled
+    keyId: keyId
     version: '12.0'
     minimalTlsVersion: minimalTlsVersion
     primaryUserAssignedIdentityId: !empty(primaryUserAssignedIdentityId) ? primaryUserAssignedIdentityId : null
@@ -214,7 +216,6 @@ resource server 'Microsoft.Sql/servers@2023-08-01-preview' = {
       ? publicNetworkAccess
       : (!empty(privateEndpoints) && empty(firewallRules) && empty(virtualNetworkRules) ? 'Disabled' : null)
     restrictOutboundNetworkAccess: !empty(restrictOutboundNetworkAccess) ? restrictOutboundNetworkAccess : null
-    isIPv6Enabled: isIPv6Enabled
   }
 }
 
@@ -701,6 +702,32 @@ type secretsExportConfigurationType = {
   @description('Optional. The sqlAzureConnectionString secret name to create.')
   sqlAzureConnectionStringSercretName: string?
 }?
+
+type ServerExternalAdministratorType = {
+  @description('Type of the sever administrator.')
+  administratorType: 'ActiveDirectory'
+
+  @description('Required. Azure Active Directory only Authentication enabled.')
+  azureADOnlyAuthentication: bool
+
+  @description('Required. Login name of the server administrator.')
+  login: string
+
+  @description('Required. Principal Type of the sever administrator.')
+  principalType: 'Application' | 'Group' | 'User'
+
+  @description('Required. SID (object ID) of the server administrator.')
+  @metadata({
+    example: '00000000-0000-0000-0000-000000000000'
+  })
+  sid: string
+
+  @description('Optional. Tenant ID of the administrator.')
+  @metadata({
+    example: '00000000-0000-0000-0000-000000000000'
+  })
+  tenantId: string?
+}
 
 import { secretSetType } from 'modules/keyVaultExport.bicep'
 type secretsOutputType = {
