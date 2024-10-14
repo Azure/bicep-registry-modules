@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "11665989256866362116"
+      "templateHash": "3097369557346474015"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace.",
@@ -750,6 +750,11 @@
     "automaticClusterUpdate": {
       "type": "string",
       "defaultValue": "",
+      "allowedValues": [
+        "Enabled",
+        "Disabled",
+        ""
+      ],
       "metadata": {
         "description": "Optional. The value for enabling automatic cluster updates in enhanced security compliance."
       }
@@ -764,13 +769,23 @@
     "complianceSecurityProfileValue": {
       "type": "string",
       "defaultValue": "",
+      "allowedValues": [
+        "Enabled",
+        "Disabled",
+        ""
+      ],
       "metadata": {
-        "description": "Optional. The value for the compliance security profile, indicating the selected profile or compliance type."
+        "description": "Optional. The value to Enable or Disable for the compliance security profile."
       }
     },
     "enhancedSecurityMonitoring": {
       "type": "string",
       "defaultValue": "",
+      "allowedValues": [
+        "Enabled",
+        "Disabled",
+        ""
+      ],
       "metadata": {
         "description": "Optional. The value for enabling or configuring enhanced security monitoring."
       }

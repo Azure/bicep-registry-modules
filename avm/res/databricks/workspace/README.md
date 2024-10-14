@@ -961,7 +961,7 @@ param vnetAddressPrefix = '10.100'
 | :-- | :-- | :-- |
 | [`amlWorkspaceResourceId`](#parameter-amlworkspaceresourceid) | string | The resource ID of a Azure Machine Learning workspace to link with Databricks workspace. |
 | [`automaticClusterUpdate`](#parameter-automaticclusterupdate) | string | The value for enabling automatic cluster updates in enhanced security compliance. |
-| [`complianceSecurityProfileValue`](#parameter-compliancesecurityprofilevalue) | string | The value for the compliance security profile, indicating the selected profile or compliance type. |
+| [`complianceSecurityProfileValue`](#parameter-compliancesecurityprofilevalue) | string | The value to Enable or Disable for the compliance security profile. |
 | [`complianceStandards`](#parameter-compliancestandards) | array | The compliance standards array for the security profile. Should be a list of compliance standards like "HIPAA", "NONE" or "PCI_DSS". |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition to use for the managed service. |
 | [`customerManagedKeyManagedDisk`](#parameter-customermanagedkeymanageddisk) | object | The customer managed key definition to use for the managed disk. |
@@ -1024,14 +1024,30 @@ The value for enabling automatic cluster updates in enhanced security compliance
 - Required: No
 - Type: string
 - Default: `''`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `complianceSecurityProfileValue`
 
-The value for the compliance security profile, indicating the selected profile or compliance type.
+The value to Enable or Disable for the compliance security profile.
 
 - Required: No
 - Type: string
 - Default: `''`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `complianceStandards`
 
@@ -1333,6 +1349,14 @@ The value for enabling or configuring enhanced security monitoring.
 - Required: No
 - Type: string
 - Default: `''`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `loadBalancerBackendPoolName`
 
