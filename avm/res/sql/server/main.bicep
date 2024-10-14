@@ -205,7 +205,7 @@ resource server 'Microsoft.Sql/servers@2023-08-01-preview' = {
   properties: {
     administratorLogin: !empty(administratorLogin) ? administratorLogin : null
     administratorLoginPassword: !empty(administratorLoginPassword) ? administratorLoginPassword : null
-    administrators: administrators
+    administrators: union({ administratorType: 'ActiveDirectory' }, administrators ?? {})
     federatedClientId: federatedClientId
     isIPv6Enabled: isIPv6Enabled
     keyId: keyId
@@ -705,7 +705,7 @@ type secretsExportConfigurationType = {
 
 type ServerExternalAdministratorType = {
   @description('Type of the sever administrator.')
-  administratorType: 'ActiveDirectory'
+  administratorType: 'ActiveDirectory'?
 
   @description('Required. Azure Active Directory only Authentication enabled.')
   azureADOnlyAuthentication: bool
