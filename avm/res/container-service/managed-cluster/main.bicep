@@ -848,7 +848,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
     serviceMeshProfile: istioServiceMeshEnabled
       ? {
           istio: {
-            revisions: istioServiceMeshRevisions
+            revisions: !empty(istioServiceMeshRevisions) ? istioServiceMeshRevisions : null
             components: {
               ingressGateways: istioServiceMeshIngressGatewayEnabled
                 ? [

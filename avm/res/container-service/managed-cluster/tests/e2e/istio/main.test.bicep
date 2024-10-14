@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'csist'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'istio'
 
 // ============ //
 // Dependencies //
@@ -65,25 +65,28 @@ module testDeployment '../../../main.bicep' = [
       ]
       istioServiceMeshEnabled: true
       istioServiceMeshIngressGatewayEnabled: true
-      istioServiceMeshIngressGatewayType: 'External'
-      // istioServiceMeshCertificateAuthority: {
-      //   certChainObjectName: nestedDependencies.outputs.certChainSecretName
-      //   certObjectName: nestedDependencies.outputs.caCertSecretName
-      //   keyObjectName: nestedDependencies.outputs.caKeySecretName
-      //   keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      //   rootCertObjectName: nestedDependencies.outputs.rootCertSecretName
-      // }
+      istioServiceMeshIngressGatewayType: 'Internal'
+      istioServiceMeshRevisions: [
+        'asm-1-22'
+      ]
+      istioServiceMeshCertificateAuthority: {
+        certChainObjectName: nestedDependencies.outputs.certChainSecretName
+        certObjectName: nestedDependencies.outputs.caCertSecretName
+        keyObjectName: nestedDependencies.outputs.caKeySecretName
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        rootCertObjectName: nestedDependencies.outputs.rootCertSecretName
+      }
       enableKeyvaultSecretsProvider: true
       enableSecretRotation: true
     }
   }
 ]
 
-// module secretPermissions 'main.rbac.bicep' = {
-//   scope: resourceGroup
-//   name: '${uniqueString(deployment().name, resourceLocation)}-rbac'
-//   params: {
-//     keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-//     principalId: testDeployment[0].outputs.keyvaultIdentityObjectId
-//   }
-// }
+module secretPermissions 'main.rbac.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-rbac'
+  params: {
+    keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+    principalId: testDeployment[0].outputs.keyvaultIdentityObjectId
+  }
+}

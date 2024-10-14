@@ -1238,6 +1238,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       rootCertObjectName: '<rootCertObjectName>'
     }
     istioServiceMeshEnabled: true
+    istioServiceMeshIngressGatewayEnabled: true
+    istioServiceMeshIngressGatewayType: 'Internal'
+    istioServiceMeshRevisions: [
+      'asm-1-22'
+    ]
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
@@ -1291,6 +1296,17 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "istioServiceMeshEnabled": {
       "value": true
     },
+    "istioServiceMeshIngressGatewayEnabled": {
+      "value": true
+    },
+    "istioServiceMeshIngressGatewayType": {
+      "value": "Internal"
+    },
+    "istioServiceMeshRevisions": {
+      "value": [
+        "asm-1-22"
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -1334,6 +1350,11 @@ param istioServiceMeshCertificateAuthority = {
   rootCertObjectName: '<rootCertObjectName>'
 }
 param istioServiceMeshEnabled = true
+param istioServiceMeshIngressGatewayEnabled = true
+param istioServiceMeshIngressGatewayType = 'Internal'
+param istioServiceMeshRevisions = [
+  'asm-1-22'
+]
 param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
@@ -4407,6 +4428,12 @@ The list of revisions of the Istio control plane. When an upgrade is not in prog
 
 - Required: No
 - Type: array
+- Default:
+  ```Bicep
+  [
+    'asm-1-23'
+  ]
+  ```
 
 ### Parameter: `kedaAddon`
 

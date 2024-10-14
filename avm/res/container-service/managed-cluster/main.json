@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "14272171367423169990"
+      "templateHash": "6483656652613891461"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1608,7 +1608,9 @@
     },
     "istioServiceMeshRevisions": {
       "type": "array",
-      "defaultValue": [],
+      "defaultValue": [
+        "asm-1-23"
+      ],
       "metadata": {
         "description": "Optional. The list of revisions of the Istio control plane. When an upgrade is not in progress, this holds one value. When canary upgrade is in progress, this can only hold two consecutive values."
       }
@@ -1875,7 +1877,7 @@
           }
         },
         "supportPlan": "[parameters('supportPlan')]",
-        "serviceMeshProfile": "[if(parameters('istioServiceMeshEnabled'), createObject('istio', createObject('revisions', parameters('istioServiceMeshRevisions'), 'components', createObject('ingressGateways', if(parameters('istioServiceMeshIngressGatewayEnabled'), createArray(createObject('enabled', true(), 'mode', parameters('istioServiceMeshIngressGatewayType'))), null())), 'certificateAuthority', if(not(empty(parameters('istioServiceMeshCertificateAuthority'))), createObject('plugin', createObject('certChainObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'certChainObjectName'), 'certObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'certObjectName'), 'keyObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'keyObjectName'), 'keyVaultId', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'keyVaultResourceId'), 'rootCertObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'rootCertObjectName'))), null())), 'mode', 'Istio'), null())]"
+        "serviceMeshProfile": "[if(parameters('istioServiceMeshEnabled'), createObject('istio', createObject('revisions', if(not(empty(parameters('istioServiceMeshRevisions'))), parameters('istioServiceMeshRevisions'), null()), 'components', createObject('ingressGateways', if(parameters('istioServiceMeshIngressGatewayEnabled'), createArray(createObject('enabled', true(), 'mode', parameters('istioServiceMeshIngressGatewayType'))), null())), 'certificateAuthority', if(not(empty(parameters('istioServiceMeshCertificateAuthority'))), createObject('plugin', createObject('certChainObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'certChainObjectName'), 'certObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'certObjectName'), 'keyObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'keyObjectName'), 'keyVaultId', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'keyVaultResourceId'), 'rootCertObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'rootCertObjectName'))), null())), 'mode', 'Istio'), null())]"
       }
     },
     "managedCluster_lock": {
