@@ -144,7 +144,7 @@ $caCertDays = 3650
 
 Write-Verbose ('Generating ca cert [{0}]' -f $caCertFile) -Verbose
 
-openssl x509 -req -sha256 -days $caCertDays -CA $rootCertFile -CAkey $rootKeyFile -CAcreateserial -extensions req_ext -extfile $caCAConfFile -in $caCertCSRFile -out $caCertFile
+openssl x509 -req -sha256 -days $caCertDays -CA $rootCertFile -CAkey $rootKeyFile -CAcreateserial -extensions req_ext -extfile $caConfFile -in $caCertCSRFile -out $caCertFile
 
 $caCertContent = Get-Content -Path $caCertFile -Raw
 $caCertContentSecureString = ConvertTo-SecureString -String $caCertContent -AsPlainText -Force
