@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'Using only defaults'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -9,20 +9,16 @@ metadata description = 'This instance deploys the module in alignment with the b
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-fabric-capacities-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-azd-ml-ai-environment-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'fcwaf'
+param serviceShort string = 'maemin'
 
-@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
+@description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
-
-@description('Required. Email address used by resource. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-adminMembersSecret\'.')
-@secure()
-param adminMembersSecret string = ''
 
 // ============ //
 // Dependencies //
@@ -45,12 +41,15 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      skuName: 'F64'
-      adminMembers: [
-        adminMembersSecret
-      ]
+      keyVaultName: '${namePrefix}${serviceShort}kv00'
+      storageAccountName: '${namePrefix}${serviceShort}sa001'
+      hubName: '${namePrefix}${serviceShort}hub001'
+      projectName: '${namePrefix}${serviceShort}pro001'
+      userAssignedtName: '${namePrefix}${serviceShort}ua001'
+      cognitiveServicesName: '${namePrefix}${serviceShort}cs001'
+      openAiConnectionName: '${namePrefix}${serviceShort}ai001-connection'
+      searchConnectionName: '${namePrefix}${serviceShort}search001-connection'
     }
   }
 ]
