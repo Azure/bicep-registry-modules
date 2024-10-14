@@ -68,6 +68,7 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}-${serviceShort}'
     primaryUserAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
     administrators: {
+      administratorType: 'ActiveDirectory'
       azureADOnlyAuthentication: true
       login: 'myspn'
       sid: nestedDependencies.outputs.managedIdentityPrincipalId
