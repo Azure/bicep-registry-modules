@@ -112,19 +112,18 @@ module project 'br/public:avm/res/machine-learning-services/workspace:0.7.0' = {
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
-}
 
-module keyVaultAccess 'br/public:avm/res/key-vault/vault:0.9.0' = {
-  name: '${uniqueString(deployment().name, location)}-keyvault'
-  params: {
-    name: keyVault.name
-    accessPolicies: [
-      {
-        objectId: project.outputs.systemAssignedMIPrincipalId
-        permissions: { secrets: ['get', 'list'] }
-      }
-    ]
-    enableTelemetry: enableTelemetry
+  resource keyVaultAccess 'accessPolicies@2023-07-01' = {
+    name: 'add'
+    properties: {
+      accessPolicies: [
+        {
+          objectId: project.outputs.systemAssignedMIPrincipalId
+          permissions: { secrets: ['get', 'list'] }
+          tenantId: tenant().tenantId
+        }
+      ]
+    }
   }
 }
 

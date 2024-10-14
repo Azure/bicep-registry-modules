@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. Name of the resource to create.')
 param name string
 
-@description('Optional. Location for all Resources.')
+@description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
