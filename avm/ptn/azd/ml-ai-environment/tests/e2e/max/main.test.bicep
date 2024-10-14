@@ -18,8 +18,8 @@ param serviceShort string = 'maemax'
 param namePrefix string = '#_namePrefix_#'
 
 // Set to fixed location as the deployment does not work in most rotated locations
-// Right now (2024/10) the following locations are supported for 'AIServices': uksouth
-param enforcedLocation string = 'uksouth'
+// Right now (2024/10) the following locations are supported for 'AIServices': uksouth, eastus
+param enforcedLocation string = 'eastus'
 
 // ============ //
 // Dependencies //
