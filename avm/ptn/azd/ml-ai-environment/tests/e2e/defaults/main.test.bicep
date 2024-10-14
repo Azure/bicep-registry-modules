@@ -42,7 +42,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       location: resourceLocation
-      keyVaultName: '${namePrefix}${serviceShort}kv00'
+      keyVaultName: '${namePrefix}${serviceShort}kv01'
       storageAccountName: '${namePrefix}${serviceShort}sa001'
       hubName: '${namePrefix}${serviceShort}hub001'
       projectName: '${namePrefix}${serviceShort}pro001'
