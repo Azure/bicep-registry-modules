@@ -44,7 +44,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: enforcedLocation
       hubName: '${namePrefix}${serviceShort}hub001'
-      keyVaultName: '${namePrefix}${serviceShort}kv001'
+      keyVaultName: '${namePrefix}${serviceShort}kv002'
       cognitiveServicesName: '${namePrefix}${serviceShort}cs001'
       projectName: '${namePrefix}${serviceShort}pro001'
       storageAccountName: '${namePrefix}${serviceShort}sta001'

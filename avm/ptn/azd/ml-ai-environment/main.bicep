@@ -123,7 +123,7 @@ module hub './modules/hub.bicep' = {
   }
 }
 
-module project 'br/public:avm/ptn/azd/ml-project:0.1.0' = {
+module project 'br/public:avm/ptn/azd/ml-project:0.1.1' = {
   name: '${uniqueString(deployment().name, location)}-project'
   params: {
     name: projectName

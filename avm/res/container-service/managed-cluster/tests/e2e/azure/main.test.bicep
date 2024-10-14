@@ -76,10 +76,10 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      primaryAgentPoolProfile: [
+      primaryAgentPoolProfiles: [
         {
           availabilityZones: [
-            '3'
+            3
           ]
           count: 1
           enableAutoScaling: true
@@ -95,13 +95,13 @@ module testDeployment '../../../main.bicep' = [
           osType: 'Linux'
           type: 'VirtualMachineScaleSets'
           vmSize: 'Standard_DS2_v2'
-          vnetSubnetID: nestedDependencies.outputs.subnetResourceIds[0]
+          vnetSubnetResourceId: nestedDependencies.outputs.subnetResourceIds[0]
         }
       ]
       agentPools: [
         {
           availabilityZones: [
-            '3'
+            3
           ]
           count: 2
           enableAutoScaling: true
@@ -118,12 +118,12 @@ module testDeployment '../../../main.bicep' = [
           scaleSetPriority: 'Regular'
           type: 'VirtualMachineScaleSets'
           vmSize: 'Standard_DS2_v2'
-          vnetSubnetID: nestedDependencies.outputs.subnetResourceIds[1]
+          vnetSubnetResourceId: nestedDependencies.outputs.subnetResourceIds[1]
           proximityPlacementGroupResourceId: nestedDependencies.outputs.proximityPlacementGroupResourceId
         }
         {
           availabilityZones: [
-            '3'
+            3
           ]
           count: 2
           enableAutoScaling: true
@@ -140,7 +140,7 @@ module testDeployment '../../../main.bicep' = [
           scaleSetPriority: 'Regular'
           type: 'VirtualMachineScaleSets'
           vmSize: 'Standard_DS2_v2'
-          vnetSubnetID: nestedDependencies.outputs.subnetResourceIds[2]
+          vnetSubnetResourceId: nestedDependencies.outputs.subnetResourceIds[2]
         }
       ]
       autoUpgradeProfileUpgradeChannel: 'stable'
@@ -213,7 +213,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       omsAgentEnabled: true
-      monitoringWorkspaceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+      monitoringWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       enableAzureDefender: true
       enableKeyvaultSecretsProvider: true
       enablePodSecurityPolicy: false

@@ -31,6 +31,7 @@ Create Azure Machine Learning workspaces of type 'Hub' and 'Project' and their r
 | `microsoft.insights/components/linkedStorageAccounts` | [2020-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults) |
+| `Microsoft.KeyVault/vaults/accessPolicies` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/accessPolicies) |
 | `Microsoft.KeyVault/vaults/accessPolicies` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/accessPolicies) |
 | `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
 | `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
@@ -95,7 +96,7 @@ module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
     // Required parameters
     cognitiveServicesName: 'maemincs001'
     hubName: 'maeminhub001'
-    keyVaultName: 'maeminkv00'
+    keyVaultName: 'maeminkv01'
     openAiConnectionName: 'maeminai001-connection'
     projectName: 'maeminpro001'
     searchConnectionName: 'maeminsearch001-connection'
@@ -127,7 +128,7 @@ module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
       "value": "maeminhub001"
     },
     "keyVaultName": {
-      "value": "maeminkv00"
+      "value": "maeminkv01"
     },
     "openAiConnectionName": {
       "value": "maeminai001-connection"
@@ -165,7 +166,7 @@ using 'br/public:avm/ptn/azd/ml-ai-environment:<version>'
 // Required parameters
 param cognitiveServicesName = 'maemincs001'
 param hubName = 'maeminhub001'
-param keyVaultName = 'maeminkv00'
+param keyVaultName = 'maeminkv01'
 param openAiConnectionName = 'maeminai001-connection'
 param projectName = 'maeminpro001'
 param searchConnectionName = 'maeminsearch001-connection'
@@ -194,7 +195,7 @@ module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
     // Required parameters
     cognitiveServicesName: 'maemaxcs001'
     hubName: 'maemaxhub001'
-    keyVaultName: 'maemaxkv001'
+    keyVaultName: 'maemaxkv002'
     openAiConnectionName: 'maemaxai001-connection'
     projectName: 'maemaxpro001'
     searchConnectionName: 'maemaxsearch001-connection'
@@ -244,7 +245,7 @@ module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
       "value": "maemaxhub001"
     },
     "keyVaultName": {
-      "value": "maemaxkv001"
+      "value": "maemaxkv002"
     },
     "openAiConnectionName": {
       "value": "maemaxai001-connection"
@@ -310,7 +311,7 @@ using 'br/public:avm/ptn/azd/ml-ai-environment:<version>'
 // Required parameters
 param cognitiveServicesName = 'maemaxcs001'
 param hubName = 'maemaxhub001'
-param keyVaultName = 'maemaxkv001'
+param keyVaultName = 'maemaxkv002'
 param openAiConnectionName = 'maemaxai001-connection'
 param projectName = 'maemaxpro001'
 param searchConnectionName = 'maemaxsearch001-connection'
@@ -537,7 +538,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/ptn/azd/ml-hub-dependencies:0.1.0` | Remote reference |
-| `br/public:avm/ptn/azd/ml-project:0.1.0` | Remote reference |
+| `br/public:avm/ptn/azd/ml-project:0.1.1` | Remote reference |
 | `br/public:avm/res/machine-learning-services/workspace:0.8.1` | Remote reference |
 
 ## Data Collection
