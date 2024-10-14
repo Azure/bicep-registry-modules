@@ -117,15 +117,30 @@ param accessConnectorResourceId string = ''
 param defaultCatalog defaultCatalogType?
 
 @description('Optional. The value for enabling automatic cluster updates in enhanced security compliance.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  ''
+])
 param automaticClusterUpdate string = ''
 
 @description('Optional. The compliance standards array for the security profile. Should be a list of compliance standards like "HIPAA", "NONE" or "PCI_DSS".')
 param complianceStandards array = []
 
-@description('Optional. The value for the compliance security profile, indicating the selected profile or compliance type.')
+@description('Optional. The value to Enable or Disable for the compliance security profile.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  ''
+])
 param complianceSecurityProfileValue string = ''
 
 @description('Optional. The value for enabling or configuring enhanced security monitoring.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  ''
+])
 param enhancedSecurityMonitoring string = ''
 
 var builtInRoleNames = {
