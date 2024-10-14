@@ -1,9 +1,6 @@
 @description('Required. The AI Studio Hub Resource name.')
 param name string
 
-@description('Optional. The display name of the AI Studio Hub Resource.')
-param displayName string = name
-
 @description('Required. The storage account ID to use for the AI Studio Hub Resource.')
 param storageAccountResourceId string
 
@@ -29,11 +26,8 @@ param aiSearchConnectionName string
 param openAiContentSafetyConnectionName string
 
 @description('Optional. The SKU name to use for the AI Studio Hub Resource.')
-param skuName string = 'Basic'
-
-@description('Optional. The SKU tier to use for the AI Studio Hub Resource.')
 @allowed(['Basic', 'Free', 'Premium', 'Standard'])
-param skuTier string = 'Basic'
+param skuName string = 'Basic'
 
 @description('Optional. The public network access setting to use for the AI Studio Hub Resource.')
 @allowed(['Enabled', 'Disabled'])
@@ -44,6 +38,56 @@ param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
 param tags object = {}
+
+var aiSearchConnection = !empty(aiSearchName) ? [{
+  name: aiSearchConnectionName
+  category: 'CognitiveSearch'
+  isSharedToAll: true
+  target: 'https://${search.name}.search.windows.net/'
+  connectionProperties: {
+    authType: 'ApiKey'
+    credentials: {
+      key: !empty(aiSearchName) ? search.listAdminKeys().primaryKey : ''
+    }
+  }
+}] : []
+
+var connections = [
+  {
+    name: 'aoai-connection'
+    category: 'AzureOpenAI'
+    isSharedToAll: true
+    metadata: {
+      ApiVersion: '2024-02-01'
+      ApiType: 'azure'
+      ResourceId: openAi.id
+    }
+    target: openAi.properties.endpoints['OpenAI Language Model Instance API']
+    connectionProperties: {
+      authType: 'ApiKey'
+      credentials: {
+        key: openAi.listKeys().key1
+      }
+    }
+  }
+  {
+    name: openAiContentSafetyConnectionName
+    category: 'AzureOpenAI'
+    isSharedToAll: true
+    target: openAi.properties.endpoints['Content Safety']
+    metadata: {
+      ApiVersion: '2023-07-01-preview'
+      ApiType: 'azure'
+      ResourceId: openAi.id
+    }
+    connectionProperties: {
+      authType: 'ApiKey'
+      credentials: {
+        key: openAi.listKeys().key1
+      }
+    }
+  }
+]
 
 // ================ //
 // Resources        //
@@ -57,80 +101,25 @@ resource search 'Microsoft.Search/searchServices@2021-04-01-preview' existing = 
   name: aiSearchName
 }
 
-resource hub 'Microsoft.MachineLearningServices/workspaces@2024-04-01' = {
-  name: name
-  location: location
-  tags: tags
-  sku: {
-    name: skuName
-    tier: skuTier
-  }
-  kind: 'Hub'
-  identity: {
-    type: 'SystemAssigned'
-  }
-  properties: {
-    friendlyName: displayName
-    storageAccount: storageAccountResourceId
-    keyVault: keyVaultResourceId
-    applicationInsights: !empty(applicationInsightsResourceId) ? applicationInsightsResourceId : null
-    containerRegistry: !empty(containerRegistryResourceId) ? containerRegistryResourceId : null
+module hub 'br/public:avm/res/machine-learning-services/workspace:0.8.1' = {
+  name: 'hub-workspace'
+  params: {
+    name: name
+    sku: skuName
+    location: location
+    tags: tags
+    kind: 'Hub'
+    associatedKeyVaultResourceId: keyVaultResourceId
+    associatedStorageAccountResourceId: storageAccountResourceId
+    associatedApplicationInsightsResourceId: !empty(applicationInsightsResourceId) ? applicationInsightsResourceId : null
+    associatedContainerRegistryResourceId: !empty(containerRegistryResourceId) ? containerRegistryResourceId : null
     hbiWorkspace: false
-    managedNetwork: {
+    managedNetworkSettings: {
       isolationMode: 'Disabled'
     }
-    v1LegacyMode: false
     publicNetworkAccess: publicNetworkAccess
     discoveryUrl: 'https://${location}.api.azureml.ms/discovery'
-  }
-
-  resource openAiConnection 'connections@2024-04-01-preview' = {
-    name: 'aoai-connection'
-    properties: {
-      category: 'AzureOpenAI'
-      authType: 'ApiKey'
-      isSharedToAll: true
-      target: openAi.properties.endpoints['OpenAI Language Model Instance API']
-      metadata: {
-        ApiVersion: '2024-02-01'
-        ApiType: 'azure'
-        ResourceId: openAi.id
-      }
-      credentials: {
-        key: openAi.listKeys().key1
-      }
-    }
-  }
-
-  resource contentSafetyConnection 'connections' = {
-    name: openAiContentSafetyConnectionName
-    properties: {
-      category: 'AzureOpenAI'
-      authType: 'ApiKey'
-      isSharedToAll: true
-      target: openAi.properties.endpoints['Content Safety']
-      metadata: {
-        ApiVersion: '2023-07-01-preview'
-        ApiType: 'azure'
-        ResourceId: openAi.id
-      }
-      credentials: {
-        key: openAi.listKeys().key1
-      }
-    }
-  }
-
-  resource searchConnection 'connections' = if (!empty(aiSearchName)) {
-    name: aiSearchConnectionName
-    properties: {
-      category: 'CognitiveSearch'
-      authType: 'ApiKey'
-      isSharedToAll: true
-      target: 'https://${search.name}.search.windows.net/'
-      credentials: {
-        key: !empty(aiSearchName) ? search.listAdminKeys().primaryKey : ''
-      }
-    }
+    connections: union(connections, aiSearchConnection)
   }
 }
 
@@ -139,5 +128,5 @@ resource hub 'Microsoft.MachineLearningServices/workspaces@2024-04-01' = {
 // ================ //
 
 output name string = hub.name
-output resourceId string = hub.id
-output principalId string = hub.identity.principalId
+output resourceId string = hub.outputs.resourceId
+output principalId string = hub.outputs.systemAssignedMIPrincipalId

@@ -35,18 +35,21 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
-  params: {
-    location: resourceLocation
-    keyVaultName: '${namePrefix}${serviceShort}kv00'
-    storageAccountName: '${namePrefix}${serviceShort}sa001'
-    hubName: '${namePrefix}${serviceShort}hub001'
-    projectName: '${namePrefix}${serviceShort}pro001'
-    userAssignedtName: '${namePrefix}${serviceShort}ua001'
-    cognitiveServicesName: '${namePrefix}${serviceShort}cs001'
-    openAiConnectionName: '${namePrefix}${serviceShort}ai001-connection'
-    searchConnectionName: '${namePrefix}${serviceShort}search001-connection'
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      keyVaultName: '${namePrefix}${serviceShort}kv00'
+      storageAccountName: '${namePrefix}${serviceShort}sa001'
+      hubName: '${namePrefix}${serviceShort}hub001'
+      projectName: '${namePrefix}${serviceShort}pro001'
+      userAssignedtName: '${namePrefix}${serviceShort}ua001'
+      cognitiveServicesName: '${namePrefix}${serviceShort}cs001'
+      openAiConnectionName: '${namePrefix}${serviceShort}ai001-connection'
+      searchConnectionName: '${namePrefix}${serviceShort}search001-connection'
+    }
   }
-}
+]

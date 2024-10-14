@@ -35,36 +35,39 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
-  params: {
-    location: resourceLocation
-    hubName: '${namePrefix}${serviceShort}hub001'
-    keyVaultName: '${namePrefix}${serviceShort}kv001'
-    cognitiveServicesName: '${namePrefix}${serviceShort}cs001'
-    projectName: '${namePrefix}${serviceShort}pro001'
-    storageAccountName: '${namePrefix}${serviceShort}sta001'
-    userAssignedtName: '${namePrefix}${serviceShort}ua001'
-    containerRegistryName: '${namePrefix}${serviceShort}cr001'
-    applicationInsightsName: '${namePrefix}${serviceShort}appin001'
-    logAnalyticsName: '${namePrefix}${serviceShort}la001'
-    searchServiceName: '${namePrefix}${serviceShort}search001'
-    openAiConnectionName: '${namePrefix}${serviceShort}ai001-connection'
-    searchConnectionName: '${namePrefix}${serviceShort}search001-connection'
-    cognitiveServicesDeployments: [
-      {
-        name: 'gpt-35-turbo'
-        model: {
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      hubName: '${namePrefix}${serviceShort}hub001'
+      keyVaultName: '${namePrefix}${serviceShort}kv001'
+      cognitiveServicesName: '${namePrefix}${serviceShort}cs001'
+      projectName: '${namePrefix}${serviceShort}pro001'
+      storageAccountName: '${namePrefix}${serviceShort}sta001'
+      userAssignedtName: '${namePrefix}${serviceShort}ua001'
+      containerRegistryName: '${namePrefix}${serviceShort}cr001'
+      applicationInsightsName: '${namePrefix}${serviceShort}appin001'
+      logAnalyticsName: '${namePrefix}${serviceShort}la001'
+      searchServiceName: '${namePrefix}${serviceShort}search001'
+      openAiConnectionName: '${namePrefix}${serviceShort}ai001-connection'
+      searchConnectionName: '${namePrefix}${serviceShort}search001-connection'
+      cognitiveServicesDeployments: [
+        {
           name: 'gpt-35-turbo'
-          format: 'OpenAI'
-          version: '0613'
+          model: {
+            name: 'gpt-35-turbo'
+            format: 'OpenAI'
+            version: '0613'
+          }
+          sku: {
+            name: 'Standard'
+            capacity: 20
+          }
         }
-        sku: {
-          name: 'Standard'
-          capacity: 20
-        }
-      }
-    ]
+      ]
+    }
   }
-}
+]

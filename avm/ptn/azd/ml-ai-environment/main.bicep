@@ -89,7 +89,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 module hubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:0.1.0' = {
-  name: 'mlHubDependenciesDeployment'
+  name: '${uniqueString(deployment().name, location)}-mlHubDependenciesDeployment'
   params: {
     location: location
     tags: tags
@@ -107,7 +107,7 @@ module hubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:0.1.0' = {
 }
 
 module hub './modules/hub.bicep' = {
-  name: 'hub'
+  name: '${uniqueString(deployment().name, location)}-hub'
   params: {
     location: location
     tags: tags
