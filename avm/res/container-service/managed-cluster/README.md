@@ -3775,7 +3775,7 @@ If set to true, getting static credentials will be disabled for this cluster. Th
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `disablePrometheusMetricsScraping`
 

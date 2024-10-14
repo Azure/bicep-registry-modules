@@ -122,7 +122,7 @@ param enableRBAC bool = true
 param aadProfileEnableAzureRBAC bool = enableRBAC
 
 @description('Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled.')
-param disableLocalAccounts bool = false
+param disableLocalAccounts bool = true
 
 @description('Optional. Name of the resource group containing agent pool nodes.')
 param nodeResourceGroup string = '${resourceGroup().name}_aks_${name}_nodes'
