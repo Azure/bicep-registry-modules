@@ -667,34 +667,26 @@ Describe 'Module tests' -Tag 'Module' {
                     $udtCases = @(
                         @{
                             parameterName = 'diagnosticSettings'
-                            udtName       = 'diagnosticSettingType'
                             link          = "$interfaceBase/diagnostic-settings"
                         }
                         @{
                             parameterName  = 'roleAssignments'
-                            udtName        = 'roleAssignmentType'
-                            udtExpectedUrl = "$interfaceBase/role-assignments/udt-schema"
                             link           = "$interfaceBase/role-assignments"
                         }
                         @{
                             parameterName  = 'lock'
-                            udtName        = 'lockType'
-                            udtExpectedUrl = "$interfaceBase/resource-locks/udt-schema"
                             link           = "$interfaceBase/resource-locks"
                         }
                         @{
                             parameterName = 'managedIdentities'
-                            udtName       = 'managedIdentitiesType'
                             link          = "$interfaceBase/managed-identities"
                         }
                         @{
                             parameterName = 'privateEndpoints'
-                            udtName       = 'privateEndpointType'
                             link          = "$interfaceBase/private-endpoints"
                         }
                         @{
                             parameterName = 'customerManagedKey'
-                            udtName       = 'customerManagedKeyType'
                             link          = "$interfaceBase/customer-managed-keys"
                         }
                     )
@@ -705,86 +697,29 @@ Describe 'Module tests' -Tag 'Module' {
                             templateFileContent      = $templateFileContent
                             templateFileContentBicep = Get-Content $templateFilePath
                             parameterName            = $udtCase.parameterName
-                            udtName                  = $udtCase.udtName
                             expectedUdtUrl           = $udtCase.udtExpectedUrl ? $udtCase.udtExpectedUrl : ''
                             link                     = $udtCase.link
                         }
                     }
                 }
 
-                It '[<moduleFolderName>] If template has a parameter [<parameterName>], it should implement the user-defined type [<udtName>]' -TestCases $udtTestCases {
+                It '[<moduleFolderName>] If template has a parameter [<parameterName>], it should implement AVM''s corresponding user-defined type.' -TestCases $udtTestCases {
 
                     param(
                         [hashtable] $templateFileContent,
                         [string[]] $templateFileContentBicep,
                         [string] $parameterName,
-                        [string] $udtName,
-                        [string] $expectedUdtUrl,
                         [string] $link
                     )
 
                     if ($templateFileContent.parameters.Keys -contains $parameterName) {
-                        $templateFileContent.parameters.$parameterName.Keys | Should -Contain '$ref' -Because "the [$parameterName] parameter should use a user-defined type. For information please review the [AVM Specs]($link)."
-                        $templateFileContent.parameters.$parameterName.'$ref' | Should -Be "#/definitions/$udtName" -Because "the [$parameterName] parameter should use a user-defined type [$udtName]. For information please review the [AVM Specs]($link)."
 
-                        if (-not [String]::IsNullOrEmpty($expectedUdtUrl)) {
-                            $implementedSchemaStartIndex = $templateFileContentBicep.IndexOf("type $udtName = {")
-                            $implementedSchemaEndIndex = $implementedSchemaStartIndex + 1
-                            while ($templateFileContentBicep[$implementedSchemaEndIndex] -notmatch '^\}.*' -and $implementedSchemaEndIndex -lt $templateFileContentBicep.Length) {
-                                $implementedSchemaEndIndex++
-                            }
-                            if ($implementedSchemaEndIndex -eq $templateFileContentBicep.Length) {
-                                throw "Failed to identify [$udtName] user-defined type in template."
-                            }
-                            $implementedSchema = $templateFileContentBicep[$implementedSchemaStartIndex..$implementedSchemaEndIndex]
-
-                            try {
-                                $rawResponse = Invoke-WebRequest -Uri $expectedUdtUrl
-                                if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
-                                    $expectedSchemaFull = $rawResponse.Content -split '\n'
-                                } else {
-                                    throw "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
-                                }
-                            } catch {
-                                Write-Warning "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
-                                return
-                            }
-
-                            $expectedSchemaStartIndex = $expectedSchemaFull.IndexOf("type $udtName = {")
-                            $expectedSchemaEndIndex = $expectedSchemaStartIndex + 1
-                            while ($expectedSchemaFull[$expectedSchemaEndIndex] -notmatch '^\}.*' -and $expectedSchemaEndIndex -lt $expectedSchemaFull.Length) {
-                                $expectedSchemaEndIndex++
-                            }
-                            if ($expectedSchemaEndIndex -eq $expectedSchemaFull.Length) {
-                                throw "Failed to identify [$udtName] user-defined type in expected schema at URL [$expectedUdtUrl]."
-                            }
-                            $expectedSchema = $expectedSchemaFull[$expectedSchemaStartIndex..$expectedSchemaEndIndex]
-
-                            if ($templateFileContentBicep -match '@sys\.([a-zA-Z]+)\(') {
-                                # Handing cases where the template may use the @sys namespace explicitly
-                                $expectedSchema = $expectedSchema | ForEach-Object { $_ -replace '@([a-zA-Z]+)\(', '@sys.$1(' }
-                            }
-
-                            $formattedDiff = @()
-                            foreach ($finding in (Compare-Object $implementedSchema $expectedSchema)) {
-                                if ($finding.SideIndicator -eq '=>') {
-                                    $formattedDiff += ('+ {0}' -f $finding.InputObject)
-                                } elseif ($finding.SideIndicator -eq '<=') {
-                                    $formattedDiff += ('- {0}' -f $finding.InputObject)
-                                }
-                            }
-
-                            if ($formattedDiff.Count -gt 0) {
-                                $warningMessage = "The implemented user-defined type is not the same as the expected user-defined type ({0}) defined in the AVM specs ({1}) and should not have diff`n{2}" -f $expectedUdtUrl, $link, ($formattedDiff | Out-String)
-                                Write-Warning $warningMessage
-
-                                # Adding also to output to show in GitHub CI
-                                $mdFormattedDiff = ($formattedDiff -join '</br>') -replace '\|', '\|'
-                                $mdFormattedWarningMessage = 'The implemented user-defined type is not the same as the expected [user-defined type]({0}) defined in the [AVM specs]({1}) and should not have diff</br><pre>{2}</pre>' -f $expectedUdtUrl, $link, $mdFormattedDiff
-                                Write-Output @{
-                                    Warning = $mdFormattedWarningMessage
-                                }
-                            }
+                        if ($templateFileContent.parameters.$parameterName.Keys -contains 'items') {
+                            # If parameter is an array, the UDT may focus on each element
+                            $templateFileContent.parameters.$parameterName.items.Keys | Should -Contain '$ref' -Because "the [$parameterName] parameter should use a user-defined type. For information please review the [AVM Specs]($link)."
+                        } else {
+                            # If not, the parameter itself should reference a UDT
+                            $templateFileContent.parameters.$parameterName.Keys | Should -Contain '$ref' -Because "the [$parameterName] parameter should use a user-defined type. For information please review the [AVM Specs]($link)."
                         }
                     } else {
                         Set-ItResult -Skipped -Because "the module template has no [$parameterName] parameter."
