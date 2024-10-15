@@ -52,7 +52,7 @@ The following section provides usage examples for the module, which were used to
 - [Public network restricted access with ACL](#example-10-public-network-restricted-access-with-acl)
 - [Deploying with a sql role definision and assignment](#example-11-deploying-with-a-sql-role-definision-and-assignment)
 - [SQL Database](#example-12-sql-database)
-- [Using only defaults](#example-13-using-only-defaults)
+- [API for Table](#example-13-api-for-table)
 - [WAF-aligned](#example-14-waf-aligned)
 
 ### Example 1: _Using analytical storage_
@@ -253,6 +253,8 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'dddamin001'
     // Non-required parameters
+    disableKeyBasedMetadataWriteAccess: true
+    disableLocalAuth: true
     location: '<location>'
   }
 }
@@ -275,6 +277,12 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "dddamin001"
     },
     // Non-required parameters
+    "disableKeyBasedMetadataWriteAccess": {
+      "value": true
+    },
+    "disableLocalAuth": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     }
@@ -295,6 +303,8 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'dddamin001'
 // Non-required parameters
+param disableKeyBasedMetadataWriteAccess = true
+param disableLocalAuth = true
 param location = '<location>'
 ```
 
@@ -3056,9 +3066,9 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 13: _Using only defaults_
+### Example 13: _API for Table_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module for an Azure Cosmos DB for Table account with two example tables.
 
 
 <details>

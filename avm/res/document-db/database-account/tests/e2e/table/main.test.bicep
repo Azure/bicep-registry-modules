@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'API for Table'
+metadata description = 'This instance deploys the module for an Azure Cosmos DB for Table account with two example tables.'
 
 // ========== //
 // Parameters //
