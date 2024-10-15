@@ -44,23 +44,26 @@ module testDeployment '../../../main.bicep' = [
       enableSecretRotation: true
       kedaAddon: true
       kubernetesVersion: '1.28'
-      maintenanceConfiguration: {
-        maintenanceWindow: {
-          schedule: {
-            daily: null
-            weekly: {
-              intervalWeeks: 1
-              dayOfWeek: 'Sunday'
+      maintenanceConfigurations: [
+        {
+          name: 'aksManagedAutoUpgradeSchedule'
+          maintenanceWindow: {
+            schedule: {
+              daily: null
+              weekly: {
+                intervalWeeks: 1
+                dayOfWeek: 'Sunday'
+              }
+              absoluteMonthly: null
+              relativeMonthly: null
             }
-            absoluteMonthly: null
-            relativeMonthly: null
+            durationHours: 4
+            utcOffset: '+00:00'
+            startDate: '2024-07-03'
+            startTime: '00:00'
           }
-          durationHours: 4
-          utcOffset: '+00:00'
-          startDate: '2024-07-03'
-          startTime: '00:00'
         }
-      }
+      ]
       managedIdentities: {
         systemAssigned: true
       }
@@ -71,15 +74,12 @@ module testDeployment '../../../main.bicep' = [
         restrictionLevel: 'ReadOnly'
       }
       outboundType: 'managedNATGateway'
-      primaryAgentPoolProfile: [
+      primaryAgentPoolProfiles: [
         {
           name: 'systempool'
           count: 3
           vmSize: 'Standard_DS4_v2'
           mode: 'System'
-          securityProfile: {
-            sshAccess: 'Disabled'
-          }
         }
       ]
       publicNetworkAccess: 'Enabled'

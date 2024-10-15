@@ -70,7 +70,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource sshPublicKey 'Microsoft.Compute/sshPublicKeys@2023-07-01' = {
+resource sshPublicKey 'Microsoft.Compute/sshPublicKeys@2024-03-01' = {
   name: name
   location: location
   tags: tags

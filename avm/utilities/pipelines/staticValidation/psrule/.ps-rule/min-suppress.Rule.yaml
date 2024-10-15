@@ -46,6 +46,8 @@ spec:
     # Azure API Management
     - Azure.APIM.MultiRegion # Team agreed this is too expensive for most use cases and is safe to ignore. Would require dependencies for a min deployment.
     - Azure.APIM.ManagedIdentity
+    # AKS specific
+    - Azure.AKS.MaintenanceWindow # Excluded as it requires user input
   if:
     name: "."
     contains:
