@@ -116,6 +116,33 @@ param accessConnectorResourceId string = ''
 @description('Optional. The default catalog configuration for the Databricks workspace.')
 param defaultCatalog defaultCatalogType?
 
+@description('Optional. The value for enabling automatic cluster updates in enhanced security compliance.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  ''
+])
+param automaticClusterUpdate string = ''
+
+@description('Optional. The compliance standards array for the security profile. Should be a list of compliance standards like "HIPAA", "NONE" or "PCI_DSS".')
+param complianceStandards array = []
+
+@description('Optional. The value to Enable or Disable for the compliance security profile.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  ''
+])
+param complianceSecurityProfileValue string = ''
+
+@description('Optional. The value for enabling or configuring enhanced security monitoring.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  ''
+])
+param enhancedSecurityMonitoring string = ''
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -337,6 +364,22 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
           defaultCatalog: {
             initialName: ''
             initialType: defaultCatalog.?initialType
+          }
+        }
+      : {},
+    !empty(automaticClusterUpdate) || !empty(complianceStandards) || !empty(enhancedSecurityMonitoring)
+      ? {
+          enhancedSecurityCompliance: {
+            automaticClusterUpdate: {
+              value: automaticClusterUpdate
+            }
+            complianceSecurityProfile: {
+              complianceStandards: complianceStandards
+              value: complianceSecurityProfileValue
+            }
+            enhancedSecurityMonitoring: {
+              value: enhancedSecurityMonitoring
+            }
           }
         }
       : {}

@@ -175,6 +175,9 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      complianceSecurityProfileValue: 'Disabled'
+      enhancedSecurityMonitoring: 'Enabled' // This can be set to 'Enabled' without the complianceSecurityProfileValue being set to 'Enabled'
+      automaticClusterUpdate: 'Enabled' // This can be set to 'Enabled' without the complianceSecurityProfileValue being set to 'Enabled'
     }
     dependsOn: [
       nestedDependencies
