@@ -8,7 +8,6 @@ This module deploys Deployment Scripts.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -30,9 +29,10 @@ The following section provides usage examples for the module, which were used to
 - [Using Azure CLI](#example-1-using-azure-cli)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [Using Private Networking](#example-4-using-private-networking)
-- [Using Azure PowerShell](#example-5-using-azure-powershell)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using Private Endpoint](#example-4-using-private-endpoint)
+- [Using Private Networking](#example-5-using-private-networking)
+- [Using Azure PowerShell](#example-6-using-azure-powershell)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _Using Azure CLI_
 
@@ -52,14 +52,12 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     name: 'rdscli001'
     // Non-required parameters
     azCliVersion: '2.9.1'
-    environmentVariables: {
-      secureList: [
-        {
-          name: 'var1'
-          value: 'AVM Deployment Script test!'
-        }
-      ]
-    }
+    environmentVariables: [
+      {
+        name: 'var1'
+        value: 'AVM Deployment Script test!'
+      }
+    ]
     location: '<location>'
     managedIdentities: {
       userAssignedResourcesIds: [
@@ -78,7 +76,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -97,14 +95,12 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
       "value": "2.9.1"
     },
     "environmentVariables": {
-      "value": {
-        "secureList": [
-          {
-            "name": "var1",
-            "value": "AVM Deployment Script test!"
-          }
-        ]
-      }
+      "value": [
+        {
+          "name": "var1",
+          "value": "AVM Deployment Script test!"
+        }
+      ]
     },
     "location": {
       "value": "<location>"
@@ -127,6 +123,38 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resources/deployment-script:<version>'
+
+// Required parameters
+param kind = 'AzureCLI'
+param name = 'rdscli001'
+// Non-required parameters
+param azCliVersion = '2.9.1'
+param environmentVariables = [
+  {
+    name: 'var1'
+    value: 'AVM Deployment Script test!'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param retentionInterval = 'P1D'
+param scriptContent = 'echo \'Enviornment variable value is: \' $var1'
+param storageAccountResourceId = '<storageAccountResourceId>'
 ```
 
 </details>
@@ -166,7 +194,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -204,6 +232,30 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resources/deployment-script:<version>'
+
+// Required parameters
+param kind = 'AzurePowerShell'
+param name = 'rdsmin001'
+// Non-required parameters
+param azPowerShellVersion = '9.7'
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param scriptContent = 'Write-Host \'AVM Deployment Script test!\''
+```
+
+</details>
+<p>
+
 ### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -225,18 +277,16 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     azCliVersion: '2.9.1'
     cleanupPreference: 'Always'
     containerGroupName: 'dep-cg-rdsmax'
-    environmentVariables: {
-      secureList: [
-        {
-          name: 'var1'
-          value: 'test'
-        }
-        {
-          name: 'var2'
-          secureValue: '<secureValue>'
-        }
-      ]
-    }
+    environmentVariables: [
+      {
+        name: 'var1'
+        value: 'test'
+      }
+      {
+        name: 'var2'
+        secureValue: '<secureValue>'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'None'
@@ -249,11 +299,13 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     retentionInterval: 'P1D'
     roleAssignments: [
       {
+        name: 'd8eadbae-2c20-4e8f-9a48-4c6d739d0c4a'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -282,7 +334,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -310,18 +362,16 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
       "value": "dep-cg-rdsmax"
     },
     "environmentVariables": {
-      "value": {
-        "secureList": [
-          {
-            "name": "var1",
-            "value": "test"
-          },
-          {
-            "name": "var2",
-            "secureValue": "<secureValue>"
-          }
-        ]
-      }
+      "value": [
+        {
+          "name": "var1",
+          "value": "test"
+        },
+        {
+          "name": "var2",
+          "secureValue": "<secureValue>"
+        }
+      ]
     },
     "location": {
       "value": "<location>"
@@ -344,11 +394,13 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     "roleAssignments": {
       "value": [
         {
+          "name": "d8eadbae-2c20-4e8f-9a48-4c6d739d0c4a",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -386,7 +438,207 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
-### Example 4: _Using Private Networking_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resources/deployment-script:<version>'
+
+// Required parameters
+param kind = 'AzureCLI'
+param name = 'rdsmax001'
+// Non-required parameters
+param arguments = '-argument1 \\\'test\\\''
+param azCliVersion = '2.9.1'
+param cleanupPreference = 'Always'
+param containerGroupName = 'dep-cg-rdsmax'
+param environmentVariables = [
+  {
+    name: 'var1'
+    value: 'test'
+  }
+  {
+    name: 'var2'
+    secureValue: '<secureValue>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'None'
+}
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param retentionInterval = 'P1D'
+param roleAssignments = [
+  {
+    name: 'd8eadbae-2c20-4e8f-9a48-4c6d739d0c4a'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param runOnce = true
+param scriptContent = 'echo \'AVM Deployment Script test!\''
+param storageAccountResourceId = '<storageAccountResourceId>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param timeout = 'PT1H'
+```
+
+</details>
+<p>
+
+### Example 4: _Using Private Endpoint_
+
+This instance deploys the module with access to a private endpoint.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
+  name: 'deploymentScriptDeployment'
+  params: {
+    // Required parameters
+    kind: 'AzureCLI'
+    name: 'rdspe001'
+    // Non-required parameters
+    azCliVersion: '2.9.1'
+    cleanupPreference: 'Always'
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourcesIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    retentionInterval: 'P1D'
+    runOnce: true
+    scriptContent: 'echo \'AVM Deployment Script test!\''
+    storageAccountResourceId: '<storageAccountResourceId>'
+    subnetResourceIds: [
+      '<subnetResourceId>'
+    ]
+    timeout: 'PT1H'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "AzureCLI"
+    },
+    "name": {
+      "value": "rdspe001"
+    },
+    // Non-required parameters
+    "azCliVersion": {
+      "value": "2.9.1"
+    },
+    "cleanupPreference": {
+      "value": "Always"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourcesIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "retentionInterval": {
+      "value": "P1D"
+    },
+    "runOnce": {
+      "value": true
+    },
+    "scriptContent": {
+      "value": "echo \"AVM Deployment Script test!\""
+    },
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
+    },
+    "subnetResourceIds": {
+      "value": [
+        "<subnetResourceId>"
+      ]
+    },
+    "timeout": {
+      "value": "PT1H"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resources/deployment-script:<version>'
+
+// Required parameters
+param kind = 'AzureCLI'
+param name = 'rdspe001'
+// Non-required parameters
+param azCliVersion = '2.9.1'
+param cleanupPreference = 'Always'
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param retentionInterval = 'P1D'
+param runOnce = true
+param scriptContent = 'echo \'AVM Deployment Script test!\''
+param storageAccountResourceId = '<storageAccountResourceId>'
+param subnetResourceIds = [
+  '<subnetResourceId>'
+]
+param timeout = 'PT1H'
+```
+
+</details>
+<p>
+
+### Example 5: _Using Private Networking_
 
 This instance deploys the module with access to a private network.
 
@@ -428,7 +680,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -486,7 +738,39 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
-### Example 5: _Using Azure PowerShell_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resources/deployment-script:<version>'
+
+// Required parameters
+param kind = 'AzureCLI'
+param name = 'rdsnet001'
+// Non-required parameters
+param azCliVersion = '2.9.1'
+param cleanupPreference = 'Always'
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param retentionInterval = 'P1D'
+param runOnce = true
+param scriptContent = 'echo \'AVM Deployment Script test!\''
+param storageAccountResourceId = '<storageAccountResourceId>'
+param subnetResourceIds = [
+  '<subnetResourceId>'
+]
+param timeout = 'PT1H'
+```
+
+</details>
+<p>
+
+### Example 6: _Using Azure PowerShell_
 
 This instance deploys the module with an Azure PowerShell script.
 
@@ -523,7 +807,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -570,7 +854,34 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resources/deployment-script:<version>'
+
+// Required parameters
+param kind = 'AzurePowerShell'
+param name = 'rdsps001'
+// Non-required parameters
+param arguments = '-var1 \\\'AVM Deployment Script test!\\\''
+param azPowerShellVersion = '9.7'
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param retentionInterval = 'P1D'
+param scriptContent = 'param([string] $var1);Write-Host \'Argument var1 value is:\' $var1'
+param storageAccountResourceId = '<storageAccountResourceId>'
+```
+
+</details>
+<p>
+
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -617,7 +928,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -682,6 +993,42 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/resources/deployment-script:<version>'
+
+// Required parameters
+param kind = 'AzureCLI'
+param name = 'rdswaf001'
+// Non-required parameters
+param azCliVersion = '2.9.1'
+param cleanupPreference = 'Always'
+param location = '<location>'
+param lock = {
+  kind: 'None'
+}
+param managedIdentities = {
+  userAssignedResourcesIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param retentionInterval = 'P1D'
+param runOnce = true
+param scriptContent = 'echo \'AVM Deployment Script test!\''
+param storageAccountResourceId = '<storageAccountResourceId>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param timeout = 'PT1H'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -702,7 +1049,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 | [`cleanupPreference`](#parameter-cleanuppreference) | string | The clean up preference when the script execution gets in a terminal state. Specify the preference on when to delete the deployment script resources. The default value is Always, which means the deployment script resources are deleted despite the terminal state (Succeeded, Failed, canceled). |
 | [`containerGroupName`](#parameter-containergroupname) | string | Container group name, if not specified then the name will get auto-generated. Not specifying a 'containerGroupName' indicates the system to generate a unique name which might end up flagging an Azure Policy as non-compliant. Use 'containerGroupName' when you have an Azure Policy that expects a specific naming convention or when you want to fully control the name. 'containerGroupName' property must be between 1 and 63 characters long, must contain only lowercase letters, numbers, and dashes and it cannot start or end with a dash and consecutive dashes are not allowed. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`environmentVariables`](#parameter-environmentvariables) | secureObject | The environment variables to pass over to the script. The list is passed as an object with a key name "secureList" and the value is the list of environment variables (array). The list must have a 'name' and a 'value' or a 'secretValue' property for each object. |
+| [`environmentVariables`](#parameter-environmentvariables) | array | The environment variables to pass over to the script. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -798,10 +1145,39 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `environmentVariables`
 
-The environment variables to pass over to the script. The list is passed as an object with a key name "secureList" and the value is the list of environment variables (array). The list must have a 'name' and a 'value' or a 'secretValue' property for each object.
+The environment variables to pass over to the script.
 
 - Required: No
-- Type: secureObject
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-environmentvariablesname) | string | The name of the environment variable. |
+| [`secureValue`](#parameter-environmentvariablessecurevalue) | securestring | The value of the secure environment variable. |
+| [`value`](#parameter-environmentvariablesvalue) | string | The value of the environment variable. |
+
+### Parameter: `environmentVariables.name`
+
+The name of the environment variable.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `environmentVariables.secureValue`
+
+The value of the secure environment variable.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `environmentVariables.value`
+
+The value of the environment variable.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 
@@ -888,6 +1264,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -904,6 +1286,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -950,6 +1333,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1030,7 +1420,6 @@ Do not provide a value! This date value is used to make sure the script run ever
 - Type: string
 - Default: `[utcNow('yyyy-MM-dd-HH-mm-ss')]`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1041,10 +1430,6 @@ Do not provide a value! This date value is used to make sure the script run ever
 | `outputs` | object | The output of the deployment script. |
 | `resourceGroupName` | string | The resource group the deployment script was deployed into. |
 | `resourceId` | string | The resource ID of the deployment script. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

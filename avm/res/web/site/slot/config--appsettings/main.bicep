@@ -15,6 +15,7 @@ param appName string
   'functionapp,workflowapp' // logic app workflow
   'functionapp,workflowapp,linux' // logic app docker container
   'functionapp,linux,container' // function app linux container
+  'functionapp,linux,container,azurecontainerapps' // function app linux container azure container apps
   'app,linux' // linux web app
   'app' // windows web app
   'linux,api' // linux api app
@@ -36,9 +37,12 @@ param appInsightResourceId string?
 @description('Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.')
 param appSettingsKeyValuePairs object?
 
+@description('Optional. The current app settings.')
+param currentAppSettings object = {}
+
 var azureWebJobsValues = !empty(storageAccountResourceId) && !(storageAccountUseIdentityAuthentication)
   ? {
-      AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};'
+      AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
     }
   : !empty(storageAccountResourceId) && storageAccountUseIdentityAuthentication
       ? union(
@@ -53,7 +57,12 @@ var appInsightsValues = !empty(appInsightResourceId)
     }
   : {}
 
-var expandedAppSettings = union(appSettingsKeyValuePairs ?? {}, azureWebJobsValues, appInsightsValues)
+var expandedAppSettings = union(
+  currentAppSettings ?? {},
+  appSettingsKeyValuePairs ?? {},
+  azureWebJobsValues,
+  appInsightsValues
+)
 
 resource app 'Microsoft.Web/sites@2022-09-01' existing = {
   name: appName

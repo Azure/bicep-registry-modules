@@ -8,7 +8,6 @@ This module deploys a Service Endpoint Policy.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -28,7 +27,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/service-endpoint-policy:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [WAF-aligned](#example-2-waf-aligned)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -56,7 +56,7 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -78,7 +78,177 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
 </details>
 <p>
 
-### Example 2: _WAF-aligned_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/service-endpoint-policy:<version>'
+
+// Required parameters
+param name = 'nsepmin001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:<version>' = {
+  name: 'serviceEndpointPolicyDeployment'
+  params: {
+    // Required parameters
+    name: 'nsepmax001'
+    // Non-required parameters
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    roleAssignments: [
+      {
+        name: '36fbc5db-13e9-4bda-9594-1b1cc9db2d6d'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nsepmax001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "36fbc5db-13e9-4bda-9594-1b1cc9db2d6d",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/service-endpoint-policy:<version>'
+
+// Required parameters
+param name = 'nsepmax001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: '36fbc5db-13e9-4bda-9594-1b1cc9db2d6d'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -95,10 +265,6 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
     name: 'nsepwaf001'
     // Non-required parameters
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -113,7 +279,7 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -127,12 +293,6 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "tags": {
       "value": {
@@ -148,6 +308,26 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/service-endpoint-policy:<version>'
+
+// Required parameters
+param name = 'nsepwaf001'
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -242,6 +422,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -258,6 +445,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -308,6 +496,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -346,7 +541,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -355,10 +549,6 @@ Tags of the resource.
 | `name` | string | The name of the Service Endpoint Policy. |
 | `resourceGroupName` | string | The resource group the Service Endpoint Policy was deployed into. |
 | `resourceId` | string | The resource ID of the Service Endpoint Policy. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

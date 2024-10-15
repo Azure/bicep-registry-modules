@@ -8,7 +8,6 @@ This module deploys an Azure Active Directory Domain Services (AADDS) instance.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -100,7 +99,7 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -187,6 +186,64 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/aad/domain-service:<version>'
+
+// Required parameters
+param domainName = 'onmicrosoft.com'
+// Non-required parameters
+param additionalRecipients = [
+  '@noreply.github.com'
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param externalAccess = 'Enabled'
+param ldaps = 'Enabled'
+param location = '<location>'
+param lock = {
+  kind: 'None'
+  name: 'myCustomLockName'
+}
+param name = 'aaddswaf001'
+param pfxCertificate = '<pfxCertificate>'
+param pfxCertificatePassword = '<pfxCertificatePassword>'
+param replicaSets = [
+  {
+    location: 'NorthEurope'
+    subnetId: '<subnetId>'
+  }
+]
+param sku = 'Standard'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -647,6 +704,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -663,6 +726,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -709,6 +773,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -805,7 +876,6 @@ The value is to enable clients making request using TLSv1.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -814,10 +884,6 @@ The value is to enable clients making request using TLSv1.
 | `name` | string | The domain name of the Azure Active Directory Domain Services(Azure ADDS). |
 | `resourceGroupName` | string | The name of the resource group the Azure Active Directory Domain Services(Azure ADDS) was created in. |
 | `resourceId` | string | The resource ID of the Azure Active Directory Domain Services(Azure ADDS). |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 

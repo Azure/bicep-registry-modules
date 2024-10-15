@@ -74,7 +74,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
     $anyErrorsOccurred = $false
     $moduleIndexData = @()
 
-    foreach ($avmModuleRoot in @('avm/res', 'avm/ptn')) {
+    foreach ($avmModuleRoot in @('avm/res', 'avm/ptn', 'avm/utl')) {
         $avmModuleGroups = (Get-ChildItem -Path $avmModuleRoot -Directory).Name
 
         foreach ($moduleGroup in $avmModuleGroups) {
@@ -99,6 +99,9 @@ function Invoke-AvmJsonModuleIndexGeneration {
                         continue
                     }
                     $tags = $tagListResponse.tags | Sort-Object -Culture 'en-US'
+
+                    # Sort tags by order of semantic versioning with the latest version last
+                    $tags = $tags | Sort-Object -Property { [semver] $_ }
 
                     $properties = [ordered]@{}
                     foreach ($tag in $tags) {

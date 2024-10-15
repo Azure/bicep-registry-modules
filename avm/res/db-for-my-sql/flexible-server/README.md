@@ -8,7 +8,6 @@ This module deploys a DBforMySQL Flexible Server.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -17,10 +16,10 @@ This module deploys a DBforMySQL Flexible Server.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DBforMySQL/flexibleServers` | [2022-09-30-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2022-09-30-preview/flexibleServers) |
-| `Microsoft.DBforMySQL/flexibleServers/administrators` | [2022-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2022-01-01/flexibleServers/administrators) |
-| `Microsoft.DBforMySQL/flexibleServers/databases` | [2022-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2022-01-01/flexibleServers/databases) |
-| `Microsoft.DBforMySQL/flexibleServers/firewallRules` | [2022-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2022-01-01/flexibleServers/firewallRules) |
+| `Microsoft.DBforMySQL/flexibleServers` | [2023-12-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-12-30/flexibleServers) |
+| `Microsoft.DBforMySQL/flexibleServers/administrators` | [2023-06-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-06-30/flexibleServers/administrators) |
+| `Microsoft.DBforMySQL/flexibleServers/databases` | [2023-06-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-06-30/flexibleServers/databases) |
+| `Microsoft.DBforMySQL/flexibleServers/firewallRules` | [2023-06-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-06-30/flexibleServers/firewallRules) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
 ## Usage examples
@@ -51,12 +50,13 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   params: {
     // Required parameters
     name: 'dfmsfsmin001'
-    skuName: 'Standard_B1ms'
-    tier: 'Burstable'
+    skuName: 'Standard_D2ds_v4'
+    tier: 'GeneralPurpose'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
     location: '<location>'
+    storageAutoGrow: 'Enabled'
   }
 }
 ```
@@ -66,7 +66,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -78,10 +78,10 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": "dfmsfsmin001"
     },
     "skuName": {
-      "value": "Standard_B1ms"
+      "value": "Standard_D2ds_v4"
     },
     "tier": {
-      "value": "Burstable"
+      "value": "GeneralPurpose"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -92,9 +92,33 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     },
     "location": {
       "value": "<location>"
+    },
+    "storageAutoGrow": {
+      "value": "Enabled"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
+
+// Required parameters
+param name = 'dfmsfsmin001'
+param skuName = 'Standard_D2ds_v4'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param location = '<location>'
+param storageAutoGrow = 'Enabled'
 ```
 
 </details>
@@ -174,7 +198,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       }
     ]
     geoRedundantBackup: 'Enabled'
-    highAvailability: 'SameZone'
+    highAvailability: 'ZoneRedundant'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -188,11 +212,13 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     }
     roleAssignments: [
       {
+        name: '2478b63b-0cae-457f-9bd3-9feb00e1925b'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -222,7 +248,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -317,7 +343,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": "Enabled"
     },
     "highAvailability": {
-      "value": "SameZone"
+      "value": "ZoneRedundant"
     },
     "location": {
       "value": "<location>"
@@ -339,11 +365,13 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "roleAssignments": {
       "value": [
         {
+          "name": "2478b63b-0cae-457f-9bd3-9feb00e1925b",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -379,6 +407,120 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
+
+// Required parameters
+param name = 'dfmsmax001'
+param skuName = 'Standard_D2ads_v5'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param availabilityZone = '1'
+param backupRetentionDays = 20
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param customerManagedKeyGeo = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param databases = [
+  {
+    name: 'testdb1'
+  }
+  {
+    charset: 'ascii'
+    collation: 'ascii_general_ci'
+    name: 'testdb2'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param firewallRules = [
+  {
+    endIpAddress: '0.0.0.0'
+    name: 'AllowAllWindowsAzureIps'
+    startIpAddress: '0.0.0.0'
+  }
+  {
+    endIpAddress: '10.10.10.10'
+    name: 'test-rule1'
+    startIpAddress: '10.10.10.1'
+  }
+  {
+    endIpAddress: '100.100.100.10'
+    name: 'test-rule2'
+    startIpAddress: '100.100.100.1'
+  }
+]
+param geoRedundantBackup = 'Enabled'
+param highAvailability = 'ZoneRedundant'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<geoBackupManagedIdentityResourceId>'
+    '<managedIdentityResourceId>'
+  ]
+}
+param roleAssignments = [
+  {
+    name: '2478b63b-0cae-457f-9bd3-9feb00e1925b'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param storageAutoGrow = 'Enabled'
+param storageAutoIoScaling = 'Enabled'
+param storageIOPS = 400
+param storageSizeGB = 64
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  resourceType: 'MySQL Flexible Server'
+  serverName: 'dfmsmax001'
+}
+param version = '8.0.21'
 ```
 
 </details>
@@ -439,7 +581,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -520,6 +662,51 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
+
+// Required parameters
+param name = 'dfmspvt001'
+param skuName = 'Standard_D2ds_v4'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param administrators = [
+  {
+    identityResourceId: '<identityResourceId>'
+    login: '<login>'
+    sid: '<sid>'
+  }
+]
+param backupRetentionDays = 10
+param databases = [
+  {
+    name: 'testdb1'
+  }
+]
+param delegatedSubnetResourceId = '<delegatedSubnetResourceId>'
+param highAvailability = 'SameZone'
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateDnsZoneResourceId = '<privateDnsZoneResourceId>'
+param storageAutoGrow = 'Enabled'
+param storageAutoIoScaling = 'Enabled'
+param storageIOPS = 400
+param storageSizeGB = 64
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -535,16 +722,20 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   params: {
     // Required parameters
     name: 'dfmswaf001'
-    skuName: 'Standard_B1ms'
-    tier: 'Burstable'
+    skuName: 'Standard_D2ds_v4'
+    tier: 'GeneralPurpose'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
+    availabilityZone: '1'
+    highAvailability: 'ZoneRedundant'
+    highAvailabilityZone: '2'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    storageAutoGrow: 'Enabled'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -559,7 +750,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -571,10 +762,10 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": "dfmswaf001"
     },
     "skuName": {
-      "value": "Standard_B1ms"
+      "value": "Standard_D2ds_v4"
     },
     "tier": {
-      "value": "Burstable"
+      "value": "GeneralPurpose"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -582,6 +773,15 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     },
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
+    },
+    "availabilityZone": {
+      "value": "1"
+    },
+    "highAvailability": {
+      "value": "ZoneRedundant"
+    },
+    "highAvailabilityZone": {
+      "value": "2"
     },
     "location": {
       "value": "<location>"
@@ -591,6 +791,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "storageAutoGrow": {
+      "value": "Enabled"
     },
     "tags": {
       "value": {
@@ -606,6 +809,38 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
+
+// Required parameters
+param name = 'dfmswaf001'
+param skuName = 'Standard_D2ds_v4'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param availabilityZone = '1'
+param highAvailability = 'ZoneRedundant'
+param highAvailabilityZone = '2'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param storageAutoGrow = 'Enabled'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -646,6 +881,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the MySQL flexible server. |
 | [`geoRedundantBackup`](#parameter-georedundantbackup) | string | A value indicating whether Geo-Redundant backup is enabled on the server. If "Enabled" and "cMKKeyName" is not empty, then "geoBackupCMKKeyVaultResourceId" and "cMKUserAssignedIdentityResourceId" are also required. |
 | [`highAvailability`](#parameter-highavailability) | string | The mode for High Availability (HA). It is not supported for the Burstable pricing tier and Zone redundant HA can only be set during server provisioning. |
+| [`highAvailabilityZone`](#parameter-highavailabilityzone) | string | Standby availability zone information of the server. Default will have no preference set. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenence window. If provided, "customWindow" property must exist and set to "Enabled". |
@@ -1108,7 +1344,7 @@ The mode for High Availability (HA). It is not supported for the Burstable prici
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
+- Default: `'ZoneRedundant'`
 - Allowed:
   ```Bicep
   [
@@ -1117,6 +1353,14 @@ The mode for High Availability (HA). It is not supported for the Burstable prici
     'ZoneRedundant'
   ]
   ```
+
+### Parameter: `highAvailabilityZone`
+
+Standby availability zone information of the server. Default will have no preference set.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `location`
 
@@ -1192,6 +1436,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'MySQL Backup And Export Operator'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1208,6 +1459,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1254,6 +1506,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1335,7 +1594,7 @@ MySQL Server version.
 
 - Required: No
 - Type: string
-- Default: `'5.7'`
+- Default: `'8.0.21'`
 - Allowed:
   ```Bicep
   [
@@ -1344,19 +1603,15 @@ MySQL Server version.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `fqdn` | string | The FQDN of the MySQL Flexible server. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed MySQL Flexible server. |
 | `resourceGroupName` | string | The resource group of the deployed MySQL Flexible server. |
 | `resourceId` | string | The resource ID of the deployed MySQL Flexible server. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

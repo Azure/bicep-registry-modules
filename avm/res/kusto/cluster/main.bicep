@@ -129,7 +129,9 @@ var formattedUserAssignedIdentities = reduce(
 
 var identity = !empty(managedIdentities)
   ? {
-      type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None'
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -139,6 +141,17 @@ var builtInRoleNames = {
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 // ============== //
 // Resources      //
@@ -262,14 +275,10 @@ resource kustoCluster_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!emp
 }
 
 resource kustoCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(kustoCluster.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(kustoCluster.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -289,17 +298,19 @@ module kustoCluster_principalAssignments 'principal-assignment/main.bicep' = [
       principalId: principalAssignment.principalId
       principalType: principalAssignment.principalType
       role: principalAssignment.role
-      tenantId: contains(principalAssignment, 'tenantId') ? principalAssignment.tenantId : tenant().tenantId
+      tenantId: principalAssignment.?tenantId ?? tenant().tenantId
     }
   }
 ]
 
-module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+@batchSize(1)
+module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-KustoCluster-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-kustoCluster-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(kustoCluster.id, '/'))}-${privateEndpoint.service}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(kustoCluster.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -312,7 +323,7 @@ module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(kustoCluster.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -334,8 +345,7 @@ module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -350,17 +360,31 @@ module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint
 // Outputs      //
 // ============ //
 
-@description('The resource group the resource was deployed into.')
+@description('The resource group the kusto cluster was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The resource id of the resource.')
-output resourceId string = kustoCluster.id
+@description('The resource id of the kusto cluster.')
+output resourceId string = kustoCluster.?id
 
-@description('The name of the resource.')
+@description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string = kustoCluster.?identity.?principalId ?? ''
+
+@description('The name of the kusto cluster.')
 output name string = kustoCluster.name
 
 @description('The location the resource was deployed into.')
 output location string = kustoCluster.location
+
+@description('The private endpoints of the kusto cluster.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: kustoCluster_privateEndpoints[i].outputs.name
+    resourceId: kustoCluster_privateEndpoints[i].outputs.resourceId
+    groupId: kustoCluster_privateEndpoints[i].outputs.groupId
+    customDnsConfig: kustoCluster_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: kustoCluster_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
 
 // =============== //
 //   Definitions   //
@@ -460,6 +484,9 @@ type lockType = {
 }?
 
 type managedIdentitiesType = {
+  @description('Optional. Enables system assigned managed identity on the resource.')
+  systemAssigned: bool?
+
   @description('Optional. The resource id(s) to assign to the resource.')
   userAssignedResourceIds: string[]
 }?
@@ -471,19 +498,31 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
-  @description('Required. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
+  @description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
+
+  @description('Required. The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".')
   service: string
 
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
 
-  @description('Optional. Manual PrivateLink Service Connections.')
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
+
+  @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
 
   @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
@@ -492,10 +531,10 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint ip address.')
+    @description('Required. Fqdn that resolves to private endpoint IP address.')
     fqdn: string?
 
-    @description('Required. A list of private ip addresses of the private endpoint.')
+    @description('Required. A list of private IP addresses of the private endpoint.')
     ipAddresses: string[]
   }[]?
 
@@ -512,7 +551,7 @@ type privateEndpointType = {
       @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
       memberName: string
 
-      @description('Required. A private ip address obtained from the private endpoint\'s subnet.')
+      @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
       privateIPAddress: string
     }
   }[]?
@@ -534,9 +573,15 @@ type privateEndpointType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
 }[]?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 

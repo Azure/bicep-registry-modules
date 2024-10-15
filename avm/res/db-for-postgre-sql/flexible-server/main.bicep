@@ -89,9 +89,10 @@ param storageSizeGB int = 32
   '13'
   '14'
   '15'
+  '16'
 ])
 @description('Optional. PostgreSQL Server version.')
-param version string = '15'
+param version string = '16'
 
 @allowed([
   'Disabled'
@@ -99,7 +100,7 @@ param version string = '15'
   'ZoneRedundant'
 ])
 @description('Optional. The mode for high availability.')
-param highAvailability string = 'Disabled'
+param highAvailability string = 'ZoneRedundant'
 
 @allowed([
   'Create'
@@ -117,7 +118,12 @@ param managedIdentities managedIdentitiesType
 param customerManagedKey customerManagedKeyType
 
 @description('Optional. Properties for the maintenence window. If provided, \'customWindow\' property must exist and set to \'Enabled\'.')
-param maintenanceWindow object = {}
+param maintenanceWindow object = {
+  customWindow: 'Enabled'
+  dayOfWeek: 0
+  startHour: 1
+  startMinute: 0
+}
 
 @description('Conditional. Required if \'createMode\' is set to \'PointInTimeRestore\'.')
 param pointInTimeUTC string = ''
@@ -128,7 +134,7 @@ param sourceServerResourceId string = ''
 @description('Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is \'Private Access\' - virtual network integration.')
 param delegatedSubnetResourceId string = ''
 
-@description('Optional. Private dns zone arm resource ID. Used when the desired connectivity mode is \'Private Access\' and required when \'delegatedSubnetResourceId\' is used. The Private DNS Zone must be lined to the Virtual Network referenced in \'delegatedSubnetResourceId\'.')
+@description('Optional. Private dns zone arm resource ID. Used when the desired connectivity mode is \'Private Access\' and required when \'delegatedSubnetResourceId\' is used. The Private DNS Zone must be linked to the Virtual Network referenced in \'delegatedSubnetResourceId\'.')
 param privateDnsZoneArmResourceId string = ''
 
 @description('Optional. The firewall rules to create in the PostgreSQL flexible server.')
@@ -155,6 +161,9 @@ param enableTelemetry bool = true
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
+@description('Optional. Configuration details for private endpoints. Used when the desired connectivy mode is \'Public Access\' and \'delegatedSubnetResourceId\' is NOT used.')
+param privateEndpoints privateEndpointType
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -172,7 +181,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -181,6 +190,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -292,14 +312,10 @@ resource flexibleServer_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
 }
 
 resource flexibleServer_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(flexibleServer.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(flexibleServer.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -317,8 +333,8 @@ module flexibleServer_databases 'database/main.bicep' = [
     params: {
       name: database.name
       flexibleServerName: flexibleServer.name
-      collation: contains(database, 'collation') ? database.collation : ''
-      charset: contains(database, 'charset') ? database.charset : ''
+      collation: database.?collation ?? ''
+      charset: database.?charset ?? ''
     }
   }
 ]
@@ -345,8 +361,8 @@ module flexibleServer_configurations 'configuration/main.bicep' = [
     params: {
       name: configuration.name
       flexibleServerName: flexibleServer.name
-      source: contains(configuration, 'source') ? configuration.source : ''
-      value: contains(configuration, 'value') ? configuration.value : ''
+      source: configuration.?source ?? ''
+      value: configuration.?value ?? ''
     }
     dependsOn: [
       flexibleServer_firewallRules
@@ -362,8 +378,11 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
       objectId: administrator.objectId
       principalName: administrator.principalName
       principalType: administrator.principalType
-      tenantId: contains(administrator, 'tenantId') ? administrator.tenantId : tenant().tenantId
+      tenantId: administrator.?tenantId ?? tenant().tenantId
     }
+    dependsOn: [
+      flexibleServer_configurations
+    ]
   }
 ]
 
@@ -393,6 +412,59 @@ resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
       logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
     }
     scope: flexibleServer
+  }
+]
+
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): if (empty(delegatedSubnetResourceId)) {
+    name: '${uniqueString(deployment().name, location)}-flexibleserver-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(flexibleServer.id, '/'))}-${privateEndpoint.?service ?? 'postgresqlServer'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(flexibleServer.id, '/'))}-${privateEndpoint.?service ?? 'postgresqlServer'}-${index}'
+              properties: {
+                privateLinkServiceId: flexibleServer.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'postgresqlServer'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(flexibleServer.id, '/'))}-${privateEndpoint.?service ?? 'postgresqlServer'}-${index}'
+              properties: {
+                privateLinkServiceId: flexibleServer.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'postgresqlServer'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
   }
 ]
 
@@ -429,6 +501,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -508,3 +583,81 @@ type customerManagedKeyType = {
   @description('Required. User assigned identity to use when fetching the customer managed key.')
   userAssignedIdentityResourceId: string
 }?
+
+type privateEndpointType = {
+  @description('Optional. The name of the private endpoint.')
+  name: string?
+
+  @description('Optional. The location to deploy the private endpoint to.')
+  location: string?
+
+  @description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
+
+  @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
+  service: string?
+
+  @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
+  subnetResourceId: string
+
+  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
+  privateDnsZoneGroupName: string?
+
+  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
+  privateDnsZoneResourceIds: string[]?
+
+  @description('Optional. If Manual Private Link Connection is required.')
+  isManualConnection: bool?
+
+  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
+  @maxLength(140)
+  manualConnectionRequestMessage: string?
+
+  @description('Optional. Custom DNS configurations.')
+  customDnsConfigs: {
+    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('Required. A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]?
+
+  @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
+  ipConfigurations: {
+    @description('Required. The name of the resource that is unique within a resource group.')
+    name: string
+
+    @description('Required. Properties of private endpoint IP configurations.')
+    properties: {
+      @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+      groupId: string
+
+      @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
+      memberName: string
+
+      @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
+      privateIPAddress: string
+    }
+  }[]?
+
+  @description('Optional. Application security groups in which the private endpoint IP configuration is included.')
+  applicationSecurityGroupResourceIds: string[]?
+
+  @description('Optional. The custom name of the network interface attached to the private endpoint.')
+  customNetworkInterfaceName: string?
+
+  @description('Optional. Specify the type of lock.')
+  lock: lockType
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType
+
+  @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
+  tags: object?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
+
+  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
+}[]?

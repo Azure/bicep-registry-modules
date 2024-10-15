@@ -52,7 +52,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     name: 'dsiitamin001'
     // Non-required parameters
     location: '<location>'
-    overwriteExistingImage: '<overwriteExistingImage>'
+    overwriteExistingImage: true
   }
 }
 ```
@@ -62,7 +62,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -84,10 +84,29 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
       "value": "<location>"
     },
     "overwriteExistingImage": {
-      "value": "<overwriteExistingImage>"
+      "value": true
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/deployment-script/import-image-to-acr:<version>'
+
+// Required parameters
+param acrName = '<acrName>'
+param image = 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+param name = 'dsiitamin001'
+// Non-required parameters
+param location = '<location>'
+param overwriteExistingImage = true
 ```
 
 </details>
@@ -115,6 +134,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     cleanupPreference: 'OnExpiration'
     location: '<location>'
     managedIdentities: '<managedIdentities>'
+    newImageName: 'application/your-image-name:tag'
     overwriteExistingImage: true
     storageAccountResourceId: '<storageAccountResourceId>'
     subnetResourceIds: '<subnetResourceIds>'
@@ -131,7 +151,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -161,6 +181,9 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     "managedIdentities": {
       "value": "<managedIdentities>"
     },
+    "newImageName": {
+      "value": "application/your-image-name:tag"
+    },
     "overwriteExistingImage": {
       "value": true
     },
@@ -177,6 +200,35 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/deployment-script/import-image-to-acr:<version>'
+
+// Required parameters
+param acrName = '<acrName>'
+param image = 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+param name = 'dsiitamax001'
+// Non-required parameters
+param assignRbacRole = true
+param cleanupPreference = 'OnExpiration'
+param location = '<location>'
+param managedIdentities = '<managedIdentities>'
+param newImageName = 'application/your-image-name:tag'
+param overwriteExistingImage = true
+param storageAccountResourceId = '<storageAccountResourceId>'
+param subnetResourceIds = '<subnetResourceIds>'
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
 }
 ```
 
@@ -213,7 +265,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -247,6 +299,25 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/deployment-script/import-image-to-acr:<version>'
+
+// Required parameters
+param acrName = '<acrName>'
+param image = 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
+param name = 'dsiitawaf001'
+// Non-required parameters
+param location = '<location>'
+param managedIdentities = '<managedIdentities>'
+param overwriteExistingImage = true
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -274,9 +345,12 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`initialScriptDelay`](#parameter-initialscriptdelay) | int | A delay in seconds before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate. Default is 30s. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
+| [`newImageName`](#parameter-newimagename) | string | The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline. |
 | [`overwriteExistingImage`](#parameter-overwriteexistingimage) | bool | The image will be overwritten if it already exists in the ACR with the same tag. Default is false. |
 | [`retryMax`](#parameter-retrymax) | int | The maximum number of retries for the script import operation. Default is 3. |
 | [`runOnce`](#parameter-runonce) | bool | How the deployment script should be forced to execute. Default is to force the script to deploy the image to run every time. |
+| [`sourceRegistryPassword`](#parameter-sourceregistrypassword) | securestring | The password for the source registry. Required if the source registry is private, or to logon to the public docker registry. |
+| [`sourceRegistryUsername`](#parameter-sourceregistryusername) | string | The username for the source registry. Required if the source registry is private, or to logon to the public docker registry. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | The resource id of the storage account to use for the deployment script. An existing storage account is needed, if PrivateLink is going to be used for the deployment script. |
 | [`subnetResourceIds`](#parameter-subnetresourceids) | array | The subnet ids to use for the deployment script. An existing subnet is needed, if PrivateLink is going to be used for the deployment script. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -294,7 +368,12 @@ A fully qualified image name to import.
 
 - Required: Yes
 - Type: string
-- Example: `mcr.microsoft.com/k8se/quickstart-jobs:latest`
+- Example:
+  ```Bicep
+  mcr.microsoft.com/k8se/quickstart-jobs:latest
+  docker.io/library/image:latest
+  docker.io/hello-world:latest
+  ```
 
 ### Parameter: `name`
 
@@ -378,6 +457,15 @@ Location for all Resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
+### Parameter: `newImageName`
+
+The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline.
+
+- Required: No
+- Type: string
+- Default: `[string(skip(parameters('image'), add(indexOf(parameters('image'), '/'), 1)))]`
+- Example: `your-image-name:tag`
+
 ### Parameter: `overwriteExistingImage`
 
 The image will be overwritten if it already exists in the ACR with the same tag. Default is false.
@@ -401,6 +489,22 @@ How the deployment script should be forced to execute. Default is to force the s
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `sourceRegistryPassword`
+
+The password for the source registry. Required if the source registry is private, or to logon to the public docker registry.
+
+- Required: No
+- Type: securestring
+- Default: `''`
+
+### Parameter: `sourceRegistryUsername`
+
+The username for the source registry. Required if the source registry is private, or to logon to the public docker registry.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `storageAccountResourceId`
 
@@ -431,7 +535,6 @@ Tags of the resource.
   }
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -446,13 +549,19 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/resources/deployment-script:0.2.3` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.4.0` | Remote reference |
 
 ## Notes
 
-The deployment script service will need and provision a Storage Account as well as a Container Instance to execute the provided script. *The deployment script resource is available only in the regions where Azure Container Instances is available.*
+The deployment script service will need and provision a Storage Account as well as a Container Instance to execute the provided script. _The deployment script resource is available only in the regions where Azure Container Instances is available._
 
-> The service cleans up these resources after the deployment script finishes. You incur charges for these resources until they're removed.
+> The service cleans up these resources after the deployment script finishes. You incur charges for these resources until they are removed.
+
+### Authentication to source Container Registry
+
+Authentication is possible by setting the ```sourceRegistryUsername``` and ```sourceRegistryPassword``` parameters. An example that uses Key Vault is in the max sample. It is commented out, as for the shared environments no user exists, that could be used to access e.g. docker hub images.
+
+### Private network access
 
 Using a Container Registry that is not available via public network access is possible as well. In this case a subnet needs to be passed to the module. A working configuration is in the max examples for this module.
 
@@ -460,6 +569,12 @@ Links:
 
 - [Access a private virtual network from a Bicep deployment script](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet)
 - [Run Bicep deployment script privately over a private endpoint](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet-private-endpoint)
+
+### Renaming the image
+
+In the case an image is updated later from a pipeline, it can makes sense to initially upload a dummy image from e.g. a public registry. However, you might want to change the name and tag from that image for processes to pick up the image before **your image** has actually be published to the registry.
+
+The pattern module [avm/ptn/app/container-job](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/authorization/policy-assignment) uses this module to create the job initially with an image that is available, which most likely will be updated later and the job will pick up the new image then.
 
 ## Data Collection
 

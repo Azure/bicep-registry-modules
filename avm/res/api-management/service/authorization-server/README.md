@@ -7,8 +7,6 @@ This module deploys an API Management Service Authorization Server.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -25,6 +23,7 @@ This module deploys an API Management Service Authorization Server.
 | [`authorizationEndpoint`](#parameter-authorizationendpoint) | string | OAuth authorization endpoint. See <http://tools.ietf.org/html/rfc6749#section-3.2>. |
 | [`clientId`](#parameter-clientid) | securestring | Client or app ID registered with this authorization server. |
 | [`clientSecret`](#parameter-clientsecret) | securestring | Client or app secret registered with this authorization server. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
+| [`displayName`](#parameter-displayname) | string | API Management Service Authorization Servers name. Must be 1 to 50 characters long. |
 | [`grantTypes`](#parameter-granttypes) | array | Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials. |
 | [`name`](#parameter-name) | string | Identifier of the authorization server. |
 
@@ -70,6 +69,13 @@ Client or app secret registered with this authorization server. This property wi
 
 - Required: Yes
 - Type: securestring
+
+### Parameter: `displayName`
+
+API Management Service Authorization Servers name. Must be 1 to 50 characters long.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `grantTypes`
 
@@ -195,7 +201,6 @@ OAuth token endpoint. Contains absolute URI to entity being referenced.
 - Type: string
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -203,11 +208,3 @@ OAuth token endpoint. Contains absolute URI to entity being referenced.
 | `name` | string | The name of the API management service authorization server. |
 | `resourceGroupName` | string | The resource group the API management service authorization server was deployed into. |
 | `resourceId` | string | The resource ID of the API management service authorization server. |
-
-## Cross-referenced modules
-
-_None_
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

@@ -14,7 +14,6 @@ param location string = resourceGroup().location
   'StandardSSD_LRS'
   'UltraSSD_LRS'
   'Premium_ZRS'
-  'Premium_ZRS'
   'PremiumV2_LRS'
 ])
 @description('Required. The disks sku name. Can be .')
@@ -125,7 +124,7 @@ param publicNetworkAccess string = 'Disabled'
 @description('Optional. True if the image from which the OS disk is created supports accelerated networking.')
 param acceleratedNetwork bool = false
 
-@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used.')
+@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones).')
 @allowed([
   0
   1
@@ -170,7 +169,7 @@ var builtInRoleNames = {
   )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -179,6 +178,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -260,14 +270,10 @@ resource disk_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock 
 }
 
 resource disk_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(disk.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(disk.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -304,6 +310,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 

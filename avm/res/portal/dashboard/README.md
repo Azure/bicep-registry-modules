@@ -8,7 +8,6 @@ This module deploys a Portal Dashboard.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -57,7 +56,7 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -74,6 +73,22 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/portal/dashboard:<version>'
+
+// Required parameters
+param name = 'pdmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -206,11 +221,13 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
     }
     roleAssignments: [
       {
+        name: '15e2e690-5c9f-4cbf-9716-94ee73efab8b'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -235,7 +252,7 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -367,11 +384,13 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "15e2e690-5c9f-4cbf-9716-94ee73efab8b",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -391,6 +410,154 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/portal/dashboard:<version>'
+
+// Required parameters
+param name = 'pdmax001'
+// Non-required parameters
+param lenses = [
+  {
+    order: 0
+    parts: [
+      {
+        metadata: {
+          inputs: []
+          type: 'Extension/Microsoft_Azure_Security/PartType/SecurityMetricGalleryTileViewModel'
+        }
+        position: {
+          colSpan: 2
+          rowSpan: 3
+          x: 0
+          y: 0
+        }
+      }
+      {
+        metadata: {
+          inputs: [
+            {
+              isOptional: true
+              name: 'isShared'
+            }
+            {
+              isOptional: true
+              name: 'queryId'
+            }
+            {
+              isOptional: true
+              name: 'formatResults'
+            }
+            {
+              isOptional: true
+              name: 'partTitle'
+              value: 'Query 1'
+            }
+            {
+              isOptional: true
+              name: 'chartType'
+              value: 1
+            }
+            {
+              isOptional: true
+              name: 'queryScope'
+              value: {
+                scope: 0
+                values: []
+              }
+            }
+            {
+              isOptional: true
+              name: 'query'
+              value: 'summarize ResourceCount=count() by type\n| order by ResourceCount desc\n| take 5\n| project [\'Resource Type\']=type, [\'Resource Count\']=ResourceCount'
+            }
+          ]
+          partHeader: {
+            subtitle: ''
+            title: 'Top 5 resource types'
+          }
+          settings: {}
+          type: 'Extension/HubsExtension/PartType/ArgQueryChartTile'
+        }
+        position: {
+          colSpan: 9
+          rowSpan: 3
+          x: 2
+          y: 0
+        }
+      }
+    ]
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param metadata = {
+  model: {
+    filterLocale: {
+      value: 'en-us'
+    }
+    filters: {
+      value: {
+        MsPortalFx_TimeRange: {
+          displayCache: {
+            name: 'UTC Time'
+            value: 'Past 24 hours'
+          }
+          filteredPartIds: []
+          model: {
+            format: 'utc'
+            granularity: 'auto'
+            relative: '24h'
+          }
+        }
+      }
+    }
+    timeRange: {
+      type: 'MsPortalFx.Composition.Configuration.ValueTypes.TimeRange'
+      value: {
+        relative: {
+          duration: 24
+          timeUnit: 1
+        }
+      }
+    }
+  }
+}
+param roleAssignments = [
+  {
+    name: '15e2e690-5c9f-4cbf-9716-94ee73efab8b'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -544,7 +711,7 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -693,6 +860,142 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/portal/dashboard:<version>'
+
+// Required parameters
+param name = 'pdwaf001'
+// Non-required parameters
+param lenses = [
+  {
+    order: 0
+    parts: [
+      {
+        metadata: {
+          inputs: []
+          settings: {
+            content: {
+              src: 'https://www.youtube.com/watch?v=JbIMrJKW5N0'
+              subtitle: 'Learn more about AVM'
+              title: 'Azure Verified Modules (AVM) introduction'
+            }
+          }
+          type: 'Extension/HubsExtension/PartType/VideoPart'
+        }
+        position: {
+          colSpan: 6
+          rowSpan: 4
+          x: 0
+          y: 0
+        }
+      }
+      {
+        metadata: {
+          inputs: []
+          type: 'Extension/Microsoft_AAD_IAM/PartType/UserManagementSummaryPart'
+        }
+        position: {
+          colSpan: 2
+          rowSpan: 2
+          x: 6
+          y: 0
+        }
+      }
+      {
+        metadata: {
+          inputs: []
+          settings: {
+            content: {}
+          }
+          type: 'Extension/HubsExtension/PartType/ClockPart'
+        }
+        position: {
+          colSpan: 2
+          rowSpan: 2
+          x: 8
+          y: 0
+        }
+      }
+      {
+        metadata: {
+          inputs: [
+            {
+              isOptional: true
+              name: 'selectedMenuItemId'
+            }
+          ]
+          type: 'Extension/HubsExtension/PartType/GalleryTile'
+        }
+        position: {
+          colSpan: 2
+          rowSpan: 2
+          x: 6
+          y: 2
+        }
+      }
+      {
+        metadata: {
+          inputs: []
+          type: 'Extension/HubsExtension/PartType/HelpAndSupportPart'
+        }
+        position: {
+          colSpan: 2
+          rowSpan: 2
+          x: 8
+          y: 2
+        }
+      }
+    ]
+  }
+]
+param location = '<location>'
+param metadata = {
+  model: {
+    filterLocale: {
+      value: 'en-us'
+    }
+    filters: {
+      value: {
+        MsPortalFx_TimeRange: {
+          displayCache: {
+            name: 'UTC Time'
+            value: 'Past 24 hours'
+          }
+          filteredPartIds: [
+            'StartboardPart-MonitorChartPart-f6c2e060-fabc-4ce5-b031-45f3296510dd'
+          ]
+          model: {
+            format: 'utc'
+            granularity: 'auto'
+            relative: '24h'
+          }
+        }
+      }
+    }
+    timeRange: {
+      type: 'MsPortalFx.Composition.Configuration.ValueTypes.TimeRange'
+      value: {
+        relative: {
+          duration: 24
+          timeUnit: 1
+        }
+      }
+    }
+  }
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -794,6 +1097,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -810,6 +1119,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -860,6 +1170,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -884,7 +1201,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -893,10 +1209,6 @@ Tags of the resource.
 | `name` | string | The name of the dashboard. |
 | `resourceGroupName` | string | The name of the resource group the dashboard was created in. |
 | `resourceId` | string | The resource ID of the dashboard. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -72,7 +72,12 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'VpnGw2AZ'
       gatewayType: 'Vpn'
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
-      activeActive: true
+      clusterSettings:{
+        clusterMode: 'activeActiveBgp'
+        secondPipName: '${namePrefix}${serviceShort}001-pip2'
+        customBgpIpAddresses: ['169.254.21.4','169.254.21.5']
+        secondCustomBgpIpAddresses:  ['169.254.22.4','169.254.22.5']
+      }
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -101,11 +106,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
+          name: 'db30550e-70b7-4dbe-901e-e9363b69c05f'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

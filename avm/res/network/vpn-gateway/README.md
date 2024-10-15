@@ -8,7 +8,6 @@ This module deploys a VPN Gateway.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -60,7 +59,7 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -80,6 +79,23 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/vpn-gateway:<version>'
+
+// Required parameters
+param name = 'vpngmin001'
+param virtualHubResourceId = '<virtualHubResourceId>'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -156,7 +172,7 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -235,6 +251,67 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/vpn-gateway:<version>'
+
+// Required parameters
+param name = 'vpngmax001'
+param virtualHubResourceId = '<virtualHubResourceId>'
+// Non-required parameters
+param bgpSettings = {
+  asn: 65515
+  peerWeight: 0
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param natRules = [
+  {
+    externalMappings: [
+      {
+        addressSpace: '192.168.21.0/24'
+      }
+    ]
+    internalMappings: [
+      {
+        addressSpace: '10.4.0.0/24'
+      }
+    ]
+    mode: 'EgressSnat'
+    name: 'natRule1'
+    type: 'Static'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param vpnConnections = [
+  {
+    connectionBandwidth: 100
+    enableBgp: false
+    enableInternetSecurity: true
+    enableRateLimiting: false
+    name: '<name>'
+    remoteVpnSiteResourceId: '<remoteVpnSiteResourceId>'
+    routingWeight: 0
+    useLocalAzureIpAddress: false
+    usePolicyBasedTrafficSelectors: false
+    vpnConnectionProtocolType: 'IKEv2'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -306,7 +383,7 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -385,6 +462,66 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/vpn-gateway:<version>'
+
+// Required parameters
+param name = 'vpngwaf001'
+param virtualHubResourceId = '<virtualHubResourceId>'
+// Non-required parameters
+param bgpSettings = {
+  asn: 65515
+  peerWeight: 0
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param natRules = [
+  {
+    externalMappings: [
+      {
+        addressSpace: '192.168.21.0/24'
+      }
+    ]
+    internalMappings: [
+      {
+        addressSpace: '10.4.0.0/24'
+      }
+    ]
+    mode: 'EgressSnat'
+    name: 'natRule1'
+    type: 'Static'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param vpnConnections = [
+  {
+    connectionBandwidth: 100
+    enableBgp: false
+    enableInternetSecurity: true
+    enableRateLimiting: false
+    name: '<name>'
+    remoteVpnSiteResourceId: '<remoteVpnSiteResourceId>'
+    routingWeight: 0
+    useLocalAzureIpAddress: false
+    usePolicyBasedTrafficSelectors: false
+    vpnConnectionProtocolType: 'IKEv2'
+  }
+]
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -531,7 +668,6 @@ The scale unit for this VPN gateway.
 - Type: int
 - Default: `2`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -540,10 +676,6 @@ The scale unit for this VPN gateway.
 | `name` | string | The name of the VPN gateway. |
 | `resourceGroupName` | string | The name of the resource group the VPN gateway was deployed into. |
 | `resourceId` | string | The resource ID of the VPN gateway. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Notes
 

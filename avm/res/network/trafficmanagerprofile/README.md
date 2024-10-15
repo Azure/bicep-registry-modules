@@ -8,7 +8,6 @@ This module deploys a Traffic Manager Profile.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -58,7 +57,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -75,6 +74,22 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/trafficmanagerprofile:<version>'
+
+// Required parameters
+param name = 'ntmpmin001'
+// Non-required parameters
+param location = 'global'
 ```
 
 </details>
@@ -118,11 +133,13 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
     relativeName: 'ntmpmax001-rn'
     roleAssignments: [
       {
+        name: '76e7bd82-b689-4072-87be-519bfabf733e'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -147,7 +164,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -190,11 +207,13 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
     "roleAssignments": {
       "value": [
         {
+          "name": "76e7bd82-b689-4072-87be-519bfabf733e",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -214,6 +233,65 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/trafficmanagerprofile:<version>'
+
+// Required parameters
+param name = 'ntmpmax001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = 'global'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param relativeName = 'ntmpmax001-rn'
+param roleAssignments = [
+  {
+    name: '76e7bd82-b689-4072-87be-519bfabf733e'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -254,7 +332,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       {
         name: 'webApp01Endpoint'
         properties: {
-          endpointLocation: 'eastus'
+          endpointLocation: '<endpointLocation>'
           endpointStatus: 'Enabled'
           priority: 1
           targetResourceId: '<targetResourceId>'
@@ -265,7 +343,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       {
         name: 'webApp02Endpoint'
         properties: {
-          endpointLocation: 'westus'
+          endpointLocation: '<endpointLocation>'
           endpointStatus: 'Enabled'
           priority: 2
           targetResourceId: '<targetResourceId>'
@@ -298,7 +376,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -331,7 +409,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
         {
           "name": "webApp01Endpoint",
           "properties": {
-            "endpointLocation": "eastus",
+            "endpointLocation": "<endpointLocation>",
             "endpointStatus": "Enabled",
             "priority": 1,
             "targetResourceId": "<targetResourceId>",
@@ -342,7 +420,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
         {
           "name": "webApp02Endpoint",
           "properties": {
-            "endpointLocation": "westus",
+            "endpointLocation": "<endpointLocation>",
             "endpointStatus": "Enabled",
             "priority": 2,
             "targetResourceId": "<targetResourceId>",
@@ -382,6 +460,73 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/trafficmanagerprofile:<version>'
+
+// Required parameters
+param name = 'ntmpwaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param endpoints = [
+  {
+    name: 'webApp01Endpoint'
+    properties: {
+      endpointLocation: '<endpointLocation>'
+      endpointStatus: 'Enabled'
+      priority: 1
+      targetResourceId: '<targetResourceId>'
+      weight: 1
+    }
+    type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
+  }
+  {
+    name: 'webApp02Endpoint'
+    properties: {
+      endpointLocation: '<endpointLocation>'
+      endpointStatus: 'Enabled'
+      priority: 2
+      targetResourceId: '<targetResourceId>'
+      weight: 1
+    }
+    type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
+  }
+]
+param location = 'global'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param monitorConfig = {
+  path: '/'
+  port: '443'
+  protocol: 'https'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -673,6 +818,14 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Traffic Manager Contributor'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -689,6 +842,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -735,6 +889,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -805,7 +966,6 @@ The DNS Time-To-Live (TTL), in seconds. This informs the local DNS resolvers and
 - Type: int
 - Default: `60`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -813,10 +973,6 @@ The DNS Time-To-Live (TTL), in seconds. This informs the local DNS resolvers and
 | `name` | string | The name of the traffic manager was deployed into. |
 | `resourceGroupName` | string | The resource group the traffic manager was deployed into. |
 | `resourceId` | string | The resource ID of the traffic manager. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

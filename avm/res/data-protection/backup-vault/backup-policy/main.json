@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "11424915933898928003"
+      "version": "0.29.47.4906",
+      "templateHash": "11474624425108890813"
     },
     "name": "Data Protection Backup Vault Backup Policies",
     "description": "This module deploys a Data Protection Backup Vault Backup Policy.",
