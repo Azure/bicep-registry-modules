@@ -46,11 +46,12 @@ The following section provides usage examples for the module, which were used to
 - [With an administrator](#example-1-with-an-administrator)
 - [With audit settings](#example-2-with-audit-settings)
 - [Using only defaults](#example-3-using-only-defaults)
-- [Deploying with a key vault reference to save secrets](#example-4-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-5-using-large-parameter-set)
-- [With a secondary database](#example-6-with-a-secondary-database)
-- [With vulnerability assessment](#example-7-with-vulnerability-assessment)
-- [WAF-aligned](#example-8-waf-aligned)
+- [Using elastic pool](#example-4-using-elastic-pool)
+- [Deploying with a key vault reference to save secrets](#example-5-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-6-using-large-parameter-set)
+- [With a secondary database](#example-7-with-a-secondary-database)
+- [With vulnerability assessment](#example-8-with-vulnerability-assessment)
+- [WAF-aligned](#example-9-waf-aligned)
 
 ### Example 1: _With an administrator_
 
@@ -312,7 +313,134 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 4: _Deploying with a key vault reference to save secrets_
+### Example 4: _Using elastic pool_
+
+This instance deploys the module with an elastic pool.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  name: 'serverDeployment'
+  params: {
+    // Required parameters
+    name: 'epool001'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    elasticPools: [
+      {
+        name: 'epool-ep-001'
+      }
+      {
+        name: 'epool-ep-002'
+        perDatabaseSettings: {
+          maxCapacity: 4
+          minCapacity: 1
+        }
+        sku: {
+          capacity: 4
+          name: 'GP_Gen5'
+          tier: 'GeneralPurpose'
+        }
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "epool001"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "elasticPools": {
+      "value": [
+        {
+          "name": "epool-ep-001"
+        },
+        {
+          "name": "epool-ep-002",
+          "perDatabaseSettings": {
+            "maxCapacity": 4,
+            "minCapacity": 1
+          },
+          "sku": {
+            "capacity": 4,
+            "name": "GP_Gen5",
+            "tier": "GeneralPurpose"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'epool001'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param elasticPools = [
+  {
+    name: 'epool-ep-001'
+  }
+  {
+    name: 'epool-ep-002'
+    perDatabaseSettings: {
+      maxCapacity: 4
+      minCapacity: 1
+    }
+    sku: {
+      capacity: 4
+      name: 'GP_Gen5'
+      tier: 'GeneralPurpose'
+    }
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 5: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -420,7 +548,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 5: _Using large parameter set_
+### Example 6: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -940,7 +1068,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 6: _With a secondary database_
+### Example 7: _With a secondary database_
 
 This instance deploys the module with a secondary database.
 
@@ -1063,7 +1191,7 @@ param tags = {
 </details>
 <p>
 
-### Example 7: _With vulnerability assessment_
+### Example 8: _With vulnerability assessment_
 
 This instance deploys the module with a vulnerability assessment.
 
@@ -1240,7 +1368,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 8: _WAF-aligned_
+### Example 9: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1676,8 +1804,10 @@ param vulnerabilityAssessmentsObj = {
 | [`elasticPools`](#parameter-elasticpools) | array | The Elastic Pools to create in the server. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionProtectorObj`](#parameter-encryptionprotectorobj) | object | The encryption protection configuration. |
+| [`federatedClientId`](#parameter-federatedclientid) | string | The Client id used for cross tenant CMK scenario |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the server. |
 | [`isIPv6Enabled`](#parameter-isipv6enabled) | string | Whether or not to enable IPv6 support for this server. |
+| [`keyId`](#parameter-keyid) | string | A CMK URI of the key to use for encryption. |
 | [`keys`](#parameter-keys) | array | The keys to configure. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1722,7 +1852,80 @@ The Azure Active Directory (AAD) administrator authentication. Required if no `a
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureADOnlyAuthentication`](#parameter-administratorsazureadonlyauthentication) | bool | Azure Active Directory only Authentication enabled. |
+| [`login`](#parameter-administratorslogin) | string | Login name of the server administrator. |
+| [`principalType`](#parameter-administratorsprincipaltype) | string | Principal Type of the sever administrator. |
+| [`sid`](#parameter-administratorssid) | string | SID (object ID) of the server administrator. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`administratorType`](#parameter-administratorsadministratortype) | string | Type of the sever administrator. |
+| [`tenantId`](#parameter-administratorstenantid) | string | Tenant ID of the administrator. |
+
+### Parameter: `administrators.azureADOnlyAuthentication`
+
+Azure Active Directory only Authentication enabled.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `administrators.login`
+
+Login name of the server administrator.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `administrators.principalType`
+
+Principal Type of the sever administrator.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Application'
+    'Group'
+    'User'
+  ]
+  ```
+
+### Parameter: `administrators.sid`
+
+SID (object ID) of the server administrator.
+
+- Required: Yes
+- Type: string
+- Example: `#_managementGroupId_#`
+
+### Parameter: `administrators.administratorType`
+
+Type of the sever administrator.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ActiveDirectory'
+  ]
+  ```
+
+### Parameter: `administrators.tenantId`
+
+Tenant ID of the administrator.
+
+- Required: No
+- Type: string
+- Example: `#_managementGroupId_#`
 
 ### Parameter: `primaryUserAssignedIdentityId`
 
@@ -1852,6 +2055,249 @@ The Elastic Pools to create in the server.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-elasticpoolsname) | string | The name of the Elastic Pool. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoPauseDelay`](#parameter-elasticpoolsautopausedelay) | int | Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled. |
+| [`availabilityZone`](#parameter-elasticpoolsavailabilityzone) | string | Specifies the availability zone the pool's primary replica is pinned to. |
+| [`highAvailabilityReplicaCount`](#parameter-elasticpoolshighavailabilityreplicacount) | int | The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools. |
+| [`licenseType`](#parameter-elasticpoolslicensetype) | string | The license type to apply for this elastic pool. |
+| [`maintenanceConfigurationId`](#parameter-elasticpoolsmaintenanceconfigurationid) | string | Maintenance configuration id assigned to the elastic pool. This configuration defines the period when the maintenance updates will will occur. |
+| [`maxSizeBytes`](#parameter-elasticpoolsmaxsizebytes) | int | The storage limit for the database elastic pool in bytes. |
+| [`minCapacity`](#parameter-elasticpoolsmincapacity) | int | Minimal capacity that serverless pool will not shrink below, if not paused |
+| [`perDatabaseSettings`](#parameter-elasticpoolsperdatabasesettings) | object | The per database settings for the elastic pool. |
+| [`preferredEnclaveType`](#parameter-elasticpoolspreferredenclavetype) | string | Type of enclave requested on the elastic pool. |
+| [`sku`](#parameter-elasticpoolssku) | object | The elastic pool SKU. |
+| [`tags`](#parameter-elasticpoolstags) | object | Tags of the resource. |
+| [`zoneRedundant`](#parameter-elasticpoolszoneredundant) | bool | Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones. |
+
+### Parameter: `elasticPools.name`
+
+The name of the Elastic Pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `elasticPools.autoPauseDelay`
+
+Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled.
+
+- Required: No
+- Type: int
+
+### Parameter: `elasticPools.availabilityZone`
+
+Specifies the availability zone the pool's primary replica is pinned to.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '1'
+    '2'
+    '3'
+    'NoPreference'
+  ]
+  ```
+
+### Parameter: `elasticPools.highAvailabilityReplicaCount`
+
+The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools.
+
+- Required: No
+- Type: int
+
+### Parameter: `elasticPools.licenseType`
+
+The license type to apply for this elastic pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'BasePrice'
+    'LicenseIncluded'
+  ]
+  ```
+
+### Parameter: `elasticPools.maintenanceConfigurationId`
+
+Maintenance configuration id assigned to the elastic pool. This configuration defines the period when the maintenance updates will will occur.
+
+- Required: No
+- Type: string
+
+### Parameter: `elasticPools.maxSizeBytes`
+
+The storage limit for the database elastic pool in bytes.
+
+- Required: No
+- Type: int
+
+### Parameter: `elasticPools.minCapacity`
+
+Minimal capacity that serverless pool will not shrink below, if not paused
+
+- Required: No
+- Type: int
+
+### Parameter: `elasticPools.perDatabaseSettings`
+
+The per database settings for the elastic pool.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`minCapacity`](#parameter-elasticpoolsperdatabasesettingsmincapacity) | int | The minimum capacity all databases are guaranteed. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoPauseDelay`](#parameter-elasticpoolsperdatabasesettingsautopausedelay) | int | Auto Pause Delay for per database within pool |
+
+**Reqired parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`maxCapacity`](#parameter-elasticpoolsperdatabasesettingsmaxcapacity) | int | The maximum capacity any one database can consume. |
+
+### Parameter: `elasticPools.perDatabaseSettings.minCapacity`
+
+The minimum capacity all databases are guaranteed.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `elasticPools.perDatabaseSettings.autoPauseDelay`
+
+Auto Pause Delay for per database within pool
+
+- Required: No
+- Type: int
+
+### Parameter: `elasticPools.perDatabaseSettings.maxCapacity`
+
+The maximum capacity any one database can consume.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `elasticPools.preferredEnclaveType`
+
+Type of enclave requested on the elastic pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Default'
+    'VBS'
+  ]
+  ```
+
+### Parameter: `elasticPools.sku`
+
+The elastic pool SKU.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-elasticpoolsskuname) | string | The name of the SKU, typically, a letter + Number code, e.g. P3. |
+| [`tier`](#parameter-elasticpoolsskutier) | string | The tier or edition of the particular SKU, e.g. Basic, Premium. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`capacity`](#parameter-elasticpoolsskucapacity) | int | The capacity of the particular SKU. |
+| [`family`](#parameter-elasticpoolsskufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
+| [`size`](#parameter-elasticpoolsskusize) | string | Size of the particular SKU |
+
+### Parameter: `elasticPools.sku.name`
+
+The name of the SKU, typically, a letter + Number code, e.g. P3.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'BasicPool'
+    'BC_DC'
+    'BC_Gen5'
+    'GP_DC'
+    'GP_FSv2'
+    'GP_Gen5'
+    'HS_Gen5'
+    'HS_MOPRMS'
+    'HS_PRMS'
+    'PremiumPool'
+    'ServerlessPool'
+    'StandardPool'
+  ]
+  ```
+
+### Parameter: `elasticPools.sku.tier`
+
+The tier or edition of the particular SKU, e.g. Basic, Premium.
+
+- Required: No
+- Type: string
+
+### Parameter: `elasticPools.sku.capacity`
+
+The capacity of the particular SKU.
+
+- Required: No
+- Type: int
+
+### Parameter: `elasticPools.sku.family`
+
+If the service has different generations of hardware, for the same SKU, then that can be captured here.
+
+- Required: No
+- Type: string
+
+### Parameter: `elasticPools.sku.size`
+
+Size of the particular SKU
+
+- Required: No
+- Type: string
+
+### Parameter: `elasticPools.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `elasticPools.zoneRedundant`
+
+Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -1867,6 +2313,13 @@ The encryption protection configuration.
 - Required: No
 - Type: object
 - Default: `{}`
+
+### Parameter: `federatedClientId`
+
+The Client id used for cross tenant CMK scenario
+
+- Required: No
+- Type: string
 
 ### Parameter: `firewallRules`
 
@@ -1890,6 +2343,13 @@ Whether or not to enable IPv6 support for this server.
     'Enabled'
   ]
   ```
+
+### Parameter: `keyId`
+
+A CMK URI of the key to use for encryption.
+
+- Required: No
+- Type: string
 
 ### Parameter: `keys`
 
