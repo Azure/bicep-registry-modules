@@ -12,7 +12,7 @@ Details for how to implement these interfaces can be found in the AVM documentat
 // Type with all properties available
 @export()
 type diagnosticSettingFullType = {
-  @description('Optional. The name of diagnostic setting.')
+  @description('Optional. The name of the diagnostic setting.')
   name: string?
 
   @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
