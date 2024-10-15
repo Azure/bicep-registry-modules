@@ -88,8 +88,8 @@ openssl x509 -req -sha256 -days $rootCertDays -signkey $rootKeyFile -extensions 
 
 $rootCertContent = Get-Content -Path $rootCertFile -Raw
 $rootCertContentSecureString = ConvertTo-SecureString -String $rootCertContent -AsPlainText -Force
-$rootCertSecret = 'root-cert'
-Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $rootCertSecret -SecretValue $rootCertContentSecureString
+$rootCertSecretName = 'root-cert'
+Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $rootCertSecretName -SecretValue $rootCertContentSecureString
 
 $caKeyFile = 'ca-key.pem'
 $caKeySize = '4096'
