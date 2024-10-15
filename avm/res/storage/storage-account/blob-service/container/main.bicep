@@ -6,6 +6,9 @@ metadata owner = 'Azure/module-maintainers'
 @description('Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment.')
 param storageAccountName string
 
+@description('Optional. The name of the parent Blob Service. Required if the template is used in a standalone deployment.')
+param blobServiceName string = 'default'
+
 @description('Required. The name of the storage container to deploy.')
 param name string
 
@@ -105,7 +108,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing 
   name: storageAccountName
 
   resource blobServices 'blobServices@2022-09-01' existing = {
-    name: 'default'
+    name: blobServiceName
   }
 }
 

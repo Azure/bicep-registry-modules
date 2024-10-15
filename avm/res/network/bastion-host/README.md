@@ -100,7 +100,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -165,6 +165,61 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/bastion-host:<version>'
+
+// Required parameters
+param name = 'nbhctmpip001'
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+// Non-required parameters
+param location = '<location>'
+param publicIPAddressObject = {
+  allocationMethod: 'Static'
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      metricCategories: [
+        {
+          category: 'AllMetrics'
+        }
+      ]
+      name: 'customSetting'
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+  name: 'nbhctmpip001-pip'
+  publicIPPrefixResourceId: ''
+  roleAssignments: [
+    {
+      principalId: '<principalId>'
+      principalType: 'ServicePrincipal'
+      roleDefinitionIdOrName: 'Reader'
+    }
+  ]
+  skuName: 'Standard'
+  skuTier: 'Regional'
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+  zones: [
+    1
+    2
+    3
+  ]
+}
+```
+
+</details>
+<p>
+
 ### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -192,7 +247,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -212,6 +267,23 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/bastion-host:<version>'
+
+// Required parameters
+param name = 'nbhmin001'
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -293,7 +365,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -391,6 +463,72 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/bastion-host:<version>'
+
+// Required parameters
+param name = 'nbhmax001'
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+// Non-required parameters
+param bastionSubnetPublicIpResourceId = '<bastionSubnetPublicIpResourceId>'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableCopyPaste = true
+param enableFileCopy = false
+param enableIpConnect = false
+param enableShareableLink = false
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'a9329bd8-d7c8-4915-9dfe-04197fa5bf45'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param scaleUnits = 4
+param skuName = 'Standard'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param zones = [
+  1
+  2
+  3
+]
+```
+
+</details>
+<p>
+
 ### Example 4: _Private-only deployment_
 
 This instance deploys the module as private-only Bastion deployment.
@@ -421,7 +559,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -450,6 +588,26 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/bastion-host:<version>'
+
+// Required parameters
+param name = 'nbhprv001'
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+// Non-required parameters
+param enablePrivateOnlyBastion = true
+param enableSessionRecording = true
+param location = '<location>'
+param skuName = 'Premium'
 ```
 
 </details>
@@ -503,7 +661,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -561,6 +719,44 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/bastion-host:<version>'
+
+// Required parameters
+param name = 'nbhwaf001'
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+// Non-required parameters
+param bastionSubnetPublicIpResourceId = '<bastionSubnetPublicIpResourceId>'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableCopyPaste = true
+param enableFileCopy = false
+param enableIpConnect = false
+param enableShareableLink = false
+param location = '<location>'
+param scaleUnits = 4
+param skuName = 'Standard'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

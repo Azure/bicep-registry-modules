@@ -1418,6 +1418,9 @@ function Set-UsageExamplesSection {
         [bool] $addBicep = $true,
 
         [Parameter(Mandatory = $false)]
+        [bool] $addBicepParametersFile = $true,
+
+        [Parameter(Mandatory = $false)]
         [string] $SectionStartIdentifier = '## Usage examples'
     )
 
@@ -1591,19 +1594,31 @@ function Set-UsageExamplesSection {
                 }
             }
 
-            # [5/6] Convert Bicep parameter block to JSON parameter block to enable processing
+            # [4/6] Convert Bicep parameter block to JSON parameter block to enable processing
             $conversionInputObject = @{
                 BicepParamBlock = ($paramsBlockArray | Out-String).TrimEnd()
                 CurrentFilePath = $testFilePath
             }
             $paramsInJSONFormat = ConvertTo-FormattedJSONParameterObject @conversionInputObject
 
-            # [6/6] Convert JSON parameters back to Bicep and order & format them
+            # [5/6] Convert JSON parameters back to Bicep and order & format them
             $conversionInputObject = @{
                 JSONParameters         = $paramsInJSONFormat
                 RequiredParametersList = $RequiredParametersList
             }
             $bicepExample = ConvertTo-FormattedBicep @conversionInputObject
+
+            # [6/6] Convert the Bicep format to a Bicep parameters file format
+            if ($bicepExample.length -gt 0) {
+                $bicepParamBlockArray = $bicepExample -split '\r?\n'
+                $topLevelParamIndent = ([regex]::Match($bicepParamBlockArray[0], '^(\s+).*')).Captures.Groups[1].Value.Length
+                $bicepParametersFileExample = $bicepParamBlockArray | ForEach-Object {
+                    $line = $_
+                    $line = $line -replace "^(\s{$topLevelParamIndent})([a-zA-Z]*)(:)(.*)", 'param $2 =$4' # Update any [    xyz: abc] to [param xyz = abc]
+                    $line = $line -replace "^\s{$topLevelParamIndent}", '' # Update any [    xyz: abc] to [xyz: abc]
+                    $line
+                }
+            }
 
             # --------------------- #
             #   Add Bicep example   #
@@ -1652,10 +1667,37 @@ function Set-UsageExamplesSection {
                     '',
                     '<details>'
                     ''
-                    '<summary>via JSON Parameter file</summary>'
+                    '<summary>via JSON parameters file</summary>'
                     ''
                     '```json',
                     $orderedJSONExample.Trim()
+                    '```',
+                    '',
+                    '</details>',
+                    '<p>'
+                )
+            }
+
+            # ---------------------------------------- #
+            #     Add Bicep parameters file example    #
+            # ---------------------------------------- #
+            if ($addBicepParametersFile) {
+
+                $formattedbicepParametersFileExample = @(
+                    "using 'br/public:$($brLink):$($targetVersion)'"
+                    ''
+                ) + $bicepParametersFileExample
+
+
+                # Build result
+                $testFilesContent += @(
+                    '',
+                    '<details>'
+                    ''
+                    '<summary>via Bicep parameters file</summary>'
+                    ''
+                    '```bicep-params',
+                    ($formattedbicepParametersFileExample | ForEach-Object { "$_" }).TrimEnd(),
                     '```',
                     '',
                     '</details>',

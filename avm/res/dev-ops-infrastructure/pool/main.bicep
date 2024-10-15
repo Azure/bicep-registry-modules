@@ -14,7 +14,7 @@ param fabricProfileSkuName string
 param concurrency int
 
 @description('Required. The VM images of the machines in the pool.')
-param images imageType
+param images imageType[]
 
 @description('Optional. The geo-location where the resource lives.')
 param location string = resourceGroup().location
@@ -235,6 +235,7 @@ output location string = managedDevOpsPool.location
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = managedDevOpsPool.?identity.?principalId
 
+@export()
 type osProfileType = {
   @description('Required. The logon type of the machine.')
   logonType: ('Interactive' | 'Service')
@@ -252,6 +253,7 @@ type osProfileType = {
   }?
 }
 
+@export()
 type storageProfileType = {
   @description('Optional. The Azure SKU name of the machines in the pool.')
   osDiskStorageAccountType: ('Premium' | 'StandardSSD' | 'Standard')?
@@ -272,6 +274,7 @@ type storageProfileType = {
   }[]?
 }?
 
+@export()
 type imageType = {
   @description('Optional. List of aliases to reference the image by.')
   aliases: string[]?
@@ -279,13 +282,14 @@ type imageType = {
   @description('Optional. The percentage of the buffer to be allocated to this image.')
   buffer: string?
 
-  @description('Required. The image to use from a well-known set of images made available to customers.')
-  wellKnownImageName: string
+  @description('Conditional. The image to use from a well-known set of images made available to customers. Required if `resourceId` is not set.')
+  wellKnownImageName: string?
 
-  @description('Optional. The resource id of the image.')
+  @description('Conditional. The specific resource id of the marketplace or compute gallery image. Required if `wellKnownImageName` is not set.')
   resourceId: string?
-}[]
+}
 
+@export()
 type organizationProfileType = {
   @description('Required. Azure DevOps organization profile.')
   kind: 'AzureDevOps'
@@ -317,6 +321,7 @@ type organizationProfileType = {
   }[]
 }
 
+@export()
 type dataDiskType = {
   @description('Optional. The type of caching to be enabled for the data disks. The default value for caching is readwrite. For information about the caching options see: https://blogs.msdn.microsoft.com/windowsazurestorage/2012/06/27/exploring-windows-azure-drives-disks-and-images/.')
   caching: ('None' | 'ReadOnly' | 'ReadWrite')?
@@ -331,6 +336,7 @@ type dataDiskType = {
   storageAccountType: ('Premium_LRS' | 'Premium_ZRS' | 'StandardSSD_LRS' | 'StandardSSD_ZRS' | 'Standard_LRS')?
 }[]?
 
+@export()
 type resourcePredictionsProfileAutomaticType = {
   @description('Required. The stand-by agent scheme is determined based on historical demand.')
   kind: 'Automatic'
@@ -339,11 +345,13 @@ type resourcePredictionsProfileAutomaticType = {
   predictionPreference: 'Balanced' | 'MostCostEffective' | 'MoreCostEffective' | 'MorePerformance' | 'BestPerformance'
 }
 
+@export()
 type resourcePredictionsProfileManualType = {
   @description('Required. Customer provides the stand-by agent scheme.')
   kind: 'Manual'
 }
 
+@export()
 type agentStatefulType = {
   @description('Required. Stateful profile meaning that the machines will be returned to the pool after running a job.')
   kind: 'Stateful'
@@ -362,6 +370,7 @@ type agentStatefulType = {
   resourcePredictionsProfile: (resourcePredictionsProfileAutomaticType | resourcePredictionsProfileManualType)?
 }
 
+@export()
 type agentStatelessType = {
   @description('Required. Stateless profile meaning that the machines will be cleaned up after running a job.')
   kind: 'Stateless'
@@ -400,8 +409,10 @@ type agentStatelessType = {
 }
 
 @discriminator('kind')
+@export()
 type agentProfileType = agentStatefulType | agentStatelessType
 
+@export()
 type roleAssignmentType = {
   @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
   name: string?
@@ -428,6 +439,7 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]?
 
+@export()
 type lockType = {
   @description('Optional. Specify the name of lock.')
   name: string?
@@ -436,6 +448,7 @@ type lockType = {
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
 
+@export()
 type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
@@ -480,6 +493,7 @@ type diagnosticSettingType = {
   marketplacePartnerResourceId: string?
 }[]?
 
+@export()
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
   systemAssigned: bool?

@@ -39,28 +39,30 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      maintenanceConfiguration: {
-        maintenanceWindow: {
-          schedule: {
-            daily: null
-            weekly: {
-              intervalWeeks: 1
-              dayOfWeek: 'Sunday'
+      maintenanceConfigurations: [
+        {
+          name: 'aksManagedAutoUpgradeSchedule'
+          maintenanceWindow: {
+            schedule: {
+              daily: null
+              weekly: {
+                intervalWeeks: 1
+                dayOfWeek: 'Sunday'
+              }
+              absoluteMonthly: null
+              relativeMonthly: null
             }
-            absoluteMonthly: null
-            relativeMonthly: null
+            durationHours: 4
+            utcOffset: '+00:00'
+            startDate: '2024-07-03'
+            startTime: '00:00'
           }
-          durationHours: 4
-          utcOffset: '+00:00'
-          startDate: '2024-07-03'
-          startTime: '00:00'
         }
-      }
+      ]
       managedIdentities: {
         systemAssigned: true
       }
-
-      primaryAgentPoolProfile: [
+      primaryAgentPoolProfiles: [
         {
           name: 'systempool'
           count: 3

@@ -18,7 +18,7 @@ This module deploys a Public SSH Key.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/sshPublicKeys` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-01/sshPublicKeys) |
+| `Microsoft.Compute/sshPublicKeys` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-01/sshPublicKeys) |
 
 ## Usage examples
 
@@ -58,7 +58,7 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -75,6 +75,22 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/ssh-public-key:<version>'
+
+// Required parameters
+param name = 'cspkmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -136,7 +152,7 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -198,6 +214,52 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/ssh-public-key:<version>'
+
+// Required parameters
+param name = 'sshkey-cspkmax001'
+// Non-required parameters
+param enableTelemetry = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'lock'
+}
+param publicKey = '<publicKey>'
+param roleAssignments = [
+  {
+    name: '74ec0421-c3f4-46f2-acf0-b519fe6fcf1c'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -252,7 +314,7 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -306,6 +368,50 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/ssh-public-key:<version>'
+
+// Required parameters
+param name = 'sshkey-cspkwaf001'
+// Non-required parameters
+param enableTelemetry = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'lock'
+}
+param publicKey = '<publicKey>'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

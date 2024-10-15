@@ -12,9 +12,16 @@
 #/avm/ptn/avd-lza/management-plane/ @Azure/avm-ptn-avd-lza-managementplane-module-owners-bicep @Azure/avm-module-reviewers-bicep
 #/avm/ptn/avd-lza/networking/ @Azure/avm-ptn-avd-lza-networking-module-owners-bicep @Azure/avm-module-reviewers-bicep
 #/avm/ptn/avd-lza/session-hosts/ @Azure/avm-ptn-avd-lza-sessionhosts-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/azd/acr-container-app/ @Azure/avm-ptn-azd-acrcontainerapp-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/azd/aks/ @Azure/avm-ptn-azd-aks-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/apim-api/ @Azure/avm-ptn-azd-apimapi-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/ptn/azd/container-apps/ @Azure/avm-ptn-azd-containerapps-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/azd/container-app-upsert/ @Azure/avm-ptn-azd-containerappupsert-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/azd/container-apps-stack/ @Azure/avm-ptn-azd-containerappsstack-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/insights-dashboard/ @Azure/avm-ptn-azd-insightsdashboard-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/azd/ml-ai-environment/ @Azure/avm-ptn-azd-mlaienvironment-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/azd/ml-hub-dependencies/ @Azure/avm-ptn-azd-mlhubdependencies-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/azd/ml-project/ @Azure/avm-ptn-azd-mlproject-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/azd/monitoring/ @Azure/avm-ptn-azd-monitoring-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/deployment-script/import-image-to-acr/ @Azure/avm-ptn-deploymentscript-importimagetoacr-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/dev-ops/cicd-agents-and-runners/ @Azure/avm-ptn-devops-cicdagentsandrunners-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/finops-toolkit/finops-hub/ @Azure/avm-ptn-finopstoolkit-finopshub-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -66,11 +73,13 @@
 /avm/res/dev-test-lab/lab/ @Azure/avm-res-devtestlab-lab-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/digital-twins/digital-twins-instance/ @Azure/avm-res-digitaltwins-digitaltwinsinstance-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/document-db/database-account/ @Azure/avm-res-documentdb-databaseaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/document-db/mongo-cluster/ @Azure/avm-res-documentdb-mongocluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/event-grid/domain/ @Azure/avm-res-eventgrid-domain-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/event-grid/namespace/ @Azure/avm-res-eventgrid-namespace-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/event-grid/system-topic/ @Azure/avm-res-eventgrid-systemtopic-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/event-grid/topic/ @Azure/avm-res-eventgrid-topic-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/event-hub/namespace/ @Azure/avm-res-eventhub-namespace-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/fabric/capacity/ @Azure/avm-res-fabric-capacity-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/health-bot/health-bot/ @Azure/avm-res-healthbot-healthbot-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/healthcare-apis/workspace/ @Azure/avm-res-healthcareapis-workspace-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/hybrid-compute/machine/ @Azure/avm-res-hybridcompute-machine-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -132,6 +141,7 @@
 /avm/res/network/virtual-network-gateway/ @Azure/avm-res-network-virtualnetworkgateway-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/virtual-wan/ @Azure/avm-res-network-virtualwan-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/vpn-gateway/ @Azure/avm-res-network-vpngateway-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/network/vpn-server-configuration/ @Azure/avm-res-network-vpnserverconfiguration-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/vpn-site/ @Azure/avm-res-network-vpnsite-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/operational-insights/workspace/ @Azure/avm-res-operationalinsights-workspace-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/operations-management/solution/ @Azure/avm-res-operationsmanagement-solution-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -146,6 +156,7 @@
 /avm/res/search/search-service/ @Azure/avm-res-search-searchservice-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/service-bus/namespace/ @Azure/avm-res-servicebus-namespace-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/service-fabric/cluster/ @Azure/avm-res-servicefabric-cluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/service-networking/traffic-controller/ @Azure/avm-res-servicenetworking-trafficcontroller-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/signal-r-service/signal-r/ @Azure/avm-res-signalrservice-signalr-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/signal-r-service/web-pub-sub/ @Azure/avm-res-signalrservice-webpubsub-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/sql/instance-pool/ @Azure/avm-res-sql-instancepool-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -160,4 +171,5 @@
 /avm/res/web/serverfarm/ @Azure/avm-res-web-serverfarm-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/web/site/ @Azure/avm-res-web-site-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/web/static-site/ @Azure/avm-res-web-staticsite-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/utl/types/avm-common-types/ @Azure/avm-utl-types-avmcommontypes-module-owners-bicep @Azure/avm-module-reviewers-bicep
 *avm.core.team.tests.ps1 @Azure/avm-core-team-technical-bicep
