@@ -2,7 +2,7 @@ metadata name = 'Azure Stack HCI Cluster Deployment Settings'
 metadata description = 'This module deploys an Azure Stack HCI Cluster Deployment Settings resource.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure.')
+@description('Conditional. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. Required if the template is used in a standalone deployment.')
 @maxLength(15)
 @minLength(4)
 param clusterName string
