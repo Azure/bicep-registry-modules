@@ -52,7 +52,7 @@ The following section provides usage examples for the module, which were used to
 - [Public network restricted access with ACL](#example-10-public-network-restricted-access-with-acl)
 - [Deploying with a sql role definision and assignment](#example-11-deploying-with-a-sql-role-definision-and-assignment)
 - [SQL Database](#example-12-sql-database)
-- [API for Table](#example-13-api-for-table)
+- [Using only defaults](#example-13-using-only-defaults)
 - [WAF-aligned](#example-14-waf-aligned)
 
 ### Example 1: _Using analytical storage_
@@ -3056,7 +3056,7 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 13: _API for Table_
+### Example 13: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
