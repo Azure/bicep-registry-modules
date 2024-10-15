@@ -52,6 +52,7 @@ The following section provides usage examples for the module, which were used to
 - [Deploying with a sql role definision and assignment](#example-11-deploying-with-a-sql-role-definision-and-assignment)
 - [SQL Database](#example-12-sql-database)
 - [WAF-aligned](#example-13-waf-aligned)
+- [API for Table](#example-14-api-for-table)
 
 ### Example 1: _Using analytical storage_
 
@@ -3275,6 +3276,112 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
+```
+
+</details>
+<p>
+
+### Example 14: _API for Table_
+
+This instance deploys the module with the minimum set of required parameters for an API for Table account with a single table defined.
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: 'databaseAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'dddatablemin001'
+    // Non-required parameters
+    location: '<location>'
+    capabilitiesToAdd: [
+      'EnableTable'
+    ]
+    tables: [
+      {
+        name: 'tbl-dddatableminprov'
+        throughput: 400
+      }
+      {
+        name: 'tbl-dddatableminauto'
+        maxThroughput: 1000
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddamin001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "capabilitiesToAdd": {
+      "value": [
+        "EnableTable"
+      ]
+    },
+    "tables": {
+      "value": [
+        {
+          "name": "tbl-dddatableminprov",
+          "throughput": 400
+        },
+        {
+          "name": "tbl-dddatableminauto",
+          "maxThroughput": 1000
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddamin001'
+// Non-required parameters
+param location = '<location>'
+param capabilitiesToAdd = [
+  'EnableTable'
+]
+param tables = [
+  {
+    name: 'tbl-dddatableminprov'
+    throughput: 400
+  }
+  {
+    name: 'tbl-dddatableminauto'
+    maxThroughput: 1000
+  }
+]
 ```
 
 </details>
