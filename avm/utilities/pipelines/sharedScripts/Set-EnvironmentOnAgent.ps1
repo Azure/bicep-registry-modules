@@ -18,9 +18,6 @@ Required. Modules to be installed, must be Object
 .PARAMETER InstalledModule
 Optional. Modules that are already installed on the machine. Can be fetched via 'Get-Module -ListAvailable'
 
-.PARAMETER InstallLatestPwshVersion
-Optional. Enable to install the latest PowerShell version
-
 .EXAMPLE
 Install-CustomModule @{ Name = 'Pester' } C:\Modules
 
@@ -34,10 +31,7 @@ function Install-CustomModule {
         [Hashtable] $Module,
 
         [Parameter(Mandatory = $false)]
-        [object[]] $InstalledModule = @(),
-
-        [Parameter(Mandatory = $false)]
-        [switch] $InstallLatestPwshVersion
+        [object[]] $InstalledModule = @()
     )
 
     # Remove exsisting module in session
@@ -120,6 +114,9 @@ Optional. The PowerShell modules that should be installed on the agent.
     }
 )
 
+.PARAMETER InstallLatestPwshVersion
+Optional. Enable to install the latest PowerShell version
+
 .EXAMPLE
 Set-EnvironmentOnAgent
 
@@ -139,7 +136,10 @@ function Set-EnvironmentOnAgent {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $false)]
-        [Hashtable[]] $PSModules = @()
+        [Hashtable[]] $PSModules = @(),
+
+        [Parameter(Mandatory = $false)]
+        [switch] $InstallLatestPwshVersion
     )
 
     ############################
