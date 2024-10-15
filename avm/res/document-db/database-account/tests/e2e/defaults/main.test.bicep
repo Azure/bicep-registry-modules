@@ -44,8 +44,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: enforcedLocation
       name: '${namePrefix}${serviceShort}001'
-      disableKeyBasedMetadataWriteAccess: true
-      disableLocalAuth: true
     }
   }
 ]
