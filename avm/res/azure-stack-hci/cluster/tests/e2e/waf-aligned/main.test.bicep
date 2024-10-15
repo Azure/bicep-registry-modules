@@ -77,7 +77,7 @@ module hciDependencies 'dependencies.bicep' = {
   }
 }
 
-module cluster '../../../main.bicep' = [
+module testDeployment '../../../main.bicep' = [
   for deploymentOperation in deploymentOperations: {
     dependsOn: [
       hciDependencies
