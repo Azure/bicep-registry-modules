@@ -409,17 +409,13 @@ param metricAnnotationsAllowList string = ''
 param istioServiceMeshEnabled bool = false
 
 @description('Optional. The list of revisions of the Istio control plane. When an upgrade is not in progress, this holds one value. When canary upgrade is in progress, this can only hold two consecutive values.')
-param istioServiceMeshRevisions array = ['asm-1-23']
+param istioServiceMeshRevisions array?
 
-@description('Optional. Specifies whether the Istio Ingress Gateway is enabled or not.')
-param istioServiceMeshIngressGatewayEnabled bool = false
+@description('Optional. Specifies whether the Internal Istio Ingress Gateway is enabled or not.')
+param istioServiceMeshInternalIngressGatewayEnabled bool = false
 
-@description('Optional. Specifies the type of the Istio Ingress Gateway.')
-@allowed([
-  'Internal'
-  'External'
-])
-param istioServiceMeshIngressGatewayType string = 'External'
+@description('Optional. Specifies whether the External Istio Ingress Gateway is enabled or not.')
+param istioServiceMeshExternalIngressGatewayEnabled bool = false
 
 @description('Optional. The Istio Certificate Authority definition.')
 param istioServiceMeshCertificateAuthority istioServiceMeshCertificateAuthorityType
@@ -850,14 +846,16 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
           istio: {
             revisions: !empty(istioServiceMeshRevisions) ? istioServiceMeshRevisions : null
             components: {
-              ingressGateways: istioServiceMeshIngressGatewayEnabled
-                ? [
-                    {
-                      enabled: true
-                      mode: istioServiceMeshIngressGatewayType
-                    }
-                  ]
-                : null
+              ingressGateways: [
+                {
+                  enabled: istioServiceMeshInternalIngressGatewayEnabled
+                  mode: 'Internal'
+                }
+                {
+                  enabled: istioServiceMeshExternalIngressGatewayEnabled
+                  mode: 'External'
+                }
+              ]
             }
             certificateAuthority: !empty(istioServiceMeshCertificateAuthority)
               ? {

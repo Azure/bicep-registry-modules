@@ -1238,8 +1238,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       rootCertObjectName: '<rootCertObjectName>'
     }
     istioServiceMeshEnabled: true
-    istioServiceMeshIngressGatewayEnabled: true
-    istioServiceMeshIngressGatewayType: 'Internal'
+    istioServiceMeshInternalIngressGatewayEnabled: true
     istioServiceMeshRevisions: [
       'asm-1-22'
     ]
@@ -1296,11 +1295,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "istioServiceMeshEnabled": {
       "value": true
     },
-    "istioServiceMeshIngressGatewayEnabled": {
+    "istioServiceMeshInternalIngressGatewayEnabled": {
       "value": true
-    },
-    "istioServiceMeshIngressGatewayType": {
-      "value": "Internal"
     },
     "istioServiceMeshRevisions": {
       "value": [
@@ -1350,8 +1346,7 @@ param istioServiceMeshCertificateAuthority = {
   rootCertObjectName: '<rootCertObjectName>'
 }
 param istioServiceMeshEnabled = true
-param istioServiceMeshIngressGatewayEnabled = true
-param istioServiceMeshIngressGatewayType = 'Internal'
+param istioServiceMeshInternalIngressGatewayEnabled = true
 param istioServiceMeshRevisions = [
   'asm-1-22'
 ]
@@ -2715,8 +2710,8 @@ param tags = {
 | [`ingressApplicationGatewayEnabled`](#parameter-ingressapplicationgatewayenabled) | bool | Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not. |
 | [`istioServiceMeshCertificateAuthority`](#parameter-istioservicemeshcertificateauthority) | object | The Istio Certificate Authority definition. |
 | [`istioServiceMeshEnabled`](#parameter-istioservicemeshenabled) | bool | Specifies whether the Istio ServiceMesh add-on is enabled or not. |
-| [`istioServiceMeshIngressGatewayEnabled`](#parameter-istioservicemeshingressgatewayenabled) | bool | Specifies whether the Istio Ingress Gateway is enabled or not. |
-| [`istioServiceMeshIngressGatewayType`](#parameter-istioservicemeshingressgatewaytype) | string | Specifies the type of the Istio Ingress Gateway. |
+| [`istioServiceMeshExternalIngressGatewayEnabled`](#parameter-istioservicemeshexternalingressgatewayenabled) | bool | Specifies whether the External Istio Ingress Gateway is enabled or not. |
+| [`istioServiceMeshInternalIngressGatewayEnabled`](#parameter-istioservicemeshinternalingressgatewayenabled) | bool | Specifies whether the Internal Istio Ingress Gateway is enabled or not. |
 | [`istioServiceMeshRevisions`](#parameter-istioservicemeshrevisions) | array | The list of revisions of the Istio control plane. When an upgrade is not in progress, this holds one value. When canary upgrade is in progress, this can only hold two consecutive values. |
 | [`kedaAddon`](#parameter-kedaaddon) | bool | Enables Kubernetes Event-driven Autoscaling (KEDA). |
 | [`kubeDashboardEnabled`](#parameter-kubedashboardenabled) | bool | Specifies whether the kubeDashboard add-on is enabled or not. |
@@ -4399,28 +4394,21 @@ Specifies whether the Istio ServiceMesh add-on is enabled or not.
 - Type: bool
 - Default: `False`
 
-### Parameter: `istioServiceMeshIngressGatewayEnabled`
+### Parameter: `istioServiceMeshExternalIngressGatewayEnabled`
 
-Specifies whether the Istio Ingress Gateway is enabled or not.
+Specifies whether the External Istio Ingress Gateway is enabled or not.
 
 - Required: No
 - Type: bool
 - Default: `False`
 
-### Parameter: `istioServiceMeshIngressGatewayType`
+### Parameter: `istioServiceMeshInternalIngressGatewayEnabled`
 
-Specifies the type of the Istio Ingress Gateway.
+Specifies whether the Internal Istio Ingress Gateway is enabled or not.
 
 - Required: No
-- Type: string
-- Default: `'External'`
-- Allowed:
-  ```Bicep
-  [
-    'External'
-    'Internal'
-  ]
-  ```
+- Type: bool
+- Default: `False`
 
 ### Parameter: `istioServiceMeshRevisions`
 
@@ -4428,12 +4416,6 @@ The list of revisions of the Istio control plane. When an upgrade is not in prog
 
 - Required: No
 - Type: array
-- Default:
-  ```Bicep
-  [
-    'asm-1-23'
-  ]
-  ```
 
 ### Parameter: `kedaAddon`
 

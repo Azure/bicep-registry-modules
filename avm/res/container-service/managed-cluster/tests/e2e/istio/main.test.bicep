@@ -64,8 +64,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       istioServiceMeshEnabled: true
-      istioServiceMeshIngressGatewayEnabled: true
-      istioServiceMeshIngressGatewayType: 'Internal'
+      istioServiceMeshInternalIngressGatewayEnabled: true
       istioServiceMeshRevisions: [
         'asm-1-22'
       ]
