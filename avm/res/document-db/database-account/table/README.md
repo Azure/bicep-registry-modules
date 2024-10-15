@@ -1,14 +1,12 @@
-# DocumentDB Database Account Gremlin Databases `[Microsoft.DocumentDB/databaseAccounts/gremlinDatabases]`
+# Azure Cosmos DB account tables `[Microsoft.DocumentDB/databaseAccounts/tables]`
 
-This module deploys a Table within an Azure Cosmos DB Account.
+This module deploys a table within an Azure Cosmos DB Account.
 
 ## Navigation
 
 - [Resource Types](#Resource-Types)
-- [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Notes](#Notes)
 
 ## Resource Types
 
@@ -28,14 +26,14 @@ This module deploys a Table within an Azure Cosmos DB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`databaseAccountName`](#parameter-databaseaccountname) | string | The name of the parent Azure Cosmos DB for Table account. Required if the template is used in a standalone deployment. |
+| [`databaseAccountName`](#parameter-databaseaccountname) | string | The name of the parent Azure Cosmos DB account. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`tags`](#parameter-tags) | object | Tags of the Gremlin database resource. |
 | [`maxThroughput`](#parameter-maxthroughput) | int | Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. |
+| [`tags`](#parameter-tags) | object | Tags for the table. |
 | [`throughput`](#parameter-throughput) | int | Request Units per second (for example 10000). Cannot be set together with `maxThroughput`. |
 
 ### Parameter: `name`
@@ -47,17 +45,10 @@ Name of the table.
 
 ### Parameter: `databaseAccountName`
 
-The name of the parent Azure Cosmos DB for Table account. Required if the template is used in a standalone deployment.
+The name of the parent Azure Cosmos DB account. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `tags`
-
-Tags of the Gremlin database resource.
-
-- Required: No
-- Type: object
 
 ### Parameter: `maxThroughput`
 
@@ -66,6 +57,13 @@ Represents maximum throughput, the resource can scale up to. Cannot be set toget
 - Required: No
 - Type: int
 - Default: `4000`
+
+### Parameter: `tags`
+
+Tags for the table.
+
+- Required: No
+- Type: object
 
 ### Parameter: `throughput`
 
@@ -79,5 +77,5 @@ Request Units per second (for example 10000). Cannot be set together with `maxTh
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the table. |
-| `resourceGroupName` | string | The name of the resource group the Azure Cosmos DB for Table account was created in. |
+| `resourceGroupName` | string | The name of the resource group the table was created in. |
 | `resourceId` | string | The resource ID of the table. |
