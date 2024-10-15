@@ -1186,7 +1186,7 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 
 // Required parameters
 param name = 'csmin001'
-param primaryAgentPoolProfile = [
+param primaryAgentPoolProfiles = [
   {
     count: 3
     mode: 'System'
@@ -1219,7 +1219,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
   params: {
     // Required parameters
     name: 'csist001'
-    primaryAgentPoolProfile: [
+    primaryAgentPoolProfiles: [
       {
         count: 3
         mode: 'System'
@@ -1266,7 +1266,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "name": {
       "value": "csist001"
     },
-    "primaryAgentPoolProfile": {
+    "primaryAgentPoolProfiles": {
       "value": [
         {
           "count": 3,
@@ -1327,7 +1327,7 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 
 // Required parameters
 param name = 'csist001'
-param primaryAgentPoolProfile = [
+param primaryAgentPoolProfiles = [
   {
     count: 3
     mode: 'System'
@@ -1644,10 +1644,10 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 
 // Required parameters
 param name = 'csmkube001'
-param primaryAgentPoolProfile = [
+param primaryAgentPoolProfiles = [
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 1
     enableAutoScaling: true
@@ -1669,7 +1669,7 @@ param primaryAgentPoolProfile = [
 param agentPools = [
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 2
     enableAutoScaling: true
@@ -1689,7 +1689,7 @@ param agentPools = [
   }
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 2
     enableAutoScaling: true
@@ -1985,10 +1985,10 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 
 // Required parameters
 param name = 'csmpriv001'
-param primaryAgentPoolProfile = [
+param primaryAgentPoolProfiles = [
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 1
     enableAutoScaling: true
@@ -2004,14 +2004,14 @@ param primaryAgentPoolProfile = [
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
     vmSize: 'Standard_DS2_v2'
-    vnetSubnetID: '<vnetSubnetID>'
+    vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
 // Non-required parameters
 param agentPools = [
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 2
     enableAutoScaling: true
@@ -2028,11 +2028,11 @@ param agentPools = [
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
     vmSize: 'Standard_DS2_v2'
-    vnetSubnetID: '<vnetSubnetID>'
+    vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 2
     enableAutoScaling: true
