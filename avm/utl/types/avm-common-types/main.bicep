@@ -12,6 +12,7 @@ metadata owner = 'Azure/module-maintainers'
 
 // Type with all properties available
 @export()
+@description('An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.')
 type diagnosticSettingFullType = {
   @description('Optional. The name of the diagnostic setting.')
   name: string?
@@ -56,8 +57,8 @@ type diagnosticSettingFullType = {
   marketplacePartnerResourceId: string?
 }
 
-// Type with only metrics available
 @export()
+@description('An AVM-aligned type for a diagnostic setting. To be used if only metrics are supported by the resource provider.')
 type diagnosticSettingMetricsOnlyType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
@@ -90,8 +91,8 @@ type diagnosticSettingMetricsOnlyType = {
   marketplacePartnerResourceId: string?
 }
 
-// Type with only logs available
 @export()
+@description('An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider.')
 type diagnosticSettingLogsOnlyType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
@@ -132,6 +133,7 @@ type diagnosticSettingLogsOnlyType = {
 //  =================== //
 
 @export()
+@description('An AVM-aligned type for a role assignment.')
 type roleAssignmentType = {
   @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
   name: string?
@@ -163,6 +165,7 @@ type roleAssignmentType = {
 // ========= //
 
 @export()
+@description('An AVM-aligned type for a lock.')
 type lockType = {
   @description('Optional. Specify the name of lock.')
   name: string?
@@ -175,8 +178,8 @@ type lockType = {
 //   Managed Identities   //
 // ====================== //
 
-// Type with all properties available
 @export()
+@description('An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.')
 type managedIdentityAllType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
   systemAssigned: bool?
@@ -185,15 +188,15 @@ type managedIdentityAllType = {
   userAssignedResourceIds: string[]?
 }
 
-// Type with only system-assigned identities available
 @export()
+@description('An AVM-aligned type for a managed identity configuration. To be used if only system-assigned identities are supported by the resource provider.')
 type managedIdentityOnlySysAssignedType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
   systemAssigned: bool?
 }
 
-// Type with only user-assigned identities available
 @export()
+@description('An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.')
 type managedIdentityOnlyUserAssignedType = {
   @description('Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.')
   userAssignedResourceIds: string[]?
@@ -242,8 +245,8 @@ type privateEndpointIpConfigurationType = {
   }
 }
 
-// Type where the Private Endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault)
 @export()
+@description('An AVM-aligned type for a private endpoint. To be used if the private endpoint\'s default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like \'vault\' for key vault).')
 type privateEndpointSingleServiceType = {
   @description('Optional. The name of the Private Endpoint.')
   name: string?
@@ -298,8 +301,8 @@ type privateEndpointSingleServiceType = {
   resourceGroupName: string?
 }
 
-// Type where the Private Endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...)
 @export()
+@description('An AVM-aligned type for a private endpoint. To be used if the private endpoint\'s default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).')
 type privateEndpointMultiServiceType = {
   @description('Optional. The name of the private endpoint.')
   name: string?
@@ -359,6 +362,7 @@ type privateEndpointMultiServiceType = {
 // ======================== //
 
 @export()
+@description('An AVM-aligned type for a customer-managed key.')
 type customerManagedKeyType = {
   @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
   keyVaultResourceId: string
@@ -378,6 +382,7 @@ type customerManagedKeyType = {
 // ================== //
 
 @export()
+@description('An AVM-aligned type for the output of the secret set via the secrets export feature.')
 type secretSetType = {
   @description('The resourceId of the exported secret.')
   secretResourceId: string
@@ -390,6 +395,7 @@ type secretSetType = {
 }
 
 @export()
+@description('An AVM-aligned type for the secret to set via the secrets export feature.')
 type secretToSetType = {
   @description('Required. The name of the secret to set.')
   name: string
