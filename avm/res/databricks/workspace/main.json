@@ -1721,9 +1721,9 @@
         "workspace"
       ]
     },
-    "storageAccount_privateEndpoints": {
+    "storageAccount_storageAccountPrivateEndpoints": {
       "copy": {
-        "name": "storageAccount_privateEndpoints",
+        "name": "storageAccount_storageAccountPrivateEndpoints",
         "count": "[length(coalesce(parameters('storageAccountPrivateEndpoints'), createArray()))]",
         "mode": "serial",
         "batchSize": 1
@@ -2586,11 +2586,11 @@
       "copy": {
         "count": "[length(if(and(not(empty(parameters('storageAccountPrivateEndpoints'))), equals(parameters('privateStorageAccount'), 'Enabled')), array(parameters('storageAccountPrivateEndpoints')), createArray()))]",
         "input": {
-          "name": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
-          "resourceId": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
-          "groupId": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
-          "customDnsConfig": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
-          "networkInterfaceIds": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
+          "name": "[reference(format('storageAccount_storageAccountPrivateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('storageAccount_storageAccountPrivateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
+          "groupId": "[reference(format('storageAccount_storageAccountPrivateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
+          "customDnsConfig": "[reference(format('storageAccount_storageAccountPrivateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
+          "networkInterfaceIds": "[reference(format('storageAccount_storageAccountPrivateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
         }
       }
     }

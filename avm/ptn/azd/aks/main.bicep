@@ -255,7 +255,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.3.0
   }
 }
 
-module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' = {
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.5.1' = {
   name: '${uniqueString(deployment().name, location)}-container-registry'
   params: {
     name: containerRegistryName
@@ -296,7 +296,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' =
   }
 }
 
-module keyVault 'br/public:avm/res/key-vault/vault:0.7.1' = {
+module keyVault 'br/public:avm/res/key-vault/vault:0.9.0' = {
   name: '${uniqueString(deployment().name, location)}-key-vault'
   params: {
     name: keyVaultName

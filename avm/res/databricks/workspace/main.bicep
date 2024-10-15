@@ -498,7 +498,7 @@ var _storageAccountId = resourceId(
 )
 
 @batchSize(1)
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module storageAccount_storageAccountPrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (storageAccountPrivateEndpoints ?? []): if (privateStorageAccount == 'Enabled') {
     name: '${uniqueString(deployment().name, location)}-workspacestorage-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -596,11 +596,11 @@ output storagePrivateEndpoints array = [
   for (pe, i) in ((!empty(storageAccountPrivateEndpoints) && privateStorageAccount == 'Enabled')
     ? array(storageAccountPrivateEndpoints)
     : []): {
-    name: storageAccount_privateEndpoints[i].outputs.name
-    resourceId: storageAccount_privateEndpoints[i].outputs.resourceId
-    groupId: storageAccount_privateEndpoints[i].outputs.groupId
-    customDnsConfig: storageAccount_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: storageAccount_privateEndpoints[i].outputs.networkInterfaceIds
+    name: storageAccount_storageAccountPrivateEndpoints[i].outputs.name
+    resourceId: storageAccount_storageAccountPrivateEndpoints[i].outputs.resourceId
+    groupId: storageAccount_storageAccountPrivateEndpoints[i].outputs.groupId
+    customDnsConfig: storageAccount_storageAccountPrivateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: storageAccount_storageAccountPrivateEndpoints[i].outputs.networkInterfaceIds
   }
 ]
 
