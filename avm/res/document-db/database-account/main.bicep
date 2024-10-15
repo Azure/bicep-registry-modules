@@ -246,6 +246,7 @@ var databaseAccountProperties = union(
   {
     databaseAccountOfferType: databaseAccountOfferType
     backupPolicy: backupPolicy
+    minimalTlsVersion: '1.2'
   },
   ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
     ? {
