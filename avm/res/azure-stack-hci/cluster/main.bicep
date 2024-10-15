@@ -17,12 +17,13 @@ param location string = resourceGroup().location
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Required. First must pass with this parameter set to Validate prior running with it set to Deploy. If either Validation or Deployment phases fail, fix the issue, then resubmit the template with the same deploymentMode to retry.')
+@description('Optional. The cluster deployment operations to execute. Defaults to "[Validate, Deploy]".')
 @allowed([
-  'Validate'
   'Deploy'
+  'Validate'
+  'None'
 ])
-param deploymentMode string
+param deploymentOperations array = ['Validate', 'Deploy']
 
 @minLength(4)
 @maxLength(8)
@@ -152,6 +153,11 @@ var formattedRoleAssignments = [
   })
 ]
 
+// if deployment operations requested, validation must be performed first so we reverse sort the array
+var sortedDeploymentOperations = (!contains(deploymentOperations, 'None'))
+  ? sort(deploymentOperations, (a, b) => a > b)
+  : []
+
 // ============= //
 //   Resources   //
 // ============= //
@@ -188,35 +194,37 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   tags: tags
 }
 
-module deploymentSetting 'deployment-settings/main.bicep' = {
-  name: 'deploymentSettings'
-  params: {
-    cloudId: cluster.properties.cloudId
-    clusterName: name
-    clusterNodeNames: clusterNodeNames
-    clusterWitnessStorageAccountName: clusterWitnessStorageAccountName
-    customLocationName: customLocationName
-    defaultGateway: defaultGateway
-    deploymentMode: deploymentMode
-    deploymentPrefix: deploymentPrefix
-    dnsServers: dnsServers
-    domainFqdn: domainFqdn
-    domainOUPath: domainOUPath
-    enableStorageAutoIp: enableStorageAutoIp
-    endingIPAddress: endingIPAddress
-    episodicDataUpload: episodicDataUpload
-    isEuropeanUnionLocation: isEuropeanUnionLocation
-    keyVaultName: keyVaultName
-    networkIntents: networkIntents
-    securityConfiguration: securityConfiguration
-    startingIPAddress: startingIPAddress
-    storageConfigurationMode: storageConfigurationMode
-    storageConnectivitySwitchless: storageConnectivitySwitchless
-    storageNetworks: storageNetworks
-    streamingDataClient: streamingDataClient
-    subnetMask: subnetMask
+module deploymentSetting 'deployment-settings/main.bicep' = [
+  for deploymentOperation in sortedDeploymentOperations: {
+    name: 'deploymentSettings-${deploymentOperation}'
+    params: {
+      cloudId: cluster.properties.cloudId
+      clusterName: name
+      clusterNodeNames: clusterNodeNames
+      clusterWitnessStorageAccountName: clusterWitnessStorageAccountName
+      customLocationName: customLocationName
+      defaultGateway: defaultGateway
+      deploymentMode: deploymentOperation
+      deploymentPrefix: deploymentPrefix
+      dnsServers: dnsServers
+      domainFqdn: domainFqdn
+      domainOUPath: domainOUPath
+      enableStorageAutoIp: enableStorageAutoIp
+      endingIPAddress: endingIPAddress
+      episodicDataUpload: episodicDataUpload
+      isEuropeanUnionLocation: isEuropeanUnionLocation
+      keyVaultName: keyVaultName
+      networkIntents: networkIntents
+      securityConfiguration: securityConfiguration
+      startingIPAddress: startingIPAddress
+      storageConfigurationMode: storageConfigurationMode
+      storageConnectivitySwitchless: storageConnectivitySwitchless
+      storageNetworks: storageNetworks
+      streamingDataClient: streamingDataClient
+      subnetMask: subnetMask
+    }
   }
-}
+]
 
 resource cluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {

@@ -21,11 +21,6 @@ param serviceShort string = 'ashc2nwaf'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@minLength(4)
-@maxLength(8)
-@description('Optional. The prefix for the resource for the deployment. This value is used in key vault and storage account names in this template, as well as for the deploymentSettings.properties.deploymentConfiguration.scaleUnits.deploymentData.namingPrefix property which requires regex pattern: ^[a-zA-Z0-9-]{1,8}$.')
-param deploymentPrefix string = take('${take(namePrefix, 8)}${uniqueString(utcNow())}', 8)
-
 @description('Optional. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param localAdminAndDeploymentUserPass string = newGuid()
@@ -50,101 +45,11 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
 
+var deploymentPrefix = take(uniqueString(namePrefix, serviceShort), 8)
+var deploymentOperations = ['Validate', 'Deploy']
+
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'southeastasia'
-
-var clusterNodeNames = ['hcinode1', 'hcinode2']
-var domainFqdn = 'hci.local'
-var domainOUPath = 'OU=HCI,DC=hci,DC=local'
-var subnetMask = '255.255.255.0'
-var defaultGateway = '172.20.0.1'
-var startingIPAddress = '172.20.0.2'
-var endingIPAddress = '172.20.0.7'
-var dnsServers = ['172.20.0.1']
-var customLocationName = '${serviceShort}-location'
-var enableStorageAutoIp = true
-var clusterWitnessStorageAccountName = 'dep${namePrefix}${serviceShort}wit'
-var keyVaultName = 'dep-${namePrefix}${serviceShort}kv'
-var hciISODownloadURL = 'https://azurestackreleases.download.prss.microsoft.com/dbazure/AzureStackHCI/OS-Composition/10.2408.0.3061/AZURESTACKHci23H2.25398.469.LCM.10.2408.0.3061.x64.en-us.iso'
-var networkIntents = [
-  {
-    adapter: ['mgmt']
-    name: 'management'
-    overrideAdapterProperty: true
-    adapterPropertyOverrides: {
-      jumboPacket: '9014'
-      networkDirect: 'Disabled'
-      networkDirectTechnology: 'iWARP'
-    }
-    overrideQosPolicy: false
-    qosPolicyOverrides: {
-      bandwidthPercentage_SMB: '50'
-      priorityValue8021Action_Cluster: '7'
-      priorityValue8021Action_SMB: '3'
-    }
-    overrideVirtualSwitchConfiguration: false
-    virtualSwitchConfigurationOverrides: {
-      enableIov: 'true'
-      loadBalancingAlgorithm: 'Dynamic'
-    }
-    trafficType: ['Management']
-  }
-  {
-    adapter: ['comp0', 'comp1']
-    name: 'compute'
-    overrideAdapterProperty: true
-    adapterPropertyOverrides: {
-      jumboPacket: '9014'
-      networkDirect: 'Disabled'
-      networkDirectTechnology: 'iWARP'
-    }
-    overrideQosPolicy: false
-    qosPolicyOverrides: {
-      bandwidthPercentage_SMB: '50'
-      priorityValue8021Action_Cluster: '7'
-      priorityValue8021Action_SMB: '3'
-    }
-    overrideVirtualSwitchConfiguration: false
-    virtualSwitchConfigurationOverrides: {
-      enableIov: 'true'
-      loadBalancingAlgorithm: 'Dynamic'
-    }
-    trafficType: ['Compute']
-  }
-  {
-    adapter: ['smb0', 'smb1']
-    name: 'storage'
-    overrideAdapterProperty: true
-    adapterPropertyOverrides: {
-      jumboPacket: '9014'
-      networkDirect: 'Disabled'
-      networkDirectTechnology: 'iWARP'
-    }
-    overrideQosPolicy: true
-    qosPolicyOverrides: {
-      bandwidthPercentage_SMB: '50'
-      priorityValue8021Action_Cluster: '7'
-      priorityValue8021Action_SMB: '3'
-    }
-    overrideVirtualSwitchConfiguration: false
-    virtualSwitchConfigurationOverrides: {
-      enableIov: 'true'
-      loadBalancingAlgorithm: 'Dynamic'
-    }
-    trafficType: ['Storage']
-  }
-]
-
-var storageNetworks = [
-  {
-    adapterName: 'smb0'
-    vlan: '711'
-  }
-  {
-    adapterName: 'smb1'
-    vlan: '712'
-  }
-]
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
@@ -155,99 +60,49 @@ module hciDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-hcidependencies-${serviceShort}'
   scope: resourceGroup
   params: {
-    clusterWitnessStorageAccountName: clusterWitnessStorageAccountName
+    arbDeploymentAppId: arbDeploymentAppId
+    arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
+    arbDeploymentSPObjectId: arbDeploymentSPObjectId
+    clusterName: name
+    clusterWitnessStorageAccountName: 'dep${namePrefix}${serviceShort}wit'
+    customLocationName: '${serviceShort}-location'
     deploymentPrefix: deploymentPrefix
     deploymentUserPassword: localAdminAndDeploymentUserPass
     hciResourceProviderObjectId: hciResourceProviderObjectId
+    keyVaultDiagnosticStorageAccountName: 'dep${take('${deploymentPrefix}${serviceShort}${take(uniqueString(resourceGroup.name,resourceGroup.location),6)}',17)}kvd'
+    keyVaultName: 'dep-${namePrefix}${serviceShort}kv'
     localAdminPassword: localAdminAndDeploymentUserPass
     location: enforcedLocation
-    arbDeploymentAppId: arbDeploymentAppId
-    arbDeploymentSPObjectId: arbDeploymentSPObjectId
-    arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
-    hciNodeCount: length(clusterNodeNames)
-    switchlessStorageConfig: false
-    hciISODownloadURL: hciISODownloadURL
-    keyVaultName: keyVaultName
     namePrefix: namePrefix
   }
 }
 
-module cluster_validate '../../../main.bicep' = {
-  dependsOn: [
-    hciDependencies
-  ]
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustervalidate-${serviceShort}'
-  scope: resourceGroup
-  params: {
-    name: name
-    customLocationName: customLocationName
-    clusterNodeNames: clusterNodeNames
-    clusterWitnessStorageAccountName: clusterWitnessStorageAccountName
-    defaultGateway: defaultGateway
-    deploymentMode: 'Validate'
-    deploymentPrefix: deploymentPrefix
-    dnsServers: dnsServers
-    domainFqdn: domainFqdn
-    domainOUPath: domainOUPath
-    endingIPAddress: endingIPAddress
-    enableStorageAutoIp: enableStorageAutoIp
-    keyVaultName: keyVaultName
-    networkIntents: networkIntents
-    startingIPAddress: startingIPAddress
-    storageConnectivitySwitchless: false
-    storageNetworks: storageNetworks
-    subnetMask: subnetMask
+module cluster '../../../main.bicep' = [
+  for deploymentOperation in deploymentOperations: {
+    dependsOn: [
+      hciDependencies
+    ]
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-cluster${deploymentOperation}-${serviceShort}'
+    scope: resourceGroup
+    params: {
+      name: name
+      customLocationName: hciDependencies.outputs.customLocationName
+      clusterNodeNames: hciDependencies.outputs.clusterNodeNames
+      clusterWitnessStorageAccountName: hciDependencies.outputs.clusterWitnessStorageAccountName
+      defaultGateway: hciDependencies.outputs.defaultGateway
+      deploymentOperations: [deploymentOperation]
+      deploymentPrefix: deploymentPrefix
+      dnsServers: hciDependencies.outputs.dnsServers
+      domainFqdn: hciDependencies.outputs.domainFqdn
+      domainOUPath: hciDependencies.outputs.domainOUPath
+      endingIPAddress: hciDependencies.outputs.endingIPAddress
+      enableStorageAutoIp: hciDependencies.outputs.enableStorageAutoIp
+      keyVaultName: hciDependencies.outputs.keyVaultName
+      networkIntents: hciDependencies.outputs.networkIntents
+      startingIPAddress: hciDependencies.outputs.startingIPAddress
+      storageConnectivitySwitchless: false
+      storageNetworks: hciDependencies.outputs.storageNetworks
+      subnetMask: hciDependencies.outputs.subnetMask
+    }
   }
-}
-
-module testDeployment '../../../main.bicep' = {
-  dependsOn: [
-    hciDependencies
-    cluster_validate
-  ]
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-clusterdeploy-${serviceShort}'
-  scope: resourceGroup
-  params: {
-    name: name
-    clusterNodeNames: clusterNodeNames
-    clusterWitnessStorageAccountName: clusterWitnessStorageAccountName
-    customLocationName: customLocationName
-    defaultGateway: defaultGateway
-    deploymentMode: 'Deploy'
-    deploymentPrefix: deploymentPrefix
-    dnsServers: dnsServers
-    domainFqdn: domainFqdn
-    domainOUPath: domainOUPath
-    endingIPAddress: endingIPAddress
-    enableStorageAutoIp: enableStorageAutoIp
-    keyVaultName: keyVaultName
-    networkIntents: networkIntents
-    startingIPAddress: startingIPAddress
-    storageConnectivitySwitchless: false
-    storageNetworks: storageNetworks
-    subnetMask: subnetMask
-  }
-}
-
-type networkIntent = {
-  adapter: string[]
-  name: string
-  overrideAdapterProperty: bool
-  adapterPropertyOverrides: {
-    jumboPacket: string
-    networkDirect: string
-    networkDirectTechnology: string
-  }
-  overrideQosPolicy: bool
-  qosPolicyOverrides: {
-    bandwidthPercentage_SMB: string
-    priorityValue8021Action_Cluster: string
-    priorityValue8021Action_SMB: string
-  }
-  overrideVirtualSwitchConfiguration: bool
-  virtualSwitchConfigurationOverrides: {
-    enableIov: string
-    loadBalancingAlgorithm: string
-  }
-  trafficType: string[]
-}
+]

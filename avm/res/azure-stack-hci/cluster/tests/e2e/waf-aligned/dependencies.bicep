@@ -19,22 +19,111 @@ param softDeleteRetentionDays int = 30
 @maxValue(365)
 param logsRetentionInDays int = 30
 param serviceShort string = 'ashcmin'
-param switchlessStorageConfig bool
-param hciNodeCount int
-param hciISODownloadURL string
 param clusterWitnessStorageAccountName string
+param keyVaultDiagnosticStorageAccountName string
+param keyVaultName string
+param customLocationName string
+
 @secure()
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
-param keyVaultName string
 param namePrefix string
+param clusterName string
 
 var deploymentUsername = 'deployUser'
 var localAdminUsername = 'admin-hci'
 var clusterNodeNames = ['hcinode1', 'hcinode2']
 var domainOUPath = 'OU=HCI,DC=hci,DC=local'
 var hciHostAssignPublicIp = false
-var keyVaultDiagnosticStorageAccountName = 'dep${take('${deploymentPrefix}${serviceShort}${take(uniqueString(resourceGroup().id,resourceGroup().location),6)}',17)}kvd'
+var domainFqdn = 'hci.local'
+var subnetMask = '255.255.255.0'
+var defaultGateway = '172.20.0.1'
+var startingIPAddress = '172.20.0.2'
+var endingIPAddress = '172.20.0.7'
+var dnsServers = ['172.20.0.1']
+var enableStorageAutoIp = true
+
+var hciISODownloadURL = 'https://azurestackreleases.download.prss.microsoft.com/dbazure/AzureStackHCI/OS-Composition/10.2408.0.3061/AZURESTACKHci23H2.25398.469.LCM.10.2408.0.3061.x64.en-us.iso'
+
+var networkIntents = [
+  {
+    adapter: ['mgmt']
+    name: 'management'
+    overrideAdapterProperty: true
+    adapterPropertyOverrides: {
+      jumboPacket: '9014'
+      networkDirect: 'Disabled'
+      networkDirectTechnology: 'iWARP'
+    }
+    overrideQosPolicy: false
+    qosPolicyOverrides: {
+      bandwidthPercentage_SMB: '50'
+      priorityValue8021Action_Cluster: '7'
+      priorityValue8021Action_SMB: '3'
+    }
+    overrideVirtualSwitchConfiguration: false
+    virtualSwitchConfigurationOverrides: {
+      enableIov: 'true'
+      loadBalancingAlgorithm: 'Dynamic'
+    }
+    trafficType: ['Management']
+  }
+  {
+    adapter: ['comp0', 'comp1']
+    name: 'compute'
+    overrideAdapterProperty: true
+    adapterPropertyOverrides: {
+      jumboPacket: '9014'
+      networkDirect: 'Disabled'
+      networkDirectTechnology: 'iWARP'
+    }
+    overrideQosPolicy: false
+    qosPolicyOverrides: {
+      bandwidthPercentage_SMB: '50'
+      priorityValue8021Action_Cluster: '7'
+      priorityValue8021Action_SMB: '3'
+    }
+    overrideVirtualSwitchConfiguration: false
+    virtualSwitchConfigurationOverrides: {
+      enableIov: 'true'
+      loadBalancingAlgorithm: 'Dynamic'
+    }
+    trafficType: ['Compute']
+  }
+  {
+    adapter: ['smb0', 'smb1']
+    name: 'storage'
+    overrideAdapterProperty: true
+    adapterPropertyOverrides: {
+      jumboPacket: '9014'
+      networkDirect: 'Disabled'
+      networkDirectTechnology: 'iWARP'
+    }
+    overrideQosPolicy: true
+    qosPolicyOverrides: {
+      bandwidthPercentage_SMB: '50'
+      priorityValue8021Action_Cluster: '7'
+      priorityValue8021Action_SMB: '3'
+    }
+    overrideVirtualSwitchConfiguration: false
+    virtualSwitchConfigurationOverrides: {
+      enableIov: 'true'
+      loadBalancingAlgorithm: 'Dynamic'
+    }
+    trafficType: ['Storage']
+  }
+]
+
+var storageNetworks = [
+  {
+    adapterName: 'smb0'
+    vlan: '711'
+  }
+  {
+    adapterName: 'smb1'
+    vlan: '712'
+  }
+]
 
 var arcNodeResourceIds = [
   for (nodeName, index) in clusterNodeNames: resourceId('Microsoft.HybridCompute/machines', nodeName)
@@ -49,13 +138,23 @@ module hciHostDeployment '../../../../../../utilities/e2e-template-assets/templa
     domainOUPath: domainOUPath
     deployProxy: false
     hciISODownloadURL: hciISODownloadURL
-    hciNodeCount: hciNodeCount
+    hciNodeCount: length(clusterNodeNames)
     hostVMSize: 'Standard_E16bds_v5'
     localAdminPassword: localAdminPassword
     location: location
-    switchlessStorageConfig: switchlessStorageConfig
+    switchlessStorageConfig: false
     namingPrefix: 'dep-${serviceShort}${namePrefix}'
   }
+}
+
+// create the HCI cluster resource - cloudId property is needed for KeyVault secret names
+resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
+  name: clusterName
+  identity: {
+    type: 'SystemAssigned'
+  }
+  location: location
+  properties: {}
 }
 
 module hciClusterPreqs '../../../../../../utilities/e2e-template-assets/templates/azure-stack-hci/modules/azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
@@ -81,5 +180,26 @@ module hciClusterPreqs '../../../../../../utilities/e2e-template-assets/template
     softDeleteRetentionDays: softDeleteRetentionDays
     tenantId: tenantId
     vnetSubnetId: hciHostDeployment.outputs.vnetSubnetId
+    clusterName: clusterName
+    cloudId: cluster.properties.cloudId
   }
 }
+
+output cluster object = cluster
+output clusterName string = clusterName
+output clusterNodeNames array = clusterNodeNames
+output clusterWitnessStorageAccountName string = clusterWitnessStorageAccountName
+output customLocationName string = customLocationName
+output defaultGateway string = defaultGateway
+output dnsServers array = dnsServers
+output domainFqdn string = domainFqdn
+output domainOUPath string = domainOUPath
+output enableStorageAutoIp bool = enableStorageAutoIp
+output endingIPAddress string = endingIPAddress
+output hciClusterPreqs object = hciClusterPreqs
+output hciHostDeployment object = hciHostDeployment
+output keyVaultName string = keyVaultName
+output networkIntents array = networkIntents
+output startingIPAddress string = startingIPAddress
+output storageNetworks array = storageNetworks
+output subnetMask string = subnetMask

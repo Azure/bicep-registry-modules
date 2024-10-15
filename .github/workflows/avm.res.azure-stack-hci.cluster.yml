@@ -1,4 +1,3 @@
-# >>> UPDATE to for example "avm.res.key-vault.vault"
 name: "avm.res.azure-stack-hci.cluster"
 
 on:
@@ -29,18 +28,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-        # >>> UPDATE to for example ".github/workflows/avm.res.key-vault.vault.yml"
       - ".github/workflows/avm.res.azure-stack-hci.cluster.yml"
-        # >>> UPDATE to for example "avm/res/key-vault/vault/**"
       - "avm/res/azure-stack-hci/cluster/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  # >>> UPDATE to for example "avm/res/key-vault/vault"
   modulePath: "avm/res/azure-stack-hci/cluster"
-  # >>> Update to for example ".github/workflows/avm.res.key-vault.vault.yml"
   workflowPath: ".github/workflows/avm.res.azure-stack-hci.cluster.yml"
 
 concurrency:

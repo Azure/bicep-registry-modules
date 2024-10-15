@@ -40,132 +40,114 @@ This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster,
 <summary>via Bicep module</summary>
 
 ```bicep
-module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
-  name: 'clusterDeployment'
+targetScope = 'subscription'
+
+metadata name = 'Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration'
+metadata description = 'This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster, validates the cluster configuration, and then deploys the cluster.'
+
+@description('Optional. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure.')
+@maxLength(15)
+@minLength(4)
+param name string = 'hcicluster'
+
+@description('Optional. Location for all resources.')
+param location string = deployment().location
+
+@description('Optional. The name of the resource group to deploy for testing purposes.')
+@maxLength(90)
+param resourceGroupName string = 'dep-azure-stack-hci.cluster-${serviceShort}-rg'
+
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+param serviceShort string = 'ashc2nmin'
+
+@description('Optional. A token to inject into the name of each resource.')
+param namePrefix string = '#_namePrefix_#'
+
+@description('Optional. The password of the LCM deployment user and local administrator accounts.')
+@secure()
+param localAdminAndDeploymentUserPass string = newGuid()
+
+@description('Required. The app ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+@secure()
+#disable-next-line secure-parameter-default
+param arbDeploymentAppId string = ''
+
+@description('Required. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+@secure()
+#disable-next-line secure-parameter-default
+param arbDeploymentSPObjectId string = ''
+
+@description('Required. The secret of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+@secure()
+#disable-next-line secure-parameter-default
+param arbDeploymentServicePrincipalSecret string = ''
+
+@description('Optional. The service principal ID of the Azure Stack HCI Resource Provider. If this is not provided, the module attemps to determine this value by querying the Microsoft Graph.')
+@secure()
+#disable-next-line secure-parameter-default
+param hciResourceProviderObjectId string = ''
+
+var deploymentPrefix = take(uniqueString(namePrefix, serviceShort), 8)
+var deploymentOperations = ['Validate', 'Deploy']
+
+#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
+var enforcedLocation = 'southeastasia'
+
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+  name: resourceGroupName
+  location: enforcedLocation
+}
+
+module hciDependencies 'dependencies.bicep' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-hcidependencies-${serviceShort}'
+  scope: resourceGroup
   params: {
-    // Required parameters
-    clusterNodeNames: '<clusterNodeNames>'
-    clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
-    customLocationName: '<customLocationName>'
-    defaultGateway: '<defaultGateway>'
-    deploymentMode: 'Deploy'
-    deploymentPrefix: '<deploymentPrefix>'
-    dnsServers: '<dnsServers>'
-    domainFqdn: '<domainFqdn>'
-    domainOUPath: '<domainOUPath>'
-    enableStorageAutoIp: '<enableStorageAutoIp>'
-    endingIPAddress: '<endingIPAddress>'
-    keyVaultName: '<keyVaultName>'
-    name: '<name>'
-    networkIntents: '<networkIntents>'
-    startingIPAddress: '<startingIPAddress>'
-    storageConnectivitySwitchless: false
-    storageNetworks: '<storageNetworks>'
-    subnetMask: '<subnetMask>'
+    arbDeploymentAppId: arbDeploymentAppId
+    arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
+    arbDeploymentSPObjectId: arbDeploymentSPObjectId
+    clusterName: name
+    clusterWitnessStorageAccountName: 'dep${namePrefix}${serviceShort}wit'
+    customLocationName: '${serviceShort}-location'
+    deploymentPrefix: deploymentPrefix
+    deploymentUserPassword: localAdminAndDeploymentUserPass
+    hciResourceProviderObjectId: hciResourceProviderObjectId
+    keyVaultDiagnosticStorageAccountName: 'dep${take('${deploymentPrefix}${serviceShort}${take(uniqueString(resourceGroup.name,resourceGroup.location),6)}',17)}kvd'
+    keyVaultName: 'dep-${namePrefix}${serviceShort}kv'
+    localAdminPassword: localAdminAndDeploymentUserPass
+    location: enforcedLocation
+    namePrefix: namePrefix
   }
 }
-```
 
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "clusterNodeNames": {
-      "value": "<clusterNodeNames>"
-    },
-    "clusterWitnessStorageAccountName": {
-      "value": "<clusterWitnessStorageAccountName>"
-    },
-    "customLocationName": {
-      "value": "<customLocationName>"
-    },
-    "defaultGateway": {
-      "value": "<defaultGateway>"
-    },
-    "deploymentMode": {
-      "value": "Deploy"
-    },
-    "deploymentPrefix": {
-      "value": "<deploymentPrefix>"
-    },
-    "dnsServers": {
-      "value": "<dnsServers>"
-    },
-    "domainFqdn": {
-      "value": "<domainFqdn>"
-    },
-    "domainOUPath": {
-      "value": "<domainOUPath>"
-    },
-    "enableStorageAutoIp": {
-      "value": "<enableStorageAutoIp>"
-    },
-    "endingIPAddress": {
-      "value": "<endingIPAddress>"
-    },
-    "keyVaultName": {
-      "value": "<keyVaultName>"
-    },
-    "name": {
-      "value": "<name>"
-    },
-    "networkIntents": {
-      "value": "<networkIntents>"
-    },
-    "startingIPAddress": {
-      "value": "<startingIPAddress>"
-    },
-    "storageConnectivitySwitchless": {
-      "value": false
-    },
-    "storageNetworks": {
-      "value": "<storageNetworks>"
-    },
-    "subnetMask": {
-      "value": "<subnetMask>"
+module cluster '../../../main.bicep' = [
+  for deploymentOperation in deploymentOperations: {
+    dependsOn: [
+      hciDependencies
+    ]
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-cluster${deploymentOperation}-${serviceShort}'
+    scope: resourceGroup
+    params: {
+      name: name
+      customLocationName: hciDependencies.outputs.customLocationName
+      clusterNodeNames: hciDependencies.outputs.clusterNodeNames
+      clusterWitnessStorageAccountName: hciDependencies.outputs.clusterWitnessStorageAccountName
+      defaultGateway: hciDependencies.outputs.defaultGateway
+      deploymentOperations: [deploymentOperation]
+      deploymentPrefix: deploymentPrefix
+      dnsServers: hciDependencies.outputs.dnsServers
+      domainFqdn: hciDependencies.outputs.domainFqdn
+      domainOUPath: hciDependencies.outputs.domainOUPath
+      endingIPAddress: hciDependencies.outputs.endingIPAddress
+      enableStorageAutoIp: hciDependencies.outputs.enableStorageAutoIp
+      keyVaultName: hciDependencies.outputs.keyVaultName
+      networkIntents: hciDependencies.outputs.networkIntents
+      startingIPAddress: hciDependencies.outputs.startingIPAddress
+      storageConnectivitySwitchless: false
+      storageNetworks: hciDependencies.outputs.storageNetworks
+      subnetMask: hciDependencies.outputs.subnetMask
     }
   }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/azure-stack-hci/cluster:<version>'
-
-// Required parameters
-param clusterNodeNames = '<clusterNodeNames>'
-param clusterWitnessStorageAccountName = '<clusterWitnessStorageAccountName>'
-param customLocationName = '<customLocationName>'
-param defaultGateway = '<defaultGateway>'
-param deploymentMode = 'Deploy'
-param deploymentPrefix = '<deploymentPrefix>'
-param dnsServers = '<dnsServers>'
-param domainFqdn = '<domainFqdn>'
-param domainOUPath = '<domainOUPath>'
-param enableStorageAutoIp = '<enableStorageAutoIp>'
-param endingIPAddress = '<endingIPAddress>'
-param keyVaultName = '<keyVaultName>'
-param name = '<name>'
-param networkIntents = '<networkIntents>'
-param startingIPAddress = '<startingIPAddress>'
-param storageConnectivitySwitchless = false
-param storageNetworks = '<storageNetworks>'
-param subnetMask = '<subnetMask>'
+]
 ```
 
 </details>
@@ -181,132 +163,114 @@ This test deploys an Azure VM to host a 3 node switchless Azure Stack HCI cluste
 <summary>via Bicep module</summary>
 
 ```bicep
-module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
-  name: 'clusterDeployment'
+targetScope = 'subscription'
+
+metadata name = 'Deploy Azure Stack HCI Cluster in Azure with a 3 node switchless configuration'
+metadata description = 'This test deploys an Azure VM to host a 3 node switchless Azure Stack HCI cluster, validates the cluster configuration, and then deploys the cluster.'
+
+@description('Optional. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure.')
+@maxLength(15)
+@minLength(4)
+param name string = 'hcicluster'
+
+@description('Optional. Location for all resources.')
+param location string = deployment().location
+
+@description('Optional. The name of the resource group to deploy for testing purposes.')
+@maxLength(90)
+param resourceGroupName string = 'dep-azure-stack-hci.cluster-${serviceShort}-rg'
+
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+param serviceShort string = 'ashc2nmin'
+
+@description('Optional. A token to inject into the name of each resource.')
+param namePrefix string = '#_namePrefix_#'
+
+@description('Optional. The password of the LCM deployment user and local administrator accounts.')
+@secure()
+param localAdminAndDeploymentUserPass string = newGuid()
+
+@description('Required. The app ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+@secure()
+#disable-next-line secure-parameter-default
+param arbDeploymentAppId string = ''
+
+@description('Required. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+@secure()
+#disable-next-line secure-parameter-default
+param arbDeploymentSPObjectId string = ''
+
+@description('Required. The secret of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+@secure()
+#disable-next-line secure-parameter-default
+param arbDeploymentServicePrincipalSecret string = ''
+
+@description('Optional. The service principal ID of the Azure Stack HCI Resource Provider. If this is not provided, the module attemps to determine this value by querying the Microsoft Graph.')
+@secure()
+#disable-next-line secure-parameter-default
+param hciResourceProviderObjectId string = ''
+
+var deploymentPrefix = take(uniqueString(namePrefix, serviceShort), 8)
+var deploymentOperations = ['Validate', 'Deploy']
+
+#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
+var enforcedLocation = 'southeastasia'
+
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+  name: resourceGroupName
+  location: enforcedLocation
+}
+
+module hciDependencies 'dependencies.bicep' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-hcidependencies-${serviceShort}'
+  scope: resourceGroup
   params: {
-    // Required parameters
-    clusterNodeNames: '<clusterNodeNames>'
-    clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
-    customLocationName: '<customLocationName>'
-    defaultGateway: '<defaultGateway>'
-    deploymentMode: 'Deploy'
-    deploymentPrefix: '<deploymentPrefix>'
-    dnsServers: '<dnsServers>'
-    domainFqdn: '<domainFqdn>'
-    domainOUPath: '<domainOUPath>'
-    enableStorageAutoIp: '<enableStorageAutoIp>'
-    endingIPAddress: '<endingIPAddress>'
-    keyVaultName: '<keyVaultName>'
-    name: '<name>'
-    networkIntents: '<networkIntents>'
-    startingIPAddress: '<startingIPAddress>'
-    storageConnectivitySwitchless: true
-    storageNetworks: '<storageNetworks>'
-    subnetMask: '<subnetMask>'
+    arbDeploymentAppId: arbDeploymentAppId
+    arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
+    arbDeploymentSPObjectId: arbDeploymentSPObjectId
+    clusterName: name
+    clusterWitnessStorageAccountName: 'dep${namePrefix}${serviceShort}wit'
+    customLocationName: '${serviceShort}-location'
+    deploymentPrefix: deploymentPrefix
+    deploymentUserPassword: localAdminAndDeploymentUserPass
+    hciResourceProviderObjectId: hciResourceProviderObjectId
+    keyVaultDiagnosticStorageAccountName: 'dep${take('${deploymentPrefix}${serviceShort}${take(uniqueString(resourceGroup.name,resourceGroup.location),6)}',17)}kvd'
+    keyVaultName: 'dep-${namePrefix}${serviceShort}kv'
+    localAdminPassword: localAdminAndDeploymentUserPass
+    location: enforcedLocation
+    namePrefix: namePrefix
   }
 }
-```
 
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "clusterNodeNames": {
-      "value": "<clusterNodeNames>"
-    },
-    "clusterWitnessStorageAccountName": {
-      "value": "<clusterWitnessStorageAccountName>"
-    },
-    "customLocationName": {
-      "value": "<customLocationName>"
-    },
-    "defaultGateway": {
-      "value": "<defaultGateway>"
-    },
-    "deploymentMode": {
-      "value": "Deploy"
-    },
-    "deploymentPrefix": {
-      "value": "<deploymentPrefix>"
-    },
-    "dnsServers": {
-      "value": "<dnsServers>"
-    },
-    "domainFqdn": {
-      "value": "<domainFqdn>"
-    },
-    "domainOUPath": {
-      "value": "<domainOUPath>"
-    },
-    "enableStorageAutoIp": {
-      "value": "<enableStorageAutoIp>"
-    },
-    "endingIPAddress": {
-      "value": "<endingIPAddress>"
-    },
-    "keyVaultName": {
-      "value": "<keyVaultName>"
-    },
-    "name": {
-      "value": "<name>"
-    },
-    "networkIntents": {
-      "value": "<networkIntents>"
-    },
-    "startingIPAddress": {
-      "value": "<startingIPAddress>"
-    },
-    "storageConnectivitySwitchless": {
-      "value": true
-    },
-    "storageNetworks": {
-      "value": "<storageNetworks>"
-    },
-    "subnetMask": {
-      "value": "<subnetMask>"
+module cluster '../../../main.bicep' = [
+  for deploymentOperation in deploymentOperations: {
+    dependsOn: [
+      hciDependencies
+    ]
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-cluster${deploymentOperation}-${serviceShort}'
+    scope: resourceGroup
+    params: {
+      name: name
+      customLocationName: hciDependencies.outputs.customLocationName
+      clusterNodeNames: hciDependencies.outputs.clusterNodeNames
+      clusterWitnessStorageAccountName: hciDependencies.outputs.clusterWitnessStorageAccountName
+      defaultGateway: hciDependencies.outputs.defaultGateway
+      deploymentOperations: [deploymentOperation]
+      deploymentPrefix: deploymentPrefix
+      dnsServers: hciDependencies.outputs.dnsServers
+      domainFqdn: hciDependencies.outputs.domainFqdn
+      domainOUPath: hciDependencies.outputs.domainOUPath
+      endingIPAddress: hciDependencies.outputs.endingIPAddress
+      enableStorageAutoIp: hciDependencies.outputs.enableStorageAutoIp
+      keyVaultName: hciDependencies.outputs.keyVaultName
+      networkIntents: hciDependencies.outputs.networkIntents
+      startingIPAddress: hciDependencies.outputs.startingIPAddress
+      storageConnectivitySwitchless: false
+      storageNetworks: hciDependencies.outputs.storageNetworks
+      subnetMask: hciDependencies.outputs.subnetMask
     }
   }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/azure-stack-hci/cluster:<version>'
-
-// Required parameters
-param clusterNodeNames = '<clusterNodeNames>'
-param clusterWitnessStorageAccountName = '<clusterWitnessStorageAccountName>'
-param customLocationName = '<customLocationName>'
-param defaultGateway = '<defaultGateway>'
-param deploymentMode = 'Deploy'
-param deploymentPrefix = '<deploymentPrefix>'
-param dnsServers = '<dnsServers>'
-param domainFqdn = '<domainFqdn>'
-param domainOUPath = '<domainOUPath>'
-param enableStorageAutoIp = '<enableStorageAutoIp>'
-param endingIPAddress = '<endingIPAddress>'
-param keyVaultName = '<keyVaultName>'
-param name = '<name>'
-param networkIntents = '<networkIntents>'
-param startingIPAddress = '<startingIPAddress>'
-param storageConnectivitySwitchless = true
-param storageNetworks = '<storageNetworks>'
-param subnetMask = '<subnetMask>'
+]
 ```
 
 </details>
@@ -322,132 +286,114 @@ This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster,
 <summary>via Bicep module</summary>
 
 ```bicep
-module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
-  name: 'clusterDeployment'
+targetScope = 'subscription'
+
+metadata name = 'Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration WAF aligned'
+metadata description = 'This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster, validates the cluster configuration, and then deploys the cluster WAF aligned.'
+
+@description('Optional. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure.')
+@maxLength(15)
+@minLength(4)
+param name string = 'hcicluster'
+
+@description('Optional. Location for all resources.')
+param location string = deployment().location
+
+@description('Optional. The name of the resource group to deploy for testing purposes.')
+@maxLength(90)
+param resourceGroupName string = 'dep-azure-stack-hci.cluster-${serviceShort}-rg'
+
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+param serviceShort string = 'ashc2nwaf'
+
+@description('Optional. A token to inject into the name of each resource.')
+param namePrefix string = '#_namePrefix_#'
+
+@description('Optional. The password of the LCM deployment user and local administrator accounts.')
+@secure()
+param localAdminAndDeploymentUserPass string = newGuid()
+
+@description('Required. The app ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+@secure()
+#disable-next-line secure-parameter-default
+param arbDeploymentAppId string = ''
+
+@description('Required. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+@secure()
+#disable-next-line secure-parameter-default
+param arbDeploymentSPObjectId string = ''
+
+@description('Required. The secret of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+@secure()
+#disable-next-line secure-parameter-default
+param arbDeploymentServicePrincipalSecret string = ''
+
+@description('Optional. The service principal ID of the Azure Stack HCI Resource Provider. If this is not provided, the module attemps to determine this value by querying the Microsoft Graph.')
+@secure()
+#disable-next-line secure-parameter-default
+param hciResourceProviderObjectId string = ''
+
+var deploymentPrefix = take(uniqueString(namePrefix, serviceShort), 8)
+var deploymentOperations = ['Validate', 'Deploy']
+
+#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
+var enforcedLocation = 'southeastasia'
+
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+  name: resourceGroupName
+  location: enforcedLocation
+}
+
+module hciDependencies 'dependencies.bicep' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-hcidependencies-${serviceShort}'
+  scope: resourceGroup
   params: {
-    // Required parameters
-    clusterNodeNames: '<clusterNodeNames>'
-    clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
-    customLocationName: '<customLocationName>'
-    defaultGateway: '<defaultGateway>'
-    deploymentMode: 'Deploy'
-    deploymentPrefix: '<deploymentPrefix>'
-    dnsServers: '<dnsServers>'
-    domainFqdn: '<domainFqdn>'
-    domainOUPath: '<domainOUPath>'
-    enableStorageAutoIp: '<enableStorageAutoIp>'
-    endingIPAddress: '<endingIPAddress>'
-    keyVaultName: '<keyVaultName>'
-    name: '<name>'
-    networkIntents: '<networkIntents>'
-    startingIPAddress: '<startingIPAddress>'
-    storageConnectivitySwitchless: false
-    storageNetworks: '<storageNetworks>'
-    subnetMask: '<subnetMask>'
+    arbDeploymentAppId: arbDeploymentAppId
+    arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
+    arbDeploymentSPObjectId: arbDeploymentSPObjectId
+    clusterName: name
+    clusterWitnessStorageAccountName: 'dep${namePrefix}${serviceShort}wit'
+    customLocationName: '${serviceShort}-location'
+    deploymentPrefix: deploymentPrefix
+    deploymentUserPassword: localAdminAndDeploymentUserPass
+    hciResourceProviderObjectId: hciResourceProviderObjectId
+    keyVaultDiagnosticStorageAccountName: 'dep${take('${deploymentPrefix}${serviceShort}${take(uniqueString(resourceGroup.name,resourceGroup.location),6)}',17)}kvd'
+    keyVaultName: 'dep-${namePrefix}${serviceShort}kv'
+    localAdminPassword: localAdminAndDeploymentUserPass
+    location: enforcedLocation
+    namePrefix: namePrefix
   }
 }
-```
 
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "clusterNodeNames": {
-      "value": "<clusterNodeNames>"
-    },
-    "clusterWitnessStorageAccountName": {
-      "value": "<clusterWitnessStorageAccountName>"
-    },
-    "customLocationName": {
-      "value": "<customLocationName>"
-    },
-    "defaultGateway": {
-      "value": "<defaultGateway>"
-    },
-    "deploymentMode": {
-      "value": "Deploy"
-    },
-    "deploymentPrefix": {
-      "value": "<deploymentPrefix>"
-    },
-    "dnsServers": {
-      "value": "<dnsServers>"
-    },
-    "domainFqdn": {
-      "value": "<domainFqdn>"
-    },
-    "domainOUPath": {
-      "value": "<domainOUPath>"
-    },
-    "enableStorageAutoIp": {
-      "value": "<enableStorageAutoIp>"
-    },
-    "endingIPAddress": {
-      "value": "<endingIPAddress>"
-    },
-    "keyVaultName": {
-      "value": "<keyVaultName>"
-    },
-    "name": {
-      "value": "<name>"
-    },
-    "networkIntents": {
-      "value": "<networkIntents>"
-    },
-    "startingIPAddress": {
-      "value": "<startingIPAddress>"
-    },
-    "storageConnectivitySwitchless": {
-      "value": false
-    },
-    "storageNetworks": {
-      "value": "<storageNetworks>"
-    },
-    "subnetMask": {
-      "value": "<subnetMask>"
+module cluster '../../../main.bicep' = [
+  for deploymentOperation in deploymentOperations: {
+    dependsOn: [
+      hciDependencies
+    ]
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-cluster${deploymentOperation}-${serviceShort}'
+    scope: resourceGroup
+    params: {
+      name: name
+      customLocationName: hciDependencies.outputs.customLocationName
+      clusterNodeNames: hciDependencies.outputs.clusterNodeNames
+      clusterWitnessStorageAccountName: hciDependencies.outputs.clusterWitnessStorageAccountName
+      defaultGateway: hciDependencies.outputs.defaultGateway
+      deploymentOperations: [deploymentOperation]
+      deploymentPrefix: deploymentPrefix
+      dnsServers: hciDependencies.outputs.dnsServers
+      domainFqdn: hciDependencies.outputs.domainFqdn
+      domainOUPath: hciDependencies.outputs.domainOUPath
+      endingIPAddress: hciDependencies.outputs.endingIPAddress
+      enableStorageAutoIp: hciDependencies.outputs.enableStorageAutoIp
+      keyVaultName: hciDependencies.outputs.keyVaultName
+      networkIntents: hciDependencies.outputs.networkIntents
+      startingIPAddress: hciDependencies.outputs.startingIPAddress
+      storageConnectivitySwitchless: false
+      storageNetworks: hciDependencies.outputs.storageNetworks
+      subnetMask: hciDependencies.outputs.subnetMask
     }
   }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/azure-stack-hci/cluster:<version>'
-
-// Required parameters
-param clusterNodeNames = '<clusterNodeNames>'
-param clusterWitnessStorageAccountName = '<clusterWitnessStorageAccountName>'
-param customLocationName = '<customLocationName>'
-param defaultGateway = '<defaultGateway>'
-param deploymentMode = 'Deploy'
-param deploymentPrefix = '<deploymentPrefix>'
-param dnsServers = '<dnsServers>'
-param domainFqdn = '<domainFqdn>'
-param domainOUPath = '<domainOUPath>'
-param enableStorageAutoIp = '<enableStorageAutoIp>'
-param endingIPAddress = '<endingIPAddress>'
-param keyVaultName = '<keyVaultName>'
-param name = '<name>'
-param networkIntents = '<networkIntents>'
-param startingIPAddress = '<startingIPAddress>'
-param storageConnectivitySwitchless = false
-param storageNetworks = '<storageNetworks>'
-param subnetMask = '<subnetMask>'
+]
 ```
 
 </details>
@@ -463,7 +409,6 @@ param subnetMask = '<subnetMask>'
 | [`clusterWitnessStorageAccountName`](#parameter-clusterwitnessstorageaccountname) | string | The name of the storage account to be used as the witness for the HCI Windows Failover Cluster. |
 | [`customLocationName`](#parameter-customlocationname) | string | The name of the Custom Location associated with the Arc Resource Bridge for this cluster. This value should reflect the physical location and identifier of the HCI cluster. Example: cl-hci-den-clu01. |
 | [`defaultGateway`](#parameter-defaultgateway) | string | The default gateway of the Management Network. Exameple: 192.168.0.1. |
-| [`deploymentMode`](#parameter-deploymentmode) | string | First must pass with this parameter set to Validate prior running with it set to Deploy. If either Validation or Deployment phases fail, fix the issue, then resubmit the template with the same deploymentMode to retry. |
 | [`deploymentPrefix`](#parameter-deploymentprefix) | string | The prefix for the resource for the deployment. This value is used in key vault and storage account names in this template, as well as for the deploymentSettings.properties.deploymentConfiguration.scaleUnits.deploymentData.namingPrefix property which requires regex pattern: ^[a-zA-Z0-9-]{1,8}$. |
 | [`dnsServers`](#parameter-dnsservers) | array | The DNS servers accessible from the Management Network for the HCI cluster. |
 | [`domainFqdn`](#parameter-domainfqdn) | string | The domain name of the Active Directory Domain Services. Example: "contoso.com". |
@@ -482,6 +427,7 @@ param subnetMask = '<subnetMask>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`deploymentOperations`](#parameter-deploymentoperations) | array | The cluster deployment operations to execute. Defaults to "[Validate, Deploy]". |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`episodicDataUpload`](#parameter-episodicdataupload) | bool | The diagnostic data for deploying a HCI cluster. |
 | [`isEuropeanUnionLocation`](#parameter-iseuropeanunionlocation) | bool | The location data for deploying a HCI cluster. |
@@ -519,20 +465,6 @@ The default gateway of the Management Network. Exameple: 192.168.0.1.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `deploymentMode`
-
-First must pass with this parameter set to Validate prior running with it set to Deploy. If either Validation or Deployment phases fail, fix the issue, then resubmit the template with the same deploymentMode to retry.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Deploy'
-    'Validate'
-  ]
-  ```
 
 ### Parameter: `deploymentPrefix`
 
@@ -780,6 +712,28 @@ The subnet mask pf the Management Network for the HCI cluster - ex: 255.255.252.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `deploymentOperations`
+
+The cluster deployment operations to execute. Defaults to "[Validate, Deploy]".
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    'Deploy'
+    'Validate'
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    'Deploy'
+    'None'
+    'Validate'
+  ]
+  ```
 
 ### Parameter: `enableTelemetry`
 
