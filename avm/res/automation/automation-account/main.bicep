@@ -15,8 +15,8 @@ param location string = resourceGroup().location
 ])
 param skuName string = 'Basic'
 
-@description('Optional. The customer managed key definition.')
 import { customerManagedKeyType } from '../../../utl/types/avm-common-types/main.bicep'
+@description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
 @description('Optional. List of credentials to be created in the automation account.')
@@ -57,24 +57,24 @@ param publicNetworkAccess string = ''
 @description('Optional. Disable local authentication profile used within the resource.')
 param disableLocalAuth bool = true
 
-@description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 import { privateEndpointMultiServiceType } from '../../../utl/types/avm-common-types/main.bicep'
+@description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
-@description('Optional. The diagnostic settings of the service.')
 import { diagnosticSettingFullType } from '../../../utl/types/avm-common-types/main.bicep'
+@description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-@description('Optional. The managed identity definition for this resource.')
 import { managedIdentityAllType } from '../../../utl/types/avm-common-types/main.bicep'
+@description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-@description('Optional. The lock settings of the service.')
 import { lockType } from '../../../utl/types/avm-common-types/main.bicep'
+@description('Optional. The lock settings of the service.')
 param lock lockType?
 
-@description('Optional. Array of role assignments to create.')
 import { roleAssignmentType } from '../../../utl/types/avm-common-types/main.bicep'
+@description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the Automation Account resource.')
