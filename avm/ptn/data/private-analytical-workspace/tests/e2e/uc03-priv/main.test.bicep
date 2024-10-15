@@ -62,11 +62,11 @@ module testDeployment '../../../main.bicep' = [
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       advancedOptions: {
         virtualNetwork: {
-          subnetNamePrivateLink: nestedDependencies.outputs.subnetResourceIds[0]
+          subnetNamePrivateLink: last(split(nestedDependencies.outputs.subnetResourceIds[0], '/'))
         }
         databricks: {
-          subnetNameFrontend: nestedDependencies.outputs.subnetResourceIds[1]
-          subnetNameBackend: nestedDependencies.outputs.subnetResourceIds[2]
+          subnetNameFrontend: last(split(nestedDependencies.outputs.subnetResourceIds[1], '/'))
+          subnetNameBackend: last(split(nestedDependencies.outputs.subnetResourceIds[2], '/'))
         }
       }
     }
