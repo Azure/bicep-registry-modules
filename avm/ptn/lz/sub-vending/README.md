@@ -1088,7 +1088,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/ptn/authorization/role-assignment:0.1.0` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.2.2` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.3.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.4.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.4.1` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.2.3` | Remote reference |
 | `br/public:avm/res/resources/resource-group:0.2.4` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.9.1` | Remote reference |
