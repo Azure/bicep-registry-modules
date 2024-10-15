@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "8697391320806003846"
+      "templateHash": "10347822602729915434"
     },
     "name": "SQL Server Elastic Pool",
     "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -24,15 +24,15 @@
           }
         },
         "maxCapacity": {
-          "type": "int",
+          "type": "string",
           "metadata": {
-            "description": "Reqired. The maximum capacity any one database can consume."
+            "description": "Reqired. The maximum capacity any one database can consume. Examples: '0.5', '2'"
           }
         },
         "minCapacity": {
-          "type": "int",
+          "type": "string",
           "metadata": {
-            "description": "Required. The minimum capacity all databases are guaranteed."
+            "description": "Required. The minimum capacity all databases are guaranteed. Examples: '0.5', '1'"
           }
         }
       },
@@ -312,8 +312,8 @@
       "$ref": "#/definitions/elasticPoolPerDatabaseSettingsType",
       "defaultValue": {
         "autoPauseDelay": -1,
-        "maxCapacity": 2,
-        "minCapacity": 0
+        "maxCapacity": "2",
+        "minCapacity": "0"
       },
       "metadata": {
         "description": "Optional. The per database settings for the elastic pool."
@@ -360,7 +360,7 @@
         "maintenanceConfigurationId": "[parameters('maintenanceConfigurationId')]",
         "maxSizeBytes": "[parameters('maxSizeBytes')]",
         "minCapacity": "[parameters('minCapacity')]",
-        "perDatabaseSettings": "[parameters('perDatabaseSettings')]",
+        "perDatabaseSettings": "[if(not(empty(parameters('perDatabaseSettings'))), createObject('autoPauseDelay', tryGet(parameters('perDatabaseSettings'), 'autoPauseDelay'), 'maxCapacity', json(tryGet(parameters('perDatabaseSettings'), 'maxCapacity')), 'minCapacity', json(tryGet(parameters('perDatabaseSettings'), 'minCapacity'))), null())]",
         "preferredEnclaveType": "[parameters('preferredEnclaveType')]",
         "zoneRedundant": "[parameters('zoneRedundant')]"
       },

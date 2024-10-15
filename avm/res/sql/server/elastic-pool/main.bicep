@@ -50,8 +50,8 @@ param minCapacity int?
 @description('Optional. The per database settings for the elastic pool.')
 param perDatabaseSettings elasticPoolPerDatabaseSettingsType = {
   autoPauseDelay: -1
-  maxCapacity: 2
-  minCapacity: 0
+  maxCapacity: '2'
+  minCapacity: '0'
 }
 
 @description('Optional. Type of enclave requested on the elastic pool.')
@@ -78,7 +78,14 @@ resource elasticPool 'Microsoft.Sql/servers/elasticPools@2023-08-01-preview' = {
     maintenanceConfigurationId: maintenanceConfigurationId
     maxSizeBytes: maxSizeBytes
     minCapacity: minCapacity
-    perDatabaseSettings: perDatabaseSettings
+    perDatabaseSettings: !empty(perDatabaseSettings)
+      ? {
+          autoPauseDelay: perDatabaseSettings.?autoPauseDelay
+          // To handle fractional values, we need to convert from string :(
+          maxCapacity: json(perDatabaseSettings.?maxCapacity)
+          minCapacity: json(perDatabaseSettings.?minCapacity)
+        }
+      : null
     preferredEnclaveType: preferredEnclaveType
     zoneRedundant: zoneRedundant
   }
@@ -106,11 +113,12 @@ type elasticPoolPerDatabaseSettingsType = {
   @description('Optional. Auto Pause Delay for per database within pool')
   autoPauseDelay: int?
 
-  @description('Reqired. The maximum capacity any one database can consume.')
-  maxCapacity: int
+  @description('Reqired. The maximum capacity any one database can consume. Examples: \'0.5\', \'2\'')
+  maxCapacity: string
 
-  @description('Required. The minimum capacity all databases are guaranteed.')
-  minCapacity: int
+  // using string as minCapacity can be fractional
+  @description('Required. The minimum capacity all databases are guaranteed. Examples: \'0.5\', \'1\'')
+  minCapacity: string
 }
 
 @export()
