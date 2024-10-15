@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "8431280172894888036"
+      "version": "0.30.23.60470",
+      "templateHash": "5428269336337327866"
     },
     "name": "Public SSH Keys",
     "description": "This module deploys a Public SSH Key.\n\n> Note: The resource does not auto-generate the key for you.",
@@ -199,7 +199,7 @@
     },
     "sshPublicKey": {
       "type": "Microsoft.Compute/sshPublicKeys",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -271,7 +271,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('sshPublicKey', '2023-07-01', 'full').location]"
+      "value": "[reference('sshPublicKey', '2024-03-01', 'full').location]"
     }
   }
 }
