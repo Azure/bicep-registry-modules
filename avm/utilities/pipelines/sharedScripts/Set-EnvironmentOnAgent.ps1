@@ -18,6 +18,9 @@ Required. Modules to be installed, must be Object
 .PARAMETER InstalledModule
 Optional. Modules that are already installed on the machine. Can be fetched via 'Get-Module -ListAvailable'
 
+.PARAMETER InstallLatestPwshVersion
+Optional. Enable to install the latest PowerShell version
+
 .EXAMPLE
 Install-CustomModule @{ Name = 'Pester' } C:\Modules
 
@@ -31,7 +34,10 @@ function Install-CustomModule {
         [Hashtable] $Module,
 
         [Parameter(Mandatory = $false)]
-        [object[]] $InstalledModule = @()
+        [object[]] $InstalledModule = @(),
+
+        [Parameter(Mandatory = $false)]
+        [switch] $InstallLatestPwshVersion
     )
 
     # Remove exsisting module in session
@@ -258,4 +264,23 @@ function Set-EnvironmentOnAgent {
     }
 
     Write-Verbose ('Install-CustomModule end') -Verbose
+}
+
+if ($InstallLatestPwshVersion) {
+    Write-Verbose '=======================' -Verbose
+    Write-Verbose 'PowerShell installation' -Verbose
+    Write-Verbose '=======================' -Verbose
+
+    # Update the list of packages
+    sudo apt-get update
+    # Install pre-requisite packages.
+    sudo apt-get install -y wget apt-transport-https software-properties-common
+    # Download the Microsoft repository GPG keys
+    wget -q "https://packages.microsoft.com/config/ubuntu/`$(lsb_release -rs)/packages-microsoft-prod.deb"
+    # Register the Microsoft repository GPG keys
+    sudo dpkg -i packages-microsoft-prod.deb
+    # Update the list of packages after we added packages.microsoft.com
+    sudo apt-get update
+    # Install PowerShell
+    sudo apt-get install -y powershell
 }
