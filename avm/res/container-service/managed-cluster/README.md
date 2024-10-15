@@ -59,9 +59,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         count: 3
         mode: 'System'
         name: 'systempool'
-        securityProfile: {
-          sshAccess: 'Disabled'
-        }
         vmSize: 'Standard_DS4_v2'
       }
     ]
@@ -131,9 +128,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "count": 3,
           "mode": "System",
           "name": "systempool",
-          "securityProfile": {
-            "sshAccess": "Disabled"
-          },
           "vmSize": "Standard_DS4_v2"
         }
       ]
@@ -227,9 +221,6 @@ param primaryAgentPoolProfiles = [
     count: 3
     mode: 'System'
     name: 'systempool'
-    securityProfile: {
-      sshAccess: 'Disabled'
-    }
     vmSize: 'Standard_DS4_v2'
   }
 ]
