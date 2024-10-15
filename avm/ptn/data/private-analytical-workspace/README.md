@@ -641,11 +641,11 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     // Non-required parameters
     advancedOptions: {
       databricks: {
-        subnetNameBackend: 'dbw-backend-subnet'
-        subnetNameFrontend: 'dbw-frontend-subnet'
+        subnetNameBackend: '<subnetNameBackend>'
+        subnetNameFrontend: '<subnetNameFrontend>'
       }
       virtualNetwork: {
-        subnetNamePrivateLink: 'private-link-subnet'
+        subnetNamePrivateLink: '<subnetNamePrivateLink>'
       }
     }
     enableDatabricks: true
@@ -678,11 +678,11 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     "advancedOptions": {
       "value": {
         "databricks": {
-          "subnetNameBackend": "dbw-backend-subnet",
-          "subnetNameFrontend": "dbw-frontend-subnet"
+          "subnetNameBackend": "<subnetNameBackend>",
+          "subnetNameFrontend": "<subnetNameFrontend>"
         },
         "virtualNetwork": {
-          "subnetNamePrivateLink": "private-link-subnet"
+          "subnetNamePrivateLink": "<subnetNamePrivateLink>"
         }
       }
     },
@@ -717,11 +717,11 @@ param name = 'dpawuc02priv001'
 // Non-required parameters
 param advancedOptions = {
   databricks: {
-    subnetNameBackend: 'dbw-backend-subnet'
-    subnetNameFrontend: 'dbw-frontend-subnet'
+    subnetNameBackend: '<subnetNameBackend>'
+    subnetNameFrontend: '<subnetNameFrontend>'
   }
   virtualNetwork: {
-    subnetNamePrivateLink: 'private-link-subnet'
+    subnetNamePrivateLink: '<subnetNamePrivateLink>'
   }
 }
 param enableDatabricks = true
@@ -753,8 +753,8 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     // Non-required parameters
     advancedOptions: {
       databricks: {
-        subnetNameBackend: 'dbw-backend-subnet'
-        subnetNameFrontend: 'dbw-frontend-subnet'
+        subnetNameBackend: '<subnetNameBackend>'
+        subnetNameFrontend: '<subnetNameFrontend>'
       }
       networkAcls: {
         ipRules: [
@@ -762,7 +762,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
         ]
       }
       virtualNetwork: {
-        subnetNamePrivateLink: 'private-link-subnet'
+        subnetNamePrivateLink: '<subnetNamePrivateLink>'
       }
     }
     enableDatabricks: true
@@ -795,8 +795,8 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     "advancedOptions": {
       "value": {
         "databricks": {
-          "subnetNameBackend": "dbw-backend-subnet",
-          "subnetNameFrontend": "dbw-frontend-subnet"
+          "subnetNameBackend": "<subnetNameBackend>",
+          "subnetNameFrontend": "<subnetNameFrontend>"
         },
         "networkAcls": {
           "ipRules": [
@@ -804,7 +804,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
           ]
         },
         "virtualNetwork": {
-          "subnetNamePrivateLink": "private-link-subnet"
+          "subnetNamePrivateLink": "<subnetNamePrivateLink>"
         }
       }
     },
@@ -839,8 +839,8 @@ param name = 'dpawuc02pub001'
 // Non-required parameters
 param advancedOptions = {
   databricks: {
-    subnetNameBackend: 'dbw-backend-subnet'
-    subnetNameFrontend: 'dbw-frontend-subnet'
+    subnetNameBackend: '<subnetNameBackend>'
+    subnetNameFrontend: '<subnetNameFrontend>'
   }
   networkAcls: {
     ipRules: [
@@ -848,7 +848,7 @@ param advancedOptions = {
     ]
   }
   virtualNetwork: {
-    subnetNamePrivateLink: 'private-link-subnet'
+    subnetNamePrivateLink: '<subnetNamePrivateLink>'
   }
 }
 param enableDatabricks = true
@@ -880,11 +880,11 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     // Non-required parameters
     advancedOptions: {
       databricks: {
-        subnetNameBackend: 'dbw-backend-subnet'
-        subnetNameFrontend: 'dbw-frontend-subnet'
+        subnetNameBackend: '<subnetNameBackend>'
+        subnetNameFrontend: '<subnetNameFrontend>'
       }
       virtualNetwork: {
-        subnetNamePrivateLink: 'private-link-subnet'
+        subnetNamePrivateLink: '<subnetNamePrivateLink>'
       }
     }
     enableDatabricks: true
@@ -919,11 +919,11 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     "advancedOptions": {
       "value": {
         "databricks": {
-          "subnetNameBackend": "dbw-backend-subnet",
-          "subnetNameFrontend": "dbw-frontend-subnet"
+          "subnetNameBackend": "<subnetNameBackend>",
+          "subnetNameFrontend": "<subnetNameFrontend>"
         },
         "virtualNetwork": {
-          "subnetNamePrivateLink": "private-link-subnet"
+          "subnetNamePrivateLink": "<subnetNamePrivateLink>"
         }
       }
     },
@@ -964,11 +964,11 @@ param name = 'dpawuc03priv001'
 // Non-required parameters
 param advancedOptions = {
   databricks: {
-    subnetNameBackend: 'dbw-backend-subnet'
-    subnetNameFrontend: 'dbw-frontend-subnet'
+    subnetNameBackend: '<subnetNameBackend>'
+    subnetNameFrontend: '<subnetNameFrontend>'
   }
   virtualNetwork: {
-    subnetNamePrivateLink: 'private-link-subnet'
+    subnetNamePrivateLink: '<subnetNamePrivateLink>'
   }
 }
 param enableDatabricks = true
@@ -1002,8 +1002,8 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     // Non-required parameters
     advancedOptions: {
       databricks: {
-        subnetNameBackend: 'dbw-backend-subnet'
-        subnetNameFrontend: 'dbw-frontend-subnet'
+        subnetNameBackend: '<subnetNameBackend>'
+        subnetNameFrontend: '<subnetNameFrontend>'
       }
       networkAcls: {
         ipRules: [
@@ -1011,7 +1011,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
         ]
       }
       virtualNetwork: {
-        subnetNamePrivateLink: 'private-link-subnet'
+        subnetNamePrivateLink: '<subnetNamePrivateLink>'
       }
     }
     enableDatabricks: true
@@ -1046,8 +1046,8 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     "advancedOptions": {
       "value": {
         "databricks": {
-          "subnetNameBackend": "dbw-backend-subnet",
-          "subnetNameFrontend": "dbw-frontend-subnet"
+          "subnetNameBackend": "<subnetNameBackend>",
+          "subnetNameFrontend": "<subnetNameFrontend>"
         },
         "networkAcls": {
           "ipRules": [
@@ -1055,7 +1055,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
           ]
         },
         "virtualNetwork": {
-          "subnetNamePrivateLink": "private-link-subnet"
+          "subnetNamePrivateLink": "<subnetNamePrivateLink>"
         }
       }
     },
@@ -1096,8 +1096,8 @@ param name = 'dpawuc03pub001'
 // Non-required parameters
 param advancedOptions = {
   databricks: {
-    subnetNameBackend: 'dbw-backend-subnet'
-    subnetNameFrontend: 'dbw-frontend-subnet'
+    subnetNameBackend: '<subnetNameBackend>'
+    subnetNameFrontend: '<subnetNameFrontend>'
   }
   networkAcls: {
     ipRules: [
@@ -1105,7 +1105,7 @@ param advancedOptions = {
     ]
   }
   virtualNetwork: {
-    subnetNamePrivateLink: 'private-link-subnet'
+    subnetNamePrivateLink: '<subnetNamePrivateLink>'
   }
 }
 param enableDatabricks = true

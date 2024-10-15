@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "3882517201901229902"
+      "templateHash": "2111096587136126273"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -36,7 +36,10 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "userGroupRoleAssignmentType": {
       "type": "array",
@@ -60,6 +63,9 @@
             }
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "networkAclsType": {
@@ -75,6 +81,9 @@
             "description": "Optional. Sets the public IP addresses or ranges that are allowed to access resources in the solution."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "virtualNetworkType": {
@@ -87,6 +96,9 @@
             "description": "Optional. The name of the existing Private Link Subnet within the Virtual Network in the parameter: 'virtualNetworkResourceId'."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "logAnalyticsWorkspaceType": {
@@ -109,6 +121,9 @@
             "description": "Optional. The workspace daily quota for ingestion. The dafult value is: '-1' (not limited)."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "keyVaultType": {
@@ -149,6 +164,9 @@
             "description": "Optional. Provide 'true' to enable Key Vault's purge protection feature. The dafult value is: 'true'."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "databricksType": {
@@ -168,6 +186,9 @@
             "description": "Optional. The name of the existing backend Subnet for Azure Databricks within the Virtual Network in the parameter: 'virtualNetworkResourceId'."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "advancedOptionsType": {
@@ -208,6 +229,9 @@
             "description": "Optional. This parameter allows you to specify additional settings for Azure Databricks if you set the 'enableDatabricks' parameter to 'true'."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     }
   },

@@ -783,6 +783,7 @@ output databricksResourceGroupName string = enableDatabricks ? dbw.outputs.resou
 // Definitions      //
 // ================ //
 
+@export()
 type lockType = {
   @description('Optional. Specify the name of lock.')
   name: string?
@@ -791,6 +792,7 @@ type lockType = {
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
 
+@export()
 type userGroupRoleAssignmentType = {
   @description('Required. The principal ID of the principal (user/group) to assign the role to.')
   principalId: string
@@ -799,16 +801,19 @@ type userGroupRoleAssignmentType = {
   principalType: ('Group' | 'User')
 }[]
 
+@export()
 type networkAclsType = {
   @description('Optional. Sets the public IP addresses or ranges that are allowed to access resources in the solution.')
   ipRules: string[]?
 }
 
+@export()
 type virtualNetworkType = {
   @description('Optional. The name of the existing Private Link Subnet within the Virtual Network in the parameter: \'virtualNetworkResourceId\'.')
   subnetNamePrivateLink: string?
 }
 
+@export()
 type logAnalyticsWorkspaceType = {
   @description('Optional. Number of days data will be retained for. The dafult value is: \'365\'.')
   @minValue(0)
@@ -820,6 +825,7 @@ type logAnalyticsWorkspaceType = {
   dailyQuotaGb: int?
 }
 
+@export()
 type keyVaultType = {
   @description('Optional. The vault\'s create mode to indicate whether the vault need to be recovered or not. - \'recover\' or \'default\'. The dafult value is: \'default\'.')
   createMode: string?
@@ -837,6 +843,7 @@ type keyVaultType = {
   enablePurgeProtection: bool?
 }
 
+@export()
 type databricksType = {
   // must be providied when DBW is going to be enabled and VNET is provided
   @description('Optional. The name of the existing frontend Subnet for Azure Databricks within the Virtual Network in the parameter: \'virtualNetworkResourceId\'.')
@@ -846,6 +853,7 @@ type databricksType = {
   subnetNameBackend: string?
 }
 
+@export()
 type advancedOptionsType = {
   @description('Optional. You can use this parameter to integrate the solution with an existing Azure Virtual Network if the \'virtualNetworkResourceId\' parameter is not empty.')
   virtualNetwork: virtualNetworkType?
