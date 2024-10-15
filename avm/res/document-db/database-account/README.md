@@ -26,6 +26,7 @@ This module deploys a DocumentDB Database Account.
 | `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlDatabases/containers) |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlRoleAssignments) |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlRoleDefinitions) |
+| `Microsoft.DocumentDB/databaseAccounts/tables` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/tables) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
@@ -51,8 +52,8 @@ The following section provides usage examples for the module, which were used to
 - [Public network restricted access with ACL](#example-10-public-network-restricted-access-with-acl)
 - [Deploying with a sql role definision and assignment](#example-11-deploying-with-a-sql-role-definision-and-assignment)
 - [SQL Database](#example-12-sql-database)
-- [WAF-aligned](#example-13-waf-aligned)
-- [API for Table](#example-14-api-for-table)
+- [API for Table](#example-13-api-for-table)
+- [WAF-aligned](#example-14-waf-aligned)
 
 ### Example 1: _Using analytical storage_
 
@@ -3055,7 +3056,114 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 13: _WAF-aligned_
+### Example 13: _API for Table_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: 'databaseAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'dddatablemin001001'
+    // Non-required parameters
+    capabilitiesToAdd: [
+      'EnableTable'
+    ]
+    location: '<location>'
+    tables: [
+      {
+        name: 'tbl-dddatableminprov'
+        throughput: 400
+      }
+      {
+        maxThroughput: 1000
+        name: 'tbl-dddatableminauto'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddatablemin001001"
+    },
+    // Non-required parameters
+    "capabilitiesToAdd": {
+      "value": [
+        "EnableTable"
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "tables": {
+      "value": [
+        {
+          "name": "tbl-dddatableminprov",
+          "throughput": 400
+        },
+        {
+          "maxThroughput": 1000,
+          "name": "tbl-dddatableminauto"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddatablemin001001'
+// Non-required parameters
+param capabilitiesToAdd = [
+  'EnableTable'
+]
+param location = '<location>'
+param tables = [
+  {
+    name: 'tbl-dddatableminprov'
+    throughput: 400
+  }
+  {
+    maxThroughput: 1000
+    name: 'tbl-dddatableminauto'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 14: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -3281,112 +3389,6 @@ param tags = {
 </details>
 <p>
 
-### Example 14: _API for Table_
-
-This instance deploys the module with the minimum set of required parameters for an API for Table account with a single table defined.
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
-  params: {
-    // Required parameters
-    name: 'dddatablemin001'
-    // Non-required parameters
-    location: '<location>'
-    capabilitiesToAdd: [
-      'EnableTable'
-    ]
-    tables: [
-      {
-        name: 'tbl-dddatableminprov'
-        throughput: 400
-      }
-      {
-        name: 'tbl-dddatableminauto'
-        maxThroughput: 1000
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "dddamin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "capabilitiesToAdd": {
-      "value": [
-        "EnableTable"
-      ]
-    },
-    "tables": {
-      "value": [
-        {
-          "name": "tbl-dddatableminprov",
-          "throughput": 400
-        },
-        {
-          "name": "tbl-dddatableminauto",
-          "maxThroughput": 1000
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/document-db/database-account:<version>'
-
-// Required parameters
-param name = 'dddamin001'
-// Non-required parameters
-param location = '<location>'
-param capabilitiesToAdd = [
-  'EnableTable'
-]
-param tables = [
-  {
-    name: 'tbl-dddatableminprov'
-    throughput: 400
-  }
-  {
-    name: 'tbl-dddatableminauto'
-    maxThroughput: 1000
-  }
-]
-```
-
-</details>
-<p>
-
 ## Parameters
 
 **Required parameters**
@@ -3431,6 +3433,7 @@ param tables = [
 | [`sqlDatabases`](#parameter-sqldatabases) | array | SQL Databases configurations. |
 | [`sqlRoleAssignmentsPrincipalIds`](#parameter-sqlroleassignmentsprincipalids) | array | SQL Role Definitions configurations. |
 | [`sqlRoleDefinitions`](#parameter-sqlroledefinitions) | array | SQL Role Definitions configurations. |
+| [`tables`](#parameter-tables) | array | Table configurations. |
 | [`tags`](#parameter-tags) | object | Tags of the Database Account resource. |
 
 ### Parameter: `name`
@@ -4871,6 +4874,14 @@ Indicates whether the Role Definition was built-in or user created.
     'CustomRole'
   ]
   ```
+
+### Parameter: `tables`
+
+Table configurations.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `tags`
 
