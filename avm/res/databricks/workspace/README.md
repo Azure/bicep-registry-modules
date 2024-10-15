@@ -116,6 +116,12 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     name: 'dwmax002'
     // Non-required parameters
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
+    automaticClusterUpdate: 'Enabled'
+    complianceSecurityProfileValue: 'Enabled'
+    complianceStandards: [
+      'HIPAA'
+      'PCI_DSS'
+    ]
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -149,6 +155,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
       }
     ]
     disablePublicIp: true
+    enhancedSecurityMonitoring: 'Enabled'
     loadBalancerBackendPoolName: '<loadBalancerBackendPoolName>'
     loadBalancerResourceId: '<loadBalancerResourceId>'
     location: '<location>'
@@ -243,6 +250,18 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     "amlWorkspaceResourceId": {
       "value": "<amlWorkspaceResourceId>"
     },
+    "automaticClusterUpdate": {
+      "value": "Enabled"
+    },
+    "complianceSecurityProfileValue": {
+      "value": "Enabled"
+    },
+    "complianceStandards": {
+      "value": [
+        "HIPAA",
+        "PCI_DSS"
+      ]
+    },
     "customerManagedKey": {
       "value": {
         "keyName": "<keyName>",
@@ -291,6 +310,9 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     },
     "disablePublicIp": {
       "value": true
+    },
+    "enhancedSecurityMonitoring": {
+      "value": "Enabled"
     },
     "loadBalancerBackendPoolName": {
       "value": "<loadBalancerBackendPoolName>"
@@ -416,6 +438,12 @@ using 'br/public:avm/res/databricks/workspace:<version>'
 param name = 'dwmax002'
 // Non-required parameters
 param amlWorkspaceResourceId = '<amlWorkspaceResourceId>'
+param automaticClusterUpdate = 'Enabled'
+param complianceSecurityProfileValue = 'Enabled'
+param complianceStandards = [
+  'HIPAA'
+  'PCI_DSS'
+]
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
@@ -449,6 +477,7 @@ param diagnosticSettings = [
   }
 ]
 param disablePublicIp = true
+param enhancedSecurityMonitoring = 'Enabled'
 param loadBalancerBackendPoolName = '<loadBalancerBackendPoolName>'
 param loadBalancerResourceId = '<loadBalancerResourceId>'
 param location = '<location>'
@@ -542,6 +571,8 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     // Non-required parameters
     accessConnectorResourceId: '<accessConnectorResourceId>'
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
+    automaticClusterUpdate: 'Enabled'
+    complianceSecurityProfileValue: 'Disabled'
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -572,6 +603,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
       }
     ]
     disablePublicIp: true
+    enhancedSecurityMonitoring: 'Enabled'
     loadBalancerBackendPoolName: '<loadBalancerBackendPoolName>'
     loadBalancerResourceId: '<loadBalancerResourceId>'
     location: '<location>'
@@ -584,9 +616,13 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     prepareEncryption: true
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'databricks_ui_api'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -653,6 +689,12 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     "amlWorkspaceResourceId": {
       "value": "<amlWorkspaceResourceId>"
     },
+    "automaticClusterUpdate": {
+      "value": "Enabled"
+    },
+    "complianceSecurityProfileValue": {
+      "value": "Disabled"
+    },
     "customerManagedKey": {
       "value": {
         "keyName": "<keyName>",
@@ -697,6 +739,9 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     "disablePublicIp": {
       "value": true
     },
+    "enhancedSecurityMonitoring": {
+      "value": "Enabled"
+    },
     "loadBalancerBackendPoolName": {
       "value": "<loadBalancerBackendPoolName>"
     },
@@ -724,9 +769,13 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "databricks_ui_api",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -808,6 +857,8 @@ param name = 'dwwaf001'
 // Non-required parameters
 param accessConnectorResourceId = '<accessConnectorResourceId>'
 param amlWorkspaceResourceId = '<amlWorkspaceResourceId>'
+param automaticClusterUpdate = 'Enabled'
+param complianceSecurityProfileValue = 'Disabled'
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
@@ -838,6 +889,7 @@ param diagnosticSettings = [
   }
 ]
 param disablePublicIp = true
+param enhancedSecurityMonitoring = 'Enabled'
 param loadBalancerBackendPoolName = '<loadBalancerBackendPoolName>'
 param loadBalancerResourceId = '<loadBalancerResourceId>'
 param location = '<location>'
@@ -850,9 +902,13 @@ param natGatewayName = 'nat-gateway'
 param prepareEncryption = true
 param privateEndpoints = [
   {
-    privateDnsZoneResourceIds: [
-      '<privateDNSZoneResourceId>'
-    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
     service: 'databricks_ui_api'
     subnetResourceId: '<subnetResourceId>'
     tags: {
@@ -916,6 +972,9 @@ param vnetAddressPrefix = '10.100'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`amlWorkspaceResourceId`](#parameter-amlworkspaceresourceid) | string | The resource ID of a Azure Machine Learning workspace to link with Databricks workspace. |
+| [`automaticClusterUpdate`](#parameter-automaticclusterupdate) | string | The value for enabling automatic cluster updates in enhanced security compliance. |
+| [`complianceSecurityProfileValue`](#parameter-compliancesecurityprofilevalue) | string | The value to Enable or Disable for the compliance security profile. |
+| [`complianceStandards`](#parameter-compliancestandards) | array | The compliance standards array for the security profile. Should be a list of compliance standards like "HIPAA", "NONE" or "PCI_DSS". |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition to use for the managed service. |
 | [`customerManagedKeyManagedDisk`](#parameter-customermanagedkeymanageddisk) | object | The customer managed key definition to use for the managed disk. |
 | [`customPrivateSubnetName`](#parameter-customprivatesubnetname) | string | The name of the Private Subnet within the Virtual Network. |
@@ -925,6 +984,7 @@ param vnetAddressPrefix = '10.100'
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disablePublicIp`](#parameter-disablepublicip) | bool | Disable Public IP. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`enhancedSecurityMonitoring`](#parameter-enhancedsecuritymonitoring) | string | The value for enabling or configuring enhanced security monitoring. |
 | [`loadBalancerBackendPoolName`](#parameter-loadbalancerbackendpoolname) | string | Name of the outbound Load Balancer Backend Pool for Secure Cluster Connectivity (No Public IP). |
 | [`loadBalancerResourceId`](#parameter-loadbalancerresourceid) | string | Resource URI of Outbound Load balancer for Secure Cluster Connectivity (No Public IP) workspace. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -968,6 +1028,46 @@ The resource ID of a Azure Machine Learning workspace to link with Databricks wo
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `automaticClusterUpdate`
+
+The value for enabling automatic cluster updates in enhanced security compliance.
+
+- Required: No
+- Type: string
+- Default: `''`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `complianceSecurityProfileValue`
+
+The value to Enable or Disable for the compliance security profile.
+
+- Required: No
+- Type: string
+- Default: `''`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `complianceStandards`
+
+The compliance standards array for the security profile. Should be a list of compliance standards like "HIPAA", "NONE" or "PCI_DSS".
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `customerManagedKey`
 
@@ -1253,6 +1353,22 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `enhancedSecurityMonitoring`
+
+The value for enabling or configuring enhanced security monitoring.
+
+- Required: No
+- Type: string
+- Default: `''`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `loadBalancerBackendPoolName`
 
@@ -1635,6 +1751,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -2221,10 +2348,15 @@ Array of role assignments to create.
 - Type: array
 - Roles configurable by name:
   - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
   - `'Owner'`
+  - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator'`
-  - `'User Access Administrator'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
