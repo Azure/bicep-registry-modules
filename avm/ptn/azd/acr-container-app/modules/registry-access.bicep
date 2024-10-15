@@ -17,7 +17,7 @@ var acrPullRole = subscriptionResourceId(
 )
 
 module aksAcrPull 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.1' = {
-  name: 'acrpullrole-deployment'
+  name: guid(subscription().id, resourceGroup().id, principalId, acrPullRole)
   params: {
     principalId: principalId
     resourceId: containerRegistry.id
