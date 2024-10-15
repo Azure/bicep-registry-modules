@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "2644636658214532574"
+      "templateHash": "15297648363887235052"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -663,7 +663,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "2549730186599602050"
+              "templateHash": "16600088245608261230"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -2339,8 +2339,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "15949466154563447171"
+                      "version": "0.30.23.60470",
+                      "templateHash": "5074972058800471543"
                     },
                     "name": "Virtual Networks",
                     "description": "This module deploys a Virtual Network (vNet).",
@@ -2954,7 +2954,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -3138,8 +3138,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "5699372618313647761"
+                              "version": "0.30.23.60470",
+                              "templateHash": "6677157161292207910"
                             },
                             "name": "Virtual Network Subnets",
                             "description": "This module deploys a Virtual Network Subnet.",
@@ -3517,8 +3517,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "5206620163504251868"
+                              "version": "0.30.23.60470",
+                              "templateHash": "345394220621166229"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering.",
@@ -3623,7 +3623,8 @@
                         }
                       },
                       "dependsOn": [
-                        "virtualNetwork"
+                        "virtualNetwork",
+                        "virtualNetwork_subnets"
                       ]
                     },
                     "virtualNetwork_peering_remote": {
@@ -3674,8 +3675,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "5206620163504251868"
+                              "version": "0.30.23.60470",
+                              "templateHash": "345394220621166229"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering.",
@@ -3780,7 +3781,8 @@
                         }
                       },
                       "dependsOn": [
-                        "virtualNetwork"
+                        "virtualNetwork",
+                        "virtualNetwork_subnets"
                       ]
                     }
                   },
@@ -13697,8 +13699,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "15949466154563447171"
+                      "version": "0.30.23.60470",
+                      "templateHash": "5074972058800471543"
                     },
                     "name": "Virtual Networks",
                     "description": "This module deploys a Virtual Network (vNet).",
@@ -14312,7 +14314,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -14496,8 +14498,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "5699372618313647761"
+                              "version": "0.30.23.60470",
+                              "templateHash": "6677157161292207910"
                             },
                             "name": "Virtual Network Subnets",
                             "description": "This module deploys a Virtual Network Subnet.",
@@ -14875,8 +14877,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "5206620163504251868"
+                              "version": "0.30.23.60470",
+                              "templateHash": "345394220621166229"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering.",
@@ -14981,7 +14983,8 @@
                         }
                       },
                       "dependsOn": [
-                        "virtualNetwork"
+                        "virtualNetwork",
+                        "virtualNetwork_subnets"
                       ]
                     },
                     "virtualNetwork_peering_remote": {
@@ -15032,8 +15035,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "5206620163504251868"
+                              "version": "0.30.23.60470",
+                              "templateHash": "345394220621166229"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering.",
@@ -15138,7 +15141,8 @@
                         }
                       },
                       "dependsOn": [
-                        "virtualNetwork"
+                        "virtualNetwork",
+                        "virtualNetwork_subnets"
                       ]
                     }
                   },
