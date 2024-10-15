@@ -338,8 +338,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       {
         name: 'epool-ep-002'
         perDatabaseSettings: {
-          maxCapacity: 4
-          minCapacity: 1
+          maxCapacity: '4'
+          minCapacity: '0.5'
         }
         sku: {
           capacity: 4
@@ -384,8 +384,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         {
           "name": "epool-ep-002",
           "perDatabaseSettings": {
-            "maxCapacity": 4,
-            "minCapacity": 1
+            "maxCapacity": "4",
+            "minCapacity": "0.5"
           },
           "sku": {
             "capacity": 4,
@@ -424,8 +424,8 @@ param elasticPools = [
   {
     name: 'epool-ep-002'
     perDatabaseSettings: {
-      maxCapacity: 4
-      minCapacity: 1
+      maxCapacity: '4'
+      minCapacity: '0.5'
     }
     sku: {
       capacity: 4
@@ -2161,7 +2161,7 @@ The per database settings for the elastic pool.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`minCapacity`](#parameter-elasticpoolsperdatabasesettingsmincapacity) | int | The minimum capacity all databases are guaranteed. |
+| [`minCapacity`](#parameter-elasticpoolsperdatabasesettingsmincapacity) | string | The minimum capacity all databases are guaranteed. Examples: '0.5', '1' |
 
 **Optional parameters**
 
@@ -2173,14 +2173,14 @@ The per database settings for the elastic pool.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`maxCapacity`](#parameter-elasticpoolsperdatabasesettingsmaxcapacity) | int | The maximum capacity any one database can consume. |
+| [`maxCapacity`](#parameter-elasticpoolsperdatabasesettingsmaxcapacity) | string | The maximum capacity any one database can consume. Examples: '0.5', '2' |
 
 ### Parameter: `elasticPools.perDatabaseSettings.minCapacity`
 
-The minimum capacity all databases are guaranteed.
+The minimum capacity all databases are guaranteed. Examples: '0.5', '1'
 
 - Required: Yes
-- Type: int
+- Type: string
 
 ### Parameter: `elasticPools.perDatabaseSettings.autoPauseDelay`
 
@@ -2191,10 +2191,10 @@ Auto Pause Delay for per database within pool
 
 ### Parameter: `elasticPools.perDatabaseSettings.maxCapacity`
 
-The maximum capacity any one database can consume.
+The maximum capacity any one database can consume. Examples: '0.5', '2'
 
 - Required: Yes
-- Type: int
+- Type: string
 
 ### Parameter: `elasticPools.preferredEnclaveType`
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "8810892363183845130"
+      "version": "0.29.47.4906",
+      "templateHash": "12931751409452972364"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -535,15 +535,15 @@
           }
         },
         "maxCapacity": {
-          "type": "int",
+          "type": "string",
           "metadata": {
-            "description": "Reqired. The maximum capacity any one database can consume."
+            "description": "Reqired. The maximum capacity any one database can consume. Examples: '0.5', '2'"
           }
         },
         "minCapacity": {
-          "type": "int",
+          "type": "string",
           "metadata": {
-            "description": "Required. The minimum capacity all databases are guaranteed."
+            "description": "Required. The minimum capacity all databases are guaranteed. Examples: '0.5', '1'"
           }
         }
       },
@@ -1184,8 +1184,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "6415977783551326128"
+              "version": "0.29.47.4906",
+              "templateHash": "18021918128213514276"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database.",
@@ -1311,6 +1311,13 @@
                 }
               },
               "nullable": true
+            },
+            "databasePropertyType": {
+              "type": "object",
+              "properties": {},
+              "metadata": {
+                "__bicep_export!": true
+              }
             }
           },
           "parameters": {
@@ -1972,8 +1979,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "15389069656635651285"
+              "version": "0.29.47.4906",
+              "templateHash": "8697391320806003846"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -1991,15 +1998,15 @@
                   }
                 },
                 "maxCapacity": {
-                  "type": "int",
+                  "type": "string",
                   "metadata": {
-                    "description": "Reqired. The maximum capacity any one database can consume."
+                    "description": "Reqired. The maximum capacity any one database can consume. Examples: '0.5', '2'"
                   }
                 },
                 "minCapacity": {
-                  "type": "int",
+                  "type": "string",
                   "metadata": {
-                    "description": "Required. The minimum capacity all databases are guaranteed."
+                    "description": "Required. The minimum capacity all databases are guaranteed. Examples: '0.5', '1'"
                   }
                 }
               },
@@ -2279,8 +2286,8 @@
               "$ref": "#/definitions/elasticPoolPerDatabaseSettingsType",
               "defaultValue": {
                 "autoPauseDelay": -1,
-                "maxCapacity": 2,
-                "minCapacity": 0
+                "maxCapacity": "2",
+                "minCapacity": "0"
               },
               "metadata": {
                 "description": "Optional. The per database settings for the elastic pool."
@@ -2327,7 +2334,7 @@
                 "maintenanceConfigurationId": "[parameters('maintenanceConfigurationId')]",
                 "maxSizeBytes": "[parameters('maxSizeBytes')]",
                 "minCapacity": "[parameters('minCapacity')]",
-                "perDatabaseSettings": "[parameters('perDatabaseSettings')]",
+                "perDatabaseSettings": "[if(not(empty(parameters('perDatabaseSettings'))), createObject('autoPauseDelay', tryGet(parameters('perDatabaseSettings'), 'autoPauseDelay'), 'maxCapacity', json(tryGet(parameters('perDatabaseSettings'), 'maxCapacity')), 'minCapacity', json(tryGet(parameters('perDatabaseSettings'), 'minCapacity'))), null())]",
                 "preferredEnclaveType": "[parameters('preferredEnclaveType')]",
                 "zoneRedundant": "[parameters('zoneRedundant')]"
               },

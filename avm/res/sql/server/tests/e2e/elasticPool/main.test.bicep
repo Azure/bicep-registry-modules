@@ -63,8 +63,8 @@ module testDeployment '../../../main.bicep' = [
             capacity: 4
           }
           perDatabaseSettings: {
-            minCapacity: 1
-            maxCapacity: 4
+            minCapacity: '0.5'
+            maxCapacity: '4'
           }
         }
       ]

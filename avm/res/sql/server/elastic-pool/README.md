@@ -142,8 +142,8 @@ The per database settings for the elastic pool.
   ```Bicep
   {
       autoPauseDelay: -1
-      maxCapacity: 2
-      minCapacity: 0
+      maxCapacity: '2'
+      minCapacity: '0'
   }
   ```
 
@@ -151,7 +151,7 @@ The per database settings for the elastic pool.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`minCapacity`](#parameter-perdatabasesettingsmincapacity) | int | The minimum capacity all databases are guaranteed. |
+| [`minCapacity`](#parameter-perdatabasesettingsmincapacity) | string | The minimum capacity all databases are guaranteed. Examples: '0.5', '1' |
 
 **Optional parameters**
 
@@ -163,14 +163,14 @@ The per database settings for the elastic pool.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`maxCapacity`](#parameter-perdatabasesettingsmaxcapacity) | int | The maximum capacity any one database can consume. |
+| [`maxCapacity`](#parameter-perdatabasesettingsmaxcapacity) | string | The maximum capacity any one database can consume. Examples: '0.5', '2' |
 
 ### Parameter: `perDatabaseSettings.minCapacity`
 
-The minimum capacity all databases are guaranteed.
+The minimum capacity all databases are guaranteed. Examples: '0.5', '1'
 
 - Required: Yes
-- Type: int
+- Type: string
 
 ### Parameter: `perDatabaseSettings.autoPauseDelay`
 
@@ -181,10 +181,10 @@ Auto Pause Delay for per database within pool
 
 ### Parameter: `perDatabaseSettings.maxCapacity`
 
-The maximum capacity any one database can consume.
+The maximum capacity any one database can consume. Examples: '0.5', '2'
 
 - Required: Yes
-- Type: int
+- Type: string
 
 ### Parameter: `preferredEnclaveType`
 
