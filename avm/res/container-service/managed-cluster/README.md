@@ -54,7 +54,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
   params: {
     // Required parameters
     name: 'csauto001'
-    primaryAgentPoolProfile: [
+    primaryAgentPoolProfiles: [
       {
         count: 3
         mode: 'System'
@@ -64,23 +64,26 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     // Non-required parameters
     location: '<location>'
-    maintenanceConfiguration: {
-      maintenanceWindow: {
-        durationHours: 4
-        schedule: {
-          absoluteMonthly: '<absoluteMonthly>'
-          daily: '<daily>'
-          relativeMonthly: '<relativeMonthly>'
-          weekly: {
-            dayOfWeek: 'Sunday'
-            intervalWeeks: 1
+    maintenanceConfigurations: [
+      {
+        maintenanceWindow: {
+          durationHours: 4
+          schedule: {
+            absoluteMonthly: '<absoluteMonthly>'
+            daily: '<daily>'
+            relativeMonthly: '<relativeMonthly>'
+            weekly: {
+              dayOfWeek: 'Sunday'
+              intervalWeeks: 1
+            }
           }
+          startDate: '2024-07-03'
+          startTime: '00:00'
+          utcOffset: '+00:00'
         }
-        startDate: '2024-07-03'
-        startTime: '00:00'
-        utcOffset: '+00:00'
+        name: 'aksManagedAutoUpgradeSchedule'
       }
-    }
+    ]
     managedIdentities: {
       systemAssigned: true
     }
@@ -104,7 +107,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "name": {
       "value": "csauto001"
     },
-    "primaryAgentPoolProfile": {
+    "primaryAgentPoolProfiles": {
       "value": [
         {
           "count": 3,
@@ -118,24 +121,27 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "location": {
       "value": "<location>"
     },
-    "maintenanceConfiguration": {
-      "value": {
-        "maintenanceWindow": {
-          "durationHours": 4,
-          "schedule": {
-            "absoluteMonthly": "<absoluteMonthly>",
-            "daily": "<daily>",
-            "relativeMonthly": "<relativeMonthly>",
-            "weekly": {
-              "dayOfWeek": "Sunday",
-              "intervalWeeks": 1
-            }
+    "maintenanceConfigurations": {
+      "value": [
+        {
+          "maintenanceWindow": {
+            "durationHours": 4,
+            "schedule": {
+              "absoluteMonthly": "<absoluteMonthly>",
+              "daily": "<daily>",
+              "relativeMonthly": "<relativeMonthly>",
+              "weekly": {
+                "dayOfWeek": "Sunday",
+                "intervalWeeks": 1
+              }
+            },
+            "startDate": "2024-07-03",
+            "startTime": "00:00",
+            "utcOffset": "+00:00"
           },
-          "startDate": "2024-07-03",
-          "startTime": "00:00",
-          "utcOffset": "+00:00"
+          "name": "aksManagedAutoUpgradeSchedule"
         }
-      }
+      ]
     },
     "managedIdentities": {
       "value": {
@@ -158,7 +164,7 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 
 // Required parameters
 param name = 'csauto001'
-param primaryAgentPoolProfile = [
+param primaryAgentPoolProfiles = [
   {
     count: 3
     mode: 'System'
@@ -168,23 +174,26 @@ param primaryAgentPoolProfile = [
 ]
 // Non-required parameters
 param location = '<location>'
-param maintenanceConfiguration = {
-  maintenanceWindow: {
-    durationHours: 4
-    schedule: {
-      absoluteMonthly: '<absoluteMonthly>'
-      daily: '<daily>'
-      relativeMonthly: '<relativeMonthly>'
-      weekly: {
-        dayOfWeek: 'Sunday'
-        intervalWeeks: 1
+param maintenanceConfigurations = [
+  {
+    maintenanceWindow: {
+      durationHours: 4
+      schedule: {
+        absoluteMonthly: '<absoluteMonthly>'
+        daily: '<daily>'
+        relativeMonthly: '<relativeMonthly>'
+        weekly: {
+          dayOfWeek: 'Sunday'
+          intervalWeeks: 1
+        }
       }
+      startDate: '2024-07-03'
+      startTime: '00:00'
+      utcOffset: '+00:00'
     }
-    startDate: '2024-07-03'
-    startTime: '00:00'
-    utcOffset: '+00:00'
+    name: 'aksManagedAutoUpgradeSchedule'
   }
-}
+]
 param managedIdentities = {
   systemAssigned: true
 }
@@ -208,10 +217,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
   params: {
     // Required parameters
     name: 'csmaz001'
-    primaryAgentPoolProfile: [
+    primaryAgentPoolProfiles: [
       {
         availabilityZones: [
-          '3'
+          3
         ]
         count: 1
         enableAutoScaling: true
@@ -227,14 +236,14 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
-        vnetSubnetID: '<vnetSubnetID>'
+        vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
     // Non-required parameters
     agentPools: [
       {
         availabilityZones: [
-          '3'
+          3
         ]
         count: 2
         enableAutoScaling: true
@@ -252,11 +261,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
-        vnetSubnetID: '<vnetSubnetID>'
+        vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
       {
         availabilityZones: [
-          '3'
+          3
         ]
         count: 2
         enableAutoScaling: true
@@ -273,9 +282,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
-        vnetSubnetID: '<vnetSubnetID>'
+        vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
+    autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
     autoUpgradeProfileUpgradeChannel: 'stable'
     customerManagedKey: {
       keyName: '<keyName>'
@@ -375,12 +385,44 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    maintenanceConfigurations: [
+      {
+        maintenanceWindow: {
+          durationHours: 4
+          schedule: {
+            weekly: {
+              dayOfWeek: 'Sunday'
+              intervalWeeks: 1
+            }
+          }
+          startDate: '2024-07-15'
+          startTime: '00:00'
+          utcOffset: '+00:00'
+        }
+        name: 'aksManagedAutoUpgradeSchedule'
+      }
+      {
+        maintenanceWindow: {
+          durationHours: 4
+          schedule: {
+            weekly: {
+              dayOfWeek: 'Sunday'
+              intervalWeeks: 1
+            }
+          }
+          startDate: '2024-07-15'
+          startTime: '00:00'
+          utcOffset: '+00:00'
+        }
+        name: 'aksManagedNodeOSUpgradeSchedule'
+      }
+    ]
     managedIdentities: {
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
       ]
     }
-    monitoringWorkspaceId: '<monitoringWorkspaceId>'
+    monitoringWorkspaceResourceId: '<monitoringWorkspaceResourceId>'
     networkDataplane: 'azure'
     networkPlugin: 'azure'
     networkPluginMode: 'overlay'
@@ -430,11 +472,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "name": {
       "value": "csmaz001"
     },
-    "primaryAgentPoolProfile": {
+    "primaryAgentPoolProfiles": {
       "value": [
         {
           "availabilityZones": [
-            "3"
+            3
           ],
           "count": 1,
           "enableAutoScaling": true,
@@ -450,7 +492,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2",
-          "vnetSubnetID": "<vnetSubnetID>"
+          "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
     },
@@ -459,7 +501,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": [
         {
           "availabilityZones": [
-            "3"
+            3
           ],
           "count": 2,
           "enableAutoScaling": true,
@@ -477,11 +519,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2",
-          "vnetSubnetID": "<vnetSubnetID>"
+          "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         },
         {
           "availabilityZones": [
-            "3"
+            3
           ],
           "count": 2,
           "enableAutoScaling": true,
@@ -498,9 +540,12 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2",
-          "vnetSubnetID": "<vnetSubnetID>"
+          "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
+    },
+    "autoNodeOsUpgradeProfileUpgradeChannel": {
+      "value": "Unmanaged"
     },
     "autoUpgradeProfileUpgradeChannel": {
       "value": "stable"
@@ -637,6 +682,40 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         "name": "myCustomLockName"
       }
     },
+    "maintenanceConfigurations": {
+      "value": [
+        {
+          "maintenanceWindow": {
+            "durationHours": 4,
+            "schedule": {
+              "weekly": {
+                "dayOfWeek": "Sunday",
+                "intervalWeeks": 1
+              }
+            },
+            "startDate": "2024-07-15",
+            "startTime": "00:00",
+            "utcOffset": "+00:00"
+          },
+          "name": "aksManagedAutoUpgradeSchedule"
+        },
+        {
+          "maintenanceWindow": {
+            "durationHours": 4,
+            "schedule": {
+              "weekly": {
+                "dayOfWeek": "Sunday",
+                "intervalWeeks": 1
+              }
+            },
+            "startDate": "2024-07-15",
+            "startTime": "00:00",
+            "utcOffset": "+00:00"
+          },
+          "name": "aksManagedNodeOSUpgradeSchedule"
+        }
+      ]
+    },
     "managedIdentities": {
       "value": {
         "userAssignedResourcesIds": [
@@ -644,8 +723,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         ]
       }
     },
-    "monitoringWorkspaceId": {
-      "value": "<monitoringWorkspaceId>"
+    "monitoringWorkspaceResourceId": {
+      "value": "<monitoringWorkspaceResourceId>"
     },
     "networkDataplane": {
       "value": "azure"
@@ -706,10 +785,10 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 
 // Required parameters
 param name = 'csmaz001'
-param primaryAgentPoolProfile = [
+param primaryAgentPoolProfiles = [
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 1
     enableAutoScaling: true
@@ -725,14 +804,14 @@ param primaryAgentPoolProfile = [
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
     vmSize: 'Standard_DS2_v2'
-    vnetSubnetID: '<vnetSubnetID>'
+    vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
 // Non-required parameters
 param agentPools = [
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 2
     enableAutoScaling: true
@@ -750,11 +829,11 @@ param agentPools = [
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
     vmSize: 'Standard_DS2_v2'
-    vnetSubnetID: '<vnetSubnetID>'
+    vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 2
     enableAutoScaling: true
@@ -771,9 +850,10 @@ param agentPools = [
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
     vmSize: 'Standard_DS2_v2'
-    vnetSubnetID: '<vnetSubnetID>'
+    vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
+param autoNodeOsUpgradeProfileUpgradeChannel = 'Unmanaged'
 param autoUpgradeProfileUpgradeChannel = 'stable'
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -873,12 +953,44 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param maintenanceConfigurations = [
+  {
+    maintenanceWindow: {
+      durationHours: 4
+      schedule: {
+        weekly: {
+          dayOfWeek: 'Sunday'
+          intervalWeeks: 1
+        }
+      }
+      startDate: '2024-07-15'
+      startTime: '00:00'
+      utcOffset: '+00:00'
+    }
+    name: 'aksManagedAutoUpgradeSchedule'
+  }
+  {
+    maintenanceWindow: {
+      durationHours: 4
+      schedule: {
+        weekly: {
+          dayOfWeek: 'Sunday'
+          intervalWeeks: 1
+        }
+      }
+      startDate: '2024-07-15'
+      startTime: '00:00'
+      utcOffset: '+00:00'
+    }
+    name: 'aksManagedNodeOSUpgradeSchedule'
+  }
+]
 param managedIdentities = {
   userAssignedResourcesIds: [
     '<managedIdentityResourceId>'
   ]
 }
-param monitoringWorkspaceId = '<monitoringWorkspaceId>'
+param monitoringWorkspaceResourceId = '<monitoringWorkspaceResourceId>'
 param networkDataplane = 'azure'
 param networkPlugin = 'azure'
 param networkPluginMode = 'overlay'
@@ -928,7 +1040,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
   params: {
     // Required parameters
     name: 'csmin001'
-    primaryAgentPoolProfile: [
+    primaryAgentPoolProfiles: [
       {
         count: 3
         mode: 'System'
@@ -961,7 +1073,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "name": {
       "value": "csmin001"
     },
-    "primaryAgentPoolProfile": {
+    "primaryAgentPoolProfiles": {
       "value": [
         {
           "count": 3,
@@ -996,7 +1108,7 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 
 // Required parameters
 param name = 'csmin001'
-param primaryAgentPoolProfile = [
+param primaryAgentPoolProfiles = [
   {
     count: 3
     mode: 'System'
@@ -1029,10 +1141,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
   params: {
     // Required parameters
     name: 'csmkube001'
-    primaryAgentPoolProfile: [
+    primaryAgentPoolProfiles: [
       {
         availabilityZones: [
-          '3'
+          3
         ]
         count: 1
         enableAutoScaling: true
@@ -1054,7 +1166,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     agentPools: [
       {
         availabilityZones: [
-          '3'
+          3
         ]
         count: 2
         enableAutoScaling: true
@@ -1074,7 +1186,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
       {
         availabilityZones: [
-          '3'
+          3
         ]
         count: 2
         enableAutoScaling: true
@@ -1158,11 +1270,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "name": {
       "value": "csmkube001"
     },
-    "primaryAgentPoolProfile": {
+    "primaryAgentPoolProfiles": {
       "value": [
         {
           "availabilityZones": [
-            "3"
+            3
           ],
           "count": 1,
           "enableAutoScaling": true,
@@ -1186,7 +1298,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": [
         {
           "availabilityZones": [
-            "3"
+            3
           ],
           "count": 2,
           "enableAutoScaling": true,
@@ -1206,7 +1318,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         },
         {
           "availabilityZones": [
-            "3"
+            3
           ],
           "count": 2,
           "enableAutoScaling": true,
@@ -1299,10 +1411,10 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 
 // Required parameters
 param name = 'csmkube001'
-param primaryAgentPoolProfile = [
+param primaryAgentPoolProfiles = [
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 1
     enableAutoScaling: true
@@ -1324,7 +1436,7 @@ param primaryAgentPoolProfile = [
 param agentPools = [
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 2
     enableAutoScaling: true
@@ -1344,7 +1456,7 @@ param agentPools = [
   }
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 2
     enableAutoScaling: true
@@ -1428,10 +1540,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
   params: {
     // Required parameters
     name: 'csmpriv001'
-    primaryAgentPoolProfile: [
+    primaryAgentPoolProfiles: [
       {
         availabilityZones: [
-          '3'
+          3
         ]
         count: 1
         enableAutoScaling: true
@@ -1447,14 +1559,14 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
-        vnetSubnetID: '<vnetSubnetID>'
+        vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
     // Non-required parameters
     agentPools: [
       {
         availabilityZones: [
-          '3'
+          3
         ]
         count: 2
         enableAutoScaling: true
@@ -1471,11 +1583,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
-        vnetSubnetID: '<vnetSubnetID>'
+        vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
       {
         availabilityZones: [
-          '3'
+          3
         ]
         count: 2
         enableAutoScaling: true
@@ -1526,11 +1638,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "name": {
       "value": "csmpriv001"
     },
-    "primaryAgentPoolProfile": {
+    "primaryAgentPoolProfiles": {
       "value": [
         {
           "availabilityZones": [
-            "3"
+            3
           ],
           "count": 1,
           "enableAutoScaling": true,
@@ -1546,7 +1658,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2",
-          "vnetSubnetID": "<vnetSubnetID>"
+          "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
     },
@@ -1555,7 +1667,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": [
         {
           "availabilityZones": [
-            "3"
+            3
           ],
           "count": 2,
           "enableAutoScaling": true,
@@ -1572,11 +1684,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2",
-          "vnetSubnetID": "<vnetSubnetID>"
+          "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         },
         {
           "availabilityZones": [
-            "3"
+            3
           ],
           "count": 2,
           "enableAutoScaling": true,
@@ -1640,10 +1752,10 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 
 // Required parameters
 param name = 'csmpriv001'
-param primaryAgentPoolProfile = [
+param primaryAgentPoolProfiles = [
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 1
     enableAutoScaling: true
@@ -1659,14 +1771,14 @@ param primaryAgentPoolProfile = [
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
     vmSize: 'Standard_DS2_v2'
-    vnetSubnetID: '<vnetSubnetID>'
+    vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
 // Non-required parameters
 param agentPools = [
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 2
     enableAutoScaling: true
@@ -1683,11 +1795,11 @@ param agentPools = [
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
     vmSize: 'Standard_DS2_v2'
-    vnetSubnetID: '<vnetSubnetID>'
+    vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 2
     enableAutoScaling: true
@@ -1738,10 +1850,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
   params: {
     // Required parameters
     name: 'cswaf001'
-    primaryAgentPoolProfile: [
+    primaryAgentPoolProfiles: [
       {
         availabilityZones: [
-          '3'
+          3
         ]
         count: 3
         enableAutoScaling: true
@@ -1757,14 +1869,14 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
-        vnetSubnetID: '<vnetSubnetID>'
+        vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
     // Non-required parameters
     agentPools: [
       {
         availabilityZones: [
-          '3'
+          3
         ]
         count: 3
         enableAutoScaling: true
@@ -1782,11 +1894,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
-        vnetSubnetID: '<vnetSubnetID>'
+        vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
       {
         availabilityZones: [
-          '3'
+          3
         ]
         count: 3
         enableAutoScaling: true
@@ -1806,6 +1918,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         vmSize: 'Standard_DS2_v2'
       }
     ]
+    autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
     autoUpgradeProfileUpgradeChannel: 'stable'
     diagnosticSettings: [
       {
@@ -1840,12 +1953,44 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     enableAzureDefender: true
     enablePrivateCluster: true
     location: '<location>'
+    maintenanceConfigurations: [
+      {
+        maintenanceWindow: {
+          durationHours: 4
+          schedule: {
+            weekly: {
+              dayOfWeek: 'Sunday'
+              intervalWeeks: 1
+            }
+          }
+          startDate: '2024-07-15'
+          startTime: '00:00'
+          utcOffset: '+00:00'
+        }
+        name: 'aksManagedAutoUpgradeSchedule'
+      }
+      {
+        maintenanceWindow: {
+          durationHours: 4
+          schedule: {
+            weekly: {
+              dayOfWeek: 'Sunday'
+              intervalWeeks: 1
+            }
+          }
+          startDate: '2024-07-15'
+          startTime: '00:00'
+          utcOffset: '+00:00'
+        }
+        name: 'aksManagedNodeOSUpgradeSchedule'
+      }
+    ]
     managedIdentities: {
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
       ]
     }
-    monitoringWorkspaceId: '<monitoringWorkspaceId>'
+    monitoringWorkspaceResourceId: '<monitoringWorkspaceResourceId>'
     networkPlugin: 'azure'
     networkPolicy: 'azure'
     omsAgentEnabled: true
@@ -1877,11 +2022,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "name": {
       "value": "cswaf001"
     },
-    "primaryAgentPoolProfile": {
+    "primaryAgentPoolProfiles": {
       "value": [
         {
           "availabilityZones": [
-            "3"
+            3
           ],
           "count": 3,
           "enableAutoScaling": true,
@@ -1897,7 +2042,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2",
-          "vnetSubnetID": "<vnetSubnetID>"
+          "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
     },
@@ -1906,7 +2051,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": [
         {
           "availabilityZones": [
-            "3"
+            3
           ],
           "count": 3,
           "enableAutoScaling": true,
@@ -1924,11 +2069,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2",
-          "vnetSubnetID": "<vnetSubnetID>"
+          "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         },
         {
           "availabilityZones": [
-            "3"
+            3
           ],
           "count": 3,
           "enableAutoScaling": true,
@@ -1948,6 +2093,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "vmSize": "Standard_DS2_v2"
         }
       ]
+    },
+    "autoNodeOsUpgradeProfileUpgradeChannel": {
+      "value": "Unmanaged"
     },
     "autoUpgradeProfileUpgradeChannel": {
       "value": "stable"
@@ -1997,6 +2145,40 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "location": {
       "value": "<location>"
     },
+    "maintenanceConfigurations": {
+      "value": [
+        {
+          "maintenanceWindow": {
+            "durationHours": 4,
+            "schedule": {
+              "weekly": {
+                "dayOfWeek": "Sunday",
+                "intervalWeeks": 1
+              }
+            },
+            "startDate": "2024-07-15",
+            "startTime": "00:00",
+            "utcOffset": "+00:00"
+          },
+          "name": "aksManagedAutoUpgradeSchedule"
+        },
+        {
+          "maintenanceWindow": {
+            "durationHours": 4,
+            "schedule": {
+              "weekly": {
+                "dayOfWeek": "Sunday",
+                "intervalWeeks": 1
+              }
+            },
+            "startDate": "2024-07-15",
+            "startTime": "00:00",
+            "utcOffset": "+00:00"
+          },
+          "name": "aksManagedNodeOSUpgradeSchedule"
+        }
+      ]
+    },
     "managedIdentities": {
       "value": {
         "userAssignedResourcesIds": [
@@ -2004,8 +2186,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         ]
       }
     },
-    "monitoringWorkspaceId": {
-      "value": "<monitoringWorkspaceId>"
+    "monitoringWorkspaceResourceId": {
+      "value": "<monitoringWorkspaceResourceId>"
     },
     "networkPlugin": {
       "value": "azure"
@@ -2048,10 +2230,10 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 
 // Required parameters
 param name = 'cswaf001'
-param primaryAgentPoolProfile = [
+param primaryAgentPoolProfiles = [
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 3
     enableAutoScaling: true
@@ -2067,14 +2249,14 @@ param primaryAgentPoolProfile = [
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
     vmSize: 'Standard_DS2_v2'
-    vnetSubnetID: '<vnetSubnetID>'
+    vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
 // Non-required parameters
 param agentPools = [
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 3
     enableAutoScaling: true
@@ -2092,11 +2274,11 @@ param agentPools = [
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
     vmSize: 'Standard_DS2_v2'
-    vnetSubnetID: '<vnetSubnetID>'
+    vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
   {
     availabilityZones: [
-      '3'
+      3
     ]
     count: 3
     enableAutoScaling: true
@@ -2116,6 +2298,7 @@ param agentPools = [
     vmSize: 'Standard_DS2_v2'
   }
 ]
+param autoNodeOsUpgradeProfileUpgradeChannel = 'Unmanaged'
 param autoUpgradeProfileUpgradeChannel = 'stable'
 param diagnosticSettings = [
   {
@@ -2150,12 +2333,44 @@ param dnsServiceIP = '10.10.200.10'
 param enableAzureDefender = true
 param enablePrivateCluster = true
 param location = '<location>'
+param maintenanceConfigurations = [
+  {
+    maintenanceWindow: {
+      durationHours: 4
+      schedule: {
+        weekly: {
+          dayOfWeek: 'Sunday'
+          intervalWeeks: 1
+        }
+      }
+      startDate: '2024-07-15'
+      startTime: '00:00'
+      utcOffset: '+00:00'
+    }
+    name: 'aksManagedAutoUpgradeSchedule'
+  }
+  {
+    maintenanceWindow: {
+      durationHours: 4
+      schedule: {
+        weekly: {
+          dayOfWeek: 'Sunday'
+          intervalWeeks: 1
+        }
+      }
+      startDate: '2024-07-15'
+      startTime: '00:00'
+      utcOffset: '+00:00'
+    }
+    name: 'aksManagedNodeOSUpgradeSchedule'
+  }
+]
 param managedIdentities = {
   userAssignedResourcesIds: [
     '<managedIdentityResourceId>'
   ]
 }
-param monitoringWorkspaceId = '<monitoringWorkspaceId>'
+param monitoringWorkspaceResourceId = '<monitoringWorkspaceResourceId>'
 param networkPlugin = 'azure'
 param networkPolicy = 'azure'
 param omsAgentEnabled = true
@@ -2179,7 +2394,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Specifies the name of the AKS cluster. |
-| [`primaryAgentPoolProfile`](#parameter-primaryagentpoolprofile) | array | Properties of the primary agent pool. |
+| [`primaryAgentPoolProfiles`](#parameter-primaryagentpoolprofiles) | array | Properties of the primary agent pool. |
 
 **Conditional parameters**
 
@@ -2203,14 +2418,15 @@ param tags = {
 | [`adminUsername`](#parameter-adminusername) | string | Specifies the administrator username of Linux virtual machines. |
 | [`agentPools`](#parameter-agentpools) | array | Define one or more secondary/additional agent pools. |
 | [`authorizedIPRanges`](#parameter-authorizedipranges) | array | IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer. |
+| [`autoNodeOsUpgradeProfileUpgradeChannel`](#parameter-autonodeosupgradeprofileupgradechannel) | string | Auto-upgrade channel on the Node Os. |
 | [`autoScalerProfileBalanceSimilarNodeGroups`](#parameter-autoscalerprofilebalancesimilarnodegroups) | bool | Specifies the balance of similar node groups for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileExpander`](#parameter-autoscalerprofileexpander) | string | Specifies the expand strategy for the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileMaxEmptyBulkDelete`](#parameter-autoscalerprofilemaxemptybulkdelete) | string | Specifies the maximum empty bulk delete for the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileMaxGracefulTerminationSec`](#parameter-autoscalerprofilemaxgracefulterminationsec) | string | Specifies the max graceful termination time interval in seconds for the auto-scaler of the AKS cluster. |
+| [`autoScalerProfileMaxEmptyBulkDelete`](#parameter-autoscalerprofilemaxemptybulkdelete) | int | Specifies the maximum empty bulk delete for the auto-scaler of the AKS cluster. |
+| [`autoScalerProfileMaxGracefulTerminationSec`](#parameter-autoscalerprofilemaxgracefulterminationsec) | int | Specifies the max graceful termination time interval in seconds for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileMaxNodeProvisionTime`](#parameter-autoscalerprofilemaxnodeprovisiontime) | string | Specifies the maximum node provisioning time for the auto-scaler of the AKS cluster. Values must be an integer followed by an "m". No unit of time other than minutes (m) is supported. |
-| [`autoScalerProfileMaxTotalUnreadyPercentage`](#parameter-autoscalerprofilemaxtotalunreadypercentage) | string | Specifies the mximum total unready percentage for the auto-scaler of the AKS cluster. The maximum is 100 and the minimum is 0. |
+| [`autoScalerProfileMaxTotalUnreadyPercentage`](#parameter-autoscalerprofilemaxtotalunreadypercentage) | int | Specifies the mximum total unready percentage for the auto-scaler of the AKS cluster. The maximum is 100 and the minimum is 0. |
 | [`autoScalerProfileNewPodScaleUpDelay`](#parameter-autoscalerprofilenewpodscaleupdelay) | string | For scenarios like burst/batch scale where you do not want CA to act before the kubernetes scheduler could schedule all the pods, you can tell CA to ignore unscheduled pods before they are a certain age. Values must be an integer followed by a unit ("s" for seconds, "m" for minutes, "h" for hours, etc). |
-| [`autoScalerProfileOkTotalUnreadyCount`](#parameter-autoscalerprofileoktotalunreadycount) | string | Specifies the OK total unready count for the auto-scaler of the AKS cluster. |
+| [`autoScalerProfileOkTotalUnreadyCount`](#parameter-autoscalerprofileoktotalunreadycount) | int | Specifies the OK total unready count for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileScaleDownDelayAfterAdd`](#parameter-autoscalerprofilescaledowndelayafteradd) | string | Specifies the scale down delay after add of the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileScaleDownDelayAfterDelete`](#parameter-autoscalerprofilescaledowndelayafterdelete) | string | Specifies the scale down delay after delete of the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileScaleDownDelayAfterFailure`](#parameter-autoscalerprofilescaledowndelayafterfailure) | string | Specifies scale down delay after failure of the auto-scaler of the AKS cluster. |
@@ -2265,12 +2481,12 @@ param tags = {
 | [`loadBalancerSku`](#parameter-loadbalancersku) | string | Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools. |
 | [`location`](#parameter-location) | string | Specifies the location of AKS cluster. It picks up Resource Group's location by default. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`maintenanceConfiguration`](#parameter-maintenanceconfiguration) | object | Whether or not to use AKS Automatic mode. |
+| [`maintenanceConfigurations`](#parameter-maintenanceconfigurations) | array | Whether or not to use AKS Automatic mode. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
 | [`managedOutboundIPCount`](#parameter-managedoutboundipcount) | int | Outbound IP Count for the Load balancer. |
 | [`metricAnnotationsAllowList`](#parameter-metricannotationsallowlist) | string | A comma-separated list of Kubernetes cluster metrics annotations. |
 | [`metricLabelsAllowlist`](#parameter-metriclabelsallowlist) | string | A comma-separated list of kubernetes cluster metrics labels. |
-| [`monitoringWorkspaceId`](#parameter-monitoringworkspaceid) | string | Resource ID of the monitoring log analytics workspace. |
+| [`monitoringWorkspaceResourceId`](#parameter-monitoringworkspaceresourceid) | string | Resource ID of the monitoring log analytics workspace. |
 | [`networkDataplane`](#parameter-networkdataplane) | string | Network dataplane used in the Kubernetes cluster. Not compatible with kubenet network plugin. |
 | [`networkPlugin`](#parameter-networkplugin) | string | Specifies the network plugin used for building Kubernetes network. |
 | [`networkPluginMode`](#parameter-networkpluginmode) | string | Network plugin mode used for building the Kubernetes network. Not compatible with kubenet network plugin. |
@@ -2303,12 +2519,371 @@ Specifies the name of the AKS cluster.
 - Required: Yes
 - Type: string
 
-### Parameter: `primaryAgentPoolProfile`
+### Parameter: `primaryAgentPoolProfiles`
 
 Properties of the primary agent pool.
 
 - Required: Yes
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-primaryagentpoolprofilesname) | string | The name of the agent pool. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`availabilityZones`](#parameter-primaryagentpoolprofilesavailabilityzones) | array | The availability zones of the agent pool. |
+| [`count`](#parameter-primaryagentpoolprofilescount) | int | The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
+| [`enableAutoScaling`](#parameter-primaryagentpoolprofilesenableautoscaling) | bool | Whether to enable auto-scaling for the agent pool. |
+| [`enableDefaultTelemetry`](#parameter-primaryagentpoolprofilesenabledefaulttelemetry) | bool | The enable default telemetry of the agent pool. |
+| [`enableEncryptionAtHost`](#parameter-primaryagentpoolprofilesenableencryptionathost) | bool | Whether to enable encryption at host for the agent pool. |
+| [`enableFIPS`](#parameter-primaryagentpoolprofilesenablefips) | bool | Whether to enable FIPS for the agent pool. |
+| [`enableNodePublicIP`](#parameter-primaryagentpoolprofilesenablenodepublicip) | bool | Whether to enable node public IP for the agent pool. |
+| [`enableUltraSSD`](#parameter-primaryagentpoolprofilesenableultrassd) | bool | Whether to enable Ultra SSD for the agent pool. |
+| [`gpuInstanceProfile`](#parameter-primaryagentpoolprofilesgpuinstanceprofile) | string | The GPU instance profile of the agent pool. |
+| [`kubeletDiskType`](#parameter-primaryagentpoolprofileskubeletdisktype) | string | The kubelet disk type of the agent pool. |
+| [`maxCount`](#parameter-primaryagentpoolprofilesmaxcount) | int | The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
+| [`maxPods`](#parameter-primaryagentpoolprofilesmaxpods) | int | The maximum number of pods that can run on a node. |
+| [`maxSurge`](#parameter-primaryagentpoolprofilesmaxsurge) | string | The maximum number of nodes that can be created during an upgrade. |
+| [`minCount`](#parameter-primaryagentpoolprofilesmincount) | int | The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
+| [`minPods`](#parameter-primaryagentpoolprofilesminpods) | int | The minimum number of pods that can run on a node. |
+| [`mode`](#parameter-primaryagentpoolprofilesmode) | string | The mode of the agent pool. |
+| [`nodeLabels`](#parameter-primaryagentpoolprofilesnodelabels) | object | The node labels of the agent pool. |
+| [`nodePublicIpPrefixResourceId`](#parameter-primaryagentpoolprofilesnodepublicipprefixresourceid) | string | The node public IP prefix ID of the agent pool. |
+| [`nodeTaints`](#parameter-primaryagentpoolprofilesnodetaints) | array | The node taints of the agent pool. |
+| [`orchestratorVersion`](#parameter-primaryagentpoolprofilesorchestratorversion) | string | The Kubernetes version of the agent pool. |
+| [`osDiskSizeGB`](#parameter-primaryagentpoolprofilesosdisksizegb) | int | The OS disk size in GB of the agent pool. |
+| [`osDiskType`](#parameter-primaryagentpoolprofilesosdisktype) | string | The OS disk type of the agent pool. |
+| [`osSku`](#parameter-primaryagentpoolprofilesossku) | string | The OS SKU of the agent pool. |
+| [`osType`](#parameter-primaryagentpoolprofilesostype) | string | The OS type of the agent pool. |
+| [`podSubnetResourceId`](#parameter-primaryagentpoolprofilespodsubnetresourceid) | string | The pod subnet ID of the agent pool. |
+| [`proximityPlacementGroupResourceId`](#parameter-primaryagentpoolprofilesproximityplacementgroupresourceid) | string | The proximity placement group resource ID of the agent pool. |
+| [`scaleDownMode`](#parameter-primaryagentpoolprofilesscaledownmode) | string | The scale down mode of the agent pool. |
+| [`scaleSetEvictionPolicy`](#parameter-primaryagentpoolprofilesscalesetevictionpolicy) | string | The scale set eviction policy of the agent pool. |
+| [`scaleSetPriority`](#parameter-primaryagentpoolprofilesscalesetpriority) | string | The scale set priority of the agent pool. |
+| [`sourceResourceId`](#parameter-primaryagentpoolprofilessourceresourceid) | string | The source resource ID to create the agent pool from. |
+| [`spotMaxPrice`](#parameter-primaryagentpoolprofilesspotmaxprice) | int | The spot max price of the agent pool. |
+| [`tags`](#parameter-primaryagentpoolprofilestags) | object | The tags of the agent pool. |
+| [`type`](#parameter-primaryagentpoolprofilestype) | string | The type of the agent pool. |
+| [`vmSize`](#parameter-primaryagentpoolprofilesvmsize) | string | The VM size of the agent pool. |
+| [`vnetSubnetResourceId`](#parameter-primaryagentpoolprofilesvnetsubnetresourceid) | string | The VNet subnet ID of the agent pool. |
+| [`workloadRuntime`](#parameter-primaryagentpoolprofilesworkloadruntime) | string | The workload runtime of the agent pool. |
+
+### Parameter: `primaryAgentPoolProfiles.name`
+
+The name of the agent pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `primaryAgentPoolProfiles.availabilityZones`
+
+The availability zones of the agent pool.
+
+- Required: No
+- Type: array
+
+### Parameter: `primaryAgentPoolProfiles.count`
+
+The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
+
+- Required: No
+- Type: int
+
+### Parameter: `primaryAgentPoolProfiles.enableAutoScaling`
+
+Whether to enable auto-scaling for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `primaryAgentPoolProfiles.enableDefaultTelemetry`
+
+The enable default telemetry of the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `primaryAgentPoolProfiles.enableEncryptionAtHost`
+
+Whether to enable encryption at host for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `primaryAgentPoolProfiles.enableFIPS`
+
+Whether to enable FIPS for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `primaryAgentPoolProfiles.enableNodePublicIP`
+
+Whether to enable node public IP for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `primaryAgentPoolProfiles.enableUltraSSD`
+
+Whether to enable Ultra SSD for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `primaryAgentPoolProfiles.gpuInstanceProfile`
+
+The GPU instance profile of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'MIG1g'
+    'MIG2g'
+    'MIG3g'
+    'MIG4g'
+    'MIG7g'
+  ]
+  ```
+
+### Parameter: `primaryAgentPoolProfiles.kubeletDiskType`
+
+The kubelet disk type of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `primaryAgentPoolProfiles.maxCount`
+
+The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
+
+- Required: No
+- Type: int
+
+### Parameter: `primaryAgentPoolProfiles.maxPods`
+
+The maximum number of pods that can run on a node.
+
+- Required: No
+- Type: int
+
+### Parameter: `primaryAgentPoolProfiles.maxSurge`
+
+The maximum number of nodes that can be created during an upgrade.
+
+- Required: No
+- Type: string
+
+### Parameter: `primaryAgentPoolProfiles.minCount`
+
+The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
+
+- Required: No
+- Type: int
+
+### Parameter: `primaryAgentPoolProfiles.minPods`
+
+The minimum number of pods that can run on a node.
+
+- Required: No
+- Type: int
+
+### Parameter: `primaryAgentPoolProfiles.mode`
+
+The mode of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'System'
+    'User'
+  ]
+  ```
+
+### Parameter: `primaryAgentPoolProfiles.nodeLabels`
+
+The node labels of the agent pool.
+
+- Required: No
+- Type: object
+
+### Parameter: `primaryAgentPoolProfiles.nodePublicIpPrefixResourceId`
+
+The node public IP prefix ID of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `primaryAgentPoolProfiles.nodeTaints`
+
+The node taints of the agent pool.
+
+- Required: No
+- Type: array
+
+### Parameter: `primaryAgentPoolProfiles.orchestratorVersion`
+
+The Kubernetes version of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `primaryAgentPoolProfiles.osDiskSizeGB`
+
+The OS disk size in GB of the agent pool.
+
+- Required: No
+- Type: int
+
+### Parameter: `primaryAgentPoolProfiles.osDiskType`
+
+The OS disk type of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `primaryAgentPoolProfiles.osSku`
+
+The OS SKU of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `primaryAgentPoolProfiles.osType`
+
+The OS type of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Linux'
+    'Windows'
+  ]
+  ```
+
+### Parameter: `primaryAgentPoolProfiles.podSubnetResourceId`
+
+The pod subnet ID of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `primaryAgentPoolProfiles.proximityPlacementGroupResourceId`
+
+The proximity placement group resource ID of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `primaryAgentPoolProfiles.scaleDownMode`
+
+The scale down mode of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Deallocate'
+    'Delete'
+  ]
+  ```
+
+### Parameter: `primaryAgentPoolProfiles.scaleSetEvictionPolicy`
+
+The scale set eviction policy of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Deallocate'
+    'Delete'
+  ]
+  ```
+
+### Parameter: `primaryAgentPoolProfiles.scaleSetPriority`
+
+The scale set priority of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Low'
+    'Regular'
+    'Spot'
+  ]
+  ```
+
+### Parameter: `primaryAgentPoolProfiles.sourceResourceId`
+
+The source resource ID to create the agent pool from.
+
+- Required: No
+- Type: string
+
+### Parameter: `primaryAgentPoolProfiles.spotMaxPrice`
+
+The spot max price of the agent pool.
+
+- Required: No
+- Type: int
+
+### Parameter: `primaryAgentPoolProfiles.tags`
+
+The tags of the agent pool.
+
+- Required: No
+- Type: object
+
+### Parameter: `primaryAgentPoolProfiles.type`
+
+The type of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AvailabilitySet'
+    'VirtualMachineScaleSets'
+  ]
+  ```
+
+### Parameter: `primaryAgentPoolProfiles.vmSize`
+
+The VM size of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `primaryAgentPoolProfiles.vnetSubnetResourceId`
+
+The VNet subnet ID of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `primaryAgentPoolProfiles.workloadRuntime`
+
+The workload runtime of the agent pool.
+
+- Required: No
+- Type: string
 
 ### Parameter: `aksServicePrincipalProfile`
 
@@ -2426,14 +3001,14 @@ Define one or more secondary/additional agent pools.
 | [`minPods`](#parameter-agentpoolsminpods) | int | The minimum number of pods that can run on a node. |
 | [`mode`](#parameter-agentpoolsmode) | string | The mode of the agent pool. |
 | [`nodeLabels`](#parameter-agentpoolsnodelabels) | object | The node labels of the agent pool. |
-| [`nodePublicIpPrefixId`](#parameter-agentpoolsnodepublicipprefixid) | string | The node public IP prefix ID of the agent pool. |
+| [`nodePublicIpPrefixResourceId`](#parameter-agentpoolsnodepublicipprefixresourceid) | string | The node public IP prefix ID of the agent pool. |
 | [`nodeTaints`](#parameter-agentpoolsnodetaints) | array | The node taints of the agent pool. |
 | [`orchestratorVersion`](#parameter-agentpoolsorchestratorversion) | string | The Kubernetes version of the agent pool. |
 | [`osDiskSizeGB`](#parameter-agentpoolsosdisksizegb) | int | The OS disk size in GB of the agent pool. |
 | [`osDiskType`](#parameter-agentpoolsosdisktype) | string | The OS disk type of the agent pool. |
 | [`osSku`](#parameter-agentpoolsossku) | string | The OS SKU of the agent pool. |
 | [`osType`](#parameter-agentpoolsostype) | string | The OS type of the agent pool. |
-| [`podSubnetId`](#parameter-agentpoolspodsubnetid) | string | The pod subnet ID of the agent pool. |
+| [`podSubnetResourceId`](#parameter-agentpoolspodsubnetresourceid) | string | The pod subnet ID of the agent pool. |
 | [`proximityPlacementGroupResourceId`](#parameter-agentpoolsproximityplacementgroupresourceid) | string | The proximity placement group resource ID of the agent pool. |
 | [`scaleDownMode`](#parameter-agentpoolsscaledownmode) | string | The scale down mode of the agent pool. |
 | [`scaleSetEvictionPolicy`](#parameter-agentpoolsscalesetevictionpolicy) | string | The scale set eviction policy of the agent pool. |
@@ -2443,14 +3018,14 @@ Define one or more secondary/additional agent pools.
 | [`tags`](#parameter-agentpoolstags) | object | The tags of the agent pool. |
 | [`type`](#parameter-agentpoolstype) | string | The type of the agent pool. |
 | [`vmSize`](#parameter-agentpoolsvmsize) | string | The VM size of the agent pool. |
-| [`vnetSubnetID`](#parameter-agentpoolsvnetsubnetid) | string | The VNet subnet ID of the agent pool. |
+| [`vnetSubnetResourceId`](#parameter-agentpoolsvnetsubnetresourceid) | string | The VNet subnet ID of the agent pool. |
 | [`workloadRuntime`](#parameter-agentpoolsworkloadruntime) | string | The workload runtime of the agent pool. |
 
 ### Parameter: `agentPools.name`
 
 The name of the agent pool.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `agentPools.availabilityZones`
@@ -2589,7 +3164,7 @@ The node labels of the agent pool.
 - Required: No
 - Type: object
 
-### Parameter: `agentPools.nodePublicIpPrefixId`
+### Parameter: `agentPools.nodePublicIpPrefixResourceId`
 
 The node public IP prefix ID of the agent pool.
 
@@ -2645,7 +3220,7 @@ The OS type of the agent pool.
   ]
   ```
 
-### Parameter: `agentPools.podSubnetId`
+### Parameter: `agentPools.podSubnetResourceId`
 
 The pod subnet ID of the agent pool.
 
@@ -2744,7 +3319,7 @@ The VM size of the agent pool.
 - Required: No
 - Type: string
 
-### Parameter: `agentPools.vnetSubnetID`
+### Parameter: `agentPools.vnetSubnetResourceId`
 
 The VNet subnet ID of the agent pool.
 
@@ -2764,6 +3339,23 @@ IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is 
 
 - Required: No
 - Type: array
+
+### Parameter: `autoNodeOsUpgradeProfileUpgradeChannel`
+
+Auto-upgrade channel on the Node Os.
+
+- Required: No
+- Type: string
+- Default: `'Unmanaged'`
+- Allowed:
+  ```Bicep
+  [
+    'NodeImage'
+    'None'
+    'SecurityPatch'
+    'Unmanaged'
+  ]
+  ```
 
 ### Parameter: `autoScalerProfileBalanceSimilarNodeGroups`
 
@@ -2795,16 +3387,16 @@ Specifies the expand strategy for the auto-scaler of the AKS cluster.
 Specifies the maximum empty bulk delete for the auto-scaler of the AKS cluster.
 
 - Required: No
-- Type: string
-- Default: `'10'`
+- Type: int
+- Default: `10`
 
 ### Parameter: `autoScalerProfileMaxGracefulTerminationSec`
 
 Specifies the max graceful termination time interval in seconds for the auto-scaler of the AKS cluster.
 
 - Required: No
-- Type: string
-- Default: `'600'`
+- Type: int
+- Default: `600`
 
 ### Parameter: `autoScalerProfileMaxNodeProvisionTime`
 
@@ -2819,8 +3411,8 @@ Specifies the maximum node provisioning time for the auto-scaler of the AKS clus
 Specifies the mximum total unready percentage for the auto-scaler of the AKS cluster. The maximum is 100 and the minimum is 0.
 
 - Required: No
-- Type: string
-- Default: `'45'`
+- Type: int
+- Default: `45`
 
 ### Parameter: `autoScalerProfileNewPodScaleUpDelay`
 
@@ -2835,8 +3427,8 @@ For scenarios like burst/batch scale where you do not want CA to act before the 
 Specifies the OK total unready count for the auto-scaler of the AKS cluster.
 
 - Required: No
-- Type: string
-- Default: `'3'`
+- Type: int
+- Default: `3`
 
 ### Parameter: `autoScalerProfileScaleDownDelayAfterAdd`
 
@@ -3183,7 +3775,7 @@ If set to true, getting static credentials will be disabled for this cluster. Th
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `disablePrometheusMetricsScraping`
 
@@ -3588,25 +4180,40 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `maintenanceConfiguration`
+### Parameter: `maintenanceConfigurations`
 
 Whether or not to use AKS Automatic mode.
 
 - Required: No
-- Type: object
+- Type: array
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`maintenanceWindow`](#parameter-maintenanceconfigurationmaintenancewindow) | object | Maintenance window for the maintenance configuration. |
+| [`maintenanceWindow`](#parameter-maintenanceconfigurationsmaintenancewindow) | object | Maintenance window for the maintenance configuration. |
+| [`name`](#parameter-maintenanceconfigurationsname) | string | Name of maintenance window. |
 
-### Parameter: `maintenanceConfiguration.maintenanceWindow`
+### Parameter: `maintenanceConfigurations.maintenanceWindow`
 
 Maintenance window for the maintenance configuration.
 
 - Required: Yes
 - Type: object
+
+### Parameter: `maintenanceConfigurations.name`
+
+Name of maintenance window.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'aksManagedAutoUpgradeSchedule'
+    'aksManagedNodeOSUpgradeSchedule'
+  ]
+  ```
 
 ### Parameter: `managedIdentities`
 
@@ -3660,7 +4267,7 @@ A comma-separated list of kubernetes cluster metrics labels.
 - Type: string
 - Default: `''`
 
-### Parameter: `monitoringWorkspaceId`
+### Parameter: `monitoringWorkspaceResourceId`
 
 Resource ID of the monitoring log analytics workspace.
 
