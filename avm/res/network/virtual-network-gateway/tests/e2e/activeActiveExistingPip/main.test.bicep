@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'ExpressRoute'
-metadata description = 'This instance deploys the module with the ExpressRoute set of required parameters.'
+metadata name = 'VPN Active Active without BGP settings using two existent Public IPs'
+metadata description = 'This instance deploys the module with the VPN Active Active without BGP settings.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.virtualnetworkgatewa
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nvger'
+param serviceShort string = 'nvgaaep'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -37,6 +37,9 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    localNetworkGatewayName: 'dep-${namePrefix}-lng-${serviceShort}'
+    existingFirstPipName: 'dep-${namePrefix}-pip-${serviceShort}-existing1'
+    existingSecondPipName: 'dep-${namePrefix}-pip-${serviceShort}-existing2'
   }
 }
 
@@ -52,21 +55,31 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      skuName: 'ErGw1AZ'
-      gatewayType: 'ExpressRoute'
+      vpnGatewayGeneration: 'Generation2'
+      skuName: 'VpnGw2AZ'
+      gatewayType: 'Vpn'
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
-      clusterSettings:{
-        clusterMode: 'activePassiveBgp'
+      existingFirstPipResourceId: nestedDependencies.outputs.existingFirstPipResourceId
+      
+      clusterSettings: {
+        clusterMode: 'activeActiveNoBgp'
+        existingSecondPipResourceId: nestedDependencies.outputs.existingSecondPipResourceId
       }
+
       domainNameLabel: [
         '${namePrefix}-dm-${serviceShort}'
       ]
-      firstPipName: '${namePrefix}-pip-${serviceShort}'
       publicIpZones: [
         1
         2
         3
       ]
+      vpnType: 'RouteBased'
+      enablePrivateIpAddress: true
+      gatewayDefaultSiteLocalNetworkGatewayId: nestedDependencies.outputs.localNetworkGatewayResourceId
+      disableIPSecReplayProtection: true
+      allowRemoteVnetTraffic: true
+      enableBgpRouteTranslationForNat: true
     }
     dependsOn: [
       nestedDependencies
