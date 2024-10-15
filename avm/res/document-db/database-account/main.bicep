@@ -152,14 +152,6 @@ param secretsExportConfiguration secretsExportConfigurationType?
 @description('Optional. The network configuration of this module.')
 param networkRestrictions networkRestrictionsType?
 
-@allowed([
-  'Tls'
-  'Tls11'
-  'Tls12'
-])
-@description('Optional. Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later.')
-param minimumTlsVersion string = 'Tls12'
-
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -254,7 +246,6 @@ var databaseAccountProperties = union(
   {
     databaseAccountOfferType: databaseAccountOfferType
     backupPolicy: backupPolicy
-    minimalTlsVersion: minimumTlsVersion
   },
   ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
     ? {
