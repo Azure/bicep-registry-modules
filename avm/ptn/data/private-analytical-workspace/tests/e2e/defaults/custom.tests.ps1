@@ -8,7 +8,7 @@ Describe 'Validate Pattern deployment' {
     BeforeAll {
 
         . $PSScriptRoot/../../common.tests.ps1
-        $expectedTags = @{Owner = 'Contoso'; CostCenter = '123-456-789' }
+        $expectedTags = @{} # Default has no tags
 
         $resourceId = $TestInputData.DeploymentOutputs.resourceId.Value
         $name = $TestInputData.DeploymentOutputs.name.Value
