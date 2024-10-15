@@ -16,7 +16,7 @@ param location string = deployment().location
 param resourceGroupName string = 'dep-azure-stack-hci.cluster-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ashc2nmin'
+param serviceShort string = 'ashc3nmin'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
