@@ -19,6 +19,9 @@ param managedIdentityName string
 @description('Required. The name of the Deployment Script to create for the Certificate generation.')
 param cacertDeploymentScriptName string
 
+@description('Optional. Do not provide a value. Used to force the deployment script to rerun on every redeployment.')
+param utcValue string = utcNow()
+
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: keyVaultName
   location: location
@@ -68,6 +71,7 @@ resource cacertDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-0
   properties: {
     azPowerShellVersion: '11.0'
     retentionInterval: 'P1D'
+    forceUpdateTag: utcValue
     arguments: ' -KeyVaultName "${keyVault.name}" -RootOrganization "${rootOrganization}" -CAOrganization "${caOrganization}" -CertSubjectName "${caSubjectName}"'
     scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateAuthorityInKeyVault.ps1')
   }
