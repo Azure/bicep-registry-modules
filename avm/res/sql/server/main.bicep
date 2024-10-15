@@ -37,7 +37,7 @@ param enableTelemetry bool = true
 param databases array = []
 
 @description('Optional. The Elastic Pools to create in the server.')
-param elasticPools array = []
+param elasticPools elasticPoolPropertyType[] = []
 
 @description('Optional. The firewall rules to create in the server.')
 param firewallRules array = []
@@ -291,21 +291,26 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
   for (elasticPool, index) in elasticPools: {
     name: '${uniqueString(deployment().name, location)}-SQLServer-ElasticPool-${index}'
     params: {
-      name: elasticPool.name
+      // properties derived from parent server resource, no override allowed
       serverName: server.name
-      databaseMaxCapacity: elasticPool.?databaseMaxCapacity ?? 2
-      databaseMinCapacity: elasticPool.?databaseMinCapacity ?? 0
-      highAvailabilityReplicaCount: elasticPool.?highAvailabilityReplicaCount
-      licenseType: elasticPool.?licenseType ?? 'LicenseIncluded'
-      maintenanceConfigurationId: elasticPool.?maintenanceConfigurationId
-      maxSizeBytes: elasticPool.?maxSizeBytes ?? 34359738368
-      minCapacity: elasticPool.?minCapacity
-      skuCapacity: elasticPool.?skuCapacity ?? 2
-      skuName: elasticPool.?skuName ?? 'GP_Gen5'
-      skuTier: elasticPool.?skuTier ?? 'GeneralPurpose'
-      zoneRedundant: elasticPool.?zoneRedundant ?? true
       location: location
+
+      // properties from the elastic pool object. If not provided, parent server resource properties will be used
       tags: elasticPool.?tags ?? tags
+
+      // properties from the elastic pool object. If not provided, defaults specified in the child resource will be used
+      name: elasticPool.name
+      sku: elasticPool.?sku
+      autoPauseDelay: elasticPool.?autoPauseDelay
+      availabilityZone: elasticPool.?availabilityZone
+      highAvailabilityReplicaCount: elasticPool.?highAvailabilityReplicaCount
+      licenseType: elasticPool.?licenseType
+      maintenanceConfigurationId: elasticPool.?maintenanceConfigurationId
+      maxSizeBytes: elasticPool.?maxSizeBytes
+      minCapacity: elasticPool.?minCapacity
+      perDatabaseSettings: elasticPool.?perDatabaseSettings
+      preferredEnclaveType: elasticPool.?preferredEnclaveType
+      zoneRedundant: elasticPool.?zoneRedundant
     }
   }
 ]
@@ -704,7 +709,7 @@ type secretsExportConfigurationType = {
 }?
 
 type ServerExternalAdministratorType = {
-  @description('Type of the sever administrator.')
+  @description('Optional. Type of the sever administrator.')
   administratorType: 'ActiveDirectory'?
 
   @description('Required. Azure Active Directory only Authentication enabled.')
@@ -718,16 +723,18 @@ type ServerExternalAdministratorType = {
 
   @description('Required. SID (object ID) of the server administrator.')
   @metadata({
-    example: '00000000-0000-0000-0000-000000000000'
+    example: '#_managementGroupId_#'
   })
   sid: string
 
   @description('Optional. Tenant ID of the administrator.')
   @metadata({
-    example: '00000000-0000-0000-0000-000000000000'
+    example: '#_managementGroupId_#'
   })
   tenantId: string?
 }
+
+import { elasticPoolPropertyType } from 'elastic-pool/main.bicep'
 
 import { secretSetType } from 'modules/keyVaultExport.bicep'
 type secretsOutputType = {
