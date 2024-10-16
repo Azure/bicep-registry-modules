@@ -173,7 +173,7 @@ var arcNodeResourceIds = [
 var tenantId = subscription().tenantId
 
 module hciHostDeployment '../../../../../../utilities/e2e-template-assets/templates/azure-stack-hci/modules/azureStackHCIHost/hciHostDeployment.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy-${location}-${deploymentPrefix}'
+  name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy-${location}-${serviceShort}${namePrefix}'
   params: {
     hciHostAssignPublicIp: hciHostAssignPublicIp
     domainOUPath: domainOUPath
@@ -202,7 +202,7 @@ module hciClusterPreqs '../../../../../../utilities/e2e-template-assets/template
   dependsOn: [
     hciHostDeployment
   ]
-  name: '${uniqueString(deployment().name, location)}-test-hciclusterreqs-${serviceShort}'
+  name: '${uniqueString(deployment().name, location)}-test-hciclusterreqs-${serviceShort}${namePrefix}'
   params: {
     location: location
     arbDeploymentAppId: arbDeploymentAppId

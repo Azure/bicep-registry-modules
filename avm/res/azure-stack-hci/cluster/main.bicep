@@ -279,8 +279,8 @@ type networkIntent = {
     @description('Required. The networkDirect configuration for the network adapters.')
     networkDirect: ('Enabled' | 'Disabled')
 
-    @description('Required. The networkDirectTechnology configuration for the network adapters. Allowed values: "RoCEv2", "iWARP".')
-    networkDirectTechnology: string
+    @description('Required. The networkDirectTechnology configuration for the network adapters.')
+    networkDirectTechnology: ('RoCEv2' | 'iWARP')
   }
 
   @description('Required. Specify whether to override the qosPolicy property. Use false by default.')
@@ -304,7 +304,7 @@ type networkIntent = {
   @description('Required. The virtualSwitchConfiguration overrides for the network intent.')
   virtualSwitchConfigurationOverrides: {
     @description('Required. The enableIov configuration for the network intent.')
-    enableIov: ('True' | 'False')
+    enableIov: ('true' | 'false')
 
     @description('Required. The loadBalancingAlgorithm configuration for the network intent.')
     loadBalancingAlgorithm: ('Dynamic' | 'HyperVPort' | 'IPHash')
@@ -337,7 +337,7 @@ type storageNetworksType = {
   vlan: string
 
   @description('Optional. The storage adapter IP information for 3-node switchless or manual config deployments.')
-  storageAdapterIPInfo: storageAdapterIPInfoType[]? // optional for non-switchless deployments
+  storageAdapterIPInfo: storageAdapterIPInfoType[]? // optional for switched deployments
 }
 @export()
 type storageNetworksArrayType = storageNetworksType[]
