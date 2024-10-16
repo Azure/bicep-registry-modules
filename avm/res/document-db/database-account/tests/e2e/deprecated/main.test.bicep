@@ -12,7 +12,7 @@ metadata description = 'This instance deploys deprecated parameters.'
 param resourceGroupName string = 'dep-${namePrefix}-documentdb.databaseaccounts-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dddapln'
+param serviceShort string = 'ddddepr'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -33,6 +33,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // Test Execution //
 // ============== //
 
+#disable-next-line secure-secrets-in-params
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -50,8 +51,6 @@ module testDeployment '../../../main.bicep' = [
               paths: [
                 '/id'
               ]
-              throughput: 400
-              #disable-next-line secure-secrets-in-params
               uniqueKeyPolicyKeys: [
                 {
                   paths: [

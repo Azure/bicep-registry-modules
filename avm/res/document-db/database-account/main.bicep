@@ -252,24 +252,36 @@ var databaseAccountProperties = union(
     databaseAccountOfferType: databaseAccountOfferType
     backupPolicy: backupPolicy
     minimalTlsVersion: minimumTlsVersion
-    consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
-    enableMultipleWriteLocations: enableMultipleWriteLocations
-    locations: empty(databaseAccount_locations) ? defaultFailoverLocation : databaseAccount_locations
-    ipRules: ipRules
-    virtualNetworkRules: virtualNetworkRules
-    networkAclBypass: networkRestrictions.?networkAclBypass ?? 'AzureServices'
-    publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Disabled'
-    isVirtualNetworkFilterEnabled: !empty(ipRules) || !empty(virtualNetworkRules)
-    capabilities: capabilities
-    enableFreeTier: enableFreeTier
-    enableAutomaticFailover: automaticFailover
-    enableAnalyticalStorage: enableAnalyticalStorage
-    disableLocalAuth: disableLocalAuth
-    disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
   },
+  ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases))
+    ? {
+        // NoSQL, MongoDB RU, and Apache Gremlin properties
+        consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
+        enableMultipleWriteLocations: enableMultipleWriteLocations
+        locations: empty(databaseAccount_locations) ? defaultFailoverLocation : databaseAccount_locations
+
+        ipRules: ipRules
+        virtualNetworkRules: virtualNetworkRules
+        networkAclBypass: networkRestrictions.?networkAclBypass ?? 'AzureServices'
+        publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Enabled'
+        isVirtualNetworkFilterEnabled: !empty(ipRules) || !empty(virtualNetworkRules)
+
+        capabilities: capabilities
+        enableFreeTier: enableFreeTier
+        enableAutomaticFailover: automaticFailover
+        enableAnalyticalStorage: enableAnalyticalStorage
+      }
+    : {}),
+  (!empty(sqlDatabases)
+    ? {
+        // NoSQL properties
+        disableLocalAuth: disableLocalAuth
+        disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
+      }
+    : {}),
   (!empty(mongodbDatabases)
     ? {
-        // MongoDb properties
+        // MongoDB RU properties
         apiProperties: {
           serverVersion: serverVersion
         }

@@ -314,7 +314,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   name: 'databaseAccountDeployment'
   params: {
     // Required parameters
-    name: 'dddapln001'
+    name: 'ddddepr001'
     // Non-required parameters
     location: '<location>'
     sqlDatabases: [
@@ -325,7 +325,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             paths: [
               '/id'
             ]
-            throughput: 400
             uniqueKeyPolicyKeys: [
               {
                 paths: [
@@ -361,7 +360,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddapln001"
+      "value": "ddddepr001"
     },
     // Non-required parameters
     "location": {
@@ -376,7 +375,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               "paths": [
                 "/id"
               ],
-              "throughput": 400,
               "uniqueKeyPolicyKeys": [
                 {
                   "paths": [
@@ -410,7 +408,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddapln001'
+param name = 'ddddepr001'
 // Non-required parameters
 param location = '<location>'
 param sqlDatabases = [
@@ -421,7 +419,6 @@ param sqlDatabases = [
         paths: [
           '/id'
         ]
-        throughput: 400
         uniqueKeyPolicyKeys: [
           {
             paths: [
