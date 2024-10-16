@@ -1934,7 +1934,6 @@ SID (object ID) of the server administrator.
 
 - Required: Yes
 - Type: string
-- Example: `#_managementGroupId_#`
 
 ### Parameter: `administrators.administratorType`
 
@@ -1955,7 +1954,6 @@ Tenant ID of the administrator.
 
 - Required: No
 - Type: string
-- Example: `#_managementGroupId_#`
 
 ### Parameter: `primaryUserAssignedIdentityId`
 
