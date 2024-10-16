@@ -37,7 +37,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
   }
 }
 
-resource policyAssignment 'Microsoft.Authorization/policyAssignments@2024-05-01' = {
+resource policyAssignment 'Microsoft.Authorization/policyAssignments@2024-04-01' = {
   name: 'audit-vm-managed-disks'
   scope: managementGroup()
   properties: {
