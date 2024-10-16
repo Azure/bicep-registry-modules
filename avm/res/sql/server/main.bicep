@@ -54,7 +54,7 @@ param keys array = []
 @description('Conditional. The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided.')
 param administrators ServerExternalAdministratorType?
 
-@description('Optional. The Client id used for cross tenant CMK scenario')
+@description('Optional. The Client id used for cross tenant CMK scenario.')
 @minLength(36)
 @maxLength(36)
 param federatedClientId string?

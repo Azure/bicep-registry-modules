@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "10347822602729915434"
+      "templateHash": "17075205316023541596"
     },
     "name": "SQL Server Elastic Pool",
     "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -20,19 +20,19 @@
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Auto Pause Delay for per database within pool"
+            "description": "Optional. Auto Pause Delay for per database within pool."
           }
         },
         "maxCapacity": {
           "type": "string",
           "metadata": {
-            "description": "Reqired. The maximum capacity any one database can consume. Examples: '0.5', '2'"
+            "description": "Reqired. The maximum capacity any one database can consume. Examples: '0.5', '2'."
           }
         },
         "minCapacity": {
           "type": "string",
           "metadata": {
-            "description": "Required. The minimum capacity all databases are guaranteed. Examples: '0.5', '1'"
+            "description": "Required. The minimum capacity all databases are guaranteed. Examples: '0.5', '1'."
           }
         }
       },
@@ -82,7 +82,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Size of the particular SKU"
+            "description": "Optional. Size of the particular SKU."
           }
         },
         "tier": {
@@ -177,7 +177,7 @@
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Minimal capacity that serverless pool will not shrink below, if not paused"
+            "description": "Optional. Minimal capacity that serverless pool will not shrink below, if not paused."
           }
         },
         "perDatabaseSettings": {

@@ -110,14 +110,14 @@ output location string = elasticPool.location
 @export()
 @description('The per database settings for the elastic pool.')
 type elasticPoolPerDatabaseSettingsType = {
-  @description('Optional. Auto Pause Delay for per database within pool')
+  @description('Optional. Auto Pause Delay for per database within pool.')
   autoPauseDelay: int?
 
-  @description('Reqired. The maximum capacity any one database can consume. Examples: \'0.5\', \'2\'')
+  @description('Reqired. The maximum capacity any one database can consume. Examples: \'0.5\', \'2\'.')
   maxCapacity: string
 
   // using string as minCapacity can be fractional
-  @description('Required. The minimum capacity all databases are guaranteed. Examples: \'0.5\', \'1\'')
+  @description('Required. The minimum capacity all databases are guaranteed. Examples: \'0.5\', \'1\'.')
   minCapacity: string
 }
 
@@ -145,7 +145,7 @@ type elasticPoolSkuType = {
     | 'HS_MOPRMS'
     | 'ServerlessPool'
 
-  @description('Optional. Size of the particular SKU')
+  @description('Optional. Size of the particular SKU.')
   size: string?
 
   @description('Required. The tier or edition of the particular SKU, e.g. Basic, Premium.')
@@ -181,7 +181,7 @@ type elasticPoolPropertyType = {
   @description('Optional. The storage limit for the database elastic pool in bytes.')
   maxSizeBytes: int?
 
-  @description('Optional. Minimal capacity that serverless pool will not shrink below, if not paused')
+  @description('Optional. Minimal capacity that serverless pool will not shrink below, if not paused.')
   minCapacity: int?
 
   @description('Optional. The per database settings for the elastic pool.')
