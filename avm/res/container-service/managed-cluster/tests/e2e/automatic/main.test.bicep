@@ -85,6 +85,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       publicNetworkAccess: 'Enabled'
       skuName: 'Automatic'
+      vpaAddon: true
       webApplicationRoutingEnabled: true
     }
   }

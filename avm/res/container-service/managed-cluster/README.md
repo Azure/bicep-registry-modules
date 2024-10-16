@@ -102,6 +102,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     outboundType: 'managedNATGateway'
     publicNetworkAccess: 'Enabled'
     skuName: 'Automatic'
+    vpaAddon: true
     webApplicationRoutingEnabled: true
   }
 }
@@ -201,6 +202,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "skuName": {
       "value": "Automatic"
     },
+    "vpaAddon": {
+      "value": true
+    },
     "webApplicationRoutingEnabled": {
       "value": true
     }
@@ -268,6 +272,7 @@ param nodeResourceGroupProfile = {
 param outboundType = 'managedNATGateway'
 param publicNetworkAccess = 'Enabled'
 param skuName = 'Automatic'
+param vpaAddon = true
 param webApplicationRoutingEnabled = true
 ```
 
