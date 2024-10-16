@@ -303,7 +303,7 @@ type networkIntent = {
 
   @description('Required. The virtualSwitchConfiguration overrides for the network intent.')
   virtualSwitchConfigurationOverrides: {
-    @description('Required. The enableIov configuration for the network intent')
+    @description('Required. The enableIov configuration for the network intent.')
     enableIov: bool
 
     @description('Required. The loadBalancingAlgorithm configuration for the network intent.')
