@@ -42,17 +42,16 @@ The following section provides usage examples for the module, which were used to
 - [Using analytical storage](#example-1-using-analytical-storage)
 - [Using bounded consistency](#example-2-using-bounded-consistency)
 - [Using only defaults](#example-3-using-only-defaults)
-- [Deprecated](#example-4-deprecated)
-- [Gremlin Database](#example-5-gremlin-database)
-- [Deploying with a key vault reference to save secrets](#example-6-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Deploying with Managed identities](#example-7-deploying-with-managed-identities)
-- [Mongo Database](#example-8-mongo-database)
-- [Deploying multiple regions](#example-9-deploying-multiple-regions)
-- [Plain](#example-10-plain)
-- [Public network restricted access with ACL](#example-11-public-network-restricted-access-with-acl)
-- [Deploying with a sql role definision and assignment](#example-12-deploying-with-a-sql-role-definision-and-assignment)
-- [SQL Database](#example-13-sql-database)
-- [WAF-aligned](#example-14-waf-aligned)
+- [Gremlin Database](#example-4-gremlin-database)
+- [Deploying with a key vault reference to save secrets](#example-5-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Deploying with Managed identities](#example-6-deploying-with-managed-identities)
+- [Mongo Database](#example-7-mongo-database)
+- [Deploying multiple regions](#example-8-deploying-multiple-regions)
+- [Plain](#example-9-plain)
+- [Public network restricted access with ACL](#example-10-public-network-restricted-access-with-acl)
+- [Deploying with a sql role definision and assignment](#example-11-deploying-with-a-sql-role-definision-and-assignment)
+- [SQL Database](#example-12-sql-database)
+- [WAF-aligned](#example-13-waf-aligned)
 
 ### Example 1: _Using analytical storage_
 
@@ -317,148 +316,7 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 4: _Deprecated_
-
-This instance deploys deprecated parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
-  params: {
-    // Required parameters
-    name: 'ddddepr001'
-    // Non-required parameters
-    location: '<location>'
-    sqlDatabases: [
-      {
-        containers: [
-          {
-            name: 'container-001'
-            paths: [
-              '/id'
-            ]
-            uniqueKeyPolicyKeys: [
-              {
-                paths: [
-                  '/firstName'
-                ]
-              }
-              {
-                paths: [
-                  '/lastName'
-                ]
-              }
-            ]
-          }
-        ]
-        name: 'database-001'
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "ddddepr001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "sqlDatabases": {
-      "value": [
-        {
-          "containers": [
-            {
-              "name": "container-001",
-              "paths": [
-                "/id"
-              ],
-              "uniqueKeyPolicyKeys": [
-                {
-                  "paths": [
-                    "/firstName"
-                  ]
-                },
-                {
-                  "paths": [
-                    "/lastName"
-                  ]
-                }
-              ]
-            }
-          ],
-          "name": "database-001"
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/document-db/database-account:<version>'
-
-// Required parameters
-param name = 'ddddepr001'
-// Non-required parameters
-param location = '<location>'
-param sqlDatabases = [
-  {
-    containers: [
-      {
-        name: 'container-001'
-        paths: [
-          '/id'
-        ]
-        uniqueKeyPolicyKeys: [
-          {
-            paths: [
-              '/firstName'
-            ]
-          }
-          {
-            paths: [
-              '/lastName'
-            ]
-          }
-        ]
-      }
-    ]
-    name: 'database-001'
-  }
-]
-```
-
-</details>
-<p>
-
-### Example 5: _Gremlin Database_
+### Example 4: _Gremlin Database_
 
 This instance deploys the module with a Gremlin Database.
 
@@ -848,7 +706,7 @@ param tags = {
 </details>
 <p>
 
-### Example 6: _Deploying with a key vault reference to save secrets_
+### Example 5: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -947,7 +805,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 7: _Deploying with Managed identities_
+### Example 6: _Deploying with Managed identities_
 
 This instance deploys the module with an system and user assigned managed identity.
 
@@ -1087,7 +945,7 @@ param roleAssignments = [
 </details>
 <p>
 
-### Example 8: _Mongo Database_
+### Example 7: _Mongo Database_
 
 This instance deploys the module with a Mongo Database.
 
@@ -1877,7 +1735,7 @@ param tags = {
 </details>
 <p>
 
-### Example 9: _Deploying multiple regions_
+### Example 8: _Deploying multiple regions_
 
 This instance deploys the module in multiple regions with configs specific of multi region scenarios.
 
@@ -2026,7 +1884,7 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 10: _Plain_
+### Example 9: _Plain_
 
 This instance deploys the module without a Database.
 
@@ -2155,7 +2013,7 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 11: _Public network restricted access with ACL_
+### Example 10: _Public network restricted access with ACL_
 
 This instance deploys the module with public network access enabled but restricted to IPs, CIDRS or subnets.
 
@@ -2277,7 +2135,7 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 12: _Deploying with a sql role definision and assignment_
+### Example 11: _Deploying with a sql role definision and assignment_
 
 This instance deploys the module with sql role definision and assignment
 
@@ -2369,7 +2227,7 @@ param sqlRoleDefinitions = [
 </details>
 <p>
 
-### Example 13: _SQL Database_
+### Example 12: _SQL Database_
 
 This instance deploys the module with a SQL Database.
 
@@ -2413,7 +2271,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               '/myPartitionKey'
             ]
             throughput: 600
-            uniqueKeyPolicyConfiguration: [
+            uniqueKeyPolicyKeys: [
               {
                 paths: [
                   '/firstName'
@@ -2501,7 +2359,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             paths: [
               '/myPartitionKey'
             ]
-            uniqueKeyPolicyConfiguration: [
+            uniqueKeyPolicyKeys: [
               {
                 paths: [
                   '/firstName'
@@ -2700,7 +2558,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
                 "/myPartitionKey"
               ],
               "throughput": 600,
-              "uniqueKeyPolicyConfiguration": [
+              "uniqueKeyPolicyKeys": [
                 {
                   "paths": [
                     "/firstName"
@@ -2788,7 +2646,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               "paths": [
                 "/myPartitionKey"
               ],
-              "uniqueKeyPolicyConfiguration": [
+              "uniqueKeyPolicyKeys": [
                 {
                   "paths": [
                     "/firstName"
@@ -2977,7 +2835,7 @@ param sqlDatabases = [
           '/myPartitionKey'
         ]
         throughput: 600
-        uniqueKeyPolicyConfiguration: [
+        uniqueKeyPolicyKeys: [
           {
             paths: [
               '/firstName'
@@ -3065,7 +2923,7 @@ param sqlDatabases = [
         paths: [
           '/myPartitionKey'
         ]
-        uniqueKeyPolicyConfiguration: [
+        uniqueKeyPolicyKeys: [
           {
             paths: [
               '/firstName'
@@ -3213,7 +3071,7 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 14: _WAF-aligned_
+### Example 13: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -4730,8 +4588,7 @@ Array of containers to deploy in the SQL database.
 | [`indexingPolicy`](#parameter-sqldatabasescontainersindexingpolicy) | object | Indexing policy of the container. |
 | [`kind`](#parameter-sqldatabasescontainerskind) | string | Default to Hash. Indicates the kind of algorithm used for partitioning. |
 | [`throughput`](#parameter-sqldatabasescontainersthroughput) | int | Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
-| [`uniqueKeyPolicyConfiguration`](#parameter-sqldatabasescontainersuniquekeypolicyconfiguration) | array | The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
-| [`uniqueKeyPolicyKeys`](#parameter-sqldatabasescontainersuniquekeypolicykeys) | array | [DEPRECATED] The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
+| [`uniqueKeyPolicyKeys`](#parameter-sqldatabasescontainersuniquekeypolicykeys) | array | The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
 | [`version`](#parameter-sqldatabasescontainersversion) | int | Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition. |
 
 ### Parameter: `sqlDatabases.containers.name`
@@ -4845,29 +4702,9 @@ Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMa
 - Required: No
 - Type: int
 
-### Parameter: `sqlDatabases.containers.uniqueKeyPolicyConfiguration`
-
-The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`paths`](#parameter-sqldatabasescontainersuniquekeypolicyconfigurationpaths) | array | List of paths must be unique for each document in the Azure Cosmos DB service. |
-
-### Parameter: `sqlDatabases.containers.uniqueKeyPolicyConfiguration.paths`
-
-List of paths must be unique for each document in the Azure Cosmos DB service.
-
-- Required: Yes
-- Type: array
-
 ### Parameter: `sqlDatabases.containers.uniqueKeyPolicyKeys`
 
-[DEPRECATED] The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.
+The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.
 
 - Required: No
 - Type: array
