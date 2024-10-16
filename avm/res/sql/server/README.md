@@ -592,17 +592,21 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         licenseType: 'LicenseIncluded'
         maxSizeBytes: 34359738368
         name: 'sqlsmaxdb-001'
-        skuCapacity: 0
-        skuName: 'ElasticPool'
-        skuTier: 'GeneralPurpose'
+        sku: {
+          capacity: 0
+          name: 'ElasticPool'
+          tier: 'GeneralPurpose'
+        }
       }
     ]
     elasticPools: [
       {
         name: 'sqlsmax-ep-001'
-        skuCapacity: 10
-        skuName: 'GP_Gen5'
-        skuTier: 'GeneralPurpose'
+        sku: {
+          capacity: 10
+          name: 'GP_Gen5'
+          tier: 'GeneralPurpose'
+        }
       }
     ]
     firewallRules: [
@@ -759,9 +763,11 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "licenseType": "LicenseIncluded",
           "maxSizeBytes": 34359738368,
           "name": "sqlsmaxdb-001",
-          "skuCapacity": 0,
-          "skuName": "ElasticPool",
-          "skuTier": "GeneralPurpose"
+          "sku": {
+            "capacity": 0,
+            "name": "ElasticPool",
+            "tier": "GeneralPurpose"
+          }
         }
       ]
     },
@@ -769,9 +775,11 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       "value": [
         {
           "name": "sqlsmax-ep-001",
-          "skuCapacity": 10,
-          "skuName": "GP_Gen5",
-          "skuTier": "GeneralPurpose"
+          "sku": {
+            "capacity": 10,
+            "name": "GP_Gen5",
+            "tier": "GeneralPurpose"
+          }
         }
       ]
     },
@@ -948,17 +956,21 @@ param databases = [
     licenseType: 'LicenseIncluded'
     maxSizeBytes: 34359738368
     name: 'sqlsmaxdb-001'
-    skuCapacity: 0
-    skuName: 'ElasticPool'
-    skuTier: 'GeneralPurpose'
+    sku: {
+      capacity: 0
+      name: 'ElasticPool'
+      tier: 'GeneralPurpose'
+    }
   }
 ]
 param elasticPools = [
   {
     name: 'sqlsmax-ep-001'
-    skuCapacity: 10
-    skuName: 'GP_Gen5'
-    skuTier: 'GeneralPurpose'
+    sku: {
+      capacity: 10
+      name: 'GP_Gen5'
+      tier: 'GeneralPurpose'
+    }
   }
 ]
 param firewallRules = [
@@ -1091,9 +1103,11 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         createMode: 'Secondary'
         maxSizeBytes: 2147483648
         name: '<name>'
-        skuName: 'Basic'
-        skuTier: 'Basic'
-        sourceDatabaseResourceId: '<sourceDatabaseResourceId>'
+        sku: {
+          name: 'Basic'
+          tier: 'Basic'
+        }
+        sourceDatabaseId: '<sourceDatabaseId>'
       }
     ]
     location: '<location>'
@@ -1135,9 +1149,11 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "createMode": "Secondary",
           "maxSizeBytes": 2147483648,
           "name": "<name>",
-          "skuName": "Basic",
-          "skuTier": "Basic",
-          "sourceDatabaseResourceId": "<sourceDatabaseResourceId>"
+          "sku": {
+            "name": "Basic",
+            "tier": "Basic"
+          },
+          "sourceDatabaseId": "<sourceDatabaseId>"
         }
       ]
     },
@@ -1175,9 +1191,11 @@ param databases = [
     createMode: 'Secondary'
     maxSizeBytes: 2147483648
     name: '<name>'
-    skuName: 'Basic'
-    skuTier: 'Basic'
-    sourceDatabaseResourceId: '<sourceDatabaseResourceId>'
+    sku: {
+      name: 'Basic'
+      tier: 'Basic'
+    }
+    sourceDatabaseId: '<sourceDatabaseId>'
   }
 ]
 param location = '<location>'
@@ -1417,18 +1435,22 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         licenseType: 'LicenseIncluded'
         maxSizeBytes: 34359738368
         name: 'sqlswafdb-001'
-        skuCapacity: 0
-        skuName: 'ElasticPool'
-        skuTier: 'GeneralPurpose'
+        sku: {
+          capacity: 0
+          name: 'ElasticPool'
+          tier: 'GeneralPurpose'
+        }
       }
     ]
     elasticPools: [
       {
         maintenanceConfigurationId: '<maintenanceConfigurationId>'
         name: 'sqlswaf-ep-001'
-        skuCapacity: 10
-        skuName: 'GP_Gen5'
-        skuTier: 'GeneralPurpose'
+        sku: {
+          capacity: 10
+          name: 'GP_Gen5'
+          tier: 'GeneralPurpose'
+        }
       }
     ]
     keys: [
@@ -1548,9 +1570,11 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "licenseType": "LicenseIncluded",
           "maxSizeBytes": 34359738368,
           "name": "sqlswafdb-001",
-          "skuCapacity": 0,
-          "skuName": "ElasticPool",
-          "skuTier": "GeneralPurpose"
+          "sku": {
+            "capacity": 0,
+            "name": "ElasticPool",
+            "tier": "GeneralPurpose"
+          }
         }
       ]
     },
@@ -1559,9 +1583,11 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         {
           "maintenanceConfigurationId": "<maintenanceConfigurationId>",
           "name": "sqlswaf-ep-001",
-          "skuCapacity": 10,
-          "skuName": "GP_Gen5",
-          "skuTier": "GeneralPurpose"
+          "sku": {
+            "capacity": 10,
+            "name": "GP_Gen5",
+            "tier": "GeneralPurpose"
+          }
         }
       ]
     },
@@ -1697,18 +1723,22 @@ param databases = [
     licenseType: 'LicenseIncluded'
     maxSizeBytes: 34359738368
     name: 'sqlswafdb-001'
-    skuCapacity: 0
-    skuName: 'ElasticPool'
-    skuTier: 'GeneralPurpose'
+    sku: {
+      capacity: 0
+      name: 'ElasticPool'
+      tier: 'GeneralPurpose'
+    }
   }
 ]
 param elasticPools = [
   {
     maintenanceConfigurationId: '<maintenanceConfigurationId>'
     name: 'sqlswaf-ep-001'
-    skuCapacity: 10
-    skuName: 'GP_Gen5'
-    skuTier: 'GeneralPurpose'
+    sku: {
+      capacity: 10
+      name: 'GP_Gen5'
+      tier: 'GeneralPurpose'
+    }
   }
 ]
 param keys = [
@@ -2062,6 +2092,7 @@ The databases to create in the server.
 | [`catalogCollation`](#parameter-databasescatalogcollation) | string | Collation of the metadata catalog. |
 | [`collation`](#parameter-databasescollation) | string | The collation of the database. |
 | [`createMode`](#parameter-databasescreatemode) | string | Specifies the mode of database creation. |
+| [`diagnosticSettings`](#parameter-databasesdiagnosticsettings) | array | The diagnostic settings of the service. |
 | [`elasticPoolId`](#parameter-databaseselasticpoolid) | string | The resource identifier of the elastic pool containing this database. |
 | [`encryptionProtector`](#parameter-databasesencryptionprotector) | string | The azure key vault URI of the database if it's configured with per Database Customer Managed Keys. |
 | [`encryptionProtectorAutoRotation`](#parameter-databasesencryptionprotectorautorotation) | bool | The flag to enable or disable auto rotation of database encryption protector AKV key. |
@@ -2158,6 +2189,152 @@ Specifies the mode of database creation.
     'Secondary'
   ]
   ```
+
+### Parameter: `databases.diagnosticSettings`
+
+The diagnostic settings of the service.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-databasesdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-databasesdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-databasesdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-databasesdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-databasesdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-databasesdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-databasesdiagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-databasesdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-databasesdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `databases.diagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.diagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.diagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `databases.diagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-databasesdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-databasesdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-databasesdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `databases.diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `databases.diagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.diagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-databasesdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-databasesdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `databases.diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `databases.diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `databases.diagnosticSettings.name`
+
+The name of diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.diagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.diagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
 
 ### Parameter: `databases.elasticPoolId`
 

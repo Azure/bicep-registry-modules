@@ -59,11 +59,13 @@ module testDeployment '../../../main.bicep' = {
     databases: [
       {
         name: nestedDependencies.outputs.databaseName
-        skuTier: 'Basic'
-        skuName: 'Basic'
+        sku: {
+          name: 'Basic'
+          tier: 'Basic'
+        }
         maxSizeBytes: 2147483648
         createMode: 'Secondary'
-        sourceDatabaseResourceId: nestedDependencies.outputs.databaseResourceId
+        sourceDatabaseId: nestedDependencies.outputs.databaseResourceId
       }
     ]
     tags: {

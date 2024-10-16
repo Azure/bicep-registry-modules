@@ -449,4 +449,7 @@ type databasePropertyType = {
 
   @description('Optional. Whether or not this database is zone redundant, which means the replicas of this database will be spread across multiple availability zones.')
   zoneRedundant: bool?
+
+  @description('Optional. The diagnostic settings of the service.')
+  diagnosticSettings: diagnosticSettingType?
 }
