@@ -739,15 +739,9 @@ type ServerExternalAdministratorType = {
   principalType: 'Application' | 'Group' | 'User'
 
   @description('Required. SID (object ID) of the server administrator.')
-  @metadata({
-    example: '#_managementGroupId_#'
-  })
   sid: string
 
   @description('Optional. Tenant ID of the administrator.')
-  @metadata({
-    example: '#_managementGroupId_#'
-  })
   tenantId: string?
 }
 
