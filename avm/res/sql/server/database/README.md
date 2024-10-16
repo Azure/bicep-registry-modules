@@ -35,7 +35,7 @@ This module deploys an Azure SQL Server Database.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoPauseDelay`](#parameter-autopausedelay) | int | Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled |
+| [`autoPauseDelay`](#parameter-autopausedelay) | int | Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled. |
 | [`availabilityZone`](#parameter-availabilityzone) | string | Specifies the availability zone the database is pinned to. |
 | [`backupLongTermRetentionPolicy`](#parameter-backuplongtermretentionpolicy) | object | The long term backup retention policy to create for the database. |
 | [`backupShortTermRetentionPolicy`](#parameter-backupshorttermretentionpolicy) | object | The short term backup retention policy to create for the database. |
@@ -91,7 +91,7 @@ The name of the parent SQL Server. Required if the template is used in a standal
 
 ### Parameter: `autoPauseDelay`
 
-Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled
+Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled.
 
 - Required: No
 - Type: int
@@ -563,7 +563,7 @@ The database SKU.
 | :-- | :-- | :-- |
 | [`capacity`](#parameter-skucapacity) | int | The capacity of the particular SKU. |
 | [`family`](#parameter-skufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
-| [`size`](#parameter-skusize) | string | Size of the particular SKU |
+| [`size`](#parameter-skusize) | string | Size of the particular SKU. |
 
 ### Parameter: `sku.name`
 
@@ -595,7 +595,7 @@ If the service has different generations of hardware, for the same SKU, then tha
 
 ### Parameter: `sku.size`
 
-Size of the particular SKU
+Size of the particular SKU.
 
 - Required: No
 - Type: string

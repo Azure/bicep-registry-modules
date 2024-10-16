@@ -1834,7 +1834,7 @@ param vulnerabilityAssessmentsObj = {
 | [`elasticPools`](#parameter-elasticpools) | array | The Elastic Pools to create in the server. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionProtectorObj`](#parameter-encryptionprotectorobj) | object | The encryption protection configuration. |
-| [`federatedClientId`](#parameter-federatedclientid) | string | The Client id used for cross tenant CMK scenario |
+| [`federatedClientId`](#parameter-federatedclientid) | string | The Client id used for cross tenant CMK scenario. |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the server. |
 | [`isIPv6Enabled`](#parameter-isipv6enabled) | string | Whether or not to enable IPv6 support for this server. |
 | [`keyId`](#parameter-keyid) | string | A CMK URI of the key to use for encryption. |
@@ -2085,7 +2085,7 @@ The databases to create in the server.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoPauseDelay`](#parameter-databasesautopausedelay) | int | Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled |
+| [`autoPauseDelay`](#parameter-databasesautopausedelay) | int | Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled. |
 | [`availabilityZone`](#parameter-databasesavailabilityzone) | string | Specifies the availability zone the database is pinned to. |
 | [`catalogCollation`](#parameter-databasescatalogcollation) | string | Collation of the metadata catalog. |
 | [`collation`](#parameter-databasescollation) | string | The collation of the database. |
@@ -2131,7 +2131,7 @@ The name of the Elastic Pool.
 
 ### Parameter: `databases.autoPauseDelay`
 
-Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled
+Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled.
 
 - Required: No
 - Type: int
@@ -2560,7 +2560,7 @@ The database SKU.
 | :-- | :-- | :-- |
 | [`capacity`](#parameter-databasesskucapacity) | int | The capacity of the particular SKU. |
 | [`family`](#parameter-databasesskufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
-| [`size`](#parameter-databasesskusize) | string | Size of the particular SKU |
+| [`size`](#parameter-databasesskusize) | string | Size of the particular SKU. |
 
 ### Parameter: `databases.sku.name`
 
@@ -2592,7 +2592,7 @@ If the service has different generations of hardware, for the same SKU, then tha
 
 ### Parameter: `databases.sku.size`
 
-Size of the particular SKU
+Size of the particular SKU.
 
 - Required: No
 - Type: string
@@ -2663,7 +2663,7 @@ The Elastic Pools to create in the server.
 | [`licenseType`](#parameter-elasticpoolslicensetype) | string | The license type to apply for this elastic pool. |
 | [`maintenanceConfigurationId`](#parameter-elasticpoolsmaintenanceconfigurationid) | string | Maintenance configuration id assigned to the elastic pool. This configuration defines the period when the maintenance updates will will occur. |
 | [`maxSizeBytes`](#parameter-elasticpoolsmaxsizebytes) | int | The storage limit for the database elastic pool in bytes. |
-| [`minCapacity`](#parameter-elasticpoolsmincapacity) | int | Minimal capacity that serverless pool will not shrink below, if not paused |
+| [`minCapacity`](#parameter-elasticpoolsmincapacity) | int | Minimal capacity that serverless pool will not shrink below, if not paused. |
 | [`perDatabaseSettings`](#parameter-elasticpoolsperdatabasesettings) | object | The per database settings for the elastic pool. |
 | [`preferredEnclaveType`](#parameter-elasticpoolspreferredenclavetype) | string | Type of enclave requested on the elastic pool. |
 | [`sku`](#parameter-elasticpoolssku) | object | The elastic pool SKU. |
@@ -2737,7 +2737,7 @@ The storage limit for the database elastic pool in bytes.
 
 ### Parameter: `elasticPools.minCapacity`
 
-Minimal capacity that serverless pool will not shrink below, if not paused
+Minimal capacity that serverless pool will not shrink below, if not paused.
 
 - Required: No
 - Type: int
@@ -2753,37 +2753,37 @@ The per database settings for the elastic pool.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`minCapacity`](#parameter-elasticpoolsperdatabasesettingsmincapacity) | string | The minimum capacity all databases are guaranteed. Examples: '0.5', '1' |
+| [`minCapacity`](#parameter-elasticpoolsperdatabasesettingsmincapacity) | string | The minimum capacity all databases are guaranteed. Examples: '0.5', '1'. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoPauseDelay`](#parameter-elasticpoolsperdatabasesettingsautopausedelay) | int | Auto Pause Delay for per database within pool |
+| [`autoPauseDelay`](#parameter-elasticpoolsperdatabasesettingsautopausedelay) | int | Auto Pause Delay for per database within pool. |
 
 **Reqired parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`maxCapacity`](#parameter-elasticpoolsperdatabasesettingsmaxcapacity) | string | The maximum capacity any one database can consume. Examples: '0.5', '2' |
+| [`maxCapacity`](#parameter-elasticpoolsperdatabasesettingsmaxcapacity) | string | The maximum capacity any one database can consume. Examples: '0.5', '2'. |
 
 ### Parameter: `elasticPools.perDatabaseSettings.minCapacity`
 
-The minimum capacity all databases are guaranteed. Examples: '0.5', '1'
+The minimum capacity all databases are guaranteed. Examples: '0.5', '1'.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `elasticPools.perDatabaseSettings.autoPauseDelay`
 
-Auto Pause Delay for per database within pool
+Auto Pause Delay for per database within pool.
 
 - Required: No
 - Type: int
 
 ### Parameter: `elasticPools.perDatabaseSettings.maxCapacity`
 
-The maximum capacity any one database can consume. Examples: '0.5', '2'
+The maximum capacity any one database can consume. Examples: '0.5', '2'.
 
 - Required: Yes
 - Type: string
@@ -2822,7 +2822,7 @@ The elastic pool SKU.
 | :-- | :-- | :-- |
 | [`capacity`](#parameter-elasticpoolsskucapacity) | int | The capacity of the particular SKU. |
 | [`family`](#parameter-elasticpoolsskufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
-| [`size`](#parameter-elasticpoolsskusize) | string | Size of the particular SKU |
+| [`size`](#parameter-elasticpoolsskusize) | string | Size of the particular SKU. |
 
 ### Parameter: `elasticPools.sku.name`
 
@@ -2871,7 +2871,7 @@ If the service has different generations of hardware, for the same SKU, then tha
 
 ### Parameter: `elasticPools.sku.size`
 
-Size of the particular SKU
+Size of the particular SKU.
 
 - Required: No
 - Type: string
@@ -2908,7 +2908,7 @@ The encryption protection configuration.
 
 ### Parameter: `federatedClientId`
 
-The Client id used for cross tenant CMK scenario
+The Client id used for cross tenant CMK scenario.
 
 - Required: No
 - Type: string

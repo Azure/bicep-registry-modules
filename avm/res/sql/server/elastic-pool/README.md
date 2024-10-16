@@ -151,37 +151,37 @@ The per database settings for the elastic pool.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`minCapacity`](#parameter-perdatabasesettingsmincapacity) | string | The minimum capacity all databases are guaranteed. Examples: '0.5', '1' |
+| [`minCapacity`](#parameter-perdatabasesettingsmincapacity) | string | The minimum capacity all databases are guaranteed. Examples: '0.5', '1'. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoPauseDelay`](#parameter-perdatabasesettingsautopausedelay) | int | Auto Pause Delay for per database within pool |
+| [`autoPauseDelay`](#parameter-perdatabasesettingsautopausedelay) | int | Auto Pause Delay for per database within pool. |
 
 **Reqired parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`maxCapacity`](#parameter-perdatabasesettingsmaxcapacity) | string | The maximum capacity any one database can consume. Examples: '0.5', '2' |
+| [`maxCapacity`](#parameter-perdatabasesettingsmaxcapacity) | string | The maximum capacity any one database can consume. Examples: '0.5', '2'. |
 
 ### Parameter: `perDatabaseSettings.minCapacity`
 
-The minimum capacity all databases are guaranteed. Examples: '0.5', '1'
+The minimum capacity all databases are guaranteed. Examples: '0.5', '1'.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `perDatabaseSettings.autoPauseDelay`
 
-Auto Pause Delay for per database within pool
+Auto Pause Delay for per database within pool.
 
 - Required: No
 - Type: int
 
 ### Parameter: `perDatabaseSettings.maxCapacity`
 
-The maximum capacity any one database can consume. Examples: '0.5', '2'
+The maximum capacity any one database can consume. Examples: '0.5', '2'.
 
 - Required: Yes
 - Type: string
@@ -229,7 +229,7 @@ The elastic pool SKU.
 | :-- | :-- | :-- |
 | [`capacity`](#parameter-skucapacity) | int | The capacity of the particular SKU. |
 | [`family`](#parameter-skufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
-| [`size`](#parameter-skusize) | string | Size of the particular SKU |
+| [`size`](#parameter-skusize) | string | Size of the particular SKU. |
 
 ### Parameter: `sku.name`
 
@@ -278,7 +278,7 @@ If the service has different generations of hardware, for the same SKU, then tha
 
 ### Parameter: `sku.size`
 
-Size of the particular SKU
+Size of the particular SKU.
 
 - Required: No
 - Type: string

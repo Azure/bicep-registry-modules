@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "2532099399760155788"
+      "templateHash": "4558221869591328265"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database.",
@@ -160,7 +160,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Size of the particular SKU"
+            "description": "Optional. Size of the particular SKU."
           }
         },
         "tier": {
@@ -203,7 +203,7 @@
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled"
+            "description": "Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled."
           }
         },
         "availabilityZone": {
@@ -517,7 +517,7 @@
       "type": "int",
       "defaultValue": 0,
       "metadata": {
-        "description": "Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled"
+        "description": "Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled."
       }
     },
     "availabilityZone": {
