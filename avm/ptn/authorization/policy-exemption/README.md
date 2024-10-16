@@ -289,7 +289,7 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
-    name: 'apesubmin001'
+    name: 'apergmin001'
     policyAssignmentId: '<policyAssignmentId>'
     // Non-required parameters
     resourceGroupName: '<resourceGroupName>'
@@ -315,7 +315,7 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
       "value": "Mitigated"
     },
     "name": {
-      "value": "apesubmin001"
+      "value": "apergmin001"
     },
     "policyAssignmentId": {
       "value": "<policyAssignmentId>"
@@ -343,7 +343,7 @@ using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
 
 // Required parameters
 param exemptionCategory = 'Mitigated'
-param name = 'apesubmin001'
+param name = 'apergmin001'
 param policyAssignmentId = '<policyAssignmentId>'
 // Non-required parameters
 param resourceGroupName = '<resourceGroupName>'
@@ -368,7 +368,7 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
-    name: 'apesubmin001'
+    name: 'apergmax001'
     policyAssignmentId: '<policyAssignmentId>'
     // Non-required parameters
     assignmentScopeValidation: 'Default'
@@ -423,7 +423,7 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
       "value": "Mitigated"
     },
     "name": {
-      "value": "apesubmin001"
+      "value": "apergmax001"
     },
     "policyAssignmentId": {
       "value": "<policyAssignmentId>"
@@ -496,7 +496,7 @@ using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
 
 // Required parameters
 param exemptionCategory = 'Mitigated'
-param name = 'apesubmin001'
+param name = 'apergmax001'
 param policyAssignmentId = '<policyAssignmentId>'
 // Non-required parameters
 param assignmentScopeValidation = 'Default'
