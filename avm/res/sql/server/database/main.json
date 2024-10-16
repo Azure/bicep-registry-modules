@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "1692971524161973439"
+      "templateHash": "2532099399760155788"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database.",
@@ -475,6 +475,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Whether or not this database is zone redundant, which means the replicas of this database will be spread across multiple availability zones."
+          }
+        },
+        "diagnosticSettings": {
+          "$ref": "#/definitions/diagnosticSettingType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The diagnostic settings of the service."
           }
         }
       },
