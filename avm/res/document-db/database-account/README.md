@@ -342,7 +342,18 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             paths: [
               '/id'
             ]
-            uniqueKeyPolicyKeys: '<uniqueKeyPolicyKeys>'
+            uniqueKeyPolicyKeys: [
+              {
+                paths: [
+                  '/firstName'
+                ]
+              }
+              {
+                paths: [
+                  '/lastName'
+                ]
+              }
+            ]
           }
         ]
         name: 'database-001'
@@ -381,7 +392,18 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               "paths": [
                 "/id"
               ],
-              "uniqueKeyPolicyKeys": "<uniqueKeyPolicyKeys>"
+              "uniqueKeyPolicyKeys": [
+                {
+                  "paths": [
+                    "/firstName"
+                  ]
+                },
+                {
+                  "paths": [
+                    "/lastName"
+                  ]
+                }
+              ]
             }
           ],
           "name": "database-001"
@@ -414,7 +436,18 @@ param sqlDatabases = [
         paths: [
           '/id'
         ]
-        uniqueKeyPolicyKeys: '<uniqueKeyPolicyKeys>'
+        uniqueKeyPolicyKeys: [
+          {
+            paths: [
+              '/firstName'
+            ]
+          }
+          {
+            paths: [
+              '/lastName'
+            ]
+          }
+        ]
       }
     ]
     name: 'database-001'
