@@ -4709,12 +4709,8 @@ Array of containers to deploy in the SQL database.
 | [`kind`](#parameter-sqldatabasescontainerskind) | string | Default to Hash. Indicates the kind of algorithm used for partitioning. |
 | [`throughput`](#parameter-sqldatabasescontainersthroughput) | int | Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
 | [`uniqueKeyPolicyConfiguration`](#parameter-sqldatabasescontainersuniquekeypolicyconfiguration) | array | The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
+| [`uniqueKeyPolicyKeys`](#parameter-sqldatabasescontainersuniquekeypolicykeys) | array | [DEPRECATED] The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
 | [`version`](#parameter-sqldatabasescontainersversion) | int | Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition. |
-
-**[DEPRECATED] Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 
 ### Parameter: `sqlDatabases.containers.name`
 
@@ -4841,6 +4837,26 @@ The unique key policy configuration containing a list of unique keys that enforc
 | [`paths`](#parameter-sqldatabasescontainersuniquekeypolicyconfigurationpaths) | array | List of paths must be unique for each document in the Azure Cosmos DB service. |
 
 ### Parameter: `sqlDatabases.containers.uniqueKeyPolicyConfiguration.paths`
+
+List of paths must be unique for each document in the Azure Cosmos DB service.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `sqlDatabases.containers.uniqueKeyPolicyKeys`
+
+[DEPRECATED] The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`paths`](#parameter-sqldatabasescontainersuniquekeypolicykeyspaths) | array | List of paths must be unique for each document in the Azure Cosmos DB service. |
+
+### Parameter: `sqlDatabases.containers.uniqueKeyPolicyKeys.paths`
 
 List of paths must be unique for each document in the Azure Cosmos DB service.
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "2241526490837897704"
+      "templateHash": "11104146859899324097"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -693,7 +693,7 @@
                 },
                 "nullable": true,
                 "metadata": {
-                  "description": "[DEPRECATED] Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
+                  "description": "Optional. [DEPRECATED] The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
                 }
               },
               "uniqueKeyPolicyConfiguration": {
@@ -1407,7 +1407,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "11163894206700796492"
+              "templateHash": "3932969652942494875"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account.",
@@ -1543,7 +1543,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.30.23.60470",
-                      "templateHash": "5204043925029630655"
+                      "templateHash": "9333480034420366070"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
@@ -1642,7 +1642,7 @@
                       "type": "array",
                       "defaultValue": [],
                       "metadata": {
-                        "description": "[DEPRECATED] Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
+                        "description": "Optional. [DEPRECATED] The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
                       }
                     },
                     "kind": {
