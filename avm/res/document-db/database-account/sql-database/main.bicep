@@ -64,6 +64,7 @@ module container 'container/main.bicep' = [
         ? -1
         : container.?throughput
       uniqueKeyPolicyConfiguration: container.?uniqueKeyPolicyConfiguration
+      uniqueKeyPolicyKeys: container.?uniqueKeyPolicyKeys
     }
   }
 ]

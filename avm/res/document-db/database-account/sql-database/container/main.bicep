@@ -43,6 +43,11 @@ param indexingPolicy object = {}
 @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
 param uniqueKeyPolicyConfiguration array = []
 
+// This should be deprecated in next major release to be compliant with PSRule linter.
+@description('Optional. [DEPRECATED] The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
+#disable-next-line secure-secrets-in-params
+param uniqueKeyPolicyKeys array = []
+
 @description('Optional. Default to Hash. Indicates the kind of algorithm used for partitioning.')
 @allowed([
   'Hash'
@@ -66,9 +71,9 @@ var containerResourceParams = union(
       kind: kind
       version: kind == 'MultiHash' ? 2 : version
     }
-    uniqueKeyPolicy: !empty(uniqueKeyPolicyConfiguration)
+    uniqueKeyPolicy: !empty(uniqueKeyPolicyConfiguration) || !empty(uniqueKeyPolicyKeys)
       ? {
-          uniqueKeys: uniqueKeyPolicyConfiguration
+          uniqueKeys: union(uniqueKeyPolicyConfiguration, uniqueKeyPolicyKeys)
         }
       : null
   },

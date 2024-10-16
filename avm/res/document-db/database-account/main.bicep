@@ -882,6 +882,12 @@ type sqlDatabaseType = {
     @description('Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.')
     throughput: int?
 
+    @description('Optional. [DEPRECATED] The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
+    uniqueKeyPolicyKeys: {
+      @description('Required. List of paths must be unique for each document in the Azure Cosmos DB service.')
+      paths: string[]
+    }[]?
+
     @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
     uniqueKeyPolicyConfiguration: {
       @description('Required. List of paths must be unique for each document in the Azure Cosmos DB service.')
