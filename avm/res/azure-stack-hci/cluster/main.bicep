@@ -257,91 +257,123 @@ output location string = cluster.location
 //   Definitions   //
 // =============== //
 
+@export()
 type networkIntent = {
   @description('Required. The names of the network adapters to include in the intent.')
   adapter: string[]
+
   @description('Required. The name of the network intent.')
   name: string
+
   @description('Required. Specify whether to override the adapter property. Use false by default.')
   overrideAdapterProperty: bool
+
   @description('Required. The adapter property overrides for the network intent.')
   adapterPropertyOverrides: {
     @description('Required. The jumboPacket configuration for the network adapters.')
     jumboPacket: string
-    @description('Required. The networkDirect configuration for the network adapters. Allowed values: "Enabled", "Disabled".')
-    networkDirect: string
+
+    @description('Required. The networkDirect configuration for the network adapters.')
+    networkDirect: ('Enabled' | 'Disabled')
+
     @description('Required. The networkDirectTechnology configuration for the network adapters. Allowed values: "RoCEv2", "iWARP".')
     networkDirectTechnology: string
   }
+
   @description('Required. Specify whether to override the qosPolicy property. Use false by default.')
   overrideQosPolicy: bool
+
   @description('Required. The qosPolicy overrides for the network intent.')
   qosPolicyOverrides: {
     @description('Required. The bandwidthPercentage for the network intent. Recommend 50.')
     bandwidthPercentage_SMB: string
+
     @description('Required. Recommend 7.')
     priorityValue8021Action_Cluster: string
+
     @description('Required. Recommend 3.')
     priorityValue8021Action_SMB: string
   }
+
   @description('Required. Specify whether to override the virtualSwitchConfiguration property. Use false by default.')
   overrideVirtualSwitchConfiguration: bool
+
   @description('Required. The virtualSwitchConfiguration overrides for the network intent.')
   virtualSwitchConfigurationOverrides: {
-    @description('Required. The enableIov configuration for the network intent. Allowed values: "True", "False".')
-    enableIov: string
-    @description('Required. The loadBalancingAlgorithm configuration for the network intent. Allowed values: "Dynamic", "HyperVPort", "IPHash".')
-    loadBalancingAlgorithm: string
+    @description('Required. The enableIov configuration for the network intent')
+    enableIov: bool
+
+    @description('Required. The loadBalancingAlgorithm configuration for the network intent.')
+    loadBalancingAlgorithm: ('Dynamic' | 'HyperVPort' | 'IPHash')
   }
-  @description('Required. The traffic types for the network intent. Allowed values: "Compute", "Management", "Storage".')
-  trafficType: string[]
+
+  @description('Required. The traffic types for the network intent.')
+  trafficType: ('Compute' | 'Management' | 'Storage')[]
 }
 
 // define custom type for storage adapter IP info for 3-node switchless deployments
+@export()
 type storageAdapterIPInfoType = {
   @description('Required. The HCI node name.')
   physicalNode: string
+
   @description('Required. The IPv4 address for the storage adapter.')
   ipv4Address: string
+
   @description('Required. The subnet mask for the storage adapter.')
   subnetMask: string
 }
 
 // define custom type for storage network objects
+@export()
 type storageNetworksType = {
   @description('Required. The name of the storage adapter.')
   adapterName: string
+
   @description('Required. The VLAN for the storage adapter.')
   vlan: string
+
   @description('Optional. The storage adapter IP information for 3-node switchless or manual config deployments.')
   storageAdapterIPInfo: storageAdapterIPInfoType[]? // optional for non-switchless deployments
 }
+@export()
 type storageNetworksArrayType = storageNetworksType[]
 
 // cluster security configuration settings
+@export()
 type securityConfigurationType = {
   @description('Required. Enable/Disable HVCI protection.')
   hvciProtection: bool
+
   @description('Required. Enable/Disable DRTM protection.')
   drtmProtection: bool
+
   @description('Required. Enable/Disable Drift Control enforcement.')
   driftControlEnforced: bool
+
   @description('Required. Enable/Disable Credential Guard enforcement.')
   credentialGuardEnforced: bool
+
   @description('Required. Enable/Disable SMB signing enforcement.')
   smbSigningEnforced: bool
+
   @description('Required. Enable/Disable SMB cluster encryption.')
   smbClusterEncryption: bool
+
   @description('Required. Enable/Disable Side Channel Mitigation enforcement.')
   sideChannelMitigationEnforced: bool
+
   @description('Required. Enable/Disable BitLocker protection for boot volume.')
   bitlockerBootVolume: bool
+
   @description('Required. Enable/Disable BitLocker protection for data volumes.')
   bitlockerDataVolumes: bool
+
   @description('Required. Enable/Disable WDAC enforcement.')
   wdacEnforced: bool
 }
 
+@export()
 type roleAssignmentType = {
   @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
   name: string?
