@@ -253,7 +253,11 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     name: 'dddamin001'
     // Non-required parameters
     location: '<location>'
-    sqlDatabases: []
+    sqlDatabases: [
+      {
+        name: 'empty-database'
+      }
+    ]
   }
 }
 ```
@@ -279,7 +283,11 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "<location>"
     },
     "sqlDatabases": {
-      "value": []
+      "value": [
+        {
+          "name": "empty-database"
+        }
+      ]
     }
   }
 }
@@ -299,7 +307,11 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 param name = 'dddamin001'
 // Non-required parameters
 param location = '<location>'
-param sqlDatabases = []
+param sqlDatabases = [
+  {
+    name: 'empty-database'
+  }
+]
 ```
 
 </details>

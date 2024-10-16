@@ -44,7 +44,11 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: enforcedLocation
       name: '${namePrefix}${serviceShort}001'
-      sqlDatabases: []
+      sqlDatabases: [
+        {
+          name: 'empty-database'
+        }
+      ]
     }
   }
 ]
