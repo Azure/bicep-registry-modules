@@ -17,8 +17,9 @@ param serviceShort string = 'dddaumr'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+// The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'eastus2'
 
 // ============ //
 // Dependencies //
@@ -26,9 +27,9 @@ param resourceLocation string = deployment().location
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
+    location: enforcedLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }
@@ -39,7 +40,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 // ============== //
@@ -48,10 +49,10 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     automaticFailover: false
-    location: resourceLocation
+    location: enforcedLocation
     backupPolicyType: 'Periodic'
     backupIntervalInMinutes: 300
     backupStorageRedundancy: 'Zone'
@@ -62,7 +63,7 @@ module testDeployment '../../../main.bicep' = {
       {
         failoverPriority: 0
         isZoneRedundant: true
-        locationName: resourceLocation
+        locationName: enforcedLocation
       }
       {
         failoverPriority: 1
