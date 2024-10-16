@@ -6,7 +6,7 @@
 /avm/ptn/aca-lza/hosting-environment/ @Azure/avm-ptn-acalza-hostingenvironment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/ai-platform/baseline/ @Azure/avm-ptn-aiplatform-baseline-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/authorization/policy-assignment/ @Azure/avm-ptn-authorization-policyassignment-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/ptn/authorization/policy-exemption/ @Azure/avm-ptn-authorization-policyexemption-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/authorization/policy-exemption/ @Azure/avm-ptn-authorization-policy-exemption-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/authorization/resource-role-assignment/ @Azure/avm-ptn-authorization-resourceroleassignment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/authorization/role-assignment/ @Azure/avm-ptn-authorization-roleassignment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 #/avm/ptn/avd-lza/insights/ @Azure/avm-ptn-avd-lza-insights-module-owners-bicep @Azure/avm-module-reviewers-bicep
