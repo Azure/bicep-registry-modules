@@ -22,7 +22,6 @@ on:
         type: string
         description: "Default location overwrite (e.g., eastus)"
         required: false
-        default: 'westeurope'
   push:
     branches:
       - main
