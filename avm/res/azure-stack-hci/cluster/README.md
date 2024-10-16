@@ -746,12 +746,12 @@ The virtualSwitchConfiguration overrides for the network intent.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableIov`](#parameter-networkintentsvirtualswitchconfigurationoverridesenableiov) | bool | The enableIov configuration for the network intent |
+| [`enableIov`](#parameter-networkintentsvirtualswitchconfigurationoverridesenableiov) | bool | The enableIov configuration for the network intent. |
 | [`loadBalancingAlgorithm`](#parameter-networkintentsvirtualswitchconfigurationoverridesloadbalancingalgorithm) | string | The loadBalancingAlgorithm configuration for the network intent. |
 
 ### Parameter: `networkIntents.virtualSwitchConfigurationOverrides.enableIov`
 
-The enableIov configuration for the network intent
+The enableIov configuration for the network intent.
 
 - Required: Yes
 - Type: bool

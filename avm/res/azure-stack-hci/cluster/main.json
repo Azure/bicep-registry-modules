@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "10344293108601439009"
+      "templateHash": "15022001966855094976"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.",
@@ -111,7 +111,7 @@
             "enableIov": {
               "type": "bool",
               "metadata": {
-                "description": "Required. The enableIov configuration for the network intent"
+                "description": "Required. The enableIov configuration for the network intent."
               }
             },
             "loadBalancingAlgorithm": {
