@@ -79,9 +79,6 @@ module hciDependencies 'dependencies.bicep' = {
 
 module testDeployment '../../../main.bicep' = [
   for deploymentOperation in deploymentOperations: {
-    dependsOn: [
-      hciDependencies
-    ]
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-cluster${deploymentOperation}-${serviceShort}'
     scope: resourceGroup
     params: {
@@ -104,5 +101,8 @@ module testDeployment '../../../main.bicep' = [
       storageNetworks: hciDependencies.outputs.storageNetworks
       subnetMask: hciDependencies.outputs.subnetMask
     }
+    dependsOn: (deploymentOperation == 'Deploy' && contains(deploymentOperations, 'Validate'))
+      ? ['deploymentSettings-Validate', 'hciDependencies']
+      : ['hciDependencies']
   }
 ]

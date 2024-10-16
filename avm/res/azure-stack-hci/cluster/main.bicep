@@ -223,6 +223,9 @@ module deploymentSetting 'deployment-settings/main.bicep' = [
       streamingDataClient: streamingDataClient
       subnetMask: subnetMask
     }
+    dependsOn: (deploymentOperation == 'Deploy' && contains(sortedDeploymentOperations, 'Validate'))
+      ? ['deploymentSettings-Validate']
+      : []
   }
 ]
 
