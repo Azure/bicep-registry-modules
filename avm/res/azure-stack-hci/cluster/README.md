@@ -626,7 +626,7 @@ The adapter property overrides for the network intent.
 | :-- | :-- | :-- |
 | [`jumboPacket`](#parameter-networkintentsadapterpropertyoverridesjumbopacket) | string | The jumboPacket configuration for the network adapters. |
 | [`networkDirect`](#parameter-networkintentsadapterpropertyoverridesnetworkdirect) | string | The networkDirect configuration for the network adapters. |
-| [`networkDirectTechnology`](#parameter-networkintentsadapterpropertyoverridesnetworkdirecttechnology) | string | The networkDirectTechnology configuration for the network adapters. Allowed values: "RoCEv2", "iWARP". |
+| [`networkDirectTechnology`](#parameter-networkintentsadapterpropertyoverridesnetworkdirecttechnology) | string | The networkDirectTechnology configuration for the network adapters. |
 
 ### Parameter: `networkIntents.adapterPropertyOverrides.jumboPacket`
 
@@ -651,10 +651,17 @@ The networkDirect configuration for the network adapters.
 
 ### Parameter: `networkIntents.adapterPropertyOverrides.networkDirectTechnology`
 
-The networkDirectTechnology configuration for the network adapters. Allowed values: "RoCEv2", "iWARP".
+The networkDirectTechnology configuration for the network adapters.
 
 - Required: Yes
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'iWARP'
+    'RoCEv2'
+  ]
+  ```
 
 ### Parameter: `networkIntents.name`
 
@@ -758,8 +765,8 @@ The enableIov configuration for the network intent.
 - Allowed:
   ```Bicep
   [
-    'False'
-    'True'
+    'false'
+    'true'
   ]
   ```
 
