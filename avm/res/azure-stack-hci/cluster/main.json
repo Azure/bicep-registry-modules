@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "13299255301563208667"
+      "templateHash": "10344293108601439009"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.",
@@ -48,8 +48,12 @@
             },
             "networkDirect": {
               "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
               "metadata": {
-                "description": "Required. The networkDirect configuration for the network adapters. Allowed values: \"Enabled\", \"Disabled\"."
+                "description": "Required. The networkDirect configuration for the network adapters."
               }
             },
             "networkDirectTechnology": {
@@ -105,15 +109,20 @@
           "type": "object",
           "properties": {
             "enableIov": {
-              "type": "string",
+              "type": "bool",
               "metadata": {
-                "description": "Required. The enableIov configuration for the network intent. Allowed values: \"True\", \"False\"."
+                "description": "Required. The enableIov configuration for the network intent"
               }
             },
             "loadBalancingAlgorithm": {
               "type": "string",
+              "allowedValues": [
+                "Dynamic",
+                "HyperVPort",
+                "IPHash"
+              ],
               "metadata": {
-                "description": "Required. The loadBalancingAlgorithm configuration for the network intent. Allowed values: \"Dynamic\", \"HyperVPort\", \"IPHash\"."
+                "description": "Required. The loadBalancingAlgorithm configuration for the network intent."
               }
             }
           },
@@ -123,13 +132,18 @@
         },
         "trafficType": {
           "type": "array",
-          "items": {
-            "type": "string"
-          },
+          "allowedValues": [
+            "Compute",
+            "Management",
+            "Storage"
+          ],
           "metadata": {
-            "description": "Required. The traffic types for the network intent. Allowed values: \"Compute\", \"Management\", \"Storage\"."
+            "description": "Required. The traffic types for the network intent."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "storageAdapterIPInfoType": {
@@ -153,6 +167,9 @@
             "description": "Required. The subnet mask for the storage adapter."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "storageNetworksType": {
@@ -180,12 +197,18 @@
             "description": "Optional. The storage adapter IP information for 3-node switchless or manual config deployments."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "storageNetworksArrayType": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/storageNetworksType"
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "securityConfigurationType": {
@@ -251,6 +274,9 @@
             "description": "Required. Enable/Disable WDAC enforcement."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "roleAssignmentType": {
@@ -324,7 +350,10 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     }
   },
   "parameters": {

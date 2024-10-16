@@ -603,7 +603,7 @@ An array of Network ATC Network Intent objects that define the Compute, Manageme
 | [`overrideQosPolicy`](#parameter-networkintentsoverrideqospolicy) | bool | Specify whether to override the qosPolicy property. Use false by default. |
 | [`overrideVirtualSwitchConfiguration`](#parameter-networkintentsoverridevirtualswitchconfiguration) | bool | Specify whether to override the virtualSwitchConfiguration property. Use false by default. |
 | [`qosPolicyOverrides`](#parameter-networkintentsqospolicyoverrides) | object | The qosPolicy overrides for the network intent. |
-| [`trafficType`](#parameter-networkintentstraffictype) | array | The traffic types for the network intent. Allowed values: "Compute", "Management", "Storage". |
+| [`trafficType`](#parameter-networkintentstraffictype) | array | The traffic types for the network intent. |
 | [`virtualSwitchConfigurationOverrides`](#parameter-networkintentsvirtualswitchconfigurationoverrides) | object | The virtualSwitchConfiguration overrides for the network intent. |
 
 ### Parameter: `networkIntents.adapter`
@@ -625,7 +625,7 @@ The adapter property overrides for the network intent.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`jumboPacket`](#parameter-networkintentsadapterpropertyoverridesjumbopacket) | string | The jumboPacket configuration for the network adapters. |
-| [`networkDirect`](#parameter-networkintentsadapterpropertyoverridesnetworkdirect) | string | The networkDirect configuration for the network adapters. Allowed values: "Enabled", "Disabled". |
+| [`networkDirect`](#parameter-networkintentsadapterpropertyoverridesnetworkdirect) | string | The networkDirect configuration for the network adapters. |
 | [`networkDirectTechnology`](#parameter-networkintentsadapterpropertyoverridesnetworkdirecttechnology) | string | The networkDirectTechnology configuration for the network adapters. Allowed values: "RoCEv2", "iWARP". |
 
 ### Parameter: `networkIntents.adapterPropertyOverrides.jumboPacket`
@@ -637,10 +637,17 @@ The jumboPacket configuration for the network adapters.
 
 ### Parameter: `networkIntents.adapterPropertyOverrides.networkDirect`
 
-The networkDirect configuration for the network adapters. Allowed values: "Enabled", "Disabled".
+The networkDirect configuration for the network adapters.
 
 - Required: Yes
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `networkIntents.adapterPropertyOverrides.networkDirectTechnology`
 
@@ -715,10 +722,18 @@ Recommend 3.
 
 ### Parameter: `networkIntents.trafficType`
 
-The traffic types for the network intent. Allowed values: "Compute", "Management", "Storage".
+The traffic types for the network intent.
 
 - Required: Yes
 - Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Compute'
+    'Management'
+    'Storage'
+  ]
+  ```
 
 ### Parameter: `networkIntents.virtualSwitchConfigurationOverrides`
 
@@ -731,22 +746,30 @@ The virtualSwitchConfiguration overrides for the network intent.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableIov`](#parameter-networkintentsvirtualswitchconfigurationoverridesenableiov) | string | The enableIov configuration for the network intent. Allowed values: "True", "False". |
-| [`loadBalancingAlgorithm`](#parameter-networkintentsvirtualswitchconfigurationoverridesloadbalancingalgorithm) | string | The loadBalancingAlgorithm configuration for the network intent. Allowed values: "Dynamic", "HyperVPort", "IPHash". |
+| [`enableIov`](#parameter-networkintentsvirtualswitchconfigurationoverridesenableiov) | bool | The enableIov configuration for the network intent |
+| [`loadBalancingAlgorithm`](#parameter-networkintentsvirtualswitchconfigurationoverridesloadbalancingalgorithm) | string | The loadBalancingAlgorithm configuration for the network intent. |
 
 ### Parameter: `networkIntents.virtualSwitchConfigurationOverrides.enableIov`
 
-The enableIov configuration for the network intent. Allowed values: "True", "False".
+The enableIov configuration for the network intent
 
 - Required: Yes
-- Type: string
+- Type: bool
 
 ### Parameter: `networkIntents.virtualSwitchConfigurationOverrides.loadBalancingAlgorithm`
 
-The loadBalancingAlgorithm configuration for the network intent. Allowed values: "Dynamic", "HyperVPort", "IPHash".
+The loadBalancingAlgorithm configuration for the network intent.
 
 - Required: Yes
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dynamic'
+    'HyperVPort'
+    'IPHash'
+  ]
+  ```
 
 ### Parameter: `startingIPAddress`
 
