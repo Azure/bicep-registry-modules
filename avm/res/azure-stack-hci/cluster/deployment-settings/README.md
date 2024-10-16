@@ -20,7 +20,6 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`clusterName`](#parameter-clustername) | string | The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. |
 | [`clusterNodeNames`](#parameter-clusternodenames) | array | Names of the cluster node Arc Machine resources. These are the name of the Arc Machine resources created when the new HCI nodes were Arc initialized. Example: [hci-node-1, hci-node-2]. |
 | [`clusterWitnessStorageAccountName`](#parameter-clusterwitnessstorageaccountname) | string | The name of the storage account to be used as the witness for the HCI Windows Failover Cluster. |
 | [`customLocationName`](#parameter-customlocationname) | string | The name of the Custom Location associated with the Arc Resource Bridge for this cluster. This value should reflect the physical location and identifier of the HCI cluster. Example: cl-hci-den-clu01. |
@@ -39,6 +38,12 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 | [`storageNetworks`](#parameter-storagenetworks) | array | An array of JSON objects that define the storage network configuration for the cluster. Each object should contain the adapterName, VLAN properties, and (optionally) IP configurations. |
 | [`subnetMask`](#parameter-subnetmask) | string | The subnet mask pf the Management Network for the HCI cluster - ex: 255.255.252.0. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`clusterName`](#parameter-clustername) | string | The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. Required if the template is used in a standalone deployment. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -51,13 +56,6 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 | [`storageConfigurationMode`](#parameter-storageconfigurationmode) | string | The storage volume configuration mode. See documentation for details. |
 | [`streamingDataClient`](#parameter-streamingdataclient) | bool | The metrics data for deploying a HCI cluster. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-
-### Parameter: `clusterName`
-
-The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `clusterNodeNames`
 
@@ -182,6 +180,13 @@ An array of JSON objects that define the storage network configuration for the c
 ### Parameter: `subnetMask`
 
 The subnet mask pf the Management Network for the HCI cluster - ex: 255.255.252.0.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `clusterName`
+
+The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
