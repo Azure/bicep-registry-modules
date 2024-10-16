@@ -194,6 +194,7 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   tags: tags
 }
 
+@batchSize(1)
 module deploymentSetting 'deployment-settings/main.bicep' = [
   for deploymentOperation in sortedDeploymentOperations: {
     name: 'deploymentSettings-${deploymentOperation}'
@@ -223,9 +224,6 @@ module deploymentSetting 'deployment-settings/main.bicep' = [
       streamingDataClient: streamingDataClient
       subnetMask: subnetMask
     }
-    dependsOn: (deploymentOperation == 'Deploy' && contains(sortedDeploymentOperations, 'Validate'))
-      ? ['deploymentSettings-Validate']
-      : []
   }
 ]
 

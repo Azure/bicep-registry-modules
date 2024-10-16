@@ -77,11 +77,9 @@ module hciDependencies 'dependencies.bicep' = {
   }
 }
 
+@batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for deploymentOperation in deploymentOperations: {
-    dependsOn: (deploymentOperation == 'Deploy' && contains(deploymentOperations, 'Validate'))
-      ? ['deploymentSettings-Validate', 'hciDependencies']
-      : ['hciDependencies']
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-cluster${deploymentOperation}-${serviceShort}'
     scope: resourceGroup
     params: {

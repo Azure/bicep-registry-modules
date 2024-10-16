@@ -77,6 +77,7 @@ module hciDependencies 'dependencies.bicep' = {
   }
 }
 
+@batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for deploymentOperation in deploymentOperations: {
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-cluster${deploymentOperation}-${serviceShort}'
@@ -101,8 +102,5 @@ module testDeployment '../../../main.bicep' = [
       storageNetworks: hciDependencies.outputs.storageNetworks
       subnetMask: hciDependencies.outputs.subnetMask
     }
-    dependsOn: (deploymentOperation == 'Deploy' && contains(deploymentOperations, 'Validate'))
-      ? ['deploymentSettings-Validate', 'hciDependencies']
-      : ['hciDependencies']
   }
 ]
