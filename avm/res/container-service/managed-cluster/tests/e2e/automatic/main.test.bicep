@@ -39,6 +39,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      autoNodeOsUpgradeProfileUpgradeChannel: 'NodeImage'
       disableLocalAccounts: true
       enableKeyvaultSecretsProvider: true
       enableSecretRotation: true

@@ -63,6 +63,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     // Non-required parameters
+    autoNodeOsUpgradeProfileUpgradeChannel: 'NodeImage'
     disableLocalAccounts: true
     enableKeyvaultSecretsProvider: true
     enableSecretRotation: true
@@ -133,6 +134,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     },
     // Non-required parameters
+    "autoNodeOsUpgradeProfileUpgradeChannel": {
+      "value": "NodeImage"
+    },
     "disableLocalAccounts": {
       "value": true
     },
@@ -225,6 +229,7 @@ param primaryAgentPoolProfiles = [
   }
 ]
 // Non-required parameters
+param autoNodeOsUpgradeProfileUpgradeChannel = 'NodeImage'
 param disableLocalAccounts = true
 param enableKeyvaultSecretsProvider = true
 param enableSecretRotation = true
