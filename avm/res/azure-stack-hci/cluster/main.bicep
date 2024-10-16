@@ -304,7 +304,7 @@ type networkIntent = {
   @description('Required. The virtualSwitchConfiguration overrides for the network intent.')
   virtualSwitchConfigurationOverrides: {
     @description('Required. The enableIov configuration for the network intent.')
-    enableIov: bool
+    enableIov: ('True' | 'False')
 
     @description('Required. The loadBalancingAlgorithm configuration for the network intent.')
     loadBalancingAlgorithm: ('Dynamic' | 'HyperVPort' | 'IPHash')
