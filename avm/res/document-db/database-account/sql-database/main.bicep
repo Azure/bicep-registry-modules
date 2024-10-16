@@ -63,7 +63,7 @@ module container 'container/main.bicep' = [
       throughput: (throughput != null || autoscaleSettingsMaxThroughput != null) && container.?throughput == null
         ? -1
         : container.?throughput
-      uniqueKeyPolicyKeys: container.?uniqueKeyPolicyKeys
+      uniqueKeyPolicyConfiguration: container.?uniqueKeyPolicyConfiguration
     }
   }
 ]

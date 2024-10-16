@@ -2254,7 +2254,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               '/myPartitionKey'
             ]
             throughput: 600
-            uniqueKeyPolicyKeys: [
+            uniqueKeyPolicyConfiguration: [
               {
                 paths: [
                   '/firstName'
@@ -2342,7 +2342,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             paths: [
               '/myPartitionKey'
             ]
-            uniqueKeyPolicyKeys: [
+            uniqueKeyPolicyConfiguration: [
               {
                 paths: [
                   '/firstName'
@@ -2541,7 +2541,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
                 "/myPartitionKey"
               ],
               "throughput": 600,
-              "uniqueKeyPolicyKeys": [
+              "uniqueKeyPolicyConfiguration": [
                 {
                   "paths": [
                     "/firstName"
@@ -2629,7 +2629,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               "paths": [
                 "/myPartitionKey"
               ],
-              "uniqueKeyPolicyKeys": [
+              "uniqueKeyPolicyConfiguration": [
                 {
                   "paths": [
                     "/firstName"
@@ -2818,7 +2818,7 @@ param sqlDatabases = [
           '/myPartitionKey'
         ]
         throughput: 600
-        uniqueKeyPolicyKeys: [
+        uniqueKeyPolicyConfiguration: [
           {
             paths: [
               '/firstName'
@@ -2906,7 +2906,7 @@ param sqlDatabases = [
         paths: [
           '/myPartitionKey'
         ]
-        uniqueKeyPolicyKeys: [
+        uniqueKeyPolicyConfiguration: [
           {
             paths: [
               '/firstName'
@@ -4563,7 +4563,7 @@ Array of containers to deploy in the SQL database.
 | [`indexingPolicy`](#parameter-sqldatabasescontainersindexingpolicy) | object | Indexing policy of the container. |
 | [`kind`](#parameter-sqldatabasescontainerskind) | string | Default to Hash. Indicates the kind of algorithm used for partitioning. |
 | [`throughput`](#parameter-sqldatabasescontainersthroughput) | int | Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
-| [`uniqueKeyPolicyKeys`](#parameter-sqldatabasescontainersuniquekeypolicykeys) | array | The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
+| [`uniqueKeyPolicyConfiguration`](#parameter-sqldatabasescontainersuniquekeypolicyconfiguration) | array | The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
 | [`version`](#parameter-sqldatabasescontainersversion) | int | Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition. |
 
 ### Parameter: `sqlDatabases.containers.name`
@@ -4677,7 +4677,7 @@ Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMa
 - Required: No
 - Type: int
 
-### Parameter: `sqlDatabases.containers.uniqueKeyPolicyKeys`
+### Parameter: `sqlDatabases.containers.uniqueKeyPolicyConfiguration`
 
 The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.
 
@@ -4688,9 +4688,9 @@ The unique key policy configuration containing a list of unique keys that enforc
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`paths`](#parameter-sqldatabasescontainersuniquekeypolicykeyspaths) | array | List of paths must be unique for each document in the Azure Cosmos DB service. |
+| [`paths`](#parameter-sqldatabasescontainersuniquekeypolicyconfigurationpaths) | array | List of paths must be unique for each document in the Azure Cosmos DB service. |
 
-### Parameter: `sqlDatabases.containers.uniqueKeyPolicyKeys.paths`
+### Parameter: `sqlDatabases.containers.uniqueKeyPolicyConfiguration.paths`
 
 List of paths must be unique for each document in the Azure Cosmos DB service.
 

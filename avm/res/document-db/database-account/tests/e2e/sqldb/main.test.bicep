@@ -64,7 +64,7 @@ module testDeployment '../../../main.bicep' = {
               mode: 'LastWriterWins'
             }
             defaultTtl: 1000
-            uniqueKeyPolicyKeys: [
+            uniqueKeyPolicyConfiguration: [
               {
                 paths: [
                   '/firstName'
@@ -153,7 +153,7 @@ module testDeployment '../../../main.bicep' = {
             paths: [
               '/myPartitionKey'
             ]
-            uniqueKeyPolicyKeys: [
+            uniqueKeyPolicyConfiguration: [
               {
                 paths: [
                   '/firstName'

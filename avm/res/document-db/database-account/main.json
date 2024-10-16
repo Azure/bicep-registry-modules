@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "12168901446113005942"
+      "templateHash": "17129687921825505008"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -675,7 +675,7 @@
                   "description": "Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used."
                 }
               },
-              "uniqueKeyPolicyKeys": {
+              "uniqueKeyPolicyConfiguration": {
                 "type": "array",
                 "items": {
                   "type": "object",
@@ -1386,7 +1386,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "10274585444287252550"
+              "templateHash": "5122244682910260308"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account.",
@@ -1507,8 +1507,8 @@
                     "value": "[tryGet(parameters('containers')[copyIndex()], 'paths')]"
                   },
                   "throughput": "[if(and(or(not(equals(parameters('throughput'), null())), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), equals(tryGet(parameters('containers')[copyIndex()], 'throughput'), null())), createObject('value', -1), createObject('value', tryGet(parameters('containers')[copyIndex()], 'throughput')))]",
-                  "uniqueKeyPolicyKeys": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'uniqueKeyPolicyKeys')]"
+                  "uniqueKeyPolicyConfiguration": {
+                    "value": "[tryGet(parameters('containers')[copyIndex()], 'uniqueKeyPolicyConfiguration')]"
                   }
                 },
                 "template": {
@@ -1519,7 +1519,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.30.23.60470",
-                      "templateHash": "165408036680070575"
+                      "templateHash": "17643907829514354402"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
@@ -1607,7 +1607,7 @@
                         "description": "Optional. Indexing policy of the container."
                       }
                     },
-                    "uniqueKeyPolicyKeys": {
+                    "uniqueKeyPolicyConfiguration": {
                       "type": "array",
                       "defaultValue": [],
                       "metadata": {
@@ -1645,7 +1645,7 @@
                         "input": "[if(startsWith(parameters('paths')[copyIndex('partitionKeyPaths')], '/'), parameters('paths')[copyIndex('partitionKeyPaths')], format('/{0}', parameters('paths')[copyIndex('partitionKeyPaths')]))]"
                       }
                     ],
-                    "containerResourceParams": "[union(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null()), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()))]"
+                    "containerResourceParams": "[union(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null()), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyConfiguration'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyConfiguration')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()))]"
                   },
                   "resources": {
                     "databaseAccount::sqlDatabase": {

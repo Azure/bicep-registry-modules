@@ -41,7 +41,7 @@ param paths string[]
 param indexingPolicy object = {}
 
 @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
-param uniqueKeyPolicyKeys array = []
+param uniqueKeyPolicyConfiguration array = []
 
 @description('Optional. Default to Hash. Indicates the kind of algorithm used for partitioning.')
 @allowed([
@@ -66,9 +66,9 @@ var containerResourceParams = union(
       kind: kind
       version: kind == 'MultiHash' ? 2 : version
     }
-    uniqueKeyPolicy: !empty(uniqueKeyPolicyKeys)
+    uniqueKeyPolicy: !empty(uniqueKeyPolicyConfiguration)
       ? {
-          uniqueKeys: uniqueKeyPolicyKeys
+          uniqueKeys: uniqueKeyPolicyConfiguration
         }
       : null
   },
