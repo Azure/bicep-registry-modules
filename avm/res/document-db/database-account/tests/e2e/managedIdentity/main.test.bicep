@@ -17,9 +17,8 @@ param serviceShort string = 'dddaumi'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-// Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'eastasia'
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
 
 // ============ //
 // Dependencies //
@@ -27,9 +26,9 @@ var enforcedLocation = 'eastasia'
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: enforcedLocation
+    location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
@@ -39,7 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceLocation
 }
 
 // ============== //
@@ -48,9 +47,9 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    location: enforcedLocation
+    location: resourceLocation
     name: '${namePrefix}-user-mi'
     managedIdentities: {
       systemAssigned: true

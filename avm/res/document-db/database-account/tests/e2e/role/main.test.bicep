@@ -19,23 +19,23 @@ param namePrefix string = '#_namePrefix_#'
 
 // Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'eastus2'
+var resourceLocation = 'eastus2'
 
 // ============== //
 // General resources
 // ============== //
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     appName: 'dep-${namePrefix}-app-${serviceShort}'
     appServicePlanName: 'dep-${namePrefix}-asp-${serviceShort}'
-    location: enforcedLocation
+    location: resourceLocation
   }
 }
 
@@ -45,9 +45,9 @@ module nestedDependencies 'dependencies.bicep' = {
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-role-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-role-${serviceShort}'
   params: {
-    location: enforcedLocation
+    location: resourceLocation
     name: '${namePrefix}-role-ref'
     sqlRoleAssignmentsPrincipalIds: [
       nestedDependencies.outputs.identityPrincipalId

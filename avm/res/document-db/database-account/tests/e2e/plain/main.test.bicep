@@ -17,16 +17,15 @@ param serviceShort string = 'dddapln'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-// Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'eastasia'
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
 
 // ============== //
 // General resources
 // ============== //
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceLocation
 }
 
 // ============== //
@@ -37,10 +36,10 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: enforcedLocation
+      location: resourceLocation
       disableLocalAuth: true
       backupPolicyType: 'Continuous'
       disableKeyBasedMetadataWriteAccess: true
@@ -50,7 +49,7 @@ module testDeployment '../../../main.bicep' = [
         {
           failoverPriority: 0
           isZoneRedundant: false
-          locationName: enforcedLocation
+          locationName: resourceLocation
         }
       ]
       sqlDatabases: [
