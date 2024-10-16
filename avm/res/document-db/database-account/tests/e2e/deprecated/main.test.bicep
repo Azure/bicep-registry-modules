@@ -36,7 +36,15 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // This is required to pass PSRule linter
 #disable-next-line no-hardcoded-secure-param
 @secure()
-param uniqueKeyPolicyKey string = '/firstName'
+param uniqueKeyPolicy object = {
+  value: [
+    {
+      paths: [
+        '/firstName'
+      ]
+    }
+  ]
+}
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
@@ -55,13 +63,7 @@ module testDeployment '../../../main.bicep' = [
               paths: [
                 '/id'
               ]
-              uniqueKeyPolicyKeys: [
-                {
-                  paths: [
-                    uniqueKeyPolicyKey
-                  ]
-                }
-              ]
+              uniqueKeyPolicyKeys: uniqueKeyPolicy.value
             }
           ]
         }
