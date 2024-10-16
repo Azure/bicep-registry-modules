@@ -57,6 +57,7 @@ param resourceGroupName string = ''
 
 @sys.description('Optional. Location for all Resources.')
 param location string = deployment().location
+
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 

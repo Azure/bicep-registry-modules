@@ -25,12 +25,11 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/authorization/policy-exemption:<version>`.
 
 - [Policy Exemptions (Management Group scope)](#example-1-policy-exemptions-management-group-scope)
-- [Policy Assignments (Management Group scope)](#example-2-policy-assignments-management-group-scope)
-- [Policy Assignments (Resource Group)](#example-3-policy-assignments-resource-group)
-- [Policy Assignments (Resource Group)](#example-4-policy-assignments-resource-group)
-- [Policy Assignments (Subscription)](#example-5-policy-assignments-subscription)
-- [Policy Assignments (Subscription)](#example-6-policy-assignments-subscription)
-- [Waf-Aligned](#example-7-waf-aligned)
+- [Policy Exemptions (Management Group scope)](#example-2-policy-exemptions-management-group-scope)
+- [Policy Exemption (Resource Group)](#example-3-policy-exemption-resource-group)
+- [Policy Exemption (Resource Group)](#example-4-policy-exemption-resource-group)
+- [Policy Exemption (Subscription)](#example-5-policy-exemption-subscription)
+- [Policy Exemption (Subscription)](#example-6-policy-exemption-subscription)
 
 ### Example 1: _Policy Exemptions (Management Group scope)_
 
@@ -98,9 +97,9 @@ param policyAssignmentId = '<policyAssignmentId>'
 </details>
 <p>
 
-### Example 2: _Policy Assignments (Management Group scope)_
+### Example 2: _Policy Exemptions (Management Group scope)_
 
-This module deploys a Policy Assignment at a Management Group scope using common parameters.
+This module deploys a Policy Exemption at a Management Group scope using common parameters.
 
 
 <details>
@@ -115,6 +114,37 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
     exemptionCategory: 'Mitigated'
     name: 'apemgmax001'
     policyAssignmentId: '<policyAssignmentId>'
+    // Non-required parameters
+    assignmentScopeValidation: 'Default'
+    description: '[Description] Policy Exemption at the management group scope'
+    displayName: '[DisplayName] Policy Exemption at the management group scope'
+    enableTelemetry: true
+    expiresOn: '2024-11-14T20:46:13Z'
+    location: '<location>'
+    managementGroupId: 'alz-landingzones'
+    metadata: {
+      assignedBy: 'Bicep'
+      category: 'Security'
+    }
+    resourceSelectors: [
+      {
+        name: 'resourceSelector-test'
+        selectors: [
+          {
+            in: [
+              'Microsoft.Compute/virtualMachines'
+            ]
+            kind: 'resourceType'
+          }
+          {
+            in: [
+              'westeurope'
+            ]
+            kind: 'resourceLocation'
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -140,6 +170,55 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
     },
     "policyAssignmentId": {
       "value": "<policyAssignmentId>"
+    },
+    // Non-required parameters
+    "assignmentScopeValidation": {
+      "value": "Default"
+    },
+    "description": {
+      "value": "[Description] Policy Exemption at the management group scope"
+    },
+    "displayName": {
+      "value": "[DisplayName] Policy Exemption at the management group scope"
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "expiresOn": {
+      "value": "2024-11-14T20:46:13Z"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managementGroupId": {
+      "value": "alz-landingzones"
+    },
+    "metadata": {
+      "value": {
+        "assignedBy": "Bicep",
+        "category": "Security"
+      }
+    },
+    "resourceSelectors": {
+      "value": [
+        {
+          "name": "resourceSelector-test",
+          "selectors": [
+            {
+              "in": [
+                "Microsoft.Compute/virtualMachines"
+              ],
+              "kind": "resourceType"
+            },
+            {
+              "in": [
+                "westeurope"
+              ],
+              "kind": "resourceLocation"
+            }
+          ]
+        }
+      ]
     }
   }
 }
@@ -159,146 +238,45 @@ using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
 param exemptionCategory = 'Mitigated'
 param name = 'apemgmax001'
 param policyAssignmentId = '<policyAssignmentId>'
-```
-
-</details>
-<p>
-
-### Example 3: _Policy Assignments (Resource Group)_
-
-This module deploys a Policy Assignment at a Resource Group scope using minimal parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
-  params: {
-    // Required parameters
-    exemptionCategory: 'Mitigated'
-    name: 'apergmin001'
-    policyAssignmentId: '<policyAssignmentId>'
-  }
+// Non-required parameters
+param assignmentScopeValidation = 'Default'
+param description = '[Description] Policy Exemption at the management group scope'
+param displayName = '[DisplayName] Policy Exemption at the management group scope'
+param enableTelemetry = true
+param expiresOn = '2024-11-14T20:46:13Z'
+param location = '<location>'
+param managementGroupId = 'alz-landingzones'
+param metadata = {
+  assignedBy: 'Bicep'
+  category: 'Security'
 }
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "exemptionCategory": {
-      "value": "Mitigated"
-    },
-    "name": {
-      "value": "apergmin001"
-    },
-    "policyAssignmentId": {
-      "value": "<policyAssignmentId>"
-    }
+param resourceSelectors = [
+  {
+    name: 'resourceSelector-test'
+    selectors: [
+      {
+        in: [
+          'Microsoft.Compute/virtualMachines'
+        ]
+        kind: 'resourceType'
+      }
+      {
+        in: [
+          'westeurope'
+        ]
+        kind: 'resourceLocation'
+      }
+    ]
   }
-}
+]
 ```
 
 </details>
 <p>
 
-<details>
+### Example 3: _Policy Exemption (Resource Group)_
 
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
-
-// Required parameters
-param exemptionCategory = 'Mitigated'
-param name = 'apergmin001'
-param policyAssignmentId = '<policyAssignmentId>'
-```
-
-</details>
-<p>
-
-### Example 4: _Policy Assignments (Resource Group)_
-
-This module deploys a Policy Assignment at a Resource Group scope using common parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
-  params: {
-    // Required parameters
-    exemptionCategory: 'Mitigated'
-    name: 'apergmax001'
-    policyAssignmentId: '<policyAssignmentId>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "exemptionCategory": {
-      "value": "Mitigated"
-    },
-    "name": {
-      "value": "apergmax001"
-    },
-    "policyAssignmentId": {
-      "value": "<policyAssignmentId>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
-
-// Required parameters
-param exemptionCategory = 'Mitigated'
-param name = 'apergmax001'
-param policyAssignmentId = '<policyAssignmentId>'
-```
-
-</details>
-<p>
-
-### Example 5: _Policy Assignments (Subscription)_
-
-This module deploys a Policy Assignment at a Subscription scope using common parameters.
+This module deploys a Policy Exemption at a Resource Group scope using minimal parameters.
 
 
 <details>
@@ -313,6 +291,9 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
     exemptionCategory: 'Mitigated'
     name: 'apesubmin001'
     policyAssignmentId: '<policyAssignmentId>'
+    // Non-required parameters
+    resourceGroupName: '<resourceGroupName>'
+    subscriptionId: '<subscriptionId>'
   }
 }
 ```
@@ -338,6 +319,13 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
     },
     "policyAssignmentId": {
       "value": "<policyAssignmentId>"
+    },
+    // Non-required parameters
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
+    },
+    "subscriptionId": {
+      "value": "<subscriptionId>"
     }
   }
 }
@@ -357,14 +345,273 @@ using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
 param exemptionCategory = 'Mitigated'
 param name = 'apesubmin001'
 param policyAssignmentId = '<policyAssignmentId>'
+// Non-required parameters
+param resourceGroupName = '<resourceGroupName>'
+param subscriptionId = '<subscriptionId>'
 ```
 
 </details>
 <p>
 
-### Example 6: _Policy Assignments (Subscription)_
+### Example 4: _Policy Exemption (Resource Group)_
 
-This module deploys a Policy Assignment at a Subscription scope using common parameters.
+This module deploys a Policy Exemption at a Resource Group scope using common parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
+  name: 'policyExemptionDeployment'
+  params: {
+    // Required parameters
+    exemptionCategory: 'Mitigated'
+    name: 'apesubmin001'
+    policyAssignmentId: '<policyAssignmentId>'
+    // Non-required parameters
+    assignmentScopeValidation: 'Default'
+    description: '[Description] Policy Exemption at the management group scope'
+    displayName: '[DisplayName] Policy Exemption at the management group scope'
+    enableTelemetry: true
+    expiresOn: '2024-11-14T20:46:13Z'
+    location: '<location>'
+    metadata: {
+      assignedBy: 'Bicep'
+      category: 'Security'
+    }
+    resourceGroupName: '<resourceGroupName>'
+    resourceSelectors: [
+      {
+        name: 'resourceSelector-test'
+        selectors: [
+          {
+            in: [
+              'Microsoft.Compute/virtualMachines'
+            ]
+            kind: 'resourceType'
+          }
+          {
+            in: [
+              'westeurope'
+            ]
+            kind: 'resourceLocation'
+          }
+        ]
+      }
+    ]
+    subscriptionId: '<subscriptionId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "exemptionCategory": {
+      "value": "Mitigated"
+    },
+    "name": {
+      "value": "apesubmin001"
+    },
+    "policyAssignmentId": {
+      "value": "<policyAssignmentId>"
+    },
+    // Non-required parameters
+    "assignmentScopeValidation": {
+      "value": "Default"
+    },
+    "description": {
+      "value": "[Description] Policy Exemption at the management group scope"
+    },
+    "displayName": {
+      "value": "[DisplayName] Policy Exemption at the management group scope"
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "expiresOn": {
+      "value": "2024-11-14T20:46:13Z"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "metadata": {
+      "value": {
+        "assignedBy": "Bicep",
+        "category": "Security"
+      }
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
+    },
+    "resourceSelectors": {
+      "value": [
+        {
+          "name": "resourceSelector-test",
+          "selectors": [
+            {
+              "in": [
+                "Microsoft.Compute/virtualMachines"
+              ],
+              "kind": "resourceType"
+            },
+            {
+              "in": [
+                "westeurope"
+              ],
+              "kind": "resourceLocation"
+            }
+          ]
+        }
+      ]
+    },
+    "subscriptionId": {
+      "value": "<subscriptionId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
+
+// Required parameters
+param exemptionCategory = 'Mitigated'
+param name = 'apesubmin001'
+param policyAssignmentId = '<policyAssignmentId>'
+// Non-required parameters
+param assignmentScopeValidation = 'Default'
+param description = '[Description] Policy Exemption at the management group scope'
+param displayName = '[DisplayName] Policy Exemption at the management group scope'
+param enableTelemetry = true
+param expiresOn = '2024-11-14T20:46:13Z'
+param location = '<location>'
+param metadata = {
+  assignedBy: 'Bicep'
+  category: 'Security'
+}
+param resourceGroupName = '<resourceGroupName>'
+param resourceSelectors = [
+  {
+    name: 'resourceSelector-test'
+    selectors: [
+      {
+        in: [
+          'Microsoft.Compute/virtualMachines'
+        ]
+        kind: 'resourceType'
+      }
+      {
+        in: [
+          'westeurope'
+        ]
+        kind: 'resourceLocation'
+      }
+    ]
+  }
+]
+param subscriptionId = '<subscriptionId>'
+```
+
+</details>
+<p>
+
+### Example 5: _Policy Exemption (Subscription)_
+
+This module deploys a Policy Exemption at a Subscription scope using minimal parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
+  name: 'policyExemptionDeployment'
+  params: {
+    // Required parameters
+    exemptionCategory: 'Mitigated'
+    name: 'apesubmin001'
+    policyAssignmentId: '<policyAssignmentId>'
+    // Non-required parameters
+    subscriptionId: '<subscriptionId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "exemptionCategory": {
+      "value": "Mitigated"
+    },
+    "name": {
+      "value": "apesubmin001"
+    },
+    "policyAssignmentId": {
+      "value": "<policyAssignmentId>"
+    },
+    // Non-required parameters
+    "subscriptionId": {
+      "value": "<subscriptionId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
+
+// Required parameters
+param exemptionCategory = 'Mitigated'
+param name = 'apesubmin001'
+param policyAssignmentId = '<policyAssignmentId>'
+// Non-required parameters
+param subscriptionId = '<subscriptionId>'
+```
+
+</details>
+<p>
+
+### Example 6: _Policy Exemption (Subscription)_
+
+This module deploys a Policy Exemption at a Subscription scope using common parameters.
 
 
 <details>
@@ -379,6 +626,37 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
     exemptionCategory: 'Mitigated'
     name: 'apesubmax001'
     policyAssignmentId: '<policyAssignmentId>'
+    // Non-required parameters
+    assignmentScopeValidation: 'Default'
+    description: '[Description] Policy Exemption at the management group scope'
+    displayName: '[DisplayName] Policy Exemption at the management group scope'
+    enableTelemetry: true
+    expiresOn: '2024-11-14T20:46:13Z'
+    location: '<location>'
+    metadata: {
+      assignedBy: 'Bicep'
+      category: 'Security'
+    }
+    resourceSelectors: [
+      {
+        name: 'resourceSelector-test'
+        selectors: [
+          {
+            in: [
+              'Microsoft.Compute/virtualMachines'
+            ]
+            kind: 'resourceType'
+          }
+          {
+            in: [
+              'westeurope'
+            ]
+            kind: 'resourceLocation'
+          }
+        ]
+      }
+    ]
+    subscriptionId: '<subscriptionId>'
   }
 }
 ```
@@ -404,6 +682,55 @@ module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<versio
     },
     "policyAssignmentId": {
       "value": "<policyAssignmentId>"
+    },
+    // Non-required parameters
+    "assignmentScopeValidation": {
+      "value": "Default"
+    },
+    "description": {
+      "value": "[Description] Policy Exemption at the management group scope"
+    },
+    "displayName": {
+      "value": "[DisplayName] Policy Exemption at the management group scope"
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "expiresOn": {
+      "value": "2024-11-14T20:46:13Z"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "metadata": {
+      "value": {
+        "assignedBy": "Bicep",
+        "category": "Security"
+      }
+    },
+    "resourceSelectors": {
+      "value": [
+        {
+          "name": "resourceSelector-test",
+          "selectors": [
+            {
+              "in": [
+                "Microsoft.Compute/virtualMachines"
+              ],
+              "kind": "resourceType"
+            },
+            {
+              "in": [
+                "westeurope"
+              ],
+              "kind": "resourceLocation"
+            }
+          ]
+        }
+      ]
+    },
+    "subscriptionId": {
+      "value": "<subscriptionId>"
     }
   }
 }
@@ -423,64 +750,37 @@ using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
 param exemptionCategory = 'Mitigated'
 param name = 'apesubmax001'
 param policyAssignmentId = '<policyAssignmentId>'
-```
-
-</details>
-<p>
-
-### Example 7: _Waf-Aligned_
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
-  params: {
-    // Required parameters
-    name: 'apewaf001'
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "apewaf001"
-    },
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
-
-// Required parameters
-param name = 'apewaf001'
+// Non-required parameters
+param assignmentScopeValidation = 'Default'
+param description = '[Description] Policy Exemption at the management group scope'
+param displayName = '[DisplayName] Policy Exemption at the management group scope'
+param enableTelemetry = true
+param expiresOn = '2024-11-14T20:46:13Z'
 param location = '<location>'
+param metadata = {
+  assignedBy: 'Bicep'
+  category: 'Security'
+}
+param resourceSelectors = [
+  {
+    name: 'resourceSelector-test'
+    selectors: [
+      {
+        in: [
+          'Microsoft.Compute/virtualMachines'
+        ]
+        kind: 'resourceType'
+      }
+      {
+        in: [
+          'westeurope'
+        ]
+        kind: 'resourceLocation'
+      }
+    ]
+  }
+]
+param subscriptionId = '<subscriptionId>'
 ```
 
 </details>

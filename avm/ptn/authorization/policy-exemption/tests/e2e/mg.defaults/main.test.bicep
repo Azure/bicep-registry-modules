@@ -6,14 +6,8 @@ metadata description = 'This module deploys a Policy Exemption at a Management G
 // Parameters //
 // ========== //
 
-@description('Required. The name of the policy assignment to deploy.')
-param policyAssignmentName string = 'audit-vm-managed-disks'
-
 @description('Required. The policy definition ID to assign the policy to.')
 param policyDefinitionID string = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
-
-@description('Optional. The display name of the policy.')
-param policyDisplayName string = 'Audit VM managed disks'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'apemgmin'
@@ -28,13 +22,13 @@ param resourceLocation string = deployment().location
 // Test Execution //
 // ============== //
 
-resource policyAssignment 'Microsoft.Authorization/policyAssignments@2023-04-01' = {
-  name: policyAssignmentName
+resource policyAssignment 'Microsoft.Authorization/policyAssignments@2024-05-01' = {
+  name: 'audit-vm-managed-disks'
   scope: managementGroup()
   properties: {
     policyDefinitionId: policyDefinitionID
-    description: 'Policy assignment to resource group scope created with Bicep file'
-    displayName: policyDisplayName
+    description: ' 	This policy audits VMs that do not use managed disks'
+    displayName: 'Audit VMs that do not use managed disks'
     enforcementMode: 'DoNotEnforce'
     nonComplianceMessages: [
       {
