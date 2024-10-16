@@ -34,7 +34,7 @@ param tags object?
 param enableTelemetry bool = true
 
 @description('Optional. The databases to create in the server.')
-param databases array = []
+param databases databasePropertyType[] = []
 
 @description('Optional. The Elastic Pools to create in the server.')
 param elasticPools elasticPoolPropertyType[] = []
@@ -250,36 +250,53 @@ module server_databases 'database/main.bicep' = [
   for (database, index) in databases: {
     name: '${uniqueString(deployment().name, location)}-Sql-DB-${index}'
     params: {
-      name: database.name
+      // properties derived from parent server resource, no override allowed
       serverName: server.name
-      skuTier: database.?skuTier ?? 'GeneralPurpose'
-      skuName: database.?skuName ?? 'GP_Gen5_2'
-      skuCapacity: database.?skuCapacity
-      skuFamily: database.?skuFamily ?? ''
-      skuSize: database.?skuSize ?? ''
-      collation: database.?collation ?? 'SQL_Latin1_General_CP1_CI_AS'
-      maxSizeBytes: database.?maxSizeBytes ?? 34359738368
-      autoPauseDelay: database.?autoPauseDelay ?? 0
-      diagnosticSettings: database.?diagnosticSettings
-      isLedgerOn: database.?isLedgerOn ?? false
       location: location
-      licenseType: database.?licenseType ?? ''
-      maintenanceConfigurationId: database.?maintenanceConfigurationId
-      minCapacity: database.?minCapacity ?? ''
-      highAvailabilityReplicaCount: database.?highAvailabilityReplicaCount ?? 0
-      readScale: database.?readScale ?? 'Disabled'
-      requestedBackupStorageRedundancy: database.?requestedBackupStorageRedundancy ?? ''
-      sampleName: database.?sampleName ?? ''
+
+      // properties from the database object. If not provided, parent server resource properties will be used
       tags: database.?tags ?? tags
-      zoneRedundant: database.?zoneRedundant ?? true
-      elasticPoolId: database.?elasticPoolId ?? ''
-      backupShortTermRetentionPolicy: database.?backupShortTermRetentionPolicy ?? {}
-      backupLongTermRetentionPolicy: database.?backupLongTermRetentionPolicy ?? {}
-      createMode: database.?createMode ?? 'Default'
-      sourceDatabaseResourceId: database.?sourceDatabaseResourceId ?? ''
-      sourceDatabaseDeletionDate: database.?sourceDatabaseDeletionDate ?? ''
-      recoveryServicesRecoveryPointResourceId: database.?recoveryServicesRecoveryPointResourceId ?? ''
-      restorePointInTime: database.?restorePointInTime ?? ''
+
+      // properties from the databse object. If not provided, defaults specified in the child resource will be used
+      name: database.name
+      sku: database.?sku
+      autoPauseDelay: database.?autoPauseDelay
+      availabilityZone: database.?availabilityZone
+      catalogCollation: database.?catalogCollation
+      collation: database.?collation
+      createMode: database.?createMode
+      elasticPoolId: database.?elasticPoolId
+      encryptionProtector: database.?encryptionProtector
+      encryptionProtectorAutoRotation: database.?encryptionProtectorAutoRotation
+      federatedClientId: database.?federatedClientId
+      freeLimitExhaustionBehavior: database.?freeLimitExhaustionBehavior
+      highAvailabilityReplicaCount: database.?highAvailabilityReplicaCount
+      isLedgerOn: database.?isLedgerOn
+      licenseType: database.?licenseType
+      longTermRetentionBackupResourceId: database.?longTermRetentionBackupResourceId
+      maintenanceConfigurationId: database.?maintenanceConfigurationId
+      manualCutover: database.?manualCutover
+      maxSizeBytes: database.?maxSizeBytes
+      minCapacity: database.?minCapacity
+      performCutover: database.?performCutover
+      preferredEnclaveType: database.?preferredEnclaveType
+      readScale: database.?readScale
+      recoverableDatabaseId: database.?recoverableDatabaseId
+      recoveryServicesRecoveryPointId: database.?recoveryServicesRecoveryPointId
+      requestedBackupStorageRedundancy: database.?requestedBackupStorageRedundancy
+      restorableDroppedDatabaseId: database.?restorableDroppedDatabaseId
+      restorePointInTime: database.?restorePointInTime
+      secondaryType: database.?secondaryType
+      sourceDatabaseDeletionDate: database.?sourceDatabaseDeletionDate
+      sourceDatabaseId: database.?sourceDatabaseId
+      sourceResourceId: database.?sourceResourceId
+      useFreeLimit: database.?useFreeLimit
+      zoneRedundant: database.?zoneRedundant
+
+      // diagnosticSettings: database.?diagnosticSettings
+      // sampleName: database.?sampleName ?? ''
+      // backupShortTermRetentionPolicy: database.?backupShortTermRetentionPolicy ?? {}
+      // backupLongTermRetentionPolicy: database.?backupLongTermRetentionPolicy ?? {}
     }
     dependsOn: [
       server_elasticPools // Enables us to add databases to existing elastic pools
@@ -735,6 +752,7 @@ type ServerExternalAdministratorType = {
 }
 
 import { elasticPoolPropertyType } from 'elastic-pool/main.bicep'
+import { databasePropertyType } from 'database/main.bicep'
 
 import { secretSetType } from 'modules/keyVaultExport.bicep'
 type secretsOutputType = {

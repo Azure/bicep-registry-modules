@@ -2047,6 +2047,423 @@ The databases to create in the server.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-databasesname) | string | The name of the Elastic Pool. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoPauseDelay`](#parameter-databasesautopausedelay) | int | Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled |
+| [`availabilityZone`](#parameter-databasesavailabilityzone) | string | Specifies the availability zone the database is pinned to. |
+| [`catalogCollation`](#parameter-databasescatalogcollation) | string | Collation of the metadata catalog. |
+| [`collation`](#parameter-databasescollation) | string | The collation of the database. |
+| [`createMode`](#parameter-databasescreatemode) | string | Specifies the mode of database creation. |
+| [`elasticPoolId`](#parameter-databaseselasticpoolid) | string | The resource identifier of the elastic pool containing this database. |
+| [`encryptionProtector`](#parameter-databasesencryptionprotector) | string | The azure key vault URI of the database if it's configured with per Database Customer Managed Keys. |
+| [`encryptionProtectorAutoRotation`](#parameter-databasesencryptionprotectorautorotation) | bool | The flag to enable or disable auto rotation of database encryption protector AKV key. |
+| [`federatedClientId`](#parameter-databasesfederatedclientid) | string | The Client id used for cross tenant per database CMK scenario. |
+| [`freeLimitExhaustionBehavior`](#parameter-databasesfreelimitexhaustionbehavior) | string | Specifies the behavior when monthly free limits are exhausted for the free database. |
+| [`highAvailabilityReplicaCount`](#parameter-databaseshighavailabilityreplicacount) | int | The number of secondary replicas associated with the database that are used to provide high availability. Not applicable to a Hyperscale database within an elastic pool. |
+| [`isLedgerOn`](#parameter-databasesisledgeron) | bool | Whether or not this database is a ledger database, which means all tables in the database are ledger tables. |
+| [`licenseType`](#parameter-databaseslicensetype) | string | The license type to apply for this database. |
+| [`longTermRetentionBackupResourceId`](#parameter-databaseslongtermretentionbackupresourceid) | string | The resource identifier of the long term retention backup associated with create operation of this database. |
+| [`maintenanceConfigurationId`](#parameter-databasesmaintenanceconfigurationid) | string | Maintenance configuration id assigned to the database. This configuration defines the period when the maintenance updates will occur. |
+| [`manualCutover`](#parameter-databasesmanualcutover) | bool | Whether or not customer controlled manual cutover needs to be done during Update Database operation to Hyperscale tier. |
+| [`maxSizeBytes`](#parameter-databasesmaxsizebytes) | int | The max size of the database expressed in bytes. |
+| [`minCapacity`](#parameter-databasesmincapacity) | string | Minimal capacity that database will always have allocated, if not paused. |
+| [`performCutover`](#parameter-databasesperformcutover) | bool | To trigger customer controlled manual cutover during the wait state while Scaling operation is in progress. |
+| [`preferredEnclaveType`](#parameter-databasespreferredenclavetype) | string | Type of enclave requested on the database. |
+| [`readScale`](#parameter-databasesreadscale) | string | The state of read-only routing. If enabled, connections that have application intent set to readonly in their connection string may be routed to a readonly secondary replica in the same region. Not applicable to a Hyperscale database within an elastic pool. |
+| [`recoverableDatabaseId`](#parameter-databasesrecoverabledatabaseid) | string | The resource identifier of the recoverable database associated with create operation of this database. |
+| [`recoveryServicesRecoveryPointId`](#parameter-databasesrecoveryservicesrecoverypointid) | string | The resource identifier of the recovery point associated with create operation of this database. |
+| [`requestedBackupStorageRedundancy`](#parameter-databasesrequestedbackupstorageredundancy) | string | The storage account type to be used to store backups for this database. |
+| [`restorableDroppedDatabaseId`](#parameter-databasesrestorabledroppeddatabaseid) | string | The resource identifier of the restorable dropped database associated with create operation of this database. |
+| [`restorePointInTime`](#parameter-databasesrestorepointintime) | string | Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database. |
+| [`sampleName`](#parameter-databasessamplename) | string | The name of the sample schema to apply when creating this database. |
+| [`secondaryType`](#parameter-databasessecondarytype) | string | The secondary type of the database if it is a secondary. |
+| [`sku`](#parameter-databasessku) | object | The database SKU. |
+| [`sourceDatabaseDeletionDate`](#parameter-databasessourcedatabasedeletiondate) | string | Specifies the time that the database was deleted. |
+| [`sourceDatabaseId`](#parameter-databasessourcedatabaseid) | string | The resource identifier of the source database associated with create operation of this database. |
+| [`sourceResourceId`](#parameter-databasessourceresourceid) | string | The resource identifier of the source associated with the create operation of this database. |
+| [`tags`](#parameter-databasestags) | object | Tags of the resource. |
+| [`useFreeLimit`](#parameter-databasesusefreelimit) | bool | Whether or not the database uses free monthly limits. Allowed on one database in a subscription. |
+| [`zoneRedundant`](#parameter-databaseszoneredundant) | bool | Whether or not this database is zone redundant, which means the replicas of this database will be spread across multiple availability zones. |
+
+### Parameter: `databases.name`
+
+The name of the Elastic Pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `databases.autoPauseDelay`
+
+Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled
+
+- Required: No
+- Type: int
+
+### Parameter: `databases.availabilityZone`
+
+Specifies the availability zone the database is pinned to.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '1'
+    '2'
+    '3'
+    'NoPreference'
+  ]
+  ```
+
+### Parameter: `databases.catalogCollation`
+
+Collation of the metadata catalog.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.collation`
+
+The collation of the database.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.createMode`
+
+Specifies the mode of database creation.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Copy'
+    'Default'
+    'OnlineSecondary'
+    'PointInTimeRestore'
+    'Recovery'
+    'Restore'
+    'RestoreExternalBackup'
+    'RestoreExternalBackupSecondary'
+    'RestoreLongTermRetentionBackup'
+    'Secondary'
+  ]
+  ```
+
+### Parameter: `databases.elasticPoolId`
+
+The resource identifier of the elastic pool containing this database.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.encryptionProtector`
+
+The azure key vault URI of the database if it's configured with per Database Customer Managed Keys.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.encryptionProtectorAutoRotation`
+
+The flag to enable or disable auto rotation of database encryption protector AKV key.
+
+- Required: No
+- Type: bool
+
+### Parameter: `databases.federatedClientId`
+
+The Client id used for cross tenant per database CMK scenario.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.freeLimitExhaustionBehavior`
+
+Specifies the behavior when monthly free limits are exhausted for the free database.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AutoPause'
+    'BillOverUsage'
+  ]
+  ```
+
+### Parameter: `databases.highAvailabilityReplicaCount`
+
+The number of secondary replicas associated with the database that are used to provide high availability. Not applicable to a Hyperscale database within an elastic pool.
+
+- Required: No
+- Type: int
+
+### Parameter: `databases.isLedgerOn`
+
+Whether or not this database is a ledger database, which means all tables in the database are ledger tables.
+
+- Required: No
+- Type: bool
+
+### Parameter: `databases.licenseType`
+
+The license type to apply for this database.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'BasePrice'
+    'LicenseIncluded'
+  ]
+  ```
+
+### Parameter: `databases.longTermRetentionBackupResourceId`
+
+The resource identifier of the long term retention backup associated with create operation of this database.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.maintenanceConfigurationId`
+
+Maintenance configuration id assigned to the database. This configuration defines the period when the maintenance updates will occur.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.manualCutover`
+
+Whether or not customer controlled manual cutover needs to be done during Update Database operation to Hyperscale tier.
+
+- Required: No
+- Type: bool
+
+### Parameter: `databases.maxSizeBytes`
+
+The max size of the database expressed in bytes.
+
+- Required: No
+- Type: int
+
+### Parameter: `databases.minCapacity`
+
+Minimal capacity that database will always have allocated, if not paused.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.performCutover`
+
+To trigger customer controlled manual cutover during the wait state while Scaling operation is in progress.
+
+- Required: No
+- Type: bool
+
+### Parameter: `databases.preferredEnclaveType`
+
+Type of enclave requested on the database.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Default'
+    'VBS'
+  ]
+  ```
+
+### Parameter: `databases.readScale`
+
+The state of read-only routing. If enabled, connections that have application intent set to readonly in their connection string may be routed to a readonly secondary replica in the same region. Not applicable to a Hyperscale database within an elastic pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `databases.recoverableDatabaseId`
+
+The resource identifier of the recoverable database associated with create operation of this database.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.recoveryServicesRecoveryPointId`
+
+The resource identifier of the recovery point associated with create operation of this database.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.requestedBackupStorageRedundancy`
+
+The storage account type to be used to store backups for this database.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Geo'
+    'GeoZone'
+    'Local'
+    'Zone'
+  ]
+  ```
+
+### Parameter: `databases.restorableDroppedDatabaseId`
+
+The resource identifier of the restorable dropped database associated with create operation of this database.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.restorePointInTime`
+
+Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.sampleName`
+
+The name of the sample schema to apply when creating this database.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.secondaryType`
+
+The secondary type of the database if it is a secondary.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Geo'
+    'Named'
+    'Standby'
+  ]
+  ```
+
+### Parameter: `databases.sku`
+
+The database SKU.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-databasesskuname) | string | The name of the SKU, typically, a letter + Number code, e.g. P3. |
+| [`tier`](#parameter-databasesskutier) | string | The tier or edition of the particular SKU, e.g. Basic, Premium. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`capacity`](#parameter-databasesskucapacity) | int | The capacity of the particular SKU. |
+| [`family`](#parameter-databasesskufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
+| [`size`](#parameter-databasesskusize) | string | Size of the particular SKU |
+
+### Parameter: `databases.sku.name`
+
+The name of the SKU, typically, a letter + Number code, e.g. P3.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `databases.sku.tier`
+
+The tier or edition of the particular SKU, e.g. Basic, Premium.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.sku.capacity`
+
+The capacity of the particular SKU.
+
+- Required: No
+- Type: int
+
+### Parameter: `databases.sku.family`
+
+If the service has different generations of hardware, for the same SKU, then that can be captured here.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.sku.size`
+
+Size of the particular SKU
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.sourceDatabaseDeletionDate`
+
+Specifies the time that the database was deleted.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.sourceDatabaseId`
+
+The resource identifier of the source database associated with create operation of this database.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.sourceResourceId`
+
+The resource identifier of the source associated with the create operation of this database.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `databases.useFreeLimit`
+
+Whether or not the database uses free monthly limits. Allowed on one database in a subscription.
+
+- Required: No
+- Type: bool
+
+### Parameter: `databases.zoneRedundant`
+
+Whether or not this database is zone redundant, which means the replicas of this database will be spread across multiple availability zones.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `elasticPools`
 
 The Elastic Pools to create in the server.
