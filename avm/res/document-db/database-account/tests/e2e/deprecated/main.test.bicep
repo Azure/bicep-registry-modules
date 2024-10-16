@@ -33,8 +33,8 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // Test Execution //
 // ============== //
 
-#disable-next-line secure-secrets-in-params
 @batchSize(1)
+#disable-next-line secure-secrets-in-params
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup

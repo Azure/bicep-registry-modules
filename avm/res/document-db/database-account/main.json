@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "10869170815631891488"
+      "templateHash": "4890923828944554711"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -1160,7 +1160,11 @@
     },
     "networkRestrictions": {
       "$ref": "#/definitions/networkRestrictionsType",
-      "nullable": true,
+      "defaultValue": {
+        "ipRules": [],
+        "virtualNetworkRules": [],
+        "publicNetworkAccess": "Disabled"
+      },
       "metadata": {
         "description": "Optional. The network configuration of this module."
       }

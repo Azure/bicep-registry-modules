@@ -253,6 +253,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     name: 'dddamin001'
     // Non-required parameters
     location: '<location>'
+    sqlDatabases: []
   }
 }
 ```
@@ -276,6 +277,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "sqlDatabases": {
+      "value": []
     }
   }
 }
@@ -295,6 +299,7 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 param name = 'dddamin001'
 // Non-required parameters
 param location = '<location>'
+param sqlDatabases = []
 ```
 
 </details>
@@ -3959,6 +3964,14 @@ The network configuration of this module.
 
 - Required: No
 - Type: object
+- Default:
+  ```Bicep
+  {
+      ipRules: []
+      publicNetworkAccess: 'Disabled'
+      virtualNetworkRules: []
+  }
+  ```
 
 **Optional parameters**
 

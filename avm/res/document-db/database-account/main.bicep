@@ -147,7 +147,11 @@ param privateEndpoints privateEndpointType
 param secretsExportConfiguration secretsExportConfigurationType?
 
 @description('Optional. The network configuration of this module.')
-param networkRestrictions networkRestrictionsType?
+param networkRestrictions networkRestrictionsType = {
+  ipRules: []
+  virtualNetworkRules: []
+  publicNetworkAccess: 'Disabled'
+}
 
 @allowed([
   'Tls'
