@@ -51,6 +51,7 @@ module testDeployment '../../../main.bicep' = [
                 '/id'
               ]
               throughput: 400
+              #disable-next-line secure-secrets-in-params
               uniqueKeyPolicyKeys: [
                 {
                   paths: [
