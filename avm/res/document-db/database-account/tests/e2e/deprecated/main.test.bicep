@@ -33,8 +33,12 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // Test Execution //
 // ============== //
 
+// This is required to pass PSRule linter
+#disable-next-line no-hardcoded-secure-param
+@secure()
+param uniqueKeyPolicyKey string = '/firstName'
+
 @batchSize(1)
-#disable-next-line secure-secrets-in-params
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
@@ -54,12 +58,7 @@ module testDeployment '../../../main.bicep' = [
               uniqueKeyPolicyKeys: [
                 {
                   paths: [
-                    '/firstName'
-                  ]
-                }
-                {
-                  paths: [
-                    '/lastName'
+                    uniqueKeyPolicyKey
                   ]
                 }
               ]

@@ -345,12 +345,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             uniqueKeyPolicyKeys: [
               {
                 paths: [
-                  '/firstName'
-                ]
-              }
-              {
-                paths: [
-                  '/lastName'
+                  '<uniqueKeyPolicyKey>'
                 ]
               }
             ]
@@ -395,12 +390,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               "uniqueKeyPolicyKeys": [
                 {
                   "paths": [
-                    "/firstName"
-                  ]
-                },
-                {
-                  "paths": [
-                    "/lastName"
+                    "<uniqueKeyPolicyKey>"
                   ]
                 }
               ]
@@ -439,12 +429,7 @@ param sqlDatabases = [
         uniqueKeyPolicyKeys: [
           {
             paths: [
-              '/firstName'
-            ]
-          }
-          {
-            paths: [
-              '/lastName'
+              '<uniqueKeyPolicyKey>'
             ]
           }
         ]
