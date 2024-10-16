@@ -90,7 +90,7 @@ module testDeployment '../../../main.bicep' = [
       clusterNodeNames: hciDependencies.outputs.clusterNodeNames
       clusterWitnessStorageAccountName: hciDependencies.outputs.clusterWitnessStorageAccountName
       defaultGateway: hciDependencies.outputs.defaultGateway
-      deploymentOperations: [deploymentOperation]
+      deploymentOperations: array(deploymentOperation)
       deploymentPrefix: deploymentPrefix
       dnsServers: hciDependencies.outputs.dnsServers
       domainFqdn: hciDependencies.outputs.domainFqdn
