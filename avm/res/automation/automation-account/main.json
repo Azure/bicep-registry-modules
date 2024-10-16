@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "7591291652498617898"
+      "templateHash": "17012028979997047683"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account.",
@@ -68,7 +68,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "../../../utl/types/avm-common-types/main.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
         }
       }
     },
@@ -110,7 +110,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "../../../utl/types/avm-common-types/main.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
         }
       }
     },
@@ -151,7 +151,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "../../../utl/types/avm-common-types/main.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
         }
       }
     },
@@ -186,8 +186,9 @@
         }
       },
       "metadata": {
+        "description": "An AVM-aligned type for a customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "../../../utl/types/avm-common-types/main.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
         }
       }
     },
@@ -198,7 +199,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name of diagnostic setting."
+            "description": "Optional. The name of the diagnostic setting."
           }
         },
         "logCategoriesAndGroups": {
@@ -307,8 +308,9 @@
         }
       },
       "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "../../../utl/types/avm-common-types/main.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
         }
       }
     },
@@ -336,8 +338,9 @@
         }
       },
       "metadata": {
+        "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "../../../utl/types/avm-common-types/main.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
         }
       }
     },
@@ -363,8 +366,9 @@
         }
       },
       "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "../../../utl/types/avm-common-types/main.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
         }
       }
     },
@@ -503,8 +507,9 @@
         }
       },
       "metadata": {
+        "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "../../../utl/types/avm-common-types/main.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
         }
       }
     },
@@ -577,8 +582,9 @@
         }
       },
       "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "../../../utl/types/avm-common-types/main.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
         }
       }
     }
@@ -610,7 +616,10 @@
     },
     "customerManagedKey": {
       "$ref": "#/definitions/customerManagedKeyType",
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The customer managed key definition."
+      }
     },
     "credentials": {
       "type": "array",
@@ -702,29 +711,44 @@
       "items": {
         "$ref": "#/definitions/privateEndpointMultiServiceType"
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
+      }
     },
     "diagnosticSettings": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/diagnosticSettingFullType"
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The diagnostic settings of the service."
+      }
     },
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentityAllType",
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource."
+      }
     },
     "lock": {
       "$ref": "#/definitions/lockType",
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
     },
     "roleAssignments": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/roleAssignmentType"
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
     },
     "tags": {
       "type": "object",
