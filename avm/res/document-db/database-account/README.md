@@ -3087,7 +3087,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   name: 'databaseAccountDeployment'
   params: {
     // Required parameters
-    name: 'dddatablemin001001'
+    name: 'dddatbl001'
     // Non-required parameters
     capabilitiesToAdd: [
       'EnableTable'
@@ -3121,7 +3121,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddatablemin001001"
+      "value": "dddatbl001"
     },
     // Non-required parameters
     "capabilitiesToAdd": {
@@ -3159,7 +3159,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddatablemin001001'
+param name = 'dddatbl001'
 // Non-required parameters
 param capabilitiesToAdd = [
   'EnableTable'
