@@ -49,7 +49,7 @@ param enableFreeTier bool = false
 param enableMultipleWriteLocations bool = false
 
 @description('Optional. Disable write operations on metadata resources (databases, containers, throughput) via account keys.')
-param disableKeyBasedMetadataWriteAccess bool = false
+param disableKeyBasedMetadataWriteAccess bool = true
 
 @minValue(1)
 @maxValue(2147483647)
@@ -149,6 +149,14 @@ param secretsExportConfiguration secretsExportConfigurationType?
 @description('Optional. The network configuration of this module.')
 param networkRestrictions networkRestrictionsType?
 
+@allowed([
+  'Tls'
+  'Tls11'
+  'Tls12'
+])
+@description('Optional. Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later.')
+param minimumTlsVersion string = 'Tls12'
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -243,33 +251,22 @@ var databaseAccountProperties = union(
   {
     databaseAccountOfferType: databaseAccountOfferType
     backupPolicy: backupPolicy
+    minimalTlsVersion: minimumTlsVersion
+    consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
+    enableMultipleWriteLocations: enableMultipleWriteLocations
+    locations: empty(databaseAccount_locations) ? defaultFailoverLocation : databaseAccount_locations
+    ipRules: ipRules
+    virtualNetworkRules: virtualNetworkRules
+    networkAclBypass: networkRestrictions.?networkAclBypass ?? 'AzureServices'
+    publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Disabled'
+    isVirtualNetworkFilterEnabled: !empty(ipRules) || !empty(virtualNetworkRules)
+    capabilities: capabilities
+    enableFreeTier: enableFreeTier
+    enableAutomaticFailover: automaticFailover
+    enableAnalyticalStorage: enableAnalyticalStorage
+    disableLocalAuth: disableLocalAuth
+    disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
   },
-  ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases))
-    ? {
-        // Common properties
-        consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
-        enableMultipleWriteLocations: enableMultipleWriteLocations
-        locations: empty(databaseAccount_locations) ? defaultFailoverLocation : databaseAccount_locations
-
-        ipRules: ipRules
-        virtualNetworkRules: virtualNetworkRules
-        networkAclBypass: networkRestrictions.?networkAclBypass ?? 'AzureServices'
-        publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Enabled'
-        isVirtualNetworkFilterEnabled: !empty(ipRules) || !empty(virtualNetworkRules)
-
-        capabilities: capabilities
-        enableFreeTier: enableFreeTier
-        enableAutomaticFailover: automaticFailover
-        enableAnalyticalStorage: enableAnalyticalStorage
-      }
-    : {}),
-  (!empty(sqlDatabases)
-    ? {
-        // SQLDB properties
-        disableLocalAuth: disableLocalAuth
-        disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
-      }
-    : {}),
   (!empty(mongodbDatabases)
     ? {
         // MongoDb properties
