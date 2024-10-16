@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "6840329240992957872"
+      "templateHash": "7649615845184764158"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -549,7 +549,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Size of the particular SKU"
+            "description": "Optional. Size of the particular SKU."
           }
         },
         "tier": {
@@ -699,19 +699,19 @@
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Auto Pause Delay for per database within pool"
+            "description": "Optional. Auto Pause Delay for per database within pool."
           }
         },
         "maxCapacity": {
           "type": "string",
           "metadata": {
-            "description": "Reqired. The maximum capacity any one database can consume. Examples: '0.5', '2'"
+            "description": "Reqired. The maximum capacity any one database can consume. Examples: '0.5', '2'."
           }
         },
         "minCapacity": {
           "type": "string",
           "metadata": {
-            "description": "Required. The minimum capacity all databases are guaranteed. Examples: '0.5', '1'"
+            "description": "Required. The minimum capacity all databases are guaranteed. Examples: '0.5', '1'."
           }
         }
       },
@@ -763,7 +763,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Size of the particular SKU"
+            "description": "Optional. Size of the particular SKU."
           }
         },
         "tier": {
@@ -808,7 +808,7 @@
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled"
+            "description": "Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled."
           }
         },
         "availabilityZone": {
@@ -1175,7 +1175,7 @@
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Minimal capacity that serverless pool will not shrink below, if not paused"
+            "description": "Optional. Minimal capacity that serverless pool will not shrink below, if not paused."
           }
         },
         "perDatabaseSettings": {
@@ -1361,7 +1361,7 @@
       "minLength": 36,
       "maxLength": 36,
       "metadata": {
-        "description": "Optional. The Client id used for cross tenant CMK scenario"
+        "description": "Optional. The Client id used for cross tenant CMK scenario."
       }
     },
     "keyId": {
@@ -1692,7 +1692,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "2532099399760155788"
+              "templateHash": "4558221869591328265"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database.",
@@ -1846,7 +1846,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Size of the particular SKU"
+                    "description": "Optional. Size of the particular SKU."
                   }
                 },
                 "tier": {
@@ -1889,7 +1889,7 @@
                   "type": "int",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled"
+                    "description": "Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled."
                   }
                 },
                 "availabilityZone": {
@@ -2203,7 +2203,7 @@
               "type": "int",
               "defaultValue": 0,
               "metadata": {
-                "description": "Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled"
+                "description": "Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled."
               }
             },
             "availabilityZone": {
@@ -2942,7 +2942,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "10347822602729915434"
+              "templateHash": "17075205316023541596"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -2956,19 +2956,19 @@
                   "type": "int",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Auto Pause Delay for per database within pool"
+                    "description": "Optional. Auto Pause Delay for per database within pool."
                   }
                 },
                 "maxCapacity": {
                   "type": "string",
                   "metadata": {
-                    "description": "Reqired. The maximum capacity any one database can consume. Examples: '0.5', '2'"
+                    "description": "Reqired. The maximum capacity any one database can consume. Examples: '0.5', '2'."
                   }
                 },
                 "minCapacity": {
                   "type": "string",
                   "metadata": {
-                    "description": "Required. The minimum capacity all databases are guaranteed. Examples: '0.5', '1'"
+                    "description": "Required. The minimum capacity all databases are guaranteed. Examples: '0.5', '1'."
                   }
                 }
               },
@@ -3018,7 +3018,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Size of the particular SKU"
+                    "description": "Optional. Size of the particular SKU."
                   }
                 },
                 "tier": {
@@ -3113,7 +3113,7 @@
                   "type": "int",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Minimal capacity that serverless pool will not shrink below, if not paused"
+                    "description": "Optional. Minimal capacity that serverless pool will not shrink below, if not paused."
                   }
                 },
                 "perDatabaseSettings": {
