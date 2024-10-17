@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "8011778884263076951"
+      "version": "0.30.23.60470",
+      "templateHash": "13951883117687020314"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace.",
@@ -746,6 +746,49 @@
       "metadata": {
         "description": "Optional. The default catalog configuration for the Databricks workspace."
       }
+    },
+    "automaticClusterUpdate": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "Enabled",
+        "Disabled",
+        ""
+      ],
+      "metadata": {
+        "description": "Optional. The value for enabling automatic cluster updates in enhanced security compliance."
+      }
+    },
+    "complianceStandards": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The compliance standards array for the security profile. Should be a list of compliance standards like \"HIPAA\", \"NONE\" or \"PCI_DSS\"."
+      }
+    },
+    "complianceSecurityProfileValue": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "Enabled",
+        "Disabled",
+        ""
+      ],
+      "metadata": {
+        "description": "Optional. The value to Enable or Disable for the compliance security profile."
+      }
+    },
+    "enhancedSecurityMonitoring": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "Enabled",
+        "Disabled",
+        ""
+      ],
+      "metadata": {
+        "description": "Optional. The value for enabling or configuring enhanced security monitoring."
+      }
     }
   },
   "variables": {
@@ -836,7 +879,7 @@
       "sku": {
         "name": "[parameters('skuName')]"
       },
-      "properties": "[union(createObject('managedResourceGroupId', if(not(empty(parameters('managedResourceGroupResourceId'))), parameters('managedResourceGroupResourceId'), format('{0}/resourceGroups/rg-{1}-managed', subscription().id, parameters('name'))), 'parameters', union(createObject('enableNoPublicIp', createObject('value', parameters('disablePublicIp')), 'prepareEncryption', createObject('value', parameters('prepareEncryption')), 'vnetAddressPrefix', createObject('value', parameters('vnetAddressPrefix')), 'requireInfrastructureEncryption', createObject('value', parameters('requireInfrastructureEncryption'))), if(not(empty(parameters('customVirtualNetworkResourceId'))), createObject('customVirtualNetworkId', createObject('value', parameters('customVirtualNetworkResourceId'))), createObject()), if(not(empty(parameters('amlWorkspaceResourceId'))), createObject('amlWorkspaceId', createObject('value', parameters('amlWorkspaceResourceId'))), createObject()), if(not(empty(parameters('customPrivateSubnetName'))), createObject('customPrivateSubnetName', createObject('value', parameters('customPrivateSubnetName'))), createObject()), if(not(empty(parameters('customPublicSubnetName'))), createObject('customPublicSubnetName', createObject('value', parameters('customPublicSubnetName'))), createObject()), if(not(empty(parameters('loadBalancerBackendPoolName'))), createObject('loadBalancerBackendPoolName', createObject('value', parameters('loadBalancerBackendPoolName'))), createObject()), if(not(empty(parameters('loadBalancerResourceId'))), createObject('loadBalancerId', createObject('value', parameters('loadBalancerResourceId'))), createObject()), if(not(empty(parameters('natGatewayName'))), createObject('natGatewayName', createObject('value', parameters('natGatewayName'))), createObject()), if(not(empty(parameters('publicIpName'))), createObject('publicIpName', createObject('value', parameters('publicIpName'))), createObject()), if(not(empty(parameters('storageAccountName'))), createObject('storageAccountName', createObject('value', parameters('storageAccountName'))), createObject()), if(not(empty(parameters('storageAccountSkuName'))), createObject('storageAccountSkuName', createObject('value', parameters('storageAccountSkuName'))), createObject())), 'publicNetworkAccess', parameters('publicNetworkAccess'), 'requiredNsgRules', parameters('requiredNsgRules'), 'encryption', if(or(not(empty(parameters('customerManagedKey'))), not(empty(parameters('customerManagedKeyManagedDisk')))), createObject('entities', createObject('managedServices', if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'managedDisk', if(not(empty(parameters('customerManagedKeyManagedDisk'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', reference('cMKManagedDiskKeyVault').vaultUri, 'keyName', parameters('customerManagedKeyManagedDisk').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVersion'), ''))), parameters('customerManagedKeyManagedDisk').keyVersion, last(split(reference('cMKManagedDiskKeyVault::cMKKey').keyUriWithVersion, '/')))), 'rotationToLatestKeyVersionEnabled', coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'rotationToLatestKeyVersionEnabled'), true())), null()))), null())), if(not(empty(parameters('privateStorageAccount'))), createObject('defaultStorageFirewall', parameters('privateStorageAccount'), 'accessConnector', createObject('id', parameters('accessConnectorResourceId'), 'identityType', 'SystemAssigned')), createObject()), if(not(empty(parameters('defaultCatalog'))), createObject('defaultCatalog', createObject('initialName', '', 'initialType', tryGet(parameters('defaultCatalog'), 'initialType'))), createObject()))]",
+      "properties": "[shallowMerge(createArray(createObject('managedResourceGroupId', if(not(empty(parameters('managedResourceGroupResourceId'))), parameters('managedResourceGroupResourceId'), format('{0}/resourceGroups/rg-{1}-managed', subscription().id, parameters('name'))), 'parameters', shallowMerge(createArray(createObject('enableNoPublicIp', createObject('value', parameters('disablePublicIp')), 'prepareEncryption', createObject('value', parameters('prepareEncryption')), 'vnetAddressPrefix', createObject('value', parameters('vnetAddressPrefix')), 'requireInfrastructureEncryption', createObject('value', parameters('requireInfrastructureEncryption'))), if(not(empty(parameters('customVirtualNetworkResourceId'))), createObject('customVirtualNetworkId', createObject('value', parameters('customVirtualNetworkResourceId'))), createObject()), if(not(empty(parameters('amlWorkspaceResourceId'))), createObject('amlWorkspaceId', createObject('value', parameters('amlWorkspaceResourceId'))), createObject()), if(not(empty(parameters('customPrivateSubnetName'))), createObject('customPrivateSubnetName', createObject('value', parameters('customPrivateSubnetName'))), createObject()), if(not(empty(parameters('customPublicSubnetName'))), createObject('customPublicSubnetName', createObject('value', parameters('customPublicSubnetName'))), createObject()), if(not(empty(parameters('loadBalancerBackendPoolName'))), createObject('loadBalancerBackendPoolName', createObject('value', parameters('loadBalancerBackendPoolName'))), createObject()), if(not(empty(parameters('loadBalancerResourceId'))), createObject('loadBalancerId', createObject('value', parameters('loadBalancerResourceId'))), createObject()), if(not(empty(parameters('natGatewayName'))), createObject('natGatewayName', createObject('value', parameters('natGatewayName'))), createObject()), if(not(empty(parameters('publicIpName'))), createObject('publicIpName', createObject('value', parameters('publicIpName'))), createObject()), if(not(empty(parameters('storageAccountName'))), createObject('storageAccountName', createObject('value', parameters('storageAccountName'))), createObject()), if(not(empty(parameters('storageAccountSkuName'))), createObject('storageAccountSkuName', createObject('value', parameters('storageAccountSkuName'))), createObject()))), 'publicNetworkAccess', parameters('publicNetworkAccess'), 'requiredNsgRules', parameters('requiredNsgRules'), 'encryption', if(or(not(empty(parameters('customerManagedKey'))), not(empty(parameters('customerManagedKeyManagedDisk')))), createObject('entities', createObject('managedServices', if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'managedDisk', if(not(empty(parameters('customerManagedKeyManagedDisk'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', reference('cMKManagedDiskKeyVault').vaultUri, 'keyName', parameters('customerManagedKeyManagedDisk').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVersion'), ''))), parameters('customerManagedKeyManagedDisk').keyVersion, last(split(reference('cMKManagedDiskKeyVault::cMKKey').keyUriWithVersion, '/')))), 'rotationToLatestKeyVersionEnabled', coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'rotationToLatestKeyVersionEnabled'), true())), null()))), null())), if(not(empty(parameters('privateStorageAccount'))), createObject('defaultStorageFirewall', parameters('privateStorageAccount'), 'accessConnector', createObject('id', parameters('accessConnectorResourceId'), 'identityType', 'SystemAssigned')), createObject()), if(not(empty(parameters('defaultCatalog'))), createObject('defaultCatalog', createObject('initialName', '', 'initialType', tryGet(parameters('defaultCatalog'), 'initialType'))), createObject()), if(or(or(not(empty(parameters('automaticClusterUpdate'))), not(empty(parameters('complianceStandards')))), not(empty(parameters('enhancedSecurityMonitoring')))), createObject('enhancedSecurityCompliance', createObject('automaticClusterUpdate', createObject('value', parameters('automaticClusterUpdate')), 'complianceSecurityProfile', createObject('complianceStandards', parameters('complianceStandards'), 'value', parameters('complianceSecurityProfileValue')), 'enhancedSecurityMonitoring', createObject('value', parameters('enhancedSecurityMonitoring')))), createObject())))]",
       "dependsOn": [
         "cMKKeyVault",
         "cMKManagedDiskKeyVault"
@@ -1678,9 +1721,9 @@
         "workspace"
       ]
     },
-    "storageAccount_privateEndpoints": {
+    "storageAccount_storageAccountPrivateEndpoints": {
       "copy": {
-        "name": "storageAccount_privateEndpoints",
+        "name": "storageAccount_storageAccountPrivateEndpoints",
         "count": "[length(coalesce(parameters('storageAccountPrivateEndpoints'), createArray()))]",
         "mode": "serial",
         "batchSize": 1
@@ -2543,11 +2586,11 @@
       "copy": {
         "count": "[length(if(and(not(empty(parameters('storageAccountPrivateEndpoints'))), equals(parameters('privateStorageAccount'), 'Enabled')), array(parameters('storageAccountPrivateEndpoints')), createArray()))]",
         "input": {
-          "name": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
-          "resourceId": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
-          "groupId": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
-          "customDnsConfig": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
-          "networkInterfaceIds": "[reference(format('storageAccount_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
+          "name": "[reference(format('storageAccount_storageAccountPrivateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('storageAccount_storageAccountPrivateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
+          "groupId": "[reference(format('storageAccount_storageAccountPrivateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
+          "customDnsConfig": "[reference(format('storageAccount_storageAccountPrivateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
+          "networkInterfaceIds": "[reference(format('storageAccount_storageAccountPrivateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
         }
       }
     }
