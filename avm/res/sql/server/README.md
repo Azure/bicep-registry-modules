@@ -25,7 +25,7 @@ This module deploys an Azure SQL Server.
 | `Microsoft.Sql/servers` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers) |
 | `Microsoft.Sql/servers/auditingSettings` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/auditingSettings) |
 | `Microsoft.Sql/servers/databases` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/databases) |
-| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies) |
+| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-05-01-preview/servers/databases/backupLongTermRetentionPolicies) |
 | `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies) |
 | `Microsoft.Sql/servers/elasticPools` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/elasticPools) |
 | `Microsoft.Sql/servers/encryptionProtector` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/encryptionProtector) |
@@ -585,10 +585,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           }
         ]
         elasticPoolResourceId: '<elasticPoolResourceId>'
-        encryptionProtectorObj: {
-          serverKeyName: '<serverKeyName>'
-          serverKeyType: 'AzureKeyVault'
-        }
         licenseType: 'LicenseIncluded'
         maxSizeBytes: 34359738368
         name: 'sqlsmaxdb-001'
@@ -609,6 +605,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         }
       }
     ]
+    encryptionProtectorObj: {
+      serverKeyName: '<serverKeyName>'
+      serverKeyType: 'AzureKeyVault'
+    }
     firewallRules: [
       {
         endIpAddress: '0.0.0.0'
@@ -756,10 +756,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             }
           ],
           "elasticPoolResourceId": "<elasticPoolResourceId>",
-          "encryptionProtectorObj": {
-            "serverKeyName": "<serverKeyName>",
-            "serverKeyType": "AzureKeyVault"
-          },
           "licenseType": "LicenseIncluded",
           "maxSizeBytes": 34359738368,
           "name": "sqlsmaxdb-001",
@@ -782,6 +778,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           }
         }
       ]
+    },
+    "encryptionProtectorObj": {
+      "value": {
+        "serverKeyName": "<serverKeyName>",
+        "serverKeyType": "AzureKeyVault"
+      }
     },
     "firewallRules": {
       "value": [
@@ -949,10 +951,6 @@ param databases = [
       }
     ]
     elasticPoolResourceId: '<elasticPoolResourceId>'
-    encryptionProtectorObj: {
-      serverKeyName: '<serverKeyName>'
-      serverKeyType: 'AzureKeyVault'
-    }
     licenseType: 'LicenseIncluded'
     maxSizeBytes: 34359738368
     name: 'sqlsmaxdb-001'
@@ -973,6 +971,10 @@ param elasticPools = [
     }
   }
 ]
+param encryptionProtectorObj = {
+  serverKeyName: '<serverKeyName>'
+  serverKeyType: 'AzureKeyVault'
+}
 param firewallRules = [
   {
     endIpAddress: '0.0.0.0'
@@ -1428,10 +1430,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           }
         ]
         elasticPoolResourceId: '<elasticPoolResourceId>'
-        encryptionProtectorObj: {
-          serverKeyName: '<serverKeyName>'
-          serverKeyType: 'AzureKeyVault'
-        }
         licenseType: 'LicenseIncluded'
         maxSizeBytes: 34359738368
         name: 'sqlswafdb-001'
@@ -1453,6 +1451,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         }
       }
     ]
+    encryptionProtectorObj: {
+      serverKeyName: '<serverKeyName>'
+      serverKeyType: 'AzureKeyVault'
+    }
     keys: [
       {
         serverKeyType: 'AzureKeyVault'
@@ -1563,10 +1565,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             }
           ],
           "elasticPoolResourceId": "<elasticPoolResourceId>",
-          "encryptionProtectorObj": {
-            "serverKeyName": "<serverKeyName>",
-            "serverKeyType": "AzureKeyVault"
-          },
           "licenseType": "LicenseIncluded",
           "maxSizeBytes": 34359738368,
           "name": "sqlswafdb-001",
@@ -1590,6 +1588,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           }
         }
       ]
+    },
+    "encryptionProtectorObj": {
+      "value": {
+        "serverKeyName": "<serverKeyName>",
+        "serverKeyType": "AzureKeyVault"
+      }
     },
     "keys": {
       "value": [
@@ -1716,10 +1720,6 @@ param databases = [
       }
     ]
     elasticPoolResourceId: '<elasticPoolResourceId>'
-    encryptionProtectorObj: {
-      serverKeyName: '<serverKeyName>'
-      serverKeyType: 'AzureKeyVault'
-    }
     licenseType: 'LicenseIncluded'
     maxSizeBytes: 34359738368
     name: 'sqlswafdb-001'
@@ -1741,6 +1741,10 @@ param elasticPools = [
     }
   }
 ]
+param encryptionProtectorObj = {
+  serverKeyName: '<serverKeyName>'
+  serverKeyType: 'AzureKeyVault'
+}
 param keys = [
   {
     serverKeyType: 'AzureKeyVault'
@@ -2087,6 +2091,8 @@ The databases to create in the server.
 | :-- | :-- | :-- |
 | [`autoPauseDelay`](#parameter-databasesautopausedelay) | int | Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled. |
 | [`availabilityZone`](#parameter-databasesavailabilityzone) | string | Specifies the availability zone the database is pinned to. |
+| [`backupLongTermRetentionPolicy`](#parameter-databasesbackuplongtermretentionpolicy) | object | The long term backup retention policy for the database. |
+| [`backupShortTermRetentionPolicy`](#parameter-databasesbackupshorttermretentionpolicy) | object | The short term backup retention policy for the database. |
 | [`catalogCollation`](#parameter-databasescatalogcollation) | string | Collation of the metadata catalog. |
 | [`collation`](#parameter-databasescollation) | string | The collation of the database. |
 | [`createMode`](#parameter-databasescreatemode) | string | Specifies the mode of database creation. |
@@ -2151,6 +2157,101 @@ Specifies the availability zone the database is pinned to.
     'NoPreference'
   ]
   ```
+
+### Parameter: `databases.backupLongTermRetentionPolicy`
+
+The long term backup retention policy for the database.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`backupStorageAccessTier`](#parameter-databasesbackuplongtermretentionpolicybackupstorageaccesstier) | string | The BackupStorageAccessTier for the LTR backups. |
+| [`makeBackupsImmutable`](#parameter-databasesbackuplongtermretentionpolicymakebackupsimmutable) | bool | The setting whether to make LTR backups immutable. |
+| [`monthlyRetention`](#parameter-databasesbackuplongtermretentionpolicymonthlyretention) | string | Monthly retention in ISO 8601 duration format. |
+| [`weeklyRetention`](#parameter-databasesbackuplongtermretentionpolicyweeklyretention) | string | Weekly retention in ISO 8601 duration format. |
+| [`weekOfYear`](#parameter-databasesbackuplongtermretentionpolicyweekofyear) | int | Week of year backup to keep for yearly retention. |
+| [`yearlyRetention`](#parameter-databasesbackuplongtermretentionpolicyyearlyretention) | string | Yearly retention in ISO 8601 duration format. |
+
+### Parameter: `databases.backupLongTermRetentionPolicy.backupStorageAccessTier`
+
+The BackupStorageAccessTier for the LTR backups.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Archive'
+    'Hot'
+  ]
+  ```
+
+### Parameter: `databases.backupLongTermRetentionPolicy.makeBackupsImmutable`
+
+The setting whether to make LTR backups immutable.
+
+- Required: No
+- Type: bool
+
+### Parameter: `databases.backupLongTermRetentionPolicy.monthlyRetention`
+
+Monthly retention in ISO 8601 duration format.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.backupLongTermRetentionPolicy.weeklyRetention`
+
+Weekly retention in ISO 8601 duration format.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.backupLongTermRetentionPolicy.weekOfYear`
+
+Week of year backup to keep for yearly retention.
+
+- Required: No
+- Type: int
+
+### Parameter: `databases.backupLongTermRetentionPolicy.yearlyRetention`
+
+Yearly retention in ISO 8601 duration format.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.backupShortTermRetentionPolicy`
+
+The short term backup retention policy for the database.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diffBackupIntervalInHours`](#parameter-databasesbackupshorttermretentionpolicydiffbackupintervalinhours) | int | Differential backup interval in hours. |
+| [`retentionDays`](#parameter-databasesbackupshorttermretentionpolicyretentiondays) | int | Point-in-time retention in days. |
+
+### Parameter: `databases.backupShortTermRetentionPolicy.diffBackupIntervalInHours`
+
+Differential backup interval in hours.
+
+- Required: No
+- Type: int
+
+### Parameter: `databases.backupShortTermRetentionPolicy.retentionDays`
+
+Point-in-time retention in days.
+
+- Required: No
+- Type: int
 
 ### Parameter: `databases.catalogCollation`
 

@@ -14,7 +14,7 @@ This module deploys an Azure SQL Server Database.
 | :-- | :-- |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Sql/servers/databases` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/databases) |
-| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies) |
+| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-05-01-preview/servers/databases/backupLongTermRetentionPolicies) |
 | `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies) |
 
 ## Parameters
@@ -120,7 +120,66 @@ The long term backup retention policy to create for the database.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`backupStorageAccessTier`](#parameter-backuplongtermretentionpolicybackupstorageaccesstier) | string | The BackupStorageAccessTier for the LTR backups. |
+| [`makeBackupsImmutable`](#parameter-backuplongtermretentionpolicymakebackupsimmutable) | bool | The setting whether to make LTR backups immutable. |
+| [`monthlyRetention`](#parameter-backuplongtermretentionpolicymonthlyretention) | string | Monthly retention in ISO 8601 duration format. |
+| [`weeklyRetention`](#parameter-backuplongtermretentionpolicyweeklyretention) | string | Weekly retention in ISO 8601 duration format. |
+| [`weekOfYear`](#parameter-backuplongtermretentionpolicyweekofyear) | int | Week of year backup to keep for yearly retention. |
+| [`yearlyRetention`](#parameter-backuplongtermretentionpolicyyearlyretention) | string | Yearly retention in ISO 8601 duration format. |
+
+### Parameter: `backupLongTermRetentionPolicy.backupStorageAccessTier`
+
+The BackupStorageAccessTier for the LTR backups.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Archive'
+    'Hot'
+  ]
+  ```
+
+### Parameter: `backupLongTermRetentionPolicy.makeBackupsImmutable`
+
+The setting whether to make LTR backups immutable.
+
+- Required: No
+- Type: bool
+
+### Parameter: `backupLongTermRetentionPolicy.monthlyRetention`
+
+Monthly retention in ISO 8601 duration format.
+
+- Required: No
+- Type: string
+
+### Parameter: `backupLongTermRetentionPolicy.weeklyRetention`
+
+Weekly retention in ISO 8601 duration format.
+
+- Required: No
+- Type: string
+
+### Parameter: `backupLongTermRetentionPolicy.weekOfYear`
+
+Week of year backup to keep for yearly retention.
+
+- Required: No
+- Type: int
+
+### Parameter: `backupLongTermRetentionPolicy.yearlyRetention`
+
+Yearly retention in ISO 8601 duration format.
+
+- Required: No
+- Type: string
 
 ### Parameter: `backupShortTermRetentionPolicy`
 
@@ -128,7 +187,27 @@ The short term backup retention policy to create for the database.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diffBackupIntervalInHours`](#parameter-backupshorttermretentionpolicydiffbackupintervalinhours) | int | Differential backup interval in hours. |
+| [`retentionDays`](#parameter-backupshorttermretentionpolicyretentiondays) | int | Point-in-time retention in days. |
+
+### Parameter: `backupShortTermRetentionPolicy.diffBackupIntervalInHours`
+
+Differential backup interval in hours.
+
+- Required: No
+- Type: int
+
+### Parameter: `backupShortTermRetentionPolicy.retentionDays`
+
+Point-in-time retention in days.
+
+- Required: No
+- Type: int
 
 ### Parameter: `catalogCollation`
 
