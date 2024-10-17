@@ -1,7 +1,9 @@
 @description('Optional. The location to deploy to.')
 param location string
 
-var virtualNetworkName = 'paw-vnet'
+@description('Required. The name of the Virtual Network to create.')
+param virtualNetworkName string
+
 var subnetName01 = 'private-link-subnet'
 var subnetName02 = 'dbw-frontend-subnet'
 var subnetName03 = 'dbw-backend-subnet'

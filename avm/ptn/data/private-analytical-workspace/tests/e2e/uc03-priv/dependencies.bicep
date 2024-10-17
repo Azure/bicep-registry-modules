@@ -1,13 +1,15 @@
 @description('Optional. The location to deploy to.')
 param location string
 
+@description('Required. The name of the Virtual Network to create.')
+param virtualNetworkName string
+
 @description('Required. The name of the Log Analytics Workspace to create.')
 param logAnalyticsWorkspaceName string
 
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
 
-var virtualNetworkName = 'paw-vnet'
 var subnetName01 = 'private-link-subnet'
 var subnetName02 = 'dbw-frontend-subnet'
 var subnetName03 = 'dbw-backend-subnet'
