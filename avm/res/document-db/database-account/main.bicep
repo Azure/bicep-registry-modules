@@ -259,7 +259,7 @@ var databaseAccountProperties = union(
   },
   ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases))
     ? {
-        // NoSQL, MongoDB RU, and Apache Gremlin properties
+        // NoSQL, MongoDB RU, and Apache Gremlin common properties
         consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
         enableMultipleWriteLocations: enableMultipleWriteLocations
         locations: empty(databaseAccount_locations) ? defaultFailoverLocation : databaseAccount_locations
