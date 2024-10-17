@@ -17,8 +17,8 @@ This module deploys an App Service Environment.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Web/hostingEnvironments` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-03-01/hostingEnvironments) |
-| `Microsoft.Web/hostingEnvironments/configurations` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/hostingEnvironments/configurations) |
+| `Microsoft.Web/hostingEnvironments` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/hostingEnvironments) |
+| `Microsoft.Web/hostingEnvironments/configurations` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/hostingEnvironments/configurations) |
 
 ## Usage examples
 
@@ -49,7 +49,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     name: 'whemin001'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    kind: 'ASEv3'
     location: '<location>'
   }
 }
@@ -75,9 +74,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "kind": {
-      "value": "ASEv3"
-    },
     "location": {
       "value": "<location>"
     }
@@ -99,7 +95,6 @@ using 'br/public:avm/res/web/hosting-environment:<version>'
 param name = 'whemin001'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
-param kind = 'ASEv3'
 param location = '<location>'
 ```
 
@@ -123,7 +118,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     name: 'whemax001'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    allowNewPrivateEndpointConnections: true
     clusterSettings: [
       {
         name: 'DisableTls1.0'
@@ -142,9 +136,8 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    ftpEnabled: true
-    inboundIpAddressOverride: '10.0.0.10'
     internalLoadBalancingMode: 'Web, Publishing'
+    kind: 'ASEv3'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -156,7 +149,14 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         '<managedIdentityResourceId>'
       ]
     }
-    remoteDebugEnabled: true
+    networkConfiguration: {
+      properties: {
+        allowNewPrivateEndpointConnections: true
+        ftpEnabled: true
+        inboundIpAddressOverride: '10.0.0.10'
+        remoteDebugEnabled: true
+      }
+    }
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -180,6 +180,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
       resourceType: 'App Service Environment'
     }
     upgradePreference: 'Late'
+    zoneRedundant: true
   }
 }
 ```
@@ -204,9 +205,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "allowNewPrivateEndpointConnections": {
-      "value": true
-    },
     "clusterSettings": {
       "value": [
         {
@@ -235,14 +233,11 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         }
       ]
     },
-    "ftpEnabled": {
-      "value": true
-    },
-    "inboundIpAddressOverride": {
-      "value": "10.0.0.10"
-    },
     "internalLoadBalancingMode": {
       "value": "Web, Publishing"
+    },
+    "kind": {
+      "value": "ASEv3"
     },
     "location": {
       "value": "<location>"
@@ -261,8 +256,15 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         ]
       }
     },
-    "remoteDebugEnabled": {
-      "value": true
+    "networkConfiguration": {
+      "value": {
+        "properties": {
+          "allowNewPrivateEndpointConnections": true,
+          "ftpEnabled": true,
+          "inboundIpAddressOverride": "10.0.0.10",
+          "remoteDebugEnabled": true
+        }
+      }
     },
     "roleAssignments": {
       "value": [
@@ -292,6 +294,9 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     },
     "upgradePreference": {
       "value": "Late"
+    },
+    "zoneRedundant": {
+      "value": true
     }
   }
 }
@@ -311,7 +316,6 @@ using 'br/public:avm/res/web/hosting-environment:<version>'
 param name = 'whemax001'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
-param allowNewPrivateEndpointConnections = true
 param clusterSettings = [
   {
     name: 'DisableTls1.0'
@@ -330,9 +334,8 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param ftpEnabled = true
-param inboundIpAddressOverride = '10.0.0.10'
 param internalLoadBalancingMode = 'Web, Publishing'
+param kind = 'ASEv3'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -344,7 +347,14 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
-param remoteDebugEnabled = true
+param networkConfiguration = {
+  properties: {
+    allowNewPrivateEndpointConnections: true
+    ftpEnabled: true
+    inboundIpAddressOverride: '10.0.0.10'
+    remoteDebugEnabled: true
+  }
+}
 param roleAssignments = [
   {
     principalId: '<principalId>'
@@ -368,6 +378,7 @@ param tags = {
   resourceType: 'App Service Environment'
 }
 param upgradePreference = 'Late'
+param zoneRedundant = true
 ```
 
 </details>
@@ -390,7 +401,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     name: 'whewaf001'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    allowNewPrivateEndpointConnections: true
     clusterSettings: [
       {
         name: 'DisableTls1.0'
@@ -409,8 +419,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    ftpEnabled: true
-    inboundIpAddressOverride: '10.0.0.10'
     internalLoadBalancingMode: 'Web, Publishing'
     location: '<location>'
     managedIdentities: {
@@ -419,7 +427,13 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         '<managedIdentityResourceId>'
       ]
     }
-    remoteDebugEnabled: true
+    networkConfiguration: {
+      properties: {
+        allowNewPrivateEndpointConnections: true
+        ftpEnabled: true
+        remoteDebugEnabled: true
+      }
+    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       hostingEnvironmentName: 'whewaf001'
@@ -450,9 +464,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "allowNewPrivateEndpointConnections": {
-      "value": true
-    },
     "clusterSettings": {
       "value": [
         {
@@ -481,12 +492,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         }
       ]
     },
-    "ftpEnabled": {
-      "value": true
-    },
-    "inboundIpAddressOverride": {
-      "value": "10.0.0.10"
-    },
     "internalLoadBalancingMode": {
       "value": "Web, Publishing"
     },
@@ -501,8 +506,14 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         ]
       }
     },
-    "remoteDebugEnabled": {
-      "value": true
+    "networkConfiguration": {
+      "value": {
+        "properties": {
+          "allowNewPrivateEndpointConnections": true,
+          "ftpEnabled": true,
+          "remoteDebugEnabled": true
+        }
+      }
     },
     "tags": {
       "value": {
@@ -532,7 +543,6 @@ using 'br/public:avm/res/web/hosting-environment:<version>'
 param name = 'whewaf001'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
-param allowNewPrivateEndpointConnections = true
 param clusterSettings = [
   {
     name: 'DisableTls1.0'
@@ -551,8 +561,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param ftpEnabled = true
-param inboundIpAddressOverride = '10.0.0.10'
 param internalLoadBalancingMode = 'Web, Publishing'
 param location = '<location>'
 param managedIdentities = {
@@ -561,7 +569,13 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
-param remoteDebugEnabled = true
+param networkConfiguration = {
+  properties: {
+    allowNewPrivateEndpointConnections: true
+    ftpEnabled: true
+    remoteDebugEnabled: true
+  }
+}
 param tags = {
   'hidden-title': 'This is visible in the resource name'
   hostingEnvironmentName: 'whewaf001'
@@ -586,7 +600,6 @@ param upgradePreference = 'Late'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`allowNewPrivateEndpointConnections`](#parameter-allownewprivateendpointconnections) | bool | Property to enable and disable new private endpoint connection creation on ASE. |
 | [`clusterSettings`](#parameter-clustersettings) | array | Custom settings for changing the behavior of the App Service Environment. |
 | [`customDnsSuffix`](#parameter-customdnssuffix) | string | Enable the default custom domain suffix to use for all sites deployed on the ASE. If provided, then customDnsSuffixCertificateUrl and customDnsSuffixKeyVaultReferenceIdentity are required. |
 | [`customDnsSuffixCertificateUrl`](#parameter-customdnssuffixcertificateurl) | string | The URL referencing the Azure Key Vault certificate secret that should be used as the default SSL/TLS certificate for sites with the custom domain suffix. Required if customDnsSuffix is not empty. |
@@ -596,14 +609,12 @@ param upgradePreference = 'Late'
 | [`dnsSuffix`](#parameter-dnssuffix) | string | DNS suffix of the App Service Environment. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`frontEndScaleFactor`](#parameter-frontendscalefactor) | int | Scale factor for frontends. |
-| [`ftpEnabled`](#parameter-ftpenabled) | bool | Property to enable and disable FTP on ASEV3. |
-| [`inboundIpAddressOverride`](#parameter-inboundipaddressoverride) | string | Customer provided Inbound IP Address. Only able to be set on Ase create. |
 | [`internalLoadBalancingMode`](#parameter-internalloadbalancingmode) | string | Specifies which endpoints to serve internally in the Virtual Network for the App Service Environment. - None, Web, Publishing, Web,Publishing. "None" Exposes the ASE-hosted apps on an internet-accessible IP address. |
 | [`kind`](#parameter-kind) | string | Kind of resource. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`remoteDebugEnabled`](#parameter-remotedebugenabled) | bool | Property to enable and disable Remote Debug on ASEv3. |
+| [`networkConfiguration`](#parameter-networkconfiguration) | object | Properties to configure additional networking features. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`upgradePreference`](#parameter-upgradepreference) | string | Specify preference for when and how the planned maintenance is applied. |
@@ -622,14 +633,6 @@ ResourceId for the subnet.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `allowNewPrivateEndpointConnections`
-
-Property to enable and disable new private endpoint connection creation on ASE.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `clusterSettings`
 
@@ -807,22 +810,6 @@ Scale factor for frontends.
 - Type: int
 - Default: `15`
 
-### Parameter: `ftpEnabled`
-
-Property to enable and disable FTP on ASEV3.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `inboundIpAddressOverride`
-
-Customer provided Inbound IP Address. Only able to be set on Ase create.
-
-- Required: No
-- Type: string
-- Default: `''`
-
 ### Parameter: `internalLoadBalancingMode`
 
 Specifies which endpoints to serve internally in the Virtual Network for the App Service Environment. - None, Web, Publishing, Web,Publishing. "None" Exposes the ASE-hosted apps on an internet-accessible IP address.
@@ -926,13 +913,12 @@ The resource ID(s) to assign to the resource.
 - Required: No
 - Type: array
 
-### Parameter: `remoteDebugEnabled`
+### Parameter: `networkConfiguration`
 
-Property to enable and disable Remote Debug on ASEv3.
+Properties to configure additional networking features.
 
 - Required: No
-- Type: bool
-- Default: `False`
+- Type: object
 
 ### Parameter: `roleAssignments`
 
@@ -1059,7 +1045,7 @@ Switch to make the App Service Environment zone redundant. If enabled, the minim
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ## Outputs
 

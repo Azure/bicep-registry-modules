@@ -68,6 +68,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceGroup.location
+      kind: 'ASEv3'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         resourceType: 'App Service Environment'
@@ -99,16 +100,21 @@ module testDeployment '../../../main.bicep' = [
       ]
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
       internalLoadBalancingMode: 'Web, Publishing'
+      networkConfiguration: {
+        properties: {
+          allowNewPrivateEndpointConnections: true
+          ftpEnabled: true
+          inboundIpAddressOverride: '10.0.0.10'
+          remoteDebugEnabled: true
+        }
+      }
       clusterSettings: [
         {
           name: 'DisableTls1.0'
           value: '1'
         }
       ]
-      allowNewPrivateEndpointConnections: true
-      ftpEnabled: true
-      inboundIpAddressOverride: '10.0.0.10'
-      remoteDebugEnabled: true
+      zoneRedundant: true
       upgradePreference: 'Late'
       diagnosticSettings: [
         {

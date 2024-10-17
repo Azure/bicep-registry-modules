@@ -65,17 +65,8 @@ param frontEndScaleFactor int = 15
 ])
 param internalLoadBalancingMode string = 'None'
 
-@description('Optional. Property to enable and disable new private endpoint connection creation on ASE.')
-param allowNewPrivateEndpointConnections bool = false
-
-@description('Optional. Property to enable and disable FTP on ASEV3.')
-param ftpEnabled bool = false
-
-@description('Optional. Customer provided Inbound IP Address. Only able to be set on Ase create.')
-param inboundIpAddressOverride string = ''
-
-@description('Optional. Property to enable and disable Remote Debug on ASEv3.')
-param remoteDebugEnabled bool = false
+@description('Optional. Properties to configure additional networking features.')
+param networkConfiguration object?
 
 @description('Optional. Specify preference for when and how the planned maintenance is applied.')
 @allowed([
@@ -90,7 +81,7 @@ param upgradePreference string = 'None'
 param subnetResourceId string
 
 @description('Optional. Switch to make the App Service Environment zone redundant. If enabled, the minimum App Service plan instance count will be three, otherwise 1. If enabled, the `dedicatedHostCount` must be set to `-1`.')
-param zoneRedundant bool = false
+param zoneRedundant bool = true
 
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
@@ -150,7 +141,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2022-03-01' = {
+resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2023-12-01' = {
   name: name
   kind: kind
   location: location
@@ -163,22 +154,12 @@ resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2022-03-01' = 
     frontEndScaleFactor: frontEndScaleFactor
     internalLoadBalancingMode: internalLoadBalancingMode
     upgradePreference: upgradePreference
+    networkingConfiguration: networkConfiguration
     virtualNetwork: {
       id: subnetResourceId
       subnet: last(split(subnetResourceId, '/'))
     }
     zoneRedundant: zoneRedundant
-  }
-}
-
-module appServiceEnvironment_configurations_networking 'configuration--networking/main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-AppServiceEnv-Configurations-Networking'
-  params: {
-    hostingEnvironmentName: appServiceEnvironment.name
-    allowNewPrivateEndpointConnections: allowNewPrivateEndpointConnections
-    ftpEnabled: ftpEnabled
-    inboundIpAddressOverride: inboundIpAddressOverride
-    remoteDebugEnabled: remoteDebugEnabled
   }
 }
 
@@ -229,11 +210,12 @@ resource appServiceEnvironment_roleAssignments 'Microsoft.Authorization/roleAssi
   for (roleAssignment, index) in (roleAssignments ?? []): {
     name: guid(appServiceEnvironment.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+          roleAssignment.roleDefinitionIdOrName,
+          '/providers/Microsoft.Authorization/roleDefinitions/'
+        )
+        ? roleAssignment.roleDefinitionIdOrName
+        : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType

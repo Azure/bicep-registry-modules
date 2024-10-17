@@ -12,7 +12,7 @@ This module deploys a Hosting Environment Custom DNS Suffix Configuration.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Web/hostingEnvironments/configurations` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/hostingEnvironments/configurations) |
+| `Microsoft.Web/hostingEnvironments/configurations` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/hostingEnvironments/configurations) |
 
 ## Parameters
 
