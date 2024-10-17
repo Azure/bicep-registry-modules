@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "4558221869591328265"
+      "templateHash": "9296721864796917258"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database.",
@@ -131,7 +131,10 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "databaseSkuType": {
       "type": "object",
@@ -174,319 +177,6 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The database SKU."
-      }
-    },
-    "databasePropertyType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the Elastic Pool."
-          }
-        },
-        "tags": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Tags of the resource."
-          }
-        },
-        "sku": {
-          "$ref": "#/definitions/databaseSkuType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The database SKU."
-          }
-        },
-        "autoPauseDelay": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled."
-          }
-        },
-        "availabilityZone": {
-          "type": "string",
-          "allowedValues": [
-            "1",
-            "2",
-            "3",
-            "NoPreference"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specifies the availability zone the database is pinned to."
-          }
-        },
-        "catalogCollation": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Collation of the metadata catalog."
-          }
-        },
-        "collation": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The collation of the database."
-          }
-        },
-        "createMode": {
-          "type": "string",
-          "allowedValues": [
-            "Copy",
-            "Default",
-            "OnlineSecondary",
-            "PointInTimeRestore",
-            "Recovery",
-            "Restore",
-            "RestoreExternalBackup",
-            "RestoreExternalBackupSecondary",
-            "RestoreLongTermRetentionBackup",
-            "Secondary"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specifies the mode of database creation."
-          }
-        },
-        "elasticPoolId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource identifier of the elastic pool containing this database."
-          }
-        },
-        "encryptionProtector": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The azure key vault URI of the database if it's configured with per Database Customer Managed Keys."
-          }
-        },
-        "encryptionProtectorAutoRotation": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The flag to enable or disable auto rotation of database encryption protector AKV key."
-          }
-        },
-        "federatedClientId": {
-          "type": "string",
-          "nullable": true,
-          "minLength": 36,
-          "maxLength": 36,
-          "metadata": {
-            "description": "Optional. The Client id used for cross tenant per database CMK scenario."
-          }
-        },
-        "freeLimitExhaustionBehavior": {
-          "type": "string",
-          "allowedValues": [
-            "AutoPause",
-            "BillOverUsage"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specifies the behavior when monthly free limits are exhausted for the free database."
-          }
-        },
-        "highAvailabilityReplicaCount": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The number of secondary replicas associated with the database that are used to provide high availability. Not applicable to a Hyperscale database within an elastic pool."
-          }
-        },
-        "isLedgerOn": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Whether or not this database is a ledger database, which means all tables in the database are ledger tables."
-          }
-        },
-        "licenseType": {
-          "type": "string",
-          "allowedValues": [
-            "BasePrice",
-            "LicenseIncluded"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The license type to apply for this database."
-          }
-        },
-        "longTermRetentionBackupResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource identifier of the long term retention backup associated with create operation of this database."
-          }
-        },
-        "maintenanceConfigurationId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Maintenance configuration id assigned to the database. This configuration defines the period when the maintenance updates will occur."
-          }
-        },
-        "manualCutover": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Whether or not customer controlled manual cutover needs to be done during Update Database operation to Hyperscale tier."
-          }
-        },
-        "maxSizeBytes": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The max size of the database expressed in bytes."
-          }
-        },
-        "minCapacity": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Minimal capacity that database will always have allocated, if not paused."
-          }
-        },
-        "performCutover": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. To trigger customer controlled manual cutover during the wait state while Scaling operation is in progress."
-          }
-        },
-        "preferredEnclaveType": {
-          "type": "string",
-          "allowedValues": [
-            "Default",
-            "VBS"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Type of enclave requested on the database."
-          }
-        },
-        "readScale": {
-          "type": "string",
-          "allowedValues": [
-            "Disabled",
-            "Enabled"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The state of read-only routing. If enabled, connections that have application intent set to readonly in their connection string may be routed to a readonly secondary replica in the same region. Not applicable to a Hyperscale database within an elastic pool."
-          }
-        },
-        "recoverableDatabaseId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource identifier of the recoverable database associated with create operation of this database."
-          }
-        },
-        "recoveryServicesRecoveryPointId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource identifier of the recovery point associated with create operation of this database."
-          }
-        },
-        "requestedBackupStorageRedundancy": {
-          "type": "string",
-          "allowedValues": [
-            "Geo",
-            "GeoZone",
-            "Local",
-            "Zone"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The storage account type to be used to store backups for this database."
-          }
-        },
-        "restorableDroppedDatabaseId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource identifier of the restorable dropped database associated with create operation of this database."
-          }
-        },
-        "restorePointInTime": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database."
-          }
-        },
-        "sampleName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the sample schema to apply when creating this database."
-          }
-        },
-        "secondaryType": {
-          "type": "string",
-          "allowedValues": [
-            "Geo",
-            "Named",
-            "Standby"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The secondary type of the database if it is a secondary."
-          }
-        },
-        "sourceDatabaseDeletionDate": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specifies the time that the database was deleted."
-          }
-        },
-        "sourceDatabaseId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource identifier of the source database associated with create operation of this database."
-          }
-        },
-        "sourceResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource identifier of the source associated with the create operation of this database."
-          }
-        },
-        "useFreeLimit": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Whether or not the database uses free monthly limits. Allowed on one database in a subscription."
-          }
-        },
-        "zoneRedundant": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Whether or not this database is zone redundant, which means the replicas of this database will be spread across multiple availability zones."
-          }
-        },
-        "diagnosticSettings": {
-          "$ref": "#/definitions/diagnosticSettingType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The diagnostic settings of the service."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true
       }
     }
   },
@@ -566,7 +256,7 @@
         "description": "Optional. Specifies the mode of database creation."
       }
     },
-    "elasticPoolId": {
+    "elasticPoolResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -696,14 +386,14 @@
         "description": "Optional. The state of read-only routing."
       }
     },
-    "recoverableDatabaseId": {
+    "recoverableDatabaseResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
         "description": "Optional. The resource identifier of the recoverable database associated with create operation of this database."
       }
     },
-    "recoveryServicesRecoveryPointId": {
+    "recoveryServicesRecoveryPointResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -723,7 +413,7 @@
         "description": "Optional. The storage account type to be used to store backups for this database."
       }
     },
-    "restorableDroppedDatabaseId": {
+    "restorableDroppedDatabaseResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -763,7 +453,7 @@
         "description": "Optional. The time that the database was deleted when restoring a deleted database."
       }
     },
-    "sourceDatabaseId": {
+    "sourceDatabaseResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -846,7 +536,7 @@
         "catalogCollation": "[parameters('catalogCollation')]",
         "collation": "[parameters('collation')]",
         "createMode": "[parameters('createMode')]",
-        "elasticPoolId": "[parameters('elasticPoolId')]",
+        "elasticPoolId": "[parameters('elasticPoolResourceId')]",
         "encryptionProtector": "[parameters('encryptionProtector')]",
         "encryptionProtectorAutoRotation": "[parameters('encryptionProtectorAutoRotation')]",
         "federatedClientId": "[parameters('federatedClientId')]",
@@ -862,15 +552,15 @@
         "performCutover": "[parameters('performCutover')]",
         "preferredEnclaveType": "[parameters('preferredEnclaveType')]",
         "readScale": "[parameters('readScale')]",
-        "recoverableDatabaseId": "[parameters('recoverableDatabaseId')]",
-        "recoveryServicesRecoveryPointId": "[parameters('recoveryServicesRecoveryPointId')]",
+        "recoverableDatabaseId": "[parameters('recoverableDatabaseResourceId')]",
+        "recoveryServicesRecoveryPointId": "[parameters('recoveryServicesRecoveryPointResourceId')]",
         "requestedBackupStorageRedundancy": "[parameters('requestedBackupStorageRedundancy')]",
-        "restorableDroppedDatabaseId": "[parameters('restorableDroppedDatabaseId')]",
+        "restorableDroppedDatabaseId": "[parameters('restorableDroppedDatabaseResourceId')]",
         "restorePointInTime": "[parameters('restorePointInTime')]",
         "sampleName": "[parameters('sampleName')]",
         "secondaryType": "[parameters('secondaryType')]",
         "sourceDatabaseDeletionDate": "[parameters('sourceDatabaseDeletionDate')]",
-        "sourceDatabaseId": "[parameters('sourceDatabaseId')]",
+        "sourceDatabaseId": "[parameters('sourceDatabaseResourceId')]",
         "sourceResourceId": "[parameters('sourceResourceId')]",
         "useFreeLimit": "[parameters('useFreeLimit')]",
         "zoneRedundant": "[parameters('zoneRedundant')]"

@@ -43,7 +43,7 @@ This module deploys an Azure SQL Server Database.
 | [`collation`](#parameter-collation) | string | The collation of the database. |
 | [`createMode`](#parameter-createmode) | string | Specifies the mode of database creation. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`elasticPoolId`](#parameter-elasticpoolid) | string | The resource ID of the elastic pool containing this database. |
+| [`elasticPoolResourceId`](#parameter-elasticpoolresourceid) | string | The resource ID of the elastic pool containing this database. |
 | [`encryptionProtector`](#parameter-encryptionprotector) | string | The azure key vault URI of the database if it's configured with per Database Customer Managed Keys. |
 | [`encryptionProtectorAutoRotation`](#parameter-encryptionprotectorautorotation) | bool | The flag to enable or disable auto rotation of database encryption protector AKV key. |
 | [`federatedClientId`](#parameter-federatedclientid) | string | The Client id used for cross tenant per database CMK scenario. |
@@ -60,16 +60,16 @@ This module deploys an Azure SQL Server Database.
 | [`performCutover`](#parameter-performcutover) | bool | To trigger customer controlled manual cutover during the wait state while Scaling operation is in progress. |
 | [`preferredEnclaveType`](#parameter-preferredenclavetype) | string | Type of enclave requested on the database i.e. Default or VBS enclaves. |
 | [`readScale`](#parameter-readscale) | string | The state of read-only routing. |
-| [`recoverableDatabaseId`](#parameter-recoverabledatabaseid) | string | The resource identifier of the recoverable database associated with create operation of this database. |
-| [`recoveryServicesRecoveryPointId`](#parameter-recoveryservicesrecoverypointid) | string | The resource identifier of the recovery point associated with create operation of this database. |
+| [`recoverableDatabaseResourceId`](#parameter-recoverabledatabaseresourceid) | string | The resource identifier of the recoverable database associated with create operation of this database. |
+| [`recoveryServicesRecoveryPointResourceId`](#parameter-recoveryservicesrecoverypointresourceid) | string | The resource identifier of the recovery point associated with create operation of this database. |
 | [`requestedBackupStorageRedundancy`](#parameter-requestedbackupstorageredundancy) | string | The storage account type to be used to store backups for this database. |
-| [`restorableDroppedDatabaseId`](#parameter-restorabledroppeddatabaseid) | string | The resource identifier of the restorable dropped database associated with create operation of this database. |
+| [`restorableDroppedDatabaseResourceId`](#parameter-restorabledroppeddatabaseresourceid) | string | The resource identifier of the restorable dropped database associated with create operation of this database. |
 | [`restorePointInTime`](#parameter-restorepointintime) | string | Point in time (ISO8601 format) of the source database to restore when createMode set to Restore or PointInTimeRestore. |
 | [`sampleName`](#parameter-samplename) | string | The name of the sample schema to apply when creating this database. |
 | [`secondaryType`](#parameter-secondarytype) | string | The secondary type of the database if it is a secondary. |
 | [`sku`](#parameter-sku) | object | The database SKU. |
 | [`sourceDatabaseDeletionDate`](#parameter-sourcedatabasedeletiondate) | string | The time that the database was deleted when restoring a deleted database. |
-| [`sourceDatabaseId`](#parameter-sourcedatabaseid) | string | The resource identifier of the source database associated with create operation of this database. |
+| [`sourceDatabaseResourceId`](#parameter-sourcedatabaseresourceid) | string | The resource identifier of the source database associated with create operation of this database. |
 | [`sourceResourceId`](#parameter-sourceresourceid) | string | The resource identifier of the source associated with the create operation of this database. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`useFreeLimit`](#parameter-usefreelimit) | bool | Whether or not the database uses free monthly limits. Allowed on one database in a subscription. |
@@ -315,7 +315,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `elasticPoolId`
+### Parameter: `elasticPoolResourceId`
 
 The resource ID of the elastic pool containing this database.
 
@@ -468,14 +468,14 @@ The state of read-only routing.
   ]
   ```
 
-### Parameter: `recoverableDatabaseId`
+### Parameter: `recoverableDatabaseResourceId`
 
 The resource identifier of the recoverable database associated with create operation of this database.
 
 - Required: No
 - Type: string
 
-### Parameter: `recoveryServicesRecoveryPointId`
+### Parameter: `recoveryServicesRecoveryPointResourceId`
 
 The resource identifier of the recovery point associated with create operation of this database.
 
@@ -499,7 +499,7 @@ The storage account type to be used to store backups for this database.
   ]
   ```
 
-### Parameter: `restorableDroppedDatabaseId`
+### Parameter: `restorableDroppedDatabaseResourceId`
 
 The resource identifier of the restorable dropped database associated with create operation of this database.
 
@@ -607,7 +607,7 @@ The time that the database was deleted when restoring a deleted database.
 - Required: No
 - Type: string
 
-### Parameter: `sourceDatabaseId`
+### Parameter: `sourceDatabaseResourceId`
 
 The resource identifier of the source database associated with create operation of this database.
 

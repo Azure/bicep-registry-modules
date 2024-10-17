@@ -21,6 +21,11 @@ This module deploys an Azure SQL Server Elastic Pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the Elastic Pool. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`serverName`](#parameter-servername) | string | The name of the parent SQL Server. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
@@ -221,7 +226,6 @@ The elastic pool SKU.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-skuname) | string | The name of the SKU, typically, a letter + Number code, e.g. P3. |
-| [`tier`](#parameter-skutier) | string | The tier or edition of the particular SKU, e.g. Basic, Premium. |
 
 **Optional parameters**
 
@@ -230,6 +234,7 @@ The elastic pool SKU.
 | [`capacity`](#parameter-skucapacity) | int | The capacity of the particular SKU. |
 | [`family`](#parameter-skufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
 | [`size`](#parameter-skusize) | string | Size of the particular SKU. |
+| [`tier`](#parameter-skutier) | string | The tier or edition of the particular SKU, e.g. Basic, Premium. |
 
 ### Parameter: `sku.name`
 
@@ -255,13 +260,6 @@ The name of the SKU, typically, a letter + Number code, e.g. P3.
   ]
   ```
 
-### Parameter: `sku.tier`
-
-The tier or edition of the particular SKU, e.g. Basic, Premium.
-
-- Required: No
-- Type: string
-
 ### Parameter: `sku.capacity`
 
 The capacity of the particular SKU.
@@ -279,6 +277,13 @@ If the service has different generations of hardware, for the same SKU, then tha
 ### Parameter: `sku.size`
 
 Size of the particular SKU.
+
+- Required: No
+- Type: string
+
+### Parameter: `sku.tier`
+
+The tier or edition of the particular SKU, e.g. Basic, Premium.
 
 - Required: No
 - Type: string

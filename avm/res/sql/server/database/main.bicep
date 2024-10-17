@@ -42,7 +42,7 @@ param createMode
   | 'Secondary' = 'Default'
 
 @description('Optional. The resource ID of the elastic pool containing this database.')
-param elasticPoolId string?
+param elasticPoolResourceId string?
 
 @description('Optional. The azure key vault URI of the database if it\'s configured with per Database Customer Managed Keys.')
 param encryptionProtector string?
@@ -92,16 +92,16 @@ param preferredEnclaveType 'Default' | 'VBS'?
 param readScale 'Enabled' | 'Disabled' = 'Disabled'
 
 @description('Optional. The resource identifier of the recoverable database associated with create operation of this database.')
-param recoverableDatabaseId string?
+param recoverableDatabaseResourceId string?
 
 @description('Optional. The resource identifier of the recovery point associated with create operation of this database.')
-param recoveryServicesRecoveryPointId string?
+param recoveryServicesRecoveryPointResourceId string?
 
 @description('Optional. The storage account type to be used to store backups for this database.')
 param requestedBackupStorageRedundancy 'Geo' | 'GeoZone' | 'Local' | 'Zone' = 'Local'
 
 @description('Optional. The resource identifier of the restorable dropped database associated with create operation of this database.')
-param restorableDroppedDatabaseId string?
+param restorableDroppedDatabaseResourceId string?
 
 @description('Optional. Point in time (ISO8601 format) of the source database to restore when createMode set to Restore or PointInTimeRestore.')
 param restorePointInTime string?
@@ -116,7 +116,7 @@ param secondaryType 'Geo' | 'Named' | 'Standby'?
 param sourceDatabaseDeletionDate string?
 
 @description('Optional. The resource identifier of the source database associated with create operation of this database.')
-param sourceDatabaseId string?
+param sourceDatabaseResourceId string?
 
 @description('Optional. The resource identifier of the source associated with the create operation of this database.')
 param sourceResourceId string?
@@ -160,7 +160,7 @@ resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
     catalogCollation: catalogCollation
     collation: collation
     createMode: createMode
-    elasticPoolId: elasticPoolId
+    elasticPoolId: elasticPoolResourceId
     encryptionProtector: encryptionProtector
     encryptionProtectorAutoRotation: encryptionProtectorAutoRotation
     federatedClientId: federatedClientId
@@ -177,15 +177,15 @@ resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
     performCutover: performCutover
     preferredEnclaveType: preferredEnclaveType
     readScale: readScale
-    recoverableDatabaseId: recoverableDatabaseId
-    recoveryServicesRecoveryPointId: recoveryServicesRecoveryPointId
+    recoverableDatabaseId: recoverableDatabaseResourceId
+    recoveryServicesRecoveryPointId: recoveryServicesRecoveryPointResourceId
     requestedBackupStorageRedundancy: requestedBackupStorageRedundancy
-    restorableDroppedDatabaseId: restorableDroppedDatabaseId
+    restorableDroppedDatabaseId: restorableDroppedDatabaseResourceId
     restorePointInTime: restorePointInTime
     sampleName: sampleName
     secondaryType: secondaryType
     sourceDatabaseDeletionDate: sourceDatabaseDeletionDate
-    sourceDatabaseId: sourceDatabaseId
+    sourceDatabaseId: sourceDatabaseResourceId
     sourceResourceId: sourceResourceId
     useFreeLimit: useFreeLimit
     zoneRedundant: zoneRedundant
@@ -263,6 +263,7 @@ output location string = database.location
 //   Definitions   //
 // =============== //
 
+@export()
 type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
@@ -324,132 +325,4 @@ type databaseSkuType = {
 
   @description('Required. The tier or edition of the particular SKU, e.g. Basic, Premium.')
   tier: string?
-}
-
-@export()
-type databasePropertyType = {
-  @description('Required. The name of the Elastic Pool.')
-  name: string
-
-  @description('Optional. Tags of the resource.')
-  tags: object?
-
-  @description('Optional. The database SKU.')
-  sku: databaseSkuType?
-
-  @description('Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled.')
-  autoPauseDelay: int?
-
-  @description('Optional. Specifies the availability zone the database is pinned to.')
-  availabilityZone: '1' | '2' | '3' | 'NoPreference'?
-
-  @description('Optional. Collation of the metadata catalog.')
-  catalogCollation: string?
-
-  @description('Optional. The collation of the database.')
-  collation: string?
-
-  @description('Optional. Specifies the mode of database creation.')
-  createMode:
-    | 'Copy'
-    | 'Default'
-    | 'OnlineSecondary'
-    | 'PointInTimeRestore'
-    | 'Recovery'
-    | 'Restore'
-    | 'RestoreExternalBackup'
-    | 'RestoreExternalBackupSecondary'
-    | 'RestoreLongTermRetentionBackup'
-    | 'Secondary'?
-
-  @description('Optional. The resource identifier of the elastic pool containing this database.')
-  elasticPoolId: string?
-
-  @description('Optional. The azure key vault URI of the database if it\'s configured with per Database Customer Managed Keys.')
-  encryptionProtector: string?
-
-  @description('Optional. The flag to enable or disable auto rotation of database encryption protector AKV key.')
-  encryptionProtectorAutoRotation: bool?
-
-  @description('Optional. The Client id used for cross tenant per database CMK scenario.')
-  @minLength(36)
-  @maxLength(36)
-  federatedClientId: string?
-
-  @description('Optional. Specifies the behavior when monthly free limits are exhausted for the free database.')
-  freeLimitExhaustionBehavior: 'AutoPause' | 'BillOverUsage'?
-
-  @description('Optional. The number of secondary replicas associated with the database that are used to provide high availability. Not applicable to a Hyperscale database within an elastic pool.')
-  highAvailabilityReplicaCount: int?
-
-  @description('Optional. Whether or not this database is a ledger database, which means all tables in the database are ledger tables.')
-  isLedgerOn: bool?
-
-  // keys
-  @description('Optional. The license type to apply for this database.')
-  licenseType: 'BasePrice' | 'LicenseIncluded'?
-
-  @description('Optional. The resource identifier of the long term retention backup associated with create operation of this database.')
-  longTermRetentionBackupResourceId: string?
-
-  @description('Optional. Maintenance configuration id assigned to the database. This configuration defines the period when the maintenance updates will occur.')
-  maintenanceConfigurationId: string?
-
-  @description('Optional. Whether or not customer controlled manual cutover needs to be done during Update Database operation to Hyperscale tier.')
-  manualCutover: bool?
-
-  @description('Optional. The max size of the database expressed in bytes.')
-  maxSizeBytes: int?
-
-  // string to enable fractional values
-  @description('Optional. Minimal capacity that database will always have allocated, if not paused.')
-  minCapacity: string?
-
-  @description('Optional. To trigger customer controlled manual cutover during the wait state while Scaling operation is in progress.')
-  performCutover: bool?
-
-  @description('Optional. Type of enclave requested on the database.')
-  preferredEnclaveType: 'Default' | 'VBS'?
-
-  @description('Optional. The state of read-only routing. If enabled, connections that have application intent set to readonly in their connection string may be routed to a readonly secondary replica in the same region. Not applicable to a Hyperscale database within an elastic pool.')
-  readScale: 'Disabled' | 'Enabled'?
-
-  @description('Optional. The resource identifier of the recoverable database associated with create operation of this database.')
-  recoverableDatabaseId: string?
-
-  @description('Optional. The resource identifier of the recovery point associated with create operation of this database.')
-  recoveryServicesRecoveryPointId: string?
-
-  @description('Optional. The storage account type to be used to store backups for this database.')
-  requestedBackupStorageRedundancy: 'Geo' | 'GeoZone' | 'Local' | 'Zone'?
-
-  @description('Optional. The resource identifier of the restorable dropped database associated with create operation of this database.')
-  restorableDroppedDatabaseId: string?
-
-  @description('Optional. Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database.')
-  restorePointInTime: string?
-
-  @description('Optional. The name of the sample schema to apply when creating this database.')
-  sampleName: string?
-
-  @description('Optional. The secondary type of the database if it is a secondary.')
-  secondaryType: 'Geo' | 'Named' | 'Standby'?
-
-  @description('Optional. Specifies the time that the database was deleted.')
-  sourceDatabaseDeletionDate: string?
-
-  @description('Optional. The resource identifier of the source database associated with create operation of this database.')
-  sourceDatabaseId: string?
-
-  @description('Optional. The resource identifier of the source associated with the create operation of this database.')
-  sourceResourceId: string?
-
-  @description('Optional. Whether or not the database uses free monthly limits. Allowed on one database in a subscription.')
-  useFreeLimit: bool?
-
-  @description('Optional. Whether or not this database is zone redundant, which means the replicas of this database will be spread across multiple availability zones.')
-  zoneRedundant: bool?
-
-  @description('Optional. The diagnostic settings of the service.')
-  diagnosticSettings: diagnosticSettingType?
 }
