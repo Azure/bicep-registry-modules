@@ -871,6 +871,12 @@ type databasePropertyType = {
 
   @description('Optional. The diagnostic settings of the service.')
   diagnosticSettings: diagnosticSettingType?
+
+  @description('Optional. The short term backup retention policy for the database.')
+  backupShortTermRetentionPolicy: shortTermBackupRetentionPolicyType?
+
+  @description('Optional. The long term backup retention policy for the database.')
+  backupLongTermRetentionPolicy: longTermBackupRetentionPolicyType?
 }
 
 @export()
@@ -916,7 +922,7 @@ type elasticPoolPropertyType = {
 }
 
 import { elasticPoolPerDatabaseSettingsType, elasticPoolSkuType } from 'elastic-pool/main.bicep'
-import { databaseSkuType, diagnosticSettingType } from 'database/main.bicep'
+import { databaseSkuType, diagnosticSettingType, shortTermBackupRetentionPolicyType, longTermBackupRetentionPolicyType } from 'database/main.bicep'
 
 import { secretSetType } from 'modules/keyVaultExport.bicep'
 type secretsOutputType = {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "9296721864796917258"
+      "templateHash": "8570245614970945119"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database.",
@@ -177,6 +177,84 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The database SKU."
+      }
+    },
+    "shortTermBackupRetentionPolicyType": {
+      "type": "object",
+      "properties": {
+        "diffBackupIntervalInHours": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Differential backup interval in hours."
+          }
+        },
+        "retentionDays": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Point-in-time retention in days."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The short-term backup retention policy for the database."
+      }
+    },
+    "longTermBackupRetentionPolicyType": {
+      "type": "object",
+      "properties": {
+        "backupStorageAccessTier": {
+          "type": "string",
+          "allowedValues": [
+            "Archive",
+            "Hot"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The BackupStorageAccessTier for the LTR backups."
+          }
+        },
+        "makeBackupsImmutable": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The setting whether to make LTR backups immutable."
+          }
+        },
+        "monthlyRetention": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Monthly retention in ISO 8601 duration format."
+          }
+        },
+        "weeklyRetention": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Weekly retention in ISO 8601 duration format."
+          }
+        },
+        "weekOfYear": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Week of year backup to keep for yearly retention."
+          }
+        },
+        "yearlyRetention": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Yearly retention in ISO 8601 duration format."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The long-term backup retention policy for the database."
       }
     }
   },
@@ -502,15 +580,15 @@
       }
     },
     "backupShortTermRetentionPolicy": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/shortTermBackupRetentionPolicyType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The short term backup retention policy to create for the database."
       }
     },
     "backupLongTermRetentionPolicy": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/longTermBackupRetentionPolicyType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The long term backup retention policy to create for the database."
       }
@@ -611,6 +689,7 @@
       ]
     },
     "database_backupShortTermRetentionPolicy": {
+      "condition": "[not(empty(parameters('backupShortTermRetentionPolicy')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}-shBakRetPol', uniqueString(deployment().name, parameters('location')), parameters('name'))]",
@@ -627,10 +706,10 @@
             "value": "[parameters('name')]"
           },
           "diffBackupIntervalInHours": {
-            "value": "[coalesce(tryGet(parameters('backupShortTermRetentionPolicy'), 'diffBackupIntervalInHours'), 24)]"
+            "value": "[tryGet(parameters('backupShortTermRetentionPolicy'), 'diffBackupIntervalInHours')]"
           },
           "retentionDays": {
-            "value": "[coalesce(tryGet(parameters('backupShortTermRetentionPolicy'), 'retentionDays'), 7)]"
+            "value": "[tryGet(parameters('backupShortTermRetentionPolicy'), 'retentionDays')]"
           }
         },
         "template": {
@@ -715,6 +794,7 @@
       ]
     },
     "database_backupLongTermRetentionPolicy": {
+      "condition": "[not(empty(parameters('backupLongTermRetentionPolicy')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}-lgBakRetPol', uniqueString(deployment().name, parameters('location')), parameters('name'))]",
@@ -730,27 +810,34 @@
           "databaseName": {
             "value": "[parameters('name')]"
           },
+          "backupStorageAccessTier": {
+            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'backupStorageAccessTier')]"
+          },
+          "makeBackupsImmutable": {
+            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'makeBackupsImmutable')]"
+          },
           "weeklyRetention": {
-            "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPolicy'), 'weeklyRetention'), '')]"
+            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weeklyRetention')]"
           },
           "monthlyRetention": {
-            "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPolicy'), 'monthlyRetention'), '')]"
+            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'monthlyRetention')]"
           },
           "yearlyRetention": {
-            "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPolicy'), 'yearlyRetention'), '')]"
+            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'yearlyRetention')]"
           },
           "weekOfYear": {
-            "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPolicy'), 'weekOfYear'), 1)]"
+            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weekOfYear')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "2778016138108001251"
+              "templateHash": "13893387790480518080"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
@@ -769,18 +856,36 @@
                 "description": "Required. The name of the parent database."
               }
             },
-            "weeklyRetention": {
+            "backupStorageAccessTier": {
               "type": "string",
-              "defaultValue": "",
+              "allowedValues": [
+                "Archive",
+                "Hot"
+              ],
+              "nullable": true,
               "metadata": {
-                "description": "Optional. Monthly retention in ISO 8601 duration format."
+                "description": "Optional. The BackupStorageAccessTier for the LTR backups."
+              }
+            },
+            "makeBackupsImmutable": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The setting whether to make LTR backups immutable."
               }
             },
             "monthlyRetention": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Weekly retention in ISO 8601 duration format."
+              }
+            },
+            "weeklyRetention": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Monthly retention in ISO 8601 duration format."
               }
             },
             "weekOfYear": {
@@ -792,25 +897,45 @@
             },
             "yearlyRetention": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Yearly retention in ISO 8601 duration format."
               }
             }
           },
-          "resources": [
-            {
-              "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
+          "resources": {
+            "server::database": {
+              "existing": true,
+              "type": "Microsoft.Sql/servers/databases",
               "apiVersion": "2023-08-01-preview",
+              "name": "[format('{0}/{1}', parameters('serverName'), parameters('databaseName'))]",
+              "dependsOn": [
+                "server"
+              ]
+            },
+            "server": {
+              "existing": true,
+              "type": "Microsoft.Sql/servers",
+              "apiVersion": "2023-08-01-preview",
+              "name": "[parameters('serverName')]"
+            },
+            "backupLongTermRetentionPolicy": {
+              "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
+              "apiVersion": "2023-05-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
               "properties": {
+                "backupStorageAccessTier": "[parameters('backupStorageAccessTier')]",
+                "makeBackupsImmutable": "[parameters('makeBackupsImmutable')]",
                 "monthlyRetention": "[parameters('monthlyRetention')]",
                 "weeklyRetention": "[parameters('weeklyRetention')]",
                 "weekOfYear": "[parameters('weekOfYear')]",
                 "yearlyRetention": "[parameters('yearlyRetention')]"
-              }
+              },
+              "dependsOn": [
+                "server::database"
+              ]
             }
-          ],
+          },
           "outputs": {
             "resourceGroupName": {
               "type": "string",

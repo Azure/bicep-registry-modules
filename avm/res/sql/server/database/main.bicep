@@ -139,10 +139,10 @@ param location string = resourceGroup().location
 param diagnosticSettings diagnosticSettingType
 
 @description('Optional. The short term backup retention policy to create for the database.')
-param backupShortTermRetentionPolicy object = {}
+param backupShortTermRetentionPolicy shortTermBackupRetentionPolicyType?
 
 @description('Optional. The long term backup retention policy to create for the database.')
-param backupLongTermRetentionPolicy object = {}
+param backupLongTermRetentionPolicy longTermBackupRetentionPolicyType?
 
 resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
   name: serverName
@@ -221,25 +221,27 @@ resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
   }
 ]
 
-module database_backupShortTermRetentionPolicy 'backup-short-term-retention-policy/main.bicep' = {
+module database_backupShortTermRetentionPolicy 'backup-short-term-retention-policy/main.bicep' = if (!empty(backupShortTermRetentionPolicy)) {
   name: '${uniqueString(deployment().name, location)}-${name}-shBakRetPol'
   params: {
     serverName: serverName
     databaseName: database.name
-    diffBackupIntervalInHours: backupShortTermRetentionPolicy.?diffBackupIntervalInHours ?? 24
-    retentionDays: backupShortTermRetentionPolicy.?retentionDays ?? 7
+    diffBackupIntervalInHours: backupShortTermRetentionPolicy.?diffBackupIntervalInHours
+    retentionDays: backupShortTermRetentionPolicy.?retentionDays
   }
 }
 
-module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy/main.bicep' = {
+module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy/main.bicep' = if (!empty(backupLongTermRetentionPolicy)) {
   name: '${uniqueString(deployment().name, location)}-${name}-lgBakRetPol'
   params: {
     serverName: serverName
     databaseName: database.name
-    weeklyRetention: backupLongTermRetentionPolicy.?weeklyRetention ?? ''
-    monthlyRetention: backupLongTermRetentionPolicy.?monthlyRetention ?? ''
-    yearlyRetention: backupLongTermRetentionPolicy.?yearlyRetention ?? ''
-    weekOfYear: backupLongTermRetentionPolicy.?weekOfYear ?? 1
+    backupStorageAccessTier: backupLongTermRetentionPolicy.?backupStorageAccessTier
+    makeBackupsImmutable: backupLongTermRetentionPolicy.?makeBackupsImmutable
+    weeklyRetention: backupLongTermRetentionPolicy.?weeklyRetention
+    monthlyRetention: backupLongTermRetentionPolicy.?monthlyRetention
+    yearlyRetention: backupLongTermRetentionPolicy.?yearlyRetention
+    weekOfYear: backupLongTermRetentionPolicy.?weekOfYear
   }
 }
 
@@ -325,4 +327,35 @@ type databaseSkuType = {
 
   @description('Required. The tier or edition of the particular SKU, e.g. Basic, Premium.')
   tier: string?
+}
+
+@export()
+@description('The short-term backup retention policy for the database.')
+type shortTermBackupRetentionPolicyType = {
+  @description('Optional. Differential backup interval in hours.')
+  diffBackupIntervalInHours: int?
+
+  @description('Optional. Point-in-time retention in days.')
+  retentionDays: int?
+}
+@export()
+@description('The long-term backup retention policy for the database.')
+type longTermBackupRetentionPolicyType = {
+  @description('Optional. The BackupStorageAccessTier for the LTR backups.')
+  backupStorageAccessTier: 'Archive' | 'Hot'?
+
+  @description('Optional. The setting whether to make LTR backups immutable.')
+  makeBackupsImmutable: bool?
+
+  @description('Optional. Monthly retention in ISO 8601 duration format.')
+  monthlyRetention: string?
+
+  @description('Optional. Weekly retention in ISO 8601 duration format.')
+  weeklyRetention: string?
+
+  @description('Optional. Week of year backup to keep for yearly retention.')
+  weekOfYear: int?
+
+  @description('Optional. Yearly retention in ISO 8601 duration format.')
+  yearlyRetention: string?
 }
