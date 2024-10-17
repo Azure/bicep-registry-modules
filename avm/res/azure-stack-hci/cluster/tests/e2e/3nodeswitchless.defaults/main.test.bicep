@@ -74,6 +74,7 @@ module hciDependencies 'dependencies.bicep' = {
     localAdminPassword: localAdminAndDeploymentUserPass
     location: enforcedLocation
     namePrefix: namePrefix
+    serviceShort: serviceShort
   }
 }
 
