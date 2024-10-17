@@ -65,7 +65,7 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
     // Required parameters
     containerRegistryName: '<containerRegistryName>'
     keyVaultName: '<keyVaultName>'
-    logAnalyticsName: '<logAnalyticsName>'
+    monitoringWorkspaceResourceId: '<monitoringWorkspaceResourceId>'
     name: '<name>'
     principalId: '<principalId>'
     // Non-required parameters
@@ -94,8 +94,8 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
     "keyVaultName": {
       "value": "<keyVaultName>"
     },
-    "logAnalyticsName": {
-      "value": "<logAnalyticsName>"
+    "monitoringWorkspaceResourceId": {
+      "value": "<monitoringWorkspaceResourceId>"
     },
     "name": {
       "value": "<name>"
@@ -127,7 +127,7 @@ using 'br/public:avm/ptn/azd/aks:<version>'
 // Required parameters
 param containerRegistryName = '<containerRegistryName>'
 param keyVaultName = '<keyVaultName>'
-param logAnalyticsName = '<logAnalyticsName>'
+param monitoringWorkspaceResourceId = '<monitoringWorkspaceResourceId>'
 param name = '<name>'
 param principalId = '<principalId>'
 // Non-required parameters
@@ -154,22 +154,11 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
     // Required parameters
     containerRegistryName: '<containerRegistryName>'
     keyVaultName: '<keyVaultName>'
-    logAnalyticsName: '<logAnalyticsName>'
+    monitoringWorkspaceResourceId: '<monitoringWorkspaceResourceId>'
     name: '<name>'
     principalId: '<principalId>'
     // Non-required parameters
     acrSku: 'Basic'
-    agentPools: [
-      {
-        maxPods: 30
-        maxSurge: '33%'
-        mode: 'User'
-        name: 'npuserpool'
-        osType: 'Linux'
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'standard_a2_v2'
-      }
-    ]
     aksClusterRoleAssignmentName: '<aksClusterRoleAssignmentName>'
     containerRegistryRoleName: '<containerRegistryRoleName>'
     dnsPrefix: 'dep-dns-paamax'
@@ -200,8 +189,8 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
     "keyVaultName": {
       "value": "<keyVaultName>"
     },
-    "logAnalyticsName": {
-      "value": "<logAnalyticsName>"
+    "monitoringWorkspaceResourceId": {
+      "value": "<monitoringWorkspaceResourceId>"
     },
     "name": {
       "value": "<name>"
@@ -212,19 +201,6 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
     // Non-required parameters
     "acrSku": {
       "value": "Basic"
-    },
-    "agentPools": {
-      "value": [
-        {
-          "maxPods": 30,
-          "maxSurge": "33%",
-          "mode": "User",
-          "name": "npuserpool",
-          "osType": "Linux",
-          "type": "VirtualMachineScaleSets",
-          "vmSize": "standard_a2_v2"
-        }
-      ]
     },
     "aksClusterRoleAssignmentName": {
       "value": "<aksClusterRoleAssignmentName>"
@@ -264,22 +240,11 @@ using 'br/public:avm/ptn/azd/aks:<version>'
 // Required parameters
 param containerRegistryName = '<containerRegistryName>'
 param keyVaultName = '<keyVaultName>'
-param logAnalyticsName = '<logAnalyticsName>'
+param monitoringWorkspaceResourceId = '<monitoringWorkspaceResourceId>'
 param name = '<name>'
 param principalId = '<principalId>'
 // Non-required parameters
 param acrSku = 'Basic'
-param agentPools = [
-  {
-    maxPods: 30
-    maxSurge: '33%'
-    mode: 'User'
-    name: 'npuserpool'
-    osType: 'Linux'
-    type: 'VirtualMachineScaleSets'
-    vmSize: 'standard_a2_v2'
-  }
-]
 param aksClusterRoleAssignmentName = '<aksClusterRoleAssignmentName>'
 param containerRegistryRoleName = '<containerRegistryRoleName>'
 param dnsPrefix = 'dep-dns-paamax'
@@ -300,7 +265,7 @@ param webApplicationRoutingEnabled = true
 | :-- | :-- | :-- |
 | [`containerRegistryName`](#parameter-containerregistryname) | string | Name of your Azure Container Registry. |
 | [`keyVaultName`](#parameter-keyvaultname) | string | Name of the Key Vault. Must be globally unique. |
-| [`logAnalyticsName`](#parameter-loganalyticsname) | string | The name of the connected log analytics workspace. |
+| [`monitoringWorkspaceResourceId`](#parameter-monitoringworkspaceresourceid) | string | Resource ID of the monitoring log analytics workspace. |
 | [`name`](#parameter-name) | string | The name of the parent managed cluster. Required if the template is used in a standalone deployment. |
 | [`principalId`](#parameter-principalid) | string | Id of the user or app to assign application roles. |
 
@@ -314,17 +279,20 @@ param webApplicationRoutingEnabled = true
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aadProfileEnableAzureRBAC`](#parameter-aadprofileenableazurerbac) | bool | Specifies whether to enable Azure RBAC for Kubernetes authorization. |
 | [`acrSku`](#parameter-acrsku) | string | Tier of your Azure container registry. |
-| [`agentPools`](#parameter-agentpools) | array | Define one or more secondary/additional agent pools. |
+| [`agentPoolConfig`](#parameter-agentpoolconfig) | object | Custom configuration of user node pool. |
+| [`agentPoolType`](#parameter-agentpooltype) | string | The User Pool Preset sizing. |
 | [`aksClusterRoleAssignmentName`](#parameter-aksclusterroleassignmentname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`autoNodeOsUpgradeProfileUpgradeChannel`](#parameter-autonodeosupgradeprofileupgradechannel) | string | Auto-upgrade channel on the Node Os. |
 | [`containerRegistryRoleName`](#parameter-containerregistryrolename) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`disableLocalAccounts`](#parameter-disablelocalaccounts) | bool | If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled. |
 | [`dnsPrefix`](#parameter-dnsprefix) | string | Specifies the DNS prefix specified when creating the managed cluster. |
 | [`dnsServiceIP`](#parameter-dnsserviceip) | string | Specifies the IP address assigned to the Kubernetes DNS service. It must be within the Kubernetes service address range specified in serviceCidr. |
+| [`enableKeyvaultSecretsProvider`](#parameter-enablekeyvaultsecretsprovider) | bool | Specifies whether the KeyvaultSecretsProvider add-on is enabled or not. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | Kubernetes Version. |
+| [`loadBalancerSku`](#parameter-loadbalancersku) | string | Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools. |
 | [`location`](#parameter-location) | string | Specifies the location of AKS cluster. It picks up Resource Group's location by default. |
-| [`monitoringWorkspaceResourceId`](#parameter-monitoringworkspaceresourceid) | string | Resource ID of the monitoring log analytics workspace. |
 | [`networkDataplane`](#parameter-networkdataplane) | string | Network dataplane used in the Kubernetes cluster. Not compatible with kubenet network plugin. |
 | [`networkPlugin`](#parameter-networkplugin) | string | Network plugin used for building the Kubernetes network. |
 | [`networkPluginMode`](#parameter-networkpluginmode) | string | Network plugin mode used for building the Kubernetes network. Not compatible with kubenet network plugin. |
@@ -337,6 +305,8 @@ param webApplicationRoutingEnabled = true
 | [`serviceCidr`](#parameter-servicecidr) | string | A CIDR notation IP range from which to assign service cluster IPs. It must not overlap with any Subnet IP ranges. |
 | [`skuTier`](#parameter-skutier) | string | Tier of a managed cluster SKU. |
 | [`sshPublicKey`](#parameter-sshpublickey) | string | Specifies the SSH RSA public key string for the Linux nodes. |
+| [`systemPoolConfig`](#parameter-systempoolconfig) | object | Custom configuration of system node pool. |
+| [`systemPoolType`](#parameter-systempooltype) | string | The System Pool Preset sizing. |
 | [`tags`](#parameter-tags) | object | Custom tags to apply to the AKS resources. |
 | [`webApplicationRoutingEnabled`](#parameter-webapplicationroutingenabled) | bool | Specifies whether the webApplicationRoutingEnabled add-on is enabled or not. |
 
@@ -354,9 +324,9 @@ Name of the Key Vault. Must be globally unique.
 - Required: Yes
 - Type: string
 
-### Parameter: `logAnalyticsName`
+### Parameter: `monitoringWorkspaceResourceId`
 
-The name of the connected log analytics workspace.
+Resource ID of the monitoring log analytics workspace.
 
 - Required: Yes
 - Type: string
@@ -382,14 +352,6 @@ Specifies the resource ID of connected application gateway. Required if `ingress
 - Required: No
 - Type: string
 
-### Parameter: `aadProfileEnableAzureRBAC`
-
-Specifies whether to enable Azure RBAC for Kubernetes authorization.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `acrSku`
 
 Tier of your Azure container registry.
@@ -406,371 +368,31 @@ Tier of your Azure container registry.
   ]
   ```
 
-### Parameter: `agentPools`
+### Parameter: `agentPoolConfig`
 
-Define one or more secondary/additional agent pools.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-agentpoolsname) | string | The name of the agent pool. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`availabilityZones`](#parameter-agentpoolsavailabilityzones) | array | The availability zones of the agent pool. |
-| [`count`](#parameter-agentpoolscount) | int | The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
-| [`enableAutoScaling`](#parameter-agentpoolsenableautoscaling) | bool | Whether to enable auto-scaling for the agent pool. |
-| [`enableDefaultTelemetry`](#parameter-agentpoolsenabledefaulttelemetry) | bool | The enable default telemetry of the agent pool. |
-| [`enableEncryptionAtHost`](#parameter-agentpoolsenableencryptionathost) | bool | Whether to enable encryption at host for the agent pool. |
-| [`enableFIPS`](#parameter-agentpoolsenablefips) | bool | Whether to enable FIPS for the agent pool. |
-| [`enableNodePublicIP`](#parameter-agentpoolsenablenodepublicip) | bool | Whether to enable node public IP for the agent pool. |
-| [`enableUltraSSD`](#parameter-agentpoolsenableultrassd) | bool | Whether to enable Ultra SSD for the agent pool. |
-| [`gpuInstanceProfile`](#parameter-agentpoolsgpuinstanceprofile) | string | The GPU instance profile of the agent pool. |
-| [`kubeletDiskType`](#parameter-agentpoolskubeletdisktype) | string | The kubelet disk type of the agent pool. |
-| [`maxCount`](#parameter-agentpoolsmaxcount) | int | The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
-| [`maxPods`](#parameter-agentpoolsmaxpods) | int | The maximum number of pods that can run on a node. |
-| [`maxSurge`](#parameter-agentpoolsmaxsurge) | string | The maximum number of nodes that can be created during an upgrade. |
-| [`minCount`](#parameter-agentpoolsmincount) | int | The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
-| [`minPods`](#parameter-agentpoolsminpods) | int | The minimum number of pods that can run on a node. |
-| [`mode`](#parameter-agentpoolsmode) | string | The mode of the agent pool. |
-| [`nodeLabels`](#parameter-agentpoolsnodelabels) | object | The node labels of the agent pool. |
-| [`nodePublicIpPrefixId`](#parameter-agentpoolsnodepublicipprefixid) | string | The node public IP prefix ID of the agent pool. |
-| [`nodeTaints`](#parameter-agentpoolsnodetaints) | array | The node taints of the agent pool. |
-| [`orchestratorVersion`](#parameter-agentpoolsorchestratorversion) | string | The Kubernetes version of the agent pool. |
-| [`osDiskSizeGB`](#parameter-agentpoolsosdisksizegb) | int | The OS disk size in GB of the agent pool. |
-| [`osDiskType`](#parameter-agentpoolsosdisktype) | string | The OS disk type of the agent pool. |
-| [`osSku`](#parameter-agentpoolsossku) | string | The OS SKU of the agent pool. |
-| [`osType`](#parameter-agentpoolsostype) | string | The OS type of the agent pool. |
-| [`podSubnetId`](#parameter-agentpoolspodsubnetid) | string | The pod subnet ID of the agent pool. |
-| [`proximityPlacementGroupResourceId`](#parameter-agentpoolsproximityplacementgroupresourceid) | string | The proximity placement group resource ID of the agent pool. |
-| [`scaleDownMode`](#parameter-agentpoolsscaledownmode) | string | The scale down mode of the agent pool. |
-| [`scaleSetEvictionPolicy`](#parameter-agentpoolsscalesetevictionpolicy) | string | The scale set eviction policy of the agent pool. |
-| [`scaleSetPriority`](#parameter-agentpoolsscalesetpriority) | string | The scale set priority of the agent pool. |
-| [`sourceResourceId`](#parameter-agentpoolssourceresourceid) | string | The source resource ID to create the agent pool from. |
-| [`spotMaxPrice`](#parameter-agentpoolsspotmaxprice) | int | The spot max price of the agent pool. |
-| [`tags`](#parameter-agentpoolstags) | object | The tags of the agent pool. |
-| [`type`](#parameter-agentpoolstype) | string | The type of the agent pool. |
-| [`vmSize`](#parameter-agentpoolsvmsize) | string | The VM size of the agent pool. |
-| [`vnetSubnetID`](#parameter-agentpoolsvnetsubnetid) | string | The VNet subnet ID of the agent pool. |
-| [`workloadRuntime`](#parameter-agentpoolsworkloadruntime) | string | The workload runtime of the agent pool. |
-
-### Parameter: `agentPools.name`
-
-The name of the agent pool.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `agentPools.availabilityZones`
-
-The availability zones of the agent pool.
-
-- Required: No
-- Type: array
-
-### Parameter: `agentPools.count`
-
-The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
-
-- Required: No
-- Type: int
-
-### Parameter: `agentPools.enableAutoScaling`
-
-Whether to enable auto-scaling for the agent pool.
-
-- Required: No
-- Type: bool
-
-### Parameter: `agentPools.enableDefaultTelemetry`
-
-The enable default telemetry of the agent pool.
-
-- Required: No
-- Type: bool
-
-### Parameter: `agentPools.enableEncryptionAtHost`
-
-Whether to enable encryption at host for the agent pool.
-
-- Required: No
-- Type: bool
-
-### Parameter: `agentPools.enableFIPS`
-
-Whether to enable FIPS for the agent pool.
-
-- Required: No
-- Type: bool
-
-### Parameter: `agentPools.enableNodePublicIP`
-
-Whether to enable node public IP for the agent pool.
-
-- Required: No
-- Type: bool
-
-### Parameter: `agentPools.enableUltraSSD`
-
-Whether to enable Ultra SSD for the agent pool.
-
-- Required: No
-- Type: bool
-
-### Parameter: `agentPools.gpuInstanceProfile`
-
-The GPU instance profile of the agent pool.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'MIG1g'
-    'MIG2g'
-    'MIG3g'
-    'MIG4g'
-    'MIG7g'
-  ]
-  ```
-
-### Parameter: `agentPools.kubeletDiskType`
-
-The kubelet disk type of the agent pool.
-
-- Required: No
-- Type: string
-
-### Parameter: `agentPools.maxCount`
-
-The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
-
-- Required: No
-- Type: int
-
-### Parameter: `agentPools.maxPods`
-
-The maximum number of pods that can run on a node.
-
-- Required: No
-- Type: int
-
-### Parameter: `agentPools.maxSurge`
-
-The maximum number of nodes that can be created during an upgrade.
-
-- Required: No
-- Type: string
-
-### Parameter: `agentPools.minCount`
-
-The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
-
-- Required: No
-- Type: int
-
-### Parameter: `agentPools.minPods`
-
-The minimum number of pods that can run on a node.
-
-- Required: No
-- Type: int
-
-### Parameter: `agentPools.mode`
-
-The mode of the agent pool.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'System'
-    'User'
-  ]
-  ```
-
-### Parameter: `agentPools.nodeLabels`
-
-The node labels of the agent pool.
+Custom configuration of user node pool.
 
 - Required: No
 - Type: object
+- Default: `{}`
 
-### Parameter: `agentPools.nodePublicIpPrefixId`
+### Parameter: `agentPoolType`
 
-The node public IP prefix ID of the agent pool.
-
-- Required: No
-- Type: string
-
-### Parameter: `agentPools.nodeTaints`
-
-The node taints of the agent pool.
-
-- Required: No
-- Type: array
-
-### Parameter: `agentPools.orchestratorVersion`
-
-The Kubernetes version of the agent pool.
+The User Pool Preset sizing.
 
 - Required: No
 - Type: string
-
-### Parameter: `agentPools.osDiskSizeGB`
-
-The OS disk size in GB of the agent pool.
-
-- Required: No
-- Type: int
-
-### Parameter: `agentPools.osDiskType`
-
-The OS disk type of the agent pool.
-
-- Required: No
-- Type: string
-
-### Parameter: `agentPools.osSku`
-
-The OS SKU of the agent pool.
-
-- Required: No
-- Type: string
-
-### Parameter: `agentPools.osType`
-
-The OS type of the agent pool.
-
-- Required: No
-- Type: string
+- Default: `''`
 - Allowed:
   ```Bicep
   [
-    'Linux'
-    'Windows'
+    ''
+    'CostOptimised'
+    'Custom'
+    'HighSpec'
+    'Standard'
   ]
   ```
-
-### Parameter: `agentPools.podSubnetId`
-
-The pod subnet ID of the agent pool.
-
-- Required: No
-- Type: string
-
-### Parameter: `agentPools.proximityPlacementGroupResourceId`
-
-The proximity placement group resource ID of the agent pool.
-
-- Required: No
-- Type: string
-
-### Parameter: `agentPools.scaleDownMode`
-
-The scale down mode of the agent pool.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Deallocate'
-    'Delete'
-  ]
-  ```
-
-### Parameter: `agentPools.scaleSetEvictionPolicy`
-
-The scale set eviction policy of the agent pool.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Deallocate'
-    'Delete'
-  ]
-  ```
-
-### Parameter: `agentPools.scaleSetPriority`
-
-The scale set priority of the agent pool.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Low'
-    'Regular'
-    'Spot'
-  ]
-  ```
-
-### Parameter: `agentPools.sourceResourceId`
-
-The source resource ID to create the agent pool from.
-
-- Required: No
-- Type: string
-
-### Parameter: `agentPools.spotMaxPrice`
-
-The spot max price of the agent pool.
-
-- Required: No
-- Type: int
-
-### Parameter: `agentPools.tags`
-
-The tags of the agent pool.
-
-- Required: No
-- Type: object
-
-### Parameter: `agentPools.type`
-
-The type of the agent pool.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AvailabilitySet'
-    'VirtualMachineScaleSets'
-  ]
-  ```
-
-### Parameter: `agentPools.vmSize`
-
-The VM size of the agent pool.
-
-- Required: No
-- Type: string
-
-### Parameter: `agentPools.vnetSubnetID`
-
-The VNet subnet ID of the agent pool.
-
-- Required: No
-- Type: string
-
-### Parameter: `agentPools.workloadRuntime`
-
-The workload runtime of the agent pool.
-
-- Required: No
-- Type: string
 
 ### Parameter: `aksClusterRoleAssignmentName`
 
@@ -779,12 +401,37 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 - Required: No
 - Type: string
 
+### Parameter: `autoNodeOsUpgradeProfileUpgradeChannel`
+
+Auto-upgrade channel on the Node Os.
+
+- Required: No
+- Type: string
+- Default: `'NodeImage'`
+- Allowed:
+  ```Bicep
+  [
+    'NodeImage'
+    'None'
+    'SecurityPatch'
+    'Unmanaged'
+  ]
+  ```
+
 ### Parameter: `containerRegistryRoleName`
 
 The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
+
+### Parameter: `disableLocalAccounts`
+
+If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `dnsPrefix`
 
@@ -800,6 +447,14 @@ Specifies the IP address assigned to the Kubernetes DNS service. It must be with
 
 - Required: No
 - Type: string
+
+### Parameter: `enableKeyvaultSecretsProvider`
+
+Specifies whether the KeyvaultSecretsProvider add-on is enabled or not.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `enableTelemetry`
 
@@ -817,6 +472,21 @@ Kubernetes Version.
 - Type: string
 - Default: `'1.29'`
 
+### Parameter: `loadBalancerSku`
+
+Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools.
+
+- Required: No
+- Type: string
+- Default: `'standard'`
+- Allowed:
+  ```Bicep
+  [
+    'basic'
+    'standard'
+  ]
+  ```
+
 ### Parameter: `location`
 
 Specifies the location of AKS cluster. It picks up Resource Group's location by default.
@@ -824,13 +494,6 @@ Specifies the location of AKS cluster. It picks up Resource Group's location by 
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-
-### Parameter: `monitoringWorkspaceResourceId`
-
-Resource ID of the monitoring log analytics workspace.
-
-- Required: No
-- Type: string
 
 ### Parameter: `networkDataplane`
 
@@ -1008,6 +671,31 @@ Specifies the SSH RSA public key string for the Linux nodes.
 - Required: No
 - Type: string
 
+### Parameter: `systemPoolConfig`
+
+Custom configuration of system node pool.
+
+- Required: No
+- Type: object
+- Default: `{}`
+
+### Parameter: `systemPoolType`
+
+The System Pool Preset sizing.
+
+- Required: No
+- Type: string
+- Default: `'Standard'`
+- Allowed:
+  ```Bicep
+  [
+    'CostOptimised'
+    'Custom'
+    'HighSpec'
+    'Standard'
+  ]
+  ```
+
 ### Parameter: `tags`
 
 Custom tags to apply to the AKS resources.
@@ -1022,6 +710,7 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 
 - Required: No
 - Type: bool
+- Default: `True`
 
 ## Outputs
 
@@ -1042,7 +731,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/container-registry/registry:0.5.1` | Remote reference |
-| `br/public:avm/res/container-service/managed-cluster:0.3.0` | Remote reference |
+| `br/public:avm/res/container-service/managed-cluster:0.4.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.9.0` | Remote reference |
 
 ## Data Collection
