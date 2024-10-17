@@ -584,7 +584,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             workspaceResourceId: '<workspaceResourceId>'
           }
         ]
-        elasticPoolId: '<elasticPoolId>'
+        elasticPoolResourceId: '<elasticPoolResourceId>'
         encryptionProtectorObj: {
           serverKeyName: '<serverKeyName>'
           serverKeyType: 'AzureKeyVault'
@@ -755,7 +755,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
               "workspaceResourceId": "<workspaceResourceId>"
             }
           ],
-          "elasticPoolId": "<elasticPoolId>",
+          "elasticPoolResourceId": "<elasticPoolResourceId>",
           "encryptionProtectorObj": {
             "serverKeyName": "<serverKeyName>",
             "serverKeyType": "AzureKeyVault"
@@ -948,7 +948,7 @@ param databases = [
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    elasticPoolId: '<elasticPoolId>'
+    elasticPoolResourceId: '<elasticPoolResourceId>'
     encryptionProtectorObj: {
       serverKeyName: '<serverKeyName>'
       serverKeyType: 'AzureKeyVault'
@@ -1107,7 +1107,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           name: 'Basic'
           tier: 'Basic'
         }
-        sourceDatabaseId: '<sourceDatabaseId>'
+        sourceDatabaseResourceId: '<sourceDatabaseResourceId>'
       }
     ]
     location: '<location>'
@@ -1153,7 +1153,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             "name": "Basic",
             "tier": "Basic"
           },
-          "sourceDatabaseId": "<sourceDatabaseId>"
+          "sourceDatabaseResourceId": "<sourceDatabaseResourceId>"
         }
       ]
     },
@@ -1195,7 +1195,7 @@ param databases = [
       name: 'Basic'
       tier: 'Basic'
     }
-    sourceDatabaseId: '<sourceDatabaseId>'
+    sourceDatabaseResourceId: '<sourceDatabaseResourceId>'
   }
 ]
 param location = '<location>'
@@ -1427,7 +1427,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             workspaceResourceId: '<workspaceResourceId>'
           }
         ]
-        elasticPoolId: '<elasticPoolId>'
+        elasticPoolResourceId: '<elasticPoolResourceId>'
         encryptionProtectorObj: {
           serverKeyName: '<serverKeyName>'
           serverKeyType: 'AzureKeyVault'
@@ -1562,7 +1562,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
               "workspaceResourceId": "<workspaceResourceId>"
             }
           ],
-          "elasticPoolId": "<elasticPoolId>",
+          "elasticPoolResourceId": "<elasticPoolResourceId>",
           "encryptionProtectorObj": {
             "serverKeyName": "<serverKeyName>",
             "serverKeyType": "AzureKeyVault"
@@ -1715,7 +1715,7 @@ param databases = [
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    elasticPoolId: '<elasticPoolId>'
+    elasticPoolResourceId: '<elasticPoolResourceId>'
     encryptionProtectorObj: {
       serverKeyName: '<serverKeyName>'
       serverKeyType: 'AzureKeyVault'
@@ -2091,7 +2091,7 @@ The databases to create in the server.
 | [`collation`](#parameter-databasescollation) | string | The collation of the database. |
 | [`createMode`](#parameter-databasescreatemode) | string | Specifies the mode of database creation. |
 | [`diagnosticSettings`](#parameter-databasesdiagnosticsettings) | array | The diagnostic settings of the service. |
-| [`elasticPoolId`](#parameter-databaseselasticpoolid) | string | The resource identifier of the elastic pool containing this database. |
+| [`elasticPoolResourceId`](#parameter-databaseselasticpoolresourceid) | string | The resource identifier of the elastic pool containing this database. |
 | [`encryptionProtector`](#parameter-databasesencryptionprotector) | string | The azure key vault URI of the database if it's configured with per Database Customer Managed Keys. |
 | [`encryptionProtectorAutoRotation`](#parameter-databasesencryptionprotectorautorotation) | bool | The flag to enable or disable auto rotation of database encryption protector AKV key. |
 | [`federatedClientId`](#parameter-databasesfederatedclientid) | string | The Client id used for cross tenant per database CMK scenario. |
@@ -2107,16 +2107,16 @@ The databases to create in the server.
 | [`performCutover`](#parameter-databasesperformcutover) | bool | To trigger customer controlled manual cutover during the wait state while Scaling operation is in progress. |
 | [`preferredEnclaveType`](#parameter-databasespreferredenclavetype) | string | Type of enclave requested on the database. |
 | [`readScale`](#parameter-databasesreadscale) | string | The state of read-only routing. If enabled, connections that have application intent set to readonly in their connection string may be routed to a readonly secondary replica in the same region. Not applicable to a Hyperscale database within an elastic pool. |
-| [`recoverableDatabaseId`](#parameter-databasesrecoverabledatabaseid) | string | The resource identifier of the recoverable database associated with create operation of this database. |
-| [`recoveryServicesRecoveryPointId`](#parameter-databasesrecoveryservicesrecoverypointid) | string | The resource identifier of the recovery point associated with create operation of this database. |
+| [`recoverableDatabaseResourceId`](#parameter-databasesrecoverabledatabaseresourceid) | string | The resource identifier of the recoverable database associated with create operation of this database. |
+| [`recoveryServicesRecoveryPointResourceId`](#parameter-databasesrecoveryservicesrecoverypointresourceid) | string | The resource identifier of the recovery point associated with create operation of this database. |
 | [`requestedBackupStorageRedundancy`](#parameter-databasesrequestedbackupstorageredundancy) | string | The storage account type to be used to store backups for this database. |
-| [`restorableDroppedDatabaseId`](#parameter-databasesrestorabledroppeddatabaseid) | string | The resource identifier of the restorable dropped database associated with create operation of this database. |
+| [`restorableDroppedDatabaseResourceId`](#parameter-databasesrestorabledroppeddatabaseresourceid) | string | The resource identifier of the restorable dropped database associated with create operation of this database. |
 | [`restorePointInTime`](#parameter-databasesrestorepointintime) | string | Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database. |
 | [`sampleName`](#parameter-databasessamplename) | string | The name of the sample schema to apply when creating this database. |
 | [`secondaryType`](#parameter-databasessecondarytype) | string | The secondary type of the database if it is a secondary. |
 | [`sku`](#parameter-databasessku) | object | The database SKU. |
 | [`sourceDatabaseDeletionDate`](#parameter-databasessourcedatabasedeletiondate) | string | Specifies the time that the database was deleted. |
-| [`sourceDatabaseId`](#parameter-databasessourcedatabaseid) | string | The resource identifier of the source database associated with create operation of this database. |
+| [`sourceDatabaseResourceId`](#parameter-databasessourcedatabaseresourceid) | string | The resource identifier of the source database associated with create operation of this database. |
 | [`sourceResourceId`](#parameter-databasessourceresourceid) | string | The resource identifier of the source associated with the create operation of this database. |
 | [`tags`](#parameter-databasestags) | object | Tags of the resource. |
 | [`useFreeLimit`](#parameter-databasesusefreelimit) | bool | Whether or not the database uses free monthly limits. Allowed on one database in a subscription. |
@@ -2334,7 +2334,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `databases.elasticPoolId`
+### Parameter: `databases.elasticPoolResourceId`
 
 The resource identifier of the elastic pool containing this database.
 
@@ -2474,14 +2474,14 @@ The state of read-only routing. If enabled, connections that have application in
   ]
   ```
 
-### Parameter: `databases.recoverableDatabaseId`
+### Parameter: `databases.recoverableDatabaseResourceId`
 
 The resource identifier of the recoverable database associated with create operation of this database.
 
 - Required: No
 - Type: string
 
-### Parameter: `databases.recoveryServicesRecoveryPointId`
+### Parameter: `databases.recoveryServicesRecoveryPointResourceId`
 
 The resource identifier of the recovery point associated with create operation of this database.
 
@@ -2504,7 +2504,7 @@ The storage account type to be used to store backups for this database.
   ]
   ```
 
-### Parameter: `databases.restorableDroppedDatabaseId`
+### Parameter: `databases.restorableDroppedDatabaseResourceId`
 
 The resource identifier of the restorable dropped database associated with create operation of this database.
 
@@ -2604,7 +2604,7 @@ Specifies the time that the database was deleted.
 - Required: No
 - Type: string
 
-### Parameter: `databases.sourceDatabaseId`
+### Parameter: `databases.sourceDatabaseResourceId`
 
 The resource identifier of the source database associated with create operation of this database.
 
@@ -2814,7 +2814,6 @@ The elastic pool SKU.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-elasticpoolsskuname) | string | The name of the SKU, typically, a letter + Number code, e.g. P3. |
-| [`tier`](#parameter-elasticpoolsskutier) | string | The tier or edition of the particular SKU, e.g. Basic, Premium. |
 
 **Optional parameters**
 
@@ -2823,6 +2822,7 @@ The elastic pool SKU.
 | [`capacity`](#parameter-elasticpoolsskucapacity) | int | The capacity of the particular SKU. |
 | [`family`](#parameter-elasticpoolsskufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
 | [`size`](#parameter-elasticpoolsskusize) | string | Size of the particular SKU. |
+| [`tier`](#parameter-elasticpoolsskutier) | string | The tier or edition of the particular SKU, e.g. Basic, Premium. |
 
 ### Parameter: `elasticPools.sku.name`
 
@@ -2848,13 +2848,6 @@ The name of the SKU, typically, a letter + Number code, e.g. P3.
   ]
   ```
 
-### Parameter: `elasticPools.sku.tier`
-
-The tier or edition of the particular SKU, e.g. Basic, Premium.
-
-- Required: No
-- Type: string
-
 ### Parameter: `elasticPools.sku.capacity`
 
 The capacity of the particular SKU.
@@ -2872,6 +2865,13 @@ If the service has different generations of hardware, for the same SKU, then tha
 ### Parameter: `elasticPools.sku.size`
 
 Size of the particular SKU.
+
+- Required: No
+- Type: string
+
+### Parameter: `elasticPools.sku.tier`
+
+The tier or edition of the particular SKU, e.g. Basic, Premium.
 
 - Required: No
 - Type: string

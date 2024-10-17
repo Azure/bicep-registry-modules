@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the Elastic Pool.')
 param name string
 
-@description('Required. The name of the parent SQL Server. Required if the template is used in a standalone deployment.')
+@description('Conditional. The name of the parent SQL Server. Required if the template is used in a standalone deployment.')
 param serverName string
 
 @description('Optional. Tags of the resource.')
@@ -148,48 +148,6 @@ type elasticPoolSkuType = {
   @description('Optional. Size of the particular SKU.')
   size: string?
 
-  @description('Required. The tier or edition of the particular SKU, e.g. Basic, Premium.')
+  @description('Optional. The tier or edition of the particular SKU, e.g. Basic, Premium.')
   tier: string?
-}
-
-@export()
-type elasticPoolPropertyType = {
-  @description('Required. The name of the Elastic Pool.')
-  name: string
-
-  @description('Optional. Tags of the resource.')
-  tags: object?
-
-  @description('Optional. The elastic pool SKU.')
-  sku: elasticPoolSkuType?
-
-  @description('Optional. Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled.')
-  autoPauseDelay: int?
-
-  @description('Optional. Specifies the availability zone the pool\'s primary replica is pinned to.')
-  availabilityZone: '1' | '2' | '3' | 'NoPreference'?
-
-  @description('Optional. The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools.')
-  highAvailabilityReplicaCount: int?
-
-  @description('Optional. The license type to apply for this elastic pool.')
-  licenseType: 'BasePrice' | 'LicenseIncluded'?
-
-  @description('Optional. Maintenance configuration id assigned to the elastic pool. This configuration defines the period when the maintenance updates will will occur.')
-  maintenanceConfigurationId: string?
-
-  @description('Optional. The storage limit for the database elastic pool in bytes.')
-  maxSizeBytes: int?
-
-  @description('Optional. Minimal capacity that serverless pool will not shrink below, if not paused.')
-  minCapacity: int?
-
-  @description('Optional. The per database settings for the elastic pool.')
-  perDatabaseSettings: elasticPoolPerDatabaseSettingsType?
-
-  @description('Optional. Type of enclave requested on the elastic pool.')
-  preferredEnclaveType: 'Default' | 'VBS'?
-
-  @description('Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones.')
-  zoneRedundant: bool?
 }

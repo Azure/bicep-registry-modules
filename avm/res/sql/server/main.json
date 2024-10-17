@@ -6,15 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-<<<<<<< HEAD
-<<<<<<< HEAD
       "templateHash": "12931751409452972364"
-=======
-      "templateHash": "6840329240992957872"
->>>>>>> 78a8ab21 (Update README)
-=======
-      "templateHash": "7649615845184764158"
->>>>>>> f5bd37d9 (Rerun generation)
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -520,275 +512,6 @@
         }
       }
     },
-    "secretsOutputType": {
-      "type": "object",
-      "properties": {},
-      "additionalProperties": {
-        "$ref": "#/definitions/secretSetType",
-        "metadata": {
-          "description": "An exported secret's references."
-        }
-      }
-    },
-    "_1.databaseSkuType": {
-      "type": "object",
-      "properties": {
-        "capacity": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The capacity of the particular SKU."
-          }
-        },
-        "family": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here."
-          }
-        },
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the SKU, typically, a letter + Number code, e.g. P3."
-          }
-        },
-        "size": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Size of the particular SKU."
-          }
-        },
-        "tier": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Required. The tier or edition of the particular SKU, e.g. Basic, Premium."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The database SKU.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "database/main.bicep"
-        }
-      }
-    },
-    "_1.diagnosticSettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of diagnostic setting."
-            }
-          },
-          "logCategoriesAndGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                  }
-                },
-                "categoryGroup": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-            }
-          },
-          "metricCategories": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-            }
-          },
-          "logAnalyticsDestinationType": {
-            "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-            }
-          },
-          "workspaceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "storageAccountResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "eventHubAuthorizationRuleResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-            }
-          }
-        }
-      },
-      "nullable": true,
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "database/main.bicep"
-        }
-      }
-    },
-    "_2.elasticPoolPerDatabaseSettingsType": {
-      "type": "object",
-      "properties": {
-        "autoPauseDelay": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Auto Pause Delay for per database within pool."
-          }
-        },
-        "maxCapacity": {
-          "type": "string",
-          "metadata": {
-            "description": "Reqired. The maximum capacity any one database can consume. Examples: '0.5', '2'."
-          }
-        },
-        "minCapacity": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The minimum capacity all databases are guaranteed. Examples: '0.5', '1'."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The per database settings for the elastic pool.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "elastic-pool/main.bicep"
-        }
-      }
-    },
-    "_2.elasticPoolSkuType": {
-      "type": "object",
-      "properties": {
-        "capacity": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The capacity of the particular SKU."
-          }
-        },
-        "family": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here."
-          }
-        },
-        "name": {
-          "type": "string",
-          "allowedValues": [
-            "BC_DC",
-            "BC_Gen5",
-            "BasicPool",
-            "GP_DC",
-            "GP_FSv2",
-            "GP_Gen5",
-            "HS_Gen5",
-            "HS_MOPRMS",
-            "HS_PRMS",
-            "PremiumPool",
-            "ServerlessPool",
-            "StandardPool"
-          ],
-          "metadata": {
-            "description": "Required. The name of the SKU, typically, a letter + Number code, e.g. P3."
-          }
-        },
-        "size": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Size of the particular SKU."
-          }
-        },
-        "tier": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Required. The tier or edition of the particular SKU, e.g. Basic, Premium."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The elastic pool SKU.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "elastic-pool/main.bicep"
-        }
-      }
-    },
     "databasePropertyType": {
       "type": "object",
       "properties": {
@@ -806,7 +529,7 @@
           }
         },
         "sku": {
-          "$ref": "#/definitions/_1.databaseSkuType",
+          "$ref": "#/definitions/databaseSkuType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The database SKU."
@@ -865,7 +588,7 @@
             "description": "Optional. Specifies the mode of database creation."
           }
         },
-        "elasticPoolId": {
+        "elasticPoolResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -995,14 +718,14 @@
             "description": "Optional. The state of read-only routing. If enabled, connections that have application intent set to readonly in their connection string may be routed to a readonly secondary replica in the same region. Not applicable to a Hyperscale database within an elastic pool."
           }
         },
-        "recoverableDatabaseId": {
+        "recoverableDatabaseResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
             "description": "Optional. The resource identifier of the recoverable database associated with create operation of this database."
           }
         },
-        "recoveryServicesRecoveryPointId": {
+        "recoveryServicesRecoveryPointResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -1022,7 +745,7 @@
             "description": "Optional. The storage account type to be used to store backups for this database."
           }
         },
-        "restorableDroppedDatabaseId": {
+        "restorableDroppedDatabaseResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -1062,7 +785,7 @@
             "description": "Optional. Specifies the time that the database was deleted."
           }
         },
-        "sourceDatabaseId": {
+        "sourceDatabaseResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -1091,7 +814,7 @@
           }
         },
         "diagnosticSettings": {
-          "$ref": "#/definitions/_1.diagnosticSettingType",
+          "$ref": "#/definitions/diagnosticSettingType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The diagnostic settings of the service."
@@ -1099,9 +822,7 @@
         }
       },
       "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "database/main.bicep"
-        }
+        "__bicep_export!": true
       }
     },
     "elasticPoolPropertyType": {
@@ -1121,7 +842,7 @@
           }
         },
         "sku": {
-          "$ref": "#/definitions/_2.elasticPoolSkuType",
+          "$ref": "#/definitions/elasticPoolSkuType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The elastic pool SKU."
@@ -1187,7 +908,7 @@
           }
         },
         "perDatabaseSettings": {
-          "$ref": "#/definitions/_2.elasticPoolPerDatabaseSettingsType",
+          "$ref": "#/definitions/elasticPoolPerDatabaseSettingsType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The per database settings for the elastic pool."
@@ -1213,6 +934,273 @@
         }
       },
       "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "secretsOutputType": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": {
+        "$ref": "#/definitions/secretSetType",
+        "metadata": {
+          "description": "An exported secret's references."
+        }
+      }
+    },
+    "databaseSkuType": {
+      "type": "object",
+      "properties": {
+        "capacity": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The capacity of the particular SKU."
+          }
+        },
+        "family": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the SKU, typically, a letter + Number code, e.g. P3."
+          }
+        },
+        "size": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Size of the particular SKU."
+          }
+        },
+        "tier": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Required. The tier or edition of the particular SKU, e.g. Basic, Premium."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The database SKU.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "database/main.bicep"
+        }
+      }
+    },
+    "diagnosticSettingType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of diagnostic setting."
+            }
+          },
+          "logCategoriesAndGroups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                  }
+                },
+                "categoryGroup": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+            }
+          },
+          "metricCategories": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+            }
+          },
+          "logAnalyticsDestinationType": {
+            "type": "string",
+            "allowedValues": [
+              "AzureDiagnostics",
+              "Dedicated"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+            }
+          },
+          "workspaceResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "storageAccountResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "eventHubAuthorizationRuleResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+            }
+          },
+          "eventHubName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "marketplacePartnerResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+            }
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "database/main.bicep"
+        }
+      }
+    },
+    "elasticPoolPerDatabaseSettingsType": {
+      "type": "object",
+      "properties": {
+        "autoPauseDelay": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Auto Pause Delay for per database within pool."
+          }
+        },
+        "maxCapacity": {
+          "type": "string",
+          "metadata": {
+            "description": "Reqired. The maximum capacity any one database can consume. Examples: '0.5', '2'."
+          }
+        },
+        "minCapacity": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The minimum capacity all databases are guaranteed. Examples: '0.5', '1'."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The per database settings for the elastic pool.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "elastic-pool/main.bicep"
+        }
+      }
+    },
+    "elasticPoolSkuType": {
+      "type": "object",
+      "properties": {
+        "capacity": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The capacity of the particular SKU."
+          }
+        },
+        "family": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here."
+          }
+        },
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "BC_DC",
+            "BC_Gen5",
+            "BasicPool",
+            "GP_DC",
+            "GP_FSv2",
+            "GP_Gen5",
+            "HS_Gen5",
+            "HS_MOPRMS",
+            "HS_PRMS",
+            "PremiumPool",
+            "ServerlessPool",
+            "StandardPool"
+          ],
+          "metadata": {
+            "description": "Required. The name of the SKU, typically, a letter + Number code, e.g. P3."
+          }
+        },
+        "size": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Size of the particular SKU."
+          }
+        },
+        "tier": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tier or edition of the particular SKU, e.g. Basic, Premium."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The elastic pool SKU.",
         "__bicep_imported_from!": {
           "sourceTemplate": "elastic-pool/main.bicep"
         }
@@ -1610,8 +1598,8 @@
           "createMode": {
             "value": "[tryGet(parameters('databases')[copyIndex()], 'createMode')]"
           },
-          "elasticPoolId": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'elasticPoolId')]"
+          "elasticPoolResourceId": {
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'elasticPoolResourceId')]"
           },
           "encryptionProtector": {
             "value": "[tryGet(parameters('databases')[copyIndex()], 'encryptionProtector')]"
@@ -1658,17 +1646,17 @@
           "readScale": {
             "value": "[tryGet(parameters('databases')[copyIndex()], 'readScale')]"
           },
-          "recoverableDatabaseId": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'recoverableDatabaseId')]"
+          "recoverableDatabaseResourceId": {
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'recoverableDatabaseResourceId')]"
           },
-          "recoveryServicesRecoveryPointId": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'recoveryServicesRecoveryPointId')]"
+          "recoveryServicesRecoveryPointResourceId": {
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'recoveryServicesRecoveryPointResourceId')]"
           },
           "requestedBackupStorageRedundancy": {
             "value": "[tryGet(parameters('databases')[copyIndex()], 'requestedBackupStorageRedundancy')]"
           },
-          "restorableDroppedDatabaseId": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'restorableDroppedDatabaseId')]"
+          "restorableDroppedDatabaseResourceId": {
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'restorableDroppedDatabaseResourceId')]"
           },
           "restorePointInTime": {
             "value": "[tryGet(parameters('databases')[copyIndex()], 'restorePointInTime')]"
@@ -1679,8 +1667,8 @@
           "sourceDatabaseDeletionDate": {
             "value": "[tryGet(parameters('databases')[copyIndex()], 'sourceDatabaseDeletionDate')]"
           },
-          "sourceDatabaseId": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'sourceDatabaseId')]"
+          "sourceDatabaseResourceId": {
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'sourceDatabaseResourceId')]"
           },
           "sourceResourceId": {
             "value": "[tryGet(parameters('databases')[copyIndex()], 'sourceResourceId')]"
@@ -1700,11 +1688,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-<<<<<<< HEAD
               "templateHash": "18021918128213514276"
-=======
-              "templateHash": "4558221869591328265"
->>>>>>> f5bd37d9 (Rerun generation)
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database.",
@@ -1829,7 +1813,10 @@
                   }
                 }
               },
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
             },
             "databaseSkuType": {
               "type": "object",
@@ -1872,319 +1859,6 @@
               "metadata": {
                 "__bicep_export!": true,
                 "description": "The database SKU."
-              }
-            },
-            "databasePropertyType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the Elastic Pool."
-                  }
-                },
-                "tags": {
-                  "type": "object",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Tags of the resource."
-                  }
-                },
-                "sku": {
-                  "$ref": "#/definitions/databaseSkuType",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The database SKU."
-                  }
-                },
-                "autoPauseDelay": {
-                  "type": "int",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled."
-                  }
-                },
-                "availabilityZone": {
-                  "type": "string",
-                  "allowedValues": [
-                    "1",
-                    "2",
-                    "3",
-                    "NoPreference"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specifies the availability zone the database is pinned to."
-                  }
-                },
-                "catalogCollation": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Collation of the metadata catalog."
-                  }
-                },
-                "collation": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The collation of the database."
-                  }
-                },
-                "createMode": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Copy",
-                    "Default",
-                    "OnlineSecondary",
-                    "PointInTimeRestore",
-                    "Recovery",
-                    "Restore",
-                    "RestoreExternalBackup",
-                    "RestoreExternalBackupSecondary",
-                    "RestoreLongTermRetentionBackup",
-                    "Secondary"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specifies the mode of database creation."
-                  }
-                },
-                "elasticPoolId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The resource identifier of the elastic pool containing this database."
-                  }
-                },
-                "encryptionProtector": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The azure key vault URI of the database if it's configured with per Database Customer Managed Keys."
-                  }
-                },
-                "encryptionProtectorAutoRotation": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The flag to enable or disable auto rotation of database encryption protector AKV key."
-                  }
-                },
-                "federatedClientId": {
-                  "type": "string",
-                  "nullable": true,
-                  "minLength": 36,
-                  "maxLength": 36,
-                  "metadata": {
-                    "description": "Optional. The Client id used for cross tenant per database CMK scenario."
-                  }
-                },
-                "freeLimitExhaustionBehavior": {
-                  "type": "string",
-                  "allowedValues": [
-                    "AutoPause",
-                    "BillOverUsage"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specifies the behavior when monthly free limits are exhausted for the free database."
-                  }
-                },
-                "highAvailabilityReplicaCount": {
-                  "type": "int",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The number of secondary replicas associated with the database that are used to provide high availability. Not applicable to a Hyperscale database within an elastic pool."
-                  }
-                },
-                "isLedgerOn": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Whether or not this database is a ledger database, which means all tables in the database are ledger tables."
-                  }
-                },
-                "licenseType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "BasePrice",
-                    "LicenseIncluded"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The license type to apply for this database."
-                  }
-                },
-                "longTermRetentionBackupResourceId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The resource identifier of the long term retention backup associated with create operation of this database."
-                  }
-                },
-                "maintenanceConfigurationId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Maintenance configuration id assigned to the database. This configuration defines the period when the maintenance updates will occur."
-                  }
-                },
-                "manualCutover": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Whether or not customer controlled manual cutover needs to be done during Update Database operation to Hyperscale tier."
-                  }
-                },
-                "maxSizeBytes": {
-                  "type": "int",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The max size of the database expressed in bytes."
-                  }
-                },
-                "minCapacity": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Minimal capacity that database will always have allocated, if not paused."
-                  }
-                },
-                "performCutover": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. To trigger customer controlled manual cutover during the wait state while Scaling operation is in progress."
-                  }
-                },
-                "preferredEnclaveType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Default",
-                    "VBS"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Type of enclave requested on the database."
-                  }
-                },
-                "readScale": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Disabled",
-                    "Enabled"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The state of read-only routing. If enabled, connections that have application intent set to readonly in their connection string may be routed to a readonly secondary replica in the same region. Not applicable to a Hyperscale database within an elastic pool."
-                  }
-                },
-                "recoverableDatabaseId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The resource identifier of the recoverable database associated with create operation of this database."
-                  }
-                },
-                "recoveryServicesRecoveryPointId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The resource identifier of the recovery point associated with create operation of this database."
-                  }
-                },
-                "requestedBackupStorageRedundancy": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Geo",
-                    "GeoZone",
-                    "Local",
-                    "Zone"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The storage account type to be used to store backups for this database."
-                  }
-                },
-                "restorableDroppedDatabaseId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The resource identifier of the restorable dropped database associated with create operation of this database."
-                  }
-                },
-                "restorePointInTime": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database."
-                  }
-                },
-                "sampleName": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name of the sample schema to apply when creating this database."
-                  }
-                },
-                "secondaryType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Geo",
-                    "Named",
-                    "Standby"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The secondary type of the database if it is a secondary."
-                  }
-                },
-                "sourceDatabaseDeletionDate": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specifies the time that the database was deleted."
-                  }
-                },
-                "sourceDatabaseId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The resource identifier of the source database associated with create operation of this database."
-                  }
-                },
-                "sourceResourceId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The resource identifier of the source associated with the create operation of this database."
-                  }
-                },
-                "useFreeLimit": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Whether or not the database uses free monthly limits. Allowed on one database in a subscription."
-                  }
-                },
-                "zoneRedundant": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Whether or not this database is zone redundant, which means the replicas of this database will be spread across multiple availability zones."
-                  }
-                },
-                "diagnosticSettings": {
-                  "$ref": "#/definitions/diagnosticSettingType",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The diagnostic settings of the service."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
               }
             }
           },
@@ -2264,7 +1938,7 @@
                 "description": "Optional. Specifies the mode of database creation."
               }
             },
-            "elasticPoolId": {
+            "elasticPoolResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
@@ -2394,14 +2068,14 @@
                 "description": "Optional. The state of read-only routing."
               }
             },
-            "recoverableDatabaseId": {
+            "recoverableDatabaseResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
                 "description": "Optional. The resource identifier of the recoverable database associated with create operation of this database."
               }
             },
-            "recoveryServicesRecoveryPointId": {
+            "recoveryServicesRecoveryPointResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
@@ -2421,7 +2095,7 @@
                 "description": "Optional. The storage account type to be used to store backups for this database."
               }
             },
-            "restorableDroppedDatabaseId": {
+            "restorableDroppedDatabaseResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
@@ -2461,7 +2135,7 @@
                 "description": "Optional. The time that the database was deleted when restoring a deleted database."
               }
             },
-            "sourceDatabaseId": {
+            "sourceDatabaseResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
@@ -2544,7 +2218,7 @@
                 "catalogCollation": "[parameters('catalogCollation')]",
                 "collation": "[parameters('collation')]",
                 "createMode": "[parameters('createMode')]",
-                "elasticPoolId": "[parameters('elasticPoolId')]",
+                "elasticPoolId": "[parameters('elasticPoolResourceId')]",
                 "encryptionProtector": "[parameters('encryptionProtector')]",
                 "encryptionProtectorAutoRotation": "[parameters('encryptionProtectorAutoRotation')]",
                 "federatedClientId": "[parameters('federatedClientId')]",
@@ -2560,15 +2234,15 @@
                 "performCutover": "[parameters('performCutover')]",
                 "preferredEnclaveType": "[parameters('preferredEnclaveType')]",
                 "readScale": "[parameters('readScale')]",
-                "recoverableDatabaseId": "[parameters('recoverableDatabaseId')]",
-                "recoveryServicesRecoveryPointId": "[parameters('recoveryServicesRecoveryPointId')]",
+                "recoverableDatabaseId": "[parameters('recoverableDatabaseResourceId')]",
+                "recoveryServicesRecoveryPointId": "[parameters('recoveryServicesRecoveryPointResourceId')]",
                 "requestedBackupStorageRedundancy": "[parameters('requestedBackupStorageRedundancy')]",
-                "restorableDroppedDatabaseId": "[parameters('restorableDroppedDatabaseId')]",
+                "restorableDroppedDatabaseId": "[parameters('restorableDroppedDatabaseResourceId')]",
                 "restorePointInTime": "[parameters('restorePointInTime')]",
                 "sampleName": "[parameters('sampleName')]",
                 "secondaryType": "[parameters('secondaryType')]",
                 "sourceDatabaseDeletionDate": "[parameters('sourceDatabaseDeletionDate')]",
-                "sourceDatabaseId": "[parameters('sourceDatabaseId')]",
+                "sourceDatabaseId": "[parameters('sourceDatabaseResourceId')]",
                 "sourceResourceId": "[parameters('sourceResourceId')]",
                 "useFreeLimit": "[parameters('useFreeLimit')]",
                 "zoneRedundant": "[parameters('zoneRedundant')]"
@@ -2954,11 +2628,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-<<<<<<< HEAD
               "templateHash": "8697391320806003846"
-=======
-              "templateHash": "17075205316023541596"
->>>>>>> f5bd37d9 (Rerun generation)
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -3041,125 +2711,13 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. The tier or edition of the particular SKU, e.g. Basic, Premium."
+                    "description": "Optional. The tier or edition of the particular SKU, e.g. Basic, Premium."
                   }
                 }
               },
               "metadata": {
                 "__bicep_export!": true,
                 "description": "The elastic pool SKU."
-              }
-            },
-            "elasticPoolPropertyType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the Elastic Pool."
-                  }
-                },
-                "tags": {
-                  "type": "object",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Tags of the resource."
-                  }
-                },
-                "sku": {
-                  "$ref": "#/definitions/elasticPoolSkuType",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The elastic pool SKU."
-                  }
-                },
-                "autoPauseDelay": {
-                  "type": "int",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled."
-                  }
-                },
-                "availabilityZone": {
-                  "type": "string",
-                  "allowedValues": [
-                    "1",
-                    "2",
-                    "3",
-                    "NoPreference"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specifies the availability zone the pool's primary replica is pinned to."
-                  }
-                },
-                "highAvailabilityReplicaCount": {
-                  "type": "int",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools."
-                  }
-                },
-                "licenseType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "BasePrice",
-                    "LicenseIncluded"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The license type to apply for this elastic pool."
-                  }
-                },
-                "maintenanceConfigurationId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Maintenance configuration id assigned to the elastic pool. This configuration defines the period when the maintenance updates will will occur."
-                  }
-                },
-                "maxSizeBytes": {
-                  "type": "int",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The storage limit for the database elastic pool in bytes."
-                  }
-                },
-                "minCapacity": {
-                  "type": "int",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Minimal capacity that serverless pool will not shrink below, if not paused."
-                  }
-                },
-                "perDatabaseSettings": {
-                  "$ref": "#/definitions/elasticPoolPerDatabaseSettingsType",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The per database settings for the elastic pool."
-                  }
-                },
-                "preferredEnclaveType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Default",
-                    "VBS"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Type of enclave requested on the elastic pool."
-                  }
-                },
-                "zoneRedundant": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
               }
             }
           },
@@ -3173,7 +2731,7 @@
             "serverName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the parent SQL Server. Required if the template is used in a standalone deployment."
+                "description": "Conditional. The name of the parent SQL Server. Required if the template is used in a standalone deployment."
               }
             },
             "tags": {

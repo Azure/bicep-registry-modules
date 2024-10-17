@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "17075205316023541596"
+      "templateHash": "2259224988550504716"
     },
     "name": "SQL Server Elastic Pool",
     "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -89,125 +89,13 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The tier or edition of the particular SKU, e.g. Basic, Premium."
+            "description": "Optional. The tier or edition of the particular SKU, e.g. Basic, Premium."
           }
         }
       },
       "metadata": {
         "__bicep_export!": true,
         "description": "The elastic pool SKU."
-      }
-    },
-    "elasticPoolPropertyType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the Elastic Pool."
-          }
-        },
-        "tags": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Tags of the resource."
-          }
-        },
-        "sku": {
-          "$ref": "#/definitions/elasticPoolSkuType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The elastic pool SKU."
-          }
-        },
-        "autoPauseDelay": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled."
-          }
-        },
-        "availabilityZone": {
-          "type": "string",
-          "allowedValues": [
-            "1",
-            "2",
-            "3",
-            "NoPreference"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specifies the availability zone the pool's primary replica is pinned to."
-          }
-        },
-        "highAvailabilityReplicaCount": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools."
-          }
-        },
-        "licenseType": {
-          "type": "string",
-          "allowedValues": [
-            "BasePrice",
-            "LicenseIncluded"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The license type to apply for this elastic pool."
-          }
-        },
-        "maintenanceConfigurationId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Maintenance configuration id assigned to the elastic pool. This configuration defines the period when the maintenance updates will will occur."
-          }
-        },
-        "maxSizeBytes": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The storage limit for the database elastic pool in bytes."
-          }
-        },
-        "minCapacity": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Minimal capacity that serverless pool will not shrink below, if not paused."
-          }
-        },
-        "perDatabaseSettings": {
-          "$ref": "#/definitions/elasticPoolPerDatabaseSettingsType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The per database settings for the elastic pool."
-          }
-        },
-        "preferredEnclaveType": {
-          "type": "string",
-          "allowedValues": [
-            "Default",
-            "VBS"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Type of enclave requested on the elastic pool."
-          }
-        },
-        "zoneRedundant": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true
       }
     }
   },
@@ -221,7 +109,7 @@
     "serverName": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the parent SQL Server. Required if the template is used in a standalone deployment."
+        "description": "Conditional. The name of the parent SQL Server. Required if the template is used in a standalone deployment."
       }
     },
     "tags": {

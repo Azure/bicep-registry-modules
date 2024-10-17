@@ -116,7 +116,7 @@ module testDeployment '../../../main.bicep' = {
             workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
           }
         ]
-        elasticPoolId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}/elasticPools/${namePrefix}-${serviceShort}-ep-001'
+        elasticPoolResourceId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}/elasticPools/${namePrefix}-${serviceShort}-ep-001'
         encryptionProtectorObj: {
           serverKeyType: 'AzureKeyVault'
           serverKeyName: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
