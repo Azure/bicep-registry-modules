@@ -6,10 +6,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "14970745628674685946"
+      "templateHash": "3702359687684026662"
     },
     "name": "Default interface types for AVM modules",
-    "description": "This module provides you with all common variants for AVM interfaces to be used in AVM modules.\n\nDetails for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/interfaces).\n"
+    "description": "This module provides you with all common variants for AVM interfaces to be used in AVM modules.\n\nDetails for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/interfaces).\n",
+    "owner": "Azure/module-maintainers"
   },
   "definitions": {
     "diagnosticSettingFullType": {
@@ -19,7 +20,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name of diagnostic setting."
+            "description": "Optional. The name of the diagnostic setting."
           }
         },
         "logCategoriesAndGroups": {
@@ -128,7 +129,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider."
       }
     },
     "diagnosticSettingMetricsOnlyType": {
@@ -214,7 +216,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if only metrics are supported by the resource provider."
       }
     },
     "diagnosticSettingLogsOnlyType": {
@@ -308,7 +311,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider."
       }
     },
     "roleAssignmentType": {
@@ -380,7 +384,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for a role assignment."
       }
     },
     "lockType": {
@@ -407,7 +412,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for a lock."
       }
     },
     "managedIdentityAllType": {
@@ -432,7 +438,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider."
       }
     },
     "managedIdentityOnlySysAssignedType": {
@@ -447,7 +454,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if only system-assigned identities are supported by the resource provider."
       }
     },
     "managedIdentityOnlyUserAssignedType": {
@@ -465,7 +473,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider."
       }
     },
     "privateEndpointPrivateDnsZoneGroupType": {
@@ -698,7 +707,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault)."
       }
     },
     "privateEndpointMultiServiceType": {
@@ -836,7 +846,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...)."
       }
     },
     "customerManagedKeyType": {
@@ -870,7 +881,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for a customer-managed key."
       }
     },
     "secretSetType": {
@@ -896,7 +908,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature."
       }
     },
     "secretToSetType": {
@@ -916,7 +929,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for the secret to set via the secrets export feature."
       }
     },
     "secretsOutputType": {
