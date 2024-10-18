@@ -2,55 +2,41 @@ metadata name = 'Automation Account Credential'
 metadata description = 'This module deploys Azure Automation Account Credential.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment.')
+@sys.description('Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment.')
 param automationAccountName string
 
-@description('Required. The credential definition.')
-param credentials credentialType
+@sys.description('Required. Name of the Automation Account credential.')
+param name string
+
+@sys.description('Required. The user name associated to the credential.')
+param userName string
+
+@sys.description('Required. Password of the credential.')
+@secure()
+param password string
+
+@sys.description('Optional. Description of the credential.')
+param description string?
 
 resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' existing = {
   name: automationAccountName
 }
 
-resource automationAccount_credential 'Microsoft.Automation/automationAccounts/credentials@2023-11-01' = [
-  for credential in credentials: {
-    name: credential.name
-    parent: automationAccount
-    properties: {
-      password: credential.password
-      userName: credential.userName
-      description: credential.?description ?? ''
-    }
+resource credential 'Microsoft.Automation/automationAccounts/credentials@2023-11-01' = {
+  name: name
+  parent: automationAccount
+  properties: {
+    password: password
+    userName: userName
+    description: description ?? ''
   }
-]
+}
 
-@description('The resource IDs of the credentials associated to the automation account.')
-#disable-next-line outputs-should-not-contain-secrets // Does not return the secret, but just the ID
-output resourceId array = [for index in range(0, length(credentials)): automationAccount_credential[index].id]
+@sys.description('The resource Id of the credential associated to the automation account.')
+output resourceId string = credential.id
 
-@description('The names of the credentials associated to the automation account.')
-#disable-next-line outputs-should-not-contain-secrets // Does not return the secret, but just the name
-output name array = [for index in range(0, length(credentials)): automationAccount_credential[index].name]
+@sys.description('The name of the credential associated to the automation account.')
+output name string = credential.name
 
-@description('The resource group of the deployed credential.')
+@sys.description('The resource group of the deployed credential.')
 output resourceGroupName string = resourceGroup().name
-
-// ================ //
-// Definitions      //
-// ================ //
-
-@export()
-type credentialType = {
-  @description('Required. Name of the Automation Account credential.')
-  name: string
-
-  @description('Required. The user name associated to the credential.')
-  userName: string
-
-  @description('Required. Password of the credential.')
-  @secure()
-  password: string
-
-  @description('Optional. Description of the credential.')
-  description: string?
-}[]
