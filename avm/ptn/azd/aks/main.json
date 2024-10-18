@@ -6,318 +6,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "5631747890720204830"
+      "templateHash": "10399258682377969561"
     },
     "name": "Azd AKS",
     "description": "Creates an Azure Kubernetes Service (AKS) cluster with a system agent pool as well as an additional user agent pool.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "agentPoolType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the agent pool."
-            }
-          },
-          "availabilityZones": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The availability zones of the agent pool."
-            }
-          },
-          "count": {
-            "type": "int",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive)."
-            }
-          },
-          "sourceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The source resource ID to create the agent pool from."
-            }
-          },
-          "enableAutoScaling": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Whether to enable auto-scaling for the agent pool."
-            }
-          },
-          "enableEncryptionAtHost": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Whether to enable encryption at host for the agent pool."
-            }
-          },
-          "enableFIPS": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Whether to enable FIPS for the agent pool."
-            }
-          },
-          "enableNodePublicIP": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Whether to enable node public IP for the agent pool."
-            }
-          },
-          "enableUltraSSD": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Whether to enable Ultra SSD for the agent pool."
-            }
-          },
-          "gpuInstanceProfile": {
-            "type": "string",
-            "allowedValues": [
-              "MIG1g",
-              "MIG2g",
-              "MIG3g",
-              "MIG4g",
-              "MIG7g"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The GPU instance profile of the agent pool."
-            }
-          },
-          "kubeletDiskType": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The kubelet disk type of the agent pool."
-            }
-          },
-          "maxCount": {
-            "type": "int",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive)."
-            }
-          },
-          "minCount": {
-            "type": "int",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive)."
-            }
-          },
-          "maxPods": {
-            "type": "int",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The maximum number of pods that can run on a node."
-            }
-          },
-          "minPods": {
-            "type": "int",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The minimum number of pods that can run on a node."
-            }
-          },
-          "mode": {
-            "type": "string",
-            "allowedValues": [
-              "System",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The mode of the agent pool."
-            }
-          },
-          "nodeLabels": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The node labels of the agent pool."
-            }
-          },
-          "nodePublicIpPrefixId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The node public IP prefix ID of the agent pool."
-            }
-          },
-          "nodeTaints": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The node taints of the agent pool."
-            }
-          },
-          "orchestratorVersion": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Kubernetes version of the agent pool."
-            }
-          },
-          "osDiskSizeGB": {
-            "type": "int",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The OS disk size in GB of the agent pool."
-            }
-          },
-          "osDiskType": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The OS disk type of the agent pool."
-            }
-          },
-          "osSku": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The OS SKU of the agent pool."
-            }
-          },
-          "osType": {
-            "type": "string",
-            "allowedValues": [
-              "Linux",
-              "Windows"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The OS type of the agent pool."
-            }
-          },
-          "podSubnetId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The pod subnet ID of the agent pool."
-            }
-          },
-          "proximityPlacementGroupResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The proximity placement group resource ID of the agent pool."
-            }
-          },
-          "scaleDownMode": {
-            "type": "string",
-            "allowedValues": [
-              "Deallocate",
-              "Delete"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The scale down mode of the agent pool."
-            }
-          },
-          "scaleSetEvictionPolicy": {
-            "type": "string",
-            "allowedValues": [
-              "Deallocate",
-              "Delete"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The scale set eviction policy of the agent pool."
-            }
-          },
-          "scaleSetPriority": {
-            "type": "string",
-            "allowedValues": [
-              "Low",
-              "Regular",
-              "Spot"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The scale set priority of the agent pool."
-            }
-          },
-          "spotMaxPrice": {
-            "type": "int",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The spot max price of the agent pool."
-            }
-          },
-          "tags": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The tags of the agent pool."
-            }
-          },
-          "type": {
-            "type": "string",
-            "allowedValues": [
-              "AvailabilitySet",
-              "VirtualMachineScaleSets"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The type of the agent pool."
-            }
-          },
-          "maxSurge": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The maximum number of nodes that can be created during an upgrade."
-            }
-          },
-          "vmSize": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The VM size of the agent pool."
-            }
-          },
-          "vnetSubnetID": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The VNet subnet ID of the agent pool."
-            }
-          },
-          "workloadRuntime": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The workload runtime of the agent pool."
-            }
-          },
-          "enableDefaultTelemetry": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The enable default telemetry of the agent pool."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
     "scopeMapsType": {
       "type": "array",
       "items": {
@@ -364,12 +59,6 @@
       "maxLength": 50,
       "metadata": {
         "description": "Required. Name of your Azure Container Registry."
-      }
-    },
-    "logAnalyticsName": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. The name of the connected log analytics workspace."
       }
     },
     "keyVaultName": {
@@ -524,13 +213,6 @@
         "description": "Optional. Specifies the SSH RSA public key string for the Linux nodes."
       }
     },
-    "aadProfileEnableAzureRBAC": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Specifies whether to enable Azure RBAC for Kubernetes authorization."
-      }
-    },
     "appGatewayResourceId": {
       "type": "string",
       "nullable": true,
@@ -540,15 +222,8 @@
     },
     "monitoringWorkspaceResourceId": {
       "type": "string",
-      "nullable": true,
       "metadata": {
-        "description": "Optional. Resource ID of the monitoring log analytics workspace."
-      }
-    },
-    "agentPools": {
-      "$ref": "#/definitions/agentPoolType",
-      "metadata": {
-        "description": "Optional. Define one or more secondary/additional agent pools."
+        "description": "Required. Resource ID of the monitoring log analytics workspace."
       }
     },
     "publicNetworkAccess": {
@@ -562,6 +237,17 @@
         "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set.  Note, requires the 'acrSku' to be 'Premium'."
       }
     },
+    "loadBalancerSku": {
+      "type": "string",
+      "defaultValue": "standard",
+      "allowedValues": [
+        "basic",
+        "standard"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools."
+      }
+    },
     "scopeMaps": {
       "$ref": "#/definitions/scopeMapsType",
       "metadata": {
@@ -570,7 +256,7 @@
     },
     "webApplicationRoutingEnabled": {
       "type": "bool",
-      "nullable": true,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Specifies whether the webApplicationRoutingEnabled add-on is enabled or not."
       }
@@ -600,22 +286,115 @@
       "metadata": {
         "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
       }
+    },
+    "systemPoolConfig": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Custom configuration of system node pool."
+      }
+    },
+    "agentPoolConfig": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Custom configuration of user node pool."
+      }
+    },
+    "enableKeyvaultSecretsProvider": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Specifies whether the KeyvaultSecretsProvider add-on is enabled or not."
+      }
+    },
+    "disableLocalAccounts": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled."
+      }
+    },
+    "autoNodeOsUpgradeProfileUpgradeChannel": {
+      "type": "string",
+      "defaultValue": "NodeImage",
+      "allowedValues": [
+        "NodeImage",
+        "None",
+        "SecurityPatch",
+        "Unmanaged"
+      ],
+      "metadata": {
+        "description": "Optional. Auto-upgrade channel on the Node Os."
+      }
+    },
+    "systemPoolType": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "CostOptimised",
+        "Standard",
+        "HighSpec",
+        "Custom"
+      ],
+      "metadata": {
+        "description": "Optional. The System Pool Preset sizing."
+      }
+    },
+    "agentPoolType": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "",
+        "CostOptimised",
+        "Standard",
+        "HighSpec",
+        "Custom"
+      ],
+      "metadata": {
+        "description": "Optional. The User Pool Preset sizing."
+      }
     }
   },
   "variables": {
+    "systemPoolSpec": "[if(not(empty(parameters('systemPoolConfig'))), parameters('systemPoolConfig'), variables('nodePoolPresets')[parameters('systemPoolType')])]",
+    "hasAgentPool": "[or(not(empty(parameters('agentPoolConfig'))), not(empty(parameters('agentPoolType'))))]",
+    "agentPoolSpec": "[if(and(variables('hasAgentPool'), not(empty(parameters('agentPoolConfig')))), parameters('agentPoolConfig'), if(empty(parameters('agentPoolType')), createObject(), variables('nodePoolPresets')[parameters('agentPoolType')]))]",
     "aksClusterAdminRole": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b1ff04bb-8a4e-4dc4-8eb5-8693973ce19b')]",
     "acrPullRole": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]",
     "nodePoolPresets": {
-      "vmSize": "Standard_DS2_v2",
-      "count": 3,
-      "minCount": 3,
-      "maxCount": 5,
-      "enableAutoScaling": true,
-      "availabilityZones": [
-        "1",
-        "2",
-        "3"
-      ]
+      "CostOptimised": {
+        "vmSize": "Standard_B4ms",
+        "count": 1,
+        "minCount": 1,
+        "maxCount": 3,
+        "enableAutoScaling": true,
+        "availabilityZones": []
+      },
+      "Standard": {
+        "vmSize": "Standard_DS2_v2",
+        "count": 3,
+        "minCount": 3,
+        "maxCount": 5,
+        "enableAutoScaling": true,
+        "availabilityZones": [
+          "1",
+          "2",
+          "3"
+        ]
+      },
+      "HighSpec": {
+        "vmSize": "Standard_D4s_v3",
+        "count": 3,
+        "minCount": 3,
+        "maxCount": 5,
+        "enableAutoScaling": true,
+        "availabilityZones": [
+          "1",
+          "2",
+          "3"
+        ]
+      }
     },
     "nodePoolBase": {
       "osType": "Linux",
@@ -625,9 +404,7 @@
         "maxSurge": "33%"
       }
     },
-    "primaryAgentPoolProfile": [
-      "[union(createObject('name', 'npsystem', 'mode', 'System'), variables('nodePoolBase'), variables('nodePoolPresets'))]"
-    ]
+    "agentPoolsConfig": "[if(variables('hasAgentPool'), createArray(union(createObject('name', 'npuser', 'mode', 'User'), variables('nodePoolBase'), variables('agentPoolSpec'))), null())]"
   },
   "resources": {
     "avmTelemetry": {
@@ -649,13 +426,6 @@
           }
         }
       }
-    },
-    "logAnalytics": {
-      "condition": "[not(empty(parameters('logAnalyticsName')))]",
-      "existing": true,
-      "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2021-12-01-preview",
-      "name": "[parameters('logAnalyticsName')]"
     },
     "managedCluster": {
       "type": "Microsoft.Resources/deployments",
@@ -706,9 +476,6 @@
           "sshPublicKey": {
             "value": "[parameters('sshPublicKey')]"
           },
-          "aadProfileEnableAzureRBAC": {
-            "value": "[parameters('aadProfileEnableAzureRBAC')]"
-          },
           "skuTier": {
             "value": "[parameters('skuTier')]"
           },
@@ -717,6 +484,24 @@
           },
           "monitoringWorkspaceId": {
             "value": "[parameters('monitoringWorkspaceResourceId')]"
+          },
+          "publicNetworkAccess": {
+            "value": "[parameters('publicNetworkAccess')]"
+          },
+          "autoNodeOsUpgradeProfileUpgradeChannel": {
+            "value": "[parameters('autoNodeOsUpgradeProfileUpgradeChannel')]"
+          },
+          "enableKeyvaultSecretsProvider": {
+            "value": "[parameters('enableKeyvaultSecretsProvider')]"
+          },
+          "webApplicationRoutingEnabled": {
+            "value": "[parameters('webApplicationRoutingEnabled')]"
+          },
+          "disableLocalAccounts": {
+            "value": "[parameters('disableLocalAccounts')]"
+          },
+          "loadBalancerSku": {
+            "value": "[parameters('loadBalancerSku')]"
           },
           "managedIdentities": {
             "value": {
@@ -744,7 +529,7 @@
                     "enabled": true
                   }
                 ],
-                "workspaceResourceId": "[if(not(empty(parameters('logAnalyticsName'))), resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsName')), '')]",
+                "workspaceResourceId": "[parameters('monitoringWorkspaceResourceId')]",
                 "metricCategories": [
                   {
                     "category": "AllMetrics",
@@ -754,17 +539,16 @@
               }
             ]
           },
-          "webApplicationRoutingEnabled": {
-            "value": "[parameters('webApplicationRoutingEnabled')]"
-          },
           "primaryAgentPoolProfile": {
-            "value": "[variables('primaryAgentPoolProfile')]"
+            "value": [
+              "[union(createObject('name', 'npsystem', 'mode', 'System'), variables('nodePoolBase'), variables('systemPoolSpec'))]"
+            ]
           },
           "dnsPrefix": {
             "value": "[parameters('dnsPrefix')]"
           },
           "agentPools": {
-            "value": "[parameters('agentPools')]"
+            "value": "[variables('agentPoolsConfig')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -787,8 +571,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "17708769259435874319"
+              "version": "0.30.23.60470",
+              "templateHash": "2657303292894801113"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Clusters",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1453,12 +1237,25 @@
               "nullable": true
             },
             "maintenanceConfigurationType": {
-              "type": "object",
-              "properties": {
-                "maintenanceWindow": {
-                  "type": "object",
-                  "metadata": {
-                    "description": "Required. Maintenance window for the maintenance configuration."
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "allowedValues": [
+                      "aksManagedAutoUpgradeSchedule",
+                      "aksManagedNodeOSUpgradeSchedule"
+                    ],
+                    "metadata": {
+                      "description": "Required. Name of maintenance window."
+                    }
+                  },
+                  "maintenanceWindow": {
+                    "type": "object",
+                    "metadata": {
+                      "description": "Required. Maintenance window for the maintenance configuration."
+                    }
                   }
                 }
               },
@@ -1767,10 +1564,10 @@
                 "description": "Optional. Define one or more secondary/additional agent pools."
               }
             },
-            "maintenanceConfiguration": {
+            "maintenanceConfigurations": {
               "$ref": "#/definitions/maintenanceConfigurationType",
               "metadata": {
-                "description": "Optional. Whether or not to use AKS Automatic mode."
+                "description": "Optional. Maintenance Window for Cluster auto upgrade and node OS upgrade."
               }
             },
             "costAnalysisEnabled": {
@@ -2010,6 +1807,19 @@
                 "description": "Optional. Auto-upgrade channel on the AKS cluster."
               }
             },
+            "autoNodeOsUpgradeProfileUpgradeChannel": {
+              "type": "string",
+              "defaultValue": "Unmanaged",
+              "allowedValues": [
+                "NodeImage",
+                "None",
+                "SecurityPatch",
+                "Unmanaged"
+              ],
+              "metadata": {
+                "description": "Optional. Auto-upgrade channel on the Node Os."
+              }
+            },
             "podIdentityProfileAllowNetworkPluginKubenet": {
               "type": "bool",
               "defaultValue": false,
@@ -2200,6 +2010,13 @@
                 "description": "Optional. Enables Kubernetes Event-driven Autoscaling (KEDA)."
               }
             },
+            "vpaAddon": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Whether to enable VPA add-on in cluster. Default value is false."
+              }
+            },
             "customerManagedKey": {
               "$ref": "#/definitions/customerManagedKeyType",
               "metadata": {
@@ -2305,7 +2122,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.containerservice-managedcluster.{0}.{1}', replace('0.3.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.containerservice-managedcluster.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2400,6 +2217,9 @@
                 "workloadAutoScalerProfile": {
                   "keda": {
                     "enabled": "[parameters('kedaAddon')]"
+                  },
+                  "verticalPodAutoscaler": {
+                    "enabled": "[parameters('vpaAddon')]"
                   }
                 },
                 "networkProfile": {
@@ -2448,7 +2268,8 @@
                   "skip-nodes-with-system-pods": "[toLower(string(parameters('autoScalerProfileSkipNodesWithSystemPods')))]"
                 },
                 "autoUpgradeProfile": {
-                  "upgradeChannel": "[parameters('autoUpgradeProfileUpgradeChannel')]"
+                  "upgradeChannel": "[parameters('autoUpgradeProfileUpgradeChannel')]",
+                  "nodeOSUpgradeChannel": "[parameters('autoNodeOsUpgradeProfileUpgradeChannel')]"
                 },
                 "apiServerAccessProfile": {
                   "authorizedIPRanges": "[parameters('authorizedIPRanges')]",
@@ -2590,18 +2411,25 @@
               ]
             },
             "managedCluster_maintenanceConfigurations": {
-              "condition": "[not(empty(parameters('maintenanceConfiguration')))]",
+              "copy": {
+                "name": "managedCluster_maintenanceConfigurations",
+                "count": "[length(coalesce(parameters('maintenanceConfigurations'), createArray()))]"
+              },
+              "condition": "[not(empty(coalesce(parameters('maintenanceConfigurations'), createArray())[copyIndex()]))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-ManagedCluster-MaintenanceConfigurations', uniqueString(deployment().name, parameters('location')))]",
+              "name": "[format('{0}-ManagedCluster-MaintenanceConfigurations-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('maintenanceConfigurations'), createArray())[copyIndex()].name]"
+                  },
                   "maintenanceWindow": {
-                    "value": "[parameters('maintenanceConfiguration').maintenanceWindow]"
+                    "value": "[coalesce(parameters('maintenanceConfigurations'), createArray())[copyIndex()].maintenanceWindow]"
                   },
                   "managedClusterName": {
                     "value": "[parameters('name')]"
@@ -2613,8 +2441,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "12168542117744033419"
+                      "version": "0.30.23.60470",
+                      "templateHash": "2505380725266419010"
                     },
                     "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
                     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
@@ -2810,8 +2638,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "2004205618690542488"
+                      "version": "0.30.23.60470",
+                      "templateHash": "4315564225725874539"
                     },
                     "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
                     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
@@ -3750,10 +3578,7 @@
             }
           }
         }
-      },
-      "dependsOn": [
-        "logAnalytics"
-      ]
+      }
     },
     "containerRegistry": {
       "type": "Microsoft.Resources/deployments",
@@ -3799,7 +3624,7 @@
                     "enabled": true
                   }
                 ],
-                "workspaceResourceId": "[if(not(empty(parameters('logAnalyticsName'))), resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsName')), '')]",
+                "workspaceResourceId": "[parameters('monitoringWorkspaceResourceId')]",
                 "metricCategories": [
                   {
                     "category": "AllMetrics",
@@ -6445,7 +6270,6 @@
         }
       },
       "dependsOn": [
-        "logAnalytics",
         "managedCluster"
       ]
     },
@@ -6464,6 +6288,18 @@
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
+          },
+          "enableRbacAuthorization": {
+            "value": false
+          },
+          "enableVaultForDeployment": {
+            "value": false
+          },
+          "enableVaultForTemplateDeployment": {
+            "value": false
+          },
+          "enablePurgeProtection": {
+            "value": false
           },
           "accessPolicies": {
             "value": [

@@ -53,4 +53,4 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
 output identityPrincipalId string = app.identity.principalId
 
 @description('The resource ID of the created Log Analytics Workspace.')
-output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.name
+output logAnalyticsResourceId string = logAnalyticsWorkspace.id
