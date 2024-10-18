@@ -1327,7 +1327,7 @@
   },
   "parameters": {
     "administratorLogin": {
-      "type": "string",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Conditional. The administrator username for the server. Required if no `administrators` object for AAD authentication is provided."
