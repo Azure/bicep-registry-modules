@@ -23,10 +23,6 @@ param activeDirectoryAuth string = 'Enabled'
   'Disabled'
   'Enabled'
 ])
-@description('Optional. If Enabled, password authentication is enabled.')
-#disable-next-line secure-secrets-in-params
-param passwordAuth string = 'Disabled'
-
 @description('Optional. Tenant id of the server.')
 param tenantId string = ''
 
@@ -255,7 +251,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' =
     administratorLoginPassword: !empty(administratorLoginPassword) ? administratorLoginPassword : null
     authConfig: {
       activeDirectoryAuth: activeDirectoryAuth
-      passwordAuth: passwordAuth
+      passwordAuth: !empty(administratorLoginPassword) ? 'enabled' : 'disabled'
       tenantId: !empty(tenantId) ? tenantId : null
     }
     availabilityZone: availabilityZone
