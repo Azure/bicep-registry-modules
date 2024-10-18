@@ -14,10 +14,10 @@ param backupStorageAccessTier 'Archive' | 'Hot'?
 @description('Optional. The setting whether to make LTR backups immutable.')
 param makeBackupsImmutable bool?
 
-@description('Optional. Weekly retention in ISO 8601 duration format.')
+@description('Optional. Monthly retention in ISO 8601 duration format.')
 param monthlyRetention string?
 
-@description('Optional. Monthly retention in ISO 8601 duration format.')
+@description('Optional. Weekly retention in ISO 8601 duration format.')
 param weeklyRetention string?
 
 @description('Optional. Week of year backup to keep for yearly retention.')

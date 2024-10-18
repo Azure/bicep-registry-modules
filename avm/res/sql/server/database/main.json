@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "8570245614970945119"
+      "templateHash": "15066479282051878033"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database.",
@@ -283,7 +283,7 @@
     },
     "autoPauseDelay": {
       "type": "int",
-      "defaultValue": 0,
+      "defaultValue": -1,
       "metadata": {
         "description": "Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled."
       }
@@ -837,7 +837,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "13893387790480518080"
+              "templateHash": "16586251276572997423"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
@@ -878,14 +878,14 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Weekly retention in ISO 8601 duration format."
+                "description": "Optional. Monthly retention in ISO 8601 duration format."
               }
             },
             "weeklyRetention": {
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Monthly retention in ISO 8601 duration format."
+                "description": "Optional. Weekly retention in ISO 8601 duration format."
               }
             },
             "weekOfYear": {

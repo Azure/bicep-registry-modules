@@ -29,8 +29,8 @@ This module deploys an Azure SQL Server Database Long-Term Backup Retention Poli
 | :-- | :-- | :-- |
 | [`backupStorageAccessTier`](#parameter-backupstorageaccesstier) | string | The BackupStorageAccessTier for the LTR backups. |
 | [`makeBackupsImmutable`](#parameter-makebackupsimmutable) | bool | The setting whether to make LTR backups immutable. |
-| [`monthlyRetention`](#parameter-monthlyretention) | string | Weekly retention in ISO 8601 duration format. |
-| [`weeklyRetention`](#parameter-weeklyretention) | string | Monthly retention in ISO 8601 duration format. |
+| [`monthlyRetention`](#parameter-monthlyretention) | string | Monthly retention in ISO 8601 duration format. |
+| [`weeklyRetention`](#parameter-weeklyretention) | string | Weekly retention in ISO 8601 duration format. |
 | [`weekOfYear`](#parameter-weekofyear) | int | Week of year backup to keep for yearly retention. |
 | [`yearlyRetention`](#parameter-yearlyretention) | string | Yearly retention in ISO 8601 duration format. |
 
@@ -71,14 +71,14 @@ The setting whether to make LTR backups immutable.
 
 ### Parameter: `monthlyRetention`
 
-Weekly retention in ISO 8601 duration format.
+Monthly retention in ISO 8601 duration format.
 
 - Required: No
 - Type: string
 
 ### Parameter: `weeklyRetention`
 
-Monthly retention in ISO 8601 duration format.
+Weekly retention in ISO 8601 duration format.
 
 - Required: No
 - Type: string
