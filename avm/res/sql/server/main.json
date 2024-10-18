@@ -422,6 +422,7 @@
             "Disabled",
             "Enabled"
           ],
+          "nullable": true,
           "metadata": {
             "description": "Required. Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required."
           }
@@ -1327,7 +1328,7 @@
   },
   "parameters": {
     "administratorLogin": {
-      "type": "securestring",
+      "type": "string",
       "defaultValue": "",
       "metadata": {
         "description": "Conditional. The administrator username for the server. Required if no `administrators` object for AAD authentication is provided."
@@ -1534,7 +1535,7 @@
     },
     "auditSettings": {
       "$ref": "#/definitions/auditSettingsType",
-      "nullable": true,
+      "defaultValue": {},
       "metadata": {
         "description": "Optional. The audit settings configuration."
       }
@@ -4727,7 +4728,7 @@
       ]
     },
     "server_audit_settings": {
-      "condition": "[not(empty(parameters('auditSettings')))]",
+      "condition": "[not(equals(parameters('auditSettings'), null()))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Sql-AuditSettings', uniqueString(deployment().name, parameters('location')))]",
@@ -4744,28 +4745,28 @@
             "value": "[coalesce(tryGet(parameters('auditSettings'), 'name'), 'default')]"
           },
           "state": {
-            "value": "[coalesce(tryGet(parameters('auditSettings'), 'state'), 'Disabled')]"
+            "value": "[tryGet(parameters('auditSettings'), 'state')]"
           },
           "auditActionsAndGroups": {
-            "value": "[coalesce(tryGet(parameters('auditSettings'), 'auditActionsAndGroups'), createArray('BATCH_COMPLETED_GROUP', 'SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP', 'FAILED_DATABASE_AUTHENTICATION_GROUP'))]"
+            "value": "[tryGet(parameters('auditSettings'), 'auditActionsAndGroups')]"
           },
           "isAzureMonitorTargetEnabled": {
-            "value": "[coalesce(tryGet(parameters('auditSettings'), 'isAzureMonitorTargetEnabled'), false())]"
+            "value": "[tryGet(parameters('auditSettings'), 'isAzureMonitorTargetEnabled')]"
           },
           "isDevopsAuditEnabled": {
-            "value": "[coalesce(tryGet(parameters('auditSettings'), 'isDevopsAuditEnabled'), false())]"
+            "value": "[tryGet(parameters('auditSettings'), 'isDevopsAuditEnabled')]"
           },
           "isManagedIdentityInUse": {
-            "value": "[coalesce(tryGet(parameters('auditSettings'), 'isManagedIdentityInUse'), false())]"
+            "value": "[tryGet(parameters('auditSettings'), 'isManagedIdentityInUse')]"
           },
           "isStorageSecondaryKeyInUse": {
-            "value": "[coalesce(tryGet(parameters('auditSettings'), 'isStorageSecondaryKeyInUse'), false())]"
+            "value": "[tryGet(parameters('auditSettings'), 'isStorageSecondaryKeyInUse')]"
           },
           "queueDelayMs": {
-            "value": "[coalesce(tryGet(parameters('auditSettings'), 'queueDelayMs'), 1000)]"
+            "value": "[tryGet(parameters('auditSettings'), 'queueDelayMs')]"
           },
           "retentionDays": {
-            "value": "[coalesce(tryGet(parameters('auditSettings'), 'retentionDays'), 90)]"
+            "value": "[tryGet(parameters('auditSettings'), 'retentionDays')]"
           },
           "storageAccountResourceId": {
             "value": "[tryGet(parameters('auditSettings'), 'storageAccountResourceId')]"
@@ -4773,7 +4774,6 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
@@ -4800,31 +4800,36 @@
             },
             "state": {
               "type": "string",
+              "defaultValue": "Enabled",
               "allowedValues": [
                 "Enabled",
                 "Disabled"
               ],
               "metadata": {
-                "description": "Required. The resource group of the SQL Server. Required if the template is used in a standalone deployment."
+                "description": "Optional. The resource group of the SQL Server. Required if the template is used in a standalone deployment."
               }
             },
             "auditActionsAndGroups": {
               "type": "array",
-              "nullable": true,
+              "defaultValue": [
+                "BATCH_COMPLETED_GROUP",
+                "SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP",
+                "FAILED_DATABASE_AUTHENTICATION_GROUP"
+              ],
               "metadata": {
                 "description": "Optional. Specifies the Actions-Groups and Actions to audit."
               }
             },
             "isAzureMonitorTargetEnabled": {
               "type": "bool",
-              "defaultValue": false,
+              "defaultValue": true,
               "metadata": {
                 "description": "Optional. Specifies whether audit events are sent to Azure Monitor."
               }
             },
             "isDevopsAuditEnabled": {
               "type": "bool",
-              "nullable": true,
+              "defaultValue": false,
               "metadata": {
                 "description": "Optional. Specifies the state of devops audit. If state is Enabled, devops logs will be sent to Azure Monitor."
               }
@@ -4838,21 +4843,21 @@
             },
             "isStorageSecondaryKeyInUse": {
               "type": "bool",
-              "nullable": true,
+              "defaultValue": false,
               "metadata": {
                 "description": "Optional. Specifies whether storageAccountAccessKey value is the storage's secondary key."
               }
             },
             "queueDelayMs": {
               "type": "int",
-              "nullable": true,
+              "defaultValue": 1000,
               "metadata": {
                 "description": "Optional. Specifies the amount of time in milliseconds that can elapse before audit actions are forced to be processed."
               }
             },
             "retentionDays": {
               "type": "int",
-              "nullable": true,
+              "defaultValue": 90,
               "metadata": {
                 "description": "Optional. Specifies the number of days to keep in the audit logs in the storage account."
               }
@@ -4865,14 +4870,8 @@
               }
             }
           },
-          "resources": {
-            "server": {
-              "existing": true,
-              "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01-preview",
-              "name": "[parameters('serverName')]"
-            },
-            "auditSettings": {
+          "resources": [
+            {
               "type": "Microsoft.Sql/servers/auditingSettings",
               "apiVersion": "2023-08-01-preview",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
@@ -4888,12 +4887,9 @@
                 "storageAccountAccessKey": "[if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('isManagedIdentityInUse'))), listKeys(parameters('storageAccountResourceId'), '2019-06-01').keys[0].value, null())]",
                 "storageAccountSubscriptionId": "[if(not(empty(parameters('storageAccountResourceId'))), split(parameters('storageAccountResourceId'), '/')[2], null())]",
                 "storageEndpoint": "[if(not(empty(parameters('storageAccountResourceId'))), format('https://{0}.blob.{1}', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage), null())]"
-              },
-              "dependsOn": [
-                "server"
-              ]
+              }
             },
-            "storageAccount_sbdc_rbac": {
+            {
               "condition": "[and(parameters('isManagedIdentityInUse'), not(empty(parameters('storageAccountResourceId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -4908,7 +4904,7 @@
                     "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                   },
                   "managedInstanceIdentityPrincipalId": {
-                    "value": "[reference('server', '2023-08-01-preview', 'full').identity.principalId]"
+                    "value": "[reference(resourceId('Microsoft.Sql/servers', parameters('serverName')), '2023-08-01-preview', 'full').identity.principalId]"
                   }
                 },
                 "template": {
@@ -4943,12 +4939,9 @@
                     }
                   ]
                 }
-              },
-              "dependsOn": [
-                "server"
-              ]
+              }
             }
-          },
+          ],
           "outputs": {
             "name": {
               "type": "string",

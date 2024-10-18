@@ -1,12 +1,11 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "4165841300638093382"
+      "templateHash": "2203194937155100618"
     },
     "name": "Azure SQL Server Audit Settings",
     "description": "This module deploys an Azure SQL Server Audit Settings.",
@@ -27,31 +26,36 @@
     },
     "state": {
       "type": "string",
+      "defaultValue": "Enabled",
       "allowedValues": [
         "Enabled",
         "Disabled"
       ],
       "metadata": {
-        "description": "Required. The resource group of the SQL Server. Required if the template is used in a standalone deployment."
+        "description": "Optional. The resource group of the SQL Server. Required if the template is used in a standalone deployment."
       }
     },
     "auditActionsAndGroups": {
       "type": "array",
-      "nullable": true,
+      "defaultValue": [
+        "BATCH_COMPLETED_GROUP",
+        "SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP",
+        "FAILED_DATABASE_AUTHENTICATION_GROUP"
+      ],
       "metadata": {
         "description": "Optional. Specifies the Actions-Groups and Actions to audit."
       }
     },
     "isAzureMonitorTargetEnabled": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Specifies whether audit events are sent to Azure Monitor."
       }
     },
     "isDevopsAuditEnabled": {
       "type": "bool",
-      "nullable": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Specifies the state of devops audit. If state is Enabled, devops logs will be sent to Azure Monitor."
       }
@@ -65,21 +69,21 @@
     },
     "isStorageSecondaryKeyInUse": {
       "type": "bool",
-      "nullable": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Specifies whether storageAccountAccessKey value is the storage's secondary key."
       }
     },
     "queueDelayMs": {
       "type": "int",
-      "nullable": true,
+      "defaultValue": 1000,
       "metadata": {
         "description": "Optional. Specifies the amount of time in milliseconds that can elapse before audit actions are forced to be processed."
       }
     },
     "retentionDays": {
       "type": "int",
-      "nullable": true,
+      "defaultValue": 90,
       "metadata": {
         "description": "Optional. Specifies the number of days to keep in the audit logs in the storage account."
       }
@@ -92,14 +96,8 @@
       }
     }
   },
-  "resources": {
-    "server": {
-      "existing": true,
-      "type": "Microsoft.Sql/servers",
-      "apiVersion": "2023-08-01-preview",
-      "name": "[parameters('serverName')]"
-    },
-    "auditSettings": {
+  "resources": [
+    {
       "type": "Microsoft.Sql/servers/auditingSettings",
       "apiVersion": "2023-08-01-preview",
       "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
@@ -115,12 +113,9 @@
         "storageAccountAccessKey": "[if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('isManagedIdentityInUse'))), listKeys(parameters('storageAccountResourceId'), '2019-06-01').keys[0].value, null())]",
         "storageAccountSubscriptionId": "[if(not(empty(parameters('storageAccountResourceId'))), split(parameters('storageAccountResourceId'), '/')[2], null())]",
         "storageEndpoint": "[if(not(empty(parameters('storageAccountResourceId'))), format('https://{0}.blob.{1}', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage), null())]"
-      },
-      "dependsOn": [
-        "server"
-      ]
+      }
     },
-    "storageAccount_sbdc_rbac": {
+    {
       "condition": "[and(parameters('isManagedIdentityInUse'), not(empty(parameters('storageAccountResourceId'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -135,7 +130,7 @@
             "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
           },
           "managedInstanceIdentityPrincipalId": {
-            "value": "[reference('server', '2023-08-01-preview', 'full').identity.principalId]"
+            "value": "[reference(resourceId('Microsoft.Sql/servers', parameters('serverName')), '2023-08-01-preview', 'full').identity.principalId]"
           }
         },
         "template": {
@@ -170,12 +165,9 @@
             }
           ]
         }
-      },
-      "dependsOn": [
-        "server"
-      ]
+      }
     }
-  },
+  ],
   "outputs": {
     "name": {
       "type": "string",
