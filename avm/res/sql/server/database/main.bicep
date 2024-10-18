@@ -17,7 +17,7 @@ param sku databaseSkuType = {
 }
 
 @description('Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled.')
-param autoPauseDelay int = 0
+param autoPauseDelay int = -1
 
 @description('Optional. Specifies the availability zone the database is pinned to.')
 param availabilityZone '1' | '2' | '3' | 'NoPreference' = 'NoPreference'

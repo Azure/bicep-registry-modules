@@ -40,7 +40,7 @@ This module deploys an Azure SQL Server Audit Settings.
 | [`isStorageSecondaryKeyInUse`](#parameter-isstoragesecondarykeyinuse) | bool | Specifies whether storageAccountAccessKey value is the storage's secondary key. |
 | [`queueDelayMs`](#parameter-queuedelayms) | int | Specifies the amount of time in milliseconds that can elapse before audit actions are forced to be processed. |
 | [`retentionDays`](#parameter-retentiondays) | int | Specifies the number of days to keep in the audit logs in the storage account. |
-| [`state`](#parameter-state) | string | The resource group of the SQL Server. Required if the template is used in a standalone deployment. |
+| [`state`](#parameter-state) | string | Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | A blob storage to hold the auditing storage account. |
 
 ### Parameter: `name`
@@ -122,7 +122,7 @@ Specifies the number of days to keep in the audit logs in the storage account.
 
 ### Parameter: `state`
 
-The resource group of the SQL Server. Required if the template is used in a standalone deployment.
+Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required.
 
 - Required: No
 - Type: string

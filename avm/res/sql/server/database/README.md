@@ -95,7 +95,7 @@ Time in minutes after which database is automatically paused. A value of -1 mean
 
 - Required: No
 - Type: int
-- Default: `0`
+- Default: `-1`
 
 ### Parameter: `availabilityZone`
 

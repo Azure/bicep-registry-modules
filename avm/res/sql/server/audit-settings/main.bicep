@@ -8,7 +8,7 @@ param name string
 @description('Conditional. The Name of SQL Server. Required if the template is used in a standalone deployment.')
 param serverName string
 
-@description('Optional. The resource group of the SQL Server. Required if the template is used in a standalone deployment.')
+@description('Optional. Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required.')
 @allowed([
   'Enabled'
   'Disabled'
