@@ -163,6 +163,7 @@ body:
         - "avm/res/network/network-manager"
         - "avm/res/network/network-security-group"
         - "avm/res/network/network-watcher"
+        - "avm/res/network/p2s-vpn-gateway"
         - "avm/res/network/private-dns-zone"
         - "avm/res/network/private-endpoint"
         - "avm/res/network/private-link-service"
