@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "8302022487024713428"
+      "templateHash": "776040171352403744"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -1327,7 +1327,7 @@
   },
   "parameters": {
     "administratorLogin": {
-      "type": "string",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Conditional. The administrator username for the server. Required if no `administrators` object for AAD authentication is provided."
