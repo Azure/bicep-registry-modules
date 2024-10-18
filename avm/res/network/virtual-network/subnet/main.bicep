@@ -30,17 +30,17 @@ param natGatewayResourceId string?
 @allowed([
   'Disabled'
   'Enabled'
-  ''
+  'NetworkSecurityGroupEnabled'
+  'RouteTableEnabled'
 ])
-param privateEndpointNetworkPolicies string = ''
+param privateEndpointNetworkPolicies string?
 
 @description('Optional. Enable or disable apply network policies on private link service in the subnet.')
 @allowed([
   'Disabled'
   'Enabled'
-  ''
 ])
-param privateLinkServiceNetworkPolicies string = ''
+param privateLinkServiceNetworkPolicies string?
 
 @description('Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty.')
 param addressPrefixes string[]?
@@ -129,10 +129,8 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2024-01-01' = {
           }
         ]
       : []
-    privateEndpointNetworkPolicies: !empty(privateEndpointNetworkPolicies) ? any(privateEndpointNetworkPolicies) : null
-    privateLinkServiceNetworkPolicies: !empty(privateLinkServiceNetworkPolicies)
-      ? any(privateLinkServiceNetworkPolicies)
-      : null
+    privateEndpointNetworkPolicies: privateEndpointNetworkPolicies
+    privateLinkServiceNetworkPolicies: privateLinkServiceNetworkPolicies
     applicationGatewayIPConfigurations: applicationGatewayIPConfigurations
     serviceEndpointPolicies: serviceEndpointPolicies
     defaultOutboundAccess: defaultOutboundAccess

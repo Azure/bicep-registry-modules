@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "6677157161292207910"
+      "templateHash": "13087420675784216597"
     },
     "name": "Virtual Network Subnets",
     "description": "This module deploys a Virtual Network Subnet.",
@@ -147,11 +147,12 @@
     },
     "privateEndpointNetworkPolicies": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
         "Disabled",
         "Enabled",
-        ""
+        "NetworkSecurityGroupEnabled",
+        "RouteTableEnabled"
       ],
       "metadata": {
         "description": "Optional. Enable or disable apply network policies on private endpoint in the subnet."
@@ -159,11 +160,10 @@
     },
     "privateLinkServiceNetworkPolicies": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
         "Disabled",
-        "Enabled",
-        ""
+        "Enabled"
       ],
       "metadata": {
         "description": "Optional. Enable or disable apply network policies on private link service in the subnet."
@@ -262,8 +262,8 @@
         "routeTable": "[if(not(empty(parameters('routeTableResourceId'))), createObject('id', parameters('routeTableResourceId')), null())]",
         "natGateway": "[if(not(empty(parameters('natGatewayResourceId'))), createObject('id', parameters('natGatewayResourceId')), null())]",
         "delegations": "[if(not(empty(parameters('delegation'))), createArray(createObject('name', parameters('delegation'), 'properties', createObject('serviceName', parameters('delegation')))), createArray())]",
-        "privateEndpointNetworkPolicies": "[if(not(empty(parameters('privateEndpointNetworkPolicies'))), parameters('privateEndpointNetworkPolicies'), null())]",
-        "privateLinkServiceNetworkPolicies": "[if(not(empty(parameters('privateLinkServiceNetworkPolicies'))), parameters('privateLinkServiceNetworkPolicies'), null())]",
+        "privateEndpointNetworkPolicies": "[parameters('privateEndpointNetworkPolicies')]",
+        "privateLinkServiceNetworkPolicies": "[parameters('privateLinkServiceNetworkPolicies')]",
         "applicationGatewayIPConfigurations": "[parameters('applicationGatewayIPConfigurations')]",
         "serviceEndpointPolicies": "[parameters('serviceEndpointPolicies')]",
         "defaultOutboundAccess": "[parameters('defaultOutboundAccess')]",

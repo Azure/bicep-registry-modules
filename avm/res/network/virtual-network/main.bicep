@@ -443,10 +443,10 @@ type subnetType = {
   networkSecurityGroupResourceId: string?
 
   @description('Optional. enable or disable apply network policies on private endpoint in the subnet.')
-  privateEndpointNetworkPolicies: ('Disabled' | 'Enabled' | '')?
+  privateEndpointNetworkPolicies: ('Disabled' | 'Enabled' | 'NetworkSecurityGroupEnabled' | 'RouteTableEnabled')?
 
   @description('Optional. enable or disable apply network policies on private link service in the subnet.')
-  privateLinkServiceNetworkPolicies: ('Disabled' | 'Enabled' | '')?
+  privateLinkServiceNetworkPolicies: ('Disabled' | 'Enabled')?
 
   @description('Optional. Array of role assignments to create.')
   roleAssignments: roleAssignmentType

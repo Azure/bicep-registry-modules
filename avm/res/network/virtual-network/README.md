@@ -1716,9 +1716,10 @@ enable or disable apply network policies on private endpoint in the subnet.
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
+    'NetworkSecurityGroupEnabled'
+    'RouteTableEnabled'
   ]
   ```
 
@@ -1731,7 +1732,6 @@ enable or disable apply network policies on private link service in the subnet.
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
   ]
