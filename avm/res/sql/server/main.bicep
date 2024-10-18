@@ -3,7 +3,6 @@ metadata description = 'This module deploys an Azure SQL Server.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The administrator username for the server. Required if no `administrators` object for AAD authentication is provided.')
-@secure()
 param administratorLogin string = ''
 
 @description('Conditional. The administrator login password. Required if no `administrators` object for AAD authentication is provided.')
@@ -121,7 +120,7 @@ param encryptionProtectorObj object = {}
 param vulnerabilityAssessmentsObj object = {}
 
 @description('Optional. The audit settings configuration.')
-param auditSettings auditSettingsType?
+param auditSettings auditSettingsType = {} //Use the defaults from the child module
 
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
@@ -468,23 +467,19 @@ module server_encryptionProtector 'encryption-protector/main.bicep' = if (!empty
   ]
 }
 
-module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSettings)) {
+module server_audit_settings 'audit-settings/main.bicep' = if (auditSettings != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-AuditSettings'
   params: {
     serverName: server.name
     name: auditSettings.?name ?? 'default'
-    state: auditSettings.?state ?? 'Disabled'
-    auditActionsAndGroups: auditSettings.?auditActionsAndGroups ?? [
-      'BATCH_COMPLETED_GROUP'
-      'SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP'
-      'FAILED_DATABASE_AUTHENTICATION_GROUP'
-    ]
-    isAzureMonitorTargetEnabled: auditSettings.?isAzureMonitorTargetEnabled ?? false
-    isDevopsAuditEnabled: auditSettings.?isDevopsAuditEnabled ?? false
-    isManagedIdentityInUse: auditSettings.?isManagedIdentityInUse ?? false
-    isStorageSecondaryKeyInUse: auditSettings.?isStorageSecondaryKeyInUse ?? false
-    queueDelayMs: auditSettings.?queueDelayMs ?? 1000
-    retentionDays: auditSettings.?retentionDays ?? 90
+    state: auditSettings.?state
+    auditActionsAndGroups: auditSettings.?auditActionsAndGroups
+    isAzureMonitorTargetEnabled: auditSettings.?isAzureMonitorTargetEnabled
+    isDevopsAuditEnabled: auditSettings.?isDevopsAuditEnabled
+    isManagedIdentityInUse: auditSettings.?isManagedIdentityInUse
+    isStorageSecondaryKeyInUse: auditSettings.?isStorageSecondaryKeyInUse
+    queueDelayMs: auditSettings.?queueDelayMs
+    retentionDays: auditSettings.?retentionDays
     storageAccountResourceId: auditSettings.?storageAccountResourceId
   }
 }
@@ -709,7 +704,7 @@ type auditSettingsType = {
   retentionDays: int?
 
   @description('Required. Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required.')
-  state: 'Enabled' | 'Disabled'
+  state: 'Enabled' | 'Disabled'?
 
   @description('Optional. Specifies the identifier key of the auditing storage account.')
   storageAccountResourceId: string?

@@ -1824,7 +1824,7 @@ param vulnerabilityAssessmentsObj = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`administratorLogin`](#parameter-administratorlogin) | securestring | The administrator username for the server. Required if no `administrators` object for AAD authentication is provided. |
+| [`administratorLogin`](#parameter-administratorlogin) | string | The administrator username for the server. Required if no `administrators` object for AAD authentication is provided. |
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. Required if no `administrators` object for AAD authentication is provided. |
 | [`administrators`](#parameter-administrators) | object | The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided. |
 | [`primaryUserAssignedIdentityId`](#parameter-primaryuserassignedidentityid) | string | The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty. |
@@ -1869,7 +1869,7 @@ The name of the server.
 The administrator username for the server. Required if no `administrators` object for AAD authentication is provided.
 
 - Required: No
-- Type: securestring
+- Type: string
 - Default: `''`
 
 ### Parameter: `administratorLoginPassword`
@@ -1973,6 +1973,7 @@ The audit settings configuration.
 
 - Required: No
 - Type: object
+- Default: `{}`
 
 **Required parameters**
 
@@ -1998,7 +1999,7 @@ The audit settings configuration.
 
 Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
