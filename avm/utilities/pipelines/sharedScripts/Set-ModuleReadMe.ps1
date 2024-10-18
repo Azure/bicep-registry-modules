@@ -1250,7 +1250,7 @@ function ConvertTo-FormattedJSONParameterObject {
     try {
         $paramInJsonFormatObject = $paramInJSONFormatArray | Out-String | ConvertFrom-Json -AsHashtable -Depth 99 -ErrorAction 'Stop'
     } catch {
-        throw ('Failed to process file [{0}]. Please check if it properly formatted. Original error message: [{1}]. Original content: {2}' -f $CurrentFilePath, $_.Exception.Message, ($paramInJSONFormatArray | Out-String))
+        throw ('Failed to process file [{0}]. Please check if it properly formatted. Original error message: [{1}].' -f $CurrentFilePath, $_.Exception.Message)
     }
     # [3/4] Inject top-level 'value`' properties
     $paramInJsonFormatObjectWithValue = @{}
