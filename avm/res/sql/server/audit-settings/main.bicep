@@ -16,7 +16,7 @@ param serverName string
 param state string = 'Enabled'
 
 @description('Optional. Specifies the Actions-Groups and Actions to audit.')
-param auditActionsAndGroups array = [
+param auditActionsAndGroups string[] = [
   'BATCH_COMPLETED_GROUP'
   'SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP'
   'FAILED_DATABASE_AUTHENTICATION_GROUP'

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "15066479282051878033"
+      "templateHash": "2290667128393523898"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database.",
@@ -554,7 +554,7 @@
     },
     "zoneRedundant": {
       "type": "bool",
-      "nullable": true,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Whether or not this database is zone redundant."
       }

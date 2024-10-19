@@ -327,16 +327,16 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   name: 'serverDeployment'
   params: {
     // Required parameters
-    name: 'epool001'
+    name: 'ssep001'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
     elasticPools: [
       {
-        name: 'epool-ep-001'
+        name: 'ssep-ep-001'
       }
       {
-        name: 'epool-ep-002'
+        name: 'ssep-ep-002'
         perDatabaseSettings: {
           maxCapacity: '4'
           minCapacity: '0.5'
@@ -367,7 +367,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "epool001"
+      "value": "ssep001"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -379,10 +379,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "elasticPools": {
       "value": [
         {
-          "name": "epool-ep-001"
+          "name": "ssep-ep-001"
         },
         {
-          "name": "epool-ep-002",
+          "name": "ssep-ep-002",
           "perDatabaseSettings": {
             "maxCapacity": "4",
             "minCapacity": "0.5"
@@ -413,16 +413,16 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'epool001'
+param name = 'ssep001'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param elasticPools = [
   {
-    name: 'epool-ep-001'
+    name: 'ssep-ep-001'
   }
   {
-    name: 'epool-ep-002'
+    name: 'ssep-ep-002'
     perDatabaseSettings: {
       maxCapacity: '4'
       minCapacity: '0.5'

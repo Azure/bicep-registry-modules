@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-sql.servers-${serviceShort}-
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'epool'
+param serviceShort string = 'ssep'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
