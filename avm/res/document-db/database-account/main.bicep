@@ -49,7 +49,7 @@ param enableFreeTier bool = false
 param enableMultipleWriteLocations bool = false
 
 @description('Optional. Disable write operations on metadata resources (databases, containers, throughput) via account keys.')
-param disableKeyBasedMetadataWriteAccess bool = false
+param disableKeyBasedMetadataWriteAccess bool = true
 
 @minValue(1)
 @maxValue(2147483647)
@@ -147,7 +147,19 @@ param privateEndpoints privateEndpointType
 param secretsExportConfiguration secretsExportConfigurationType?
 
 @description('Optional. The network configuration of this module.')
-param networkRestrictions networkRestrictionsType?
+param networkRestrictions networkRestrictionsType = {
+  ipRules: []
+  virtualNetworkRules: []
+  publicNetworkAccess: 'Disabled'
+}
+
+@allowed([
+  'Tls'
+  'Tls11'
+  'Tls12'
+])
+@description('Optional. Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later.')
+param minimumTlsVersion string = 'Tls12'
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -243,10 +255,11 @@ var databaseAccountProperties = union(
   {
     databaseAccountOfferType: databaseAccountOfferType
     backupPolicy: backupPolicy
+    minimalTlsVersion: minimumTlsVersion
   },
   ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases))
     ? {
-        // Common properties
+        // NoSQL, MongoDB RU, and Apache Gremlin common properties
         consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
         enableMultipleWriteLocations: enableMultipleWriteLocations
         locations: empty(databaseAccount_locations) ? defaultFailoverLocation : databaseAccount_locations
@@ -265,14 +278,14 @@ var databaseAccountProperties = union(
     : {}),
   (!empty(sqlDatabases)
     ? {
-        // SQLDB properties
+        // NoSQL properties
         disableLocalAuth: disableLocalAuth
         disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
       }
     : {}),
   (!empty(mongodbDatabases)
     ? {
-        // MongoDb properties
+        // MongoDB RU properties
         apiProperties: {
           serverVersion: serverVersion
         }

@@ -14,6 +14,9 @@ param applicationInsightsResourceId string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 @description('Optional. Tags of the resource.')
 @metadata({
   example: '''
@@ -35,6 +38,7 @@ module dashboard 'br/public:avm/res/portal/dashboard:0.1.0' = {
     name: name
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     lenses: [
       {
         order: 0

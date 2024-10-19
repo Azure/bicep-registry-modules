@@ -22,7 +22,7 @@ param roleAssignments roleAssignmentType
   'Premium'
   'Standard'
 ])
-param acrSku string = 'Basic'
+param acrSku string = 'Premium'
 
 @allowed([
   'disabled'
@@ -107,7 +107,7 @@ param privateEndpoints privateEndpointType
   'Enabled'
 ])
 @description('Optional. Whether or not zone redundancy is enabled for this container registry.')
-param zoneRedundancy string = 'Disabled'
+param zoneRedundancy string = 'Enabled'
 
 @description('Optional. All replications to create.')
 param replications array?

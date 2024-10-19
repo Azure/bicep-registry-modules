@@ -19,7 +19,7 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates) |
-| `Microsoft.Compute/virtualMachines` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-01/virtualMachines) |
+| `Microsoft.Compute/virtualMachines` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines) |
 | `Microsoft.Compute/virtualMachines/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions) |
 | `Microsoft.DevTestLab/schedules` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules) |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
@@ -98,7 +98,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
     zone: 0
     // Non-required parameters
     configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
@@ -174,7 +174,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 0
@@ -246,7 +246,7 @@ param osDisk = {
   }
 }
 param osType = 'Linux'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 0
 // Non-required parameters
 param configurationProfile = '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
@@ -307,7 +307,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
     zone: 0
     // Non-required parameters
     disablePasswordAuthentication: true
@@ -378,7 +378,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 0
@@ -443,7 +443,7 @@ param osDisk = {
   }
 }
 param osType = 'Linux'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 0
 // Non-required parameters
 param disablePasswordAuthentication = true
@@ -586,7 +586,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'osdisk01'
     }
     osType: 'Linux'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
     zone: 1
     // Non-required parameters
     backupPolicyName: '<backupPolicyName>'
@@ -886,7 +886,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 1
@@ -1222,7 +1222,7 @@ param osDisk = {
   name: 'osdisk01'
 }
 param osType = 'Linux'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 1
 // Non-required parameters
 param backupPolicyName = '<backupPolicyName>'
@@ -1488,7 +1488,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
     zone: 2
     // Non-required parameters
     adminPassword: '<adminPassword>'
@@ -1780,7 +1780,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 2
@@ -2112,7 +2112,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 2
 // Non-required parameters
 param adminPassword = '<adminPassword>'
@@ -2330,7 +2330,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
     zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
@@ -2392,7 +2392,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 0
@@ -2446,7 +2446,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 0
 // Non-required parameters
 param adminPassword = '<adminPassword>'
@@ -2483,6 +2483,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         ipConfigurations: [
           {
             name: 'ipconfig01'
+            pipConfiguration: {
+              publicIpNameSuffix: '-pip-01'
+              zones: []
+            }
             subnetResourceId: '<subnetResourceId>'
           }
         ]
@@ -2497,7 +2501,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
     zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
@@ -2568,6 +2572,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "ipConfigurations": [
             {
               "name": "ipconfig01",
+              "pipConfiguration": {
+                "publicIpNameSuffix": "-pip-01",
+                "zones": []
+              },
               "subnetResourceId": "<subnetResourceId>"
             }
           ],
@@ -2588,7 +2596,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 0
@@ -2663,6 +2671,10 @@ param nicConfigurations = [
     ipConfigurations: [
       {
         name: 'ipconfig01'
+        pipConfiguration: {
+          publicIpNameSuffix: '-pip-01'
+          zones: []
+        }
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -2677,7 +2689,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 0
 // Non-required parameters
 param adminPassword = '<adminPassword>'
@@ -2757,7 +2769,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
     zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
@@ -2842,7 +2854,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 0
@@ -2925,7 +2937,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 0
 // Non-required parameters
 param adminPassword = '<adminPassword>'
@@ -3026,7 +3038,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             ]
             name: 'ipconfig01'
             pipConfiguration: {
-              publicIpNameSuffix: '-pip-01'
+              publicIPAddressResourceId: '<publicIPAddressResourceId>'
               roleAssignments: [
                 {
                   name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
@@ -3044,11 +3056,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                   principalType: 'ServicePrincipal'
                   roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
                 }
-              ]
-              zones: [
-                1
-                2
-                3
               ]
             }
             subnetResourceId: '<subnetResourceId>'
@@ -3086,7 +3093,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'osdisk01'
     }
     osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
     zone: 2
     // Non-required parameters
     adminPassword: '<adminPassword>'
@@ -3350,7 +3357,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               ],
               "name": "ipconfig01",
               "pipConfiguration": {
-                "publicIpNameSuffix": "-pip-01",
+                "publicIPAddressResourceId": "<publicIPAddressResourceId>",
                 "roleAssignments": [
                   {
                     "name": "e962e7c1-261a-4afd-b5ad-17a640a0b7bc",
@@ -3368,11 +3375,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                     "principalType": "ServicePrincipal",
                     "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
                   }
-                ],
-                "zones": [
-                  1,
-                  2,
-                  3
                 ]
               },
               "subnetResourceId": "<subnetResourceId>"
@@ -3416,7 +3418,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 2
@@ -3726,7 +3728,7 @@ param nicConfigurations = [
         ]
         name: 'ipconfig01'
         pipConfiguration: {
-          publicIpNameSuffix: '-pip-01'
+          publicIPAddressResourceId: '<publicIPAddressResourceId>'
           roleAssignments: [
             {
               name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
@@ -3744,11 +3746,6 @@ param nicConfigurations = [
               principalType: 'ServicePrincipal'
               roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
             }
-          ]
-          zones: [
-            1
-            2
-            3
           ]
         }
         subnetResourceId: '<subnetResourceId>'
@@ -3786,7 +3783,7 @@ param osDisk = {
   name: 'osdisk01'
 }
 param osType = 'Windows'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 2
 // Non-required parameters
 param adminPassword = '<adminPassword>'
@@ -4198,7 +4195,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
     zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
@@ -4273,7 +4270,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 0
@@ -4342,7 +4339,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 0
 // Non-required parameters
 param adminPassword = '<adminPassword>'
@@ -4404,7 +4401,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
     zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
@@ -4467,7 +4464,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     "zone": {
       "value": 0
@@ -4524,7 +4521,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_DS2_v2'
+param vmSize = 'Standard_D2s_v3'
 param zone = 0
 // Non-required parameters
 param adminPassword = '<adminPassword>'
@@ -5746,10 +5743,12 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/network-interface:0.2.4` | Remote reference |
-| `br/public:avm/res/network/public-ip-address:0.4.1` | Remote reference |
+| `br/public:avm/res/network/network-interface:0.4.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.6.0` | Remote reference |
 
 ## Notes
+
+Inside the `nicConfigurations` section and there inside the `ipConfigurations`, a `pipConfiguration` can be defined. For a new puplic IP address, the naming can either be set with the `name` or the `publicIpNameSuffix`. Per default a newly created PIP will have its `zones` parameter set to `[1,2,3]`. You can override it, for example with `[]`. If an existing PIP should be used, only set the `publicIPAddressResourceId`.
 
 ### Automanage considerations
 
