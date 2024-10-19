@@ -26,8 +26,5 @@
     "markdown-table": "^3.0.2",
     "prettier": "2.8.6",
     "semver": "^7.3.5"
-  },
-  "dependencies": {
-    "bicep-registry-modules": "file:"
   }
 }
