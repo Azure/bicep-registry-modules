@@ -73,7 +73,7 @@ resource cacertDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-0
     retentionInterval: 'P1D'
     forceUpdateTag: utcValue
     arguments: ' -KeyVaultName "${keyVault.name}" -RootOrganization "${rootOrganization}" -CAOrganization "${caOrganization}" -CertSubjectName "${caSubjectName}"'
-    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateAuthorityInKeyVault.ps1')
+    scriptContent: loadTextContent('scripts/Set-CertificateAuthorityInKeyVault.ps1')
   }
 }
 
