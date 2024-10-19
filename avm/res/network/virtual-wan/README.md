@@ -8,7 +8,6 @@ This module deploys a Virtual WAN.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -57,7 +56,7 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -74,6 +73,22 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-wan:<version>'
+
+// Required parameters
+param name = 'nvwmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -137,7 +152,7 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -205,6 +220,54 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-wan:<version>'
+
+// Required parameters
+param name = 'nvwmax001'
+// Non-required parameters
+param allowBranchToBranchTraffic = true
+param allowVnetToVnetTraffic = true
+param disableVpnEncryption = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: '360a3e7e-49bf-4e94-839f-14c91e8e0c23'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param type = 'Basic'
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -240,7 +303,7 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -281,6 +344,30 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-wan:<version>'
+
+// Required parameters
+param name = 'nvwwaf001'
+// Non-required parameters
+param allowBranchToBranchTraffic = true
+param allowVnetToVnetTraffic = true
+param disableVpnEncryption = true
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param type = 'Basic'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -393,6 +480,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -506,7 +600,6 @@ The type of the Virtual WAN.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -515,10 +608,6 @@ The type of the Virtual WAN.
 | `name` | string | The name of the virtual WAN. |
 | `resourceGroupName` | string | The resource group the virtual WAN was deployed into. |
 | `resourceId` | string | The resource ID of the virtual WAN. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

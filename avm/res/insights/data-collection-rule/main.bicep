@@ -21,6 +21,9 @@ param location string = resourceGroup().location
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
+@description('Optional. The managed identity definition for this resource. Only one type of, and up to one managed identity is supported.')
+param managedIdentities managedIdentitiesType
+
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
@@ -31,11 +34,25 @@ param tags object?
 //   Deployments   //
 // =============== //
 
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -45,16 +62,25 @@ var builtInRoleNames = {
   )
 }
 
-var formattedRoleAssignments = [
-  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
-    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
-        roleAssignment.roleDefinitionIdOrName,
-        '/providers/Microsoft.Authorization/roleDefinitions/'
-      )
-      ? roleAssignment.roleDefinitionIdOrName
-      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
-  })
-]
+var dataCollectionRulePropertiesUnion = union(
+  {
+    description: dataCollectionRuleProperties.?description
+  },
+  dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows' || dataCollectionRuleProperties.kind == 'All'
+    ? {
+        dataSources: dataCollectionRuleProperties.dataSources
+        dataFlows: dataCollectionRuleProperties.dataFlows
+        destinations: dataCollectionRuleProperties.destinations
+        dataCollectionEndpointId: dataCollectionRuleProperties.?dataCollectionEndpointResourceId
+        streamDeclarations: dataCollectionRuleProperties.?streamDeclarations
+      }
+    : {},
+  dataCollectionRuleProperties.kind == 'AgentSettings'
+    ? {
+        agentSettings: dataCollectionRuleProperties.agentSettings
+      }
+    : {}
+)
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -75,121 +101,79 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
+resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' = if (dataCollectionRuleProperties.kind != 'All') {
   kind: dataCollectionRuleProperties.kind
   location: location
   name: name
   tags: tags
-  properties: union(
-    {
-      description: dataCollectionRuleProperties.?description
-    },
-    dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows'
-      ? {
-          dataSources: dataCollectionRuleProperties.dataSources
-          dataFlows: dataCollectionRuleProperties.dataFlows
-          destinations: dataCollectionRuleProperties.destinations
-          dataCollectionEndpointId: dataCollectionRuleProperties.?dataCollectionEndpointResourceId
-          streamDeclarations: dataCollectionRuleProperties.?streamDeclarations
-        }
-      : {},
-    dataCollectionRuleProperties.kind == 'AgentSettings'
-      ? {
-          agentSettings: dataCollectionRuleProperties.agentSettings
-        }
-      : {}
-  )
+  identity: identity
+  properties: dataCollectionRulePropertiesUnion
 }
 
-resource dataCollectionRule_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
-      ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
-  }
-  scope: dataCollectionRule
+// Using a separate resource for parameter kind: 'All' as it requires that the "kind' is not set on the resource and 'kind: null' is not allowed for this resource type
+resource dataCollectionRuleAll 'Microsoft.Insights/dataCollectionRules@2023-03-11' = if (dataCollectionRuleProperties.kind == 'All') {
+  location: location
+  name: name
+  tags: tags
+  identity: identity
+  properties: dataCollectionRulePropertiesUnion
 }
 
-resource dataCollectionRule_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
-    name: roleAssignment.?name ?? guid(
-      dataCollectionRule.id,
-      roleAssignment.principalId,
-      roleAssignment.roleDefinitionId
-    )
-    properties: {
-      roleDefinitionId: roleAssignment.roleDefinitionId
-      principalId: roleAssignment.principalId
-      description: roleAssignment.?description
-      principalType: roleAssignment.?principalType
-      condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
-    }
-    scope: dataCollectionRule
+// Using a module as a workaround for issues with conditional scope: https://github.com/Azure/bicep/issues/7367
+module dataCollectionRule_conditionalScopeResources 'modules/nested_conditionalScope.bicep' = if ((!empty(lock ?? {}) && lock.?kind != 'None') || (!empty(roleAssignments ?? []))) {
+  name: '${uniqueString(deployment().name, location)}-DCR-ConditionalScope'
+  params: {
+    dataCollectionRuleName: dataCollectionRuleProperties.kind == 'All'
+      ? dataCollectionRuleAll.name
+      : dataCollectionRule.name
+    builtInRoleNames: builtInRoleNames
+    lock: lock
+    roleAssignments: roleAssignments
   }
-]
+}
 
 // =========== //
 //   Outputs   //
 // =========== //
 
 @description('The name of the dataCollectionRule.')
-output name string = dataCollectionRule.name
+output name string = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll.name : dataCollectionRule.name
 
 @description('The resource ID of the dataCollectionRule.')
-output resourceId string = dataCollectionRule.id
+output resourceId string = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll.id : dataCollectionRule.id
 
 @description('The name of the resource group the dataCollectionRule was created in.')
 output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
-output location string = dataCollectionRule.location
+output location string = dataCollectionRuleProperties.kind == 'All'
+  ? dataCollectionRuleAll.location
+  : dataCollectionRule.location
+
+@description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string = dataCollectionRuleProperties.kind == 'All'
+  ? dataCollectionRuleAll.?identity.?principalId ?? ''
+  : dataCollectionRule.?identity.?principalId ?? ''
 
 // =============== //
 //   Definitions   //
 // =============== //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+import { roleAssignmentType, lockType } from 'modules/nested_conditionalScope.bicep'
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
+type managedIdentitiesType = {
+  @description('Optional. Enables system assigned managed identity on the resource.')
+  systemAssigned: bool?
+
+  @description('Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.')
+  userAssignedResourceIds: string[]?
 }?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
 
 @discriminator('kind')
 type dataCollectionRulePropertiesType =
   | linuxDcrPropertiesType
   | windowsDcrPropertiesType
+  | allPlatformsDcrPropertiesType
   | agentSettingsDcrPropertiesType
 
 type linuxDcrPropertiesType = {
@@ -218,6 +202,29 @@ type linuxDcrPropertiesType = {
 type windowsDcrPropertiesType = {
   @description('Required. The platform type specifies the type of resources this rule can apply to.')
   kind: 'Windows'
+
+  @description('Required. Specification of data sources that will be collected.')
+  dataSources: object
+
+  @description('Required. The specification of data flows.')
+  dataFlows: array
+
+  @description('Required. Specification of destinations that can be used in data flows.')
+  destinations: object
+
+  @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
+  dataCollectionEndpointResourceId: string?
+
+  @description('Optional. Declaration of custom streams used in this rule.')
+  streamDeclarations: object?
+
+  @description('Optional. Description of the data collection rule.')
+  description: string?
+}
+
+type allPlatformsDcrPropertiesType = {
+  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  kind: 'All'
 
   @description('Required. Specification of data sources that will be collected.')
   dataSources: object

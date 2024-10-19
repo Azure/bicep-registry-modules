@@ -8,7 +8,6 @@ This module deploys a Metric Alert.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -73,7 +72,7 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -111,6 +110,39 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/metric-alert:<version>'
+
+// Required parameters
+param criteria = {
+  allof: [
+    {
+      criterionType: 'StaticThresholdCriterion'
+      dimensions: []
+      metricName: 'Percentage CPU'
+      name: '1st criterion'
+      operator: 'GreaterThan'
+      threshold: 80
+      timeAggregation: 'Average'
+    }
+  ]
+  'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
+}
+param name = 'imamin001'
+// Non-required parameters
+param location = 'Global'
+param scopes = [
+  '<virtualMachineResourceId>'
+]
 ```
 
 </details>
@@ -186,7 +218,7 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -266,6 +298,66 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/metric-alert:<version>'
+
+// Required parameters
+param criteria = {
+  allof: [
+    {
+      criterionType: 'StaticThresholdCriterion'
+      metricName: 'Percentage CPU'
+      metricNamespace: 'microsoft.compute/virtualmachines'
+      name: 'HighCPU'
+      operator: 'GreaterThan'
+      threshold: '90'
+      timeAggregation: 'Average'
+    }
+  ]
+  'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
+}
+param name = 'imamax001'
+// Non-required parameters
+param actions = [
+  '<actionGroupResourceId>'
+]
+param location = 'Global'
+param roleAssignments = [
+  {
+    name: '3ab52119-85d9-4374-a454-2410b84f19f9'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param targetResourceRegion = 'westeurope'
+param targetResourceType = 'microsoft.compute/virtualmachines'
+param windowSize = 'PT15M'
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -312,7 +404,7 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -366,6 +458,41 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/metric-alert:<version>'
+
+// Required parameters
+param criteria = {
+  componentResourceId: '<componentResourceId>'
+  failedLocationCount: 3
+  'odata.type': 'Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria'
+  webTestResourceId: '<webTestResourceId>'
+}
+param name = 'imawaf001'
+// Non-required parameters
+param actions = [
+  '<actionGroupResourceId>'
+]
+param evaluationFrequency = 'PT5M'
+param location = 'global'
+param scopes = [
+  '<appInsightsResourceId>'
+  '<pingTestResourceId>'
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param windowSize = 'PT5M'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -500,6 +627,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -650,7 +783,6 @@ the period of time (in ISO 8601 duration format) that is used to monitor alert a
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -659,10 +791,6 @@ the period of time (in ISO 8601 duration format) that is used to monitor alert a
 | `name` | string | The name of the metric alert. |
 | `resourceGroupName` | string | The resource group the metric alert was deployed into. |
 | `resourceId` | string | The resource ID of the metric alert. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -188,11 +188,18 @@ param deploymentScriptManagedIdentityName string
 @sys.description('The name of the storage account for the deployment script.')
 param deploymentScriptStorageAccountName string
 
+@sys.description('Optional. The number of blank ARM deployments to create sequentially to introduce a delay to the Subscription being moved to the target Management Group being, if set, to allow for background platform RBAC inheritance to occur.')
+param managementGroupAssociationDelayCount int = 15
+
 // VARIABLES
 
 // Deployment name variables
 // LIMITS: Tenant = 64, Management Group = 64, Subscription = 64, Resource Group = 64
 var deploymentNames = {
+  moveSubscriptionToManagementGroupDelay: take(
+    'lz-vend-move-sub-delay-${uniqueString(subscriptionId, subscriptionManagementGroupId, deployment().name)}',
+    64
+  )
   moveSubscriptionToManagementGroup: take(
     'lz-vend-move-sub-${uniqueString(subscriptionId, subscriptionManagementGroupId, deployment().name)}',
     64
@@ -295,7 +302,7 @@ var virtualWanHubSubscriptionId = (!empty(virtualHubResourceIdChecked) ? split(v
 var virtualWanHubResourceGroupName = (!empty(virtualHubResourceIdChecked)
   ? split(virtualHubResourceIdChecked, '/')[4]
   : '')
-var virtualWanHubConnectionName = 'vhc-${guid(virtualHubResourceIdChecked, virtualNetworkName, virtualNetworkResourceGroupName, virtualNetworkLocation, subscriptionId)}'
+var virtualWanHubConnectionName = 'vhc-${virtualNetworkName}-${substring(guid(virtualHubResourceIdChecked, virtualNetworkName, virtualNetworkResourceGroupName, virtualNetworkLocation, subscriptionId), 0, 5)}'
 var virtualWanHubConnectionAssociatedRouteTable = !empty(virtualNetworkVwanAssociatedRouteTableResourceId)
   ? virtualNetworkVwanAssociatedRouteTableResourceId
   : '${virtualHubResourceIdChecked}/hubRouteTables/defaultRouteTable'
@@ -313,8 +320,28 @@ var resourceProvidersFormatted = replace(string(resourceProviders), '"', '\\"')
 
 // RESOURCES & MODULES
 
+@batchSize(1)
+#disable-next-line no-deployments-resources
+resource moveSubscriptionToManagementGroupDelay 'Microsoft.Resources/deployments@2024-03-01' = [
+  for (cycle, i) in range(0, managementGroupAssociationDelayCount): if (subscriptionManagementGroupAssociationEnabled && !empty(subscriptionManagementGroupId)) {
+    name: '${deploymentNames.moveSubscriptionToManagementGroupDelay}-${i}'
+    location: virtualNetworkLocation
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+      }
+    }
+  }
+]
+
 module moveSubscriptionToManagementGroup './managementGroupSubscription.bicep' = if (subscriptionManagementGroupAssociationEnabled && !empty(subscriptionManagementGroupId)) {
   scope: managementGroup(subscriptionManagementGroupId)
+  dependsOn: [
+    moveSubscriptionToManagementGroupDelay
+  ]
   name: deploymentNames.moveSubscriptionToManagementGroup
   params: {
     subscriptionManagementGroupId: subscriptionManagementGroupId
@@ -361,7 +388,7 @@ module tagResourceGroup 'tags.bicep' = if (virtualNetworkEnabled && !empty(virtu
   }
 }
 
-module createLzVnet 'br/public:avm/res/network/virtual-network:0.1.7' = if (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+module createLzVnet 'br/public:avm/res/network/virtual-network:0.4.1' = if (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   dependsOn: [
     createResourceGroupForLzNetworking
   ]
@@ -377,19 +404,19 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.1.7' = if (virt
     peerings: (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(hubVirtualNetworkResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))
       ? [
           {
+            remoteVirtualNetworkResourceId: hubVirtualNetworkResourceIdChecked
             allowForwardedTraffic: true
             allowVirtualNetworkAccess: true
             allowGatewayTransit: false
             useRemoteGateways: virtualNetworkUseRemoteGateways
             remotePeeringEnabled: virtualNetworkPeeringEnabled
-            remoteVirtualNetworkId: hubVirtualNetworkResourceIdChecked
             remotePeeringAllowForwardedTraffic: true
             remotePeeringAllowVirtualNetworkAccess: true
             remotePeeringAllowGatewayTransit: true
             remotePeeringUseRemoteGateways: false
           }
         ]
-      : []
+      : null
     enableTelemetry: enableTelemetry
   }
 }
@@ -552,7 +579,7 @@ module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' 
   }
 }
 
-module createDsVnet 'br/public:avm/res/network/virtual-network:0.1.7' = if (!empty(resourceProviders)) {
+module createDsVnet 'br/public:avm/res/network/virtual-network:0.4.1' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.createdsVnet
   params: {
@@ -561,26 +588,21 @@ module createDsVnet 'br/public:avm/res/network/virtual-network:0.1.7' = if (!emp
     addressPrefixes: [
       virtualNetworkDeploymentScriptAddressPrefix
     ]
-    subnets: [
-      {
-        addressPrefix: !empty(resourceProviders) ? cidrSubnet(virtualNetworkDeploymentScriptAddressPrefix, 24, 0) : null
-        name: 'ds-subnet-001'
-        networkSecurityGroupResourceId: !empty(resourceProviders) ? createDsNsg.outputs.resourceId : null
-        serviceEndpoints: [
+    subnets: !empty(resourceProviders)
+      ? [
           {
-            service: 'Microsoft.Storage'
+            addressPrefix: !empty(resourceProviders)
+              ? cidrSubnet(virtualNetworkDeploymentScriptAddressPrefix, 24, 0)
+              : null
+            name: 'ds-subnet-001'
+            networkSecurityGroupResourceId: !empty(resourceProviders) ? createDsNsg.outputs.resourceId : null
+            serviceEndpoints: [
+              'Microsoft.Storage'
+            ]
+            delegation: 'Microsoft.ContainerInstance/containerGroups'
           }
         ]
-        delegations: [
-          {
-            name: 'Microsoft.ContainerInstance.containerGroups'
-            properties: {
-              serviceName: 'Microsoft.ContainerInstance/containerGroups'
-            }
-          }
-        ]
-      }
-    ]
+      : null
     enableTelemetry: enableTelemetry
   }
 }

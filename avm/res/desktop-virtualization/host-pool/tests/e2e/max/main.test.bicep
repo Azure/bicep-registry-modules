@@ -23,7 +23,7 @@ param namePrefix string = '#_namePrefix_#'
 // General resources
 // =================
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -84,15 +84,23 @@ module testDeployment '../../../main.bicep' = {
     publicNetworkAccess: 'Disabled'
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+            }
+          ]
+        }
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
       }
       {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+            }
+          ]
+        }
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
       }
     ]
@@ -123,11 +131,13 @@ module testDeployment '../../../main.bicep' = {
     }
     roleAssignments: [
       {
+        name: '52c43567-917f-4c56-8c9b-6cadeef37b51'
         roleDefinitionIdOrName: 'Owner'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
       {
+        name: guid('Custom seed ${namePrefix}${serviceShort}')
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
