@@ -74,8 +74,9 @@ runs:
           $modulePath = "${{ inputs.modulePath }}"
           $exceptionModulePaths = @(
             'avm/ptn/lz/sub-vending' # Requires additional OIDC MSI permissions
-            'avm/res/compute/image'  # Failing on resource deletion when trying to delete RBAC at subscription level
           )
+          # avm/res/compute/image back # Failing on resource deletion when trying to delete RBAC at subscription level
+          # avm/res/compute/disk back # Failing on resource deletion when trying to delete RBAC at subscription level
           if ($exceptionModulePaths.Contains($modulePath)) {
             $oidcException = 'true'
             Write-Verbose ('The module [{0}] is in the list of modules temporarily requiring an exception to OIDC.' -f $modulePath) -Verbose
