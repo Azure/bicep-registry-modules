@@ -43,7 +43,6 @@ param maintenanceConfigurationId string?
 @description('Optional. The storage limit for the database elastic pool in bytes.')
 param maxSizeBytes int = 34359738368
 
-// TODO: Only for Serverless
 @description('Optional. Minimal capacity that serverless pool will not shrink below, if not paused.')
 param minCapacity int?
 
@@ -58,7 +57,7 @@ param perDatabaseSettings elasticPoolPerDatabaseSettingsType = {
 param preferredEnclaveType 'Default' | 'VBS' = 'Default'
 
 @description('Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones.')
-param zoneRedundant bool = false
+param zoneRedundant bool = true
 
 resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
   name: serverName

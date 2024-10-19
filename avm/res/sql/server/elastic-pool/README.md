@@ -301,7 +301,7 @@ Whether or not this elastic pool is zone redundant, which means the replicas of 
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ## Outputs
 

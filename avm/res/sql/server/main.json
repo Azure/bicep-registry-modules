@@ -2333,7 +2333,7 @@
             },
             "zoneRedundant": {
               "type": "bool",
-              "nullable": true,
+              "defaultValue": true,
               "metadata": {
                 "description": "Optional. Whether or not this database is zone redundant."
               }
@@ -3064,7 +3064,7 @@
             },
             "zoneRedundant": {
               "type": "bool",
-              "defaultValue": false,
+              "defaultValue": true,
               "metadata": {
                 "description": "Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones."
               }
@@ -4774,6 +4774,7 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
@@ -4811,6 +4812,9 @@
             },
             "auditActionsAndGroups": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "defaultValue": [
                 "BATCH_COMPLETED_GROUP",
                 "SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP",
@@ -4870,8 +4874,14 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "server": {
+              "existing": true,
+              "type": "Microsoft.Sql/servers",
+              "apiVersion": "2023-08-01-preview",
+              "name": "[parameters('serverName')]"
+            },
+            "auditSettings": {
               "type": "Microsoft.Sql/servers/auditingSettings",
               "apiVersion": "2023-08-01-preview",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
@@ -4887,9 +4897,12 @@
                 "storageAccountAccessKey": "[if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('isManagedIdentityInUse'))), listKeys(parameters('storageAccountResourceId'), '2019-06-01').keys[0].value, null())]",
                 "storageAccountSubscriptionId": "[if(not(empty(parameters('storageAccountResourceId'))), split(parameters('storageAccountResourceId'), '/')[2], null())]",
                 "storageEndpoint": "[if(not(empty(parameters('storageAccountResourceId'))), format('https://{0}.blob.{1}', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage), null())]"
-              }
+              },
+              "dependsOn": [
+                "server"
+              ]
             },
-            {
+            "storageAccount_sbdc_rbac": {
               "condition": "[and(parameters('isManagedIdentityInUse'), not(empty(parameters('storageAccountResourceId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -4904,7 +4917,7 @@
                     "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                   },
                   "managedInstanceIdentityPrincipalId": {
-                    "value": "[reference(resourceId('Microsoft.Sql/servers', parameters('serverName')), '2023-08-01-preview', 'full').identity.principalId]"
+                    "value": "[reference('server', '2023-08-01-preview', 'full').identity.principalId]"
                   }
                 },
                 "template": {
@@ -4939,9 +4952,12 @@
                     }
                   ]
                 }
-              }
+              },
+              "dependsOn": [
+                "server"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",

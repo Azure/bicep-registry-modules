@@ -125,7 +125,7 @@ param sourceResourceId string?
 param useFreeLimit bool?
 
 @description('Optional. Whether or not this database is zone redundant.')
-param zoneRedundant bool?
+param zoneRedundant bool = true
 
 // END OF DATABASE PROPERTIES
 
