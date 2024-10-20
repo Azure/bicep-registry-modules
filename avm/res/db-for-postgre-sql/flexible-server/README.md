@@ -158,6 +158,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
+    geoRedundantBackup: 'Disabled'
     location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
@@ -204,6 +205,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
+    "geoRedundantBackup": {
+      "value": "Disabled"
+    },
     "location": {
       "value": "<location>"
     },
@@ -240,6 +244,7 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
+param geoRedundantBackup = 'Disabled'
 param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
@@ -1101,7 +1106,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    geoRedundantBackup: 'Enabled'
     highAvailability: 'ZoneRedundant'
     location: '<location>'
     maintenanceWindow: {
@@ -1191,9 +1195,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         }
       ]
     },
-    "geoRedundantBackup": {
-      "value": "Enabled"
-    },
     "highAvailability": {
       "value": "ZoneRedundant"
     },
@@ -1275,7 +1276,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param geoRedundantBackup = 'Enabled'
 param highAvailability = 'ZoneRedundant'
 param location = '<location>'
 param maintenanceWindow = {
@@ -1331,7 +1331,7 @@ param tags = {
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the PostgreSQL flexible server. |
-| [`geoRedundantBackup`](#parameter-georedundantbackup) | string | A value indicating whether Geo-Redundant backup is enabled on the server. Should be left disabled if 'cMKKeyName' is not empty. |
+| [`geoRedundantBackup`](#parameter-georedundantbackup) | string | A value indicating whether Geo-Redundant backup is enabled on the server. Should be disabled if 'cMKKeyName' is not empty. |
 | [`highAvailability`](#parameter-highavailability) | string | The mode for high availability. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1728,11 +1728,11 @@ The firewall rules to create in the PostgreSQL flexible server.
 
 ### Parameter: `geoRedundantBackup`
 
-A value indicating whether Geo-Redundant backup is enabled on the server. Should be left disabled if 'cMKKeyName' is not empty.
+A value indicating whether Geo-Redundant backup is enabled on the server. Should be disabled if 'cMKKeyName' is not empty.
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
+- Default: `'Enabled'`
 - Allowed:
   ```Bicep
   [

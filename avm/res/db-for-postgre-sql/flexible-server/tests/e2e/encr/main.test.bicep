@@ -65,6 +65,7 @@ module testDeployment '../../../main.bicep' = [
       administratorLoginPassword: password
       skuName: 'Standard_D2s_v3'
       tier: 'GeneralPurpose'
+      geoRedundantBackup: 'Disabled'
       customerManagedKey: {
         keyName: nestedDependencies.outputs.keyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId

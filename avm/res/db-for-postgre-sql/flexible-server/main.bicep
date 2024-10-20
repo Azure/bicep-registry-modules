@@ -65,8 +65,8 @@ param backupRetentionDays int = 7
   'Disabled'
   'Enabled'
 ])
-@description('Optional. A value indicating whether Geo-Redundant backup is enabled on the server. Should be left disabled if \'cMKKeyName\' is not empty.')
-param geoRedundantBackup string = 'Disabled'
+@description('Optional. A value indicating whether Geo-Redundant backup is enabled on the server. Should be disabled if \'cMKKeyName\' is not empty.')
+param geoRedundantBackup string = 'Enabled' // Enabled by default for WAF-alignment (ref: https://azure.github.io/PSRule.Rules.Azure/en/rules/Azure.PostgreSQL.GeoRedundantBackup/)
 
 @allowed([
   32

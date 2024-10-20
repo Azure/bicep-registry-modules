@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "17332317160262186091"
+      "templateHash": "1776938741125766949"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -655,13 +655,13 @@
     },
     "geoRedundantBackup": {
       "type": "string",
-      "defaultValue": "Disabled",
+      "defaultValue": "Enabled",
       "allowedValues": [
         "Disabled",
         "Enabled"
       ],
       "metadata": {
-        "description": "Optional. A value indicating whether Geo-Redundant backup is enabled on the server. Should be left disabled if 'cMKKeyName' is not empty."
+        "description": "Optional. A value indicating whether Geo-Redundant backup is enabled on the server. Should be disabled if 'cMKKeyName' is not empty."
       }
     },
     "storageSizeGB": {
