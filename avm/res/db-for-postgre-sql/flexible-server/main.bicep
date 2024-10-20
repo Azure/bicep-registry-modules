@@ -251,7 +251,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' =
     administratorLoginPassword: !empty(administratorLoginPassword) ? administratorLoginPassword : null
     authConfig: {
       activeDirectoryAuth: activeDirectoryAuth
-      passwordAuth: !empty(administratorLoginPassword) ? 'enabled' : 'disabled'
+      passwordAuth: !empty(administratorLogin) && !empty(administratorLoginPassword) ? 'enabled' : 'disabled'
       tenantId: !empty(tenantId) ? tenantId : null
     }
     availabilityZone: availabilityZone
