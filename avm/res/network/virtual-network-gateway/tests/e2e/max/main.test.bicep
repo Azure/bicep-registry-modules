@@ -74,7 +74,7 @@ module testDeployment '../../../main.bicep' = [
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
       clusterSettings:{
         clusterMode: 'activeActiveBgp'
-        activeGatewayPipName: '${namePrefix}${serviceShort}001-pip2'
+        secondPipName: '${namePrefix}${serviceShort}001-pip2'
         customBgpIpAddresses: ['169.254.21.4','169.254.21.5']
         secondCustomBgpIpAddresses:  ['169.254.22.4','169.254.22.5']
       }

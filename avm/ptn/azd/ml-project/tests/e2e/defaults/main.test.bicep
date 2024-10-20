@@ -36,7 +36,7 @@ module dependencies 'dependencies.bicep' = {
   scope: resourceGroup
   params: {
     hubName: '${namePrefix}${serviceShort}hub001'
-    keyVaultName: '${namePrefix}${serviceShort}kv001'
+    keyVaultName: '${namePrefix}${serviceShort}kv002'
     storageAccountName: '${namePrefix}${serviceShort}sa001'
   }
 }
