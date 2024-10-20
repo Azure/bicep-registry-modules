@@ -124,9 +124,5 @@ module testDeployment '../../../main.bicep' = [
       }
       highAvailability: 'ZoneRedundant'
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]
