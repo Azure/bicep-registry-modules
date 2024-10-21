@@ -45,10 +45,10 @@ param appInsightsConnectionString string?
 param keyVaultName string = 'kv${uniqueString(name, location, resourceGroup().name)}'
 
 @description('Optional. The permissions that will be assigned to the Key Vault. The managed Identity will be assigned the permissions to get and list secrets.')
-param keyVaultRoleAssignments roleAssignmentType
+param keyVaultRoleAssignments roleAssignmentType[]?
 
 @description('Optional. The permissions that will be assigned to the Container Registry. The managed Identity will be assigned the permissions to get and list images.')
-param registryRoleAssignments roleAssignmentType
+param registryRoleAssignments roleAssignmentType[]?
 
 // network related parameters
 // -------------------------
@@ -336,12 +336,6 @@ type environmentVariablesType = {
   value: string?
 }
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+import { lockType, roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.1.0'
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}
-
-import { roleAssignmentType, securityRulesType, secretType } from 'modules/deploy_services.bicep'
+import { securityRulesType, secretType } from 'modules/deploy_services.bicep'

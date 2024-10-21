@@ -57,10 +57,10 @@ param keyVaultName string
 param keyVaultSecrets secretType[]?
 
 @description('Optional. Role assignments that will be added to the Key Vault. The managed Identity will be assigned the `Key Vault Secrets User` role by default.')
-param keyVaultRoleAssignments roleAssignmentType
+param keyVaultRoleAssignments roleAssignmentType[]?
 
 @description('Optional. The permissions that will be assigned to the Container Registry. The managed Identity will be assigned the permissions to get and list images.')
-param registryRoleAssignments roleAssignmentType
+param registryRoleAssignments roleAssignmentType[]?
 
 // workload parameters
 // -------------------------
@@ -870,41 +870,6 @@ type secretType = {
   value: string?
 }
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}
-
-@export()
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
 @export()
 type securityRulesType = {
   @description('Required. The name of the security rule.')
@@ -960,3 +925,5 @@ type securityRulesType = {
     sourcePortRanges: string[]?
   }
 }[]?
+
+import { lockType, roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.1.0'
