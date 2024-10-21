@@ -64,9 +64,11 @@ param vnetRouteAllEnabled bool = false
 @description('Optional. Stop SCM (KUDU) site when the app is stopped.')
 param scmSiteAlsoStopped bool = false
 
-@description('Optional. The site config object.')
+@description('Optional. The site config object. The defaults are set to the following values: alwaysOn: true, minTlsVersion: \'1.2\', ftpsState: \'FtpsOnly\'.')
 param siteConfig object = {
   alwaysOn: true
+  minTlsVersion: '1.2'
+  ftpsState: 'FtpsOnly'
 }
 
 @description('Optional. The Function App configuration object.')
