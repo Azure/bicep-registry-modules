@@ -3315,6 +3315,7 @@ param tags = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`maxIntervalInSeconds`](#parameter-maxintervalinseconds) | int | Default to 300. Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400. |
 | [`maxStalenessPrefix`](#parameter-maxstalenessprefix) | int | Default to 100000. Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000. |
+| [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. |
 | [`mongodbDatabases`](#parameter-mongodbdatabases) | array | MongoDB Databases configurations. |
 | [`networkRestrictions`](#parameter-networkrestrictions) | object | The network configuration of this module. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
@@ -3606,7 +3607,7 @@ Disable write operations on metadata resources (databases, containers, throughpu
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `disableLocalAuth`
 
@@ -3786,6 +3787,22 @@ Default to 100000. Max stale requests. Required for BoundedStaleness. Valid rang
 - Type: int
 - Default: `100000`
 
+### Parameter: `minimumTlsVersion`
+
+Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later.
+
+- Required: No
+- Type: string
+- Default: `'Tls12'`
+- Allowed:
+  ```Bicep
+  [
+    'Tls'
+    'Tls11'
+    'Tls12'
+  ]
+  ```
+
 ### Parameter: `mongodbDatabases`
 
 MongoDB Databases configurations.
@@ -3800,6 +3817,14 @@ The network configuration of this module.
 
 - Required: No
 - Type: object
+- Default:
+  ```Bicep
+  {
+      ipRules: []
+      publicNetworkAccess: 'Disabled'
+      virtualNetworkRules: []
+  }
+  ```
 
 **Optional parameters**
 

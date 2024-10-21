@@ -5,473 +5,155 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "4084557661858315692"
+      "version": "0.30.23.60470",
+      "templateHash": "17012028979997047683"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "managedIdentitiesType": {
+    "credentialType": {
       "type": "object",
       "properties": {
-        "systemAssigned": {
-          "type": "bool",
-          "nullable": true,
+        "name": {
+          "type": "string",
           "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
+            "description": "Required. Name of the Automation Account credential."
           }
         },
-        "userAssignedResourceIds": {
+        "userName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The user name associated to the credential."
+          }
+        },
+        "password": {
+          "type": "securestring",
+          "metadata": {
+            "description": "Required. Password of the credential."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Description of the credential."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "_1.privateEndpointCustomDnsConfigType": {
+      "type": "object",
+      "properties": {
+        "fqdn": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Required. Fqdn that resolves to private endpoint IP address."
+          }
+        },
+        "ipAddresses": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
+            "description": "Required. A list of private IP addresses of the private endpoint."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+        }
+      }
     },
-    "lockType": {
+    "_1.privateEndpointIpConfigurationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the resource that is unique within a resource group."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "groupId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+              }
+            },
+            "memberName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+              }
+            },
+            "privateIPAddress": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. A private IP address obtained from the private endpoint's subnet."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. Properties of private endpoint IP configurations."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+        }
+      }
+    },
+    "_1.privateEndpointPrivateDnsZoneGroupType": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specify the name of lock."
+            "description": "Optional. The name of the Private DNS Zone Group."
           }
         },
-        "kind": {
-          "type": "string",
-          "allowedValues": [
-            "CanNotDelete",
-            "None",
-            "ReadOnly"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the type of lock."
-          }
-        }
-      },
-      "nullable": true
-    },
-    "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "privateEndpointType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the private endpoint."
-            }
-          },
-          "location": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The location to deploy the private endpoint to."
-            }
-          },
-          "privateLinkServiceConnectionName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the private link connection to create."
-            }
-          },
-          "service": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The subresource to deploy the private endpoint for. For example \"blob\", \"table\", \"queue\" or \"file\"."
-            }
-          },
-          "subnetResourceId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
-            }
-          },
-          "privateDnsZoneGroup": {
+        "privateDnsZoneGroupConfigs": {
+          "type": "array",
+          "items": {
             "type": "object",
             "properties": {
               "name": {
                 "type": "string",
                 "nullable": true,
                 "metadata": {
-                  "description": "Optional. The name of the Private DNS Zone Group."
+                  "description": "Optional. The name of the private DNS Zone Group config."
                 }
               },
-              "privateDnsZoneGroupConfigs": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The name of the private DNS zone group config."
-                      }
-                    },
-                    "privateDnsZoneResourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource id of the private DNS zone."
-                      }
-                    }
-                  }
-                },
+              "privateDnsZoneResourceId": {
+                "type": "string",
                 "metadata": {
-                  "description": "Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
+                  "description": "Required. The resource id of the private DNS zone."
                 }
               }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The private DNS zone group to configure for the private endpoint."
             }
           },
-          "isManualConnection": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. If Manual Private Link Connection is required."
-            }
-          },
-          "manualConnectionRequestMessage": {
-            "type": "string",
-            "nullable": true,
-            "maxLength": 140,
-            "metadata": {
-              "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
-            }
-          },
-          "customDnsConfigs": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "fqdn": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
-                  }
-                },
-                "ipAddresses": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "metadata": {
-                    "description": "Required. A list of private IP addresses of the private endpoint."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Custom DNS configurations."
-            }
-          },
-          "ipConfigurations": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the resource that is unique within a resource group."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
-                      }
-                    },
-                    "memberName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
-                      }
-                    },
-                    "privateIPAddress": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private endpoint IP configurations."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-            }
-          },
-          "applicationSecurityGroupResourceIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
-            }
-          },
-          "customNetworkInterfaceName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The custom name of the network interface attached to the private endpoint."
-            }
-          },
-          "lock": {
-            "$ref": "#/definitions/lockType",
-            "metadata": {
-              "description": "Optional. Specify the type of lock."
-            }
-          },
-          "roleAssignments": {
-            "$ref": "#/definitions/roleAssignmentType",
-            "metadata": {
-              "description": "Optional. Array of role assignments to create."
-            }
-          },
-          "tags": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-            }
-          },
-          "enableTelemetry": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Enable/Disable usage telemetry for module."
-            }
-          },
-          "resourceGroupName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
-            }
+          "metadata": {
+            "description": "Required. The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones."
           }
         }
       },
-      "nullable": true
-    },
-    "diagnosticSettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of diagnostic setting."
-            }
-          },
-          "logCategoriesAndGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                  }
-                },
-                "categoryGroup": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-            }
-          },
-          "metricCategories": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-            }
-          },
-          "logAnalyticsDestinationType": {
-            "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-            }
-          },
-          "workspaceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "storageAccountResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "eventHubAuthorizationRuleResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-            }
-          }
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
         }
-      },
-      "nullable": true
+      }
     },
     "customerManagedKeyType": {
       "type": "object",
@@ -503,43 +185,406 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a customer-managed key.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+        }
+      }
     },
-    "credentialType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Name of the Automation Account credential."
+    "diagnosticSettingFullType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
             }
           },
-          "userName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The user name associated to the credential."
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
             }
           },
-          "password": {
-            "type": "securestring",
-            "metadata": {
-              "description": "Required. Password of the credential."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Description of the credential."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
           }
         }
       },
       "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "credential/main.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+        }
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+        }
+      }
+    },
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+        }
+      }
+    },
+    "privateEndpointMultiServiceType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the private endpoint."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The location to deploy the private endpoint to."
+          }
+        },
+        "privateLinkServiceConnectionName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the private link connection to create."
+          }
+        },
+        "service": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The subresource to deploy the private endpoint for. For example \"blob\", \"table\", \"queue\" or \"file\" for a Storage Account's Private Endpoints."
+          }
+        },
+        "subnetResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+          }
+        },
+        "privateDnsZoneGroup": {
+          "$ref": "#/definitions/_1.privateEndpointPrivateDnsZoneGroupType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The private DNS zone group to configure for the private endpoint."
+          }
+        },
+        "isManualConnection": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If Manual Private Link Connection is required."
+          }
+        },
+        "manualConnectionRequestMessage": {
+          "type": "string",
+          "nullable": true,
+          "maxLength": 140,
+          "metadata": {
+            "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
+          }
+        },
+        "customDnsConfigs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.privateEndpointCustomDnsConfigType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom DNS configurations."
+          }
+        },
+        "ipConfigurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.privateEndpointIpConfigurationType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
+          }
+        },
+        "applicationSecurityGroupResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
+          }
+        },
+        "customNetworkInterfaceName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The custom name of the network interface attached to the private endpoint."
+          }
+        },
+        "lock": {
+          "$ref": "#/definitions/lockType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
+          }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
+          }
+        },
+        "resourceGroupName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
         }
       }
     }
@@ -571,13 +616,17 @@
     },
     "customerManagedKey": {
       "$ref": "#/definitions/customerManagedKeyType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The customer managed key definition."
       }
     },
     "credentials": {
-      "$ref": "#/definitions/credentialType",
-      "defaultValue": [],
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/credentialType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of credentials to be created in the automation account."
       }
@@ -658,31 +707,45 @@
       }
     },
     "privateEndpoints": {
-      "$ref": "#/definitions/privateEndpointType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointMultiServiceType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
       }
     },
     "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The diagnostic settings of the service."
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed identity definition for this resource."
       }
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -873,10 +936,13 @@
       ]
     },
     "automationAccount_credentials": {
-      "condition": "[not(empty(parameters('credentials')))]",
+      "copy": {
+        "name": "automationAccount_credentials",
+        "count": "[length(coalesce(parameters('credentials'), createArray()))]"
+      },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-AutomationAccount-Credentials', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-AutomationAccount-Credential-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -886,8 +952,17 @@
           "automationAccountName": {
             "value": "[parameters('name')]"
           },
-          "credentials": {
-            "value": "[parameters('credentials')]"
+          "name": {
+            "value": "[coalesce(parameters('credentials'), createArray())[copyIndex()].name]"
+          },
+          "password": {
+            "value": "[coalesce(parameters('credentials'), createArray())[copyIndex()].password]"
+          },
+          "userName": {
+            "value": "[coalesce(parameters('credentials'), createArray())[copyIndex()].userName]"
+          },
+          "description": {
+            "value": "[tryGet(coalesce(parameters('credentials'), createArray())[copyIndex()], 'description')]"
           }
         },
         "template": {
@@ -897,50 +972,12 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10580987489047715400"
+              "version": "0.30.23.60470",
+              "templateHash": "12611107514388164926"
             },
             "name": "Automation Account Credential",
             "description": "This module deploys Azure Automation Account Credential.",
             "owner": "Azure/module-maintainers"
-          },
-          "definitions": {
-            "credentialType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. Name of the Automation Account credential."
-                    }
-                  },
-                  "userName": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The user name associated to the credential."
-                    }
-                  },
-                  "password": {
-                    "type": "securestring",
-                    "metadata": {
-                      "description": "Required. Password of the credential."
-                    }
-                  },
-                  "description": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Description of the credential."
-                    }
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            }
           },
           "parameters": {
             "automationAccountName": {
@@ -949,10 +986,29 @@
                 "description": "Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment."
               }
             },
-            "credentials": {
-              "$ref": "#/definitions/credentialType",
+            "name": {
+              "type": "string",
               "metadata": {
-                "description": "Required. The credential definition."
+                "description": "Required. Name of the Automation Account credential."
+              }
+            },
+            "userName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The user name associated to the credential."
+              }
+            },
+            "password": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Required. Password of the credential."
+              }
+            },
+            "description": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Description of the credential."
               }
             }
           },
@@ -963,18 +1019,14 @@
               "apiVersion": "2022-08-08",
               "name": "[parameters('automationAccountName')]"
             },
-            "automationAccount_credential": {
-              "copy": {
-                "name": "automationAccount_credential",
-                "count": "[length(parameters('credentials'))]"
-              },
+            "credential": {
               "type": "Microsoft.Automation/automationAccounts/credentials",
               "apiVersion": "2023-11-01",
-              "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('credentials')[copyIndex()].name)]",
+              "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
               "properties": {
-                "password": "[parameters('credentials')[copyIndex()].password]",
-                "userName": "[parameters('credentials')[copyIndex()].userName]",
-                "description": "[coalesce(tryGet(parameters('credentials')[copyIndex()], 'description'), '')]"
+                "password": "[parameters('password')]",
+                "userName": "[parameters('userName')]",
+                "description": "[coalesce(parameters('description'), '')]"
               },
               "dependsOn": [
                 "automationAccount"
@@ -983,24 +1035,18 @@
           },
           "outputs": {
             "resourceId": {
-              "type": "array",
+              "type": "string",
               "metadata": {
-                "description": "The resource IDs of the credentials associated to the automation account."
+                "description": "The resource Id of the credential associated to the automation account."
               },
-              "copy": {
-                "count": "[length(range(0, length(parameters('credentials'))))]",
-                "input": "[resourceId('Microsoft.Automation/automationAccounts/credentials', parameters('automationAccountName'), parameters('credentials')[range(0, length(parameters('credentials')))[copyIndex()]].name)]"
-              }
+              "value": "[resourceId('Microsoft.Automation/automationAccounts/credentials', parameters('automationAccountName'), parameters('name'))]"
             },
             "name": {
-              "type": "array",
+              "type": "string",
               "metadata": {
-                "description": "The names of the credentials associated to the automation account."
+                "description": "The name of the credential associated to the automation account."
               },
-              "copy": {
-                "count": "[length(range(0, length(parameters('credentials'))))]",
-                "input": "[parameters('credentials')[range(0, length(parameters('credentials')))[copyIndex()]].name]"
-              }
+              "value": "[parameters('name')]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -1056,8 +1102,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "14556422655915492083"
+              "version": "0.30.23.60470",
+              "templateHash": "15453846545391026191"
             },
             "name": "Automation Account Modules",
             "description": "This module deploys an Azure Automation Account Module.",
@@ -1184,13 +1230,27 @@
           "automationAccountName": {
             "value": "[parameters('name')]"
           },
-          "advancedSchedule": "[if(contains(parameters('schedules')[copyIndex()], 'advancedSchedule'), createObject('value', parameters('schedules')[copyIndex()].advancedSchedule), createObject('value', null()))]",
-          "description": "[if(contains(parameters('schedules')[copyIndex()], 'description'), createObject('value', parameters('schedules')[copyIndex()].description), createObject('value', ''))]",
-          "expiryTime": "[if(contains(parameters('schedules')[copyIndex()], 'expiryTime'), createObject('value', parameters('schedules')[copyIndex()].expiryTime), createObject('value', ''))]",
-          "frequency": "[if(contains(parameters('schedules')[copyIndex()], 'frequency'), createObject('value', parameters('schedules')[copyIndex()].frequency), createObject('value', 'OneTime'))]",
-          "interval": "[if(contains(parameters('schedules')[copyIndex()], 'interval'), createObject('value', parameters('schedules')[copyIndex()].interval), createObject('value', 0))]",
-          "startTime": "[if(contains(parameters('schedules')[copyIndex()], 'startTime'), createObject('value', parameters('schedules')[copyIndex()].startTime), createObject('value', ''))]",
-          "timeZone": "[if(contains(parameters('schedules')[copyIndex()], 'timeZone'), createObject('value', parameters('schedules')[copyIndex()].timeZone), createObject('value', ''))]"
+          "advancedSchedule": {
+            "value": "[tryGet(parameters('schedules')[copyIndex()], 'advancedSchedule')]"
+          },
+          "description": {
+            "value": "[tryGet(parameters('schedules')[copyIndex()], 'description')]"
+          },
+          "expiryTime": {
+            "value": "[tryGet(parameters('schedules')[copyIndex()], 'expiryTime')]"
+          },
+          "frequency": {
+            "value": "[tryGet(parameters('schedules')[copyIndex()], 'frequency')]"
+          },
+          "interval": {
+            "value": "[tryGet(parameters('schedules')[copyIndex()], 'interval')]"
+          },
+          "startTime": {
+            "value": "[tryGet(parameters('schedules')[copyIndex()], 'startTime')]"
+          },
+          "timeZone": {
+            "value": "[tryGet(parameters('schedules')[copyIndex()], 'timeZone')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1198,8 +1258,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "6299933839999486418"
+              "version": "0.30.23.60470",
+              "templateHash": "18156490457024191308"
             },
             "name": "Automation Account Schedules",
             "description": "This module deploys an Azure Automation Account Schedule.",
@@ -1354,9 +1414,15 @@
           "type": {
             "value": "[parameters('runbooks')[copyIndex()].type]"
           },
-          "description": "[if(contains(parameters('runbooks')[copyIndex()], 'description'), createObject('value', parameters('runbooks')[copyIndex()].description), createObject('value', ''))]",
-          "uri": "[if(contains(parameters('runbooks')[copyIndex()], 'uri'), createObject('value', parameters('runbooks')[copyIndex()].uri), createObject('value', ''))]",
-          "version": "[if(contains(parameters('runbooks')[copyIndex()], 'version'), createObject('value', parameters('runbooks')[copyIndex()].version), createObject('value', ''))]",
+          "description": {
+            "value": "[tryGet(parameters('runbooks')[copyIndex()], 'description')]"
+          },
+          "uri": {
+            "value": "[tryGet(parameters('runbooks')[copyIndex()], 'uri')]"
+          },
+          "version": {
+            "value": "[tryGet(parameters('runbooks')[copyIndex()], 'version')]"
+          },
           "sasTokenValidityLength": {
             "value": "[tryGet(parameters('runbooks')[copyIndex()], 'sasTokenValidityLength')]"
           },
@@ -1377,8 +1443,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "11653746330709835761"
+              "version": "0.30.23.60470",
+              "templateHash": "12957326312361613170"
             },
             "name": "Automation Account Runbooks",
             "description": "This module deploys an Azure Automation Account Runbook.",
@@ -1572,8 +1638,12 @@
           "scheduleName": {
             "value": "[parameters('jobSchedules')[copyIndex()].scheduleName]"
           },
-          "parameters": "[if(contains(parameters('jobSchedules')[copyIndex()], 'parameters'), createObject('value', parameters('jobSchedules')[copyIndex()].parameters), createObject('value', createObject()))]",
-          "runOn": "[if(contains(parameters('jobSchedules')[copyIndex()], 'runOn'), createObject('value', parameters('jobSchedules')[copyIndex()].runOn), createObject('value', ''))]"
+          "parameters": {
+            "value": "[tryGet(parameters('jobSchedules')[copyIndex()], 'parameters')]"
+          },
+          "runOn": {
+            "value": "[tryGet(parameters('jobSchedules')[copyIndex()], 'runOn')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1581,8 +1651,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10826746631810286901"
+              "version": "0.30.23.60470",
+              "templateHash": "4313990302593445827"
             },
             "name": "Automation Account Job Schedules",
             "description": "This module deploys an Azure Automation Account Job Schedule.",
@@ -1697,11 +1767,15 @@
           "name": {
             "value": "[parameters('variables')[copyIndex()].name]"
           },
-          "description": "[if(contains(parameters('variables')[copyIndex()], 'description'), createObject('value', parameters('variables')[copyIndex()].description), createObject('value', ''))]",
+          "description": {
+            "value": "[tryGet(parameters('variables')[copyIndex()], 'description')]"
+          },
           "value": {
             "value": "[parameters('variables')[copyIndex()].value]"
           },
-          "isEncrypted": "[if(contains(parameters('variables')[copyIndex()], 'isEncrypted'), createObject('value', parameters('variables')[copyIndex()].isEncrypted), createObject('value', true()))]"
+          "isEncrypted": {
+            "value": "[tryGet(parameters('variables')[copyIndex()], 'isEncrypted')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1709,8 +1783,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "13284693609482301780"
+              "version": "0.30.23.60470",
+              "templateHash": "11786120333296513300"
             },
             "name": "Automation Account Variables",
             "description": "This module deploys an Azure Automation Account Variable.",
@@ -1824,8 +1898,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "12032441371027552374"
+              "version": "0.30.23.60470",
+              "templateHash": "9587193864623256690"
             },
             "name": "Log Analytics Workspace Linked Services",
             "description": "This module deploys a Log Analytics Workspace Linked Service.",
@@ -1942,8 +2016,12 @@
           "logAnalyticsWorkspaceName": {
             "value": "[last(split(parameters('linkedWorkspaceResourceId'), '/'))]"
           },
-          "product": "[if(contains(parameters('gallerySolutions')[copyIndex()], 'product'), createObject('value', parameters('gallerySolutions')[copyIndex()].product), createObject('value', 'OMSGallery'))]",
-          "publisher": "[if(contains(parameters('gallerySolutions')[copyIndex()], 'publisher'), createObject('value', parameters('gallerySolutions')[copyIndex()].publisher), createObject('value', 'Microsoft'))]",
+          "product": {
+            "value": "[tryGet(parameters('gallerySolutions')[copyIndex()], 'product')]"
+          },
+          "publisher": {
+            "value": "[tryGet(parameters('gallerySolutions')[copyIndex()], 'publisher')]"
+          },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           }
@@ -1954,8 +2032,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "18444780972506374592"
+              "version": "0.28.1.47646",
+              "templateHash": "15740268121966556319"
             },
             "name": "Operations Management Solutions",
             "description": "This module deploys an Operations Management Solution.",
@@ -2011,8 +2089,8 @@
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.operationsmanagement-solution.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.operationsmanagement-solution.{0}.{1}', replace('0.1.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2109,42 +2187,97 @@
           "rebootSetting": {
             "value": "[parameters('softwareUpdateConfigurations')[copyIndex()].rebootSetting]"
           },
-          "azureVirtualMachines": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'azureVirtualMachines'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].azureVirtualMachines), createObject('value', createArray()))]",
-          "excludeUpdates": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'excludeUpdates'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].excludeUpdates), createObject('value', createArray()))]",
-          "expiryTime": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'expiryTime'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].expiryTime), createObject('value', ''))]",
-          "expiryTimeOffsetMinutes": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'expiryTimeOffsetMinutes'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].expiryTimeOffsetMinute), createObject('value', 0))]",
-          "includeUpdates": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'includeUpdates'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].includeUpdates), createObject('value', createArray()))]",
-          "interval": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'interval'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].interval), createObject('value', 1))]",
-          "isEnabled": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'isEnabled'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].isEnabled), createObject('value', true()))]",
-          "maintenanceWindow": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'maintenanceWindow'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].maintenanceWindow), createObject('value', 'PT2H'))]",
-          "monthDays": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'monthDays'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].monthDays), createObject('value', createArray()))]",
-          "monthlyOccurrences": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'monthlyOccurrences'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].monthlyOccurrences), createObject('value', createArray()))]",
-          "nextRun": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'nextRun'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].nextRun), createObject('value', ''))]",
-          "nextRunOffsetMinutes": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'nextRunOffsetMinutes'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].nextRunOffsetMinutes), createObject('value', 0))]",
-          "nonAzureComputerNames": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'nonAzureComputerNames'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].nonAzureComputerNames), createObject('value', createArray()))]",
-          "nonAzureQueries": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'nonAzureQueries'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].nonAzureQueries), createObject('value', createArray()))]",
-          "postTaskParameters": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'postTaskParameters'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].postTaskParameters), createObject('value', createObject()))]",
-          "postTaskSource": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'postTaskSource'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].postTaskSource), createObject('value', ''))]",
-          "preTaskParameters": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'preTaskParameters'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].preTaskParameters), createObject('value', createObject()))]",
-          "preTaskSource": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'preTaskSource'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].preTaskSource), createObject('value', ''))]",
-          "scheduleDescription": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'scheduleDescription'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].scheduleDescription), createObject('value', ''))]",
-          "scopeByLocations": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'scopeByLocations'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].scopeByLocations), createObject('value', createArray()))]",
-          "scopeByResources": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'scopeByResources'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].scopeByResources), createObject('value', createArray(subscription().id)))]",
-          "scopeByTags": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'scopeByTags'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].scopeByTags), createObject('value', createObject()))]",
-          "scopeByTagsOperation": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'scopeByTagsOperation'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].scopeByTagsOperation), createObject('value', 'All'))]",
-          "startTime": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'startTime'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].startTime), createObject('value', ''))]",
-          "timeZone": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'timeZone'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].timeZone), createObject('value', 'UTC'))]",
-          "updateClassifications": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'updateClassifications'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].updateClassifications), createObject('value', createArray('Critical', 'Security')))]",
-          "weekDays": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'weekDays'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].weekDays), createObject('value', createArray()))]"
+          "azureVirtualMachines": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'azureVirtualMachines')]"
+          },
+          "excludeUpdates": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'excludeUpdates')]"
+          },
+          "expiryTime": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'expiryTime')]"
+          },
+          "expiryTimeOffsetMinutes": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'expiryTimeOffsetMinute')]"
+          },
+          "includeUpdates": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'includeUpdates')]"
+          },
+          "interval": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'interval')]"
+          },
+          "isEnabled": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'isEnabled')]"
+          },
+          "maintenanceWindow": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'maintenanceWindow')]"
+          },
+          "monthDays": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'monthDays')]"
+          },
+          "monthlyOccurrences": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'monthlyOccurrences')]"
+          },
+          "nextRun": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'nextRun')]"
+          },
+          "nextRunOffsetMinutes": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'nextRunOffsetMinutes')]"
+          },
+          "nonAzureComputerNames": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'nonAzureComputerNames')]"
+          },
+          "nonAzureQueries": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'nonAzureQueries')]"
+          },
+          "postTaskParameters": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'postTaskParameters')]"
+          },
+          "postTaskSource": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'postTaskSource')]"
+          },
+          "preTaskParameters": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'preTaskParameters')]"
+          },
+          "preTaskSource": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'preTaskSource')]"
+          },
+          "scheduleDescription": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'scheduleDescription')]"
+          },
+          "scopeByLocations": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'scopeByLocations')]"
+          },
+          "scopeByResources": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'scopeByResources')]"
+          },
+          "scopeByTags": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'scopeByTags')]"
+          },
+          "scopeByTagsOperation": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'scopeByTagsOperation')]"
+          },
+          "startTime": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'startTime')]"
+          },
+          "timeZone": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'timeZone')]"
+          },
+          "updateClassifications": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'updateClassifications')]"
+          },
+          "weekDays": {
+            "value": "[tryGet(parameters('softwareUpdateConfigurations')[copyIndex()], 'weekDays')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "752305553206238634"
+              "version": "0.30.23.60470",
+              "templateHash": "1633069486738674821"
             },
             "name": "Automation Account Software Update Configurations",
             "description": "This module deploys an Azure Automation Account Software Update Configuration.",
@@ -2276,28 +2409,28 @@
             },
             "preTaskParameters": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Parameters provided to the task running before the deployment schedule."
               }
             },
             "preTaskSource": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The source of the task running before the deployment schedule."
               }
             },
             "postTaskParameters": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Parameters provided to the task running after the deployment schedule."
               }
             },
             "postTaskSource": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The source of the task running after the deployment schedule."
               }
@@ -2347,7 +2480,10 @@
             },
             "weekDays": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
               "allowedValues": [
                 "Monday",
                 "Tuesday",
@@ -2363,7 +2499,10 @@
             },
             "monthDays": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "type": "int"
+              },
+              "nullable": true,
               "allowedValues": [
                 1,
                 2,
@@ -2403,7 +2542,7 @@
             },
             "monthlyOccurrences": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Can be used with frequency 'Month'. Provides the pattern/cadence for running the deployment schedule in a month. Takes objects formed like this {occurance(int),day(string)}. Day is the name of the day to run the deployment schedule, the occurance specifies which occurance of that day to run the deployment schedule."
               }
@@ -2461,8 +2600,14 @@
           "variables": {
             "updateClassificationsVar": "[replace(replace(replace(replace(string(parameters('updateClassifications')), ',', ', '), '[', ''), ']', ''), '\"', '')]"
           },
-          "resources": [
-            {
+          "resources": {
+            "automationAccount": {
+              "existing": true,
+              "type": "Microsoft.Automation/automationAccounts",
+              "apiVersion": "2022-08-08",
+              "name": "[parameters('automationAccountName')]"
+            },
+            "softwareUpdateConfiguration": {
               "type": "Microsoft.Automation/automationAccounts/softwareUpdateConfigurations",
               "apiVersion": "2019-06-01",
               "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
@@ -2490,12 +2635,12 @@
                 },
                 "tasks": {
                   "preTask": {
-                    "parameters": "[if(empty(parameters('preTaskParameters')), null(), parameters('preTaskParameters'))]",
-                    "source": "[if(empty(parameters('preTaskSource')), null(), parameters('preTaskSource'))]"
+                    "parameters": "[parameters('preTaskParameters')]",
+                    "source": "[parameters('preTaskSource')]"
                   },
                   "postTask": {
-                    "parameters": "[if(empty(parameters('postTaskParameters')), null(), parameters('postTaskParameters'))]",
-                    "source": "[if(empty(parameters('postTaskSource')), null(), parameters('postTaskSource'))]"
+                    "parameters": "[parameters('postTaskParameters')]",
+                    "source": "[parameters('postTaskSource')]"
                   }
                 },
                 "scheduleInfo": {
@@ -2504,9 +2649,9 @@
                   "isEnabled": "[parameters('isEnabled')]",
                   "timeZone": "[parameters('timeZone')]",
                   "advancedSchedule": {
-                    "weekDays": "[if(empty(parameters('weekDays')), null(), parameters('weekDays'))]",
-                    "monthDays": "[if(empty(parameters('monthDays')), null(), parameters('monthDays'))]",
-                    "monthlyOccurrences": "[if(empty(parameters('monthlyOccurrences')), null(), parameters('monthlyOccurrences'))]"
+                    "weekDays": "[parameters('weekDays')]",
+                    "monthDays": "[parameters('monthDays')]",
+                    "monthlyOccurrences": "[parameters('monthlyOccurrences')]"
                   },
                   "startTime": "[if(empty(parameters('startTime')), dateTimeAdd(parameters('baseTime'), 'PT10M'), parameters('startTime'))]",
                   "expiryTime": "[parameters('expiryTime')]",
@@ -2515,9 +2660,12 @@
                   "nextRunOffsetMinutes": "[parameters('nextRunOffsetMinutes')]",
                   "description": "[parameters('scheduleDescription')]"
                 }
-              }
+              },
+              "dependsOn": [
+                "automationAccount"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
