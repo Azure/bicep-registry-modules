@@ -213,3 +213,5 @@ Resource tags.
 | `name` | string | The name of the secret. |
 | `resourceGroupName` | string | The name of the resource group the secret was created in. |
 | `resourceId` | string | The resource ID of the secret. |
+| `secretUri` | string | The uri of the secret. |
+| `secretUriWithVersion` | string | The uri with version of the secret. |

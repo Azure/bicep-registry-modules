@@ -118,5 +118,11 @@ output name string = secret.name
 @description('The resource ID of the secret.')
 output resourceId string = secret.id
 
+@description('The uri of the secret.')
+output secretUri string = secret.properties.secretUri
+
+@description('The uri with version of the secret.')
+output secretUriWithVersion string = secret.properties.secretUriWithVersion
+
 @description('The name of the resource group the secret was created in.')
 output resourceGroupName string = resourceGroup().name

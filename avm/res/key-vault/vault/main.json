@@ -6,13 +6,39 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "13326515824255460643"
+      "templateHash": "16457776473069409200"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "credentialOutputType": {
+      "type": "object",
+      "properties": {
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The item's resourceId."
+          }
+        },
+        "uri": {
+          "type": "string",
+          "metadata": {
+            "description": "The item's uri."
+          }
+        },
+        "uriWithVersion": {
+          "type": "string",
+          "metadata": {
+            "description": "The item's uri with version."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
     "accessPolicyType": {
       "type": "object",
       "properties": {
@@ -142,6 +168,9 @@
             "description": "Required. Permissions the identity has for keys, secrets and certificates."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "secretType": {
@@ -213,6 +242,9 @@
             "description": "Optional. Array of role assignments to create."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "keyType": {
@@ -340,7 +372,7 @@
           }
         },
         "rotationPolicy": {
-          "$ref": "#/definitions/rotationPoliciesType",
+          "$ref": "#/definitions/rotationPolicyType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Key rotation policy."
@@ -356,9 +388,12 @@
             "description": "Optional. Array of role assignments to create."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
-    "rotationPoliciesType": {
+    "rotationPolicyType": {
       "type": "object",
       "properties": {
         "attributes": {
@@ -1550,7 +1585,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "9293448242558863877"
+              "templateHash": "3722225129523225927"
             },
             "name": "Key Vault Secrets",
             "description": "This module deploys a Key Vault Secret.",
@@ -1781,6 +1816,20 @@
                 "description": "The resource ID of the secret."
               },
               "value": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('name'))]"
+            },
+            "secretUri": {
+              "type": "string",
+              "metadata": {
+                "description": "The uri of the secret."
+              },
+              "value": "[reference('secret').secretUri]"
+            },
+            "secretUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "The uri with version of the secret."
+              },
+              "value": "[reference('secret').secretUriWithVersion]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -2968,11 +3017,45 @@
       "copy": {
         "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
         "input": {
-          "name": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
-          "resourceId": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
-          "groupId": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
-          "customDnsConfig": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
-          "networkInterfaceIds": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
+          "name": "[reference(format('keyVault_privateEndpoints[{0}]', if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray())[copyIndex()])).outputs.name.value]",
+          "resourceId": "[reference(format('keyVault_privateEndpoints[{0}]', if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray())[copyIndex()])).outputs.resourceId.value]",
+          "groupId": "[reference(format('keyVault_privateEndpoints[{0}]', if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray())[copyIndex()])).outputs.groupId.value]",
+          "customDnsConfig": "[reference(format('keyVault_privateEndpoints[{0}]', if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray())[copyIndex()])).outputs.customDnsConfig.value]",
+          "networkInterfaceIds": "[reference(format('keyVault_privateEndpoints[{0}]', if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray())[copyIndex()])).outputs.networkInterfaceIds.value]"
+        }
+      }
+    },
+    "secrets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/credentialOutputType"
+      },
+      "metadata": {
+        "description": "The properties of the created secrets."
+      },
+      "copy": {
+        "count": "[length(range(0, length(coalesce(parameters('secrets'), createArray()))))]",
+        "input": {
+          "resourceId": "[reference(format('keyVault_secrets[{0}]', range(0, length(coalesce(parameters('secrets'), createArray())))[copyIndex()])).outputs.resourceId.value]",
+          "uri": "[reference(format('keyVault_secrets[{0}]', range(0, length(coalesce(parameters('secrets'), createArray())))[copyIndex()])).outputs.secretUri.value]",
+          "uriWithVersion": "[reference(format('keyVault_secrets[{0}]', range(0, length(coalesce(parameters('secrets'), createArray())))[copyIndex()])).outputs.secretUriWithVersion.value]"
+        }
+      }
+    },
+    "keys": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/credentialOutputType"
+      },
+      "metadata": {
+        "description": "The properties of the created keys."
+      },
+      "copy": {
+        "count": "[length(range(0, length(coalesce(parameters('keys'), createArray()))))]",
+        "input": {
+          "resourceId": "[reference(format('keyVault_keys[{0}]', range(0, length(coalesce(parameters('keys'), createArray())))[copyIndex()])).outputs.resourceId.value]",
+          "uri": "[reference(format('keyVault_keys[{0}]', range(0, length(coalesce(parameters('keys'), createArray())))[copyIndex()])).outputs.keyUri.value]",
+          "uriWithVersion": "[reference(format('keyVault_keys[{0}]', range(0, length(coalesce(parameters('keys'), createArray())))[copyIndex()])).outputs.keyUriWithVersion.value]"
         }
       }
     }

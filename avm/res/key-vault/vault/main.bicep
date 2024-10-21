@@ -393,12 +393,31 @@ output location string = keyVault.location
 
 @description('The private endpoints of the key vault.')
 output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: keyVault_privateEndpoints[i].outputs.name
-    resourceId: keyVault_privateEndpoints[i].outputs.resourceId
-    groupId: keyVault_privateEndpoints[i].outputs.groupId
-    customDnsConfig: keyVault_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: keyVault_privateEndpoints[i].outputs.networkInterfaceIds
+  for index in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: keyVault_privateEndpoints[index].outputs.name
+    resourceId: keyVault_privateEndpoints[index].outputs.resourceId
+    groupId: keyVault_privateEndpoints[index].outputs.groupId
+    customDnsConfig: keyVault_privateEndpoints[index].outputs.customDnsConfig
+    networkInterfaceIds: keyVault_privateEndpoints[index].outputs.networkInterfaceIds
+  }
+]
+
+@description('The properties of the created secrets.')
+output secrets credentialOutputType[] = [
+  #disable-next-line outputs-should-not-contain-secrets // Only returning the references, not a secret value
+  for index in range(0, length(secrets ?? [])): {
+    resourceId: keyVault_secrets[index].outputs.resourceId
+    uri: keyVault_secrets[index].outputs.secretUri
+    uriWithVersion: keyVault_secrets[index].outputs.secretUriWithVersion
+  }
+]
+
+@description('The properties of the created keys.')
+output keys credentialOutputType[] = [
+  for index in range(0, length(keys ?? [])): {
+    resourceId: keyVault_keys[index].outputs.resourceId
+    uri: keyVault_keys[index].outputs.keyUri
+    uriWithVersion: keyVault_keys[index].outputs.keyUriWithVersion
   }
 ]
 
@@ -406,6 +425,19 @@ output privateEndpoints array = [
 // Definitions      //
 // ================ //
 
+@export()
+type credentialOutputType = {
+  @description('The item\'s resourceId.')
+  resourceId: string
+
+  @description('The item\'s uri.')
+  uri: string
+
+  @description('The item\'s uri with version.')
+  uriWithVersion: string
+}
+
+@export()
 type accessPolicyType = {
   @description('Optional. The tenant ID that is used for authenticating requests to the key vault.')
   tenantId: string?
@@ -485,6 +517,7 @@ type accessPolicyType = {
   }
 }
 
+@export()
 type secretType = {
   @description('Required. The name of the secret.')
   name: string
@@ -514,6 +547,7 @@ type secretType = {
   roleAssignments: roleAssignmentType[]?
 }
 
+@export()
 type keyType = {
   @description('Required. The name of the key.')
   name: string
@@ -554,13 +588,13 @@ type keyType = {
   }?
 
   @description('Optional. Key rotation policy.')
-  rotationPolicy: rotationPoliciesType?
+  rotationPolicy: rotationPolicyType?
 
   @description('Optional. Array of role assignments to create.')
   roleAssignments: roleAssignmentType[]?
 }
 
-type rotationPoliciesType = {
+type rotationPolicyType = {
   @description('Optional. The attributes of key rotation policy.')
   attributes: {
     @description('Optional. The expiration time for the new key version. It should be in ISO8601 format. Eg: "P90D", "P1Y".')

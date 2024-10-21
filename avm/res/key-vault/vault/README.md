@@ -3182,11 +3182,13 @@ Resource tags.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `keys` | array | The properties of the created keys. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the key vault. |
 | `privateEndpoints` | array | The private endpoints of the key vault. |
 | `resourceGroupName` | string | The name of the resource group the key vault was created in. |
 | `resourceId` | string | The resource ID of the key vault. |
+| `secrets` | array | The properties of the created secrets. |
 | `uri` | string | The URI of the key vault. |
 
 ## Cross-referenced modules
