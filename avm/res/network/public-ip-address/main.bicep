@@ -1,6 +1,5 @@
 metadata name = 'Public IP Addresses'
 metadata description = 'This module deploys a Public IP Address.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Public IP Address.')
 param name string

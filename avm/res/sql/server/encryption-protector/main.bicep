@@ -1,6 +1,5 @@
 metadata name = 'Azure SQL Server Encryption Protector'
 metadata description = 'This module deploys an Azure SQL Server Encryption Protector.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the sql server. Required if the template is used in a standalone deployment.')
 param sqlServerName string

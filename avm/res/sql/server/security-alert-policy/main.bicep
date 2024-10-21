@@ -1,6 +1,5 @@
 metadata name = 'Azure SQL Server Security Alert Policies'
 metadata description = 'This module deploys an Azure SQL Server Security Alert Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Security Alert Policy.')
 param name string

@@ -1,6 +1,5 @@
 metadata name = 'NAT Gateways'
 metadata description = 'This module deploys a NAT Gateway.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Azure Bastion resource.')
 param name string

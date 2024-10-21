@@ -1,6 +1,5 @@
 metadata name = 'Virtual Hub Route Tables'
 metadata description = 'This module deploys a Virtual Hub Route Table.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The route table name.')
 param name string

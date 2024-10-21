@@ -1,6 +1,5 @@
 metadata name = 'import-image-to-acr'
 metadata description = 'This modules deployes an image to an Azure Container Registry.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the deployment script resource.')
 param name string

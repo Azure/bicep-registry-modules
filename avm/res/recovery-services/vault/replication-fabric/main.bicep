@@ -2,7 +2,6 @@ metadata name = 'Recovery Services Vault Replication Fabrics'
 metadata description = '''This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.
 
 > Note: this module currently support only the `instanceType: 'Azure'` scenario.'''
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment.')
 param recoveryVaultName string

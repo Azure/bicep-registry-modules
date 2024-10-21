@@ -4,7 +4,6 @@ metadata description = '''This template will prepare the management group struct
 This module has some known **limitations**:
 - It's not possible to change the display name of the root management group (the one that has the tenant GUID as ID)
 - It can't manage the Root (/) management group'''
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'managementGroup'
 

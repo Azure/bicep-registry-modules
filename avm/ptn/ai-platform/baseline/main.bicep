@@ -2,7 +2,6 @@ metadata name = 'AI Platform Baseline'
 metadata description = '''This module provides a secure and scalable environment for deploying AI applications on Azure.
 The module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.
 By integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access.'''
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Alphanumberic suffix to use for resource naming.')
 @minLength(3)

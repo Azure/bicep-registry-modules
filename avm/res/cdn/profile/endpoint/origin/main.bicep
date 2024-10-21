@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles Endpoints Origins'
 metadata description = 'This module deploys a CDN Profile Endpoint Origin.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the CDN Endpoint.')
 param endpointName string

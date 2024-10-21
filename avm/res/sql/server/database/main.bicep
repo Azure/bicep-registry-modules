@@ -1,6 +1,5 @@
 metadata name = 'SQL Server Database'
 metadata description = 'This module deploys an Azure SQL Server Database.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the database.')
 param name string

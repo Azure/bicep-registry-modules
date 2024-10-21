@@ -1,6 +1,5 @@
 metadata name = 'Azure Compute Galleries'
 metadata description = 'This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).'
-metadata owner = 'Azure/module-maintainers'
 
 // ============ //
 // Parameters   //

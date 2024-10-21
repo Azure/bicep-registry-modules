@@ -1,6 +1,5 @@
 metadata name = 'Synapse Workspaces Keys'
 metadata description = 'This module deploys a Synapse Workspaces Key.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Synapse Workspaces Key.')
 param name string

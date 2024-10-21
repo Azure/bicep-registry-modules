@@ -1,6 +1,5 @@
 metadata name = 'Operations Management Solutions'
 metadata description = 'This module deploys an Operations Management Solution.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the solution. For Microsoft published gallery solution the target solution resource name will be composed as `{name}({logAnalyticsWorkspaceName})`.')
 param name string

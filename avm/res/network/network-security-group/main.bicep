@@ -1,6 +1,5 @@
 metadata name = 'Network Security Groups'
 metadata description = 'This module deploys a Network security Group (NSG).'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Network Security Group.')
 param name string

@@ -1,6 +1,5 @@
 metadata name = 'Data Factory Managed Virtual Network Managed PrivateEndpoints'
 metadata description = 'This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent data factory. Required if the template is used in a standalone deployment.')
 param dataFactoryName string

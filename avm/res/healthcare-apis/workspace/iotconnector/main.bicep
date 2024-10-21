@@ -1,6 +1,5 @@
 metadata name = 'Healthcare API Workspace IoT Connectors'
 metadata description = 'This module deploys a Healthcare API Workspace IoT Connector.'
-metadata owner = 'Azure/module-maintainers'
 
 @minLength(3)
 @maxLength(24)

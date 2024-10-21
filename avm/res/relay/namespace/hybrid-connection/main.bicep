@@ -1,6 +1,5 @@
 metadata name = 'Relay Namespace Hybrid Connections'
 metadata description = 'This module deploys a Relay Namespace Hybrid Connection.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Relay Namespace for the Relay Hybrid Connection. Required if the template is used in a standalone deployment.')
 @minLength(6)

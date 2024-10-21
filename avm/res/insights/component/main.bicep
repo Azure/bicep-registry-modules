@@ -1,6 +1,5 @@
 metadata name = 'Application Insights'
 metadata description = 'This component deploys an Application Insights instance.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Application Insights.')
 param name string

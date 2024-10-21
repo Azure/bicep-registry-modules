@@ -1,6 +1,5 @@
 metadata name = 'Service Bus Namespace Topic'
 metadata description = 'This module deploys a Service Bus Namespace Topic.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Service Bus Namespace for the Service Bus Topic. Required if the template is used in a standalone deployment.')
 @minLength(1)

@@ -1,6 +1,5 @@
 metadata name = 'Event Grid Domains'
 metadata description = 'This module deploys an Event Grid Domain.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Event Grid Domain.')
 param name string

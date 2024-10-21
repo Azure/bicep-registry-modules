@@ -1,6 +1,5 @@
 metadata name = 'Azure Container Registries (ACR)'
 metadata description = 'This module deploys an Azure Container Registry (ACR).'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of your Azure Container Registry.')
 @minLength(5)
