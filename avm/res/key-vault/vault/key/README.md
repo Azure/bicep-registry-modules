@@ -275,8 +275,8 @@ Resource tags.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `keyUriWithVersion` | string | The uri with version of the key. |
 | `keyUri` | string | The uri of the key. |
+| `keyUriWithVersion` | string | The uri with version of the key. |
 | `name` | string | The name of the key. |
 | `resourceGroupName` | string | The name of the resource group the key was created in. |
 | `resourceId` | string | The resource ID of the key. |
