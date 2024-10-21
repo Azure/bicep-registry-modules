@@ -54,28 +54,28 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    administratorLogin: 'adminUserName'
-    administratorLoginPassword: password
-    skuName: 'Standard_D2s_v3'
-    tier: 'GeneralPurpose'
-    customerManagedKey: {
-      keyName: nestedDependencies.outputs.keyName
-      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      administratorLogin: 'adminUserName'
+      administratorLoginPassword: password
+      skuName: 'Standard_D2s_v3'
+      tier: 'GeneralPurpose'
+      geoRedundantBackup: 'Disabled'
+      customerManagedKey: {
+        keyName: nestedDependencies.outputs.keyName
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+      }
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
     }
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}]
+]
