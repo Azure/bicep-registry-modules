@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "17501165975344742322"
+      "version": "0.30.23.60470",
+      "templateHash": "8538777017463575324"
     },
     "name": "DBforPostgreSQL Flexible Server Databases",
     "description": "This module deploys a DBforPostgreSQL Flexible Server Database.",
@@ -26,30 +27,39 @@
     },
     "collation": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The collation of the database."
       }
     },
     "charset": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The charset of the database."
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "flexibleServer": {
+      "existing": true,
+      "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "apiVersion": "2022-12-01",
+      "name": "[parameters('flexibleServerName')]"
+    },
+    "database": {
       "type": "Microsoft.DBforPostgreSQL/flexibleServers/databases",
       "apiVersion": "2022-12-01",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
       "properties": {
         "collation": "[if(not(empty(parameters('collation'))), parameters('collation'), null())]",
         "charset": "[if(not(empty(parameters('charset'))), parameters('charset'), null())]"
-      }
+      },
+      "dependsOn": [
+        "flexibleServer"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
