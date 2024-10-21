@@ -1336,7 +1336,6 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'. |
-| [`passwordAuth`](#parameter-passwordauth) | string | If Enabled, password authentication is enabled. |
 | [`privateDnsZoneArmResourceId`](#parameter-privatednszonearmresourceid) | string | Private dns zone arm resource ID. Used when the desired connectivity mode is 'Private Access' and required when 'delegatedSubnetResourceId' is used. The Private DNS Zone must be linked to the Virtual Network referenced in 'delegatedSubnetResourceId'. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. Used when the desired connectivy mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -1815,21 +1814,6 @@ Properties for the maintenence window. If provided, 'customWindow' property must
       startHour: 1
       startMinute: 0
   }
-  ```
-
-### Parameter: `passwordAuth`
-
-If Enabled, password authentication is enabled.
-
-- Required: No
-- Type: string
-- Default: `'Disabled'`
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
   ```
 
 ### Parameter: `privateDnsZoneArmResourceId`
@@ -2385,6 +2369,13 @@ Tenant id of the server.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `version`
 
