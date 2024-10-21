@@ -63,18 +63,7 @@ module testDeployment '../../../main.bicep' = [
       containerRegistryName: '${uniqueString(deployment().name, enforcedLocation)}testcontainerregistry${serviceShort}'
       skuTier: 'Free'
       webApplicationRoutingEnabled: true
-      agentPools: [
-        {
-          name: 'npuserpool'
-          mode: 'User'
-          osType: 'Linux'
-          maxPods: 30
-          type: 'VirtualMachineScaleSets'
-          maxSurge: '33%'
-          vmSize: 'standard_a2_v2'
-        }
-      ]
-      logAnalyticsName: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+      monitoringWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsResourceId
       keyVaultName: 'kv${uniqueString(deployment().name)}-${serviceShort}'
       location: enforcedLocation
       principalId: nestedDependencies.outputs.identityPrincipalId
