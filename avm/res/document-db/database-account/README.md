@@ -1746,12 +1746,12 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     locations: [
       {
         failoverPriority: 0
-        isZoneRedundant: true
+        isZoneRedundant: false
         locationName: '<locationName>'
       }
       {
         failoverPriority: 1
-        isZoneRedundant: true
+        isZoneRedundant: false
         locationName: '<locationName>'
       }
     ]
@@ -1806,12 +1806,12 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": [
         {
           "failoverPriority": 0,
-          "isZoneRedundant": true,
+          "isZoneRedundant": false,
           "locationName": "<locationName>"
         },
         {
           "failoverPriority": 1,
-          "isZoneRedundant": true,
+          "isZoneRedundant": false,
           "locationName": "<locationName>"
         }
       ]
@@ -1850,12 +1850,12 @@ param location = '<location>'
 param locations = [
   {
     failoverPriority: 0
-    isZoneRedundant: true
+    isZoneRedundant: false
     locationName: '<locationName>'
   }
   {
     failoverPriority: 1
-    isZoneRedundant: true
+    isZoneRedundant: false
     locationName: '<locationName>'
   }
 ]
@@ -3794,7 +3794,7 @@ Default to the location where the account is deployed. Locations enabled for the
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`isZoneRedundant`](#parameter-locationsiszoneredundant) | bool | Default to true. Flag to indicate whether or not this region is an AvailabilityZone region. |
+| [`isZoneRedundant`](#parameter-locationsiszoneredundant) | bool | Default to false. Flag to indicate whether or not this region is an AvailabilityZone region. |
 
 ### Parameter: `locations.failoverPriority`
 
@@ -3812,7 +3812,7 @@ The name of the region.
 
 ### Parameter: `locations.isZoneRedundant`
 
-Default to true. Flag to indicate whether or not this region is an AvailabilityZone region.
+Default to false. Flag to indicate whether or not this region is an AvailabilityZone region.
 
 - Required: No
 - Type: bool
