@@ -112,7 +112,7 @@ param requestedBackupStorageRedundancy string = ''
 param isLedgerOn bool = false
 
 @description('Optional. Maintenance configuration ID assigned to the database. This configuration defines the period when the maintenance updates will occur.')
-param maintenanceConfigurationId string = ''
+param maintenanceConfigurationId string?
 
 @description('Optional. The short term backup retention policy to create for the database.')
 param backupShortTermRetentionPolicy object = {}
@@ -164,7 +164,7 @@ resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
     highAvailabilityReplicaCount: highAvailabilityReplicaCount
     requestedBackupStorageRedundancy: any(requestedBackupStorageRedundancy)
     isLedgerOn: isLedgerOn
-    maintenanceConfigurationId: !empty(maintenanceConfigurationId) ? maintenanceConfigurationId : null
+    maintenanceConfigurationId: maintenanceConfigurationId
     elasticPoolId: elasticPoolId
     createMode: createMode
     sourceDatabaseId: !empty(sourceDatabaseResourceId) ? sourceDatabaseResourceId : null
@@ -211,12 +211,8 @@ module database_backupShortTermRetentionPolicy 'backup-short-term-retention-poli
   params: {
     serverName: serverName
     databaseName: database.name
-    diffBackupIntervalInHours: contains(backupShortTermRetentionPolicy, 'diffBackupIntervalInHours')
-      ? backupShortTermRetentionPolicy.diffBackupIntervalInHours
-      : 24
-    retentionDays: contains(backupShortTermRetentionPolicy, 'retentionDays')
-      ? backupShortTermRetentionPolicy.retentionDays
-      : 7
+    diffBackupIntervalInHours: backupShortTermRetentionPolicy.?diffBackupIntervalInHours ?? 24
+    retentionDays: backupShortTermRetentionPolicy.?retentionDays ?? 7
   }
 }
 
@@ -225,16 +221,10 @@ module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy
   params: {
     serverName: serverName
     databaseName: database.name
-    weeklyRetention: contains(backupLongTermRetentionPolicy, 'weeklyRetention')
-      ? backupLongTermRetentionPolicy.weeklyRetention
-      : ''
-    monthlyRetention: contains(backupLongTermRetentionPolicy, 'monthlyRetention')
-      ? backupLongTermRetentionPolicy.monthlyRetention
-      : ''
-    yearlyRetention: contains(backupLongTermRetentionPolicy, 'yearlyRetention')
-      ? backupLongTermRetentionPolicy.yearlyRetention
-      : ''
-    weekOfYear: contains(backupLongTermRetentionPolicy, 'weekOfYear') ? backupLongTermRetentionPolicy.weekOfYear : 1
+    weeklyRetention: backupLongTermRetentionPolicy.?weeklyRetention ?? ''
+    monthlyRetention: backupLongTermRetentionPolicy.?monthlyRetention ?? ''
+    yearlyRetention: backupLongTermRetentionPolicy.?yearlyRetention ?? ''
+    weekOfYear: backupLongTermRetentionPolicy.?weekOfYear ?? 1
   }
 }
 
