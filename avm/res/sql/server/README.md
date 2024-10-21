@@ -19,6 +19,7 @@ This module deploys an Azure SQL Server.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Sql/servers` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers) |
@@ -45,10 +46,11 @@ The following section provides usage examples for the module, which were used to
 - [With an administrator](#example-1-with-an-administrator)
 - [With audit settings](#example-2-with-audit-settings)
 - [Using only defaults](#example-3-using-only-defaults)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [With a secondary database](#example-5-with-a-secondary-database)
-- [With vulnerability assessment](#example-6-with-vulnerability-assessment)
-- [WAF-aligned](#example-7-waf-aligned)
+- [Deploying with a key vault reference to save secrets](#example-4-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [With a secondary database](#example-6-with-a-secondary-database)
+- [With vulnerability assessment](#example-7-with-vulnerability-assessment)
+- [WAF-aligned](#example-8-waf-aligned)
 
 ### Example 1: _With an administrator_
 
@@ -82,7 +84,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -107,6 +109,28 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlsadmin'
+// Non-required parameters
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: 'myspn'
+  principalType: 'Application'
+  sid: '<sid>'
+}
+param location = '<location>'
 ```
 
 </details>
@@ -148,7 +172,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -188,6 +212,32 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'ssaud001'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param auditSettings = {
+  isManagedIdentityInUse: true
+  state: 'Enabled'
+  storageAccountResourceId: '<storageAccountResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -216,7 +266,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -244,7 +294,133 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'ssmin001'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 4: _Deploying with a key vault reference to save secrets_
+
+This instance deploys the module saving all its secrets in a key vault.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  name: 'serverDeployment'
+  params: {
+    // Required parameters
+    name: 'sqlkvs001'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    databases: [
+      {
+        name: 'myDatabase'
+      }
+    ]
+    location: '<location>'
+    secretsExportConfiguration: {
+      keyVaultResourceId: '<keyVaultResourceId>'
+      sqlAdminPasswordSecretName: 'adminLoginPasswordKey'
+      sqlAzureConnectionStringSercretName: 'sqlConnectionStringKey'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sqlkvs001"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "databases": {
+      "value": [
+        {
+          "name": "myDatabase"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "secretsExportConfiguration": {
+      "value": {
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "sqlAdminPasswordSecretName": "adminLoginPasswordKey",
+        "sqlAzureConnectionStringSercretName": "sqlConnectionStringKey"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlkvs001'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param databases = [
+  {
+    name: 'myDatabase'
+  }
+]
+param location = '<location>'
+param secretsExportConfiguration = {
+  keyVaultResourceId: '<keyVaultResourceId>'
+  sqlAdminPasswordSecretName: 'adminLoginPasswordKey'
+  sqlAzureConnectionStringSercretName: 'sqlConnectionStringKey'
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -295,7 +471,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     ]
     elasticPools: [
       {
-        maintenanceConfigurationId: '<maintenanceConfigurationId>'
         name: 'sqlsmax-ep-001'
         skuCapacity: 10
         skuName: 'GP_Gen5'
@@ -413,7 +588,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -465,7 +640,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "elasticPools": {
       "value": [
         {
-          "maintenanceConfigurationId": "<maintenanceConfigurationId>",
           "name": "sqlsmax-ep-001",
           "skuCapacity": 10,
           "skuName": "GP_Gen5",
@@ -608,7 +782,165 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-### Example 5: _With a secondary database_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlsmax'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param databases = [
+  {
+    backupLongTermRetentionPolicy: {
+      monthlyRetention: 'P6M'
+    }
+    backupShortTermRetentionPolicy: {
+      retentionDays: 14
+    }
+    collation: 'SQL_Latin1_General_CP1_CI_AS'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    elasticPoolId: '<elasticPoolId>'
+    encryptionProtectorObj: {
+      serverKeyName: '<serverKeyName>'
+      serverKeyType: 'AzureKeyVault'
+    }
+    licenseType: 'LicenseIncluded'
+    maxSizeBytes: 34359738368
+    name: 'sqlsmaxdb-001'
+    skuCapacity: 0
+    skuName: 'ElasticPool'
+    skuTier: 'GeneralPurpose'
+  }
+]
+param elasticPools = [
+  {
+    name: 'sqlsmax-ep-001'
+    skuCapacity: 10
+    skuName: 'GP_Gen5'
+    skuTier: 'GeneralPurpose'
+  }
+]
+param firewallRules = [
+  {
+    endIpAddress: '0.0.0.0'
+    name: 'AllowAllWindowsAzureIps'
+    startIpAddress: '0.0.0.0'
+  }
+]
+param keys = [
+  {
+    name: '<name>'
+    serverKeyType: 'AzureKeyVault'
+    uri: '<uri>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param restrictOutboundNetworkAccess = 'Disabled'
+param roleAssignments = [
+  {
+    name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param securityAlertPolicies = [
+  {
+    emailAccountAdmins: true
+    name: 'Default'
+    state: 'Enabled'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param virtualNetworkRules = [
+  {
+    ignoreMissingVnetServiceEndpoint: true
+    name: 'newVnetRule1'
+    virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+  }
+]
+param vulnerabilityAssessmentsObj = {
+  emailSubscriptionAdmins: true
+  name: 'default'
+  recurringScansEmails: [
+    'test1@contoso.com'
+    'test2@contoso.com'
+  ]
+  recurringScansIsEnabled: true
+  storageAccountResourceId: '<storageAccountResourceId>'
+}
+```
+
+</details>
+<p>
+
+### Example 6: _With a secondary database_
 
 This instance deploys the module with a secondary database.
 
@@ -651,7 +983,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -698,7 +1030,40 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-### Example 6: _With vulnerability assessment_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlsec-sec'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param databases = [
+  {
+    createMode: 'Secondary'
+    maxSizeBytes: 2147483648
+    name: '<name>'
+    skuName: 'Basic'
+    skuTier: 'Basic'
+    sourceDatabaseResourceId: '<sourceDatabaseResourceId>'
+  }
+]
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 7: _With vulnerability assessment_
 
 This instance deploys the module with a vulnerability assessment.
 
@@ -757,7 +1122,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -826,7 +1191,56 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlsvln'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param securityAlertPolicies = [
+  {
+    emailAccountAdmins: true
+    name: 'Default'
+    state: 'Enabled'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param vulnerabilityAssessmentsObj = {
+  createStorageRoleAssignment: true
+  emailSubscriptionAdmins: true
+  name: 'default'
+  recurringScansEmails: [
+    'test1@contoso.com'
+    'test2@contoso.com'
+  ]
+  recurringScansIsEnabled: true
+  storageAccountResourceId: '<storageAccountResourceId>'
+  useStorageAccountAccessKey: false
+}
+```
+
+</details>
+<p>
+
+### Example 8: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -960,7 +1374,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1112,6 +1526,130 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlswaf'
+// Non-required parameters
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: 'myspn'
+  principalType: 'Application'
+  sid: '<sid>'
+  tenantId: '<tenantId>'
+}
+param databases = [
+  {
+    backupLongTermRetentionPolicy: {
+      monthlyRetention: 'P6M'
+    }
+    backupShortTermRetentionPolicy: {
+      retentionDays: 14
+    }
+    collation: 'SQL_Latin1_General_CP1_CI_AS'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    elasticPoolId: '<elasticPoolId>'
+    encryptionProtectorObj: {
+      serverKeyName: '<serverKeyName>'
+      serverKeyType: 'AzureKeyVault'
+    }
+    licenseType: 'LicenseIncluded'
+    maxSizeBytes: 34359738368
+    name: 'sqlswafdb-001'
+    skuCapacity: 0
+    skuName: 'ElasticPool'
+    skuTier: 'GeneralPurpose'
+  }
+]
+param elasticPools = [
+  {
+    maintenanceConfigurationId: '<maintenanceConfigurationId>'
+    name: 'sqlswaf-ep-001'
+    skuCapacity: 10
+    skuName: 'GP_Gen5'
+    skuTier: 'GeneralPurpose'
+  }
+]
+param keys = [
+  {
+    serverKeyType: 'AzureKeyVault'
+    uri: '<uri>'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'sqlServer'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param restrictOutboundNetworkAccess = 'Disabled'
+param securityAlertPolicies = [
+  {
+    emailAccountAdmins: true
+    name: 'Default'
+    state: 'Enabled'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param virtualNetworkRules = [
+  {
+    ignoreMissingVnetServiceEndpoint: true
+    name: 'newVnetRule1'
+    virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+  }
+]
+param vulnerabilityAssessmentsObj = {
+  emailSubscriptionAdmins: true
+  name: 'default'
+  recurringScansEmails: [
+    'test1@contoso.com'
+    'test2@contoso.com'
+  ]
+  recurringScansIsEnabled: true
+  storageAccountResourceId: '<storageAccountResourceId>'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -1139,6 +1677,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionProtectorObj`](#parameter-encryptionprotectorobj) | object | The encryption protection configuration. |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the server. |
+| [`isIPv6Enabled`](#parameter-isipv6enabled) | string | Whether or not to enable IPv6 support for this server. |
 | [`keys`](#parameter-keys) | array | The keys to configure. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1148,6 +1687,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and neither firewall rules nor virtual network rules are set. |
 | [`restrictOutboundNetworkAccess`](#parameter-restrictoutboundnetworkaccess) | string | Whether or not to restrict outbound network access for this server. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`securityAlertPolicies`](#parameter-securityalertpolicies) | array | The security alert policies to create in the server. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkRules`](#parameter-virtualnetworkrules) | array | The virtual network rules to create in the server. |
@@ -1336,6 +1876,21 @@ The firewall rules to create in the server.
 - Type: array
 - Default: `[]`
 
+### Parameter: `isIPv6Enabled`
+
+Whether or not to enable IPv6 support for this server.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `keys`
 
 The keys to configure.
@@ -1429,6 +1984,7 @@ Minimal TLS version allowed.
     '1.0'
     '1.1'
     '1.2'
+    '1.3'
   ]
   ```
 
@@ -1851,6 +2407,7 @@ Whether or not public network access is allowed for this resource. For security 
     ''
     'Disabled'
     'Enabled'
+    'SecuredByPerimeter'
   ]
   ```
 
@@ -1980,6 +2537,47 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `secretsExportConfiguration`
+
+Key vault reference and secret settings for the module's secrets export.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The resource ID of the key vault where to store the secrets of this module. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sqlAdminPasswordSecretName`](#parameter-secretsexportconfigurationsqladminpasswordsecretname) | string | The sqlAdminPassword secret name to create. |
+| [`sqlAzureConnectionStringSercretName`](#parameter-secretsexportconfigurationsqlazureconnectionstringsercretname) | string | The sqlAzureConnectionString secret name to create. |
+
+### Parameter: `secretsExportConfiguration.keyVaultResourceId`
+
+The resource ID of the key vault where to store the secrets of this module.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `secretsExportConfiguration.sqlAdminPasswordSecretName`
+
+The sqlAdminPassword secret name to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `secretsExportConfiguration.sqlAzureConnectionStringSercretName`
+
+The sqlAzureConnectionString secret name to create.
+
+- Required: No
+- Type: string
+
 ### Parameter: `securityAlertPolicies`
 
 The security alert policies to create in the server.
@@ -2015,6 +2613,7 @@ The vulnerability assessment configuration.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed SQL server. |
 | `privateEndpoints` | array | The private endpoints of the SQL server. |

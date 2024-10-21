@@ -87,7 +87,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -144,6 +144,54 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/scheduled-query-rule:<version>'
+
+// Required parameters
+param criterias = {
+  allOf: [
+    {
+      dimensions: [
+        {
+          name: 'Computer'
+          operator: 'Include'
+          values: [
+            '*'
+          ]
+        }
+        {
+          name: 'InstanceName'
+          operator: 'Include'
+          values: [
+            '*'
+          ]
+        }
+      ]
+      metricMeasureColumn: 'AggregatedValue'
+      operator: 'GreaterThan'
+      query: 'Perf | where ObjectName == \'LogicalDisk\' | where CounterName == \'% Free Space\' | where InstanceName <> \'HarddiskVolume1\' and InstanceName <> \'_Total\' | summarize AggregatedValue = min(CounterValue) by Computer, InstanceName, bin(TimeGenerated,5m)'
+      threshold: 0
+      timeAggregation: 'Average'
+    }
+  ]
+}
+param name = 'isqrmin001'
+param scopes = [
+  '<logAnalyticsWorkspaceResourceId>'
+]
+// Non-required parameters
+param evaluationFrequency = 'PT5M'
+param location = '<location>'
+param windowSize = 'PT5M'
 ```
 
 </details>
@@ -240,7 +288,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -351,6 +399,87 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/scheduled-query-rule:<version>'
+
+// Required parameters
+param criterias = {
+  allOf: [
+    {
+      dimensions: [
+        {
+          name: 'Computer'
+          operator: 'Include'
+          values: [
+            '*'
+          ]
+        }
+        {
+          name: 'InstanceName'
+          operator: 'Include'
+          values: [
+            '*'
+          ]
+        }
+      ]
+      metricMeasureColumn: 'AggregatedValue'
+      operator: 'GreaterThan'
+      query: 'Perf | where ObjectName == \'LogicalDisk\' | where CounterName == \'% Free Space\' | where InstanceName <> \'HarddiskVolume1\' and InstanceName <> \'_Total\' | summarize AggregatedValue = min(CounterValue) by Computer, InstanceName, bin(TimeGenerated,5m)'
+      threshold: 0
+      timeAggregation: 'Average'
+    }
+  ]
+}
+param name = 'isqrmax001'
+param scopes = [
+  '<logAnalyticsWorkspaceResourceId>'
+]
+// Non-required parameters
+param alertDescription = 'My sample Alert'
+param alertDisplayName = '<alertDisplayName>'
+param autoMitigate = false
+param evaluationFrequency = 'PT5M'
+param location = '<location>'
+param queryTimeRange = 'PT5M'
+param roleAssignments = [
+  {
+    name: 'fa8868c7-33d3-4cd5-86a5-cbf76261035b'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param ruleResolveConfiguration = {
+  autoResolved: true
+  timeToResolve: 'PT5M'
+}
+param suppressForMinutes = 'PT5M'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param windowSize = 'PT5M'
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -418,7 +547,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -494,6 +623,63 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/scheduled-query-rule:<version>'
+
+// Required parameters
+param criterias = {
+  allOf: [
+    {
+      dimensions: [
+        {
+          name: 'Computer'
+          operator: 'Include'
+          values: [
+            '*'
+          ]
+        }
+        {
+          name: 'InstanceName'
+          operator: 'Include'
+          values: [
+            '*'
+          ]
+        }
+      ]
+      metricMeasureColumn: 'AggregatedValue'
+      operator: 'GreaterThan'
+      query: 'Perf | where ObjectName == \'LogicalDisk\' | where CounterName == \'% Free Space\' | where InstanceName <> \'HarddiskVolume1\' and InstanceName <> \'_Total\' | summarize AggregatedValue = min(CounterValue) by Computer, InstanceName, bin(TimeGenerated,5m)'
+      threshold: 0
+      timeAggregation: 'Average'
+    }
+  ]
+}
+param name = 'isqrwaf001'
+param scopes = [
+  '<logAnalyticsWorkspaceResourceId>'
+]
+// Non-required parameters
+param alertDescription = 'My sample Alert'
+param autoMitigate = false
+param evaluationFrequency = 'PT5M'
+param location = '<location>'
+param queryTimeRange = 'PT5M'
+param suppressForMinutes = 'PT5M'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param windowSize = 'PT5M'
 ```
 
 </details>

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "1719886395722436280"
+      "version": "0.30.3.12046",
+      "templateHash": "15476128515731477399"
     },
     "name": "Site logs Config",
     "description": "This module deploys a Site logs Configuration.",
@@ -31,12 +31,12 @@
     "app": {
       "existing": true,
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2023-12-01",
       "name": "[parameters('appName')]"
     },
     "webSettings": {
       "type": "Microsoft.Web/sites/config",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2023-12-01",
       "name": "[format('{0}/{1}', parameters('appName'), 'logs')]",
       "kind": "string",
       "properties": "[parameters('logsConfiguration')]",

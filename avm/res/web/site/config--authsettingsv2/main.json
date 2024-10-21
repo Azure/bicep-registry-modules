@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "15126303852151434516"
+      "version": "0.30.3.12046",
+      "templateHash": "5141699950067054376"
     },
     "name": "Site Auth Settings V2 Config",
     "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -48,7 +48,7 @@
   "resources": [
     {
       "type": "Microsoft.Web/sites/config",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2023-12-01",
       "name": "[format('{0}/{1}', parameters('appName'), 'authsettingsV2')]",
       "kind": "[parameters('kind')]",
       "properties": "[parameters('authSettingV2Configuration')]"

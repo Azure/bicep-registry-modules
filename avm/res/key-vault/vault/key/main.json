@@ -232,19 +232,7 @@
       "apiVersion": "2022-07-01",
       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
-      "properties": {
-        "attributes": {
-          "enabled": "[parameters('attributesEnabled')]",
-          "exp": "[parameters('attributesExp')]",
-          "nbf": "[parameters('attributesNbf')]"
-        },
-        "curveName": "[parameters('curveName')]",
-        "keyOps": "[parameters('keyOps')]",
-        "keySize": "[parameters('keySize')]",
-        "kty": "[parameters('kty')]",
-        "rotationPolicy": "[coalesce(parameters('rotationPolicy'), createObject())]",
-        "release_policy": "[coalesce(parameters('releasePolicy'), createObject())]"
-      },
+      "properties": "[shallowMerge(createArray(createObject('attributes', createObject('enabled', parameters('attributesEnabled'), 'exp', parameters('attributesExp'), 'nbf', parameters('attributesNbf')), 'curveName', parameters('curveName'), 'keyOps', parameters('keyOps'), 'keySize', parameters('keySize'), 'kty', parameters('kty'), 'release_policy', coalesce(parameters('releasePolicy'), createObject())), if(empty(parameters('rotationPolicy')), createObject(), createObject('rotationPolicy', parameters('rotationPolicy')))))]",
       "dependsOn": [
         "keyVault"
       ]

@@ -66,7 +66,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -86,6 +86,23 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/key-vault/vault:<version>'
+
+// Required parameters
+param name = 'kvvmin002'
+// Non-required parameters
+param enablePurgeProtection = false
+param location = '<location>'
 ```
 
 </details>
@@ -152,7 +169,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -208,6 +225,57 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/key-vault/vault:<version>'
+
+// Required parameters
+param name = 'kvvec002'
+// Non-required parameters
+param enablePurgeProtection = false
+param enableRbacAuthorization = true
+param keys = [
+  {
+    attributes: {
+      exp: 1725109032
+      nbf: 10000
+    }
+    kty: 'EC'
+    name: 'keyName'
+    rotationPolicy: {
+      attributes: {
+        expiryTime: 'P2Y'
+      }
+      lifetimeActions: [
+        {
+          action: {
+            type: 'Rotate'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P2M'
+          }
+        }
+        {
+          action: {
+            type: 'Notify'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P30D'
+          }
+        }
+      ]
+    }
+  }
+]
+param location = '<location>'
 ```
 
 </details>
@@ -284,8 +352,10 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     enableRbacAuthorization: false
     keys: [
       {
-        attributesExp: 1725109032
-        attributesNbf: 10000
+        attributes: {
+          exp: 1725109032
+          nbf: 10000
+        }
         name: 'keyName'
         roleAssignments: [
           {
@@ -427,8 +497,10 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     ]
     secrets: [
       {
-        attributesExp: 1702648632
-        attributesNbf: 10000
+        attributes: {
+          exp: 1725109032
+          nbf: 10000
+        }
         contentType: 'Something'
         name: 'secretName'
         roleAssignments: [
@@ -466,7 +538,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -540,8 +612,10 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "keys": {
       "value": [
         {
-          "attributesExp": 1725109032,
-          "attributesNbf": 10000,
+          "attributes": {
+            "exp": 1725109032,
+            "nbf": 10000
+          },
           "name": "keyName",
           "roleAssignments": [
             {
@@ -695,8 +769,10 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "secrets": {
       "value": [
         {
-          "attributesExp": 1702648632,
-          "attributesNbf": 10000,
+          "attributes": {
+            "exp": 1725109032,
+            "nbf": 10000
+          },
           "contentType": "Something",
           "name": "secretName",
           "roleAssignments": [
@@ -731,6 +807,253 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/key-vault/vault:<version>'
+
+// Required parameters
+param name = 'kvvmax002'
+// Non-required parameters
+param accessPolicies = [
+  {
+    objectId: '<objectId>'
+    permissions: {
+      keys: [
+        'get'
+        'list'
+        'update'
+      ]
+      secrets: [
+        'all'
+      ]
+    }
+    tenantId: '<tenantId>'
+  }
+  {
+    objectId: '<objectId>'
+    permissions: {
+      certificates: [
+        'backup'
+        'create'
+        'delete'
+      ]
+      secrets: [
+        'all'
+      ]
+    }
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'AzurePolicyEvaluationDetails'
+      }
+      {
+        category: 'AuditEvent'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param enablePurgeProtection = false
+param enableRbacAuthorization = false
+param keys = [
+  {
+    attributes: {
+      exp: 1725109032
+      nbf: 10000
+    }
+    name: 'keyName'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    rotationPolicy: {
+      attributes: {
+        expiryTime: 'P2Y'
+      }
+      lifetimeActions: [
+        {
+          action: {
+            type: 'Rotate'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P2M'
+          }
+        }
+        {
+          action: {
+            type: 'Notify'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P30D'
+          }
+        }
+      ]
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param networkAcls = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
+  ipRules: [
+    {
+      value: '40.74.28.0/23'
+    }
+  ]
+  virtualNetworkRules: [
+    {
+      id: '<id>'
+      ignoreMissingVnetServiceEndpoint: false
+    }
+  ]
+}
+param privateEndpoints = [
+  {
+    customDnsConfigs: [
+      {
+        fqdn: 'abc.keyvault.com'
+        ipAddresses: [
+          '10.0.0.10'
+        ]
+      }
+    ]
+    ipConfigurations: [
+      {
+        name: 'myIPconfig'
+        properties: {
+          groupId: 'vault'
+          memberName: 'default'
+          privateIPAddress: '10.0.0.10'
+        }
+      }
+    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    name: 'b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param secrets = [
+  {
+    attributes: {
+      exp: 1725109032
+      nbf: 10000
+    }
+    contentType: 'Something'
+    name: 'secretName'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    value: 'secretValue'
+  }
+]
+param softDeleteRetentionInDays = 7
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -798,7 +1121,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -854,6 +1177,57 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/key-vault/vault:<version>'
+
+// Required parameters
+param name = 'kvvrsa002'
+// Non-required parameters
+param enablePurgeProtection = false
+param enableRbacAuthorization = true
+param keys = [
+  {
+    attributes: {
+      exp: 1725109032
+      nbf: 10000
+    }
+    kty: 'RSA'
+    name: 'keyName'
+    rotationPolicy: {
+      attributes: {
+        expiryTime: 'P2Y'
+      }
+      lifetimeActions: [
+        {
+          action: {
+            type: 'Rotate'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P2M'
+          }
+        }
+        {
+          action: {
+            type: 'Notify'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P30D'
+          }
+        }
+      ]
+    }
+  }
+]
+param location = '<location>'
 ```
 
 </details>
@@ -968,7 +1342,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1085,6 +1459,105 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/key-vault/vault:<version>'
+
+// Required parameters
+param name = 'kvvwaf002'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param enablePurgeProtection = false
+param enableRbacAuthorization = true
+param keys = [
+  {
+    attributes: {
+      enabled: true
+      exp: 1702648632
+      nbf: 10000
+    }
+    keySize: 4096
+    name: 'keyName'
+    rotationPolicy: {
+      attributes: {
+        expiryTime: 'P2Y'
+      }
+      lifetimeActions: [
+        {
+          action: {
+            type: 'Rotate'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P2M'
+          }
+        }
+        {
+          action: {
+            type: 'Notify'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P30D'
+          }
+        }
+      ]
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param networkAcls = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'vault'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param secrets = [
+  {
+    attributes: {
+      enabled: true
+      exp: 1702648632
+      nbf: 10000
+    }
+    contentType: 'Something'
+    name: 'secretName'
+    value: 'secretValue'
+  }
+]
+param softDeleteRetentionInDays = 7
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

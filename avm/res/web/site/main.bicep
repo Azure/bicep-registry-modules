@@ -64,10 +64,15 @@ param vnetRouteAllEnabled bool = false
 @description('Optional. Stop SCM (KUDU) site when the app is stopped.')
 param scmSiteAlsoStopped bool = false
 
-@description('Optional. The site config object.')
+@description('Optional. The site config object. The defaults are set to the following values: alwaysOn: true, minTlsVersion: \'1.2\', ftpsState: \'FtpsOnly\'.')
 param siteConfig object = {
   alwaysOn: true
+  minTlsVersion: '1.2'
+  ftpsState: 'FtpsOnly'
 }
+
+@description('Optional. The Function App configuration object.')
+param functionAppConfig object?
 
 @description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
 param storageAccountResourceId string?
@@ -265,6 +270,7 @@ resource app 'Microsoft.Web/sites@2023-12-01' = {
     keyVaultReferenceIdentity: keyVaultAccessIdentityResourceId
     virtualNetworkSubnetId: virtualNetworkSubnetId
     siteConfig: siteConfig
+    functionAppConfig: functionAppConfig
     clientCertEnabled: clientCertEnabled
     clientCertExclusionPaths: clientCertExclusionPaths
     clientCertMode: clientCertMode
@@ -352,6 +358,7 @@ module app_slots 'slot/main.bicep' = [
       storageAccountRequired: slot.?storageAccountRequired ?? storageAccountRequired
       virtualNetworkSubnetId: slot.?virtualNetworkSubnetId ?? virtualNetworkSubnetId
       siteConfig: slot.?siteConfig ?? siteConfig
+      functionAppConfig: slot.?functionAppConfig ?? functionAppConfig
       storageAccountResourceId: slot.?storageAccountResourceId ?? storageAccountResourceId
       storageAccountUseIdentityAuthentication: slot.?storageAccountUseIdentityAuthentication ?? storageAccountUseIdentityAuthentication
       appInsightResourceId: slot.?appInsightResourceId ?? appInsightResourceId

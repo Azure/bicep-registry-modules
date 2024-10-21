@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "8260746772295919880"
+      "version": "0.30.23.60470",
+      "templateHash": "4145709731033849736"
     },
     "name": "Dns Forwarding Rulesets",
     "description": "This template deploys an dns forwarding ruleset.",
@@ -190,7 +190,7 @@
             }
           },
           "port": {
-            "type": "string",
+            "type": "int",
             "metadata": {
               "description": "Required. The port of the target DNS server."
             }
@@ -394,8 +394,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "17239011184377594139"
+              "version": "0.30.23.60470",
+              "templateHash": "10407418001531703281"
             },
             "name": "Dns Forwarding Rulesets Forwarding Rules",
             "description": "This template deploys Forwarding Rule in a Dns Forwarding Ruleset.",
@@ -522,8 +522,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "14775682641579876025"
+              "version": "0.30.23.60470",
+              "templateHash": "7319659019579418232"
             },
             "name": "Dns Forwarding Rulesets Virtual Network Links",
             "description": "This template deploys Virtual Network Link in a Dns Forwarding Ruleset.",

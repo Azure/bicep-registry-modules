@@ -8,6 +8,7 @@ This module deploys a DBforPostgreSQL Flexible Server.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -22,6 +23,8 @@ This module deploys a DBforPostgreSQL Flexible Server.
 | `Microsoft.DBforPostgreSQL/flexibleServers/databases` | [2022-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2022-12-01/flexibleServers/databases) |
 | `Microsoft.DBforPostgreSQL/flexibleServers/firewallRules` | [2022-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2022-12-01/flexibleServers/firewallRules) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -34,8 +37,9 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
 - [Private access](#example-3-private-access)
-- [Public access](#example-4-public-access)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Public access with private endpoints](#example-4-public-access-with-private-endpoints)
+- [Public access](#example-5-public-access)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -62,9 +66,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         principalType: 'ServicePrincipal'
       }
     ]
-    geoRedundantBackup: 'Enabled'
-    highAvailability: 'ZoneRedundant'
-    location: '<location>'
   }
 }
 ```
@@ -74,7 +75,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -100,18 +101,33 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
           "principalType": "ServicePrincipal"
         }
       ]
-    },
-    "geoRedundantBackup": {
-      "value": "Enabled"
-    },
-    "highAvailability": {
-      "value": "ZoneRedundant"
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
+
+// Required parameters
+param name = 'dfpsfsmin001'
+param skuName = 'Standard_D2s_v3'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administrators = [
+  {
+    objectId: '<objectId>'
+    principalName: '<principalName>'
+    principalType: 'ServicePrincipal'
+  }
+]
 ```
 
 </details>
@@ -142,6 +158,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
+    geoRedundantBackup: 'Disabled'
     location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
@@ -157,7 +174,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -188,6 +205,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
+    "geoRedundantBackup": {
+      "value": "Disabled"
+    },
     "location": {
       "value": "<location>"
     },
@@ -199,6 +219,37 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
+
+// Required parameters
+param name = 'dfpsfse001'
+param skuName = 'Standard_D2s_v3'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param geoRedundantBackup = 'Disabled'
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 ```
 
@@ -296,7 +347,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -407,9 +458,90 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 </details>
 <p>
 
-### Example 4: _Public access_
+<details>
 
-This instance deploys the module with public access.
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
+
+// Required parameters
+param name = 'dfpsfspvt001'
+param skuName = 'Standard_D2s_v3'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param configurations = [
+  {
+    name: 'log_min_messages'
+    source: 'user-override'
+    value: 'INFO'
+  }
+  {
+    name: 'autovacuum_naptime'
+    source: 'user-override'
+    value: '80'
+  }
+]
+param databases = [
+  {
+    charset: 'UTF8'
+    collation: 'en_US.utf8'
+    name: 'testdb1'
+  }
+  {
+    name: 'testdb2'
+  }
+]
+param delegatedSubnetResourceId = '<delegatedSubnetResourceId>'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param geoRedundantBackup = 'Enabled'
+param location = '<location>'
+param privateDnsZoneArmResourceId = '<privateDnsZoneArmResourceId>'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Public access with private endpoints_
+
+This instance deploys the module with public access and private endpoints.
 
 
 <details>
@@ -421,7 +553,174 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
-    name: 'dfpsfsp001'
+    name: 'dfpsfspe001'
+    skuName: 'Standard_D2ds_v5'
+    tier: 'GeneralPurpose'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    geoRedundantBackup: 'Enabled'
+    highAvailability: 'ZoneRedundant'
+    location: '<location>'
+    maintenanceWindow: {
+      customWindow: 'Enabled'
+      dayOfWeek: '0'
+      startHour: '1'
+      startMinute: '0'
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dfpsfspe001"
+    },
+    "skuName": {
+      "value": "Standard_D2ds_v5"
+    },
+    "tier": {
+      "value": "GeneralPurpose"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "geoRedundantBackup": {
+      "value": "Enabled"
+    },
+    "highAvailability": {
+      "value": "ZoneRedundant"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "maintenanceWindow": {
+      "value": {
+        "customWindow": "Enabled",
+        "dayOfWeek": "0",
+        "startHour": "1",
+        "startMinute": "0"
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
+
+// Required parameters
+param name = 'dfpsfspe001'
+param skuName = 'Standard_D2ds_v5'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param geoRedundantBackup = 'Enabled'
+param highAvailability = 'ZoneRedundant'
+param location = '<location>'
+param maintenanceWindow = {
+  customWindow: 'Enabled'
+  dayOfWeek: '0'
+  startHour: '1'
+  startMinute: '0'
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 5: _Public access_
+
+This instance deploys the module with public access and most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
+  name: 'flexibleServerDeployment'
+  params: {
+    // Required parameters
+    name: 'dfpsfspub001'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -517,7 +816,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -526,7 +825,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dfpsfsp001"
+      "value": "dfpsfspub001"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
@@ -651,7 +950,107 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
+
+// Required parameters
+param name = 'dfpsfspub001'
+param skuName = 'Standard_D2s_v3'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administrators = [
+  {
+    objectId: '<objectId>'
+    principalName: '<principalName>'
+    principalType: 'ServicePrincipal'
+  }
+]
+param backupRetentionDays = 20
+param configurations = [
+  {
+    name: 'log_min_messages'
+    source: 'user-override'
+    value: 'INFO'
+  }
+]
+param databases = [
+  {
+    charset: 'UTF8'
+    collation: 'en_US.utf8'
+    name: 'testdb1'
+  }
+  {
+    name: 'testdb2'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param firewallRules = [
+  {
+    endIpAddress: '0.0.0.0'
+    name: 'AllowAllWindowsAzureIps'
+    startIpAddress: '0.0.0.0'
+  }
+  {
+    endIpAddress: '10.10.10.10'
+    name: 'test-rule1'
+    startIpAddress: '10.10.10.1'
+  }
+  {
+    endIpAddress: '100.100.100.10'
+    name: 'test-rule2'
+    startIpAddress: '100.100.100.1'
+  }
+]
+param geoRedundantBackup = 'Disabled'
+param highAvailability = 'SameZone'
+param location = '<location>'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param storageSizeGB = 1024
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param version = '14'
+```
+
+</details>
+<p>
+
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -707,7 +1106,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    geoRedundantBackup: 'Enabled'
     highAvailability: 'ZoneRedundant'
     location: '<location>'
     maintenanceWindow: {
@@ -731,7 +1129,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -797,9 +1195,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         }
       ]
     },
-    "geoRedundantBackup": {
-      "value": "Enabled"
-    },
     "highAvailability": {
       "value": "ZoneRedundant"
     },
@@ -825,6 +1220,75 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
+
+// Required parameters
+param name = 'dfpsfswaf001'
+param skuName = 'Standard_D2s_v3'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administrators = [
+  {
+    objectId: '<objectId>'
+    principalName: '<principalName>'
+    principalType: 'ServicePrincipal'
+  }
+]
+param configurations = [
+  {
+    name: 'log_min_messages'
+    source: 'user-override'
+    value: 'INFO'
+  }
+  {
+    name: 'autovacuum_naptime'
+    source: 'user-override'
+    value: '80'
+  }
+]
+param databases = [
+  {
+    charset: 'UTF8'
+    collation: 'en_US.utf8'
+    name: 'testdb1'
+  }
+  {
+    name: 'testdb2'
+  }
+]
+param delegatedSubnetResourceId = '<delegatedSubnetResourceId>'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param highAvailability = 'ZoneRedundant'
+param location = '<location>'
+param maintenanceWindow = {
+  customWindow: 'Enabled'
+  dayOfWeek: 0
+  startHour: 1
+  startMinute: 0
+}
+param privateDnsZoneArmResourceId = '<privateDnsZoneArmResourceId>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -867,13 +1331,14 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the PostgreSQL flexible server. |
-| [`geoRedundantBackup`](#parameter-georedundantbackup) | string | A value indicating whether Geo-Redundant backup is enabled on the server. Should be left disabled if 'cMKKeyName' is not empty. |
+| [`geoRedundantBackup`](#parameter-georedundantbackup) | string | A value indicating whether Geo-Redundant backup is enabled on the server. Should be disabled if 'cMKKeyName' is not empty. |
 | [`highAvailability`](#parameter-highavailability) | string | The mode for high availability. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'. |
 | [`passwordAuth`](#parameter-passwordauth) | string | If Enabled, password authentication is enabled. |
-| [`privateDnsZoneArmResourceId`](#parameter-privatednszonearmresourceid) | string | Private dns zone arm resource ID. Used when the desired connectivity mode is 'Private Access' and required when 'delegatedSubnetResourceId' is used. The Private DNS Zone must be lined to the Virtual Network referenced in 'delegatedSubnetResourceId'. |
+| [`privateDnsZoneArmResourceId`](#parameter-privatednszonearmresourceid) | string | Private dns zone arm resource ID. Used when the desired connectivity mode is 'Private Access' and required when 'delegatedSubnetResourceId' is used. The Private DNS Zone must be linked to the Virtual Network referenced in 'delegatedSubnetResourceId'. |
+| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. Used when the desired connectivy mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`storageSizeGB`](#parameter-storagesizegb) | int | Max storage allowed for a server. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -920,13 +1385,13 @@ The managed identity definition for this resource. Required if 'cMKKeyName' is n
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `pointInTimeUTC`
@@ -966,7 +1431,6 @@ The administrator login name of a server. Can only be specified when the Postgre
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `administratorLoginPassword`
 
@@ -974,7 +1438,6 @@ The administrator login password.
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `administrators`
 
@@ -1029,7 +1492,9 @@ The mode to create a new PostgreSQL server.
   [
     'Create'
     'Default'
+    'GeoRestore'
     'PointInTimeRestore'
+    'Replica'
     'Update'
   ]
   ```
@@ -1047,13 +1512,13 @@ The customer managed key definition.
 | :-- | :-- | :-- |
 | [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
 | [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
-| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
 
@@ -1069,16 +1534,16 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 - Required: Yes
 - Type: string
 
-### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
-
-User assigned identity to use when fetching the customer managed key.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `customerManagedKey.keyVersion`
 
 The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+
+- Required: No
+- Type: string
+
+### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
+
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
 
 - Required: No
 - Type: string
@@ -1116,7 +1581,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -1226,7 +1691,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -1263,11 +1728,11 @@ The firewall rules to create in the PostgreSQL flexible server.
 
 ### Parameter: `geoRedundantBackup`
 
-A value indicating whether Geo-Redundant backup is enabled on the server. Should be left disabled if 'cMKKeyName' is not empty.
+A value indicating whether Geo-Redundant backup is enabled on the server. Should be disabled if 'cMKKeyName' is not empty.
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
+- Default: `'Enabled'`
 - Allowed:
   ```Bicep
   [
@@ -1369,11 +1834,417 @@ If Enabled, password authentication is enabled.
 
 ### Parameter: `privateDnsZoneArmResourceId`
 
-Private dns zone arm resource ID. Used when the desired connectivity mode is 'Private Access' and required when 'delegatedSubnetResourceId' is used. The Private DNS Zone must be lined to the Virtual Network referenced in 'delegatedSubnetResourceId'.
+Private dns zone arm resource ID. Used when the desired connectivity mode is 'Private Access' and required when 'delegatedSubnetResourceId' is used. The Private DNS Zone must be linked to the Virtual Network referenced in 'delegatedSubnetResourceId'.
 
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `privateEndpoints`
+
+Configuration details for private endpoints. Used when the desired connectivy mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`applicationSecurityGroupResourceIds`](#parameter-privateendpointsapplicationsecuritygroupresourceids) | array | Application security groups in which the Private Endpoint IP configuration is included. |
+| [`customDnsConfigs`](#parameter-privateendpointscustomdnsconfigs) | array | Custom DNS configurations. |
+| [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the Private Endpoint. |
+| [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the Private Endpoint. This will be used to map to the first-party Service endpoints. |
+| [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
+| [`location`](#parameter-privateendpointslocation) | string | The location to deploy the Private Endpoint to. |
+| [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
+| [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
+| [`name`](#parameter-privateendpointsname) | string | The name of the Private Endpoint. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
+| [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
+| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource. |
+| [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
+| [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
+
+### Parameter: `privateEndpoints.subnetResourceId`
+
+Resource ID of the subnet where the endpoint needs to be created.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
+
+Application security groups in which the Private Endpoint IP configuration is included.
+
+- Required: No
+- Type: array
+
+### Parameter: `privateEndpoints.customDnsConfigs`
+
+Custom DNS configurations.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+Fqdn that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
+
+A list of private IP addresses of the private endpoint.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `privateEndpoints.customNetworkInterfaceName`
+
+The custom name of the network interface attached to the Private Endpoint.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+
+### Parameter: `privateEndpoints.ipConfigurations`
+
+A list of IP configurations of the Private Endpoint. This will be used to map to the first-party Service endpoints.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsipconfigurationsname) | string | The name of the resource that is unique within a resource group. |
+| [`properties`](#parameter-privateendpointsipconfigurationsproperties) | object | Properties of private endpoint IP configurations. |
+
+### Parameter: `privateEndpoints.ipConfigurations.name`
+
+The name of the resource that is unique within a resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties`
+
+Properties of private endpoint IP configurations.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
+
+The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
+
+A private IP address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.isManualConnection`
+
+If Manual Private Link Connection is required.
+
+- Required: No
+- Type: bool
+
+### Parameter: `privateEndpoints.location`
+
+The location to deploy the Private Endpoint to.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock`
+
+Specify the type of lock.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+
+### Parameter: `privateEndpoints.lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `privateEndpoints.lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.manualConnectionRequestMessage`
+
+A message passed to the owner of the remote resource with the manual connection request.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.name`
+
+The name of the Private Endpoint.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup`
+
+The private DNS Zone Group to configure for the Private Endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS Zone Group config.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
+
+The name of the Private DNS Zone Group.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
+
+The name of the private link connection to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.resourceGroupName`
+
+Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-privateendpointsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-privateendpointsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-privateendpointsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-privateendpointsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-privateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `privateEndpoints.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `privateEndpoints.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `privateEndpoints.service`
+
+The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.tags`
+
+Tags to be applied on all resources/Resource Groups in this deployment.
+
+- Required: No
+- Type: object
 
 ### Parameter: `roleAssignments`
 
@@ -1514,7 +2385,6 @@ Tenant id of the server.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `version`
 
@@ -1544,6 +2414,14 @@ PostgreSQL Server version.
 | `name` | string | The name of the deployed PostgreSQL Flexible server. |
 | `resourceGroupName` | string | The resource group of the deployed PostgreSQL Flexible server. |
 | `resourceId` | string | The resource ID of the deployed PostgreSQL Flexible server. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/res/network/private-endpoint:0.8.0` | Remote reference |
 
 ## Data Collection
 
