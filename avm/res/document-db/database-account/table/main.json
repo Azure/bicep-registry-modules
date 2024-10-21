@@ -1,0 +1,96 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.30.23.60470",
+      "templateHash": "15712676324433329983"
+    },
+    "name": "Azure Cosmos DB account tables",
+    "description": "This module deploys a table within an Azure Cosmos DB Account.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the table."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags for the table."
+      }
+    },
+    "databaseAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Azure Cosmos DB account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "maxThroughput": {
+      "type": "int",
+      "defaultValue": 4000,
+      "metadata": {
+        "description": "Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored."
+      }
+    },
+    "throughput": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`."
+      }
+    }
+  },
+  "resources": {
+    "databaseAccount": {
+      "existing": true,
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2023-04-15",
+      "name": "[parameters('databaseAccountName')]"
+    },
+    "table": {
+      "type": "Microsoft.DocumentDB/databaseAccounts/tables",
+      "apiVersion": "2023-04-15",
+      "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(equals(parameters('throughput'), null()), createObject('maxThroughput', parameters('maxThroughput')), null()), 'throughput', parameters('throughput')))]",
+        "resource": {
+          "id": "[parameters('name')]"
+        }
+      },
+      "dependsOn": [
+        "databaseAccount"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the table."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the table."
+      },
+      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/tables', parameters('databaseAccountName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the table was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

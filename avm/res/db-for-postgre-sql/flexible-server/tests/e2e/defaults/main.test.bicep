@@ -50,7 +50,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       administrators: [
         {
           objectId: nestedDependencies.outputs.managedIdentityClientId
@@ -60,8 +59,6 @@ module testDeployment '../../../main.bicep' = [
       ]
       skuName: 'Standard_D2s_v3'
       tier: 'GeneralPurpose'
-      geoRedundantBackup: 'Enabled'
-      highAvailability: 'ZoneRedundant'
     }
   }
 ]
