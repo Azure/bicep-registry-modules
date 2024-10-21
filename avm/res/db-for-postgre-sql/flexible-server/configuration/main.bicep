@@ -9,10 +9,10 @@ param name string
 param flexibleServerName string
 
 @description('Optional. Source of the configuration.')
-param source string = ''
+param source string?
 
 @description('Optional. Value of the configuration.')
-param value string = ''
+param value string?
 
 resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' existing = {
   name: flexibleServerName
