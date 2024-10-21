@@ -1,6 +1,5 @@
 metadata name = 'DBforPostgreSQL Flexible Server Firewall Rules'
 metadata description = 'This module deploys a DBforPostgreSQL Flexible Server Firewall Rule.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the PostgreSQL flexible server Firewall Rule.')
 param name string

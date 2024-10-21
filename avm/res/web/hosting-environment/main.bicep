@@ -1,6 +1,5 @@
 metadata name = 'App Service Environments'
 metadata description = 'This module deploys an App Service Environment.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the resource to create.')
 param name string

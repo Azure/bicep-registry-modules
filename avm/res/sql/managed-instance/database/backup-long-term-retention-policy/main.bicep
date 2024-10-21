@@ -1,6 +1,5 @@
 metadata name = 'SQL Managed Instance Database Backup Long-Term Retention Policies'
 metadata description = 'This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Long Term Retention backup policy. For example "default".')
 param name string

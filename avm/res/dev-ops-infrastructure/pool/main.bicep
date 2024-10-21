@@ -1,6 +1,5 @@
 metadata name = 'Managed DevOps Pool'
 metadata description = 'This module deploys the Managed DevOps Pool resource.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the pool. It needs to be globally unique.')
 param name string

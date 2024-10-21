@@ -1,6 +1,5 @@
 metadata name = 'SignalR Service SignalR'
 metadata description = 'This module deploys a SignalR Service SignalR.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. The location for the resource.')
 param location string = resourceGroup().location

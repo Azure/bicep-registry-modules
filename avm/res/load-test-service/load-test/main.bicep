@@ -1,6 +1,5 @@
 metadata name = 'Load Testing Service'
 metadata description = 'This module deploys a Load test.'
-metadata owner = 'Azure/module-maintainers'
 
 // ================ //
 // Parameters       //

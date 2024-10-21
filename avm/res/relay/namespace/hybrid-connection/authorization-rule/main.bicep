@@ -1,6 +1,5 @@
 metadata name = 'Hybrid Connection Authorization Rules'
 metadata description = 'This module deploys a Hybrid Connection Authorization Rule.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the authorization rule.')
 param name string

@@ -1,6 +1,5 @@
 metadata name = 'Event Hub Namespace Disaster Recovery Configs'
 metadata description = 'This module deploys an Event Hub Namespace Disaster Recovery Config.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment.')
 param namespaceName string

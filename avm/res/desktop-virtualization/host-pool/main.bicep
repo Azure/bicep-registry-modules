@@ -1,6 +1,5 @@
 metadata name = 'Azure Virtual Desktop Host Pool'
 metadata description = 'This module deploys an Azure Virtual Desktop Host Pool'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Required. Name of the scaling plan.')
 param name string

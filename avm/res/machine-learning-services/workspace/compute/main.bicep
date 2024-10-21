@@ -2,7 +2,6 @@ metadata name = 'Machine Learning Services Workspaces Computes'
 metadata description = '''This module deploys a Machine Learning Services Workspaces Compute.
 
 Attaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`).'''
-metadata owner = 'Azure/module-maintainers'
 
 // ================ //
 // Parameters       //

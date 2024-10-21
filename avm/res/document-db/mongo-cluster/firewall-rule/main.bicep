@@ -1,6 +1,5 @@
 metadata name = 'Azure Cosmos DB MongoDB vCore Cluster Config FireWall Rules'
 metadata description = 'This module config firewall rules for the Azure Cosmos DB MongoDB vCore cluster.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Azure Cosmos DB MongoDB vCore cluster. Required if the template is used in a standalone deployment.')
 param mongoClusterName string

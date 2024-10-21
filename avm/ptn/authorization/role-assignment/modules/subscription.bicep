@@ -1,6 +1,5 @@
 metadata name = 'Role Assignments (Subscription scope)'
 metadata description = 'This module deploys a Role Assignment at a Subscription scope.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'subscription'
 

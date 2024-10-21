@@ -1,6 +1,5 @@
 metadata name = 'Hosting Environment Network Configuration'
 metadata description = 'This module deploys a Hosting Environment Network Configuration.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Hosting Environment. Required if the template is used in a standalone deployment.')
 param hostingEnvironmentName string

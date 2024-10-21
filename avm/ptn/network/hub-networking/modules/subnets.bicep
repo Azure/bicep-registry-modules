@@ -1,6 +1,5 @@
 metadata name = 'Virtual Network Subnets'
 metadata description = 'This module deploys a Virtual Network Subnet.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The Name of the subnet resource.')
 param name string
