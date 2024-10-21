@@ -1975,12 +1975,6 @@ The audit settings configuration.
 - Type: object
 - Default: `{}`
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`state`](#parameter-auditsettingsstate) | string | Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -1993,21 +1987,8 @@ The audit settings configuration.
 | [`name`](#parameter-auditsettingsname) | string | Specifies the name of the audit settings. |
 | [`queueDelayMs`](#parameter-auditsettingsqueuedelayms) | int | Specifies the amount of time in milliseconds that can elapse before audit actions are forced to be processed. |
 | [`retentionDays`](#parameter-auditsettingsretentiondays) | int | Specifies the number of days to keep in the audit logs in the storage account. |
+| [`state`](#parameter-auditsettingsstate) | string | Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required. |
 | [`storageAccountResourceId`](#parameter-auditsettingsstorageaccountresourceid) | string | Specifies the identifier key of the auditing storage account. |
-
-### Parameter: `auditSettings.state`
-
-Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
 
 ### Parameter: `auditSettings.auditActionsAndGroups`
 
@@ -2064,6 +2045,20 @@ Specifies the number of days to keep in the audit logs in the storage account.
 
 - Required: No
 - Type: int
+
+### Parameter: `auditSettings.state`
+
+Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `auditSettings.storageAccountResourceId`
 

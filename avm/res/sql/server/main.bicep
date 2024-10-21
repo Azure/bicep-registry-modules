@@ -286,6 +286,7 @@ module server_databases 'database/main.bicep' = [
       requestedBackupStorageRedundancy: database.?requestedBackupStorageRedundancy
       restorableDroppedDatabaseResourceId: database.?restorableDroppedDatabaseResourceId
       restorePointInTime: database.?restorePointInTime
+      sampleName: database.?sampleName
       secondaryType: database.?secondaryType
       sourceDatabaseDeletionDate: database.?sourceDatabaseDeletionDate
       sourceDatabaseResourceId: database.?sourceDatabaseResourceId
@@ -293,10 +294,9 @@ module server_databases 'database/main.bicep' = [
       useFreeLimit: database.?useFreeLimit
       zoneRedundant: database.?zoneRedundant
 
-      // diagnosticSettings: database.?diagnosticSettings
-      // sampleName: database.?sampleName ?? ''
-      // backupShortTermRetentionPolicy: database.?backupShortTermRetentionPolicy ?? {}
-      // backupLongTermRetentionPolicy: database.?backupLongTermRetentionPolicy ?? {}
+      diagnosticSettings: database.?diagnosticSettings
+      backupShortTermRetentionPolicy: database.?backupShortTermRetentionPolicy
+      backupLongTermRetentionPolicy: database.?backupLongTermRetentionPolicy
     }
     dependsOn: [
       server_elasticPools // Enables us to add databases to existing elastic pools
@@ -703,7 +703,7 @@ type auditSettingsType = {
   @description('Optional. Specifies the number of days to keep in the audit logs in the storage account.')
   retentionDays: int?
 
-  @description('Required. Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required.')
+  @description('Optional. Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required.')
   state: 'Enabled' | 'Disabled'?
 
   @description('Optional. Specifies the identifier key of the auditing storage account.')
