@@ -60,7 +60,7 @@ param searchConnectionName string
 @description('Optional. The User Assigned Identity resource name.')
 param userAssignedtName string
 
-@description('Optional. The number of replicas in the search service. If specified, it must be a value between 1 and 12 inclusive for standard SKUs or between 1 and 3 inclusive for basic SKU.')
+@description('Optional. The number of replicas in the search service. If specified, it must be a value between 1 and 12 inclusive for standard SKUs, or between 1 and 3 inclusive for basic SKU.')
 @minValue(1)
 @maxValue(12)
 param replicaCount int = 1
@@ -123,7 +123,7 @@ module hub './modules/hub.bicep' = {
   }
 }
 
-module project 'br/public:avm/ptn/azd/ml-project:0.1.0' = {
+module project 'br/public:avm/ptn/azd/ml-project:0.1.1' = {
   name: '${uniqueString(deployment().name, location)}-project'
   params: {
     name: projectName

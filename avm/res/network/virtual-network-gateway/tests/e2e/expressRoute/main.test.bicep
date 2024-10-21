@@ -61,7 +61,7 @@ module testDeployment '../../../main.bicep' = [
       domainNameLabel: [
         '${namePrefix}-dm-${serviceShort}'
       ]
-      gatewayPipName: '${namePrefix}-pip-${serviceShort}'
+      firstPipName: '${namePrefix}-pip-${serviceShort}'
       publicIpZones: [
         1
         2

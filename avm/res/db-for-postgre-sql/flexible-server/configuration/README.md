@@ -55,7 +55,6 @@ Source of the configuration.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `value`
 
@@ -63,7 +62,6 @@ Value of the configuration.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 
