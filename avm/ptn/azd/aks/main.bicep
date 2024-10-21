@@ -132,7 +132,7 @@ param agentPoolConfig object = {}
 param enableKeyvaultSecretsProvider bool = true
 
 @description('Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled.')
-param disableLocalAccounts bool = false
+param disableLocalAccounts bool = true
 
 @allowed([
   'NodeImage'
@@ -161,6 +161,18 @@ param systemPoolType string = 'Standard'
 ])
 @description('Optional. The User Pool Preset sizing.')
 param agentPoolType string = ''
+
+@description('Optional. Property that controls how data actions are authorized. When true, the key vault will use Role Based Access Control (RBAC) for authorization of data actions, and the access policies specified in vault properties will be ignored. When false, the key vault will use the access policies specified in vault properties, and any policy stored on Azure Resource Manager will be ignored. Note that management actions are always authorized with RBAC.')
+param enableRbacAuthorization bool = false
+
+@description('Optional. Provide \'true\' to enable Key Vault\'s purge protection feature.')
+param enablePurgeProtection bool = false
+
+@description('Optional. Specifies if the vault is enabled for deployment by script or compute.')
+param enableVaultForDeployment bool = false
+
+@description('Optional. Specifies if the vault is enabled for a template deployment.')
+param enableVaultForTemplateDeployment bool = false
 
 var systemPoolSpec = !empty(systemPoolConfig) ? systemPoolConfig : nodePoolPresets[systemPoolType]
 
@@ -369,10 +381,10 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.9.0' = {
   params: {
     name: keyVaultName
     enableTelemetry: enableTelemetry
-    enableRbacAuthorization: false
-    enableVaultForDeployment: false
-    enableVaultForTemplateDeployment: false
-    enablePurgeProtection: false
+    enableRbacAuthorization: enableRbacAuthorization
+    enableVaultForDeployment: enableVaultForDeployment
+    enableVaultForTemplateDeployment: enableVaultForTemplateDeployment
+    enablePurgeProtection: enablePurgeProtection
     accessPolicies: [
       {
         objectId: managedCluster.outputs.kubeletIdentityObjectId

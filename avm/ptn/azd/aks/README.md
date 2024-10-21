@@ -289,7 +289,11 @@ param webApplicationRoutingEnabled = true
 | [`dnsPrefix`](#parameter-dnsprefix) | string | Specifies the DNS prefix specified when creating the managed cluster. |
 | [`dnsServiceIP`](#parameter-dnsserviceip) | string | Specifies the IP address assigned to the Kubernetes DNS service. It must be within the Kubernetes service address range specified in serviceCidr. |
 | [`enableKeyvaultSecretsProvider`](#parameter-enablekeyvaultsecretsprovider) | bool | Specifies whether the KeyvaultSecretsProvider add-on is enabled or not. |
+| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Provide 'true' to enable Key Vault's purge protection feature. |
+| [`enableRbacAuthorization`](#parameter-enablerbacauthorization) | bool | Property that controls how data actions are authorized. When true, the key vault will use Role Based Access Control (RBAC) for authorization of data actions, and the access policies specified in vault properties will be ignored. When false, the key vault will use the access policies specified in vault properties, and any policy stored on Azure Resource Manager will be ignored. Note that management actions are always authorized with RBAC. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`enableVaultForDeployment`](#parameter-enablevaultfordeployment) | bool | Specifies if the vault is enabled for deployment by script or compute. |
+| [`enableVaultForTemplateDeployment`](#parameter-enablevaultfortemplatedeployment) | bool | Specifies if the vault is enabled for a template deployment. |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | Kubernetes Version. |
 | [`loadBalancerSku`](#parameter-loadbalancersku) | string | Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools. |
 | [`location`](#parameter-location) | string | Specifies the location of AKS cluster. It picks up Resource Group's location by default. |
@@ -431,7 +435,7 @@ If set to true, getting static credentials will be disabled for this cluster. Th
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `dnsPrefix`
 
@@ -456,6 +460,22 @@ Specifies whether the KeyvaultSecretsProvider add-on is enabled or not.
 - Type: bool
 - Default: `True`
 
+### Parameter: `enablePurgeProtection`
+
+Provide 'true' to enable Key Vault's purge protection feature.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableRbacAuthorization`
+
+Property that controls how data actions are authorized. When true, the key vault will use Role Based Access Control (RBAC) for authorization of data actions, and the access policies specified in vault properties will be ignored. When false, the key vault will use the access policies specified in vault properties, and any policy stored on Azure Resource Manager will be ignored. Note that management actions are always authorized with RBAC.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -463,6 +483,22 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `enableVaultForDeployment`
+
+Specifies if the vault is enabled for deployment by script or compute.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableVaultForTemplateDeployment`
+
+Specifies if the vault is enabled for a template deployment.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `kubernetesVersion`
 
