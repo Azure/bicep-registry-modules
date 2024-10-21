@@ -1,6 +1,5 @@
 metadata name = 'avm/ptn/azd/container-apps'
 metadata description = 'Creates an Azure Container Registry and an Azure Container Apps environment.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location

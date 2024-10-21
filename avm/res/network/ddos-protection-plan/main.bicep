@@ -1,6 +1,5 @@
 metadata name = 'DDoS Protection Plans'
 metadata description = 'This module deploys a DDoS Protection Plan.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the DDoS protection plan to assign the VNET to.')
 @minLength(1)

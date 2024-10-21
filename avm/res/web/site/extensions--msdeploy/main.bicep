@@ -1,6 +1,5 @@
 metadata name = 'Site Deployment Extension '
 metadata description = 'This module deploys a Site extension for MSDeploy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the parent site resource.')
 param appName string

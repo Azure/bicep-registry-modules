@@ -1,6 +1,5 @@
 metadata name = 'Private DNS Zones'
 metadata description = 'This module deploys a Private DNS zone.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Private DNS zone name.')
 param name string

@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles Custom Domains'
 metadata description = 'This module deploys a CDN Profile Custom Domains.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the custom domain.')
 param name string
@@ -40,10 +39,9 @@ param secretName string = ''
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
 
-  resource secrect 'secrets@2023-05-01' existing =
-    if (!empty(secretName)) {
-      name: secretName
-    }
+  resource secrect 'secrets@2023-05-01' existing = if (!empty(secretName)) {
+    name: secretName
+  }
 }
 
 resource customDomain 'Microsoft.Cdn/profiles/customDomains@2023-05-01' = {

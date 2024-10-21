@@ -1,6 +1,5 @@
 metadata name = 'Machine Learning Services Workspaces'
 metadata description = 'This module deploys a Machine Learning Services Workspace.'
-metadata owner = 'Azure/module-maintainers'
 
 // ================ //
 // Parameters       //

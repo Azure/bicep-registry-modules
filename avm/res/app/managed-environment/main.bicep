@@ -1,6 +1,5 @@
 metadata name = 'App ManagedEnvironments'
 metadata description = 'This module deploys an App Managed Environment (also known as a Container App Environment).'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Container Apps Managed Environment.')
 param name string

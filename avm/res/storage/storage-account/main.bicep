@@ -1,6 +1,5 @@
 metadata name = 'Storage Accounts'
 metadata description = 'This module deploys a Storage Account.'
-metadata owner = 'Azure/module-maintainers'
 
 @maxLength(24)
 @description('Required. Name of the Storage Account. Must be lower-case.')

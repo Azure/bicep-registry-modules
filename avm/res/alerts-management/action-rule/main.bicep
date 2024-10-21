@@ -1,6 +1,5 @@
 metadata name = 'Action Rules'
 metadata description = 'This module deploys an Alert Processing Rule.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the alert processing rule.')
 param name string

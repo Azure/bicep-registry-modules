@@ -1,6 +1,5 @@
 metadata name = 'Web/Function Apps'
 metadata description = 'This module deploys a Web or Function App.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the site.')
 param name string
