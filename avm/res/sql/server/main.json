@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "12931751409452972364"
+      "templateHash": "11793309099204894215"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -424,7 +424,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Required. Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required."
+            "description": "Optional. Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required."
           }
         },
         "storageAccountResourceId": {
@@ -1758,6 +1758,9 @@
           "restorePointInTime": {
             "value": "[tryGet(parameters('databases')[copyIndex()], 'restorePointInTime')]"
           },
+          "sampleName": {
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'sampleName')]"
+          },
           "secondaryType": {
             "value": "[tryGet(parameters('databases')[copyIndex()], 'secondaryType')]"
           },
@@ -1775,6 +1778,15 @@
           },
           "zoneRedundant": {
             "value": "[tryGet(parameters('databases')[copyIndex()], 'zoneRedundant')]"
+          },
+          "diagnosticSettings": {
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'diagnosticSettings')]"
+          },
+          "backupShortTermRetentionPolicy": {
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'backupShortTermRetentionPolicy')]"
+          },
+          "backupLongTermRetentionPolicy": {
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'backupLongTermRetentionPolicy')]"
           }
         },
         "template": {
