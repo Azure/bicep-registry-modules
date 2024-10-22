@@ -203,7 +203,7 @@ var defaultFailoverLocation = [
   {
     failoverPriority: 0
     locationName: location
-    isZoneRedundant: false
+    isZoneRedundant: true
   }
 ]
 
@@ -211,7 +211,7 @@ var databaseAccount_locations = [
   for failoverLocation in locations: {
     failoverPriority: failoverLocation.failoverPriority
     locationName: failoverLocation.locationName
-    isZoneRedundant: failoverLocation.?isZoneRedundant ?? false
+    isZoneRedundant: failoverLocation.?isZoneRedundant ?? true
   }
 ]
 
@@ -837,7 +837,7 @@ type failoverLocationsType = {
   @description('Required. The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists.')
   failoverPriority: int
 
-  @description('Optional. Default to false. Flag to indicate whether or not this region is an AvailabilityZone region.')
+  @description('Optional. Default to true. Flag to indicate whether or not this region is an AvailabilityZone region.')
   isZoneRedundant: bool?
 
   @description('Required. The name of the region.')
