@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "16960642970387731391"
+      "templateHash": "2886040651089761865"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -486,7 +486,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Default to false. Flag to indicate whether or not this region is an AvailabilityZone region."
+            "description": "Optional. Default to true. Flag to indicate whether or not this region is an AvailabilityZone region."
           }
         },
         "locationName": {
@@ -1176,7 +1176,7 @@
         "input": {
           "failoverPriority": "[parameters('locations')[copyIndex('databaseAccount_locations')].failoverPriority]",
           "locationName": "[parameters('locations')[copyIndex('databaseAccount_locations')].locationName]",
-          "isZoneRedundant": "[coalesce(tryGet(parameters('locations')[copyIndex('databaseAccount_locations')], 'isZoneRedundant'), false())]"
+          "isZoneRedundant": "[coalesce(tryGet(parameters('locations')[copyIndex('databaseAccount_locations')], 'isZoneRedundant'), true())]"
         }
       },
       {
@@ -1232,7 +1232,7 @@
       {
         "failoverPriority": 0,
         "locationName": "[parameters('location')]",
-        "isZoneRedundant": false
+        "isZoneRedundant": true
       }
     ],
     "kind": "[if(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('gremlinDatabases')))), 'GlobalDocumentDB', if(not(empty(parameters('mongodbDatabases'))), 'MongoDB', 'GlobalDocumentDB'))]",
