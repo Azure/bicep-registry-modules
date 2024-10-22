@@ -1746,12 +1746,12 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     locations: [
       {
         failoverPriority: 0
-        isZoneRedundant: false
+        isZoneRedundant: true
         locationName: '<locationName>'
       }
       {
         failoverPriority: 1
-        isZoneRedundant: false
+        isZoneRedundant: true
         locationName: '<locationName>'
       }
     ]
@@ -1806,12 +1806,12 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": [
         {
           "failoverPriority": 0,
-          "isZoneRedundant": false,
+          "isZoneRedundant": true,
           "locationName": "<locationName>"
         },
         {
           "failoverPriority": 1,
-          "isZoneRedundant": false,
+          "isZoneRedundant": true,
           "locationName": "<locationName>"
         }
       ]
@@ -1850,12 +1850,12 @@ param location = '<location>'
 param locations = [
   {
     failoverPriority: 0
-    isZoneRedundant: false
+    isZoneRedundant: true
     locationName: '<locationName>'
   }
   {
     failoverPriority: 1
-    isZoneRedundant: false
+    isZoneRedundant: true
     locationName: '<locationName>'
   }
 ]
