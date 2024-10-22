@@ -51,27 +51,28 @@ By integrating with Microsoft Entra ID for secure identity management and utiliz
 | `Microsoft.Network/privateDnsZones/SRV` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV) |
 | `Microsoft.Network/privateDnsZones/TXT` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT) |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/virtualNetworkLinks) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 | `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.OperationalInsights/workspaces` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces) |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems) |
 | `Microsoft.Storage/storageAccounts` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts) |
 | `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
-| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/fileServices) |
+| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/fileServices) |
 | `Microsoft.Storage/storageAccounts/fileServices/shares` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/fileServices/shares) |
-| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/localUsers) |
+| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/localUsers) |
 | `Microsoft.Storage/storageAccounts/managementPolicies` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/managementPolicies) |
-| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices) |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/queueServices/queues) |
-| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices) |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/tableServices/tables) |
+| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices) |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices/queues) |
+| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices) |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices/tables) |
 
 ## Usage examples
 
@@ -116,7 +117,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -135,6 +136,25 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-platform/baseline:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param virtualMachineConfiguration = {
+  adminPassword: '<adminPassword>'
+  adminUsername: 'localAdminUser'
 }
 ```
 
@@ -268,7 +288,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -409,6 +429,123 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-platform/baseline:<version>'
+
+// Required parameters
+param name = 'aipbmax'
+// Non-required parameters
+param applicationInsightsConfiguration = {
+  name: 'appi-aipbmax'
+}
+param bastionConfiguration = {
+  disableCopyPaste: true
+  enabled: true
+  enableFileCopy: true
+  enableIpConnect: true
+  enableKerberos: true
+  enableShareableLink: true
+  name: 'bas-aipbmax'
+  networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+  scaleUnits: 3
+  sku: 'Standard'
+  subnetAddressPrefix: '10.1.1.0/26'
+}
+param containerRegistryConfiguration = {
+  name: 'craipbmax'
+  trustPolicyStatus: 'disabled'
+}
+param keyVaultConfiguration = {
+  enablePurgeProtection: false
+  name: '<name>'
+}
+param logAnalyticsConfiguration = {
+  name: 'log-aipbmax'
+}
+param managedIdentityName = '<managedIdentityName>'
+param storageAccountConfiguration = {
+  allowSharedKeyAccess: true
+  name: 'staipbmax'
+  sku: 'Standard_GRS'
+}
+param virtualMachineConfiguration = {
+  adminPassword: '<adminPassword>'
+  adminUsername: 'localAdminUser'
+  enableAadLoginExtension: true
+  enableAzureMonitorAgent: true
+  enabled: true
+  encryptionAtHost: false
+  imageReference: {
+    offer: 'dsvm-win-2022'
+    publisher: 'microsoft-dsvm'
+    sku: 'winserver-2022'
+    version: 'latest'
+  }
+  maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
+  name: '<name>'
+  nicConfigurationConfiguration: {
+    ipConfigName: 'ipcfg-aipbmax'
+    name: 'nic-aipbmax'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+    privateIPAllocationMethod: 'Dynamic'
+  }
+  osDisk: {
+    caching: 'ReadOnly'
+    createOption: 'FromImage'
+    deleteOption: 'Delete'
+    diskSizeGB: 256
+    managedDisk: {
+      storageAccountType: 'Standard_LRS'
+    }
+    name: 'disk-aipbmax'
+  }
+  patchMode: 'AutomaticByPlatform'
+  size: 'Standard_DS1_v2'
+  zone: 0
+}
+param virtualNetworkConfiguration = {
+  addressPrefix: '10.1.0.0/16'
+  enabled: true
+  name: 'vnet-aipbmax'
+  subnet: {
+    addressPrefix: '10.1.0.0/24'
+    name: 'snet-aipbmax'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+  }
+}
+param workspaceConfiguration = {
+  computes: [
+    {
+      computeType: 'ComputeInstance'
+      description: 'Default'
+      location: '<location>'
+      name: '<name>'
+      properties: {
+        vmSize: 'STANDARD_DS11_V2'
+      }
+      sku: 'Standard'
+    }
+  ]
+  name: 'hub-aipbmax'
+  networkIsolationMode: 'AllowOnlyApprovedOutbound'
+  networkOutboundRules: {
+    rule1: {
+      category: 'UserDefined'
+      destination: 'pypi.org'
+      type: 'FQDN'
+    }
+  }
+  projectName: 'project-aipbmax'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _Without virtual machine_
 
 This instance deploys the module with a virtual network, but no virtual machine or Azure Bastion host.
@@ -440,7 +577,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -463,6 +600,27 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-platform/baseline:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param bastionConfiguration = {
+  enabled: false
+}
+param virtualMachineConfiguration = {
+  enabled: false
 }
 ```
 
@@ -497,7 +655,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -515,6 +673,24 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-platform/baseline:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param virtualNetworkConfiguration = {
+  enabled: false
 }
 ```
 
@@ -573,7 +749,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -619,6 +795,48 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
           }
         }
       }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-platform/baseline:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param managedIdentityName = '<managedIdentityName>'
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+param virtualMachineConfiguration = {
+  adminPassword: '<adminPassword>'
+  adminUsername: 'localAdminUser'
+  enableAadLoginExtension: true
+  enableAzureMonitorAgent: true
+  maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
+  patchMode: 'AutomaticByPlatform'
+  zone: 1
+}
+param workspaceConfiguration = {
+  networkIsolationMode: 'AllowOnlyApprovedOutbound'
+  networkOutboundRules: {
+    rule: {
+      category: 'UserDefined'
+      destination: {
+        serviceResourceId: '<serviceResourceId>'
+        subresourceTarget: 'blob'
+      }
+      type: 'PrivateEndpoint'
     }
   }
 }
@@ -1150,6 +1368,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/bastion-host:0.2.2` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.3.1` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.3.1` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.4.0` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.11.0` | Remote reference |
 
 ## Data Collection

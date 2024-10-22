@@ -94,7 +94,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -150,6 +150,48 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-registry/registry:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param acrAdminUserEnabled = false
+param acrSku = 'Standard'
+param cacheRules = [
+  {
+    credentialSetResourceId: '<credentialSetResourceId>'
+    name: 'customRule'
+    sourceRepository: 'docker.io/library/hello-world'
+    targetRepository: 'cached-docker-hub/hello-world'
+  }
+]
+param credentialSets = [
+  {
+    authCredentials: [
+      {
+        name: 'Credential1'
+        passwordSecretIdentifier: '<passwordSecretIdentifier>'
+        usernameSecretIdentifier: '<usernameSecretIdentifier>'
+      }
+    ]
+    loginServer: 'docker.io'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    name: 'default'
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -177,7 +219,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -197,6 +239,23 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-registry/registry:<version>'
+
+// Required parameters
+param name = 'crrmin001'
+// Non-required parameters
+param acrSku = 'Standard'
+param location = '<location>'
 ```
 
 </details>
@@ -240,7 +299,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -277,6 +336,34 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-registry/registry:<version>'
+
+// Required parameters
+param name = 'crrencr001'
+// Non-required parameters
+param acrSku = 'Premium'
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param publicNetworkAccess = 'Disabled'
 ```
 
 </details>
@@ -409,7 +496,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -566,6 +653,123 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-registry/registry:<version>'
+
+// Required parameters
+param name = 'crrmax001'
+// Non-required parameters
+param acrAdminUserEnabled = false
+param acrSku = 'Premium'
+param azureADAuthenticationAsArmPolicyStatus = 'enabled'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param exportPolicyStatus = 'enabled'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkRuleSetIpRules = [
+  {
+    action: 'Allow'
+    value: '40.74.28.0/23'
+  }
+]
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param quarantinePolicyStatus = 'enabled'
+param replications = [
+  {
+    location: '<location>'
+    name: '<name>'
+  }
+]
+param roleAssignments = [
+  {
+    name: '60395919-cfd3-47bf-8349-775ddebb255e'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param softDeletePolicyDays = 7
+param softDeletePolicyStatus = 'disabled'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param trustPolicyStatus = 'enabled'
+param webhooks = [
+  {
+    name: 'acrx001webhook'
+    serviceUri: 'https://www.contoso.com/webhook'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 5: _Using `scopeMaps` in parameter set_
 
 This instance deploys the module with the scopeMaps feature.
@@ -602,7 +806,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -633,6 +837,32 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-registry/registry:<version>'
+
+// Required parameters
+param name = 'crrs001'
+// Non-required parameters
+param acrSku = 'Standard'
+param location = '<location>'
+param scopeMaps = [
+  {
+    actions: [
+      'repositories/*/content/read'
+    ]
+    description: 'This is a test for scopeMaps feature.'
+    name: 'testscopemap'
+  }
+]
 ```
 
 </details>
@@ -703,7 +933,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -788,6 +1018,61 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-registry/registry:<version>'
+
+// Required parameters
+param name = 'crrwaf001'
+// Non-required parameters
+param acrAdminUserEnabled = false
+param acrSku = 'Premium'
+param azureADAuthenticationAsArmPolicyStatus = 'enabled'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param exportPolicyStatus = 'enabled'
+param location = '<location>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param quarantinePolicyStatus = 'enabled'
+param replications = [
+  {
+    location: '<location>'
+    name: '<name>'
+  }
+]
+param softDeletePolicyDays = 7
+param softDeletePolicyStatus = 'disabled'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param trustPolicyStatus = 'enabled'
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -853,7 +1138,7 @@ Tier of your Azure container registry.
 
 - Required: No
 - Type: string
-- Default: `'Basic'`
+- Default: `'Premium'`
 - Allowed:
   ```Bicep
   [
@@ -1909,7 +2194,7 @@ Whether or not zone redundancy is enabled for this container registry.
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
+- Default: `'Enabled'`
 - Allowed:
   ```Bicep
   [

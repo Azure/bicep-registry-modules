@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "8148563999971279398"
+      "version": "0.30.23.60470",
+      "templateHash": "13657670923843039959"
     },
     "name": "Front Door Web Application Firewall (WAF) Policies",
     "description": "This module deploys a Front Door Web Application Firewall (WAF) Policy.",
@@ -110,6 +110,148 @@
         }
       },
       "nullable": true
+    },
+    "managedRulesType": {
+      "type": "object",
+      "properties": {
+        "managedRuleSets": {
+          "$ref": "#/definitions/managedRuleSetsType",
+          "metadata": {
+            "description": "Optional. List of rule sets."
+          }
+        }
+      }
+    },
+    "managedRuleSetsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ruleSetType": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Defines the rule set type to use."
+            }
+          },
+          "ruleSetVersion": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Defines the version of the rule set to use."
+            }
+          },
+          "ruleGroupOverrides": {
+            "type": "array",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Defines the rule group overrides to apply to the rule set."
+            }
+          },
+          "exclusions": {
+            "type": "array",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Describes the exclusions that are applied to all rules in the set."
+            }
+          },
+          "ruleSetAction": {
+            "type": "string",
+            "allowedValues": [
+              "Block",
+              "Log",
+              "Redirect"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Defines the rule set action."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "customRulesType": {
+      "type": "object",
+      "properties": {
+        "rules": {
+          "$ref": "#/definitions/customRulesRuleType",
+          "metadata": {
+            "description": "Optional. List of rules."
+          }
+        }
+      }
+    },
+    "customRulesRuleType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "allowedValues": [
+              "Allow",
+              "Block",
+              "Log",
+              "Redirect"
+            ],
+            "metadata": {
+              "description": "Required. Describes what action to be applied when rule matches."
+            }
+          },
+          "enabledState": {
+            "type": "string",
+            "allowedValues": [
+              "Disabled",
+              "Enabled"
+            ],
+            "metadata": {
+              "description": "Required. Describes if the custom rule is in enabled or disabled state."
+            }
+          },
+          "matchConditions": {
+            "type": "array",
+            "metadata": {
+              "description": "Required. List of match conditions. See https://learn.microsoft.com/en-us/azure/templates/microsoft.network/frontdoorwebapplicationfirewallpolicies#matchcondition for details."
+            }
+          },
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Describes the name of the rule."
+            }
+          },
+          "priority": {
+            "type": "int",
+            "metadata": {
+              "description": "Required. Describes priority of the rule. Rules with a lower value will be evaluated before rules with a higher value."
+            }
+          },
+          "rateLimitDurationInMinutes": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Time window for resetting the rate limit count. Default is 1 minute."
+            }
+          },
+          "rateLimitThreshold": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Number of allowed requests per client within the time window."
+            }
+          },
+          "ruleType": {
+            "type": "string",
+            "allowedValues": [
+              "MatchRule",
+              "RateLimitRule"
+            ],
+            "metadata": {
+              "description": "Required. Describes type of rule."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -154,7 +296,7 @@
       }
     },
     "managedRules": {
-      "type": "object",
+      "$ref": "#/definitions/managedRulesType",
       "defaultValue": {
         "managedRuleSets": [
           {
@@ -177,7 +319,7 @@
       }
     },
     "customRules": {
-      "type": "object",
+      "$ref": "#/definitions/customRulesType",
       "defaultValue": {
         "rules": [
           {
@@ -265,7 +407,7 @@
     },
     "frontDoorWAFPolicy": {
       "type": "Microsoft.Network/FrontDoorWebApplicationFirewallPolicies",
-      "apiVersion": "2022-05-01",
+      "apiVersion": "2024-02-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -342,7 +484,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('frontDoorWAFPolicy', '2022-05-01', 'full').location]"
+      "value": "[reference('frontDoorWAFPolicy', '2024-02-01', 'full').location]"
     }
   }
 }

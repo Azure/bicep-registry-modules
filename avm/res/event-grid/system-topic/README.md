@@ -60,7 +60,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -83,6 +83,24 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/system-topic:<version>'
+
+// Required parameters
+param name = 'egstmin001'
+param source = '<source>'
+param topicType = 'Microsoft.Storage.StorageAccounts'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -184,7 +202,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -292,6 +310,92 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/system-topic:<version>'
+
+// Required parameters
+param name = 'egstmax001'
+param source = '<source>'
+param topicType = 'Microsoft.Storage.StorageAccounts'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param eventSubscriptions = [
+  {
+    destination: {
+      endpointType: 'StorageQueue'
+      properties: {
+        queueMessageTimeToLiveInSeconds: 86400
+        queueName: '<queueName>'
+        resourceId: '<resourceId>'
+      }
+    }
+    eventDeliverySchema: 'CloudEventSchemaV1_0'
+    expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+    filter: {
+      enableAdvancedFilteringOnArrays: true
+      isSubjectCaseSensitive: false
+    }
+    name: 'egstmax001'
+    retryPolicy: {
+      eventTimeToLive: '120'
+      maxDeliveryAttempts: 10
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param roleAssignments = [
+  {
+    name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -366,7 +470,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -442,6 +546,70 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/system-topic:<version>'
+
+// Required parameters
+param name = 'egstwaf001'
+param source = '<source>'
+param topicType = 'Microsoft.Storage.StorageAccounts'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param eventSubscriptions = [
+  {
+    destination: {
+      endpointType: 'StorageQueue'
+      properties: {
+        queueMessageTimeToLiveInSeconds: 86400
+        queueName: '<queueName>'
+        resourceId: '<resourceId>'
+      }
+    }
+    eventDeliverySchema: 'CloudEventSchemaV1_0'
+    expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+    filter: {
+      enableAdvancedFilteringOnArrays: true
+      isSubjectCaseSensitive: false
+    }
+    name: 'egstwaf001'
+    retryPolicy: {
+      eventTimeToLive: '120'
+      maxDeliveryAttempts: 10
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 

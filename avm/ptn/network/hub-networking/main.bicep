@@ -43,7 +43,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 }
 
 // Create hub virtual networks
-module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.4.0' = [
+module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.5.0' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): {
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nvn'
     params: {
@@ -166,7 +166,7 @@ module hubBastion 'br/public:avm/res/network/bastion-host:0.4.0' = [
 
 // Create Azure Firewall if enabled
 // AzureFirewallSubnet is required to deploy Azure Firewall service. This subnet must exist in the subnets array if you enable Azure Firewall.
-module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.5.0' = [
+module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.5.1' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableAzureFirewall) {
     name: '${uniqueString(deployment().name, location)}-${hub.key}-naf'
     params: {
@@ -245,22 +245,26 @@ output hubVirtualNetworks object[] = [
 
 @description('Array of hub bastion resources.')
 output hubBastions object[] = [
-  for (hub, index) in items(hubVirtualNetworks ?? {}): {
-    resourceGroupName: hubBastion[index].outputs.resourceGroupName
-    location: hubBastion[index].outputs.location
-    name: hubBastion[index].outputs.name
-    resourceId: hubBastion[index].outputs.resourceId
-  }
+  for (hub, index) in items(hubVirtualNetworks ?? {}): (hub.value.enableBastion)
+    ? {
+        resourceGroupName: hubBastion[index].outputs.resourceGroupName
+        location: hubBastion[index].outputs.location
+        name: hubBastion[index].outputs.name
+        resourceId: hubBastion[index].outputs.resourceId
+      }
+    : {}
 ]
 
 @description('Array of hub Azure Firewall resources.')
 output hubAzureFirewalls object[] = [
-  for (hub, index) in items(hubVirtualNetworks ?? {}): {
-    resourceGroupName: hubAzureFirewall[index].outputs.resourceGroupName
-    location: hubAzureFirewall[index].outputs.location
-    name: hubAzureFirewall[index].outputs.name
-    resourceId: hubAzureFirewall[index].outputs.resourceId
-  }
+  for (hub, index) in items(hubVirtualNetworks ?? {}): (hub.value.enableAzureFirewall)
+    ? {
+        resourceGroupName: hubAzureFirewall[index].outputs.resourceGroupName
+        location: hubAzureFirewall[index].outputs.location
+        name: hubAzureFirewall[index].outputs.name
+        resourceId: hubAzureFirewall[index].outputs.resourceId
+      }
+    : {}
 ]
 
 @description('The subnets of the hub virtual network.')

@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "4256977187793378377"
+      "version": "0.30.23.60470",
+      "templateHash": "17927787726774417819"
     },
     "name": "API Management Service Authorization Servers",
     "description": "This module deploys an API Management Service Authorization Server.",
@@ -16,6 +16,13 @@
       "type": "string",
       "metadata": {
         "description": "Required. Identifier of the authorization server."
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "maxLength": 50,
+      "metadata": {
+        "description": "Required. API Management Service Authorization Servers name. Must be 1 to 50 characters long."
       }
     },
     "apiManagementServiceName": {
@@ -154,7 +161,7 @@
         "bearerTokenSendingMethods": "[parameters('bearerTokenSendingMethods')]",
         "resourceOwnerUsername": "[parameters('resourceOwnerUsername')]",
         "resourceOwnerPassword": "[parameters('resourceOwnerPassword')]",
-        "displayName": "[parameters('name')]",
+        "displayName": "[parameters('displayName')]",
         "clientRegistrationEndpoint": "[parameters('clientRegistrationEndpoint')]",
         "authorizationEndpoint": "[parameters('authorizationEndpoint')]",
         "grantTypes": "[parameters('grantTypes')]",

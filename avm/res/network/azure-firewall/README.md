@@ -18,7 +18,7 @@ This module deploys an Azure Firewall.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/azureFirewalls` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/azureFirewalls) |
+| `Microsoft.Network/azureFirewalls` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/azureFirewalls) |
 | `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 
 ## Usage examples
@@ -37,7 +37,8 @@ The following section provides usage examples for the module, which were used to
 - [Hub-min](#example-6-hub-min)
 - [Using large parameter set](#example-7-using-large-parameter-set)
 - [Public-IP-Prefix](#example-8-public-ip-prefix)
-- [WAF-aligned](#example-9-waf-aligned)
+- [Forced tunneling](#example-9-forced-tunneling)
+- [WAF-aligned](#example-10-waf-aligned)
 
 ### Example 1: _Add-PIP_
 
@@ -83,7 +84,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -131,6 +132,40 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/azure-firewall:<version>'
+
+// Required parameters
+param name = 'nafaddpip001'
+// Non-required parameters
+param additionalPublicIpConfigurations = [
+  {
+    name: 'ipConfig01'
+    publicIPAddressResourceId: '<publicIPAddressResourceId>'
+  }
+]
+param azureSkuTier = 'Basic'
+param location = '<location>'
+param managementIPAddressObject = {
+  publicIPAllocationMethod: 'Static'
+  roleAssignments: [
+    {
+      principalId: '<principalId>'
+      principalType: 'ServicePrincipal'
+      roleDefinitionIdOrName: 'Reader'
+    }
+  ]
+}
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+```
+
+</details>
+<p>
+
 ### Example 2: _Basic SKU_
 
 This instance deploys the module with the Basic SKU.
@@ -161,7 +196,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -190,6 +225,26 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/azure-firewall:<version>'
+
+// Required parameters
+param name = 'nafbasic001'
+// Non-required parameters
+param azureSkuTier = 'Basic'
+param location = '<location>'
+param networkRuleCollections = []
+param threatIntelMode = 'Deny'
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 ```
 
 </details>
@@ -250,7 +305,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -305,6 +360,51 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/azure-firewall:<version>'
+
+// Required parameters
+param name = 'nafcstpip001'
+// Non-required parameters
+param location = '<location>'
+param publicIPAddressObject = {
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      metricCategories: [
+        {
+          category: 'AllMetrics'
+        }
+      ]
+      name: 'customSetting'
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+  name: 'new-pip-nafcstpip'
+  publicIPAllocationMethod: 'Static'
+  publicIPPrefixResourceId: ''
+  roleAssignments: [
+    {
+      principalId: '<principalId>'
+      principalType: 'ServicePrincipal'
+      roleDefinitionIdOrName: 'Reader'
+    }
+  ]
+  skuName: 'Standard'
+  skuTier: 'Regional'
+}
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+```
+
+</details>
+<p>
+
 ### Example 4: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -332,7 +432,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -352,6 +452,23 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/azure-firewall:<version>'
+
+// Required parameters
+param name = 'nafmin001'
+// Non-required parameters
+param location = '<location>'
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 ```
 
 </details>
@@ -390,7 +507,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -420,6 +537,29 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/azure-firewall:<version>'
+
+// Required parameters
+param name = 'nafhubcom001'
+// Non-required parameters
+param firewallPolicyId = '<firewallPolicyId>'
+param hubIPAddresses = {
+  publicIPs: {
+    count: 1
+  }
+}
+param location = '<location>'
+param virtualHubId = '<virtualHubId>'
 ```
 
 </details>
@@ -457,7 +597,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -484,6 +624,28 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/azure-firewall:<version>'
+
+// Required parameters
+param name = 'nafhubmin001'
+// Non-required parameters
+param hubIPAddresses = {
+  publicIPs: {
+    count: 1
+  }
+}
+param location = '<location>'
+param virtualHubId = '<virtualHubId>'
 ```
 
 </details>
@@ -661,7 +823,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -847,6 +1009,168 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/azure-firewall:<version>'
+
+// Required parameters
+param name = 'nafmax001'
+// Non-required parameters
+param applicationRuleCollections = [
+  {
+    name: 'allow-app-rules'
+    properties: {
+      action: {
+        type: 'Allow'
+      }
+      priority: 100
+      rules: [
+        {
+          fqdnTags: [
+            'AppServiceEnvironment'
+            'WindowsUpdate'
+          ]
+          name: 'allow-ase-tags'
+          protocols: [
+            {
+              port: 80
+              protocolType: 'Http'
+            }
+            {
+              port: 443
+              protocolType: 'Https'
+            }
+          ]
+          sourceAddresses: [
+            '*'
+          ]
+        }
+        {
+          name: 'allow-ase-management'
+          protocols: [
+            {
+              port: 80
+              protocolType: 'Http'
+            }
+            {
+              port: 443
+              protocolType: 'Https'
+            }
+          ]
+          sourceAddresses: [
+            '*'
+          ]
+          targetFqdns: [
+            'bing.com'
+          ]
+        }
+      ]
+    }
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param networkRuleCollections = [
+  {
+    name: 'allow-network-rules'
+    properties: {
+      action: {
+        type: 'Allow'
+      }
+      priority: 100
+      rules: [
+        {
+          destinationAddresses: [
+            '*'
+          ]
+          destinationPorts: [
+            '12000'
+            '123'
+          ]
+          name: 'allow-ntp'
+          protocols: [
+            'Any'
+          ]
+          sourceAddresses: [
+            '*'
+          ]
+        }
+        {
+          description: 'allow azure devops'
+          destinationAddresses: [
+            'AzureDevOps'
+          ]
+          destinationPorts: [
+            '443'
+          ]
+          name: 'allow-azure-devops'
+          protocols: [
+            'Any'
+          ]
+          sourceAddresses: [
+            '*'
+          ]
+        }
+      ]
+    }
+  }
+]
+param publicIPResourceID = '<publicIPResourceID>'
+param roleAssignments = [
+  {
+    name: '3a8da184-d6d8-4bea-b992-e27cc053ef21'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+param zones = [
+  '1'
+  '2'
+  '3'
+]
+```
+
+</details>
+<p>
+
 ### Example 8: _Public-IP-Prefix_
 
 This instance deploys the module and will use a public IP prefix.
@@ -890,7 +1214,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -939,7 +1263,150 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 9: _WAF-aligned_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/azure-firewall:<version>'
+
+// Required parameters
+param name = 'nafpip001'
+// Non-required parameters
+param azureSkuTier = 'Basic'
+param location = '<location>'
+param managementIPAddressObject = {
+  managementIPAllocationMethod: 'Static'
+  managementIPPrefixResourceId: '<managementIPPrefixResourceId>'
+  name: 'managementIP01'
+  skuName: 'Standard'
+  skuTier: 'Regional'
+}
+param publicIPAddressObject = {
+  name: 'publicIP01'
+  publicIPAllocationMethod: 'Static'
+  publicIPPrefixResourceId: '<publicIPPrefixResourceId>'
+  skuName: 'Standard'
+  skuTier: 'Regional'
+}
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+param zones = []
+```
+
+</details>
+<p>
+
+### Example 9: _Forced tunneling_
+
+This instance deploys the module and sets up forced tunneling.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
+  name: 'azureFirewallDeployment'
+  params: {
+    // Required parameters
+    name: 'naftunn001'
+    // Non-required parameters
+    additionalPublicIpConfigurations: [
+      {
+        name: 'ipConfig01'
+        publicIPAddressResourceId: '<publicIPAddressResourceId>'
+      }
+    ]
+    azureSkuTier: 'Standard'
+    enableForcedTunneling: true
+    location: '<location>'
+    managementIPAddressObject: {
+      publicIPAllocationMethod: 'Static'
+    }
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "naftunn001"
+    },
+    // Non-required parameters
+    "additionalPublicIpConfigurations": {
+      "value": [
+        {
+          "name": "ipConfig01",
+          "publicIPAddressResourceId": "<publicIPAddressResourceId>"
+        }
+      ]
+    },
+    "azureSkuTier": {
+      "value": "Standard"
+    },
+    "enableForcedTunneling": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managementIPAddressObject": {
+      "value": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/azure-firewall:<version>'
+
+// Required parameters
+param name = 'naftunn001'
+// Non-required parameters
+param additionalPublicIpConfigurations = [
+  {
+    name: 'ipConfig01'
+    publicIPAddressResourceId: '<publicIPAddressResourceId>'
+  }
+]
+param azureSkuTier = 'Standard'
+param enableForcedTunneling = true
+param location = '<location>'
+param managementIPAddressObject = {
+  publicIPAllocationMethod: 'Static'
+}
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+```
+
+</details>
+<p>
+
+### Example 10: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1072,7 +1539,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1215,6 +1682,129 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/azure-firewall:<version>'
+
+// Required parameters
+param name = 'nafwaf001'
+// Non-required parameters
+param applicationRuleCollections = [
+  {
+    name: 'allow-app-rules'
+    properties: {
+      action: {
+        type: 'Allow'
+      }
+      priority: 100
+      rules: [
+        {
+          fqdnTags: [
+            'AppServiceEnvironment'
+            'WindowsUpdate'
+          ]
+          name: 'allow-ase-tags'
+          protocols: [
+            {
+              port: 80
+              protocolType: 'Http'
+            }
+            {
+              port: 443
+              protocolType: 'Https'
+            }
+          ]
+          sourceAddresses: [
+            '*'
+          ]
+        }
+        {
+          name: 'allow-ase-management'
+          protocols: [
+            {
+              port: 80
+              protocolType: 'Http'
+            }
+            {
+              port: 443
+              protocolType: 'Https'
+            }
+          ]
+          sourceAddresses: [
+            '*'
+          ]
+          targetFqdns: [
+            'bing.com'
+          ]
+        }
+      ]
+    }
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param networkRuleCollections = [
+  {
+    name: 'allow-network-rules'
+    properties: {
+      action: {
+        type: 'Allow'
+      }
+      priority: 100
+      rules: [
+        {
+          destinationAddresses: [
+            '*'
+          ]
+          destinationPorts: [
+            '12000'
+            '123'
+          ]
+          name: 'allow-ntp'
+          protocols: [
+            'Any'
+          ]
+          sourceAddresses: [
+            '*'
+          ]
+        }
+      ]
+    }
+  }
+]
+param publicIPResourceID = '<publicIPResourceID>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+param zones = [
+  '1'
+  '2'
+  '3'
+]
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -1239,6 +1829,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 | [`applicationRuleCollections`](#parameter-applicationrulecollections) | array | Collection of application rule collections used by Azure Firewall. |
 | [`azureSkuTier`](#parameter-azureskutier) | string | Tier of an Azure Firewall. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`enableForcedTunneling`](#parameter-enableforcedtunneling) | bool | Enable/Disable forced tunneling. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`firewallPolicyId`](#parameter-firewallpolicyid) | string | Resource ID of the Firewall Policy that should be attached. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -1631,6 +2222,14 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+
+### Parameter: `enableForcedTunneling`
+
+Enable/Disable forced tunneling.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
@@ -2234,7 +2833,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/public-ip-address:0.5.1` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.6.0` | Remote reference |
 
 ## Data Collection
 
