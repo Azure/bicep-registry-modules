@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "1683127699645349372"
+      "templateHash": "2886040651089761865"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -1029,6 +1029,13 @@
         "description": "Optional. Gremlin Databases configurations."
       }
     },
+    "tables": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Table configurations."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -1230,7 +1237,7 @@
     ],
     "kind": "[if(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('gremlinDatabases')))), 'GlobalDocumentDB', if(not(empty(parameters('mongodbDatabases'))), 'MongoDB', 'GlobalDocumentDB'))]",
     "backupPolicy": "[if(equals(parameters('backupPolicyType'), 'Continuous'), createObject('type', parameters('backupPolicyType'), 'continuousModeProperties', createObject('tier', parameters('backupPolicyContinuousTier'))), createObject('type', parameters('backupPolicyType'), 'periodicModeProperties', createObject('backupIntervalInMinutes', parameters('backupIntervalInMinutes'), 'backupRetentionIntervalInHours', parameters('backupRetentionIntervalInHours'), 'backupStorageRedundancy', parameters('backupStorageRedundancy'))))]",
-    "databaseAccountProperties": "[union(createObject('databaseAccountOfferType', parameters('databaseAccountOfferType'), 'backupPolicy', variables('backupPolicy'), 'minimalTlsVersion', parameters('minimumTlsVersion')), if(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), createObject('consistencyPolicy', variables('consistencyPolicy')[parameters('defaultConsistencyLevel')], 'enableMultipleWriteLocations', parameters('enableMultipleWriteLocations'), 'locations', if(empty(variables('databaseAccount_locations')), variables('defaultFailoverLocation'), variables('databaseAccount_locations')), 'ipRules', variables('ipRules'), 'virtualNetworkRules', variables('virtualNetworkRules'), 'networkAclBypass', coalesce(tryGet(parameters('networkRestrictions'), 'networkAclBypass'), 'AzureServices'), 'publicNetworkAccess', coalesce(tryGet(parameters('networkRestrictions'), 'publicNetworkAccess'), 'Enabled'), 'isVirtualNetworkFilterEnabled', or(not(empty(variables('ipRules'))), not(empty(variables('virtualNetworkRules')))), 'capabilities', variables('capabilities'), 'enableFreeTier', parameters('enableFreeTier'), 'enableAutomaticFailover', parameters('automaticFailover'), 'enableAnalyticalStorage', parameters('enableAnalyticalStorage')), createObject()), if(not(empty(parameters('sqlDatabases'))), createObject('disableLocalAuth', parameters('disableLocalAuth'), 'disableKeyBasedMetadataWriteAccess', parameters('disableKeyBasedMetadataWriteAccess')), createObject()), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject()))]",
+    "databaseAccountProperties": "[union(createObject('databaseAccountOfferType', parameters('databaseAccountOfferType'), 'backupPolicy', variables('backupPolicy'), 'minimalTlsVersion', parameters('minimumTlsVersion')), if(or(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('tables')))), createObject('consistencyPolicy', variables('consistencyPolicy')[parameters('defaultConsistencyLevel')], 'enableMultipleWriteLocations', parameters('enableMultipleWriteLocations'), 'locations', if(empty(variables('databaseAccount_locations')), variables('defaultFailoverLocation'), variables('databaseAccount_locations')), 'ipRules', variables('ipRules'), 'virtualNetworkRules', variables('virtualNetworkRules'), 'networkAclBypass', coalesce(tryGet(parameters('networkRestrictions'), 'networkAclBypass'), 'AzureServices'), 'publicNetworkAccess', coalesce(tryGet(parameters('networkRestrictions'), 'publicNetworkAccess'), 'Enabled'), 'isVirtualNetworkFilterEnabled', or(not(empty(variables('ipRules'))), not(empty(variables('virtualNetworkRules')))), 'capabilities', variables('capabilities'), 'enableFreeTier', parameters('enableFreeTier'), 'enableAutomaticFailover', parameters('automaticFailover'), 'enableAnalyticalStorage', parameters('enableAnalyticalStorage')), createObject()), if(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('tables')))), createObject('disableLocalAuth', parameters('disableLocalAuth'), 'disableKeyBasedMetadataWriteAccess', parameters('disableKeyBasedMetadataWriteAccess')), createObject()), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject()))]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Cosmos DB Account Reader Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fbdf93bf-df7d-467e-a4d2-9458aa1360c8')]",
@@ -2602,6 +2609,137 @@
               "type": "string",
               "metadata": {
                 "description": "The name of the resource group the Gremlin database was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "databaseAccount"
+      ]
+    },
+    "databaseAccount_tables": {
+      "copy": {
+        "name": "databaseAccount_tables",
+        "count": "[length(parameters('tables'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-table-{1}', uniqueString(deployment().name, parameters('location')), parameters('tables')[copyIndex()].name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "databaseAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('tables')[copyIndex()].name]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "maxThroughput": {
+            "value": "[tryGet(parameters('tables')[copyIndex()], 'maxThroughput')]"
+          },
+          "throughput": {
+            "value": "[tryGet(parameters('tables')[copyIndex()], 'throughput')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.30.23.60470",
+              "templateHash": "15712676324433329983"
+            },
+            "name": "Azure Cosmos DB account tables",
+            "description": "This module deploys a table within an Azure Cosmos DB Account.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the table."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags for the table."
+              }
+            },
+            "databaseAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Azure Cosmos DB account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "maxThroughput": {
+              "type": "int",
+              "defaultValue": 4000,
+              "metadata": {
+                "description": "Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored."
+              }
+            },
+            "throughput": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`."
+              }
+            }
+          },
+          "resources": {
+            "databaseAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2023-04-15",
+              "name": "[parameters('databaseAccountName')]"
+            },
+            "table": {
+              "type": "Microsoft.DocumentDB/databaseAccounts/tables",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(equals(parameters('throughput'), null()), createObject('maxThroughput', parameters('maxThroughput')), null()), 'throughput', parameters('throughput')))]",
+                "resource": {
+                  "id": "[parameters('name')]"
+                }
+              },
+              "dependsOn": [
+                "databaseAccount"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the table."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the table."
+              },
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/tables', parameters('databaseAccountName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the table was created in."
               },
               "value": "[resourceGroup().name]"
             }
