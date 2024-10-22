@@ -305,7 +305,7 @@ module keyVault_keys 'key/main.bicep' = [
   }
 ]
 
-module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.8.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-keyVault-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -392,8 +392,8 @@ output uri string = keyVault.properties.vaultUri
 output location string = keyVault.location
 
 @description('The private endpoints of the key vault.')
-output privateEndpoints array = [
-  for index in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+output privateEndpoints privateEndpointOutputType[] = [
+  for index in (privateEndpoints ?? []): {
     name: keyVault_privateEndpoints[index].outputs.name
     resourceId: keyVault_privateEndpoints[index].outputs.resourceId
     groupId: keyVault_privateEndpoints[index].outputs.groupId
@@ -424,6 +424,30 @@ output keys credentialOutputType[] = [
 // ================ //
 // Definitions      //
 // ================ //
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfig: {
+    @description('Fqdn that resolves to private endpoint IP address.')
+    fqdn: string
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]?
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceIds: string[]
+}
 
 @export()
 type credentialOutputType = {

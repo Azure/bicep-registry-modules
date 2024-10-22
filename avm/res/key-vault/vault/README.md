@@ -1294,10 +1294,6 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
       }
     ]
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
@@ -1407,12 +1403,6 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "networkAcls": {
       "value": {
         "bypass": "AzureServices",
@@ -1520,10 +1510,6 @@ param keys = [
   }
 ]
 param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param networkAcls = {
   bypass: 'AzureServices'
   defaultAction: 'Deny'
@@ -2718,7 +2704,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -3197,7 +3183,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.8.0` | Remote reference |
 
 ## Data Collection
 
