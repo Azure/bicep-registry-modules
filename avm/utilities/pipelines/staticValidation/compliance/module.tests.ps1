@@ -629,7 +629,7 @@ Describe 'Module tests' -Tag 'Module' {
 
                     if (-not $isRequired) {
                         $description = $templateFileParameters.$parameter.metadata.description
-                        if ($description -match "\('Required\.") {
+                        if ($description -match '^Required\.') {
                             $incorrectParameters += $parameter
                         }
                     }
@@ -670,12 +670,12 @@ Describe 'Module tests' -Tag 'Module' {
                             link          = "$interfaceBase/diagnostic-settings"
                         }
                         @{
-                            parameterName  = 'roleAssignments'
-                            link           = "$interfaceBase/role-assignments"
+                            parameterName = 'roleAssignments'
+                            link          = "$interfaceBase/role-assignments"
                         }
                         @{
-                            parameterName  = 'lock'
-                            link           = "$interfaceBase/resource-locks"
+                            parameterName = 'lock'
+                            link          = "$interfaceBase/resource-locks"
                         }
                         @{
                             parameterName = 'managedIdentities'
