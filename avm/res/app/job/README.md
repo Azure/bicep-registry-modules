@@ -1114,7 +1114,6 @@ HTTPGet specifies the http request to perform.
 | :-- | :-- | :-- |
 | [`path`](#parameter-containersprobeshttpgetpath) | string | Path to access on the HTTP server. |
 | [`port`](#parameter-containersprobeshttpgetport) | int | Name of the port to access on the container. If not specified, the containerPort is used. |
-| [`scheme`](#parameter-containersprobeshttpgetscheme) | string | Scheme to use for connecting to the host. Defaults to HTTP. |
 
 **Optional parameters**
 
@@ -1122,6 +1121,7 @@ HTTPGet specifies the http request to perform.
 | :-- | :-- | :-- |
 | [`host`](#parameter-containersprobeshttpgethost) | string | Host name to connect to, defaults to the pod IP. |
 | [`httpHeaders`](#parameter-containersprobeshttpgethttpheaders) | array | Custom headers to set in the request. |
+| [`scheme`](#parameter-containersprobeshttpgetscheme) | string | Scheme to use for connecting to the host. Defaults to HTTP. |
 
 ### Parameter: `containers.probes.httpGet.path`
 
@@ -1136,20 +1136,6 @@ Name of the port to access on the container. If not specified, the containerPort
 
 - Required: Yes
 - Type: int
-
-### Parameter: `containers.probes.httpGet.scheme`
-
-Scheme to use for connecting to the host. Defaults to HTTP.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'HTTP'
-    'HTTPS'
-  ]
-  ```
 
 ### Parameter: `containers.probes.httpGet.host`
 
@@ -1185,6 +1171,20 @@ The header field value.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `containers.probes.httpGet.scheme`
+
+Scheme to use for connecting to the host. Defaults to HTTP.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'HTTP'
+    'HTTPS'
+  ]
+  ```
 
 ### Parameter: `containers.probes.initialDelaySeconds`
 

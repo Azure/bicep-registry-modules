@@ -429,7 +429,7 @@ type containerProbeType = {
     @maxValue(65535)
     port: int
 
-    @description('Required. Scheme to use for connecting to the host. Defaults to HTTP.')
+    @description('Optional. Scheme to use for connecting to the host. Defaults to HTTP.')
     scheme: ('HTTP' | 'HTTPS')?
   }?
 
