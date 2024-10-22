@@ -12,7 +12,7 @@ This module deploys a Site Slot Hybrid Connection Namespace Relay.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/sites/slots/hybridConnectionNamespaces/relays) |
+| `Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays) |
 
 ## Parameters
 
