@@ -221,7 +221,7 @@ type privateEndpointPrivateDnsZoneGroupType = {
 }
 
 type privateEndpointCustomDnsConfigType = {
-  @description('Required. Fqdn that resolves to private endpoint IP address.')
+  @description('Optional. Fqdn that resolves to private endpoint IP address.')
   fqdn: string?
 
   @description('Required. A list of private IP addresses of the private endpoint.')

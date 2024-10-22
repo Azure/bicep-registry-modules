@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "3702359687684026662"
+      "templateHash": "5379800043788600368"
     },
     "name": "Default interface types for AVM modules",
     "description": "This module provides you with all common variants for AVM interfaces to be used in AVM modules.\n\nDetails for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/interfaces).\n",
@@ -520,7 +520,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. Fqdn that resolves to private endpoint IP address."
+            "description": "Optional. Fqdn that resolves to private endpoint IP address."
           }
         },
         "ipAddresses": {
