@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "6589620406341282293"
+      "templateHash": "17951197435041154622"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job.",
@@ -606,7 +606,7 @@
                 },
                 "nullable": true,
                 "metadata": {
-                  "description": "Required. Authentication secrets for the scale rule."
+                  "description": "Optional. Authentication secrets for the scale rule."
                 }
               },
               "metadata": {
@@ -686,7 +686,7 @@
           "$ref": "#/definitions/containerResourceType",
           "nullable": true,
           "metadata": {
-            "description": "Required. Container resource requirements."
+            "description": "Optional. Container resource requirements."
           }
         },
         "volumeMounts": {
