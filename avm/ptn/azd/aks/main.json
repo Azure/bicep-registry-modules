@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "7110154178681720169"
+      "templateHash": "8872877172389095214"
     },
     "name": "Azd AKS",
     "description": "Creates an Azure Kubernetes Service (AKS) cluster with a system agent pool as well as an additional user agent pool.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
@@ -44,6 +44,312 @@
         }
       },
       "nullable": true
+    },
+    "agentPoolType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the agent pool."
+          }
+        },
+        "availabilityZones": {
+          "type": "array",
+          "items": {
+            "type": "int"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The availability zones of the agent pool."
+          }
+        },
+        "count": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive)."
+          }
+        },
+        "sourceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The source resource ID to create the agent pool from."
+          }
+        },
+        "enableAutoScaling": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to enable auto-scaling for the agent pool."
+          }
+        },
+        "enableEncryptionAtHost": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to enable encryption at host for the agent pool."
+          }
+        },
+        "enableFIPS": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to enable FIPS for the agent pool."
+          }
+        },
+        "enableNodePublicIP": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to enable node public IP for the agent pool."
+          }
+        },
+        "enableUltraSSD": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to enable Ultra SSD for the agent pool."
+          }
+        },
+        "gpuInstanceProfile": {
+          "type": "string",
+          "allowedValues": [
+            "MIG1g",
+            "MIG2g",
+            "MIG3g",
+            "MIG4g",
+            "MIG7g"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The GPU instance profile of the agent pool."
+          }
+        },
+        "kubeletDiskType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The kubelet disk type of the agent pool."
+          }
+        },
+        "maxCount": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive)."
+          }
+        },
+        "minCount": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive)."
+          }
+        },
+        "maxPods": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The maximum number of pods that can run on a node."
+          }
+        },
+        "minPods": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The minimum number of pods that can run on a node."
+          }
+        },
+        "mode": {
+          "type": "string",
+          "allowedValues": [
+            "System",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The mode of the agent pool."
+          }
+        },
+        "nodeLabels": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The node labels of the agent pool."
+          }
+        },
+        "nodePublicIpPrefixResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The node public IP prefix ID of the agent pool."
+          }
+        },
+        "nodeTaints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The node taints of the agent pool."
+          }
+        },
+        "orchestratorVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Kubernetes version of the agent pool."
+          }
+        },
+        "osDiskSizeGB": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The OS disk size in GB of the agent pool."
+          }
+        },
+        "osDiskType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The OS disk type of the agent pool."
+          }
+        },
+        "osSku": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The OS SKU of the agent pool."
+          }
+        },
+        "osType": {
+          "type": "string",
+          "allowedValues": [
+            "Linux",
+            "Windows"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The OS type of the agent pool."
+          }
+        },
+        "podSubnetResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The pod subnet ID of the agent pool."
+          }
+        },
+        "proximityPlacementGroupResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The proximity placement group resource ID of the agent pool."
+          }
+        },
+        "scaleDownMode": {
+          "type": "string",
+          "allowedValues": [
+            "Deallocate",
+            "Delete"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The scale down mode of the agent pool."
+          }
+        },
+        "scaleSetEvictionPolicy": {
+          "type": "string",
+          "allowedValues": [
+            "Deallocate",
+            "Delete"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The scale set eviction policy of the agent pool."
+          }
+        },
+        "scaleSetPriority": {
+          "type": "string",
+          "allowedValues": [
+            "Low",
+            "Regular",
+            "Spot"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The scale set priority of the agent pool."
+          }
+        },
+        "spotMaxPrice": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The spot max price of the agent pool."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tags of the agent pool."
+          }
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "AvailabilitySet",
+            "VirtualMachineScaleSets"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The type of the agent pool."
+          }
+        },
+        "maxSurge": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The maximum number of nodes that can be created during an upgrade."
+          }
+        },
+        "vmSize": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The VM size of the agent pool."
+          }
+        },
+        "vnetSubnetResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The VNet subnet ID of the agent pool."
+          }
+        },
+        "workloadRuntime": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The workload runtime of the agent pool."
+          }
+        },
+        "enableDefaultTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The enable default telemetry of the agent pool."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/container-service/managed-cluster:0.4.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -288,15 +594,15 @@
       }
     },
     "systemPoolConfig": {
-      "type": "object",
-      "defaultValue": {},
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. Custom configuration of system node pool."
       }
     },
     "agentPoolConfig": {
-      "type": "object",
-      "defaultValue": {},
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. Custom configuration of user node pool."
       }
@@ -328,7 +634,7 @@
         "description": "Optional. Auto-upgrade channel on the Node Os."
       }
     },
-    "systemPoolType": {
+    "systemPoolSize": {
       "type": "string",
       "defaultValue": "Standard",
       "allowedValues": [
@@ -341,7 +647,7 @@
         "description": "Optional. The System Pool Preset sizing."
       }
     },
-    "agentPoolType": {
+    "agentPoolSize": {
       "type": "string",
       "defaultValue": "",
       "allowedValues": [
@@ -385,9 +691,9 @@
     }
   },
   "variables": {
-    "systemPoolSpec": "[if(not(empty(parameters('systemPoolConfig'))), parameters('systemPoolConfig'), variables('nodePoolPresets')[parameters('systemPoolType')])]",
-    "hasAgentPool": "[or(not(empty(parameters('agentPoolConfig'))), not(empty(parameters('agentPoolType'))))]",
-    "agentPoolSpec": "[if(and(variables('hasAgentPool'), not(empty(parameters('agentPoolConfig')))), parameters('agentPoolConfig'), if(empty(parameters('agentPoolType')), createObject(), variables('nodePoolPresets')[parameters('agentPoolType')]))]",
+    "systemPoolSpec": "[if(not(empty(parameters('systemPoolConfig'))), parameters('systemPoolConfig'), createArray(union(createObject('name', 'npsystem', 'mode', 'System'), variables('nodePoolBase'), variables('nodePoolPresets')[parameters('systemPoolSize')])))]",
+    "hasAgentPool": "[or(not(empty(parameters('agentPoolConfig'))), not(empty(parameters('agentPoolSize'))))]",
+    "agentPoolsConfig": "[if(and(variables('hasAgentPool'), not(empty(parameters('agentPoolConfig')))), parameters('agentPoolConfig'), if(empty(parameters('agentPoolSize')), createArray(), createArray(union(createObject('name', 'npuser', 'mode', 'User'), variables('nodePoolBase'), variables('nodePoolPresets')[parameters('agentPoolSize')]))))]",
     "aksClusterAdminRole": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b1ff04bb-8a4e-4dc4-8eb5-8693973ce19b')]",
     "acrPullRole": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]",
     "nodePoolPresets": {
@@ -431,8 +737,7 @@
       "upgradeSettings": {
         "maxSurge": "33%"
       }
-    },
-    "agentPoolsConfig": "[if(variables('hasAgentPool'), createArray(union(createObject('name', 'npuser', 'mode', 'User'), variables('nodePoolBase'), variables('agentPoolSpec'))), null())]"
+    }
   },
   "resources": {
     "avmTelemetry": {
@@ -568,9 +873,7 @@
             ]
           },
           "primaryAgentPoolProfile": {
-            "value": [
-              "[union(createObject('name', 'npsystem', 'mode', 'System'), variables('nodePoolBase'), variables('systemPoolSpec'))]"
-            ]
+            "value": "[variables('systemPoolSpec')]"
           },
           "dnsPrefix": {
             "value": "[parameters('dnsPrefix')]"

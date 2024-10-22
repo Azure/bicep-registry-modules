@@ -159,12 +159,40 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
     principalId: '<principalId>'
     // Non-required parameters
     acrSku: 'Basic'
+    agentPoolConfig: [
+      {
+        maxPods: 30
+        maxSurge: '33%'
+        mode: 'User'
+        name: 'npuserpool'
+        osType: 'Linux'
+        type: 'VirtualMachineScaleSets'
+        vmSize: 'standard_a2'
+      }
+    ]
+    agentPoolSize: 'Standard'
     aksClusterRoleAssignmentName: '<aksClusterRoleAssignmentName>'
     containerRegistryRoleName: '<containerRegistryRoleName>'
     dnsPrefix: 'dep-dns-paamax'
     location: '<location>'
     principalType: 'ServicePrincipal'
     skuTier: 'Free'
+    systemPoolConfig: [
+      {
+        availabilityZones: [
+          '1'
+          '2'
+          '3'
+        ]
+        count: 3
+        enableAutoScaling: true
+        maxCount: 5
+        minCount: 3
+        mode: 'System'
+        name: 'npsystem'
+        vmSize: 'Standard_DS2_v2'
+      }
+    ]
     webApplicationRoutingEnabled: true
   }
 }
@@ -202,6 +230,22 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
     "acrSku": {
       "value": "Basic"
     },
+    "agentPoolConfig": {
+      "value": [
+        {
+          "maxPods": 30,
+          "maxSurge": "33%",
+          "mode": "User",
+          "name": "npuserpool",
+          "osType": "Linux",
+          "type": "VirtualMachineScaleSets",
+          "vmSize": "standard_a2"
+        }
+      ]
+    },
+    "agentPoolSize": {
+      "value": "Standard"
+    },
     "aksClusterRoleAssignmentName": {
       "value": "<aksClusterRoleAssignmentName>"
     },
@@ -219,6 +263,24 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
     },
     "skuTier": {
       "value": "Free"
+    },
+    "systemPoolConfig": {
+      "value": [
+        {
+          "availabilityZones": [
+            "1",
+            "2",
+            "3"
+          ],
+          "count": 3,
+          "enableAutoScaling": true,
+          "maxCount": 5,
+          "minCount": 3,
+          "mode": "System",
+          "name": "npsystem",
+          "vmSize": "Standard_DS2_v2"
+        }
+      ]
     },
     "webApplicationRoutingEnabled": {
       "value": true
@@ -245,12 +307,40 @@ param name = '<name>'
 param principalId = '<principalId>'
 // Non-required parameters
 param acrSku = 'Basic'
+param agentPoolConfig = [
+  {
+    maxPods: 30
+    maxSurge: '33%'
+    mode: 'User'
+    name: 'npuserpool'
+    osType: 'Linux'
+    type: 'VirtualMachineScaleSets'
+    vmSize: 'standard_a2'
+  }
+]
+param agentPoolSize = 'Standard'
 param aksClusterRoleAssignmentName = '<aksClusterRoleAssignmentName>'
 param containerRegistryRoleName = '<containerRegistryRoleName>'
 param dnsPrefix = 'dep-dns-paamax'
 param location = '<location>'
 param principalType = 'ServicePrincipal'
 param skuTier = 'Free'
+param systemPoolConfig = [
+  {
+    availabilityZones: [
+      '1'
+      '2'
+      '3'
+    ]
+    count: 3
+    enableAutoScaling: true
+    maxCount: 5
+    minCount: 3
+    mode: 'System'
+    name: 'npsystem'
+    vmSize: 'Standard_DS2_v2'
+  }
+]
 param webApplicationRoutingEnabled = true
 ```
 
@@ -280,8 +370,8 @@ param webApplicationRoutingEnabled = true
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`acrSku`](#parameter-acrsku) | string | Tier of your Azure container registry. |
-| [`agentPoolConfig`](#parameter-agentpoolconfig) | object | Custom configuration of user node pool. |
-| [`agentPoolType`](#parameter-agentpooltype) | string | The User Pool Preset sizing. |
+| [`agentPoolConfig`](#parameter-agentpoolconfig) | array | Custom configuration of user node pool. |
+| [`agentPoolSize`](#parameter-agentpoolsize) | string | The User Pool Preset sizing. |
 | [`aksClusterRoleAssignmentName`](#parameter-aksclusterroleassignmentname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`autoNodeOsUpgradeProfileUpgradeChannel`](#parameter-autonodeosupgradeprofileupgradechannel) | string | Auto-upgrade channel on the Node Os. |
 | [`containerRegistryRoleName`](#parameter-containerregistryrolename) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
@@ -309,8 +399,8 @@ param webApplicationRoutingEnabled = true
 | [`serviceCidr`](#parameter-servicecidr) | string | A CIDR notation IP range from which to assign service cluster IPs. It must not overlap with any Subnet IP ranges. |
 | [`skuTier`](#parameter-skutier) | string | Tier of a managed cluster SKU. |
 | [`sshPublicKey`](#parameter-sshpublickey) | string | Specifies the SSH RSA public key string for the Linux nodes. |
-| [`systemPoolConfig`](#parameter-systempoolconfig) | object | Custom configuration of system node pool. |
-| [`systemPoolType`](#parameter-systempooltype) | string | The System Pool Preset sizing. |
+| [`systemPoolConfig`](#parameter-systempoolconfig) | array | Custom configuration of system node pool. |
+| [`systemPoolSize`](#parameter-systempoolsize) | string | The System Pool Preset sizing. |
 | [`tags`](#parameter-tags) | object | Custom tags to apply to the AKS resources. |
 | [`webApplicationRoutingEnabled`](#parameter-webapplicationroutingenabled) | bool | Specifies whether the webApplicationRoutingEnabled add-on is enabled or not. |
 
@@ -377,10 +467,10 @@ Tier of your Azure container registry.
 Custom configuration of user node pool.
 
 - Required: No
-- Type: object
-- Default: `{}`
+- Type: array
+- Default: `[]`
 
-### Parameter: `agentPoolType`
+### Parameter: `agentPoolSize`
 
 The User Pool Preset sizing.
 
@@ -712,10 +802,10 @@ Specifies the SSH RSA public key string for the Linux nodes.
 Custom configuration of system node pool.
 
 - Required: No
-- Type: object
-- Default: `{}`
+- Type: array
+- Default: `[]`
 
-### Parameter: `systemPoolType`
+### Parameter: `systemPoolSize`
 
 The System Pool Preset sizing.
 

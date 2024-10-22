@@ -122,11 +122,12 @@ param containerRegistryRoleName string?
 @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
 param aksClusterRoleAssignmentName string?
 
+import {agentPoolType} from 'br/public:avm/res/container-service/managed-cluster:0.4.1'
 @description('Optional. Custom configuration of system node pool.')
-param systemPoolConfig object = {}
+param systemPoolConfig array = []
 
 @description('Optional. Custom configuration of user node pool.')
-param agentPoolConfig object = {}
+param agentPoolConfig array = []
 
 @description('Optional. Specifies whether the KeyvaultSecretsProvider add-on is enabled or not.')
 param enableKeyvaultSecretsProvider bool = true
@@ -150,7 +151,7 @@ param autoNodeOsUpgradeProfileUpgradeChannel string = 'NodeImage'
   'Custom'
 ])
 @description('Optional. The System Pool Preset sizing.')
-param systemPoolType string = 'Standard'
+param systemPoolSize string = 'Standard'
 
 @allowed([
   ''
@@ -160,7 +161,7 @@ param systemPoolType string = 'Standard'
   'Custom'
 ])
 @description('Optional. The User Pool Preset sizing.')
-param agentPoolType string = ''
+param agentPoolSize string = ''
 
 @description('Optional. Property that controls how data actions are authorized. When true, the key vault will use Role Based Access Control (RBAC) for authorization of data actions, and the access policies specified in vault properties will be ignored. When false, the key vault will use the access policies specified in vault properties, and any policy stored on Azure Resource Manager will be ignored. Note that management actions are always authorized with RBAC.')
 param enableRbacAuthorization bool = false
@@ -174,13 +175,11 @@ param enableVaultForDeployment bool = false
 @description('Optional. Specifies if the vault is enabled for a template deployment.')
 param enableVaultForTemplateDeployment bool = false
 
-var systemPoolSpec = !empty(systemPoolConfig) ? systemPoolConfig : nodePoolPresets[systemPoolType]
+var systemPoolSpec = !empty(systemPoolConfig) ? systemPoolConfig :  [union({ name: 'npsystem', mode: 'System' }, nodePoolBase, nodePoolPresets[systemPoolSize])]
 
-var hasAgentPool = !empty(agentPoolConfig) || !empty(agentPoolType)
+var hasAgentPool = !empty(agentPoolConfig) || !empty(agentPoolSize)
 
-var agentPoolSpec = hasAgentPool && !empty(agentPoolConfig)
-  ? agentPoolConfig
-  : empty(agentPoolType) ? {} : nodePoolPresets[agentPoolType]
+var agentPoolsConfig = hasAgentPool && !empty(agentPoolConfig) ? agentPoolConfig : empty(agentPoolSize) ? [] : [union({ name: 'npuser', mode: 'User' }, nodePoolBase, nodePoolPresets[agentPoolSize])]
 
 var aksClusterAdminRole = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
@@ -235,8 +234,6 @@ var nodePoolBase = {
     maxSurge: '33%'
   }
 }
-
-var agentPoolsConfig = hasAgentPool ? [union({ name: 'npuser', mode: 'User' }, nodePoolBase, agentPoolSpec)] : null
 
 // ============== //
 // Resources      //
@@ -318,9 +315,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.4.0
         ]
       }
     ]
-    primaryAgentPoolProfile: [
-      union({ name: 'npsystem', mode: 'System' }, nodePoolBase, systemPoolSpec)
-    ]
+    primaryAgentPoolProfile: systemPoolSpec
     dnsPrefix: dnsPrefix
     agentPools: agentPoolsConfig
     enableTelemetry: enableTelemetry

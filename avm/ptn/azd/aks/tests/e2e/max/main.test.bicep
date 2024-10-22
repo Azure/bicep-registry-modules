@@ -72,6 +72,34 @@ module testDeployment '../../../main.bicep' = [
       principalType: 'ServicePrincipal'
       containerRegistryRoleName: containerRegistryRoleName
       aksClusterRoleAssignmentName: aksClusterRoleAssignmentName
+      agentPoolConfig: [
+        {
+          name: 'npuserpool'
+          mode: 'User'
+          osType: 'Linux'
+          maxPods: 30
+          type: 'VirtualMachineScaleSets'
+          maxSurge: '33%'
+          vmSize: 'standard_a2'
+        }
+      ]
+      agentPoolSize: 'Standard'
+      systemPoolConfig: [
+        {
+          name: 'npsystem'
+          mode: 'System'
+          vmSize: 'Standard_DS2_v2'
+          count: 3
+          minCount: 3
+          maxCount: 5
+          enableAutoScaling: true
+          availabilityZones: [
+            '1'
+            '2'
+            '3'
+          ]
+        }
+      ]
     }
   }
 ]
