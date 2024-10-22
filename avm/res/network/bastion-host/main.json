@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "13829228453837029434"
+      "templateHash": "1273376840607599272"
     },
     "name": "Bastion Hosts",
     "description": "This module deploys a Bastion Host.",
@@ -260,7 +260,6 @@
       "defaultValue": "Basic",
       "allowedValues": [
         "Basic",
-        "Developer",
         "Premium",
         "Standard"
       ],
@@ -272,35 +271,35 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Choose to disable or enable Copy Paste. For Basic and Developer SKU Copy/Paste is always enabled."
+        "description": "Optional. Choose to disable or enable Copy Paste. For Basic SKU Copy/Paste is always enabled."
       }
     },
     "enableFileCopy": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Choose to disable or enable File Copy. Not supported for Basic and Developer SKU."
+        "description": "Optional. Choose to disable or enable File Copy. Not supported for Basic SKU."
       }
     },
     "enableIpConnect": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Choose to disable or enable IP Connect. Not supported for Basic and Developer SKU."
+        "description": "Optional. Choose to disable or enable IP Connect. Not supported for Basic SKU."
       }
     },
     "enableKerberos": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Choose to disable or enable Kerberos authentication. Not supported for Developer SKU."
+        "description": "Optional. Choose to disable or enable Kerberos authentication."
       }
     },
     "enableShareableLink": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Choose to disable or enable Shareable Link. Not supported for Basic and Developer SKU."
+        "description": "Optional. Choose to disable or enable Shareable Link. Not supported for Basic SKU."
       }
     },
     "enableSessionRecording": {
@@ -321,7 +320,7 @@
       "type": "int",
       "defaultValue": 2,
       "metadata": {
-        "description": "Optional. The scale units for the Bastion Host resource. The Basic and Developer SKU only support 2 scale units."
+        "description": "Optional. The scale units for the Bastion Host resource. The Basic SKU only supports 2 scale units."
       }
     },
     "roleAssignments": {
@@ -356,7 +355,7 @@
         3
       ],
       "metadata": {
-        "description": "Optional. A list of availability zones denoting where the Bastion Host resource needs to come from. This is not supported for the Developer SKU."
+        "description": "Optional. A list of availability zones denoting where the Bastion Host resource needs to come from."
       }
     }
   },
@@ -406,8 +405,8 @@
       "sku": {
         "name": "[parameters('skuName')]"
       },
-      "zones": "[if(equals(parameters('skuName'), 'Developer'), createArray(), map(parameters('zones'), lambda('zone', string(lambdaVariables('zone')))))]",
-      "properties": "[union(createObject('scaleUnits', if(or(equals(parameters('skuName'), 'Basic'), equals(parameters('skuName'), 'Developer')), 2, parameters('scaleUnits')), 'ipConfigurations', if(equals(parameters('skuName'), 'Developer'), createArray(), createArray(createObject('name', 'IpConfAzureBastionSubnet', 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureBastionSubnet', parameters('virtualNetworkResourceId')))), if(not(parameters('enablePrivateOnlyBastion')), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('bastionSubnetPublicIpResourceId'))), parameters('bastionSubnetPublicIpResourceId'), reference('publicIPAddress').outputs.resourceId.value))), createObject())))))), if(equals(parameters('skuName'), 'Developer'), createObject('virtualNetwork', createObject('id', parameters('virtualNetworkResourceId'))), createObject()), if(or(or(equals(parameters('skuName'), 'Basic'), equals(parameters('skuName'), 'Standard')), equals(parameters('skuName'), 'Premium')), createObject('enableKerberos', parameters('enableKerberos')), createObject()), if(or(equals(parameters('skuName'), 'Standard'), equals(parameters('skuName'), 'Premium')), createObject('enableTunneling', if(equals(parameters('skuName'), 'Standard'), true(), if(parameters('enableSessionRecording'), false(), true())), 'disableCopyPaste', parameters('disableCopyPaste'), 'enableFileCopy', parameters('enableFileCopy'), 'enableIpConnect', parameters('enableIpConnect'), 'enableShareableLink', parameters('enableShareableLink')), createObject()), if(equals(parameters('skuName'), 'Premium'), createObject('enableSessionRecording', parameters('enableSessionRecording'), 'enablePrivateOnlyBastion', parameters('enablePrivateOnlyBastion')), createObject()))]",
+      "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
+      "properties": "[union(createObject('scaleUnits', if(equals(parameters('skuName'), 'Basic'), 2, parameters('scaleUnits')), 'ipConfigurations', createArray(createObject('name', 'IpConfAzureBastionSubnet', 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureBastionSubnet', parameters('virtualNetworkResourceId')))), if(not(parameters('enablePrivateOnlyBastion')), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('bastionSubnetPublicIpResourceId'))), parameters('bastionSubnetPublicIpResourceId'), reference('publicIPAddress').outputs.resourceId.value))), createObject()))))), if(or(or(equals(parameters('skuName'), 'Basic'), equals(parameters('skuName'), 'Standard')), equals(parameters('skuName'), 'Premium')), createObject('enableKerberos', parameters('enableKerberos')), createObject()), if(or(equals(parameters('skuName'), 'Standard'), equals(parameters('skuName'), 'Premium')), createObject('enableTunneling', if(equals(parameters('skuName'), 'Standard'), true(), if(parameters('enableSessionRecording'), false(), true())), 'disableCopyPaste', parameters('disableCopyPaste'), 'enableFileCopy', parameters('enableFileCopy'), 'enableIpConnect', parameters('enableIpConnect'), 'enableShareableLink', parameters('enableShareableLink')), createObject()), if(equals(parameters('skuName'), 'Premium'), createObject('enableSessionRecording', parameters('enableSessionRecording'), 'enablePrivateOnlyBastion', parameters('enablePrivateOnlyBastion')), createObject()))]",
       "dependsOn": [
         "publicIPAddress"
       ]
@@ -481,7 +480,7 @@
       ]
     },
     "publicIPAddress": {
-      "condition": "[and(and(empty(parameters('bastionSubnetPublicIpResourceId')), not(equals(parameters('skuName'), 'Developer'))), not(parameters('enablePrivateOnlyBastion')))]",
+      "condition": "[and(empty(parameters('bastionSubnetPublicIpResourceId')), not(parameters('enablePrivateOnlyBastion')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Bastion-PIP', uniqueString(deployment().name, parameters('location')))]",

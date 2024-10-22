@@ -27,26 +27,25 @@ param lock lockType
 
 @allowed([
   'Basic'
-  'Developer'
   'Premium'
   'Standard'
 ])
 @description('Optional. The SKU of this Bastion Host.')
 param skuName string = 'Basic'
 
-@description('Optional. Choose to disable or enable Copy Paste. For Basic and Developer SKU Copy/Paste is always enabled.')
+@description('Optional. Choose to disable or enable Copy Paste. For Basic SKU Copy/Paste is always enabled.')
 param disableCopyPaste bool = false
 
-@description('Optional. Choose to disable or enable File Copy. Not supported for Basic and Developer SKU.')
+@description('Optional. Choose to disable or enable File Copy. Not supported for Basic SKU.')
 param enableFileCopy bool = true
 
-@description('Optional. Choose to disable or enable IP Connect. Not supported for Basic and Developer SKU.')
+@description('Optional. Choose to disable or enable IP Connect. Not supported for Basic SKU.')
 param enableIpConnect bool = false
 
-@description('Optional. Choose to disable or enable Kerberos authentication. Not supported for Developer SKU.')
+@description('Optional. Choose to disable or enable Kerberos authentication.')
 param enableKerberos bool = false
 
-@description('Optional. Choose to disable or enable Shareable Link. Not supported for Basic and Developer SKU.')
+@description('Optional. Choose to disable or enable Shareable Link. Not supported for Basic SKU.')
 param enableShareableLink bool = false
 
 @description('Optional. Choose to disable or enable Session Recording feature. The Premium SKU is required for this feature. If Session Recording is enabled, the Native client support will be disabled.')
@@ -55,7 +54,7 @@ param enableSessionRecording bool = false
 @description('Optional. Choose to disable or enable Private-only Bastion deployment. The Premium SKU is required for this feature.')
 param enablePrivateOnlyBastion bool = false
 
-@description('Optional. The scale units for the Bastion Host resource. The Basic and Developer SKU only support 2 scale units.')
+@description('Optional. The scale units for the Bastion Host resource. The Basic SKU only supports 2 scale units.')
 param scaleUnits int = 2
 
 @description('Optional. Array of role assignments to create.')
@@ -67,7 +66,7 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. A list of availability zones denoting where the Bastion Host resource needs to come from. This is not supported for the Developer SKU.')
+@description('Optional. A list of availability zones denoting where the Bastion Host resource needs to come from.')
 @allowed([
   1
   2
@@ -79,31 +78,28 @@ param zones int[] = [] // Availability Zones are currently in preview and only a
 // Prep ipConfigurations object AzureBastionSubnet for different uses cases:
 // 1. Use existing Public IP
 // 2. Use new Public IP created in this module
-// (skuName == 'Developer' is a special case where ipConfigurations is empty)
-var ipConfigurations = skuName == 'Developer'
-  ? []
-  : [
+var ipConfigurations = [
+  {
+    name: 'IpConfAzureBastionSubnet'
+    properties: union(
       {
-        name: 'IpConfAzureBastionSubnet'
-        properties: union(
-          {
-            subnet: {
-              id: '${virtualNetworkResourceId}/subnets/AzureBastionSubnet' // The subnet name must be AzureBastionSubnet
+        subnet: {
+          id: '${virtualNetworkResourceId}/subnets/AzureBastionSubnet' // The subnet name must be AzureBastionSubnet
+        }
+      },
+      (!enablePrivateOnlyBastion
+        ? {
+            //Use existing Public IP, new Public IP created in this module
+            publicIPAddress: {
+              id: !empty(bastionSubnetPublicIpResourceId)
+                ? bastionSubnetPublicIpResourceId
+                : publicIPAddress.outputs.resourceId
             }
-          },
-          (!enablePrivateOnlyBastion
-            ? {
-                //Use existing Public IP, new Public IP created in this module
-                publicIPAddress: {
-                  id: !empty(bastionSubnetPublicIpResourceId)
-                    ? bastionSubnetPublicIpResourceId
-                    : publicIPAddress.outputs.resourceId
-                }
-              }
-            : {})
-        )
-      }
-    ]
+          }
+        : {})
+    )
+  }
+]
 
 // ----------------------------------------------------------------------------
 
@@ -151,7 +147,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.6.0' = if (empty(bastionSubnetPublicIpResourceId) && (skuName != 'Developer') && (!enablePrivateOnlyBastion)) {
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.6.0' = if (empty(bastionSubnetPublicIpResourceId) && (!enablePrivateOnlyBastion)) {
   name: '${uniqueString(deployment().name, location)}-Bastion-PIP'
   params: {
     name: publicIPAddressObject.name
@@ -172,16 +168,9 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.6.0' = if 
 
 var bastionpropertiesVar = union(
   {
-    scaleUnits: (skuName == 'Basic' || skuName == 'Developer') ? 2 : scaleUnits
+    scaleUnits: skuName == 'Basic' ? 2 : scaleUnits
     ipConfigurations: ipConfigurations
   },
-  (skuName == 'Developer'
-    ? {
-        virtualNetwork: {
-          id: virtualNetworkResourceId
-        }
-      }
-    : {}),
   ((skuName == 'Basic' || skuName == 'Standard' || skuName == 'Premium')
     ? {
         enableKerberos: enableKerberos
@@ -211,7 +200,7 @@ resource azureBastion 'Microsoft.Network/bastionHosts@2024-01-01' = {
   sku: {
     name: skuName
   }
-  zones: skuName == 'Developer' ? [] : map(zones, zone => string(zone))
+  zones: map(zones, zone => string(zone))
   properties: bastionpropertiesVar
 }
 
