@@ -186,7 +186,7 @@ output customDnsConfig customDnsConfigType[] = privateEndpoint.properties.custom
 output networkInterfaceResourceIds string[] = map(privateEndpoint.properties.networkInterfaces, nic => nic.id)
 
 @description('The group Id for the private endpoint Group.')
-output groupId string? = privateEndpoint.properties.?manualPrivateLinkServiceConnections[?0].properties.?groupIds[0] ?? privateEndpoint.properties.?privateLinkServiceConnections[?0].properties.?groupIds[0]
+output groupId string? = privateEndpoint.properties.?manualPrivateLinkServiceConnections[?0].properties.?groupIds[?0] ?? privateEndpoint.properties.?privateLinkServiceConnections[?0].properties.?groupIds[?0]
 
 // ================ //
 // Definitions      //
