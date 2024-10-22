@@ -393,7 +393,7 @@ output location string = keyVault.location
 
 @description('The private endpoints of the key vault.')
 output privateEndpoints privateEndpointOutputType[] = [
-  for index in (privateEndpoints ?? []): {
+  for (item, index) in (privateEndpoints ?? []): {
     name: keyVault_privateEndpoints[index].outputs.name
     resourceId: keyVault_privateEndpoints[index].outputs.resourceId
     groupId: keyVault_privateEndpoints[index].outputs.groupId

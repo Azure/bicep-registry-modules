@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "16791306450818610729"
+      "templateHash": "6635207559611753149"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -3082,11 +3082,11 @@
       "copy": {
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
         "input": {
-          "name": "[reference(format('keyVault_privateEndpoints[{0}]', coalesce(parameters('privateEndpoints'), createArray())[copyIndex()])).outputs.name.value]",
-          "resourceId": "[reference(format('keyVault_privateEndpoints[{0}]', coalesce(parameters('privateEndpoints'), createArray())[copyIndex()])).outputs.resourceId.value]",
-          "groupId": "[reference(format('keyVault_privateEndpoints[{0}]', coalesce(parameters('privateEndpoints'), createArray())[copyIndex()])).outputs.groupId.value]",
-          "customDnsConfig": "[reference(format('keyVault_privateEndpoints[{0}]', coalesce(parameters('privateEndpoints'), createArray())[copyIndex()])).outputs.customDnsConfig.value]",
-          "networkInterfaceIds": "[reference(format('keyVault_privateEndpoints[{0}]', coalesce(parameters('privateEndpoints'), createArray())[copyIndex()])).outputs.networkInterfaceIds.value]"
+          "name": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
+          "groupId": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
+          "customDnsConfig": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
+          "networkInterfaceIds": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
         }
       }
     },
