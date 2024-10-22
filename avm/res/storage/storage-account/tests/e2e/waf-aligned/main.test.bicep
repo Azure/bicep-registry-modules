@@ -154,9 +154,14 @@ module testDeployment '../../../main.bicep' = [
             metadata: {
               testKey: 'testValue'
             }
-            enableWORM: true
-            WORMRetention: 666
             allowProtectedAppendWrites: false
+            immutableStorageWithVersioningEnabled: true
+            immutabilityPolicyName: 'default'
+            immutabilityPolicyProperties: {
+              immutabilityPeriodSinceCreationInDays: 666
+              allowProtectedAppendWrites: true
+              allowProtectedAppendWritesAll: false
+            }
           }
         ]
         automaticSnapshotPolicyEnabled: true

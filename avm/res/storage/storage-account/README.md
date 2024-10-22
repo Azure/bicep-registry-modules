@@ -499,18 +499,19 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           ]
         }
         {
-          name: 'archivecontainer'
-          publicAccess: 'None'
+          allowProtectedAppendWrites: false
+          immutabilityPolicyName: 'default'
+          immutabilityPolicyProperties: {
+            allowProtectedAppendWrites: true
+            allowProtectedAppendWritesAll: false
+            immutabilityPeriodSinceCreationInDays: 666
+          }
+          immutableStorageWithVersioningEnabled: true
           metadata: {
             testKey: 'testValue'
           }
-          immutableStorageWithVersioningEnabled: true
-          immutabilityPolicyName: 'default'
-          immutabilityPolicyProperties: {
-            immutabilityPeriodSinceCreationInDays: 666
-            allowProtectedAppendWrites: true
-            allowProtectedAppendWritesAll: false
-            }
+          name: 'archivecontainer'
+          publicAccess: 'None'
         }
       ]
       deleteRetentionPolicyDays: 9
@@ -949,13 +950,18 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           },
           {
             "allowProtectedAppendWrites": false,
-            "enableWORM": true,
+            "immutabilityPolicyName": "default",
+            "immutabilityPolicyProperties": {
+              "allowProtectedAppendWrites": true,
+              "allowProtectedAppendWritesAll": false,
+              "immutabilityPeriodSinceCreationInDays": 666
+            },
+            "immutableStorageWithVersioningEnabled": true,
             "metadata": {
               "testKey": "testValue"
             },
             "name": "archivecontainer",
-            "publicAccess": "None",
-            "WORMRetention": 666
+            "publicAccess": "None"
           }
         ],
         "deleteRetentionPolicyDays": 9,
@@ -1428,13 +1434,18 @@ param blobServices = {
     }
     {
       allowProtectedAppendWrites: false
-      enableWORM: true
+      immutabilityPolicyName: 'default'
+      immutabilityPolicyProperties: {
+        allowProtectedAppendWrites: true
+        allowProtectedAppendWritesAll: false
+        immutabilityPeriodSinceCreationInDays: 666
+      }
+      immutableStorageWithVersioningEnabled: true
       metadata: {
         testKey: 'testValue'
       }
       name: 'archivecontainer'
       publicAccess: 'None'
-      WORMRetention: 666
     }
   ]
   deleteRetentionPolicyDays: 9
@@ -2357,13 +2368,18 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         }
         {
           allowProtectedAppendWrites: false
-          enableWORM: true
+          immutabilityPolicyName: 'default'
+          immutabilityPolicyProperties: {
+            allowProtectedAppendWrites: true
+            allowProtectedAppendWritesAll: false
+            immutabilityPeriodSinceCreationInDays: 666
+          }
+          immutableStorageWithVersioningEnabled: true
           metadata: {
             testKey: 'testValue'
           }
           name: 'archivecontainer'
           publicAccess: 'None'
-          WORMRetention: 666
         }
       ]
       deleteRetentionPolicyDays: 9
@@ -2620,13 +2636,18 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           },
           {
             "allowProtectedAppendWrites": false,
-            "enableWORM": true,
+            "immutabilityPolicyName": "default",
+            "immutabilityPolicyProperties": {
+              "allowProtectedAppendWrites": true,
+              "allowProtectedAppendWritesAll": false,
+              "immutabilityPeriodSinceCreationInDays": 666
+            },
+            "immutableStorageWithVersioningEnabled": true,
             "metadata": {
               "testKey": "testValue"
             },
             "name": "archivecontainer",
-            "publicAccess": "None",
-            "WORMRetention": 666
+            "publicAccess": "None"
           }
         ],
         "deleteRetentionPolicyDays": 9,
@@ -2913,13 +2934,18 @@ param blobServices = {
     }
     {
       allowProtectedAppendWrites: false
-      enableWORM: true
+      immutabilityPolicyName: 'default'
+      immutabilityPolicyProperties: {
+        allowProtectedAppendWrites: true
+        allowProtectedAppendWritesAll: false
+        immutabilityPeriodSinceCreationInDays: 666
+      }
+      immutableStorageWithVersioningEnabled: true
       metadata: {
         testKey: 'testValue'
       }
       name: 'archivecontainer'
       publicAccess: 'None'
-      WORMRetention: 666
     }
   ]
   deleteRetentionPolicyDays: 9
