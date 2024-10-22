@@ -26,6 +26,7 @@ This module deploys a DocumentDB Database Account.
 | `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlDatabases/containers) |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlRoleAssignments) |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlRoleDefinitions) |
+| `Microsoft.DocumentDB/databaseAccounts/tables` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/tables) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
@@ -51,7 +52,8 @@ The following section provides usage examples for the module, which were used to
 - [Public network restricted access with ACL](#example-10-public-network-restricted-access-with-acl)
 - [Deploying with a sql role definision and assignment](#example-11-deploying-with-a-sql-role-definision-and-assignment)
 - [SQL Database](#example-12-sql-database)
-- [WAF-aligned](#example-13-waf-aligned)
+- [API for Table](#example-13-api-for-table)
+- [WAF-aligned](#example-14-waf-aligned)
 
 ### Example 1: _Using analytical storage_
 
@@ -3054,7 +3056,114 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 13: _WAF-aligned_
+### Example 13: _API for Table_
+
+This instance deploys the module for an Azure Cosmos DB for Table account with two example tables.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: 'databaseAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'dddatbl001'
+    // Non-required parameters
+    capabilitiesToAdd: [
+      'EnableTable'
+    ]
+    location: '<location>'
+    tables: [
+      {
+        name: 'tbl-dddatableminprov'
+        throughput: 400
+      }
+      {
+        maxThroughput: 1000
+        name: 'tbl-dddatableminauto'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddatbl001"
+    },
+    // Non-required parameters
+    "capabilitiesToAdd": {
+      "value": [
+        "EnableTable"
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "tables": {
+      "value": [
+        {
+          "name": "tbl-dddatableminprov",
+          "throughput": 400
+        },
+        {
+          "maxThroughput": 1000,
+          "name": "tbl-dddatableminauto"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddatbl001'
+// Non-required parameters
+param capabilitiesToAdd = [
+  'EnableTable'
+]
+param location = '<location>'
+param tables = [
+  {
+    name: 'tbl-dddatableminprov'
+    throughput: 400
+  }
+  {
+    maxThroughput: 1000
+    name: 'tbl-dddatableminauto'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 14: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -3315,6 +3424,7 @@ param tags = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`maxIntervalInSeconds`](#parameter-maxintervalinseconds) | int | Default to 300. Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400. |
 | [`maxStalenessPrefix`](#parameter-maxstalenessprefix) | int | Default to 100000. Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000. |
+| [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. |
 | [`mongodbDatabases`](#parameter-mongodbdatabases) | array | MongoDB Databases configurations. |
 | [`networkRestrictions`](#parameter-networkrestrictions) | object | The network configuration of this module. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
@@ -3324,6 +3434,7 @@ param tags = {
 | [`sqlDatabases`](#parameter-sqldatabases) | array | SQL Databases configurations. |
 | [`sqlRoleAssignmentsPrincipalIds`](#parameter-sqlroleassignmentsprincipalids) | array | SQL Role Definitions configurations. |
 | [`sqlRoleDefinitions`](#parameter-sqlroledefinitions) | array | SQL Role Definitions configurations. |
+| [`tables`](#parameter-tables) | array | Table configurations. |
 | [`tags`](#parameter-tags) | object | Tags of the Database Account resource. |
 
 ### Parameter: `name`
@@ -3606,7 +3717,7 @@ Disable write operations on metadata resources (databases, containers, throughpu
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `disableLocalAuth`
 
@@ -3786,6 +3897,22 @@ Default to 100000. Max stale requests. Required for BoundedStaleness. Valid rang
 - Type: int
 - Default: `100000`
 
+### Parameter: `minimumTlsVersion`
+
+Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later.
+
+- Required: No
+- Type: string
+- Default: `'Tls12'`
+- Allowed:
+  ```Bicep
+  [
+    'Tls'
+    'Tls11'
+    'Tls12'
+  ]
+  ```
+
 ### Parameter: `mongodbDatabases`
 
 MongoDB Databases configurations.
@@ -3800,6 +3927,14 @@ The network configuration of this module.
 
 - Required: No
 - Type: object
+- Default:
+  ```Bicep
+  {
+      ipRules: []
+      publicNetworkAccess: 'Disabled'
+      virtualNetworkRules: []
+  }
+  ```
 
 **Optional parameters**
 
@@ -4764,6 +4899,14 @@ Indicates whether the Role Definition was built-in or user created.
     'CustomRole'
   ]
   ```
+
+### Parameter: `tables`
+
+Table configurations.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `tags`
 
