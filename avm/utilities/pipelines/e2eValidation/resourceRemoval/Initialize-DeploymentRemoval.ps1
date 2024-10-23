@@ -94,6 +94,7 @@ function Initialize-DeploymentRemoval {
             'Microsoft.ContainerInstance/containerGroups' # Must be removed before their MSI
             'Microsoft.ManagedIdentity/userAssignedIdentities',
             'Microsoft.Databricks/workspaces'
+            'Microsoft.DevOpsInfrastructure/pools' # Must be removed before other resources it depends on like a virtual network
             'Microsoft.Resources/resourceGroups'
         )
 
