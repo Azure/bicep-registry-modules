@@ -879,7 +879,7 @@ module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/exte
     extensionType: 'microsoft.flux'
     fluxConfigurations: fluxExtension.?configurations
     location: location
-    name: 'flux'
+    name: fluxExtension.?name ?? 'flux'
     releaseNamespace: fluxExtension.?releaseNamespace ?? 'flux-system'
     releaseTrain: fluxExtension.?releaseTrain ?? 'Stable'
     version: fluxExtension.?version
@@ -1229,7 +1229,7 @@ type fluxConfigurationProtectedSettingsType = {
 
 @export()
 type extensionType = {
-  @description('Required. The name of the extension.')
+  @description('Optional. The name of the extension.')
   name: string?
 
   @description('Optional. Namespace where the extension Release must be placed.')
@@ -1238,7 +1238,7 @@ type extensionType = {
   @description('Optional. Namespace where the extension will be created for an Namespace scoped extension.')
   targetNamespace: string?
 
-  @description('Required. The release train of the extension.')
+  @description('Optional. The release train of the extension.')
   releaseTrain: string?
 
   @description('Optional. The configuration protected settings of the extension.')

@@ -14,7 +14,7 @@ param tags object?
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
-@description('Optional. Default to Standard. The offer type for the Cosmos DB database account.')
+@description('Optional. Default to Standard. The offer type for the Azure Cosmos DB database account.')
 @allowed([
   'Standard'
 ])

@@ -3973,13 +3973,6 @@ Settings and configurations for the flux extension.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-fluxextensionname) | string | The name of the extension. |
-| [`releaseTrain`](#parameter-fluxextensionreleasetrain) | string | The release train of the extension. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -3987,23 +3980,11 @@ Settings and configurations for the flux extension.
 | [`configurationProtectedSettings`](#parameter-fluxextensionconfigurationprotectedsettings) | object | The configuration protected settings of the extension. |
 | [`configurations`](#parameter-fluxextensionconfigurations) | array | The flux configurations of the extension. |
 | [`configurationSettings`](#parameter-fluxextensionconfigurationsettings) | object | The configuration settings of the extension. |
+| [`name`](#parameter-fluxextensionname) | string | The name of the extension. |
 | [`releaseNamespace`](#parameter-fluxextensionreleasenamespace) | string | Namespace where the extension Release must be placed. |
+| [`releaseTrain`](#parameter-fluxextensionreleasetrain) | string | The release train of the extension. |
 | [`targetNamespace`](#parameter-fluxextensiontargetnamespace) | string | Namespace where the extension will be created for an Namespace scoped extension. |
 | [`version`](#parameter-fluxextensionversion) | string | The version of the extension. |
-
-### Parameter: `fluxExtension.name`
-
-The name of the extension.
-
-- Required: No
-- Type: string
-
-### Parameter: `fluxExtension.releaseTrain`
-
-The release train of the extension.
-
-- Required: No
-- Type: string
 
 ### Parameter: `fluxExtension.configurationProtectedSettings`
 
@@ -4039,9 +4020,23 @@ The configuration settings of the extension.
 - Required: No
 - Type: object
 
+### Parameter: `fluxExtension.name`
+
+The name of the extension.
+
+- Required: No
+- Type: string
+
 ### Parameter: `fluxExtension.releaseNamespace`
 
 Namespace where the extension Release must be placed.
+
+- Required: No
+- Type: string
+
+### Parameter: `fluxExtension.releaseTrain`
+
+The release train of the extension.
 
 - Required: No
 - Type: string

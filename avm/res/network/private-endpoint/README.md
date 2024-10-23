@@ -830,12 +830,12 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-customdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
+| [`fqdn`](#parameter-customdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-customdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
 ### Parameter: `customDnsConfigs.fqdn`
 
-Fqdn that resolves to private endpoint IP address.
+FQDN that resolves to private endpoint IP address.
 
 - Required: Yes
 - Type: string

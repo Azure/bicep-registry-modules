@@ -5,8 +5,7 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "9752154092257593892"
+
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -892,7 +891,7 @@
         "Standard"
       ],
       "metadata": {
-        "description": "Optional. Default to Standard. The offer type for the Cosmos DB database account."
+        "description": "Optional. Default to Standard. The offer type for the Azure Cosmos DB database account."
       }
     },
     "locations": {
