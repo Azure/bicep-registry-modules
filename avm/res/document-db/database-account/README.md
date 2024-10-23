@@ -3426,7 +3426,7 @@ param tags = {
 | [`maxStalenessPrefix`](#parameter-maxstalenessprefix) | int | Default to 100000. Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000. |
 | [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. |
 | [`mongodbDatabases`](#parameter-mongodbdatabases) | array | MongoDB Databases configurations. |
-| [`networkRestrictions`](#parameter-networkrestrictions) | object | The network configuration of this module.<p>Defaults to:<p>```bicep<p>{<p>  ipRules: []<p>  virtualNetworkRules: []<p>  publicNetworkAccess: 'Disabled'<p>}<p>```<p> |
+| [`networkRestrictions`](#parameter-networkrestrictions) | object | The network configuration of this module. Defaults to `{ ipRules: [], virtualNetworkRules: [], publicNetworkAccess: 'Disabled' }`. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
@@ -3923,7 +3923,7 @@ MongoDB Databases configurations.
 
 ### Parameter: `networkRestrictions`
 
-The network configuration of this module.<p>Defaults to:<p>```bicep<p>{<p>  ipRules: []<p>  virtualNetworkRules: []<p>  publicNetworkAccess: 'Disabled'<p>}<p>```<p>
+The network configuration of this module. Defaults to `{ ipRules: [], virtualNetworkRules: [], publicNetworkAccess: 'Disabled' }`.
 
 - Required: No
 - Type: object

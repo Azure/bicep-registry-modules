@@ -149,16 +149,7 @@ param privateEndpoints privateEndpointType
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
-@description('''Optional. The network configuration of this module.
-Defaults to:
-```bicep
-{
-  ipRules: []
-  virtualNetworkRules: []
-  publicNetworkAccess: 'Disabled'
-}
-```
-''')
+@description('Optional. The network configuration of this module. Defaults to `{ ipRules: [], virtualNetworkRules: [], publicNetworkAccess: \'Disabled\' }`.')
 param networkRestrictions networkRestrictionsType = {
   ipRules: []
   virtualNetworkRules: []
