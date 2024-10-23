@@ -1264,7 +1264,7 @@ Enables system assigned managed identity on the resource.
 
 The resource id(s) to assign to the resource.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `principalAssignments`

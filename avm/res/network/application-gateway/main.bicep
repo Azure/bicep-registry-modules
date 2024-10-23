@@ -483,7 +483,7 @@ output privateEndpoints array = [
 
 type managedIdentitiesType = {
   @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]
+  userAssignedResourceIds: string[]?
 }?
 
 type lockType = {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "5215042074557934261"
+      "templateHash": "13977544414417545286"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -21,6 +21,7 @@
           "items": {
             "type": "string"
           },
+          "nullable": true,
           "metadata": {
             "description": "Optional. The resource ID(s) to assign to the resource."
           }

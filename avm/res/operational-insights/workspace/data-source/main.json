@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "3142568368299403228"
+      "templateHash": "10275938611959517944"
     },
     "name": "Log Analytics Workspace Datasources",
     "description": "This module deploys a Log Analytics Workspace Data Source.",
@@ -39,7 +39,7 @@
         "LinuxPerformanceCollection"
       ],
       "metadata": {
-        "description": "Required. The kind of the DataSource."
+        "description": "Optional. The kind of the DataSource."
       }
     },
     "tags": {

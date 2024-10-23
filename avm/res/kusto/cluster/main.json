@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "17058846954041368000"
+      "templateHash": "13790083532406916912"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster.",
@@ -264,6 +264,7 @@
           "items": {
             "type": "string"
           },
+          "nullable": true,
           "metadata": {
             "description": "Optional. The resource id(s) to assign to the resource."
           }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "16061974406624985685"
+      "templateHash": "8237956651125434199"
     },
     "name": "Network Application Gateways",
     "description": "This module deploys a Network Application Gateway.",
@@ -21,6 +21,7 @@
           "items": {
             "type": "string"
           },
+          "nullable": true,
           "metadata": {
             "description": "Optional. The resource ID(s) to assign to the resource."
           }

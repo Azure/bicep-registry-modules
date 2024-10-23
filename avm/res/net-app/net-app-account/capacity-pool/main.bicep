@@ -119,7 +119,6 @@ module capacityPool_volumes 'volume/main.bicep' = [
       remoteVolumeRegion: volume.?remoteVolumeRegion ?? ''
       remoteVolumeResourceId: volume.?remoteVolumeResourceId ?? ''
       replicationSchedule: volume.?replicationSchedule ?? ''
-      snapshotPolicyId: volume.?snapshotPolicyId ?? ''
       snapshotPolicyName: volume.?snapshotPolicyName ?? 'snapshotPolicy'
       snapshotPolicyLocation: volume.?snapshotPolicyLocation ?? ''
       snapEnabled: volume.?snapEnabled ?? false

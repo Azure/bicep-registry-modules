@@ -488,7 +488,7 @@ type managedIdentitiesType = {
   systemAssigned: bool?
 
   @description('Optional. The resource id(s) to assign to the resource.')
-  userAssignedResourceIds: string[]
+  userAssignedResourceIds: string[]?
 }?
 
 type privateEndpointType = {
