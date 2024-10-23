@@ -9,7 +9,7 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Required. The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default.')
+@description('Optional. The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default.')
 param skuObject skuType = {
   name: 'Premium'
   capacity: 2
@@ -552,7 +552,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('Required. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private IP addresses of the private endpoint.')
