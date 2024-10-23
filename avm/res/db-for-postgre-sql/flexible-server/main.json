@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "18241687671815067303"
+      "templateHash": "4674728695659998649"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -571,24 +571,9 @@
         "description": "Optional. The administrator login password."
       }
     },
-    "activeDirectoryAuth": {
-      "type": "string",
-      "defaultValue": "Enabled",
-      "allowedValues": [
-        "Disabled",
-        "Enabled"
-      ],
-      "metadata": {
-        "description": "Optional. If Enabled, Azure Active Directory authentication is enabled."
-      }
-    },
     "tenantId": {
       "type": "string",
       "nullable": true,
-      "allowedValues": [
-        "Disabled",
-        "Enabled"
-      ],
       "metadata": {
         "description": "Optional. Tenant id of the server."
       }
@@ -929,7 +914,7 @@
         "administratorLogin": "[parameters('administratorLogin')]",
         "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
         "authConfig": {
-          "activeDirectoryAuth": "[parameters('activeDirectoryAuth')]",
+          "activeDirectoryAuth": "[if(not(empty(parameters('administrators'))), 'enabled', 'disabled')]",
           "passwordAuth": "[if(and(not(empty(parameters('administratorLogin'))), not(empty(parameters('administratorLoginPassword')))), 'enabled', 'disabled')]",
           "tenantId": "[parameters('tenantId')]"
         },

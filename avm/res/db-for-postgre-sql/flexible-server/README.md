@@ -1317,7 +1317,6 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`activeDirectoryAuth`](#parameter-activedirectoryauth) | string | If Enabled, Azure Active Directory authentication is enabled. |
 | [`administratorLogin`](#parameter-administratorlogin) | string | The administrator login name of a server. Can only be specified when the PostgreSQL server is being created. |
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. |
 | [`administrators`](#parameter-administrators) | array | The Azure AD administrators when AAD authentication enabled. |
@@ -1408,21 +1407,6 @@ Required if 'createMode' is set to 'PointInTimeRestore'.
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `activeDirectoryAuth`
-
-If Enabled, Azure Active Directory authentication is enabled.
-
-- Required: No
-- Type: string
-- Default: `'Enabled'`
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
 
 ### Parameter: `administratorLogin`
 
@@ -2369,13 +2353,6 @@ Tenant id of the server.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
 
 ### Parameter: `version`
 
