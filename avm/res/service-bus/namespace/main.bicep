@@ -9,7 +9,7 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Required. The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default.')
+@description('Optional. The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default.')
 param skuObject skuType = {
   name: 'Premium'
   capacity: 2
