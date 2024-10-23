@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "3581703841799807268"
+      "templateHash": "2418467213841620758"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -237,7 +237,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -1524,7 +1524,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "11115774341673396434"
+              "templateHash": "10249716032875912201"
             },
             "name": "Site Deployment Extension ",
             "description": "This module deploys a Site extension for MSDeploy.",
@@ -1541,7 +1541,7 @@
               "type": "object",
               "nullable": true,
               "metadata": {
-                "description": "Required. Sets the MSDeployment Properties."
+                "description": "Optional. Sets the MSDeployment Properties."
               }
             }
           },

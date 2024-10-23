@@ -21,7 +21,6 @@ This module deploys a Storage Account Queue.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`metadata`](#parameter-metadata) | object | A name-value pair that represents queue metadata. |
 | [`name`](#parameter-name) | string | The name of the storage queue to deploy. |
 
 **Conditional parameters**
@@ -34,15 +33,8 @@ This module deploys a Storage Account Queue.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`metadata`](#parameter-metadata) | object | A name-value pair that represents queue metadata. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-
-### Parameter: `metadata`
-
-A name-value pair that represents queue metadata.
-
-- Required: No
-- Type: object
-- Default: `{}`
 
 ### Parameter: `name`
 
@@ -57,6 +49,14 @@ The name of the parent Storage Account. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
+
+### Parameter: `metadata`
+
+A name-value pair that represents queue metadata.
+
+- Required: No
+- Type: object
+- Default: `{}`
 
 ### Parameter: `roleAssignments`
 

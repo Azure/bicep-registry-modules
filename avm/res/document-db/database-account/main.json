@@ -5,7 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-
+      "version": "0.30.23.60470",
+      "templateHash": "5068103534255186614"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -235,7 +236,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -1786,7 +1787,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "2916914405670681340"
+              "templateHash": "13088569006752107887"
             },
             "name": "DocumentDB Database Account SQL Role.",
             "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account.",
@@ -1994,7 +1995,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.30.23.60470",
-                      "templateHash": "14629860270436011718"
+                      "templateHash": "4561927123418147924"
                     },
                     "name": "DocumentDB Database Account SQL Role Assignments.",
                     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account.",
@@ -2017,7 +2018,7 @@
                       "type": "string",
                       "defaultValue": "",
                       "metadata": {
-                        "description": "Required. Id needs to be granted."
+                        "description": "Optional. Id needs to be granted."
                       }
                     },
                     "roleDefinitionId": {
