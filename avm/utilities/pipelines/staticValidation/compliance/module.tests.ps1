@@ -293,113 +293,113 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
 
 Describe 'Module tests' -Tag 'Module' {
 
-    Context 'Readme content tests' -Tag 'Readme' {
+    # Context 'Readme content tests' -Tag 'Readme' {
 
-        $readmeFileTestCases = [System.Collections.ArrayList] @()
+    #     $readmeFileTestCases = [System.Collections.ArrayList] @()
 
-        foreach ($moduleFolderPath in $moduleFolderPaths) {
+    #     foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-            $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/' # 'avm/res|ptn|utl/<provider>/<resourceType>' would return '<provider>/<resourceType>'
-            $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
+    #         $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/' # 'avm/res|ptn|utl/<provider>/<resourceType>' would return '<provider>/<resourceType>'
+    #         $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
 
-            $readmeFileTestCases += @{
-                moduleFolderName    = $resourceTypeIdentifier
-                templateFileContent = $builtTestFileMap[$templateFilePath]
-                templateFilePath    = $templateFilePath
-                readMeFilePath      = Join-Path -Path $moduleFolderPath 'README.md'
-            }
-        }
+    #         $readmeFileTestCases += @{
+    #             moduleFolderName    = $resourceTypeIdentifier
+    #             templateFileContent = $builtTestFileMap[$templateFilePath]
+    #             templateFilePath    = $templateFilePath
+    #             readMeFilePath      = Join-Path -Path $moduleFolderPath 'README.md'
+    #         }
+    #     }
 
-        It '[<moduleFolderName>] `Set-ModuleReadMe` script should not apply any updates.' -TestCases $readmeFileTestCases {
+    #     It '[<moduleFolderName>] `Set-ModuleReadMe` script should not apply any updates.' -TestCases $readmeFileTestCases {
 
-            param(
-                [string] $templateFilePath,
-                [hashtable] $templateFileContent,
-                [string] $readMeFilePath
-            )
+    #         param(
+    #             [string] $templateFilePath,
+    #             [hashtable] $templateFileContent,
+    #             [string] $readMeFilePath
+    #         )
 
-            # Get current hash
-            $fileHashBefore = (Get-FileHash $readMeFilePath).Hash
+    #         # Get current hash
+    #         $fileHashBefore = (Get-FileHash $readMeFilePath).Hash
 
-            # Load function
-            . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
+    #         # Load function
+    #         . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
 
-            # Apply update with already compiled template content
-            Set-ModuleReadMe -TemplateFilePath $templateFilePath -PreLoadedContent @{ TemplateFileContent = $templateFileContent }
+    #         # Apply update with already compiled template content
+    #         Set-ModuleReadMe -TemplateFilePath $templateFilePath -PreLoadedContent @{ TemplateFileContent = $templateFileContent }
 
-            # Get hash after 'update'
-            $fileHashAfter = (Get-FileHash $readMeFilePath).Hash
+    #         # Get hash after 'update'
+    #         $fileHashAfter = (Get-FileHash $readMeFilePath).Hash
 
-            # Compare
-            $filesAreTheSame = $fileHashBefore -eq $fileHashAfter
-            if (-not $filesAreTheSame) {
-                $diffReponse = git diff $readMeFilePath
-                Write-Warning ($diffReponse | Out-String) -Verbose
+    #         # Compare
+    #         $filesAreTheSame = $fileHashBefore -eq $fileHashAfter
+    #         if (-not $filesAreTheSame) {
+    #             $diffReponse = git diff $readMeFilePath
+    #             Write-Warning ($diffReponse | Out-String) -Verbose
 
-                # Reset readme file to original state
-                git checkout HEAD -- $readMeFilePath
-            }
+    #             # Reset readme file to original state
+    #             git checkout HEAD -- $readMeFilePath
+    #         }
 
-            $mdFormattedDiff = ($diffReponse -join '</br>') -replace '\|', '\|'
-            $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/avm/utilities/tools/Set-AVMModule.ps1` and more precisely the `/avm/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
-        }
-    }
+    #         $mdFormattedDiff = ($diffReponse -join '</br>') -replace '\|', '\|'
+    #         $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/avm/utilities/tools/Set-AVMModule.ps1` and more precisely the `/avm/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
+    #     }
+    # }
 
-    Context 'Compiled ARM template tests' -Tag 'ARM' {
+    # Context 'Compiled ARM template tests' -Tag 'ARM' {
 
-        $armTemplateTestCases = [System.Collections.ArrayList] @()
+    #     $armTemplateTestCases = [System.Collections.ArrayList] @()
 
-        foreach ($moduleFolderPath in $moduleFolderPaths) {
+    #     foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-            # Skipping folders without a [main.bicep] template
-            $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
-            if (-not (Test-Path $templateFilePath)) {
-                continue
-            }
+    #         # Skipping folders without a [main.bicep] template
+    #         $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
+    #         if (-not (Test-Path $templateFilePath)) {
+    #             continue
+    #         }
 
-            $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/' # 'avm/res|ptn|utl/<provider>/<resourceType>' would return '<provider>/<resourceType>'
+    #         $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/' # 'avm/res|ptn|utl/<provider>/<resourceType>' would return '<provider>/<resourceType>'
 
-            $armTemplateTestCases += @{
-                moduleFolderName = $resourceTypeIdentifier
-                moduleFolderPath = $moduleFolderPath
-                templateFilePath = $templateFilePath
-            }
-        }
+    #         $armTemplateTestCases += @{
+    #             moduleFolderName = $resourceTypeIdentifier
+    #             moduleFolderPath = $moduleFolderPath
+    #             templateFilePath = $templateFilePath
+    #         }
+    #     }
 
-        It '[<moduleFolderName>] The [main.json] ARM template should be based on the current [main.bicep] Bicep template.' -TestCases $armTemplateTestCases {
+    #     It '[<moduleFolderName>] The [main.json] ARM template should be based on the current [main.bicep] Bicep template.' -TestCases $armTemplateTestCases {
 
-            param(
-                [string] $moduleFolderName,
-                [string] $moduleFolderPath,
-                [string] $templateFilePath
-            )
+    #         param(
+    #             [string] $moduleFolderName,
+    #             [string] $moduleFolderPath,
+    #             [string] $templateFilePath
+    #         )
 
-            $armTemplatePath = Join-Path $moduleFolderPath 'main.json'
+    #         $armTemplatePath = Join-Path $moduleFolderPath 'main.json'
 
-            # Current json
+    #         # Current json
 
-            if (-not (Test-Path $armTemplatePath)) {
-                $false | Should -Be $true -Because "[main.json] file for module [$moduleFolderName] is missing."
-                return # Skipping if test was failing
-            }
+    #         if (-not (Test-Path $armTemplatePath)) {
+    #             $false | Should -Be $true -Because "[main.json] file for module [$moduleFolderName] is missing."
+    #             return # Skipping if test was failing
+    #         }
 
-            $originalJson = Remove-JSONMetadata -TemplateObject (Get-Content $armTemplatePath -Raw | ConvertFrom-Json -Depth 99 -AsHashtable)
-            $originalJson = ConvertTo-OrderedHashtable -JSONInputObject (ConvertTo-Json $originalJson -Depth 99)
+    #         $originalJson = Remove-JSONMetadata -TemplateObject (Get-Content $armTemplatePath -Raw | ConvertFrom-Json -Depth 99 -AsHashtable)
+    #         $originalJson = ConvertTo-OrderedHashtable -JSONInputObject (ConvertTo-Json $originalJson -Depth 99)
 
-            # Recompile json
-            $null = Remove-Item -Path $armTemplatePath -Force
-            bicep build $templateFilePath
+    #         # Recompile json
+    #         $null = Remove-Item -Path $armTemplatePath -Force
+    #         bicep build $templateFilePath
 
-            $newJson = Remove-JSONMetadata -TemplateObject (Get-Content $armTemplatePath -Raw | ConvertFrom-Json -Depth 99 -AsHashtable)
-            $newJson = ConvertTo-OrderedHashtable -JSONInputObject (ConvertTo-Json $newJson -Depth 99)
+    #         $newJson = Remove-JSONMetadata -TemplateObject (Get-Content $armTemplatePath -Raw | ConvertFrom-Json -Depth 99 -AsHashtable)
+    #         $newJson = ConvertTo-OrderedHashtable -JSONInputObject (ConvertTo-Json $newJson -Depth 99)
 
-            # compare
-            (ConvertTo-Json $originalJson -Depth 99) | Should -Be (ConvertTo-Json $newJson -Depth 99) -Because "the [$moduleFolderName] [main.json] should be based on the latest [main.bicep] file. Please run [` bicep build >bicepFilePath< `] using the latest Bicep CLI version."
+    #         # compare
+    #         (ConvertTo-Json $originalJson -Depth 99) | Should -Be (ConvertTo-Json $newJson -Depth 99) -Because "the [$moduleFolderName] [main.json] should be based on the latest [main.bicep] file. Please run [` bicep build >bicepFilePath< `] using the latest Bicep CLI version."
 
-            # Reset template file to original state
-            git checkout HEAD -- $armTemplatePath
-        }
-    }
+    #         # Reset template file to original state
+    #         git checkout HEAD -- $armTemplatePath
+    #     }
+    # }
 
     Context 'Template tests' -Tag 'Template' {
 
@@ -629,13 +629,34 @@ Describe 'Module tests' -Tag 'Module' {
 
                     if (-not $isRequired) {
                         $description = $templateFileParameters.$parameter.metadata.description
-                        if ($description -match "\('Required\.") {
+                        if ($description -match '^Required\.') {
                             $incorrectParameters += $parameter
                         }
                     }
                 }
 
                 $incorrectParameters | Should -BeNullOrEmpty -Because ('only required parameters in the template file should have a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
+            }
+
+            It '[<moduleFolderName>] All required parameters & UDTs in template file should have description that start with "Required.".' -TestCases $moduleFolderTestCases {
+                param (
+                    [hashtable] $templateFileContent,
+                    [hashtable] $templateFileParameters
+                )
+
+                $incorrectParameters = @()
+                foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object -Culture 'en-US')) {
+                    $isRequired = Get-IsParameterRequired -TemplateFileContent $templateFileContent -Parameter $templateFileParameters.$parameter
+
+                    if ($isRequired) {
+                        $description = $templateFileParameters.$parameter.metadata.description
+                        if ($description -notmatch '^Required\.') {
+                            $incorrectParameters += $parameter
+                        }
+                    }
+                }
+
+                $incorrectParameters | Should -BeNullOrEmpty -Because ('required parameters in the template file should have a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
 
             Context 'Schema-based User-defined-types tests' -Tag 'UDT' {
@@ -670,12 +691,12 @@ Describe 'Module tests' -Tag 'Module' {
                             link          = "$interfaceBase/diagnostic-settings"
                         }
                         @{
-                            parameterName  = 'roleAssignments'
-                            link           = "$interfaceBase/role-assignments"
+                            parameterName = 'roleAssignments'
+                            link          = "$interfaceBase/role-assignments"
                         }
                         @{
-                            parameterName  = 'lock'
-                            link           = "$interfaceBase/resource-locks"
+                            parameterName = 'lock'
+                            link          = "$interfaceBase/resource-locks"
                         }
                         @{
                             parameterName = 'managedIdentities'

@@ -1114,7 +1114,6 @@ HTTPGet specifies the http request to perform.
 | :-- | :-- | :-- |
 | [`path`](#parameter-containersprobeshttpgetpath) | string | Path to access on the HTTP server. |
 | [`port`](#parameter-containersprobeshttpgetport) | int | Name of the port to access on the container. If not specified, the containerPort is used. |
-| [`scheme`](#parameter-containersprobeshttpgetscheme) | string | Scheme to use for connecting to the host. Defaults to HTTP. |
 
 **Optional parameters**
 
@@ -1122,6 +1121,7 @@ HTTPGet specifies the http request to perform.
 | :-- | :-- | :-- |
 | [`host`](#parameter-containersprobeshttpgethost) | string | Host name to connect to, defaults to the pod IP. |
 | [`httpHeaders`](#parameter-containersprobeshttpgethttpheaders) | array | Custom headers to set in the request. |
+| [`scheme`](#parameter-containersprobeshttpgetscheme) | string | Scheme to use for connecting to the host. Defaults to HTTP. |
 
 ### Parameter: `containers.probes.httpGet.path`
 
@@ -1136,20 +1136,6 @@ Name of the port to access on the container. If not specified, the containerPort
 
 - Required: Yes
 - Type: int
-
-### Parameter: `containers.probes.httpGet.scheme`
-
-Scheme to use for connecting to the host. Defaults to HTTP.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'HTTP'
-    'HTTPS'
-  ]
-  ```
 
 ### Parameter: `containers.probes.httpGet.host`
 
@@ -1185,6 +1171,20 @@ The header field value.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `containers.probes.httpGet.scheme`
+
+Scheme to use for connecting to the host. Defaults to HTTP.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'HTTP'
+    'HTTPS'
+  ]
+  ```
 
 ### Parameter: `containers.probes.initialDelaySeconds`
 
@@ -1454,15 +1454,22 @@ Scaling rules for the job.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`auth`](#parameter-eventtriggerconfigscalerulesauth) | array | Authentication secrets for the scale rule. |
 | [`name`](#parameter-eventtriggerconfigscalerulesname) | string | The name of the scale rule. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`auth`](#parameter-eventtriggerconfigscalerulesauth) | array | Authentication secrets for the scale rule. |
 | [`metadata`](#parameter-eventtriggerconfigscalerulesmetadata) | object | Metadata properties to describe the scale rule. |
 | [`type`](#parameter-eventtriggerconfigscalerulestype) | string | The type of the rule. |
+
+### Parameter: `eventTriggerConfig.scale.rules.name`
+
+The name of the scale rule.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `eventTriggerConfig.scale.rules.auth`
 
@@ -1488,13 +1495,6 @@ Name of the secret from which to pull the auth params.
 ### Parameter: `eventTriggerConfig.scale.rules.auth.triggerParameter`
 
 Trigger Parameter that uses the secret.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `eventTriggerConfig.scale.rules.name`
-
-The name of the scale rule.
 
 - Required: Yes
 - Type: string
@@ -1638,7 +1638,6 @@ List of specialized containers that run before app containers.
 | :-- | :-- | :-- |
 | [`image`](#parameter-initcontainersimage) | string | The image of the container. |
 | [`name`](#parameter-initcontainersname) | string | The name of the container. |
-| [`resources`](#parameter-initcontainersresources) | object | Container resource requirements. |
 
 **Optional parameters**
 
@@ -1647,6 +1646,7 @@ List of specialized containers that run before app containers.
 | [`args`](#parameter-initcontainersargs) | array | Container start command arguments. |
 | [`command`](#parameter-initcontainerscommand) | array | Container start command. |
 | [`env`](#parameter-initcontainersenv) | array | The environment variables to set in the container. |
+| [`resources`](#parameter-initcontainersresources) | object | Container resource requirements. |
 | [`volumeMounts`](#parameter-initcontainersvolumemounts) | array | The volume mounts to attach to the container. |
 
 ### Parameter: `initContainers.image`
@@ -1662,50 +1662,6 @@ The name of the container.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `initContainers.resources`
-
-Container resource requirements.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`cpu`](#parameter-initcontainersresourcescpu) | string | The CPU limit of the container in cores. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`memory`](#parameter-initcontainersresourcesmemory) | string | The required memory. |
-
-### Parameter: `initContainers.resources.cpu`
-
-The CPU limit of the container in cores.
-
-- Required: Yes
-- Type: string
-- Example:
-  ```Bicep
-  '0.25'
-  '1'
-  ```
-
-### Parameter: `initContainers.resources.memory`
-
-The required memory.
-
-- Required: Yes
-- Type: string
-- Example:
-  ```Bicep
-  '250Mb'
-  '1.5Gi'
-  '1500Mi'
-  ```
 
 ### Parameter: `initContainers.args`
 
@@ -1774,6 +1730,50 @@ The environment variable value. Required if `secretRef` is null.
 
 - Required: No
 - Type: string
+
+### Parameter: `initContainers.resources`
+
+Container resource requirements.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cpu`](#parameter-initcontainersresourcescpu) | string | The CPU limit of the container in cores. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`memory`](#parameter-initcontainersresourcesmemory) | string | The required memory. |
+
+### Parameter: `initContainers.resources.cpu`
+
+The CPU limit of the container in cores.
+
+- Required: Yes
+- Type: string
+- Example:
+  ```Bicep
+  '0.25'
+  '1'
+  ```
+
+### Parameter: `initContainers.resources.memory`
+
+The required memory.
+
+- Required: Yes
+- Type: string
+- Example:
+  ```Bicep
+  '250Mb'
+  '1.5Gi'
+  '1500Mi'
+  ```
 
 ### Parameter: `initContainers.volumeMounts`
 

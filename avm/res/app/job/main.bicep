@@ -429,7 +429,7 @@ type containerProbeType = {
     @maxValue(65535)
     port: int
 
-    @description('Required. Scheme to use for connecting to the host. Defaults to HTTP.')
+    @description('Optional. Scheme to use for connecting to the host. Defaults to HTTP.')
     scheme: ('HTTP' | 'HTTPS')?
   }?
 
@@ -572,7 +572,7 @@ type jobScaleType = {
     '''
   })
   rules: {
-    @description('Required. Authentication secrets for the scale rule.')
+    @description('Optional. Authentication secrets for the scale rule.')
     auth: {
       @description('Required. Name of the secret from which to pull the auth params.')
       secretRef: string
@@ -640,7 +640,7 @@ type initContainerType = {
   @description('Required. The name of the container.')
   name: string
 
-  @description('Required. Container resource requirements.')
+  @description('Optional. Container resource requirements.')
   resources: containerResourceType?
 
   @description('Optional. The volume mounts to attach to the container.')
