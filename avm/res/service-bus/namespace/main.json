@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "12661291967132690760"
+      "templateHash": "11203076592722611139"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -237,7 +237,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -1142,7 +1142,7 @@
         "capacity": 2
       },
       "metadata": {
-        "description": "Required. The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default."
+        "description": "Optional. The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default."
       }
     },
     "zoneRedundant": {

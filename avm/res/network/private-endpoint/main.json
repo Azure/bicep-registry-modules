@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "2004143709646884954"
+      "version": "0.30.23.60470",
+      "templateHash": "688035319963273524"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -270,7 +270,7 @@
           "fqdn": {
             "type": "string",
             "metadata": {
-              "description": "Required. Fqdn that resolves to private endpoint IP address."
+              "description": "Optional. FQDN that resolves to private endpoint IP address."
             }
           },
           "ipAddresses": {
@@ -534,8 +534,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "5805178546717255803"
+              "version": "0.30.23.60470",
+              "templateHash": "12329174801198479603"
             },
             "name": "Private Endpoint Private DNS Zone Groups",
             "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
