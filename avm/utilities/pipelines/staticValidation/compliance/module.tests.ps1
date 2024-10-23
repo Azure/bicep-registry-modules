@@ -638,7 +638,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $incorrectParameters | Should -BeNullOrEmpty -Because ('only required parameters in the template file should have a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
 
-            It '[<moduleFolderName>] All required parameters & UDTs in template file should have description that start with "Required.".' -TestCases $moduleFolderTestCases {
+            It '[<moduleFolderName>] All required parameters & UDTs in template file should have description that start with "(Required|Conditional).".' -TestCases $moduleFolderTestCases {
                 param (
                     [hashtable] $templateFileContent,
                     [hashtable] $templateFileParameters
@@ -650,7 +650,7 @@ Describe 'Module tests' -Tag 'Module' {
 
                     if ($isRequired) {
                         $description = $templateFileParameters.$parameter.metadata.description
-                        if ($description -notmatch '^Required\.') {
+                        if ($description -notmatch '^(Required|Conditional)\.') {
                             $incorrectParameters += $parameter
                         }
                     }
