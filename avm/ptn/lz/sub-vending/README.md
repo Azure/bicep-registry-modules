@@ -55,7 +55,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults.](#example-1-using-only-defaults)
 - [Hub and spoke topology.](#example-2-hub-and-spoke-topology)
-- [Vwan topology.](#example-3-vwan-topology)
+- [Using RBAC conditions.](#example-3-using-rbac-conditions)
+- [Vwan topology.](#example-4-vwan-topology)
 
 ### Example 1: _Using only defaults._
 
@@ -396,7 +397,173 @@ param virtualNetworkUseRemoteGateways = false
 </details>
 <p>
 
-### Example 3: _Vwan topology._
+### Example 3: _Using RBAC conditions._
+
+This instance deploys the module with RBAC conditions for the role assignments.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  name: 'subVendingDeployment'
+  params: {
+    resourceProviders: {}
+    roleAssignmentEnabled: true
+    roleAssignments: [
+      {
+        definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+        relativeScope: ''
+        roleAssignmentCondition: {
+          roleConditionType: {
+            principleTypesToAssign: [
+              'Group'
+              'ServicePrincipal'
+            ]
+            rolesToAssign: [
+              'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            ]
+            templateName: 'constrainRolesAndPrincipalTypes'
+          }
+        }
+      }
+    ]
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: '<subscriptionAliasName>'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
+    subscriptionDisplayName: '<subscriptionDisplayName>'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceProviders": {
+      "value": {}
+    },
+    "roleAssignmentEnabled": {
+      "value": true
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "definition": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
+          "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
+          "relativeScope": "",
+          "roleAssignmentCondition": {
+            "roleConditionType": {
+              "principleTypesToAssign": [
+                "Group",
+                "ServicePrincipal"
+              ],
+              "rolesToAssign": [
+                "b24988ac-6180-42a0-ab88-20f7382dd24c"
+              ],
+              "templateName": "constrainRolesAndPrincipalTypes"
+            }
+          }
+        }
+      ]
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "<subscriptionAliasName>"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
+    },
+    "subscriptionDisplayName": {
+      "value": "<subscriptionDisplayName>"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param resourceProviders = {}
+param roleAssignmentEnabled = true
+param roleAssignments = [
+  {
+    definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+    principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+    relativeScope: ''
+    roleAssignmentCondition: {
+      roleConditionType: {
+        principleTypesToAssign: [
+          'Group'
+          'ServicePrincipal'
+        ]
+        rolesToAssign: [
+          'b24988ac-6180-42a0-ab88-20f7382dd24c'
+        ]
+        templateName: 'constrainRolesAndPrincipalTypes'
+      }
+    }
+  }
+]
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+```
+
+</details>
+<p>
+
+### Example 4: _Vwan topology._
 
 This instance deploys a subscription with a vwan network topology.
 
@@ -702,7 +869,7 @@ The name of the storage account for the deployment script.
 
 - Required: No
 - Type: string
-- Default: `[format('stgds{0}', substring(uniqueString(deployment().name, parameters('virtualNetworkLocation')), 0, 4))]`
+- Default: `[format('stgds{0}', substring(uniqueString(deployment().name, parameters('virtualNetworkLocation')), 0, 10))]`
 
 ### Parameter: `deploymentScriptVirtualNetworkName`
 
@@ -836,6 +1003,88 @@ Supply an array of objects containing the details of the role assignments to cre
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`definition`](#parameter-roleassignmentsdefinition) | string | The role definition ID or name. |
+| [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the user, group, or service principal. |
+| [`relativeScope`](#parameter-roleassignmentsrelativescope) | string | The relative scope of the role assignment. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`roleAssignmentCondition`](#parameter-roleassignmentsroleassignmentcondition) | object | The condition for the role assignment. |
+
+### Parameter: `roleAssignments.definition`
+
+The role definition ID or name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.principalId`
+
+The principal ID of the user, group, or service principal.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.relativeScope`
+
+The relative scope of the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.roleAssignmentCondition`
+
+The condition for the role assignment.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`roleConditionType`](#parameter-roleassignmentsroleassignmentconditionroleconditiontype) | object | The type of template for the role assignment condition. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`conditionVersion`](#parameter-roleassignmentsroleassignmentconditionconditionversion) | string | The version of the condition template. |
+| [`delegationCode`](#parameter-roleassignmentsroleassignmentconditiondelegationcode) | string | The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '. |
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType`
+
+The type of template for the role assignment condition.
+
+- Required: No
+- Type: object
+
+### Parameter: `roleAssignments.roleAssignmentCondition.conditionVersion`
+
+The version of the condition template.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `roleAssignments.roleAssignmentCondition.delegationCode`
+
+The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '.
+
+- Required: No
+- Type: string
 
 ### Parameter: `subscriptionAliasEnabled`
 
@@ -1085,10 +1334,10 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/ptn/authorization/role-assignment:0.1.0` | Remote reference |
+| `br/public:avm/ptn/authorization/role-assignment:0.1.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.2.2` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.3.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.4.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.5.0` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.2.3` | Remote reference |
 | `br/public:avm/res/resources/resource-group:0.2.4` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.9.1` | Remote reference |

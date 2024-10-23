@@ -109,7 +109,6 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      geoRedundantBackup: 'Enabled'
       privateDnsZoneArmResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
       tags: {
         'hidden-title': 'This is visible in the resource name'
@@ -124,9 +123,5 @@ module testDeployment '../../../main.bicep' = [
       }
       highAvailability: 'ZoneRedundant'
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

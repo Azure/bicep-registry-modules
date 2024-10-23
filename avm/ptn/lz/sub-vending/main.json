@@ -1,16 +1,233 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "2644636658214532574"
+      "templateHash": "7041333731896478717"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
     "owner": "Azure/module-maintainers",
     "details": "These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)\n\nThis is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.\n\n> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)"
+  },
+  "definitions": {
+    "_1.constrainedDelegationTemplatesType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "templateName",
+        "mapping": {
+          "excludeRoles": {
+            "$ref": "#/definitions/_1.excludeRolesType"
+          },
+          "constrainRoles": {
+            "$ref": "#/definitions/_1.constrainRolesType"
+          },
+          "constrainRolesAndPrincipalTypes": {
+            "$ref": "#/definitions/_1.constrainRolesAndPrincipalTypesType"
+          },
+          "constrainRolesAndPrincipals": {
+            "$ref": "#/definitions/_1.constrainRolesAndPrincipalsType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    },
+    "_1.constrainRolesAndPrincipalsType": {
+      "type": "object",
+      "properties": {
+        "templateName": {
+          "type": "string",
+          "allowedValues": [
+            "constrainRolesAndPrincipals"
+          ],
+          "metadata": {
+            "description": "Required. Name of the RBAC condition template."
+          }
+        },
+        "rolesToAssign": {
+          "type": "array",
+          "metadata": {
+            "description": "Required. The list of roles that are allowed to be assigned by the delegate."
+          }
+        },
+        "principalsToAssignTo": {
+          "type": "array",
+          "metadata": {
+            "description": "Required. The list of principals that are allowed to be assigned roles by the delegate."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    },
+    "_1.constrainRolesAndPrincipalTypesType": {
+      "type": "object",
+      "properties": {
+        "templateName": {
+          "type": "string",
+          "allowedValues": [
+            "constrainRolesAndPrincipalTypes"
+          ],
+          "metadata": {
+            "description": "Required. Name of the RBAC condition template."
+          }
+        },
+        "rolesToAssign": {
+          "type": "array",
+          "metadata": {
+            "description": "Required. The list of roles that are allowed to be assigned by the delegate."
+          }
+        },
+        "principleTypesToAssign": {
+          "type": "array",
+          "allowedValues": [
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "metadata": {
+            "description": "Required. The list of principle types that are allowed to be assigned roles by the delegate."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    },
+    "_1.constrainRolesType": {
+      "type": "object",
+      "properties": {
+        "templateName": {
+          "type": "string",
+          "allowedValues": [
+            "constrainRoles"
+          ],
+          "metadata": {
+            "description": "Required. Name of the RBAC condition template."
+          }
+        },
+        "rolesToAssign": {
+          "type": "array",
+          "metadata": {
+            "description": "Required. The list of roles that are allowed to be assigned by the delegate."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    },
+    "_1.excludeRolesType": {
+      "type": "object",
+      "properties": {
+        "templateName": {
+          "type": "string",
+          "allowedValues": [
+            "excludeRoles"
+          ],
+          "metadata": {
+            "description": "Required. Name of the RBAC condition template."
+          }
+        },
+        "ExludededRoles": {
+          "type": "array",
+          "metadata": {
+            "description": "Required. The list of roles that are not allowed to be assigned by the delegate."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    },
+    "_1.roleAssignmentConditionType": {
+      "type": "object",
+      "properties": {
+        "roleConditionType": {
+          "$ref": "#/definitions/_1.constrainedDelegationTemplatesType",
+          "nullable": true,
+          "metadata": {
+            "description": "Required. The type of template for the role assignment condition."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the condition template."
+          }
+        },
+        "delegationCode": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "principalId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The principal ID of the user, group, or service principal."
+            }
+          },
+          "definition": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The role definition ID or name."
+            }
+          },
+          "relativeScope": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The relative scope of the role assignment."
+            }
+          },
+          "roleAssignmentCondition": {
+            "$ref": "#/definitions/_1.roleAssignmentConditionType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The condition for the role assignment."
+            }
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    }
   },
   "parameters": {
     "subscriptionAliasEnabled": {
@@ -235,7 +452,7 @@
       }
     },
     "roleAssignments": {
-      "type": "array",
+      "$ref": "#/definitions/roleAssignmentType",
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Supply an array of objects containing the details of the role assignments to create.\n\nEach object must contain the following `keys`:\n- `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.\n- `definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:\n  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator (Preview), and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.\n  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition\n    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`\n- `relativeScope` = 2 options can be provided for input value:\n    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope\n    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.\n"
@@ -293,7 +510,7 @@
     },
     "deploymentScriptStorageAccountName": {
       "type": "string",
-      "defaultValue": "[format('stgds{0}', substring(uniqueString(deployment().name, parameters('virtualNetworkLocation')), 0, 4))]",
+      "defaultValue": "[format('stgds{0}', substring(uniqueString(deployment().name, parameters('virtualNetworkLocation')), 0, 10))]",
       "metadata": {
         "description": "Optional. The name of the storage account for the deployment script."
       }
@@ -393,8 +610,8 @@
       "createSubscriptionResources": "[take(format('lz-vend-sub-res-create-{0}-{1}', parameters('subscriptionAliasName'), uniqueString(parameters('subscriptionAliasName'), parameters('subscriptionDisplayName'), parameters('subscriptionBillingScope'), parameters('subscriptionWorkload'), parameters('existingSubscriptionId'), deployment().name)), 64)]"
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
@@ -415,7 +632,7 @@
         }
       }
     },
-    {
+    "createSubscription": {
       "condition": "[and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -540,7 +757,7 @@
         }
       }
     },
-    {
+    "createSubscriptionResources": {
       "condition": "[or(parameters('subscriptionAliasEnabled'), not(empty(parameters('existingSubscriptionId'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -552,7 +769,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "subscriptionId": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), createObject('value', reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionId.value), createObject('value', parameters('existingSubscriptionId')))]",
+          "subscriptionId": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), createObject('value', reference('createSubscription').outputs.subscriptionId.value), createObject('value', parameters('existingSubscriptionId')))]",
           "managementGroupAssociationDelayCount": {
             "value": "[parameters('managementGroupAssociationDelayCount')]"
           },
@@ -658,17 +875,321 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "2549730186599602050"
+              "templateHash": "1508834239626613483"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
             "details": "These are the input parameters for the Bicep module: [`deploy.bicep`](./deploy.bicep)\n\nThis is the sub-orchestration module that is used and called by the [`main.bicep`](../../../main.bicep)  module to deploy the resources into the subscription that has been created (or an existing one provided), based on the parameter input values that are provided to it at deployment time from the `main.bicep` orchestration module.\n\n> ⚠️ It is not intended for this module to be called outside of being a sub-orchestration module for the `main.bicep` module ⚠️"
           },
+          "definitions": {
+            "roleAssignmentType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "principalId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The principal ID of the user, group, or service principal."
+                    }
+                  },
+                  "definition": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The role definition ID or name."
+                    }
+                  },
+                  "relativeScope": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The relative scope of the role assignment."
+                    }
+                  },
+                  "roleAssignmentCondition": {
+                    "$ref": "#/definitions/roleAssignmentConditionType",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The condition for the role assignment."
+                    }
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "constrainRolesType": {
+              "type": "object",
+              "properties": {
+                "templateName": {
+                  "type": "string",
+                  "allowedValues": [
+                    "constrainRoles"
+                  ],
+                  "metadata": {
+                    "description": "Required. Name of the RBAC condition template."
+                  }
+                },
+                "rolesToAssign": {
+                  "type": "array",
+                  "metadata": {
+                    "description": "Required. The list of roles that are allowed to be assigned by the delegate."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "constrainRolesAndPrincipalTypesType": {
+              "type": "object",
+              "properties": {
+                "templateName": {
+                  "type": "string",
+                  "allowedValues": [
+                    "constrainRolesAndPrincipalTypes"
+                  ],
+                  "metadata": {
+                    "description": "Required. Name of the RBAC condition template."
+                  }
+                },
+                "rolesToAssign": {
+                  "type": "array",
+                  "metadata": {
+                    "description": "Required. The list of roles that are allowed to be assigned by the delegate."
+                  }
+                },
+                "principleTypesToAssign": {
+                  "type": "array",
+                  "allowedValues": [
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "metadata": {
+                    "description": "Required. The list of principle types that are allowed to be assigned roles by the delegate."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "constrainRolesAndPrincipalsType": {
+              "type": "object",
+              "properties": {
+                "templateName": {
+                  "type": "string",
+                  "allowedValues": [
+                    "constrainRolesAndPrincipals"
+                  ],
+                  "metadata": {
+                    "description": "Required. Name of the RBAC condition template."
+                  }
+                },
+                "rolesToAssign": {
+                  "type": "array",
+                  "metadata": {
+                    "description": "Required. The list of roles that are allowed to be assigned by the delegate."
+                  }
+                },
+                "principalsToAssignTo": {
+                  "type": "array",
+                  "metadata": {
+                    "description": "Required. The list of principals that are allowed to be assigned roles by the delegate."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "excludeRolesType": {
+              "type": "object",
+              "properties": {
+                "templateName": {
+                  "type": "string",
+                  "allowedValues": [
+                    "excludeRoles"
+                  ],
+                  "metadata": {
+                    "description": "Required. Name of the RBAC condition template."
+                  }
+                },
+                "ExludededRoles": {
+                  "type": "array",
+                  "metadata": {
+                    "description": "Required. The list of roles that are not allowed to be assigned by the delegate."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "constrainedDelegationTemplatesType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "templateName",
+                "mapping": {
+                  "excludeRoles": {
+                    "$ref": "#/definitions/excludeRolesType"
+                  },
+                  "constrainRoles": {
+                    "$ref": "#/definitions/constrainRolesType"
+                  },
+                  "constrainRolesAndPrincipalTypes": {
+                    "$ref": "#/definitions/constrainRolesAndPrincipalTypesType"
+                  },
+                  "constrainRolesAndPrincipals": {
+                    "$ref": "#/definitions/constrainRolesAndPrincipalsType"
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "roleAssignmentConditionType": {
+              "type": "object",
+              "properties": {
+                "roleConditionType": {
+                  "$ref": "#/definitions/constrainedDelegationTemplatesType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Required. The type of template for the role assignment condition."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The version of the condition template."
+                  }
+                },
+                "delegationCode": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            }
+          },
+          "functions": [
+            {
+              "namespace": "__bicep",
+              "members": {
+                "generateCodeRolesType": {
+                  "parameters": [
+                    {
+                      "$ref": "#/definitions/constrainRolesType",
+                      "name": "constrainRoles"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}})) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{0}}}) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}}) OR (@Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{1}}}))))', __bicep.joinArray(parameters('constrainRoles').rolesToAssign), __bicep.joinArray(parameters('constrainRoles').rolesToAssign))]"
+                  },
+                  "metadata": {
+                    "description": "Generates the code for the \"Constrain Roles\" condition template.",
+                    "__bicep_export!": true
+                  }
+                },
+                "generateCodeRolesAndPrincipalsTypes": {
+                  "parameters": [
+                    {
+                      "$ref": "#/definitions/constrainRolesAndPrincipalTypesType",
+                      "name": "constrainRolesAndPrincipalsTypes"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{0}}} AND @Request[Microsoft.Authorization/roleAssignments:PrincipalType] ForAnyOfAnyValues:StringEqualsIgnoreCase {{{1}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}})) OR (@Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{2}}} AND @Resource[Microsoft.Authorization/roleAssignments:PrincipalType] ForAnyOfAnyValues:StringEqualsIgnoreCase {{{3}}})))', __bicep.joinArray(parameters('constrainRolesAndPrincipalsTypes').rolesToAssign), __bicep.joinArrayIgnoreCase(parameters('constrainRolesAndPrincipalsTypes').principleTypesToAssign), __bicep.joinArray(parameters('constrainRolesAndPrincipalsTypes').rolesToAssign), __bicep.joinArrayIgnoreCase(parameters('constrainRolesAndPrincipalsTypes').principleTypesToAssign))]"
+                  },
+                  "metadata": {
+                    "description": "Generates the code for the \"Constrain Roles and Principal types\" condition template.",
+                    "__bicep_export!": true
+                  }
+                },
+                "generateCodeRolesAndPrincipals": {
+                  "parameters": [
+                    {
+                      "$ref": "#/definitions/constrainRolesAndPrincipalsType",
+                      "name": "constrainRolesAndPrincipals"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{0}}} AND @Request[Microsoft.Authorization/roleAssignments:PrincipalId] ForAnyOfAnyValues:GuidEquals {{{1}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}})) OR (@Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{2}}} AND @Resource[Microsoft.Authorization/roleAssignments:PrincipalId] ForAnyOfAnyValues:GuidEquals {{{3}}})))', __bicep.joinArray(parameters('constrainRolesAndPrincipals').rolesToAssign), __bicep.joinArray(parameters('constrainRolesAndPrincipals').principalsToAssignTo), __bicep.joinArray(parameters('constrainRolesAndPrincipals').rolesToAssign), __bicep.joinArray(parameters('constrainRolesAndPrincipals').principalsToAssignTo))]"
+                  },
+                  "metadata": {
+                    "description": "Generates the code for the \"Constrain Roles and Principals\" condition template.",
+                    "__bicep_export!": true
+                  }
+                },
+                "generateCodeExcludeRoles": {
+                  "parameters": [
+                    {
+                      "$ref": "#/definitions/excludeRolesType",
+                      "name": "excludeRoles"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{0}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{1}}}))))', __bicep.joinArray(parameters('excludeRoles').ExludededRoles), __bicep.joinArray(parameters('excludeRoles').ExludededRoles))]"
+                  },
+                  "metadata": {
+                    "description": "Generates the code for the \"Exclude Roles\" condition template.",
+                    "__bicep_export!": true
+                  }
+                },
+                "joinArray": {
+                  "parameters": [
+                    {
+                      "type": "array",
+                      "name": "roles"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[replace(join(parameters('roles'), ','), '\"', '')]"
+                  },
+                  "metadata": {
+                    "__bicep_export!": true
+                  }
+                },
+                "joinArrayIgnoreCase": {
+                  "parameters": [
+                    {
+                      "type": "array",
+                      "name": "principalTypes"
+                    }
+                  ],
+                  "output": {
+                    "type": "string",
+                    "value": "[format('''{0}''', replace(replace(join(parameters('principalTypes'), ','), '\"', ''''), ',', ''','''))]"
+                  },
+                  "metadata": {
+                    "__bicep_export!": true
+                  }
+                }
+              }
+            }
+          ],
           "parameters": {
             "subscriptionId": {
               "type": "string",
@@ -831,7 +1352,7 @@
               }
             },
             "roleAssignments": {
-              "type": "array",
+              "$ref": "#/definitions/roleAssignmentType",
               "defaultValue": [],
               "metadata": {
                 "description": "Supply an array of objects containing the details of the role assignments to create."
@@ -1019,8 +1540,8 @@
             "virtualWanHubConnectionPropogatedLabels": "[if(not(empty(parameters('virtualNetworkVwanPropagatedLabels'))), parameters('virtualNetworkVwanPropagatedLabels'), createArray('default'))]",
             "resourceProvidersFormatted": "[replace(string(parameters('resourceProviders')), '\"', '\\\"')]"
           },
-          "resources": [
-            {
+          "resources": {
+            "moveSubscriptionToManagementGroupDelay": {
               "copy": {
                 "name": "moveSubscriptionToManagementGroupDelay",
                 "count": "[length(range(0, parameters('managementGroupAssociationDelayCount')))]",
@@ -1041,7 +1562,7 @@
                 }
               }
             },
-            {
+            "moveSubscriptionToManagementGroup": {
               "condition": "[and(parameters('subscriptionManagementGroupAssociationEnabled'), not(empty(parameters('subscriptionManagementGroupId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -1099,7 +1620,7 @@
                 "moveSubscriptionToManagementGroupDelay"
               ]
             },
-            {
+            "tagSubscription": {
               "condition": "[not(empty(parameters('subscriptionTags')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -1464,7 +1985,7 @@
                 }
               }
             },
-            {
+            "createResourceGroupForLzNetworking": {
               "condition": "[and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -1925,7 +2446,7 @@
                 }
               }
             },
-            {
+            "tagResourceGroup": {
               "condition": "[and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), not(empty(parameters('virtualNetworkResourceGroupTags'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -2293,10 +2814,10 @@
                 }
               },
               "dependsOn": [
-                "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', variables('deploymentNames').createResourceGroupForLzNetworking)]"
+                "createResourceGroupForLzNetworking"
               ]
             },
-            {
+            "createLzVnet": {
               "condition": "[and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -2339,232 +2860,14 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "15949466154563447171"
+                      "version": "0.30.23.60470",
+                      "templateHash": "12023193036665775110"
                     },
                     "name": "Virtual Networks",
                     "description": "This module deploys a Virtual Network (vNet).",
                     "owner": "Azure/module-maintainers"
                   },
                   "definitions": {
-                    "lockType": {
-                      "type": "object",
-                      "properties": {
-                        "name": {
-                          "type": "string",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. Specify the name of lock."
-                          }
-                        },
-                        "kind": {
-                          "type": "string",
-                          "allowedValues": [
-                            "CanNotDelete",
-                            "None",
-                            "ReadOnly"
-                          ],
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. Specify the type of lock."
-                          }
-                        }
-                      },
-                      "nullable": true
-                    },
-                    "roleAssignmentType": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                            }
-                          },
-                          "roleDefinitionIdOrName": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                            }
-                          },
-                          "principalId": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                            }
-                          },
-                          "principalType": {
-                            "type": "string",
-                            "allowedValues": [
-                              "Device",
-                              "ForeignGroup",
-                              "Group",
-                              "ServicePrincipal",
-                              "User"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The principal type of the assigned principal ID."
-                            }
-                          },
-                          "description": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The description of the role assignment."
-                            }
-                          },
-                          "condition": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                            }
-                          },
-                          "conditionVersion": {
-                            "type": "string",
-                            "allowedValues": [
-                              "2.0"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Version of the condition."
-                            }
-                          },
-                          "delegatedManagedIdentityResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The Resource Id of the delegated managed identity resource."
-                            }
-                          }
-                        }
-                      },
-                      "nullable": true
-                    },
-                    "diagnosticSettingType": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The name of diagnostic setting."
-                            }
-                          },
-                          "logCategoriesAndGroups": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "category": {
-                                  "type": "string",
-                                  "nullable": true,
-                                  "metadata": {
-                                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                                  }
-                                },
-                                "categoryGroup": {
-                                  "type": "string",
-                                  "nullable": true,
-                                  "metadata": {
-                                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                                  }
-                                },
-                                "enabled": {
-                                  "type": "bool",
-                                  "nullable": true,
-                                  "metadata": {
-                                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                                  }
-                                }
-                              }
-                            },
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-                            }
-                          },
-                          "metricCategories": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "category": {
-                                  "type": "string",
-                                  "metadata": {
-                                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                                  }
-                                },
-                                "enabled": {
-                                  "type": "bool",
-                                  "nullable": true,
-                                  "metadata": {
-                                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                                  }
-                                }
-                              }
-                            },
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-                            }
-                          },
-                          "logAnalyticsDestinationType": {
-                            "type": "string",
-                            "allowedValues": [
-                              "AzureDiagnostics",
-                              "Dedicated"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-                            }
-                          },
-                          "workspaceResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-                            }
-                          },
-                          "storageAccountResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-                            }
-                          },
-                          "eventHubAuthorizationRuleResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-                            }
-                          },
-                          "eventHubName": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-                            }
-                          },
-                          "marketplacePartnerResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-                            }
-                          }
-                        }
-                      },
-                      "nullable": true
-                    },
                     "peeringType": {
                       "type": "object",
                       "properties": {
@@ -2727,9 +3030,10 @@
                         "privateEndpointNetworkPolicies": {
                           "type": "string",
                           "allowedValues": [
-                            "",
                             "Disabled",
-                            "Enabled"
+                            "Enabled",
+                            "NetworkSecurityGroupEnabled",
+                            "RouteTableEnabled"
                           ],
                           "nullable": true,
                           "metadata": {
@@ -2739,7 +3043,6 @@
                         "privateLinkServiceNetworkPolicies": {
                           "type": "string",
                           "allowedValues": [
-                            "",
                             "Disabled",
                             "Enabled"
                           ],
@@ -2749,7 +3052,11 @@
                           }
                         },
                         "roleAssignments": {
-                          "$ref": "#/definitions/roleAssignmentType",
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/definitions/roleAssignmentType"
+                          },
+                          "nullable": true,
                           "metadata": {
                             "description": "Optional. Array of role assignments to create."
                           }
@@ -2798,6 +3105,233 @@
                           "metadata": {
                             "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
                           }
+                        }
+                      }
+                    },
+                    "diagnosticSettingFullType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of the diagnostic setting."
+                          }
+                        },
+                        "logCategoriesAndGroups": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "category": {
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                                }
+                              },
+                              "categoryGroup": {
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                                }
+                              },
+                              "enabled": {
+                                "type": "bool",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                }
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                          }
+                        },
+                        "metricCategories": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "category": {
+                                "type": "string",
+                                "metadata": {
+                                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                                }
+                              },
+                              "enabled": {
+                                "type": "bool",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                }
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+                          }
+                        },
+                        "logAnalyticsDestinationType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "AzureDiagnostics",
+                            "Dedicated"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                          }
+                        },
+                        "workspaceResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "storageAccountResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "eventHubAuthorizationRuleResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                          }
+                        },
+                        "eventHubName": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "marketplacePartnerResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+                        }
+                      }
+                    },
+                    "lockType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the name of lock."
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "allowedValues": [
+                            "CanNotDelete",
+                            "None",
+                            "ReadOnly"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the type of lock."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a lock.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+                        }
+                      }
+                    },
+                    "roleAssignmentType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                          }
+                        },
+                        "roleDefinitionIdOrName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                          }
+                        },
+                        "principalId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a role assignment.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
                         }
                       }
                     }
@@ -2893,19 +3427,28 @@
                       }
                     },
                     "diagnosticSettings": {
-                      "$ref": "#/definitions/diagnosticSettingType",
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/diagnosticSettingFullType"
+                      },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. The diagnostic settings of the service."
                       }
                     },
                     "lock": {
                       "$ref": "#/definitions/lockType",
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. The lock settings of the service."
                       }
                     },
                     "roleAssignments": {
-                      "$ref": "#/definitions/roleAssignmentType",
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/roleAssignmentType"
+                      },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Array of role assignments to create."
                       }
@@ -2954,7 +3497,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.5.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -3138,8 +3681,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "5699372618313647761"
+                              "version": "0.30.23.60470",
+                              "templateHash": "6411714881793832751"
                             },
                             "name": "Virtual Network Subnets",
                             "description": "This module deploys a Virtual Network Subnet.",
@@ -3147,77 +3690,79 @@
                           },
                           "definitions": {
                             "roleAssignmentType": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "properties": {
-                                  "name": {
-                                    "type": "string",
-                                    "nullable": true,
-                                    "metadata": {
-                                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                                    }
-                                  },
-                                  "roleDefinitionIdOrName": {
-                                    "type": "string",
-                                    "metadata": {
-                                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                                    }
-                                  },
-                                  "principalId": {
-                                    "type": "string",
-                                    "metadata": {
-                                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                                    }
-                                  },
-                                  "principalType": {
-                                    "type": "string",
-                                    "allowedValues": [
-                                      "Device",
-                                      "ForeignGroup",
-                                      "Group",
-                                      "ServicePrincipal",
-                                      "User"
-                                    ],
-                                    "nullable": true,
-                                    "metadata": {
-                                      "description": "Optional. The principal type of the assigned principal ID."
-                                    }
-                                  },
-                                  "description": {
-                                    "type": "string",
-                                    "nullable": true,
-                                    "metadata": {
-                                      "description": "Optional. The description of the role assignment."
-                                    }
-                                  },
-                                  "condition": {
-                                    "type": "string",
-                                    "nullable": true,
-                                    "metadata": {
-                                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                                    }
-                                  },
-                                  "conditionVersion": {
-                                    "type": "string",
-                                    "allowedValues": [
-                                      "2.0"
-                                    ],
-                                    "nullable": true,
-                                    "metadata": {
-                                      "description": "Optional. Version of the condition."
-                                    }
-                                  },
-                                  "delegatedManagedIdentityResourceId": {
-                                    "type": "string",
-                                    "nullable": true,
-                                    "metadata": {
-                                      "description": "Optional. The Resource Id of the delegated managed identity resource."
-                                    }
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                                  }
+                                },
+                                "roleDefinitionIdOrName": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                                  }
+                                },
+                                "principalId": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                                  }
+                                },
+                                "principalType": {
+                                  "type": "string",
+                                  "allowedValues": [
+                                    "Device",
+                                    "ForeignGroup",
+                                    "Group",
+                                    "ServicePrincipal",
+                                    "User"
+                                  ],
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The principal type of the assigned principal ID."
+                                  }
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The description of the role assignment."
+                                  }
+                                },
+                                "condition": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                                  }
+                                },
+                                "conditionVersion": {
+                                  "type": "string",
+                                  "allowedValues": [
+                                    "2.0"
+                                  ],
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Version of the condition."
+                                  }
+                                },
+                                "delegatedManagedIdentityResourceId": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The Resource Id of the delegated managed identity resource."
                                   }
                                 }
                               },
-                              "nullable": true
+                              "metadata": {
+                                "description": "An AVM-aligned type for a role assignment.",
+                                "__bicep_imported_from!": {
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+                                }
+                              }
                             }
                           },
                           "parameters": {
@@ -3280,11 +3825,12 @@
                             },
                             "privateEndpointNetworkPolicies": {
                               "type": "string",
-                              "defaultValue": "",
+                              "nullable": true,
                               "allowedValues": [
                                 "Disabled",
                                 "Enabled",
-                                ""
+                                "NetworkSecurityGroupEnabled",
+                                "RouteTableEnabled"
                               ],
                               "metadata": {
                                 "description": "Optional. Enable or disable apply network policies on private endpoint in the subnet."
@@ -3292,11 +3838,10 @@
                             },
                             "privateLinkServiceNetworkPolicies": {
                               "type": "string",
-                              "defaultValue": "",
+                              "nullable": true,
                               "allowedValues": [
                                 "Disabled",
-                                "Enabled",
-                                ""
+                                "Enabled"
                               ],
                               "metadata": {
                                 "description": "Optional. Enable or disable apply network policies on private link service in the subnet."
@@ -3345,7 +3890,11 @@
                               }
                             },
                             "roleAssignments": {
-                              "$ref": "#/definitions/roleAssignmentType",
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/definitions/roleAssignmentType"
+                              },
+                              "nullable": true,
                               "metadata": {
                                 "description": "Optional. Array of role assignments to create."
                               }
@@ -3395,8 +3944,8 @@
                                 "routeTable": "[if(not(empty(parameters('routeTableResourceId'))), createObject('id', parameters('routeTableResourceId')), null())]",
                                 "natGateway": "[if(not(empty(parameters('natGatewayResourceId'))), createObject('id', parameters('natGatewayResourceId')), null())]",
                                 "delegations": "[if(not(empty(parameters('delegation'))), createArray(createObject('name', parameters('delegation'), 'properties', createObject('serviceName', parameters('delegation')))), createArray())]",
-                                "privateEndpointNetworkPolicies": "[if(not(empty(parameters('privateEndpointNetworkPolicies'))), parameters('privateEndpointNetworkPolicies'), null())]",
-                                "privateLinkServiceNetworkPolicies": "[if(not(empty(parameters('privateLinkServiceNetworkPolicies'))), parameters('privateLinkServiceNetworkPolicies'), null())]",
+                                "privateEndpointNetworkPolicies": "[parameters('privateEndpointNetworkPolicies')]",
+                                "privateLinkServiceNetworkPolicies": "[parameters('privateLinkServiceNetworkPolicies')]",
                                 "applicationGatewayIPConfigurations": "[parameters('applicationGatewayIPConfigurations')]",
                                 "serviceEndpointPolicies": "[parameters('serviceEndpointPolicies')]",
                                 "defaultOutboundAccess": "[parameters('defaultOutboundAccess')]",
@@ -3517,8 +4066,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "5206620163504251868"
+                              "version": "0.30.23.60470",
+                              "templateHash": "345394220621166229"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering.",
@@ -3623,7 +4172,8 @@
                         }
                       },
                       "dependsOn": [
-                        "virtualNetwork"
+                        "virtualNetwork",
+                        "virtualNetwork_subnets"
                       ]
                     },
                     "virtualNetwork_peering_remote": {
@@ -3674,8 +4224,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "5206620163504251868"
+                              "version": "0.30.23.60470",
+                              "templateHash": "345394220621166229"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering.",
@@ -3780,7 +4330,8 @@
                         }
                       },
                       "dependsOn": [
-                        "virtualNetwork"
+                        "virtualNetwork",
+                        "virtualNetwork_subnets"
                       ]
                     }
                   },
@@ -3837,10 +4388,10 @@
                 }
               },
               "dependsOn": [
-                "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', variables('deploymentNames').createResourceGroupForLzNetworking)]"
+                "createResourceGroupForLzNetworking"
               ]
             },
-            {
+            "createLzVirtualWanConnection": {
               "condition": "[and(and(and(and(and(and(and(and(parameters('virtualNetworkEnabled'), parameters('virtualNetworkPeeringEnabled')), not(empty(variables('virtualHubResourceIdChecked')))), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), not(empty(variables('virtualWanHubResourceGroupName')))), not(empty(variables('virtualWanHubSubscriptionId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -3951,11 +4502,11 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createLzVnet)]",
-                "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', variables('deploymentNames').createResourceGroupForLzNetworking)]"
+                "createLzVnet",
+                "createResourceGroupForLzNetworking"
               ]
             },
-            {
+            "createLzRoleAssignmentsSub": {
               "copy": {
                 "name": "createLzRoleAssignmentsSub",
                 "count": "[length(variables('roleAssignmentsSubscription'))]"
@@ -3982,7 +4533,9 @@
                   },
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"
-                  }
+                  },
+                  "conditionVersion": "[if(not(empty(coalesce(tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'roleAssignmentCondition'), createObject()))), createObject('value', coalesce(tryGet(tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'roleAssignmentCondition'), 'conditionVersion'), '2.0')), createObject('value', null()))]",
+                  "condition": "[if(empty(coalesce(tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'roleAssignmentCondition'), createObject())), createObject('value', null()), if(and(equals(tryGet(tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRoles'), empty(tryGet(tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode'))), createObject('value', __bicep.generateCodeRolesType(tryGet(tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType'))), if(and(equals(tryGet(tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipalTypes'), empty(tryGet(tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode'))), createObject('value', __bicep.generateCodeRolesAndPrincipalsTypes(tryGet(tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType'))), if(and(equals(tryGet(tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipals'), empty(tryGet(tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode'))), createObject('value', __bicep.generateCodeRolesAndPrincipals(tryGet(tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType'))), if(and(equals(tryGet(tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'excludeRoles'), empty(tryGet(tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode'))), createObject('value', __bicep.generateCodeExcludeRoles(tryGet(tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType'))), if(not(empty(tryGet(tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode'))), createObject('value', tryGet(tryGet(variables('roleAssignmentsSubscription')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode')), createObject('value', null())))))))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
@@ -3990,8 +4543,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "4635601566143603046"
+                      "version": "0.28.1.47646",
+                      "templateHash": "4097241605548087035"
                     },
                     "name": "Role Assignments (All scopes)",
                     "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.",
@@ -4096,8 +4649,8 @@
                     {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2023-07-01",
-                      "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('0.1.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -4150,8 +4703,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "13749459126745145624"
+                              "version": "0.28.1.47646",
+                              "templateHash": "8906093264527258150"
                             },
                             "name": "Role Assignments (Management Group scope)",
                             "description": "This module deploys a Role Assignment at a Management Group scope.",
@@ -4314,8 +4867,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "4516670639800961845"
+                              "version": "0.28.1.47646",
+                              "templateHash": "707244099707019442"
                             },
                             "name": "Role Assignments (Subscription scope)",
                             "description": "This module deploys a Role Assignment at a Subscription scope.",
@@ -4486,8 +5039,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "7241874480439813582"
+                              "version": "0.28.1.47646",
+                              "templateHash": "14591941439222880522"
                             },
                             "name": "Role Assignments (Resource Group scope)",
                             "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -4652,7 +5205,7 @@
                 }
               }
             },
-            {
+            "createLzRoleAssignmentsRsgsSelf": {
               "copy": {
                 "name": "createLzRoleAssignmentsRsgsSelf",
                 "count": "[length(variables('roleAssignmentsResourceGroupSelf'))]"
@@ -4682,7 +5235,9 @@
                   },
                   "resourceGroupName": {
                     "value": "[split(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].relativeScope, '/')[2]]"
-                  }
+                  },
+                  "conditionVersion": "[if(not(empty(coalesce(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'roleAssignmentCondition'), createObject()))), createObject('value', coalesce(tryGet(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'roleAssignmentCondition'), 'conditionVersion'), '2.0')), createObject('value', null()))]",
+                  "condition": "[if(empty(coalesce(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'roleAssignmentCondition'), createObject())), createObject('value', null()), if(and(equals(tryGet(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRoles'), empty(tryGet(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode'))), createObject('value', __bicep.generateCodeRolesType(tryGet(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType'))), if(and(equals(tryGet(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipalTypes'), empty(tryGet(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode'))), createObject('value', __bicep.generateCodeRolesAndPrincipalsTypes(tryGet(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType'))), if(and(equals(tryGet(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipals'), empty(tryGet(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode'))), createObject('value', __bicep.generateCodeRolesAndPrincipals(tryGet(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType'))), if(and(equals(tryGet(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'excludeRoles'), empty(tryGet(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode'))), createObject('value', __bicep.generateCodeExcludeRoles(tryGet(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType'))), if(not(empty(tryGet(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode'))), createObject('value', tryGet(tryGet(variables('roleAssignmentsResourceGroupSelf')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode')), createObject('value', null())))))))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
@@ -4690,8 +5245,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "4635601566143603046"
+                      "version": "0.28.1.47646",
+                      "templateHash": "4097241605548087035"
                     },
                     "name": "Role Assignments (All scopes)",
                     "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.",
@@ -4796,8 +5351,8 @@
                     {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2023-07-01",
-                      "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('0.1.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -4850,8 +5405,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "13749459126745145624"
+                              "version": "0.28.1.47646",
+                              "templateHash": "8906093264527258150"
                             },
                             "name": "Role Assignments (Management Group scope)",
                             "description": "This module deploys a Role Assignment at a Management Group scope.",
@@ -5014,8 +5569,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "4516670639800961845"
+                              "version": "0.28.1.47646",
+                              "templateHash": "707244099707019442"
                             },
                             "name": "Role Assignments (Subscription scope)",
                             "description": "This module deploys a Role Assignment at a Subscription scope.",
@@ -5186,8 +5741,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "7241874480439813582"
+                              "version": "0.28.1.47646",
+                              "templateHash": "14591941439222880522"
                             },
                             "name": "Role Assignments (Resource Group scope)",
                             "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -5352,10 +5907,10 @@
                 }
               },
               "dependsOn": [
-                "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', variables('deploymentNames').createResourceGroupForLzNetworking)]"
+                "createResourceGroupForLzNetworking"
               ]
             },
-            {
+            "createLzRoleAssignmentsRsgsNotSelf": {
               "copy": {
                 "name": "createLzRoleAssignmentsRsgsNotSelf",
                 "count": "[length(variables('roleAssignmentsResourceGroupNotSelf'))]"
@@ -5385,7 +5940,9 @@
                   },
                   "resourceGroupName": {
                     "value": "[split(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].relativeScope, '/')[2]]"
-                  }
+                  },
+                  "conditionVersion": "[if(not(empty(coalesce(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'roleAssignmentCondition'), createObject()))), createObject('value', coalesce(tryGet(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'roleAssignmentCondition'), 'conditionVersion'), '2.0')), createObject('value', null()))]",
+                  "condition": "[if(empty(coalesce(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'roleAssignmentCondition'), createObject())), createObject('value', null()), if(and(equals(tryGet(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRoles'), empty(tryGet(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode'))), createObject('value', __bicep.generateCodeRolesType(tryGet(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType'))), if(and(equals(tryGet(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipalTypes'), empty(tryGet(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode'))), createObject('value', __bicep.generateCodeRolesAndPrincipalsTypes(tryGet(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType'))), if(and(equals(tryGet(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'constrainRolesAndPrincipals'), empty(tryGet(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode'))), createObject('value', __bicep.generateCodeRolesAndPrincipals(tryGet(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType'))), if(and(equals(tryGet(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType', 'templateName'), 'excludeRoles'), empty(tryGet(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode'))), createObject('value', __bicep.generateCodeExcludeRoles(tryGet(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'roleAssignmentCondition'), 'roleConditionType'))), if(not(empty(tryGet(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode'))), createObject('value', tryGet(tryGet(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()], 'roleAssignmentCondition'), 'delegationCode')), createObject('value', null())))))))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
@@ -5393,8 +5950,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "4635601566143603046"
+                      "version": "0.28.1.47646",
+                      "templateHash": "4097241605548087035"
                     },
                     "name": "Role Assignments (All scopes)",
                     "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.",
@@ -5499,8 +6056,8 @@
                     {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2023-07-01",
-                      "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('0.1.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -5553,8 +6110,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "13749459126745145624"
+                              "version": "0.28.1.47646",
+                              "templateHash": "8906093264527258150"
                             },
                             "name": "Role Assignments (Management Group scope)",
                             "description": "This module deploys a Role Assignment at a Management Group scope.",
@@ -5717,8 +6274,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "4516670639800961845"
+                              "version": "0.28.1.47646",
+                              "templateHash": "707244099707019442"
                             },
                             "name": "Role Assignments (Subscription scope)",
                             "description": "This module deploys a Role Assignment at a Subscription scope.",
@@ -5889,8 +6446,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "7241874480439813582"
+                              "version": "0.28.1.47646",
+                              "templateHash": "14591941439222880522"
                             },
                             "name": "Role Assignments (Resource Group scope)",
                             "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -6055,7 +6612,7 @@
                 }
               }
             },
-            {
+            "createResourceGroupForDeploymentScript": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -6515,7 +7072,7 @@
                 }
               }
             },
-            {
+            "createManagedIdentityForDeploymentScript": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -6969,10 +7526,10 @@
                 }
               },
               "dependsOn": [
-                "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', variables('deploymentNames').createResourceGroupForDeploymentScript)]"
+                "createResourceGroupForDeploymentScript"
               ]
             },
-            {
+            "createRoleAssignmentsDeploymentScript": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -6987,7 +7544,7 @@
                   "location": {
                     "value": "[parameters('deploymentScriptLocation')]"
                   },
-                  "principalId": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDeploymentScriptManagedIdentity), '2022-09-01').outputs.principalId.value), createObject('value', ''))]",
+                  "principalId": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference('createManagedIdentityForDeploymentScript').outputs.principalId.value), createObject('value', ''))]",
                   "roleDefinitionIdOrName": {
                     "value": "Contributor"
                   },
@@ -7001,8 +7558,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "4635601566143603046"
+                      "version": "0.28.1.47646",
+                      "templateHash": "4097241605548087035"
                     },
                     "name": "Role Assignments (All scopes)",
                     "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.",
@@ -7107,8 +7664,8 @@
                     {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2023-07-01",
-                      "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('0.1.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -7161,8 +7718,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "13749459126745145624"
+                              "version": "0.28.1.47646",
+                              "templateHash": "8906093264527258150"
                             },
                             "name": "Role Assignments (Management Group scope)",
                             "description": "This module deploys a Role Assignment at a Management Group scope.",
@@ -7325,8 +7882,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "4516670639800961845"
+                              "version": "0.28.1.47646",
+                              "templateHash": "707244099707019442"
                             },
                             "name": "Role Assignments (Subscription scope)",
                             "description": "This module deploys a Role Assignment at a Subscription scope.",
@@ -7497,8 +8054,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "7241874480439813582"
+                              "version": "0.28.1.47646",
+                              "templateHash": "14591941439222880522"
                             },
                             "name": "Role Assignments (Resource Group scope)",
                             "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -7663,10 +8220,10 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDeploymentScriptManagedIdentity)]"
+                "createManagedIdentityForDeploymentScript"
               ]
             },
-            {
+            "createRoleAssignmentsDeploymentScriptStorageAccount": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -7681,7 +8238,7 @@
                   "location": {
                     "value": "[parameters('deploymentScriptLocation')]"
                   },
-                  "principalId": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDeploymentScriptManagedIdentity), '2022-09-01').outputs.principalId.value), createObject('value', ''))]",
+                  "principalId": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference('createManagedIdentityForDeploymentScript').outputs.principalId.value), createObject('value', ''))]",
                   "roleDefinitionIdOrName": {
                     "value": "/providers/Microsoft.Authorization/roleDefinitions/69566ab7-960f-475b-8e7c-b3118f30c6bd"
                   },
@@ -7698,8 +8255,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "4635601566143603046"
+                      "version": "0.28.1.47646",
+                      "templateHash": "4097241605548087035"
                     },
                     "name": "Role Assignments (All scopes)",
                     "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.",
@@ -7804,8 +8361,8 @@
                     {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2023-07-01",
-                      "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('0.1.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -7858,8 +8415,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "13749459126745145624"
+                              "version": "0.28.1.47646",
+                              "templateHash": "8906093264527258150"
                             },
                             "name": "Role Assignments (Management Group scope)",
                             "description": "This module deploys a Role Assignment at a Management Group scope.",
@@ -8022,8 +8579,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "4516670639800961845"
+                              "version": "0.28.1.47646",
+                              "templateHash": "707244099707019442"
                             },
                             "name": "Role Assignments (Subscription scope)",
                             "description": "This module deploys a Role Assignment at a Subscription scope.",
@@ -8194,8 +8751,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.26.170.59819",
-                              "templateHash": "7241874480439813582"
+                              "version": "0.28.1.47646",
+                              "templateHash": "14591941439222880522"
                             },
                             "name": "Role Assignments (Resource Group scope)",
                             "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -8360,10 +8917,10 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDeploymentScriptManagedIdentity)]"
+                "createManagedIdentityForDeploymentScript"
               ]
             },
-            {
+            "createDsNsg": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -8977,10 +9534,10 @@
                 }
               },
               "dependsOn": [
-                "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', variables('deploymentNames').createResourceGroupForDeploymentScript)]"
+                "createResourceGroupForDeploymentScript"
               ]
             },
-            {
+            "createDsStorageAccount": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -9012,7 +9569,7 @@
                       "virtualNetworkRules": [
                         {
                           "action": "Allow",
-                          "id": "[if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createdsVnet), '2022-09-01').outputs.subnetResourceIds.value[0], null())]"
+                          "id": "[if(not(empty(parameters('resourceProviders'))), reference('createDsVnet').outputs.subnetResourceIds.value[0], null())]"
                         }
                       ]
                     }
@@ -13657,11 +14214,11 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createdsVnet)]",
-                "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', take(format('{0}', variables('deploymentNames').createRoleAssignmentsDeploymentScriptStorageAccount), 64))]"
+                "createDsVnet",
+                "createRoleAssignmentsDeploymentScriptStorageAccount"
               ]
             },
-            {
+            "createDsVnet": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -13685,7 +14242,7 @@
                       "[parameters('virtualNetworkDeploymentScriptAddressPrefix')]"
                     ]
                   },
-                  "subnets": "[if(not(empty(parameters('resourceProviders'))), createObject('value', createArray(createObject('addressPrefix', if(not(empty(parameters('resourceProviders'))), cidrSubnet(parameters('virtualNetworkDeploymentScriptAddressPrefix'), 24, 0), null()), 'name', 'ds-subnet-001', 'networkSecurityGroupResourceId', if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDsNsg), '2022-09-01').outputs.resourceId.value, null()), 'serviceEndpoints', createArray('Microsoft.Storage'), 'delegation', 'Microsoft.ContainerInstance/containerGroups'))), createObject('value', null()))]",
+                  "subnets": "[if(not(empty(parameters('resourceProviders'))), createObject('value', createArray(createObject('addressPrefix', if(not(empty(parameters('resourceProviders'))), cidrSubnet(parameters('virtualNetworkDeploymentScriptAddressPrefix'), 24, 0), null()), 'name', 'ds-subnet-001', 'networkSecurityGroupResourceId', if(not(empty(parameters('resourceProviders'))), reference('createDsNsg').outputs.resourceId.value, null()), 'serviceEndpoints', createArray('Microsoft.Storage'), 'delegation', 'Microsoft.ContainerInstance/containerGroups'))), createObject('value', null()))]",
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   }
@@ -13697,232 +14254,14 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "15949466154563447171"
+                      "version": "0.30.23.60470",
+                      "templateHash": "12023193036665775110"
                     },
                     "name": "Virtual Networks",
                     "description": "This module deploys a Virtual Network (vNet).",
                     "owner": "Azure/module-maintainers"
                   },
                   "definitions": {
-                    "lockType": {
-                      "type": "object",
-                      "properties": {
-                        "name": {
-                          "type": "string",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. Specify the name of lock."
-                          }
-                        },
-                        "kind": {
-                          "type": "string",
-                          "allowedValues": [
-                            "CanNotDelete",
-                            "None",
-                            "ReadOnly"
-                          ],
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. Specify the type of lock."
-                          }
-                        }
-                      },
-                      "nullable": true
-                    },
-                    "roleAssignmentType": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                            }
-                          },
-                          "roleDefinitionIdOrName": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                            }
-                          },
-                          "principalId": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                            }
-                          },
-                          "principalType": {
-                            "type": "string",
-                            "allowedValues": [
-                              "Device",
-                              "ForeignGroup",
-                              "Group",
-                              "ServicePrincipal",
-                              "User"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The principal type of the assigned principal ID."
-                            }
-                          },
-                          "description": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The description of the role assignment."
-                            }
-                          },
-                          "condition": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                            }
-                          },
-                          "conditionVersion": {
-                            "type": "string",
-                            "allowedValues": [
-                              "2.0"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Version of the condition."
-                            }
-                          },
-                          "delegatedManagedIdentityResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The Resource Id of the delegated managed identity resource."
-                            }
-                          }
-                        }
-                      },
-                      "nullable": true
-                    },
-                    "diagnosticSettingType": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The name of diagnostic setting."
-                            }
-                          },
-                          "logCategoriesAndGroups": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "category": {
-                                  "type": "string",
-                                  "nullable": true,
-                                  "metadata": {
-                                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                                  }
-                                },
-                                "categoryGroup": {
-                                  "type": "string",
-                                  "nullable": true,
-                                  "metadata": {
-                                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                                  }
-                                },
-                                "enabled": {
-                                  "type": "bool",
-                                  "nullable": true,
-                                  "metadata": {
-                                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                                  }
-                                }
-                              }
-                            },
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-                            }
-                          },
-                          "metricCategories": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "category": {
-                                  "type": "string",
-                                  "metadata": {
-                                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                                  }
-                                },
-                                "enabled": {
-                                  "type": "bool",
-                                  "nullable": true,
-                                  "metadata": {
-                                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                                  }
-                                }
-                              }
-                            },
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-                            }
-                          },
-                          "logAnalyticsDestinationType": {
-                            "type": "string",
-                            "allowedValues": [
-                              "AzureDiagnostics",
-                              "Dedicated"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-                            }
-                          },
-                          "workspaceResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-                            }
-                          },
-                          "storageAccountResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-                            }
-                          },
-                          "eventHubAuthorizationRuleResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-                            }
-                          },
-                          "eventHubName": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-                            }
-                          },
-                          "marketplacePartnerResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-                            }
-                          }
-                        }
-                      },
-                      "nullable": true
-                    },
                     "peeringType": {
                       "type": "object",
                       "properties": {
@@ -14085,9 +14424,10 @@
                         "privateEndpointNetworkPolicies": {
                           "type": "string",
                           "allowedValues": [
-                            "",
                             "Disabled",
-                            "Enabled"
+                            "Enabled",
+                            "NetworkSecurityGroupEnabled",
+                            "RouteTableEnabled"
                           ],
                           "nullable": true,
                           "metadata": {
@@ -14097,7 +14437,6 @@
                         "privateLinkServiceNetworkPolicies": {
                           "type": "string",
                           "allowedValues": [
-                            "",
                             "Disabled",
                             "Enabled"
                           ],
@@ -14107,7 +14446,11 @@
                           }
                         },
                         "roleAssignments": {
-                          "$ref": "#/definitions/roleAssignmentType",
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/definitions/roleAssignmentType"
+                          },
+                          "nullable": true,
                           "metadata": {
                             "description": "Optional. Array of role assignments to create."
                           }
@@ -14156,6 +14499,233 @@
                           "metadata": {
                             "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
                           }
+                        }
+                      }
+                    },
+                    "diagnosticSettingFullType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of the diagnostic setting."
+                          }
+                        },
+                        "logCategoriesAndGroups": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "category": {
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                                }
+                              },
+                              "categoryGroup": {
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                                }
+                              },
+                              "enabled": {
+                                "type": "bool",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                }
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                          }
+                        },
+                        "metricCategories": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "category": {
+                                "type": "string",
+                                "metadata": {
+                                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                                }
+                              },
+                              "enabled": {
+                                "type": "bool",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                }
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+                          }
+                        },
+                        "logAnalyticsDestinationType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "AzureDiagnostics",
+                            "Dedicated"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                          }
+                        },
+                        "workspaceResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "storageAccountResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "eventHubAuthorizationRuleResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                          }
+                        },
+                        "eventHubName": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "marketplacePartnerResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+                        }
+                      }
+                    },
+                    "lockType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the name of lock."
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "allowedValues": [
+                            "CanNotDelete",
+                            "None",
+                            "ReadOnly"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the type of lock."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a lock.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+                        }
+                      }
+                    },
+                    "roleAssignmentType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                          }
+                        },
+                        "roleDefinitionIdOrName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                          }
+                        },
+                        "principalId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a role assignment.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
                         }
                       }
                     }
@@ -14251,19 +14821,28 @@
                       }
                     },
                     "diagnosticSettings": {
-                      "$ref": "#/definitions/diagnosticSettingType",
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/diagnosticSettingFullType"
+                      },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. The diagnostic settings of the service."
                       }
                     },
                     "lock": {
                       "$ref": "#/definitions/lockType",
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. The lock settings of the service."
                       }
                     },
                     "roleAssignments": {
-                      "$ref": "#/definitions/roleAssignmentType",
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/roleAssignmentType"
+                      },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Array of role assignments to create."
                       }
@@ -14312,7 +14891,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.5.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -14496,8 +15075,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "5699372618313647761"
+                              "version": "0.30.23.60470",
+                              "templateHash": "6411714881793832751"
                             },
                             "name": "Virtual Network Subnets",
                             "description": "This module deploys a Virtual Network Subnet.",
@@ -14505,77 +15084,79 @@
                           },
                           "definitions": {
                             "roleAssignmentType": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "properties": {
-                                  "name": {
-                                    "type": "string",
-                                    "nullable": true,
-                                    "metadata": {
-                                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                                    }
-                                  },
-                                  "roleDefinitionIdOrName": {
-                                    "type": "string",
-                                    "metadata": {
-                                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                                    }
-                                  },
-                                  "principalId": {
-                                    "type": "string",
-                                    "metadata": {
-                                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                                    }
-                                  },
-                                  "principalType": {
-                                    "type": "string",
-                                    "allowedValues": [
-                                      "Device",
-                                      "ForeignGroup",
-                                      "Group",
-                                      "ServicePrincipal",
-                                      "User"
-                                    ],
-                                    "nullable": true,
-                                    "metadata": {
-                                      "description": "Optional. The principal type of the assigned principal ID."
-                                    }
-                                  },
-                                  "description": {
-                                    "type": "string",
-                                    "nullable": true,
-                                    "metadata": {
-                                      "description": "Optional. The description of the role assignment."
-                                    }
-                                  },
-                                  "condition": {
-                                    "type": "string",
-                                    "nullable": true,
-                                    "metadata": {
-                                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                                    }
-                                  },
-                                  "conditionVersion": {
-                                    "type": "string",
-                                    "allowedValues": [
-                                      "2.0"
-                                    ],
-                                    "nullable": true,
-                                    "metadata": {
-                                      "description": "Optional. Version of the condition."
-                                    }
-                                  },
-                                  "delegatedManagedIdentityResourceId": {
-                                    "type": "string",
-                                    "nullable": true,
-                                    "metadata": {
-                                      "description": "Optional. The Resource Id of the delegated managed identity resource."
-                                    }
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                                  }
+                                },
+                                "roleDefinitionIdOrName": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                                  }
+                                },
+                                "principalId": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                                  }
+                                },
+                                "principalType": {
+                                  "type": "string",
+                                  "allowedValues": [
+                                    "Device",
+                                    "ForeignGroup",
+                                    "Group",
+                                    "ServicePrincipal",
+                                    "User"
+                                  ],
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The principal type of the assigned principal ID."
+                                  }
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The description of the role assignment."
+                                  }
+                                },
+                                "condition": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                                  }
+                                },
+                                "conditionVersion": {
+                                  "type": "string",
+                                  "allowedValues": [
+                                    "2.0"
+                                  ],
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Version of the condition."
+                                  }
+                                },
+                                "delegatedManagedIdentityResourceId": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The Resource Id of the delegated managed identity resource."
                                   }
                                 }
                               },
-                              "nullable": true
+                              "metadata": {
+                                "description": "An AVM-aligned type for a role assignment.",
+                                "__bicep_imported_from!": {
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+                                }
+                              }
                             }
                           },
                           "parameters": {
@@ -14638,11 +15219,12 @@
                             },
                             "privateEndpointNetworkPolicies": {
                               "type": "string",
-                              "defaultValue": "",
+                              "nullable": true,
                               "allowedValues": [
                                 "Disabled",
                                 "Enabled",
-                                ""
+                                "NetworkSecurityGroupEnabled",
+                                "RouteTableEnabled"
                               ],
                               "metadata": {
                                 "description": "Optional. Enable or disable apply network policies on private endpoint in the subnet."
@@ -14650,11 +15232,10 @@
                             },
                             "privateLinkServiceNetworkPolicies": {
                               "type": "string",
-                              "defaultValue": "",
+                              "nullable": true,
                               "allowedValues": [
                                 "Disabled",
-                                "Enabled",
-                                ""
+                                "Enabled"
                               ],
                               "metadata": {
                                 "description": "Optional. Enable or disable apply network policies on private link service in the subnet."
@@ -14703,7 +15284,11 @@
                               }
                             },
                             "roleAssignments": {
-                              "$ref": "#/definitions/roleAssignmentType",
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/definitions/roleAssignmentType"
+                              },
+                              "nullable": true,
                               "metadata": {
                                 "description": "Optional. Array of role assignments to create."
                               }
@@ -14753,8 +15338,8 @@
                                 "routeTable": "[if(not(empty(parameters('routeTableResourceId'))), createObject('id', parameters('routeTableResourceId')), null())]",
                                 "natGateway": "[if(not(empty(parameters('natGatewayResourceId'))), createObject('id', parameters('natGatewayResourceId')), null())]",
                                 "delegations": "[if(not(empty(parameters('delegation'))), createArray(createObject('name', parameters('delegation'), 'properties', createObject('serviceName', parameters('delegation')))), createArray())]",
-                                "privateEndpointNetworkPolicies": "[if(not(empty(parameters('privateEndpointNetworkPolicies'))), parameters('privateEndpointNetworkPolicies'), null())]",
-                                "privateLinkServiceNetworkPolicies": "[if(not(empty(parameters('privateLinkServiceNetworkPolicies'))), parameters('privateLinkServiceNetworkPolicies'), null())]",
+                                "privateEndpointNetworkPolicies": "[parameters('privateEndpointNetworkPolicies')]",
+                                "privateLinkServiceNetworkPolicies": "[parameters('privateLinkServiceNetworkPolicies')]",
                                 "applicationGatewayIPConfigurations": "[parameters('applicationGatewayIPConfigurations')]",
                                 "serviceEndpointPolicies": "[parameters('serviceEndpointPolicies')]",
                                 "defaultOutboundAccess": "[parameters('defaultOutboundAccess')]",
@@ -14875,8 +15460,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "5206620163504251868"
+                              "version": "0.30.23.60470",
+                              "templateHash": "345394220621166229"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering.",
@@ -14981,7 +15566,8 @@
                         }
                       },
                       "dependsOn": [
-                        "virtualNetwork"
+                        "virtualNetwork",
+                        "virtualNetwork_subnets"
                       ]
                     },
                     "virtualNetwork_peering_remote": {
@@ -15032,8 +15618,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.29.47.4906",
-                              "templateHash": "5206620163504251868"
+                              "version": "0.30.23.60470",
+                              "templateHash": "345394220621166229"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering.",
@@ -15138,7 +15724,8 @@
                         }
                       },
                       "dependsOn": [
-                        "virtualNetwork"
+                        "virtualNetwork",
+                        "virtualNetwork_subnets"
                       ]
                     }
                   },
@@ -15195,10 +15782,10 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDsNsg)]"
+                "createDsNsg"
               ]
             },
-            {
+            "registerResourceProviders": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -15238,9 +15825,9 @@
                   "runOnce": {
                     "value": true
                   },
-                  "managedIdentities": "[if(not(empty(parameters('resourceProviders'))), createObject('value', createObject('userAssignedResourcesIds', createArray(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDeploymentScriptManagedIdentity), '2022-09-01').outputs.resourceId.value))), createObject('value', null()))]",
-                  "storageAccountResourceId": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDsStorageAccount), '2022-09-01').outputs.resourceId.value), createObject('value', null()))]",
-                  "subnetResourceIds": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createdsVnet), '2022-09-01').outputs.subnetResourceIds.value), createObject('value', null()))]",
+                  "managedIdentities": "[if(not(empty(parameters('resourceProviders'))), createObject('value', createObject('userAssignedResourcesIds', createArray(reference('createManagedIdentityForDeploymentScript').outputs.resourceId.value))), createObject('value', null()))]",
+                  "storageAccountResourceId": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference('createDsStorageAccount').outputs.resourceId.value), createObject('value', null()))]",
+                  "subnetResourceIds": "[if(not(empty(parameters('resourceProviders'))), createObject('value', reference('createDsVnet').outputs.subnetResourceIds.value), createObject('value', null()))]",
                   "arguments": {
                     "value": "[format('-resourceProviders ''{0}'' -resourceProvidersFeatures -subscriptionId {1}', variables('resourceProvidersFormatted'), parameters('subscriptionId'))]"
                   },
@@ -15745,71 +16332,71 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDsStorageAccount)]",
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createdsVnet)]",
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createDeploymentScriptManagedIdentity)]"
+                "createDsStorageAccount",
+                "createDsVnet",
+                "createManagedIdentityForDeploymentScript"
               ]
             }
-          ],
+          },
           "outputs": {
             "failedProviders": {
               "type": "string",
-              "value": "[if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').registerResourceProviders), '2022-09-01').outputs.outputs.value.failedProvidersRegistrations, '')]"
+              "value": "[if(not(empty(parameters('resourceProviders'))), reference('registerResourceProviders').outputs.outputs.value.failedProvidersRegistrations, '')]"
             },
             "failedFeatures": {
               "type": "string",
-              "value": "[if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').registerResourceProviders), '2022-09-01').outputs.outputs.value.failedFeaturesRegistrations, '')]"
+              "value": "[if(not(empty(parameters('resourceProviders'))), reference('registerResourceProviders').outputs.outputs.value.failedFeaturesRegistrations, '')]"
             }
           }
         }
       },
       "dependsOn": [
-        "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription)]"
+        "createSubscription"
       ]
     }
-  ],
+  },
   "outputs": {
     "subscriptionId": {
       "type": "string",
       "metadata": {
         "description": "The Subscription ID that has been created or provided."
       },
-      "value": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionId.value, if(contains(variables('existingSubscriptionIDEmptyCheck'), 'No Subscription ID Provided'), variables('existingSubscriptionIDEmptyCheck'), format('{0}', parameters('existingSubscriptionId'))))]"
+      "value": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), reference('createSubscription').outputs.subscriptionId.value, if(contains(variables('existingSubscriptionIDEmptyCheck'), 'No Subscription ID Provided'), variables('existingSubscriptionIDEmptyCheck'), format('{0}', parameters('existingSubscriptionId'))))]"
     },
     "subscriptionResourceId": {
       "type": "string",
       "metadata": {
         "description": "The Subscription Resource ID that has been created or provided."
       },
-      "value": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionResourceId.value, if(contains(variables('existingSubscriptionIDEmptyCheck'), 'No Subscription ID Provided'), variables('existingSubscriptionIDEmptyCheck'), format('/subscriptions/{0}', parameters('existingSubscriptionId'))))]"
+      "value": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), reference('createSubscription').outputs.subscriptionResourceId.value, if(contains(variables('existingSubscriptionIDEmptyCheck'), 'No Subscription ID Provided'), variables('existingSubscriptionIDEmptyCheck'), format('/subscriptions/{0}', parameters('existingSubscriptionId'))))]"
     },
     "subscriptionAcceptOwnershipState": {
       "type": "string",
       "metadata": {
         "description": "The Subscription Owner State. Only used when creating MCA Subscriptions across tenants."
       },
-      "value": "[if(and(and(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), not(empty(parameters('subscriptionTenantId')))), not(empty(parameters('subscriptionOwnerId')))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionAcceptOwnershipState.value, 'N/A')]"
+      "value": "[if(and(and(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), not(empty(parameters('subscriptionTenantId')))), not(empty(parameters('subscriptionOwnerId')))), reference('createSubscription').outputs.subscriptionAcceptOwnershipState.value, 'N/A')]"
     },
     "subscriptionAcceptOwnershipUrl": {
       "type": "string",
       "metadata": {
         "description": "The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants."
       },
-      "value": "[if(and(and(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), not(empty(parameters('subscriptionTenantId')))), not(empty(parameters('subscriptionOwnerId')))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionAcceptOwnershipUrl.value, 'N/A')]"
+      "value": "[if(and(and(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), not(empty(parameters('subscriptionTenantId')))), not(empty(parameters('subscriptionOwnerId')))), reference('createSubscription').outputs.subscriptionAcceptOwnershipUrl.value, 'N/A')]"
     },
     "failedResourceProviders": {
       "type": "string",
       "metadata": {
         "description": "The resource providers that failed to register."
       },
-      "value": "[if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscriptionResources), '2022-09-01').outputs.failedProviders.value, '')]"
+      "value": "[if(not(empty(parameters('resourceProviders'))), reference('createSubscriptionResources').outputs.failedProviders.value, '')]"
     },
     "failedResourceProvidersFeatures": {
       "type": "string",
       "metadata": {
         "description": "The resource providers features that failed to register."
       },
-      "value": "[if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscriptionResources), '2022-09-01').outputs.failedFeatures.value, '')]"
+      "value": "[if(not(empty(parameters('resourceProviders'))), reference('createSubscriptionResources').outputs.failedFeatures.value, '')]"
     }
   }
 }
