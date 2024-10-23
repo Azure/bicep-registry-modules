@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "6521871129937528343"
+      "templateHash": "2224027190177398808"
     },
     "name": "Healthcare API Workspaces",
     "description": "This module deploys a Healthcare API Workspace.",
@@ -1117,7 +1117,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "6132652626401879766"
+              "templateHash": "8075255504556528583"
             },
             "name": "Healthcare API Workspace DICOM Services",
             "description": "This module deploys a Healthcare API Workspace DICOM Service.",
@@ -1318,7 +1318,7 @@
             "corsHeaders": {
               "type": "array",
               "metadata": {
-                "description": "Optional. Specify HTTP headers which can be used during the request. Use \"*\" for any header."
+                "description": "Required. Specify HTTP headers which can be used during the request. Use \"*\" for any header."
               }
             },
             "corsMethods": {
