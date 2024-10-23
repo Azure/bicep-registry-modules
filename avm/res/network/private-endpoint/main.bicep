@@ -9,13 +9,13 @@ param name string
 param subnetResourceId string
 
 @description('Optional. Application security groups in which the private endpoint IP configuration is included.')
-param applicationSecurityGroupResourceIds array?
+param applicationSecurityGroupResourceIds string[]?
 
 @description('Optional. The custom name of the network interface attached to the private endpoint.')
 param customNetworkInterfaceName string?
 
 @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
-param ipConfigurations ipConfigurationsType[]?
+param ipConfigurations ipConfigurationType[]?
 
 @description('Optional. The private DNS zone group to configure for the private endpoint.')
 param privateDnsZoneGroup privateDnsZoneGroupType?
@@ -38,10 +38,10 @@ param tags object?
 param customDnsConfigs customDnsConfigType[]?
 
 @description('Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource.')
-param manualPrivateLinkServiceConnections manualPrivateLinkServiceConnectionsType[]?
+param manualPrivateLinkServiceConnections manualPrivateLinkServiceConnectionType[]?
 
 @description('Optional. A grouping of information about the connection to the remote resource.')
-param privateLinkServiceConnections privateLinkServiceConnectionsType[]?
+param privateLinkServiceConnections privateLinkServiceConnectionType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -204,7 +204,7 @@ type privateDnsZoneGroupType = {
 }
 
 @export()
-type ipConfigurationsType = {
+type ipConfigurationType = {
   @description('Required. The name of the resource that is unique within a resource group.')
   name: string
 
@@ -222,7 +222,7 @@ type ipConfigurationsType = {
 }
 
 @export()
-type manualPrivateLinkServiceConnectionsType = {
+type manualPrivateLinkServiceConnectionType = {
   @description('Required. The name of the private link service connection.')
   name: string
 
@@ -240,7 +240,7 @@ type manualPrivateLinkServiceConnectionsType = {
 }
 
 @export()
-type privateLinkServiceConnectionsType = {
+type privateLinkServiceConnectionType = {
   @description('Required. The name of the private link service connection.')
   name: string
 
