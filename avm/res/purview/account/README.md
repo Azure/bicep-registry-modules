@@ -1078,15 +1078,13 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-accountprivateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-accountprivateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `accountPrivateEndpoints.customDnsConfigs.fqdn`
+**Optional parameters**
 
-FQDN that resolves to private endpoint IP address.
-
-- Required: No
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-accountprivateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `accountPrivateEndpoints.customDnsConfigs.ipAddresses`
 
@@ -1094,6 +1092,13 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `accountPrivateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
 
 ### Parameter: `accountPrivateEndpoints.customNetworkInterfaceName`
 
@@ -1627,15 +1632,13 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-eventhubprivateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-eventhubprivateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `eventHubPrivateEndpoints.customDnsConfigs.fqdn`
+**Optional parameters**
 
-FQDN that resolves to private endpoint IP address.
-
-- Required: No
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-eventhubprivateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `eventHubPrivateEndpoints.customDnsConfigs.ipAddresses`
 
@@ -1643,6 +1646,13 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `eventHubPrivateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
 
 ### Parameter: `eventHubPrivateEndpoints.customNetworkInterfaceName`
 
@@ -2094,15 +2104,13 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-portalprivateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-portalprivateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `portalPrivateEndpoints.customDnsConfigs.fqdn`
+**Optional parameters**
 
-FQDN that resolves to private endpoint IP address.
-
-- Required: No
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-portalprivateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `portalPrivateEndpoints.customDnsConfigs.ipAddresses`
 
@@ -2110,6 +2118,13 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `portalPrivateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
 
 ### Parameter: `portalPrivateEndpoints.customNetworkInterfaceName`
 
@@ -2608,15 +2623,13 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-storageblobprivateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-storageblobprivateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `storageBlobPrivateEndpoints.customDnsConfigs.fqdn`
+**Optional parameters**
 
-FQDN that resolves to private endpoint IP address.
-
-- Required: No
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-storageblobprivateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `storageBlobPrivateEndpoints.customDnsConfigs.ipAddresses`
 
@@ -2624,6 +2637,13 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `storageBlobPrivateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
 
 ### Parameter: `storageBlobPrivateEndpoints.customNetworkInterfaceName`
 
@@ -3009,15 +3029,13 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-storagequeueprivateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-storagequeueprivateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `storageQueuePrivateEndpoints.customDnsConfigs.fqdn`
+**Optional parameters**
 
-FQDN that resolves to private endpoint IP address.
-
-- Required: No
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-storagequeueprivateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `storageQueuePrivateEndpoints.customDnsConfigs.ipAddresses`
 
@@ -3025,6 +3043,13 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `storageQueuePrivateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
 
 ### Parameter: `storageQueuePrivateEndpoints.customNetworkInterfaceName`
 
