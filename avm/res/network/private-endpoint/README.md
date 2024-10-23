@@ -849,7 +849,7 @@ A list of private IP addresses of the private endpoint.
 
 FQDN that resolves to private endpoint IP address.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `customNetworkInterfaceName`
@@ -1027,7 +1027,7 @@ The resource id of private link service.
 
 A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `privateDnsZoneGroup`

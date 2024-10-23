@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "13790083532406916912"
+      "templateHash": "8362793153324787983"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster.",
@@ -19,7 +19,7 @@
         "value": {
           "type": "string",
           "metadata": {
-            "description": "Optional. GUID or valid URL representing an accepted audience."
+            "description": "Required. GUID or valid URL representing an accepted audience."
           }
         }
       },

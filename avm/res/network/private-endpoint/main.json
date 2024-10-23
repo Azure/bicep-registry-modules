@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "688035319963273524"
+      "templateHash": "9475287345712156585"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -204,6 +204,7 @@
               },
               "requestMessage": {
                 "type": "string",
+                "nullable": true,
                 "metadata": {
                   "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
                 }
@@ -269,6 +270,7 @@
         "properties": {
           "fqdn": {
             "type": "string",
+            "nullable": true,
             "metadata": {
               "description": "Optional. FQDN that resolves to private endpoint IP address."
             }

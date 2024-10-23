@@ -798,7 +798,7 @@ The Kusto Cluster's accepted audiences.
 - Type: array
 - Default: `[]`
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
