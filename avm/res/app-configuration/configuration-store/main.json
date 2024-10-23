@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "14971372454468107906"
+      "templateHash": "1061724596337882078"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store.",
@@ -960,7 +960,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "9705214022171357077"
+              "templateHash": "7558745915280433021"
             },
             "name": "App Configuration Replicas",
             "description": "This module deploys an App Configuration Replica.",
@@ -976,7 +976,7 @@
             "appConfigurationName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent app configuration store."
+                "description": "Conditional. The name of the parent app configuration store. Required if the template is used in a standalone deployment."
               }
             },
             "replicaLocation": {
