@@ -251,12 +251,6 @@ module testDeployment '../../../main.bicep' = [
               testKey: 'testValue'
             }
             allowProtectedAppendWrites: false
-            immutabilityPolicyName: 'default'
-            immutabilityPolicyProperties: {
-              immutabilityPeriodSinceCreationInDays: 666
-              allowProtectedAppendWrites: true
-              allowProtectedAppendWritesAll: false
-            }
           }
         ]
         automaticSnapshotPolicyEnabled: true
