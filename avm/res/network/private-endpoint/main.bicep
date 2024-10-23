@@ -290,7 +290,7 @@ type privateLinkServiceConnectionsType = {
 }[]?
 
 type customDnsConfigType = {
-  @description('Required. Fqdn that resolves to private endpoint IP address.')
+  @description('Required. FQDN that resolves to private endpoint IP address.')
   fqdn: string
 
   @description('Required. A list of private IP addresses of the private endpoint.')

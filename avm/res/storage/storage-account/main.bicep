@@ -831,7 +831,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint ip address.')
+    @description('Required. FQDN that resolves to private endpoint ip address.')
     fqdn: string?
 
     @description('Required. A list of private ip addresses of the private endpoint.')
