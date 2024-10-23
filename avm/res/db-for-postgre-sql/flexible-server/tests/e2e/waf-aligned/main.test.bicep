@@ -21,8 +21,6 @@ param serviceShort string = 'dfpsfswaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
-//////////////////////////
-/// need to change////////
 
 // ============ //
 // Dependencies //
