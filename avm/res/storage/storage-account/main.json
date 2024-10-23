@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "2539177874382575703"
+      "templateHash": "9000611860285870217"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -82,6 +82,9 @@
             "description": "Optional. Specifies the default action of allow or deny when no other rules match."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "secretsExportConfigurationType": {
@@ -121,6 +124,9 @@
             "description": "Optional. The connectionString2 secret name to create."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "secretsOutputType": {
@@ -2145,7 +2151,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "14184905621772237225"
+              "templateHash": "16085999990701852975"
             },
             "name": "Storage Account Local Users",
             "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication.",
@@ -2180,7 +2186,10 @@
                   }
                 }
               },
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
             }
           },
           "parameters": {
