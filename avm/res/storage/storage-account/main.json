@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "9000611860285870217"
+      "templateHash": "18039199717960862641"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -695,11 +695,18 @@
           "metadata": {
             "description": "The secret URI of the exported secret."
           }
+        },
+        "secretUriWithVersion": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI with version of the exported secret."
+          }
         }
       },
       "metadata": {
+        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "modules/keyVaultExport.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
         }
       }
     }
@@ -2151,7 +2158,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "16085999990701852975"
+              "templateHash": "6956015525711190964"
             },
             "name": "Storage Account Local Users",
             "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication.",
@@ -2186,7 +2193,6 @@
                   }
                 }
               },
-              "nullable": true,
               "metadata": {
                 "__bicep_export!": true
               }
@@ -2240,6 +2246,7 @@
             },
             "sshAuthorizedKeys": {
               "$ref": "#/definitions/sshAuthorizedKeysType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The local user SSH authorized keys for SFTP."
               }
@@ -5071,7 +5078,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "12263717469683062316"
+              "templateHash": "17674678201284157355"
             }
           },
           "definitions": {
@@ -5089,10 +5096,19 @@
                   "metadata": {
                     "description": "The secret URI of the exported secret."
                   }
+                },
+                "secretUriWithVersion": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The secret URI with version of the exported secret."
+                  }
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+                }
               }
             },
             "secretToSetType": {
@@ -5109,6 +5125,12 @@
                   "metadata": {
                     "description": "Required. The value of the secret to set."
                   }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for the secret to set via the secrets export feature.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
                 }
               }
             }
@@ -5166,7 +5188,8 @@
                 "count": "[length(range(0, length(coalesce(parameters('secretsToSet'), createArray()))))]",
                 "input": {
                   "secretResourceId": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretsToSet')[range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()]].name)]",
-                  "secretUri": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUri]"
+                  "secretUri": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUri]",
+                  "secretUriWithVersion": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUriWithVersion]"
                 }
               }
             }

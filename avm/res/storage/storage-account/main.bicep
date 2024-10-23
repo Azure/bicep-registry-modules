@@ -774,7 +774,7 @@ type secretsExportConfigurationType = {
   connectionString2: string?
 }
 
-import { secretSetType } from 'modules/keyVaultExport.bicep'
+import { secretSetType } from 'br/public:avm/utl/types/avm-common-types:0.1.0'
 type secretsOutputType = {
   @description('An exported secret\'s references.')
   *: secretSetType
