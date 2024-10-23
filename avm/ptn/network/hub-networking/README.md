@@ -18,7 +18,7 @@ This module is designed to simplify the creation of multi-region hub networks in
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/azureFirewalls` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/azureFirewalls) |
+| `Microsoft.Network/azureFirewalls` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/azureFirewalls) |
 | `Microsoft.Network/bastionHosts` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/bastionHosts) |
 | `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 | `Microsoft.Network/routeTables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables) |
@@ -2203,10 +2203,10 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/azure-firewall:0.5.0` | Remote reference |
+| `br/public:avm/res/network/azure-firewall:0.5.1` | Remote reference |
 | `br/public:avm/res/network/bastion-host:0.4.0` | Remote reference |
 | `br/public:avm/res/network/route-table:0.4.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.4.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.5.0` | Remote reference |
 
 ## Data Collection
 

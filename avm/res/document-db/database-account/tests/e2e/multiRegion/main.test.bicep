@@ -19,21 +19,9 @@ param namePrefix string = '#_namePrefix_#'
 
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'eastus2'
-
-// ============ //
-// Dependencies //
-// ============ //
-
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
-  params: {
-    location: enforcedLocation
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-  }
-}
+var enforcedLocation = 'australiaeast'
+#disable-next-line no-hardcoded-location
+var enforcedPairedLocation = 'uksouth'
 
 // ============== //
 // General resources
@@ -68,7 +56,7 @@ module testDeployment '../../../main.bicep' = {
       {
         failoverPriority: 1
         isZoneRedundant: true
-        locationName: nestedDependencies.outputs.pairedRegionName
+        locationName: enforcedPairedLocation
       }
     ]
     sqlDatabases: [
