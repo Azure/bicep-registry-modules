@@ -670,12 +670,12 @@ Describe 'Module tests' -Tag 'Module' {
                             link          = "$interfaceBase/diagnostic-settings"
                         }
                         @{
-                            parameterName = 'roleAssignments'
-                            link          = "$interfaceBase/role-assignments"
+                            parameterName  = 'roleAssignments'
+                            link           = "$interfaceBase/role-assignments"
                         }
                         @{
-                            parameterName = 'lock'
-                            link          = "$interfaceBase/resource-locks"
+                            parameterName  = 'lock'
+                            link           = "$interfaceBase/resource-locks"
                         }
                         @{
                             parameterName = 'managedIdentities'
