@@ -167,7 +167,7 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
         name: 'npuserpool'
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'standard_a2'
+        vmSize: 'Standard_DS2_v2'
       }
     ]
     agentPoolSize: 'Standard'
@@ -180,9 +180,9 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
     systemPoolConfig: [
       {
         availabilityZones: [
-          '1'
-          '2'
-          '3'
+          1
+          2
+          3
         ]
         count: 3
         enableAutoScaling: true
@@ -239,7 +239,7 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
           "name": "npuserpool",
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "standard_a2"
+          "vmSize": "Standard_DS2_v2"
         }
       ]
     },
@@ -268,9 +268,9 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
       "value": [
         {
           "availabilityZones": [
-            "1",
-            "2",
-            "3"
+            1,
+            2,
+            3
           ],
           "count": 3,
           "enableAutoScaling": true,
@@ -315,7 +315,7 @@ param agentPoolConfig = [
     name: 'npuserpool'
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'standard_a2'
+    vmSize: 'Standard_DS2_v2'
   }
 ]
 param agentPoolSize = 'Standard'
@@ -328,9 +328,9 @@ param skuTier = 'Free'
 param systemPoolConfig = [
   {
     availabilityZones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
     count: 3
     enableAutoScaling: true
@@ -468,7 +468,365 @@ Custom configuration of user node pool.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-agentpoolconfigname) | string | The name of the agent pool. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`availabilityZones`](#parameter-agentpoolconfigavailabilityzones) | array | The availability zones of the agent pool. |
+| [`count`](#parameter-agentpoolconfigcount) | int | The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
+| [`enableAutoScaling`](#parameter-agentpoolconfigenableautoscaling) | bool | Whether to enable auto-scaling for the agent pool. |
+| [`enableDefaultTelemetry`](#parameter-agentpoolconfigenabledefaulttelemetry) | bool | The enable default telemetry of the agent pool. |
+| [`enableEncryptionAtHost`](#parameter-agentpoolconfigenableencryptionathost) | bool | Whether to enable encryption at host for the agent pool. |
+| [`enableFIPS`](#parameter-agentpoolconfigenablefips) | bool | Whether to enable FIPS for the agent pool. |
+| [`enableNodePublicIP`](#parameter-agentpoolconfigenablenodepublicip) | bool | Whether to enable node public IP for the agent pool. |
+| [`enableUltraSSD`](#parameter-agentpoolconfigenableultrassd) | bool | Whether to enable Ultra SSD for the agent pool. |
+| [`gpuInstanceProfile`](#parameter-agentpoolconfiggpuinstanceprofile) | string | The GPU instance profile of the agent pool. |
+| [`kubeletDiskType`](#parameter-agentpoolconfigkubeletdisktype) | string | The kubelet disk type of the agent pool. |
+| [`maxCount`](#parameter-agentpoolconfigmaxcount) | int | The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
+| [`maxPods`](#parameter-agentpoolconfigmaxpods) | int | The maximum number of pods that can run on a node. |
+| [`maxSurge`](#parameter-agentpoolconfigmaxsurge) | string | The maximum number of nodes that can be created during an upgrade. |
+| [`minCount`](#parameter-agentpoolconfigmincount) | int | The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
+| [`minPods`](#parameter-agentpoolconfigminpods) | int | The minimum number of pods that can run on a node. |
+| [`mode`](#parameter-agentpoolconfigmode) | string | The mode of the agent pool. |
+| [`nodeLabels`](#parameter-agentpoolconfignodelabels) | object | The node labels of the agent pool. |
+| [`nodePublicIpPrefixResourceId`](#parameter-agentpoolconfignodepublicipprefixresourceid) | string | The node public IP prefix ID of the agent pool. |
+| [`nodeTaints`](#parameter-agentpoolconfignodetaints) | array | The node taints of the agent pool. |
+| [`orchestratorVersion`](#parameter-agentpoolconfigorchestratorversion) | string | The Kubernetes version of the agent pool. |
+| [`osDiskSizeGB`](#parameter-agentpoolconfigosdisksizegb) | int | The OS disk size in GB of the agent pool. |
+| [`osDiskType`](#parameter-agentpoolconfigosdisktype) | string | The OS disk type of the agent pool. |
+| [`osSku`](#parameter-agentpoolconfigossku) | string | The OS SKU of the agent pool. |
+| [`osType`](#parameter-agentpoolconfigostype) | string | The OS type of the agent pool. |
+| [`podSubnetResourceId`](#parameter-agentpoolconfigpodsubnetresourceid) | string | The pod subnet ID of the agent pool. |
+| [`proximityPlacementGroupResourceId`](#parameter-agentpoolconfigproximityplacementgroupresourceid) | string | The proximity placement group resource ID of the agent pool. |
+| [`scaleDownMode`](#parameter-agentpoolconfigscaledownmode) | string | The scale down mode of the agent pool. |
+| [`scaleSetEvictionPolicy`](#parameter-agentpoolconfigscalesetevictionpolicy) | string | The scale set eviction policy of the agent pool. |
+| [`scaleSetPriority`](#parameter-agentpoolconfigscalesetpriority) | string | The scale set priority of the agent pool. |
+| [`sourceResourceId`](#parameter-agentpoolconfigsourceresourceid) | string | The source resource ID to create the agent pool from. |
+| [`spotMaxPrice`](#parameter-agentpoolconfigspotmaxprice) | int | The spot max price of the agent pool. |
+| [`tags`](#parameter-agentpoolconfigtags) | object | The tags of the agent pool. |
+| [`type`](#parameter-agentpoolconfigtype) | string | The type of the agent pool. |
+| [`vmSize`](#parameter-agentpoolconfigvmsize) | string | The VM size of the agent pool. |
+| [`vnetSubnetResourceId`](#parameter-agentpoolconfigvnetsubnetresourceid) | string | The VNet subnet ID of the agent pool. |
+| [`workloadRuntime`](#parameter-agentpoolconfigworkloadruntime) | string | The workload runtime of the agent pool. |
+
+### Parameter: `agentPoolConfig.name`
+
+The name of the agent pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentPoolConfig.availabilityZones`
+
+The availability zones of the agent pool.
+
+- Required: No
+- Type: array
+
+### Parameter: `agentPoolConfig.count`
+
+The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
+
+- Required: No
+- Type: int
+
+### Parameter: `agentPoolConfig.enableAutoScaling`
+
+Whether to enable auto-scaling for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `agentPoolConfig.enableDefaultTelemetry`
+
+The enable default telemetry of the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `agentPoolConfig.enableEncryptionAtHost`
+
+Whether to enable encryption at host for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `agentPoolConfig.enableFIPS`
+
+Whether to enable FIPS for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `agentPoolConfig.enableNodePublicIP`
+
+Whether to enable node public IP for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `agentPoolConfig.enableUltraSSD`
+
+Whether to enable Ultra SSD for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `agentPoolConfig.gpuInstanceProfile`
+
+The GPU instance profile of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'MIG1g'
+    'MIG2g'
+    'MIG3g'
+    'MIG4g'
+    'MIG7g'
+  ]
+  ```
+
+### Parameter: `agentPoolConfig.kubeletDiskType`
+
+The kubelet disk type of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `agentPoolConfig.maxCount`
+
+The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
+
+- Required: No
+- Type: int
+
+### Parameter: `agentPoolConfig.maxPods`
+
+The maximum number of pods that can run on a node.
+
+- Required: No
+- Type: int
+
+### Parameter: `agentPoolConfig.maxSurge`
+
+The maximum number of nodes that can be created during an upgrade.
+
+- Required: No
+- Type: string
+
+### Parameter: `agentPoolConfig.minCount`
+
+The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
+
+- Required: No
+- Type: int
+
+### Parameter: `agentPoolConfig.minPods`
+
+The minimum number of pods that can run on a node.
+
+- Required: No
+- Type: int
+
+### Parameter: `agentPoolConfig.mode`
+
+The mode of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'System'
+    'User'
+  ]
+  ```
+
+### Parameter: `agentPoolConfig.nodeLabels`
+
+The node labels of the agent pool.
+
+- Required: No
+- Type: object
+
+### Parameter: `agentPoolConfig.nodePublicIpPrefixResourceId`
+
+The node public IP prefix ID of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `agentPoolConfig.nodeTaints`
+
+The node taints of the agent pool.
+
+- Required: No
+- Type: array
+
+### Parameter: `agentPoolConfig.orchestratorVersion`
+
+The Kubernetes version of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `agentPoolConfig.osDiskSizeGB`
+
+The OS disk size in GB of the agent pool.
+
+- Required: No
+- Type: int
+
+### Parameter: `agentPoolConfig.osDiskType`
+
+The OS disk type of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `agentPoolConfig.osSku`
+
+The OS SKU of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `agentPoolConfig.osType`
+
+The OS type of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Linux'
+    'Windows'
+  ]
+  ```
+
+### Parameter: `agentPoolConfig.podSubnetResourceId`
+
+The pod subnet ID of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `agentPoolConfig.proximityPlacementGroupResourceId`
+
+The proximity placement group resource ID of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `agentPoolConfig.scaleDownMode`
+
+The scale down mode of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Deallocate'
+    'Delete'
+  ]
+  ```
+
+### Parameter: `agentPoolConfig.scaleSetEvictionPolicy`
+
+The scale set eviction policy of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Deallocate'
+    'Delete'
+  ]
+  ```
+
+### Parameter: `agentPoolConfig.scaleSetPriority`
+
+The scale set priority of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Low'
+    'Regular'
+    'Spot'
+  ]
+  ```
+
+### Parameter: `agentPoolConfig.sourceResourceId`
+
+The source resource ID to create the agent pool from.
+
+- Required: No
+- Type: string
+
+### Parameter: `agentPoolConfig.spotMaxPrice`
+
+The spot max price of the agent pool.
+
+- Required: No
+- Type: int
+
+### Parameter: `agentPoolConfig.tags`
+
+The tags of the agent pool.
+
+- Required: No
+- Type: object
+
+### Parameter: `agentPoolConfig.type`
+
+The type of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AvailabilitySet'
+    'VirtualMachineScaleSets'
+  ]
+  ```
+
+### Parameter: `agentPoolConfig.vmSize`
+
+The VM size of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `agentPoolConfig.vnetSubnetResourceId`
+
+The VNet subnet ID of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `agentPoolConfig.workloadRuntime`
+
+The workload runtime of the agent pool.
+
+- Required: No
+- Type: string
 
 ### Parameter: `agentPoolSize`
 
@@ -803,7 +1161,365 @@ Custom configuration of system node pool.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-systempoolconfigname) | string | The name of the agent pool. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`availabilityZones`](#parameter-systempoolconfigavailabilityzones) | array | The availability zones of the agent pool. |
+| [`count`](#parameter-systempoolconfigcount) | int | The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
+| [`enableAutoScaling`](#parameter-systempoolconfigenableautoscaling) | bool | Whether to enable auto-scaling for the agent pool. |
+| [`enableDefaultTelemetry`](#parameter-systempoolconfigenabledefaulttelemetry) | bool | The enable default telemetry of the agent pool. |
+| [`enableEncryptionAtHost`](#parameter-systempoolconfigenableencryptionathost) | bool | Whether to enable encryption at host for the agent pool. |
+| [`enableFIPS`](#parameter-systempoolconfigenablefips) | bool | Whether to enable FIPS for the agent pool. |
+| [`enableNodePublicIP`](#parameter-systempoolconfigenablenodepublicip) | bool | Whether to enable node public IP for the agent pool. |
+| [`enableUltraSSD`](#parameter-systempoolconfigenableultrassd) | bool | Whether to enable Ultra SSD for the agent pool. |
+| [`gpuInstanceProfile`](#parameter-systempoolconfiggpuinstanceprofile) | string | The GPU instance profile of the agent pool. |
+| [`kubeletDiskType`](#parameter-systempoolconfigkubeletdisktype) | string | The kubelet disk type of the agent pool. |
+| [`maxCount`](#parameter-systempoolconfigmaxcount) | int | The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
+| [`maxPods`](#parameter-systempoolconfigmaxpods) | int | The maximum number of pods that can run on a node. |
+| [`maxSurge`](#parameter-systempoolconfigmaxsurge) | string | The maximum number of nodes that can be created during an upgrade. |
+| [`minCount`](#parameter-systempoolconfigmincount) | int | The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
+| [`minPods`](#parameter-systempoolconfigminpods) | int | The minimum number of pods that can run on a node. |
+| [`mode`](#parameter-systempoolconfigmode) | string | The mode of the agent pool. |
+| [`nodeLabels`](#parameter-systempoolconfignodelabels) | object | The node labels of the agent pool. |
+| [`nodePublicIpPrefixResourceId`](#parameter-systempoolconfignodepublicipprefixresourceid) | string | The node public IP prefix ID of the agent pool. |
+| [`nodeTaints`](#parameter-systempoolconfignodetaints) | array | The node taints of the agent pool. |
+| [`orchestratorVersion`](#parameter-systempoolconfigorchestratorversion) | string | The Kubernetes version of the agent pool. |
+| [`osDiskSizeGB`](#parameter-systempoolconfigosdisksizegb) | int | The OS disk size in GB of the agent pool. |
+| [`osDiskType`](#parameter-systempoolconfigosdisktype) | string | The OS disk type of the agent pool. |
+| [`osSku`](#parameter-systempoolconfigossku) | string | The OS SKU of the agent pool. |
+| [`osType`](#parameter-systempoolconfigostype) | string | The OS type of the agent pool. |
+| [`podSubnetResourceId`](#parameter-systempoolconfigpodsubnetresourceid) | string | The pod subnet ID of the agent pool. |
+| [`proximityPlacementGroupResourceId`](#parameter-systempoolconfigproximityplacementgroupresourceid) | string | The proximity placement group resource ID of the agent pool. |
+| [`scaleDownMode`](#parameter-systempoolconfigscaledownmode) | string | The scale down mode of the agent pool. |
+| [`scaleSetEvictionPolicy`](#parameter-systempoolconfigscalesetevictionpolicy) | string | The scale set eviction policy of the agent pool. |
+| [`scaleSetPriority`](#parameter-systempoolconfigscalesetpriority) | string | The scale set priority of the agent pool. |
+| [`sourceResourceId`](#parameter-systempoolconfigsourceresourceid) | string | The source resource ID to create the agent pool from. |
+| [`spotMaxPrice`](#parameter-systempoolconfigspotmaxprice) | int | The spot max price of the agent pool. |
+| [`tags`](#parameter-systempoolconfigtags) | object | The tags of the agent pool. |
+| [`type`](#parameter-systempoolconfigtype) | string | The type of the agent pool. |
+| [`vmSize`](#parameter-systempoolconfigvmsize) | string | The VM size of the agent pool. |
+| [`vnetSubnetResourceId`](#parameter-systempoolconfigvnetsubnetresourceid) | string | The VNet subnet ID of the agent pool. |
+| [`workloadRuntime`](#parameter-systempoolconfigworkloadruntime) | string | The workload runtime of the agent pool. |
+
+### Parameter: `systemPoolConfig.name`
+
+The name of the agent pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `systemPoolConfig.availabilityZones`
+
+The availability zones of the agent pool.
+
+- Required: No
+- Type: array
+
+### Parameter: `systemPoolConfig.count`
+
+The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
+
+- Required: No
+- Type: int
+
+### Parameter: `systemPoolConfig.enableAutoScaling`
+
+Whether to enable auto-scaling for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `systemPoolConfig.enableDefaultTelemetry`
+
+The enable default telemetry of the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `systemPoolConfig.enableEncryptionAtHost`
+
+Whether to enable encryption at host for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `systemPoolConfig.enableFIPS`
+
+Whether to enable FIPS for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `systemPoolConfig.enableNodePublicIP`
+
+Whether to enable node public IP for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `systemPoolConfig.enableUltraSSD`
+
+Whether to enable Ultra SSD for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `systemPoolConfig.gpuInstanceProfile`
+
+The GPU instance profile of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'MIG1g'
+    'MIG2g'
+    'MIG3g'
+    'MIG4g'
+    'MIG7g'
+  ]
+  ```
+
+### Parameter: `systemPoolConfig.kubeletDiskType`
+
+The kubelet disk type of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `systemPoolConfig.maxCount`
+
+The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
+
+- Required: No
+- Type: int
+
+### Parameter: `systemPoolConfig.maxPods`
+
+The maximum number of pods that can run on a node.
+
+- Required: No
+- Type: int
+
+### Parameter: `systemPoolConfig.maxSurge`
+
+The maximum number of nodes that can be created during an upgrade.
+
+- Required: No
+- Type: string
+
+### Parameter: `systemPoolConfig.minCount`
+
+The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
+
+- Required: No
+- Type: int
+
+### Parameter: `systemPoolConfig.minPods`
+
+The minimum number of pods that can run on a node.
+
+- Required: No
+- Type: int
+
+### Parameter: `systemPoolConfig.mode`
+
+The mode of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'System'
+    'User'
+  ]
+  ```
+
+### Parameter: `systemPoolConfig.nodeLabels`
+
+The node labels of the agent pool.
+
+- Required: No
+- Type: object
+
+### Parameter: `systemPoolConfig.nodePublicIpPrefixResourceId`
+
+The node public IP prefix ID of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `systemPoolConfig.nodeTaints`
+
+The node taints of the agent pool.
+
+- Required: No
+- Type: array
+
+### Parameter: `systemPoolConfig.orchestratorVersion`
+
+The Kubernetes version of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `systemPoolConfig.osDiskSizeGB`
+
+The OS disk size in GB of the agent pool.
+
+- Required: No
+- Type: int
+
+### Parameter: `systemPoolConfig.osDiskType`
+
+The OS disk type of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `systemPoolConfig.osSku`
+
+The OS SKU of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `systemPoolConfig.osType`
+
+The OS type of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Linux'
+    'Windows'
+  ]
+  ```
+
+### Parameter: `systemPoolConfig.podSubnetResourceId`
+
+The pod subnet ID of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `systemPoolConfig.proximityPlacementGroupResourceId`
+
+The proximity placement group resource ID of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `systemPoolConfig.scaleDownMode`
+
+The scale down mode of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Deallocate'
+    'Delete'
+  ]
+  ```
+
+### Parameter: `systemPoolConfig.scaleSetEvictionPolicy`
+
+The scale set eviction policy of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Deallocate'
+    'Delete'
+  ]
+  ```
+
+### Parameter: `systemPoolConfig.scaleSetPriority`
+
+The scale set priority of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Low'
+    'Regular'
+    'Spot'
+  ]
+  ```
+
+### Parameter: `systemPoolConfig.sourceResourceId`
+
+The source resource ID to create the agent pool from.
+
+- Required: No
+- Type: string
+
+### Parameter: `systemPoolConfig.spotMaxPrice`
+
+The spot max price of the agent pool.
+
+- Required: No
+- Type: int
+
+### Parameter: `systemPoolConfig.tags`
+
+The tags of the agent pool.
+
+- Required: No
+- Type: object
+
+### Parameter: `systemPoolConfig.type`
+
+The type of the agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AvailabilitySet'
+    'VirtualMachineScaleSets'
+  ]
+  ```
+
+### Parameter: `systemPoolConfig.vmSize`
+
+The VM size of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `systemPoolConfig.vnetSubnetResourceId`
+
+The VNet subnet ID of the agent pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `systemPoolConfig.workloadRuntime`
+
+The workload runtime of the agent pool.
+
+- Required: No
+- Type: string
 
 ### Parameter: `systemPoolSize`
 
@@ -857,7 +1573,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/container-registry/registry:0.5.1` | Remote reference |
-| `br/public:avm/res/container-service/managed-cluster:0.4.0` | Remote reference |
+| `br/public:avm/res/container-service/managed-cluster:0.4.1` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.9.0` | Remote reference |
 
 ## Data Collection

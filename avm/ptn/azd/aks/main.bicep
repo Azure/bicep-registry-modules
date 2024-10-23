@@ -124,10 +124,10 @@ param aksClusterRoleAssignmentName string?
 
 import {agentPoolType} from 'br/public:avm/res/container-service/managed-cluster:0.4.1'
 @description('Optional. Custom configuration of system node pool.')
-param systemPoolConfig array = []
+param systemPoolConfig agentPoolType[]?
 
 @description('Optional. Custom configuration of user node pool.')
-param agentPoolConfig array = []
+param agentPoolConfig agentPoolType[]?
 
 @description('Optional. Specifies whether the KeyvaultSecretsProvider add-on is enabled or not.')
 param enableKeyvaultSecretsProvider bool = true
@@ -175,11 +175,9 @@ param enableVaultForDeployment bool = false
 @description('Optional. Specifies if the vault is enabled for a template deployment.')
 param enableVaultForTemplateDeployment bool = false
 
-var systemPoolSpec = !empty(systemPoolConfig) ? systemPoolConfig :  [union({ name: 'npsystem', mode: 'System' }, nodePoolBase, nodePoolPresets[systemPoolSize])]
+var systemPoolsConfig = !empty(systemPoolConfig) ? systemPoolConfig :  [union({ name: 'npsystem', mode: 'System' }, nodePoolBase, nodePoolPresets[systemPoolSize])]
 
-var hasAgentPool = !empty(agentPoolConfig) || !empty(agentPoolSize)
-
-var agentPoolsConfig = hasAgentPool && !empty(agentPoolConfig) ? agentPoolConfig : empty(agentPoolSize) ? [] : [union({ name: 'npuser', mode: 'User' }, nodePoolBase, nodePoolPresets[agentPoolSize])]
+var agentPoolsConfig = !empty(agentPoolConfig) ? agentPoolConfig : empty(agentPoolSize) ? null : [union({ name: 'npuser', mode: 'User' }, nodePoolBase, nodePoolPresets[agentPoolSize])]
 
 var aksClusterAdminRole = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
@@ -207,9 +205,9 @@ var nodePoolPresets = {
     maxCount: 5
     enableAutoScaling: true
     availabilityZones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
   }
   HighSpec: {
@@ -258,7 +256,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.4.0' = {
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.4.1' = {
   name: '${uniqueString(deployment().name, location)}-managed-cluster'
   params: {
     name: name
@@ -276,7 +274,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.4.0
     sshPublicKey: sshPublicKey
     skuTier: skuTier
     appGatewayResourceId: appGatewayResourceId
-    monitoringWorkspaceId: monitoringWorkspaceResourceId
+    monitoringWorkspaceResourceId: monitoringWorkspaceResourceId
     publicNetworkAccess: publicNetworkAccess
     autoNodeOsUpgradeProfileUpgradeChannel: autoNodeOsUpgradeProfileUpgradeChannel
     enableKeyvaultSecretsProvider: enableKeyvaultSecretsProvider
@@ -315,7 +313,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.4.0
         ]
       }
     ]
-    primaryAgentPoolProfile: systemPoolSpec
+    primaryAgentPoolProfiles: systemPoolsConfig
     dnsPrefix: dnsPrefix
     agentPools: agentPoolsConfig
     enableTelemetry: enableTelemetry

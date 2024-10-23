@@ -80,7 +80,7 @@ module testDeployment '../../../main.bicep' = [
           maxPods: 30
           type: 'VirtualMachineScaleSets'
           maxSurge: '33%'
-          vmSize: 'standard_a2'
+          vmSize: 'Standard_DS2_v2'
         }
       ]
       agentPoolSize: 'Standard'
@@ -94,9 +94,9 @@ module testDeployment '../../../main.bicep' = [
           maxCount: 5
           enableAutoScaling: true
           availabilityZones: [
-            '1'
-            '2'
-            '3'
+            1
+            2
+            3
           ]
         }
       ]
