@@ -86,7 +86,7 @@ param startingIPAddress string
 param endingIPAddress string
 
 @description('Required. The DNS servers accessible from the Management Network for the HCI cluster.')
-param dnsServers array
+param dnsServers string[]
 
 @description('Required. An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster.')
 param networkIntents networkIntentType[]
