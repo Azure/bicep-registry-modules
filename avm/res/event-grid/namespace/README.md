@@ -40,7 +40,7 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
 - [MQTT Broker with routing to a namespace topic](#example-3-mqtt-broker-with-routing-to-a-namespace-topic)
-- [MQTT Broker with routing to a namespace topic](#example-4-mqtt-broker-with-routing-to-a-namespace-topic)
+- [MQTT Broker with routing to a custom topic](#example-4-mqtt-broker-with-routing-to-a-custom-topic)
 - [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -1214,9 +1214,9 @@ param topicSpacesState = 'Enabled'
 </details>
 <p>
 
-### Example 4: _MQTT Broker with routing to a namespace topic_
+### Example 4: _MQTT Broker with routing to a custom topic_
 
-This instance deploys the module as a MQTT Broker with routing to a topic within the same Eventgrid namespace.
+This instance deploys the module as a MQTT Broker with routing to a custom topic.
 
 
 <details>
