@@ -119,7 +119,7 @@ Describe 'Validate Pattern deployment' {
                 Test-VerifyDatabricks -DatabricksResourceGroupName $databricksResourceGroupName -DatabricksName $databricksName -Tags $expectedTags `
                     -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku 'premium' -VirtualNetworkResourceId $virtualNetworkResourceId `
                     -PrivateSubnetName 'dbw-backend-subnet' -PublicSubnetName 'dbw-frontend-subnet' -PEPName0 '-sa-blob-PEP' -PEPName1 '-dbw-auth-PEP' -PEPName2 '-dbw-ui-PEP' `
-                    -BlobNumberOfRecordSets 2 -DatabricksNumberOfRecordSets 5 -PLSubnetName 'private-link-subnet' -PublicNetworkAccess 'Enabled' -RequiredNsgRule 'AllRules'
+                    -BlobNumberOfRecordSets 2 -DatabricksNumberOfRecordSets 4 -PLSubnetName 'private-link-subnet' -PublicNetworkAccess 'Enabled' -RequiredNsgRule 'AllRules'
             }
         }
     }
