@@ -32,9 +32,7 @@ param ipRules array = []
 
 var networkRules = [
   for (virtualNetworkRule, index) in virtualNetworkRules: {
-    ignoreMissingVnetServiceEndpoint: contains(virtualNetworkRule, 'ignoreMissingVnetServiceEndpoint')
-      ? virtualNetworkRule.ignoreMissingVnetServiceEndpoint
-      : null
+    ignoreMissingVnetServiceEndpoint: virtualNetworkRule.?ignoreMissingVnetServiceEndpoint
     subnet: contains(virtualNetworkRule, 'subnetResourceId')
       ? {
           id: virtualNetworkRule.subnetResourceId
