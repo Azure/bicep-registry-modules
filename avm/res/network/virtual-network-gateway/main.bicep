@@ -494,6 +494,29 @@ output activeActive bool = virtualNetworkGateway.properties.activeActive
 @description('The location the resource was deployed into.')
 output location string = virtualNetworkGateway.location
 
+@description('The ASN (Autonomous System Number) of the virtual network gateway.')
+output asn int = virtualNetworkGateway.properties.bgpSettings.asn
+
+@description('The public IP address of the virtual network gateway.')
+output publicIpAddress string = !empty(existingFirstPipResourceId) ? reference(existingFirstPipResourceId).properties.ipAddress: publicIPAddress[0].outputs.ipAddress
+
+@description('The default Azure BGP peer IP address.')
+output bgpPeerIp string = virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[0].ipconfigurationId
+
+@description('The custom Azure APIPA BGP IP address.')
+output customBgpIpAddress string = virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[0].customBgpIpAddresses[0]
+
+@description('The second public IP address of the virtual network gateway (Active-Active mode).')
+output secondPublicIpAddress string = isActiveActive ? !empty(existingSecondPipResourceIdVar) ? reference(existingSecondPipResourceIdVar).properties.ipAddress: publicIPAddress[1].outputs.ipAddress: 'Not applicable (Active-Passive mode)'
+
+
+@description('The second Azure BGP peer IP address (Active-Active mode).')
+output secondBgpPeerIp string = isActiveActive ? virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[1].ipconfigurationId : 'Not applicable (Active-Passive mode)'
+
+@description('The second custom Azure APIPA BGP IP address (Active-Active mode).')
+output secondCustomBgpIpAddress string = isActiveActive ? virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[1].customBgpIpAddresses[0] : 'Not applicable (Active-Passive mode)'
+
+
 // =============== //
 //   Definitions   //
 // =============== //
