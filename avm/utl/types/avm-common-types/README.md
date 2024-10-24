@@ -65,7 +65,7 @@ import {
   privateEndpointMultiServiceType
   privateEndpointSingleServiceType
   secretToSetType
-  secretSetType
+  secretSetOutputType
 } from '../../../main.bicep' // Would be: br/public:avm/utl/types/avm-common-types:<version>
 
 //  ====================== //
@@ -309,14 +309,14 @@ param secretToSet secretToSetType[] = [
 #disable-next-line outputs-should-not-contain-secrets // Does not contain a secret
 output secretToSetOutput secretToSetType[] = secretToSet
 
-param secretSet secretSetType[] = [
+param secretSet secretSetOutputType[] = [
   {
     secretResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.KeyVault/vaults/myVault/secrets/mySecret'
     secretUri: 'https://myVault.${az.environment().suffixes.keyvaultDns}/secrets/mySecret'
     secretUriWithVersion: 'https://myVault.${az.environment().suffixes.keyvaultDns}/secrets/mySecret/2f4783701d724537a4e0c2d473c31846'
   }
 ]
-output secretSetOutput secretSetType[] = secretSet
+output secretSetOutput secretSetOutputType[] = secretSet
 ```
 
 </details>
