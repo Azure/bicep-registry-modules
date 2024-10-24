@@ -12,9 +12,6 @@ param name string
 @maxLength(50)
 param containerRegistryName string
 
-@description('Required. The name of the connected log analytics workspace.')
-param logAnalyticsName string
-
 @description('Required. Name of the Key Vault. Must be globally unique.')
 @maxLength(24)
 param keyVaultName string
@@ -85,17 +82,11 @@ param dnsServiceIP string?
 @description('Optional. Specifies the SSH RSA public key string for the Linux nodes.')
 param sshPublicKey string?
 
-@description('Optional. Specifies whether to enable Azure RBAC for Kubernetes authorization.')
-param aadProfileEnableAzureRBAC bool = false
-
 @description('Conditional. Specifies the resource ID of connected application gateway. Required if `ingressApplicationGatewayEnabled` is set to `true`.')
 param appGatewayResourceId string?
 
-@description('Optional. Resource ID of the monitoring log analytics workspace.')
-param monitoringWorkspaceResourceId string?
-
-@description('Optional. Define one or more secondary/additional agent pools.')
-param agentPools agentPoolType
+@description('Required. Resource ID of the monitoring log analytics workspace.')
+param monitoringWorkspaceResourceId string
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set.  Note, requires the \'acrSku\' to be \'Premium\'.')
 @allowed([
@@ -104,11 +95,18 @@ param agentPools agentPoolType
 ])
 param publicNetworkAccess string = 'Enabled'
 
+@description('Optional. Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools.')
+@allowed([
+  'basic'
+  'standard'
+])
+param loadBalancerSku string = 'standard'
+
 @description('Optional. Scope maps setting.')
 param scopeMaps scopeMapsType
 
 @description('Optional. Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.')
-param webApplicationRoutingEnabled bool?
+param webApplicationRoutingEnabled bool = true
 
 @description('Optional. Tier of your Azure container registry.')
 @allowed([
@@ -124,6 +122,63 @@ param containerRegistryRoleName string?
 @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
 param aksClusterRoleAssignmentName string?
 
+import {agentPoolType} from 'br/public:avm/res/container-service/managed-cluster:0.4.1'
+@description('Optional. Custom configuration of system node pool.')
+param systemPoolConfig agentPoolType[]?
+
+@description('Optional. Custom configuration of user node pool.')
+param agentPoolConfig agentPoolType[]?
+
+@description('Optional. Specifies whether the KeyvaultSecretsProvider add-on is enabled or not.')
+param enableKeyvaultSecretsProvider bool = true
+
+@description('Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled.')
+param disableLocalAccounts bool = true
+
+@allowed([
+  'NodeImage'
+  'None'
+  'SecurityPatch'
+  'Unmanaged'
+])
+@description('Optional. Auto-upgrade channel on the Node Os.')
+param autoNodeOsUpgradeProfileUpgradeChannel string = 'NodeImage'
+
+@allowed([
+  'CostOptimised'
+  'Standard'
+  'HighSpec'
+  'Custom'
+])
+@description('Optional. The System Pool Preset sizing.')
+param systemPoolSize string = 'Standard'
+
+@allowed([
+  ''
+  'CostOptimised'
+  'Standard'
+  'HighSpec'
+  'Custom'
+])
+@description('Optional. The User Pool Preset sizing.')
+param agentPoolSize string = ''
+
+@description('Optional. Property that controls how data actions are authorized. When true, the key vault will use Role Based Access Control (RBAC) for authorization of data actions, and the access policies specified in vault properties will be ignored. When false, the key vault will use the access policies specified in vault properties, and any policy stored on Azure Resource Manager will be ignored. Note that management actions are always authorized with RBAC.')
+param enableRbacAuthorization bool = false
+
+@description('Optional. Provide \'true\' to enable Key Vault\'s purge protection feature.')
+param enablePurgeProtection bool = false
+
+@description('Optional. Specifies if the vault is enabled for deployment by script or compute.')
+param enableVaultForDeployment bool = false
+
+@description('Optional. Specifies if the vault is enabled for a template deployment.')
+param enableVaultForTemplateDeployment bool = false
+
+var systemPoolsConfig = !empty(systemPoolConfig) ? systemPoolConfig :  [union({ name: 'npsystem', mode: 'System' }, nodePoolBase, nodePoolPresets[systemPoolSize])]
+
+var agentPoolsConfig = !empty(agentPoolConfig) ? agentPoolConfig : empty(agentPoolSize) ? null : [union({ name: 'npuser', mode: 'User' }, nodePoolBase, nodePoolPresets[agentPoolSize])]
+
 var aksClusterAdminRole = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
   'b1ff04bb-8a4e-4dc4-8eb5-8693973ce19b'
@@ -135,16 +190,38 @@ var acrPullRole = subscriptionResourceId(
 )
 
 var nodePoolPresets = {
-  vmSize: 'Standard_DS2_v2'
-  count: 3
-  minCount: 3
-  maxCount: 5
-  enableAutoScaling: true
-  availabilityZones: [
-    '1'
-    '2'
-    '3'
-  ]
+  CostOptimised: {
+    vmSize: 'Standard_B4ms'
+    count: 1
+    minCount: 1
+    maxCount: 3
+    enableAutoScaling: true
+    availabilityZones: []
+  }
+  Standard: {
+    vmSize: 'Standard_DS2_v2'
+    count: 3
+    minCount: 3
+    maxCount: 5
+    enableAutoScaling: true
+    availabilityZones: [
+      1
+      2
+      3
+    ]
+  }
+  HighSpec: {
+    vmSize: 'Standard_D4s_v3'
+    count: 3
+    minCount: 3
+    maxCount: 5
+    enableAutoScaling: true
+    availabilityZones: [
+      '1'
+      '2'
+      '3'
+    ]
+  }
 }
 
 var nodePoolBase = {
@@ -155,10 +232,6 @@ var nodePoolBase = {
     maxSurge: '33%'
   }
 }
-
-var primaryAgentPoolProfile = [
-  union({ name: 'npsystem', mode: 'System' }, nodePoolBase, nodePoolPresets)
-]
 
 // ============== //
 // Resources      //
@@ -183,11 +256,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' existing = if (!empty(logAnalyticsName)) {
-  name: logAnalyticsName
-}
-
-module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.3.0' = {
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.4.1' = {
   name: '${uniqueString(deployment().name, location)}-managed-cluster'
   params: {
     name: name
@@ -203,10 +272,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.3.0
     dnsServiceIP: dnsServiceIP
     kubernetesVersion: kubernetesVersion
     sshPublicKey: sshPublicKey
-    aadProfileEnableAzureRBAC: aadProfileEnableAzureRBAC
     skuTier: skuTier
     appGatewayResourceId: appGatewayResourceId
-    monitoringWorkspaceId: monitoringWorkspaceResourceId
+    monitoringWorkspaceResourceId: monitoringWorkspaceResourceId
+    publicNetworkAccess: publicNetworkAccess
+    autoNodeOsUpgradeProfileUpgradeChannel: autoNodeOsUpgradeProfileUpgradeChannel
+    enableKeyvaultSecretsProvider: enableKeyvaultSecretsProvider
+    webApplicationRoutingEnabled: webApplicationRoutingEnabled
+    disableLocalAccounts: disableLocalAccounts
+    loadBalancerSku: loadBalancerSku
     managedIdentities: {
       systemAssigned: true
     }
@@ -230,7 +304,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.3.0
             enabled: true
           }
         ]
-        workspaceResourceId: !empty(logAnalyticsName) ? logAnalytics.id : ''
+        workspaceResourceId: monitoringWorkspaceResourceId
         metricCategories: [
           {
             category: 'AllMetrics'
@@ -239,10 +313,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.3.0
         ]
       }
     ]
-    webApplicationRoutingEnabled: webApplicationRoutingEnabled
-    primaryAgentPoolProfile: primaryAgentPoolProfile
+    primaryAgentPoolProfiles: systemPoolsConfig
     dnsPrefix: dnsPrefix
-    agentPools: agentPools
+    agentPools: agentPoolsConfig
     enableTelemetry: enableTelemetry
     roleAssignments: [
       {
@@ -277,7 +350,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.5.1' =
             enabled: true
           }
         ]
-        workspaceResourceId: !empty(logAnalyticsName) ? logAnalytics.id : ''
+        workspaceResourceId: monitoringWorkspaceResourceId
         metricCategories: [
           {
             category: 'AllMetrics'
@@ -301,6 +374,10 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.9.0' = {
   params: {
     name: keyVaultName
     enableTelemetry: enableTelemetry
+    enableRbacAuthorization: enableRbacAuthorization
+    enableVaultForDeployment: enableVaultForDeployment
+    enableVaultForTemplateDeployment: enableVaultForTemplateDeployment
+    enablePurgeProtection: enablePurgeProtection
     accessPolicies: [
       {
         objectId: managedCluster.outputs.kubeletIdentityObjectId
@@ -340,119 +417,6 @@ output containerRegistryLoginServer string = containerRegistry.outputs.loginServ
 // =============== //
 //   Definitions   //
 // =============== //
-
-type agentPoolType = {
-  @description('Required. The name of the agent pool.')
-  name: string
-
-  @description('Optional. The availability zones of the agent pool.')
-  availabilityZones: string[]?
-
-  @description('Optional. The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).')
-  count: int?
-
-  @description('Optional. The source resource ID to create the agent pool from.')
-  sourceResourceId: string?
-
-  @description('Optional. Whether to enable auto-scaling for the agent pool.')
-  enableAutoScaling: bool?
-
-  @description('Optional. Whether to enable encryption at host for the agent pool.')
-  enableEncryptionAtHost: bool?
-
-  @description('Optional. Whether to enable FIPS for the agent pool.')
-  enableFIPS: bool?
-
-  @description('Optional. Whether to enable node public IP for the agent pool.')
-  enableNodePublicIP: bool?
-
-  @description('Optional. Whether to enable Ultra SSD for the agent pool.')
-  enableUltraSSD: bool?
-
-  @description('Optional. The GPU instance profile of the agent pool.')
-  gpuInstanceProfile: ('MIG1g' | 'MIG2g' | 'MIG3g' | 'MIG4g' | 'MIG7g')?
-
-  @description('Optional. The kubelet disk type of the agent pool.')
-  kubeletDiskType: string?
-
-  @description('Optional. The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).')
-  maxCount: int?
-
-  @description('Optional. The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).')
-  minCount: int?
-
-  @description('Optional. The maximum number of pods that can run on a node.')
-  maxPods: int?
-
-  @description('Optional. The minimum number of pods that can run on a node.')
-  minPods: int?
-
-  @description('Optional. The mode of the agent pool.')
-  mode: ('System' | 'User')?
-
-  @description('Optional. The node labels of the agent pool.')
-  nodeLabels: object?
-
-  @description('Optional. The node public IP prefix ID of the agent pool.')
-  nodePublicIpPrefixId: string?
-
-  @description('Optional. The node taints of the agent pool.')
-  nodeTaints: string[]?
-
-  @description('Optional. The Kubernetes version of the agent pool.')
-  orchestratorVersion: string?
-
-  @description('Optional. The OS disk size in GB of the agent pool.')
-  osDiskSizeGB: int?
-
-  @description('Optional. The OS disk type of the agent pool.')
-  osDiskType: string?
-
-  @description('Optional. The OS SKU of the agent pool.')
-  osSku: string?
-
-  @description('Optional. The OS type of the agent pool.')
-  osType: ('Linux' | 'Windows')?
-
-  @description('Optional. The pod subnet ID of the agent pool.')
-  podSubnetId: string?
-
-  @description('Optional. The proximity placement group resource ID of the agent pool.')
-  proximityPlacementGroupResourceId: string?
-
-  @description('Optional. The scale down mode of the agent pool.')
-  scaleDownMode: ('Delete' | 'Deallocate')?
-
-  @description('Optional. The scale set eviction policy of the agent pool.')
-  scaleSetEvictionPolicy: ('Delete' | 'Deallocate')?
-
-  @description('Optional. The scale set priority of the agent pool.')
-  scaleSetPriority: ('Low' | 'Regular' | 'Spot')?
-
-  @description('Optional. The spot max price of the agent pool.')
-  spotMaxPrice: int?
-
-  @description('Optional. The tags of the agent pool.')
-  tags: object?
-
-  @description('Optional. The type of the agent pool.')
-  type: ('AvailabilitySet' | 'VirtualMachineScaleSets')?
-
-  @description('Optional. The maximum number of nodes that can be created during an upgrade.')
-  maxSurge: string?
-
-  @description('Optional. The VM size of the agent pool.')
-  vmSize: string?
-
-  @description('Optional. The VNet subnet ID of the agent pool.')
-  vnetSubnetID: string?
-
-  @description('Optional. The workload runtime of the agent pool.')
-  workloadRuntime: string?
-
-  @description('Optional. The enable default telemetry of the agent pool.')
-  enableDefaultTelemetry: bool?
-}[]?
 
 type scopeMapsType = {
   @description('Optional. The name of the scope map.')
