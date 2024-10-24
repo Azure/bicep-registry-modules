@@ -61,7 +61,7 @@ Describe 'Validate Pattern deployment' {
                     -Tags $expectedTags -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -AddressPrefix '192.168.224.0/19' -NumberOfSubnets 3
 
                 Test-VerifySubnet -Subnet $vnet.Subnets[0] -SubnetName 'private-link-subnet' -SubnetAddressPrefix '192.168.224.0/24' `
-                    -NumberOfSecurityGroups 1 -NumberOfPrivateEndpoints 4 -NumberOfIpConfigurations 6 -DelegationServiceName $null
+                    -NumberOfSecurityGroups 1 -NumberOfPrivateEndpoints 4 -NumberOfIpConfigurations 5 -DelegationServiceName $null
 
                 Test-VerifySubnet -Subnet $vnet.Subnets[1] -SubnetName 'dbw-frontend-subnet' -SubnetAddressPrefix '192.168.228.0/23' `
                     -NumberOfSecurityGroups 1 -NumberOfPrivateEndpoints $null -NumberOfIpConfigurations $null -DelegationServiceName 'Microsoft.Databricks/workspaces'
@@ -119,7 +119,7 @@ Describe 'Validate Pattern deployment' {
                 Test-VerifyDatabricks -DatabricksResourceGroupName $databricksResourceGroupName -DatabricksName $databricksName -Tags $expectedTags `
                     -LogAnalyticsWorkspaceResourceId $logAnalyticsWorkspaceResourceId -Sku 'premium' -VirtualNetworkResourceId $virtualNetworkResourceId `
                     -PrivateSubnetName 'dbw-backend-subnet' -PublicSubnetName 'dbw-frontend-subnet' -PEPName0 '-sa-blob-PEP' -PEPName1 '-dbw-auth-PEP' -PEPName2 '-dbw-ui-PEP' `
-                    -BlobNumberOfRecordSets 2 -DatabricksNumberOfRecordSets 5 -PLSubnetName 'private-link-subnet' -PublicNetworkAccess 'Disabled' -RequiredNsgRule 'NoAzureDatabricksRules'
+                    -BlobNumberOfRecordSets 2 -DatabricksNumberOfRecordSets 4 -PLSubnetName 'private-link-subnet' -PublicNetworkAccess 'Disabled' -RequiredNsgRule 'NoAzureDatabricksRules'
             }
         }
     }
