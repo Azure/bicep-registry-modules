@@ -197,7 +197,6 @@ output domainOUPath string = domainOUPath
 output enableStorageAutoIp bool = enableStorageAutoIp
 output endingIPAddress string = endingIPAddress
 output hciClusterPreqs object = hciClusterPreqs
-output hciHostDeployment object = hciHostDeployment
 output keyVaultName string = keyVaultName
 output networkIntents array = networkIntents
 output startingIPAddress string = startingIPAddress
