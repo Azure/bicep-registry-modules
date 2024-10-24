@@ -16,13 +16,7 @@ This module deploys a Snapshot Policy for an Azure NetApp File.
 
 ## Parameters
 
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`netAppAccountName`](#parameter-netappaccountname) | string | The name of the parent NetApp account. Required if the template is used in a standalone deployment. |
-
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
@@ -38,8 +32,6 @@ This module deploys a Snapshot Policy for an Azure NetApp File.
 | [`monthlyMinute`](#parameter-monthlyminute) | int | The monthly snapshot minute. |
 | [`monthlySnapshotsToKeep`](#parameter-monthlysnapshotstokeep) | int | Monthly snapshot count to keep. |
 | [`monthlyUsedBytes`](#parameter-monthlyusedbytes) | int | Monthly snapshot used bytes. |
-| [`snapEnabled`](#parameter-snapenabled) | bool | Indicates whether the snapshot policy is enabled. |
-| [`snapshotPolicyLocation`](#parameter-snapshotpolicylocation) | string | The location of the snapshot policy. |
 | [`snapshotPolicyName`](#parameter-snapshotpolicyname) | string | The name of the snapshot policy. |
 | [`weeklyDay`](#parameter-weeklyday) | string | The weekly snapshot day. |
 | [`weeklyHour`](#parameter-weeklyhour) | int | The weekly snapshot hour. |
@@ -47,12 +39,18 @@ This module deploys a Snapshot Policy for an Azure NetApp File.
 | [`weeklySnapshotsToKeep`](#parameter-weeklysnapshotstokeep) | int | Weekly snapshot count to keep. |
 | [`weeklyUsedBytes`](#parameter-weeklyusedbytes) | int | Weekly snapshot used bytes. |
 
-### Parameter: `netAppAccountName`
+**Conditional parameters**
 
-The name of the parent NetApp account. Required if the template is used in a standalone deployment.
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`netAppAccountName`](#parameter-netappaccountname) | string | The name of the parent NetApp account. Required if the template is used in a standalone deployment. |
 
-- Required: Yes
-- Type: string
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`snapEnabled`](#parameter-snapenabled) | bool | Indicates whether the snapshot policy is enabled. |
+| [`snapshotPolicyLocation`](#parameter-snapshotpolicylocation) | string | The location of the snapshot policy. |
 
 ### Parameter: `dailyHour`
 
@@ -138,22 +136,6 @@ Monthly snapshot used bytes.
 - Required: Yes
 - Type: int
 
-### Parameter: `snapEnabled`
-
-Indicates whether the snapshot policy is enabled.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `snapshotPolicyLocation`
-
-The location of the snapshot policy.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
-
 ### Parameter: `snapshotPolicyName`
 
 The name of the snapshot policy.
@@ -195,6 +177,29 @@ Weekly snapshot used bytes.
 
 - Required: Yes
 - Type: int
+
+### Parameter: `netAppAccountName`
+
+The name of the parent NetApp account. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `snapEnabled`
+
+Indicates whether the snapshot policy is enabled.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `snapshotPolicyLocation`
+
+The location of the snapshot policy.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
 
 ## Outputs
 

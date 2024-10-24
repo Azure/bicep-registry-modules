@@ -5,19 +5,19 @@ metadata owner = 'Azure/module-maintainers'
 @description('Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment.')
 param netAppAccountName string
 
-@description('Required. The name of the backup policy.')
+@description('Optional. The name of the backup policy.')
 param backupPolicyName string = 'backupPolicy'
 
-@description('Optional. The location of the backup policy. Required if the template is used in a standalone deployment.')
+@description('Required. The location of the backup policy. Required if the template is used in a standalone deployment.')
 param backupPolicyLocation string
 
-@description('Optional. The daily backups to keep.')
+@description('Required. The daily backups to keep.')
 param dailyBackupsToKeep int
 
-@description('Optional. The monthly backups to keep.')
+@description('Required. The monthly backups to keep.')
 param monthlyBackupsToKeep int
 
-@description('Optional. The weekly backups to keep.')
+@description('Required. The weekly backups to keep.')
 param weeklyBackupsToKeep int
 
 @description('Optional. Indicates whether the backup policy is enabled.')

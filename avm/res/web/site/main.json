@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.3.12046",
-      "templateHash": "6864173112039216012"
+      "version": "0.30.23.60470",
+      "templateHash": "15895523310817597793"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -237,7 +237,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -1018,8 +1018,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "13784573514230124302"
+              "version": "0.30.23.60470",
+              "templateHash": "10845600494881775271"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting.",
@@ -1182,8 +1182,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "5141699950067054376"
+              "version": "0.30.23.60470",
+              "templateHash": "7782125422759995841"
             },
             "name": "Site Auth Settings V2 Config",
             "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -1286,8 +1286,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "15476128515731477399"
+              "version": "0.30.23.60470",
+              "templateHash": "2527104715221107836"
             },
             "name": "Site logs Config",
             "description": "This module deploys a Site logs Configuration.",
@@ -1304,7 +1304,7 @@
               "type": "object",
               "nullable": true,
               "metadata": {
-                "description": "Required. The logs settings configuration."
+                "description": "Optional. The logs settings configuration."
               }
             }
           },
@@ -1381,8 +1381,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "7638371671246573627"
+              "version": "0.30.23.60470",
+              "templateHash": "18186736059685095806"
             },
             "name": "Site Api Management Config",
             "description": "This module deploys a Site Api Management Configuration.",
@@ -1399,7 +1399,7 @@
               "type": "object",
               "nullable": true,
               "metadata": {
-                "description": "Required. The web settings api management configuration."
+                "description": "Optional. The web settings api management configuration."
               }
             }
           },
@@ -1475,8 +1475,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "6041792177778980481"
+              "version": "0.30.23.60470",
+              "templateHash": "10249716032875912201"
             },
             "name": "Site Deployment Extension ",
             "description": "This module deploys a Site extension for MSDeploy.",
@@ -1493,7 +1493,7 @@
               "type": "object",
               "nullable": true,
               "metadata": {
-                "description": "Required. Sets the MSDeployment Properties."
+                "description": "Optional. Sets the MSDeployment Properties."
               }
             }
           },
@@ -1697,8 +1697,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "12989347170911346864"
+              "version": "0.30.23.60470",
+              "templateHash": "2418467213841620758"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -1929,7 +1929,7 @@
                           "type": "string",
                           "nullable": true,
                           "metadata": {
-                            "description": "Required. Fqdn that resolves to private endpoint IP address."
+                            "description": "Optional. FQDN that resolves to private endpoint IP address."
                           }
                         },
                         "ipAddresses": {
@@ -2678,8 +2678,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.3.12046",
-                      "templateHash": "831233374953684624"
+                      "version": "0.30.23.60470",
+                      "templateHash": "3011151783207983935"
                     },
                     "name": "Site Slot App Settings",
                     "description": "This module deploys a Site Slot App Setting.",
@@ -2861,8 +2861,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.3.12046",
-                      "templateHash": "1793943127677832192"
+                      "version": "0.30.23.60470",
+                      "templateHash": "7842363652527859767"
                     },
                     "name": "Site Slot Auth Settings V2 Config",
                     "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -2983,8 +2983,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.3.12046",
-                      "templateHash": "3658885600663423622"
+                      "version": "0.30.23.60470",
+                      "templateHash": "1564349757337430633"
                     },
                     "name": "Web Site Slot Basic Publishing Credentials Policies",
                     "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy.",
@@ -3109,8 +3109,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.3.12046",
-                      "templateHash": "15904319483580637456"
+                      "version": "0.30.23.60470",
+                      "templateHash": "12569198723769767672"
                     },
                     "name": "Web/Function Apps Slot Hybrid Connection Relay",
                     "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay.",
@@ -3215,8 +3215,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.3.12046",
-                      "templateHash": "6041792177778980481"
+                      "version": "0.30.23.60470",
+                      "templateHash": "10249716032875912201"
                     },
                     "name": "Site Deployment Extension ",
                     "description": "This module deploys a Site extension for MSDeploy.",
@@ -3233,7 +3233,7 @@
                       "type": "object",
                       "nullable": true,
                       "metadata": {
-                        "description": "Required. Sets the MSDeployment Properties."
+                        "description": "Optional. Sets the MSDeployment Properties."
                       }
                     }
                   },
@@ -4144,8 +4144,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "17116264484298889418"
+              "version": "0.30.23.60470",
+              "templateHash": "15847824660831257384"
             },
             "name": "Web Site Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Basic Publishing Credentials Policy.",
@@ -4260,8 +4260,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "9740773215195883934"
+              "version": "0.30.23.60470",
+              "templateHash": "9545759447796150909"
             },
             "name": "Web/Function Apps Hybrid Connection Relay",
             "description": "This module deploys a Site Hybrid Connection Namespace Relay.",

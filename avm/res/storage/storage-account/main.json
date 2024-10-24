@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "7109049210516898074"
+      "templateHash": "14816410578282611145"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -307,7 +307,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint ip address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -3900,7 +3900,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "6947504466788447852"
+              "templateHash": "7439864435097753769"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service.",
@@ -4145,7 +4145,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.30.23.60470",
-                      "templateHash": "6090221832347220924"
+                      "templateHash": "13351606092620772899"
                     },
                     "name": "Storage Account Queues",
                     "description": "This module deploys a Storage Account Queue.",
@@ -4244,7 +4244,7 @@
                       "type": "object",
                       "defaultValue": {},
                       "metadata": {
-                        "description": "Required. A name-value pair that represents queue metadata."
+                        "description": "Optional. A name-value pair that represents queue metadata."
                       }
                     },
                     "roleAssignments": {

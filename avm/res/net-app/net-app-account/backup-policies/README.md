@@ -20,7 +20,10 @@ This module deploys a Backup Policy for Azure NetApp File.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`backupPolicyName`](#parameter-backuppolicyname) | string | The name of the backup policy. |
+| [`backupPolicyLocation`](#parameter-backuppolicylocation) | string | The location of the backup policy. Required if the template is used in a standalone deployment. |
+| [`dailyBackupsToKeep`](#parameter-dailybackupstokeep) | int | The daily backups to keep. |
+| [`monthlyBackupsToKeep`](#parameter-monthlybackupstokeep) | int | The monthly backups to keep. |
+| [`weeklyBackupsToKeep`](#parameter-weeklybackupstokeep) | int | The weekly backups to keep. |
 
 **Conditional parameters**
 
@@ -33,33 +36,7 @@ This module deploys a Backup Policy for Azure NetApp File.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`backupEnabled`](#parameter-backupenabled) | bool | Indicates whether the backup policy is enabled. |
-| [`backupPolicyLocation`](#parameter-backuppolicylocation) | string | The location of the backup policy. Required if the template is used in a standalone deployment. |
-| [`dailyBackupsToKeep`](#parameter-dailybackupstokeep) | int | The daily backups to keep. |
-| [`monthlyBackupsToKeep`](#parameter-monthlybackupstokeep) | int | The monthly backups to keep. |
-| [`weeklyBackupsToKeep`](#parameter-weeklybackupstokeep) | int | The weekly backups to keep. |
-
-### Parameter: `backupPolicyName`
-
-The name of the backup policy.
-
-- Required: No
-- Type: string
-- Default: `'backupPolicy'`
-
-### Parameter: `netAppAccountName`
-
-The name of the parent NetApp account. Required if the template is used in a standalone deployment.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `backupEnabled`
-
-Indicates whether the backup policy is enabled.
-
-- Required: No
-- Type: bool
-- Default: `False`
+| [`backupPolicyName`](#parameter-backuppolicyname) | string | The name of the backup policy. |
 
 ### Parameter: `backupPolicyLocation`
 
@@ -88,6 +65,29 @@ The weekly backups to keep.
 
 - Required: Yes
 - Type: int
+
+### Parameter: `netAppAccountName`
+
+The name of the parent NetApp account. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupEnabled`
+
+Indicates whether the backup policy is enabled.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `backupPolicyName`
+
+The name of the backup policy.
+
+- Required: No
+- Type: string
+- Default: `'backupPolicy'`
 
 ## Outputs
 

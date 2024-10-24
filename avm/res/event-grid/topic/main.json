@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "12405995366615613618"
+      "version": "0.30.23.60470",
+      "templateHash": "2810622723572048404"
     },
     "name": "Event Grid Topics",
     "description": "This module deploys an Event Grid Topic.",
@@ -237,7 +237,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -738,8 +738,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "2521126347714866146"
+              "version": "0.30.23.60470",
+              "templateHash": "1060516343519365885"
             },
             "name": "EventGrid Topic Event Subscriptions",
             "description": "This module deploys an Event Grid Topic Event Subscription.",

@@ -597,10 +597,10 @@ type storageAccountFilesToUploadType = {
   @description('Required. The name of the environment variable.')
   name: string
 
-  @description('Required. The value of the secure environment variable.')
+  @description('Optional. The value of the secure environment variable.')
   @secure()
   secureValue: string?
 
-  @description('Required. The value of the environment variable.')
+  @description('Optional. The value of the environment variable.')
   value: string?
 }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "4580919221810730076"
+      "templateHash": "9111396630441610187"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery.",
@@ -26,14 +26,14 @@
           "type": "securestring",
           "nullable": true,
           "metadata": {
-            "description": "Required. The value of the secure environment variable."
+            "description": "Optional. The value of the secure environment variable."
           }
         },
         "value": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The value of the environment variable."
+            "description": "Optional. The value of the environment variable."
           }
         }
       },
