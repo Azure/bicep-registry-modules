@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "13723413759511510986"
+      "templateHash": "8911539763995397815"
     },
     "name": "Service Bus Namespace Topic",
     "description": "This module deploys a Service Bus Namespace Topic.",
@@ -366,7 +366,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. Authorization Rules for the Service Bus Queue."
+        "description": "Optional. Authorization Rules for the Service Bus Topic."
       }
     },
     "lock": {
@@ -483,7 +483,9 @@
           "name": {
             "value": "[parameters('authorizationRules')[copyIndex()].name]"
           },
-          "rights": "[if(contains(parameters('authorizationRules')[copyIndex()], 'rights'), createObject('value', parameters('authorizationRules')[copyIndex()].rights), createObject('value', createArray()))]"
+          "rights": {
+            "value": "[coalesce(tryGet(parameters('authorizationRules')[copyIndex()], 'rights'), createArray())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

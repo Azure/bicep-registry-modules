@@ -36,7 +36,7 @@ This module deploys a Service Bus Namespace Topic.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the Service Bus Queue. |
+| [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the Service Bus Topic. |
 | [`autoDeleteOnIdle`](#parameter-autodeleteonidle) | string | ISO 8601 timespan idle interval after which the topic is automatically deleted. The minimum duration is 5 minutes. |
 | [`defaultMessageTimeToLive`](#parameter-defaultmessagetimetolive) | string | ISO 8601 default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself. |
 | [`duplicateDetectionHistoryTimeWindow`](#parameter-duplicatedetectionhistorytimewindow) | string | ISO 8601 timeSpan structure that defines the duration of the duplicate detection history. The default value is 10 minutes. |
@@ -68,7 +68,7 @@ The name of the parent Service Bus Namespace for the Service Bus Topic. Required
 
 ### Parameter: `authorizationRules`
 
-Authorization Rules for the Service Bus Queue.
+Authorization Rules for the Service Bus Topic.
 
 - Required: No
 - Type: array
