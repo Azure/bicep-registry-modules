@@ -380,20 +380,6 @@ type customerManagedKeyType = {
 // ================== //
 //   Secrets Export   //
 // ================== //
-
-@export()
-@description('An AVM-aligned type for the output of the secret set via the secrets export feature.')
-type secretSetType = {
-  @description('The resourceId of the exported secret.')
-  secretResourceId: string
-
-  @description('The secret URI of the exported secret.')
-  secretUri: string
-
-  @description('The secret URI with version of the exported secret.')
-  secretUriWithVersion: string
-}
-
 @export()
 @description('An AVM-aligned type for the secret to set via the secrets export feature.')
 type secretToSetType = {
@@ -406,7 +392,20 @@ type secretToSetType = {
 }
 
 @export()
+@description('An AVM-aligned type for the output of the secret set via the secrets export feature.')
+type secretSetOutputType = {
+  @description('The resourceId of the exported secret.')
+  secretResourceId: string
+
+  @description('The secret URI of the exported secret.')
+  secretUri: string
+
+  @description('The secret URI with version of the exported secret.')
+  secretUriWithVersion: string
+}
+
+@export()
 type secretsOutputType = {
   @description('An exported secret\'s references.')
-  *: secretSetType
+  *: secretSetOutputType
 }
