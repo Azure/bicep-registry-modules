@@ -8,33 +8,37 @@ param name string
 @description('Conditional. The Name of SQL Server. Required if the template is used in a standalone deployment.')
 param serverName string
 
-@description('Required. The resource group of the SQL Server. Required if the template is used in a standalone deployment.')
+@description('Optional. Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required.')
 @allowed([
   'Enabled'
   'Disabled'
 ])
-param state string
+param state string = 'Enabled'
 
 @description('Optional. Specifies the Actions-Groups and Actions to audit.')
-param auditActionsAndGroups array?
+param auditActionsAndGroups string[] = [
+  'BATCH_COMPLETED_GROUP'
+  'SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP'
+  'FAILED_DATABASE_AUTHENTICATION_GROUP'
+]
 
 @description('Optional. Specifies whether audit events are sent to Azure Monitor.')
-param isAzureMonitorTargetEnabled bool = false
+param isAzureMonitorTargetEnabled bool = true
 
 @description('Optional. Specifies the state of devops audit. If state is Enabled, devops logs will be sent to Azure Monitor.')
-param isDevopsAuditEnabled bool?
+param isDevopsAuditEnabled bool = false
 
 @description('Optional. Specifies whether Managed Identity is used to access blob storage.')
 param isManagedIdentityInUse bool = false
 
 @description('Optional. Specifies whether storageAccountAccessKey value is the storage\'s secondary key.')
-param isStorageSecondaryKeyInUse bool?
+param isStorageSecondaryKeyInUse bool = false
 
 @description('Optional. Specifies the amount of time in milliseconds that can elapse before audit actions are forced to be processed.')
-param queueDelayMs int?
+param queueDelayMs int = 1000
 
 @description('Optional. Specifies the number of days to keep in the audit logs in the storage account.')
-param retentionDays int?
+param retentionDays int = 90
 
 @description('Optional. A blob storage to hold the auditing storage account.')
 param storageAccountResourceId string = ''
