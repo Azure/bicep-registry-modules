@@ -89,7 +89,7 @@ param endingIPAddress string
 param dnsServers array
 
 @description('Required. An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster.')
-param networkIntents networkIntent[]
+param networkIntents networkIntentType[]
 
 @description('Required. Specify whether the Storage Network connectivity is switched or switchless.')
 param storageConnectivitySwitchless bool
@@ -98,7 +98,7 @@ param storageConnectivitySwitchless bool
 param enableStorageAutoIp bool
 
 @description('Required. An array of JSON objects that define the storage network configuration for the cluster. Each object should contain the adapterName, VLAN properties, and (optionally) IP configurations.')
-param storageNetworks storageNetworksArrayType
+param storageNetworks storageNetworksType[]
 
 @description('Required. The name of the Custom Location associated with the Arc Resource Bridge for this cluster. This value should reflect the physical location and identifier of the HCI cluster. Example: cl-hci-den-clu01.')
 param customLocationName string
@@ -341,8 +341,6 @@ type storageNetworksType = {
   @description('Optional. The storage adapter IP information for 3-node switchless or manual config deployments.')
   storageAdapterIPInfo: storageAdapterIPInfoType[]? // optional for switched deployments
 }
-@export()
-type storageNetworksArrayType = storageNetworksType[]
 
 // cluster security configuration settings
 @export()

@@ -46,7 +46,6 @@ param arbDeploymentServicePrincipalSecret string = ''
 param hciResourceProviderObjectId string = ''
 
 var deploymentPrefix = take(uniqueString(namePrefix, serviceShort), 8)
-var deploymentOperations = ['Validate', 'Deploy']
 
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'southeastasia'
@@ -65,7 +64,7 @@ module hciDependencies 'dependencies.bicep' = {
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
     clusterName: name
     clusterWitnessStorageAccountName: 'dep${namePrefix}${serviceShort}wit'
-    customLocationName: '${serviceShort}-location'
+    customLocationName: 'dep-${namePrefix}${serviceShort}-location'
     deploymentPrefix: deploymentPrefix
     deploymentUserPassword: localAdminAndDeploymentUserPass
     hciResourceProviderObjectId: hciResourceProviderObjectId
@@ -78,30 +77,26 @@ module hciDependencies 'dependencies.bicep' = {
   }
 }
 
-@batchSize(1)
-module testDeployment '../../../main.bicep' = [
-  for deploymentOperation in deploymentOperations: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-cluster${deploymentOperation}-${serviceShort}'
-    scope: resourceGroup
-    params: {
-      name: name
-      customLocationName: hciDependencies.outputs.customLocationName
-      clusterNodeNames: hciDependencies.outputs.clusterNodeNames
-      clusterWitnessStorageAccountName: hciDependencies.outputs.clusterWitnessStorageAccountName
-      defaultGateway: hciDependencies.outputs.defaultGateway
-      deploymentOperations: array(deploymentOperation)
-      deploymentPrefix: deploymentPrefix
-      dnsServers: hciDependencies.outputs.dnsServers
-      domainFqdn: hciDependencies.outputs.domainFqdn
-      domainOUPath: hciDependencies.outputs.domainOUPath
-      endingIPAddress: hciDependencies.outputs.endingIPAddress
-      enableStorageAutoIp: hciDependencies.outputs.enableStorageAutoIp
-      keyVaultName: hciDependencies.outputs.keyVaultName
-      networkIntents: hciDependencies.outputs.networkIntents
-      startingIPAddress: hciDependencies.outputs.startingIPAddress
-      storageConnectivitySwitchless: false
-      storageNetworks: hciDependencies.outputs.storageNetworks
-      subnetMask: hciDependencies.outputs.subnetMask
-    }
+module testDeployment '../../../main.bicep' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
+  scope: resourceGroup
+  params: {
+    name: name
+    customLocationName: hciDependencies.outputs.customLocationName
+    clusterNodeNames: hciDependencies.outputs.clusterNodeNames
+    clusterWitnessStorageAccountName: hciDependencies.outputs.clusterWitnessStorageAccountName
+    defaultGateway: hciDependencies.outputs.defaultGateway
+    deploymentPrefix: deploymentPrefix
+    dnsServers: hciDependencies.outputs.dnsServers
+    domainFqdn: hciDependencies.outputs.domainFqdn
+    domainOUPath: hciDependencies.outputs.domainOUPath
+    endingIPAddress: hciDependencies.outputs.endingIPAddress
+    enableStorageAutoIp: hciDependencies.outputs.enableStorageAutoIp
+    keyVaultName: hciDependencies.outputs.keyVaultName
+    networkIntents: hciDependencies.outputs.networkIntents
+    startingIPAddress: hciDependencies.outputs.startingIPAddress
+    storageConnectivitySwitchless: false
+    storageNetworks: hciDependencies.outputs.storageNetworks
+    subnetMask: hciDependencies.outputs.subnetMask
   }
-]
+}
