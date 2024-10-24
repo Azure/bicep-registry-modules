@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "5062482221653261403"
+      "templateHash": "18103612355913992690"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment).",
@@ -129,6 +129,24 @@
             "metadata": {
               "description": "Optional. The Resource Id of the delegated managed identity resource."
             }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "certificateKeyVaultPropertiesType": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resoource ID of the identity. This is the identity that will be used to access the key vault."
+          }
+        },
+        "keyVaultUrl": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. A key vault URL referencing the wildcard certificate that will be used for the custom domain."
           }
         }
       },
@@ -313,6 +331,12 @@
         "description": "Optional. Certificate to use for the custom domain. PFX or PEM."
       }
     },
+    "certificateKeyVaultProperties": {
+      "$ref": "#/definitions/certificateKeyVaultPropertiesType",
+      "metadata": {
+        "description": "Optional. A key vault reference to the certificate to use for the custom domain."
+      }
+    },
     "dnsSuffix": {
       "type": "string",
       "defaultValue": "",
@@ -441,7 +465,8 @@
         "customDomainConfiguration": {
           "certificatePassword": "[parameters('certificatePassword')]",
           "certificateValue": "[if(not(empty(parameters('certificateValue'))), parameters('certificateValue'), null())]",
-          "dnsSuffix": "[parameters('dnsSuffix')]"
+          "dnsSuffix": "[parameters('dnsSuffix')]",
+          "certificateKeyVaultProperties": "[parameters('certificateKeyVaultProperties')]"
         },
         "openTelemetryConfiguration": "[if(not(empty(parameters('openTelemetryConfiguration'))), parameters('openTelemetryConfiguration'), null())]",
         "peerTrafficConfiguration": {
