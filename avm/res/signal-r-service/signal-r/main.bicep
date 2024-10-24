@@ -2,6 +2,10 @@ metadata name = 'SignalR Service SignalR'
 metadata description = 'This module deploys a SignalR Service SignalR.'
 metadata owner = 'Azure/module-maintainers'
 
+// ============== //
+//   Parameters   //
+// ============== //
+
 @description('Optional. The location for the resource.')
 param location string = resourceGroup().location
 
@@ -102,13 +106,34 @@ param upstreamTemplatesToEnable array?
 param privateEndpoints privateEndpointType
 
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentityAllType?
+
+// ============= //
+//   Variables   //
+// ============= //
+
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 var liveTraceCatagories = [
   for configuration in liveTraceCatagoriesToEnable: {
@@ -200,7 +225,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource signalR 'Microsoft.SignalRService/signalR@2022-02-01' = {
+resource signalR 'Microsoft.SignalRService/signalR@2024-03-01' = {
   name: name
   location: location
   kind: kind
@@ -210,6 +235,7 @@ resource signalR 'Microsoft.SignalRService/signalR@2022-02-01' = {
     tier: tier
   }
   tags: tags
+  identity: identity
   properties: {
     cors: {
       allowedOrigins: allowedOrigins
@@ -240,7 +266,7 @@ resource signalR 'Microsoft.SignalRService/signalR@2022-02-01' = {
   }
 }
 
-module signalR_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module signalR_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.8.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-signalR-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -331,6 +357,9 @@ output resourceId string = signalR.id
 @description('The location the resource was deployed into.')
 output location string = signalR.location
 
+@description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string = signalR.?identity.?principalId ?? ''
+
 @description('The private endpoints of the SignalR.')
 output privateEndpoints array = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
@@ -346,39 +375,7 @@ output privateEndpoints array = [
 //   Definitions   //
 // =============== //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+import { lockType, roleAssignmentType, managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.1.0'
 
 type privateEndpointType = {
   @description('Optional. The name of the private endpoint.')
@@ -452,10 +449,10 @@ type privateEndpointType = {
   customNetworkInterfaceName: string?
 
   @description('Optional. Specify the type of lock.')
-  lock: lockType
+  lock: lockType?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
   tags: object?
