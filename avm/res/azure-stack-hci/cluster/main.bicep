@@ -245,12 +245,16 @@ resource cluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
 
 @description('The name of the cluster.')
 output name string = cluster.name
+
 @description('The ID of the cluster.')
 output resourceId string = cluster.id
+
 @description('The resource group of the cluster.')
 output resourceGroupName string = resourceGroup().name
+
 @description('The managed identity of the cluster.')
 output systemAssignedMIPrincipalId string = cluster.identity.principalId
+
 @description('The location of the cluster.')
 output location string = cluster.location
 
