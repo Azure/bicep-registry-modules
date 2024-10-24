@@ -23,7 +23,7 @@ param tags object?
   'Validate'
   'None'
 ])
-param deploymentOperations array = ['Validate', 'Deploy']
+param deploymentOperations string[] = ['Validate', 'Deploy']
 
 @minLength(4)
 @maxLength(8)
