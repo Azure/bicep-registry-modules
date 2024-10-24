@@ -6,14 +6,14 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "7356668021232877178"
+      "templateHash": "6935638633912852467"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "networkIntent": {
+    "networkIntentType": {
       "type": "object",
       "properties": {
         "adapter": {
@@ -210,15 +210,6 @@
         "__bicep_export!": true
       }
     },
-    "storageNetworksArrayType": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/storageNetworksType"
-      },
-      "metadata": {
-        "__bicep_export!": true
-      }
-    },
     "securityConfigurationType": {
       "type": "object",
       "properties": {
@@ -389,6 +380,9 @@
     },
     "deploymentOperations": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [
         "Validate",
         "Deploy"
@@ -412,6 +406,9 @@
     },
     "clusterNodeNames": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "metadata": {
         "description": "Required. Names of the cluster node Arc Machine resources. These are the name of the Arc Machine resources created when the new HCI nodes were Arc initialized. Example: [hci-node-1, hci-node-2]."
       }
@@ -505,6 +502,9 @@
     },
     "dnsServers": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "metadata": {
         "description": "Required. The DNS servers accessible from the Management Network for the HCI cluster."
       }
@@ -512,7 +512,7 @@
     "networkIntents": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/networkIntent"
+        "$ref": "#/definitions/networkIntentType"
       },
       "metadata": {
         "description": "Required. An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster."
@@ -531,7 +531,10 @@
       }
     },
     "storageNetworks": {
-      "$ref": "#/definitions/storageNetworksArrayType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/storageNetworksType"
+      },
       "metadata": {
         "description": "Required. An array of JSON objects that define the storage network configuration for the cluster. Each object should contain the adapterName, VLAN properties, and (optionally) IP configurations."
       }
@@ -738,7 +741,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "3241591826392885903"
+              "templateHash": "2368487517380268388"
             },
             "name": "Azure Stack HCI Cluster Deployment Settings",
             "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource.",
@@ -880,6 +883,9 @@
             },
             "dnsServers": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "metadata": {
                 "description": "Required. The DNS servers accessible from the Management Network for the HCI cluster."
               }

@@ -61,8 +61,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     storageConnectivitySwitchless: false
     storageNetworks: '<storageNetworks>'
     subnetMask: '<subnetMask>'
-    // Non-required parameters
-    deploymentOperations: '<deploymentOperations>'
   }
 }
 ```
@@ -130,10 +128,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     },
     "subnetMask": {
       "value": "<subnetMask>"
-    },
-    // Non-required parameters
-    "deploymentOperations": {
-      "value": "<deploymentOperations>"
     }
   }
 }
@@ -167,8 +161,6 @@ param startingIPAddress = '<startingIPAddress>'
 param storageConnectivitySwitchless = false
 param storageNetworks = '<storageNetworks>'
 param subnetMask = '<subnetMask>'
-// Non-required parameters
-param deploymentOperations = '<deploymentOperations>'
 ```
 
 </details>
@@ -205,8 +197,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     storageConnectivitySwitchless: false
     storageNetworks: '<storageNetworks>'
     subnetMask: '<subnetMask>'
-    // Non-required parameters
-    deploymentOperations: '<deploymentOperations>'
   }
 }
 ```
@@ -274,10 +264,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     },
     "subnetMask": {
       "value": "<subnetMask>"
-    },
-    // Non-required parameters
-    "deploymentOperations": {
-      "value": "<deploymentOperations>"
     }
   }
 }
@@ -311,8 +297,6 @@ param startingIPAddress = '<startingIPAddress>'
 param storageConnectivitySwitchless = false
 param storageNetworks = '<storageNetworks>'
 param subnetMask = '<subnetMask>'
-// Non-required parameters
-param deploymentOperations = '<deploymentOperations>'
 ```
 
 </details>
@@ -349,8 +333,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     storageConnectivitySwitchless: false
     storageNetworks: '<storageNetworks>'
     subnetMask: '<subnetMask>'
-    // Non-required parameters
-    deploymentOperations: '<deploymentOperations>'
   }
 }
 ```
@@ -418,10 +400,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     },
     "subnetMask": {
       "value": "<subnetMask>"
-    },
-    // Non-required parameters
-    "deploymentOperations": {
-      "value": "<deploymentOperations>"
     }
   }
 }
@@ -455,8 +433,6 @@ param startingIPAddress = '<startingIPAddress>'
 param storageConnectivitySwitchless = false
 param storageNetworks = '<storageNetworks>'
 param subnetMask = '<subnetMask>'
-// Non-required parameters
-param deploymentOperations = '<deploymentOperations>'
 ```
 
 </details>
@@ -805,6 +781,69 @@ An array of JSON objects that define the storage network configuration for the c
 
 - Required: Yes
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`adapterName`](#parameter-storagenetworksadaptername) | string | The name of the storage adapter. |
+| [`vlan`](#parameter-storagenetworksvlan) | string | The VLAN for the storage adapter. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`storageAdapterIPInfo`](#parameter-storagenetworksstorageadapteripinfo) | array | The storage adapter IP information for 3-node switchless or manual config deployments. |
+
+### Parameter: `storageNetworks.adapterName`
+
+The name of the storage adapter.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `storageNetworks.vlan`
+
+The VLAN for the storage adapter.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `storageNetworks.storageAdapterIPInfo`
+
+The storage adapter IP information for 3-node switchless or manual config deployments.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipv4Address`](#parameter-storagenetworksstorageadapteripinfoipv4address) | string | The IPv4 address for the storage adapter. |
+| [`physicalNode`](#parameter-storagenetworksstorageadapteripinfophysicalnode) | string | The HCI node name. |
+| [`subnetMask`](#parameter-storagenetworksstorageadapteripinfosubnetmask) | string | The subnet mask for the storage adapter. |
+
+### Parameter: `storageNetworks.storageAdapterIPInfo.ipv4Address`
+
+The IPv4 address for the storage adapter.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `storageNetworks.storageAdapterIPInfo.physicalNode`
+
+The HCI node name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `storageNetworks.storageAdapterIPInfo.subnetMask`
+
+The subnet mask for the storage adapter.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `subnetMask`
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "3241591826392885903"
+      "templateHash": "2368487517380268388"
     },
     "name": "Azure Stack HCI Cluster Deployment Settings",
     "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource.",
@@ -148,6 +148,9 @@
     },
     "dnsServers": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "metadata": {
         "description": "Required. The DNS servers accessible from the Management Network for the HCI cluster."
       }
