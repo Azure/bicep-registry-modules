@@ -6,6 +6,9 @@ metadata owner = 'Azure/module-maintainers'
 @description('Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment.')
 param storageAccountName string
 
+@description('Optional. The name of the parent Blob Service. Required if the template is used in a standalone deployment.')
+param blobServiceName string = 'default'
+
 @description('Required. The name of the storage container to deploy.')
 param name string
 
@@ -52,7 +55,7 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     'c12c1c16-33a1-487b-954d-41c89c60f349'
   )
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -105,7 +108,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing 
   name: storageAccountName
 
   resource blobServices 'blobServices@2022-09-01' existing = {
-    name: 'default'
+    name: blobServiceName
   }
 }
 

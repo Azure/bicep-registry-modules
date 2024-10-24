@@ -70,7 +70,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -87,6 +87,22 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/automation/automation-account:<version>'
+
+// Required parameters
+param name = 'aamin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -128,7 +144,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -158,6 +174,32 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/automation/automation-account:<version>'
+
+// Required parameters
+param name = 'aaencr001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 ```
 
@@ -236,9 +278,13 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     ]
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'Webhook'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -248,9 +294,13 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'Webhook'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -260,9 +310,13 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'DSCAndHybridWorker'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -410,7 +464,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -499,9 +553,13 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "Webhook",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -511,9 +569,13 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "Webhook",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -523,9 +585,13 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "DSCAndHybridWorker",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -684,6 +750,254 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/automation/automation-account:<version>'
+
+// Required parameters
+param name = 'aamax001'
+// Non-required parameters
+param credentials = [
+  {
+    description: 'Description of Credential01'
+    name: 'Credential01'
+    password: '<password>'
+    userName: 'userName01'
+  }
+  {
+    name: 'Credential02'
+    password: '<password>'
+    userName: 'username02'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAuth = true
+param gallerySolutions = [
+  {
+    name: 'Updates'
+    product: 'OMSGallery'
+    publisher: 'Microsoft'
+  }
+]
+param jobSchedules = [
+  {
+    runbookName: 'TestRunbook'
+    scheduleName: 'TestSchedule'
+  }
+]
+param linkedWorkspaceResourceId = '<linkedWorkspaceResourceId>'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param modules = [
+  {
+    name: 'PSWindowsUpdate'
+    uri: 'https://www.powershellgallery.com/api/v2/package'
+    version: 'latest'
+  }
+]
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'Webhook'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'Webhook'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'DSCAndHybridWorker'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param roleAssignments = [
+  {
+    name: 'de334944-f952-4273-8ab3-bd523380034c'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param runbooks = [
+  {
+    description: 'Test runbook'
+    name: 'TestRunbook'
+    type: 'PowerShell'
+    uri: 'https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/quickstarts/microsoft.automation/101-automation/scripts/AzureAutomationTutorial.ps1'
+    version: '1.0.0.0'
+  }
+]
+param schedules = [
+  {
+    advancedSchedule: {}
+    expiryTime: '9999-12-31T13:00'
+    frequency: 'Hour'
+    interval: 12
+    name: 'TestSchedule'
+    startTime: ''
+    timeZone: 'Europe/Berlin'
+  }
+]
+param softwareUpdateConfigurations = [
+  {
+    excludeUpdates: [
+      '123456'
+    ]
+    frequency: 'Month'
+    includeUpdates: [
+      '654321'
+    ]
+    interval: 1
+    maintenanceWindow: 'PT4H'
+    monthlyOccurrences: [
+      {
+        day: 'Friday'
+        occurrence: 3
+      }
+    ]
+    name: 'Windows_ZeroDay'
+    operatingSystem: 'Windows'
+    rebootSetting: 'IfRequired'
+    scopeByTags: {
+      Update: [
+        'Automatic-Wave1'
+      ]
+    }
+    startTime: '22:00'
+    updateClassifications: [
+      'Critical'
+      'Definition'
+      'FeaturePack'
+      'Security'
+      'ServicePack'
+      'Tools'
+      'UpdateRollup'
+      'Updates'
+    ]
+  }
+  {
+    excludeUpdates: [
+      'icacls'
+    ]
+    frequency: 'OneTime'
+    includeUpdates: [
+      'kernel'
+    ]
+    maintenanceWindow: 'PT4H'
+    name: 'Linux_ZeroDay'
+    operatingSystem: 'Linux'
+    rebootSetting: 'IfRequired'
+    startTime: '22:00'
+    updateClassifications: [
+      'Critical'
+      'Other'
+      'Security'
+    ]
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param variables = [
+  {
+    description: 'TestStringDescription'
+    name: 'TestString'
+    value: '\'TestString\''
+  }
+  {
+    description: 'TestIntegerDescription'
+    name: 'TestInteger'
+    value: '500'
+  }
+  {
+    description: 'TestBooleanDescription'
+    name: 'TestBoolean'
+    value: 'false'
+  }
+  {
+    description: 'TestDateTimeDescription'
+    isEncrypted: false
+    name: 'TestDateTime'
+    value: '\'\\/Date(1637934042656)\\/\''
+  }
+  {
+    description: 'TestEncryptedDescription'
+    name: 'TestEncryptedVariable'
+    value: '\'TestEncryptedValue\''
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -743,9 +1057,13 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     ]
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'Webhook'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -755,9 +1073,13 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'DSCAndHybridWorker'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -885,7 +1207,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -959,9 +1281,13 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "Webhook",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -971,9 +1297,13 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "DSCAndHybridWorker",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -1110,6 +1440,204 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/automation/automation-account:<version>'
+
+// Required parameters
+param name = 'aawaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAuth = true
+param gallerySolutions = [
+  {
+    name: 'Updates'
+    product: 'OMSGallery'
+    publisher: 'Microsoft'
+  }
+]
+param jobSchedules = [
+  {
+    runbookName: 'TestRunbook'
+    scheduleName: 'TestSchedule'
+  }
+]
+param linkedWorkspaceResourceId = '<linkedWorkspaceResourceId>'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param modules = [
+  {
+    name: 'PSWindowsUpdate'
+    uri: 'https://www.powershellgallery.com/api/v2/package'
+    version: 'latest'
+  }
+]
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'Webhook'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'DSCAndHybridWorker'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param runbooks = [
+  {
+    description: 'Test runbook'
+    name: 'TestRunbook'
+    type: 'PowerShell'
+    uri: 'https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/quickstarts/microsoft.automation/101-automation/scripts/AzureAutomationTutorial.ps1'
+    version: '1.0.0.0'
+  }
+]
+param schedules = [
+  {
+    advancedSchedule: {}
+    expiryTime: '9999-12-31T13:00'
+    frequency: 'Hour'
+    interval: 12
+    name: 'TestSchedule'
+    startTime: ''
+    timeZone: 'Europe/Berlin'
+  }
+]
+param softwareUpdateConfigurations = [
+  {
+    excludeUpdates: [
+      '123456'
+    ]
+    frequency: 'Month'
+    includeUpdates: [
+      '654321'
+    ]
+    interval: 1
+    maintenanceWindow: 'PT4H'
+    monthlyOccurrences: [
+      {
+        day: 'Friday'
+        occurrence: 3
+      }
+    ]
+    name: 'Windows_ZeroDay'
+    operatingSystem: 'Windows'
+    rebootSetting: 'IfRequired'
+    scopeByTags: {
+      Update: [
+        'Automatic-Wave1'
+      ]
+    }
+    startTime: '22:00'
+    updateClassifications: [
+      'Critical'
+      'Definition'
+      'FeaturePack'
+      'Security'
+      'ServicePack'
+      'Tools'
+      'UpdateRollup'
+      'Updates'
+    ]
+  }
+  {
+    excludeUpdates: [
+      'icacls'
+    ]
+    frequency: 'OneTime'
+    includeUpdates: [
+      'kernel'
+    ]
+    maintenanceWindow: 'PT4H'
+    name: 'Linux_ZeroDay'
+    operatingSystem: 'Linux'
+    rebootSetting: 'IfRequired'
+    startTime: '22:00'
+    updateClassifications: [
+      'Critical'
+      'Other'
+      'Security'
+    ]
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param variables = [
+  {
+    description: 'TestStringDescription'
+    name: 'TestString'
+    value: '\'TestString\''
+  }
+  {
+    description: 'TestIntegerDescription'
+    name: 'TestInteger'
+    value: '500'
+  }
+  {
+    description: 'TestBooleanDescription'
+    name: 'TestBoolean'
+    value: 'false'
+  }
+  {
+    description: 'TestDateTimeDescription'
+    name: 'TestDateTime'
+    value: '\'\\/Date(1637934042656)\\/\''
+  }
+  {
+    description: 'TestEncryptedDescription'
+    name: 'TestEncryptedVariable'
+    value: '\'TestEncryptedValue\''
+  }
+]
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -1158,7 +1686,6 @@ List of credentials to be created in the automation account.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -1268,7 +1795,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -1378,7 +1905,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -1493,7 +2020,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -1504,7 +2031,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -1528,7 +2055,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints. |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -1545,8 +2072,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
@@ -1554,7 +2080,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 ### Parameter: `privateEndpoints.service`
 
-The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
+The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints.
 
 - Required: Yes
 - Type: string
@@ -1584,19 +2110,19 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint ip address. |
-| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private ip addresses of the private endpoint. |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
-Fqdn that resolves to private endpoint ip address.
+Fqdn that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
-A list of private ip addresses of the private endpoint.
+A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
@@ -1649,7 +2175,7 @@ Properties of private endpoint IP configurations.
 | :-- | :-- | :-- |
 | [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
 | [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
-| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private ip address obtained from the private endpoint's subnet. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
 
@@ -1667,7 +2193,7 @@ The member name of a group obtained from the remote resource that this private e
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
-A private ip address obtained from the private endpoint's subnet.
+A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
@@ -1736,19 +2262,64 @@ The name of the private endpoint.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneGroupName`
+### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
-The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.
+The private DNS zone group to configure for the private endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneResourceIds`
+### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
-The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
+The name of the Private DNS Zone Group.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -1770,6 +2341,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -1890,6 +2472,16 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Automation Contributor'`
+  - `'Automation Job Operator'`
+  - `'Automation Operator'`
+  - `'Automation Runbook Operator'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2035,13 +2627,13 @@ List of variables to be created in the automation account.
 - Type: array
 - Default: `[]`
 
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed automation account. |
+| `privateEndpoints` | array | The private endpoints of the automation account. |
 | `resourceGroupName` | string | The resource group of the deployed automation account. |
 | `resourceId` | string | The resource ID of the deployed automation account. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
@@ -2052,8 +2644,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.6.1` | Remote reference |
-| `br/public:avm/res/operations-management/solution:0.1.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/res/operations-management/solution:0.1.3` | Remote reference |
 
 ## Data Collection
 

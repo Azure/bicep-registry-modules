@@ -1,10 +1,5 @@
 # Azure Front Doors `[Microsoft.Network/frontDoors]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an Azure Front Door.
 
 ## Navigation
@@ -13,7 +8,6 @@ This module deploys an Azure Front Door.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -23,7 +17,7 @@ This module deploys an Azure Front Door.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/frontDoors` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-05-01/frontDoors) |
+| `Microsoft.Network/frontDoors` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-06-01/frontDoors) |
 
 ## Usage examples
 
@@ -142,7 +136,7 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -248,6 +242,101 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/front-door:<version>'
+
+// Required parameters
+param backendPools = [
+  {
+    name: 'backendPool'
+    properties: {
+      backends: [
+        {
+          address: 'biceptest.local'
+          backendHostHeader: 'backendAddress'
+          enabledState: 'Enabled'
+          httpPort: 80
+          httpsPort: 443
+          priority: 1
+          weight: 50
+        }
+      ]
+      HealthProbeSettings: {
+        id: '<id>'
+      }
+      LoadBalancingSettings: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param frontendEndpoints = [
+  {
+    name: 'frontEnd'
+    properties: {
+      hostName: '<hostName>'
+      sessionAffinityEnabledState: 'Disabled'
+      sessionAffinityTtlSeconds: 60
+    }
+  }
+]
+param healthProbeSettings = [
+  {
+    name: 'heathProbe'
+    properties: {
+      intervalInSeconds: 60
+      path: '/'
+      protocol: 'Https'
+    }
+  }
+]
+param loadBalancingSettings = [
+  {
+    name: 'loadBalancer'
+    properties: {
+      additionalLatencyMilliseconds: 0
+      sampleSize: 50
+      successfulSamplesRequired: 1
+    }
+  }
+]
+param name = '<name>'
+param routingRules = [
+  {
+    name: 'routingRule'
+    properties: {
+      acceptedProtocols: [
+        'Https'
+      ]
+      enabledState: 'Enabled'
+      frontendEndpoints: [
+        {
+          id: '<id>'
+        }
+      ]
+      patternsToMatch: [
+        '/*'
+      ]
+      routeConfiguration: {
+        '@odata.type': '#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration'
+        backendPool: {
+          id: '<id>'
+        }
+      }
+    }
+  }
+]
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -414,7 +503,7 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -593,6 +682,157 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/front-door:<version>'
+
+// Required parameters
+param backendPools = [
+  {
+    name: 'backendPool'
+    properties: {
+      backends: [
+        {
+          address: 'biceptest.local'
+          backendHostHeader: 'backendAddress'
+          enabledState: 'Enabled'
+          httpPort: 80
+          httpsPort: 443
+          priority: 1
+          privateLinkAlias: ''
+          privateLinkApprovalMessage: ''
+          privateLinkLocation: ''
+          weight: 50
+        }
+      ]
+      HealthProbeSettings: {
+        id: '<id>'
+      }
+      LoadBalancingSettings: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param frontendEndpoints = [
+  {
+    name: 'frontEnd'
+    properties: {
+      hostName: '<hostName>'
+      sessionAffinityEnabledState: 'Disabled'
+      sessionAffinityTtlSeconds: 60
+    }
+  }
+]
+param healthProbeSettings = [
+  {
+    name: 'heathProbe'
+    properties: {
+      enabledState: ''
+      healthProbeMethod: ''
+      intervalInSeconds: 60
+      path: '/'
+      protocol: 'Https'
+    }
+  }
+]
+param loadBalancingSettings = [
+  {
+    name: 'loadBalancer'
+    properties: {
+      additionalLatencyMilliseconds: 0
+      sampleSize: 50
+      successfulSamplesRequired: 1
+    }
+  }
+]
+param name = '<name>'
+param routingRules = [
+  {
+    name: 'routingRule'
+    properties: {
+      acceptedProtocols: [
+        'Http'
+        'Https'
+      ]
+      enabledState: 'Enabled'
+      frontendEndpoints: [
+        {
+          id: '<id>'
+        }
+      ]
+      patternsToMatch: [
+        '/*'
+      ]
+      routeConfiguration: {
+        '@odata.type': '#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration'
+        backendPool: {
+          id: '<id>'
+        }
+        forwardingProtocol: 'MatchRequest'
+      }
+    }
+  }
+]
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'FrontdoorAccessLog'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param enforceCertificateNameCheck = 'Disabled'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'b2c1ef5f-3422-4a49-8e55-7789fe980b64'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param sendRecvTimeoutSeconds = 10
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -720,7 +960,7 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -861,6 +1101,122 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/front-door:<version>'
+
+// Required parameters
+param backendPools = [
+  {
+    name: 'backendPool'
+    properties: {
+      backends: [
+        {
+          address: 'biceptest.local'
+          backendHostHeader: 'backendAddress'
+          enabledState: 'Enabled'
+          httpPort: 80
+          httpsPort: 443
+          priority: 1
+          privateLinkAlias: ''
+          privateLinkApprovalMessage: ''
+          privateLinkLocation: ''
+          weight: 50
+        }
+      ]
+      HealthProbeSettings: {
+        id: '<id>'
+      }
+      LoadBalancingSettings: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param frontendEndpoints = [
+  {
+    name: 'frontEnd'
+    properties: {
+      hostName: '<hostName>'
+      sessionAffinityEnabledState: 'Disabled'
+      sessionAffinityTtlSeconds: 60
+    }
+  }
+]
+param healthProbeSettings = [
+  {
+    name: 'heathProbe'
+    properties: {
+      enabledState: 'Enabled'
+      healthProbeMethod: 'HEAD'
+      intervalInSeconds: 60
+      path: '/healthz'
+      protocol: 'Https'
+    }
+  }
+]
+param loadBalancingSettings = [
+  {
+    name: 'loadBalancer'
+    properties: {
+      additionalLatencyMilliseconds: 0
+      sampleSize: 50
+      successfulSamplesRequired: 1
+    }
+  }
+]
+param name = '<name>'
+param routingRules = [
+  {
+    name: 'routingRule'
+    properties: {
+      acceptedProtocols: [
+        'Http'
+        'Https'
+      ]
+      enabledState: 'Enabled'
+      frontendEndpoints: [
+        {
+          id: '<id>'
+        }
+      ]
+      patternsToMatch: [
+        '/*'
+      ]
+      routeConfiguration: {
+        '@odata.type': '#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration'
+        backendPool: {
+          id: '<id>'
+        }
+        forwardingProtocol: 'MatchRequest'
+      }
+    }
+  }
+]
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param enforceCertificateNameCheck = 'Disabled'
+param location = '<location>'
+param sendRecvTimeoutSeconds = 10
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -1159,6 +1515,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1265,7 +1628,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1273,10 +1635,6 @@ Resource tags.
 | `name` | string | The name of the front door. |
 | `resourceGroupName` | string | The resource group the front door was deployed into. |
 | `resourceId` | string | The resource ID of the front door. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

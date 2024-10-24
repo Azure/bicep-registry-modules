@@ -18,11 +18,11 @@ param webAppName string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-resource webApp 'Microsoft.Web/sites@2022-09-01' existing = {
+resource webApp 'Microsoft.Web/sites@2023-12-01' existing = {
   name: webAppName
 }
 
-resource basicPublishingCredentialsPolicy 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2022-09-01' = {
+resource basicPublishingCredentialsPolicy 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2023-12-01' = {
   #disable-next-line BCP225 // False-positive. Value is required.
   name: name
   location: location

@@ -8,7 +8,6 @@ This module deploys a Disk Encryption Set. The module will attempt to set permis
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -89,7 +88,7 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -151,6 +150,52 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/disk-encryption-set:<version>'
+
+// Required parameters
+param keyName = '<keyName>'
+param keyVaultResourceId = '<keyVaultResourceId>'
+param name = 'cdesap001'
+// Non-required parameters
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -179,7 +224,7 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -202,6 +247,24 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/disk-encryption-set:<version>'
+
+// Required parameters
+param keyName = '<keyName>'
+param keyVaultResourceId = '<keyVaultResourceId>'
+param name = 'cdesmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -268,7 +331,7 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -337,6 +400,57 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/disk-encryption-set:<version>'
+
+// Required parameters
+param keyName = '<keyName>'
+param keyVaultResourceId = '<keyVaultResourceId>'
+param name = 'cdesmax001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param roleAssignments = [
+  {
+    name: 'c331c327-6458-473a-9398-95b382c6f04f'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -375,7 +489,7 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -417,6 +531,33 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/disk-encryption-set:<version>'
+
+// Required parameters
+param keyName = '<keyName>'
+param keyVaultResourceId = '<keyVaultResourceId>'
+param name = 'cdeswaf001'
+// Non-required parameters
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -587,6 +728,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Data Operator for Managed Disks'`
+  - `'Disk Backup Reader'`
+  - `'Disk Pool Operator'`
+  - `'Disk Restore Operator'`
+  - `'Disk Snapshot Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -693,7 +845,6 @@ Tags of the disk encryption resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -705,10 +856,6 @@ Tags of the disk encryption resource.
 | `resourceGroupName` | string | The resource group the disk encryption set was deployed into. |
 | `resourceId` | string | The resource ID of the disk encryption set. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

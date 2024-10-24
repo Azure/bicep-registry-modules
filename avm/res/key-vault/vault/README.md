@@ -22,8 +22,8 @@ This module deploys a Key Vault.
 | `Microsoft.KeyVault/vaults/accessPolicies` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/accessPolicies) |
 | `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
 | `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -66,7 +66,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -86,6 +86,23 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/key-vault/vault:<version>'
+
+// Required parameters
+param name = 'kvvmin002'
+// Non-required parameters
+param enablePurgeProtection = false
+param location = '<location>'
 ```
 
 </details>
@@ -152,7 +169,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -208,6 +225,57 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/key-vault/vault:<version>'
+
+// Required parameters
+param name = 'kvvec002'
+// Non-required parameters
+param enablePurgeProtection = false
+param enableRbacAuthorization = true
+param keys = [
+  {
+    attributes: {
+      exp: 1725109032
+      nbf: 10000
+    }
+    kty: 'EC'
+    name: 'keyName'
+    rotationPolicy: {
+      attributes: {
+        expiryTime: 'P2Y'
+      }
+      lifetimeActions: [
+        {
+          action: {
+            type: 'Rotate'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P2M'
+          }
+        }
+        {
+          action: {
+            type: 'Notify'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P30D'
+          }
+        }
+      ]
+    }
+  }
+]
+param location = '<location>'
 ```
 
 </details>
@@ -284,8 +352,10 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     enableRbacAuthorization: false
     keys: [
       {
-        attributesExp: 1725109032
-        attributesNbf: 10000
+        attributes: {
+          exp: 1725109032
+          nbf: 10000
+        }
         name: 'keyName'
         roleAssignments: [
           {
@@ -369,9 +439,13 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
             }
           }
         ]
-        privateDnsZoneResourceIds: [
-          '<privateDNSResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         roleAssignments: [
           {
             principalId: '<principalId>'
@@ -392,9 +466,13 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -419,8 +497,10 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     ]
     secrets: [
       {
-        attributesExp: 1702648632
-        attributesNbf: 10000
+        attributes: {
+          exp: 1725109032
+          nbf: 10000
+        }
         contentType: 'Something'
         name: 'secretName'
         roleAssignments: [
@@ -458,7 +538,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -532,8 +612,10 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "keys": {
       "value": [
         {
-          "attributesExp": 1725109032,
-          "attributesNbf": 10000,
+          "attributes": {
+            "exp": 1725109032,
+            "nbf": 10000
+          },
           "name": "keyName",
           "roleAssignments": [
             {
@@ -625,9 +707,13 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
               }
             }
           ],
-          "privateDnsZoneResourceIds": [
-            "<privateDNSResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "roleAssignments": [
             {
               "principalId": "<principalId>",
@@ -648,9 +734,13 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -679,8 +769,10 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "secrets": {
       "value": [
         {
-          "attributesExp": 1702648632,
-          "attributesNbf": 10000,
+          "attributes": {
+            "exp": 1725109032,
+            "nbf": 10000
+          },
           "contentType": "Something",
           "name": "secretName",
           "roleAssignments": [
@@ -715,6 +807,253 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/key-vault/vault:<version>'
+
+// Required parameters
+param name = 'kvvmax002'
+// Non-required parameters
+param accessPolicies = [
+  {
+    objectId: '<objectId>'
+    permissions: {
+      keys: [
+        'get'
+        'list'
+        'update'
+      ]
+      secrets: [
+        'all'
+      ]
+    }
+    tenantId: '<tenantId>'
+  }
+  {
+    objectId: '<objectId>'
+    permissions: {
+      certificates: [
+        'backup'
+        'create'
+        'delete'
+      ]
+      secrets: [
+        'all'
+      ]
+    }
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'AzurePolicyEvaluationDetails'
+      }
+      {
+        category: 'AuditEvent'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param enablePurgeProtection = false
+param enableRbacAuthorization = false
+param keys = [
+  {
+    attributes: {
+      exp: 1725109032
+      nbf: 10000
+    }
+    name: 'keyName'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    rotationPolicy: {
+      attributes: {
+        expiryTime: 'P2Y'
+      }
+      lifetimeActions: [
+        {
+          action: {
+            type: 'Rotate'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P2M'
+          }
+        }
+        {
+          action: {
+            type: 'Notify'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P30D'
+          }
+        }
+      ]
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param networkAcls = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
+  ipRules: [
+    {
+      value: '40.74.28.0/23'
+    }
+  ]
+  virtualNetworkRules: [
+    {
+      id: '<id>'
+      ignoreMissingVnetServiceEndpoint: false
+    }
+  ]
+}
+param privateEndpoints = [
+  {
+    customDnsConfigs: [
+      {
+        fqdn: 'abc.keyvault.com'
+        ipAddresses: [
+          '10.0.0.10'
+        ]
+      }
+    ]
+    ipConfigurations: [
+      {
+        name: 'myIPconfig'
+        properties: {
+          groupId: 'vault'
+          memberName: 'default'
+          privateIPAddress: '10.0.0.10'
+        }
+      }
+    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    name: 'b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param secrets = [
+  {
+    attributes: {
+      exp: 1725109032
+      nbf: 10000
+    }
+    contentType: 'Something'
+    name: 'secretName'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    value: 'secretValue'
+  }
+]
+param softDeleteRetentionInDays = 7
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -782,7 +1121,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -838,6 +1177,57 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/key-vault/vault:<version>'
+
+// Required parameters
+param name = 'kvvrsa002'
+// Non-required parameters
+param enablePurgeProtection = false
+param enableRbacAuthorization = true
+param keys = [
+  {
+    attributes: {
+      exp: 1725109032
+      nbf: 10000
+    }
+    kty: 'RSA'
+    name: 'keyName'
+    rotationPolicy: {
+      attributes: {
+        expiryTime: 'P2Y'
+      }
+      lifetimeActions: [
+        {
+          action: {
+            type: 'Rotate'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P2M'
+          }
+        }
+        {
+          action: {
+            type: 'Notify'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P30D'
+          }
+        }
+      ]
+    }
+  }
+]
+param location = '<location>'
 ```
 
 </details>
@@ -914,9 +1304,13 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     }
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'vault'
         subnetResourceId: '<subnetResourceId>'
       }
@@ -948,7 +1342,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1028,9 +1422,13 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "vault",
           "subnetResourceId": "<subnetResourceId>"
         }
@@ -1067,6 +1465,104 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/key-vault/vault:<version>'
+
+// Required parameters
+param name = 'kvvwaf002'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param enablePurgeProtection = false
+param enableRbacAuthorization = true
+param keys = [
+  {
+    attributes: {
+      enabled: true
+      exp: 1702648632
+      nbf: 10000
+    }
+    keySize: 4096
+    name: 'keyName'
+    rotationPolicy: {
+      attributes: {
+        expiryTime: 'P2Y'
+      }
+      lifetimeActions: [
+        {
+          action: {
+            type: 'Rotate'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P2M'
+          }
+        }
+        {
+          action: {
+            type: 'Notify'
+          }
+          trigger: {
+            timeBeforeExpiry: 'P30D'
+          }
+        }
+      ]
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param networkAcls = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'vault'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param secrets = [
+  {
+    attributes: {
+      enabled: true
+      exp: 1702648632
+      nbf: 10000
+    }
+    contentType: 'Something'
+    name: 'secretName'
+    value: 'secretValue'
+  }
+]
+param softDeleteRetentionInDays = 7
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -1658,6 +2154,18 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Key Vault Administrator'`
+  - `'Key Vault Contributor'`
+  - `'Key Vault Crypto Officer'`
+  - `'Key Vault Crypto Service Encryption User'`
+  - `'Key Vault Crypto User'`
+  - `'Key Vault Reader'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1937,8 +2445,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
@@ -2122,19 +2629,64 @@ The name of the private endpoint.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneGroupName`
+### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
-The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
+The private DNS zone group to configure for the private endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneResourceIds`
+### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
-The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
+The name of the Private DNS Zone Group.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -2156,6 +2708,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -2283,6 +2846,22 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Key Vault Administrator'`
+  - `'Key Vault Certificates Officer'`
+  - `'Key Vault Certificate User'`
+  - `'Key Vault Contributor'`
+  - `'Key Vault Crypto Officer'`
+  - `'Key Vault Crypto Service Encryption User'`
+  - `'Key Vault Crypto User'`
+  - `'Key Vault Reader'`
+  - `'Key Vault Secrets Officer'`
+  - `'Key Vault Secrets User'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2460,6 +3039,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Key Vault Administrator'`
+  - `'Key Vault Contributor'`
+  - `'Key Vault Reader'`
+  - `'Key Vault Secrets Officer'`
+  - `'Key Vault Secrets User'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2588,13 +3178,13 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the key vault. |
+| `privateEndpoints` | array | The private endpoints of the key vault. |
 | `resourceGroupName` | string | The name of the resource group the key vault was created in. |
 | `resourceId` | string | The resource ID of the key vault. |
 | `uri` | string | The URI of the key vault. |
@@ -2605,7 +3195,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
 
 ## Data Collection
 

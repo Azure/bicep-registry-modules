@@ -9,6 +9,9 @@ This is the orchestration module that is used and called by a consumer of the mo
 
 targetScope = 'managementGroup'
 
+//Imports
+import { roleAssignmentType } from 'modules/subResourceWrapper.bicep'
+
 // PARAMETERS
 
 // Subscription Parameters
@@ -196,9 +199,9 @@ Each object must contain the following `keys`:
     1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope
     2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.
 ''')
-param roleAssignments array = []
+param roleAssignments roleAssignmentType = []
 
-@sys.description('Optional. Enable/Disable usage telemetry for module.')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. The name of the resource group to create the deployment script for resource providers registration.')
@@ -221,7 +224,7 @@ param deploymentScriptNetworkSecurityGroupName string = 'nsg-${deployment().loca
 param virtualNetworkDeploymentScriptAddressPrefix string = '192.168.0.0/24'
 
 @description('Optional. The name of the storage account for the deployment script.')
-param deploymentScriptStorageAccountName string = 'stgds${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 4)}'
+param deploymentScriptStorageAccountName string = 'stgds${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 10)}'
 
 @description('Optional. The location of the deployment script. Use region shortnames e.g. uksouth, eastus, etc.')
 param deploymentScriptLocation string = deployment().location
@@ -297,6 +300,9 @@ param resourceProviders object = {
   'Microsoft.Web': []
 }
 
+@sys.description('Optional. The number of blank ARM deployments to create sequentially to introduce a delay to the Subscription being moved to the target Management Group being, if set, to allow for background platform RBAC inheritance to occur.')
+param managementGroupAssociationDelayCount int = 15
+
 // VARIABLES
 
 var existingSubscriptionIDEmptyCheck = empty(existingSubscriptionId)
@@ -355,6 +361,7 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     subscriptionId: (subscriptionAliasEnabled && empty(existingSubscriptionId))
       ? createSubscription.outputs.subscriptionId
       : existingSubscriptionId
+    managementGroupAssociationDelayCount: managementGroupAssociationDelayCount
     subscriptionManagementGroupAssociationEnabled: subscriptionManagementGroupAssociationEnabled
     subscriptionManagementGroupId: subscriptionManagementGroupId
     subscriptionTags: subscriptionTags

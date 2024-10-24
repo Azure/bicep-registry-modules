@@ -55,10 +55,13 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'ErGw1AZ'
       gatewayType: 'ExpressRoute'
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
+      clusterSettings:{
+        clusterMode: 'activePassiveBgp'
+      }
       domainNameLabel: [
         '${namePrefix}-dm-${serviceShort}'
       ]
-      gatewayPipName: '${namePrefix}-pip-${serviceShort}'
+      firstPipName: '${namePrefix}-pip-${serviceShort}'
       publicIpZones: [
         1
         2

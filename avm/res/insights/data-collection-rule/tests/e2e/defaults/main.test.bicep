@@ -25,7 +25,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -42,45 +42,47 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      dataSources: {
-        performanceCounters: [
+      dataCollectionRuleProperties: {
+        kind: 'Windows'
+        dataSources: {
+          performanceCounters: [
+            {
+              name: 'perfCounterDataSource60'
+              samplingFrequencyInSeconds: 60
+              streams: [
+                'Microsoft-InsightsMetrics'
+              ]
+              counterSpecifiers: [
+                '\\Processor Information(_Total)\\% Processor Time'
+                '\\Processor Information(_Total)\\% Privileged Time'
+                '\\Processor Information(_Total)\\% User Time'
+                '\\Processor Information(_Total)\\Processor Frequency'
+                '\\System\\Processes'
+                '\\Process(_Total)\\Thread Count'
+                '\\Process(_Total)\\Handle Count'
+                '\\System\\System Up Time'
+                '\\System\\Context Switches/sec'
+                '\\System\\Processor Queue Length'
+              ]
+            }
+          ]
+        }
+        destinations: {
+          azureMonitorMetrics: {
+            name: 'azureMonitorMetrics-default'
+          }
+        }
+        dataFlows: [
           {
-            name: 'perfCounterDataSource60'
-            samplingFrequencyInSeconds: 60
             streams: [
               'Microsoft-InsightsMetrics'
             ]
-            counterSpecifiers: [
-              '\\Processor Information(_Total)\\% Processor Time'
-              '\\Processor Information(_Total)\\% Privileged Time'
-              '\\Processor Information(_Total)\\% User Time'
-              '\\Processor Information(_Total)\\Processor Frequency'
-              '\\System\\Processes'
-              '\\Process(_Total)\\Thread Count'
-              '\\Process(_Total)\\Handle Count'
-              '\\System\\System Up Time'
-              '\\System\\Context Switches/sec'
-              '\\System\\Processor Queue Length'
+            destinations: [
+              'azureMonitorMetrics-default'
             ]
           }
         ]
       }
-      destinations: {
-        azureMonitorMetrics: {
-          name: 'azureMonitorMetrics-default'
-        }
-      }
-      dataFlows: [
-        {
-          streams: [
-            'Microsoft-InsightsMetrics'
-          ]
-          destinations: [
-            'azureMonitorMetrics-default'
-          ]
-        }
-      ]
-      kind: 'Windows'
     }
   }
 ]

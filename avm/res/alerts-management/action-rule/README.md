@@ -8,7 +8,6 @@ This module deploys an Alert Processing Rule.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -57,7 +56,7 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -74,6 +73,22 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/alerts-management/action-rule:<version>'
+
+// Required parameters
+param name = 'aprmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -233,7 +248,7 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -399,6 +414,150 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/alerts-management/action-rule:<version>'
+
+// Required parameters
+param name = 'aprmax001'
+// Non-required parameters
+param actions = [
+  {
+    actionGroupIds: [
+      '<actionGroupResourceId>'
+    ]
+    actionType: 'AddActionGroups'
+  }
+]
+param aprDescription = 'Test deployment of the module with the max set of parameters.'
+param conditions = [
+  {
+    field: 'AlertContext'
+    operator: 'NotEquals'
+    values: [
+      'myAlertContext'
+    ]
+  }
+  {
+    field: 'AlertRuleId'
+    operator: 'Equals'
+    values: [
+      '<activityLogAlertResourceId>'
+    ]
+  }
+  {
+    field: 'AlertRuleName'
+    operator: 'Equals'
+    values: [
+      '<activityLogAlertResourceName>'
+    ]
+  }
+  {
+    field: 'Description'
+    operator: 'Contains'
+    values: [
+      'myAlertRuleDescription'
+    ]
+  }
+  {
+    field: 'MonitorService'
+    operator: 'Equals'
+    values: [
+      'ActivityLog Administrative'
+    ]
+  }
+  {
+    field: 'MonitorCondition'
+    operator: 'Equals'
+    values: [
+      'Fired'
+    ]
+  }
+  {
+    field: 'TargetResourceType'
+    operator: 'DoesNotContain'
+    values: [
+      'myAlertResourceType'
+    ]
+  }
+  {
+    field: 'TargetResource'
+    operator: 'Equals'
+    values: [
+      'myAlertResource1'
+      'myAlertResource2'
+    ]
+  }
+  {
+    field: 'TargetResourceGroup'
+    operator: 'Equals'
+    values: [
+      '<id>'
+    ]
+  }
+  {
+    field: 'Severity'
+    operator: 'Equals'
+    values: [
+      'Sev0'
+      'Sev1'
+      'Sev2'
+      'Sev3'
+      'Sev4'
+    ]
+  }
+  {
+    field: 'SignalType'
+    operator: 'Equals'
+    values: [
+      'Health'
+      'Log'
+      'Metric'
+      'Unknown'
+    ]
+  }
+]
+param enabled = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'a66da6bc-b3ee-484e-9bdb-9294938bb327'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param scopes = [
+  '<id>'
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -437,7 +596,7 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -477,6 +636,33 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/alerts-management/action-rule:<version>'
+
+// Required parameters
+param name = 'aprwaf001'
+// Non-required parameters
+param actions = [
+  {
+    actionGroupIds: [
+      '<actionGroupResourceId>'
+    ]
+    actionType: 'AddActionGroups'
+  }
+]
+param aprDescription = 'Test deployment of the module with the waf aligned set of parameters.'
+param location = '<location>'
+param scopes = [
+  '<id>'
+]
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -605,6 +791,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -723,7 +915,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -732,10 +923,6 @@ Resource tags.
 | `name` | string | The name of the Alert Processing Rule. |
 | `resourceGroupName` | string | The resource group the action group was deployed into. |
 | `resourceId` | string | The resource ID of the Alert Processing Rule. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

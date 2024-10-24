@@ -8,7 +8,6 @@ This module deploys an Activity Log Alert.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -86,7 +85,7 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -135,6 +134,52 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/activity-log-alert:<version>'
+
+// Required parameters
+param conditions = [
+  {
+    equals: 'ServiceHealth'
+    field: 'category'
+  }
+  {
+    anyOf: [
+      {
+        equals: 'Incident'
+        field: 'properties.incidentType'
+      }
+      {
+        equals: 'Maintenance'
+        field: 'properties.incidentType'
+      }
+    ]
+  }
+  {
+    containsAny: [
+      'Storage'
+    ]
+    field: 'properties.impactedServices[*].ServiceName'
+  }
+  {
+    containsAny: [
+      'West Europe'
+    ]
+    field: 'properties.impactedServices[*].ImpactedRegions[*].RegionName'
+  }
+]
+param name = 'ialamin001'
+// Non-required parameters
+param location = 'global'
 ```
 
 </details>
@@ -230,7 +275,7 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -326,6 +371,86 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/activity-log-alert:<version>'
+
+// Required parameters
+param conditions = [
+  {
+    equals: 'ServiceHealth'
+    field: 'category'
+  }
+  {
+    anyOf: [
+      {
+        equals: 'Incident'
+        field: 'properties.incidentType'
+      }
+      {
+        equals: 'Maintenance'
+        field: 'properties.incidentType'
+      }
+    ]
+  }
+  {
+    containsAny: [
+      'Action Groups'
+      'Activity Logs & Alerts'
+    ]
+    field: 'properties.impactedServices[*].ServiceName'
+  }
+  {
+    containsAny: [
+      'Global'
+      'West Europe'
+    ]
+    field: 'properties.impactedServices[*].ImpactedRegions[*].RegionName'
+  }
+]
+param name = 'ialamax001'
+// Non-required parameters
+param actions = [
+  {
+    actionGroupId: '<actionGroupId>'
+  }
+]
+param location = 'global'
+param roleAssignments = [
+  {
+    name: 'be96d7a9-6596-40c7-9acd-db6acd5cd41b'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param scopes = [
+  '<id>'
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -397,7 +522,7 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -472,6 +597,66 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/activity-log-alert:<version>'
+
+// Required parameters
+param conditions = [
+  {
+    equals: 'ServiceHealth'
+    field: 'category'
+  }
+  {
+    anyOf: [
+      {
+        equals: 'Incident'
+        field: 'properties.incidentType'
+      }
+      {
+        equals: 'Maintenance'
+        field: 'properties.incidentType'
+      }
+    ]
+  }
+  {
+    containsAny: [
+      'Action Groups'
+      'Activity Logs & Alerts'
+    ]
+    field: 'properties.impactedServices[*].ServiceName'
+  }
+  {
+    containsAny: [
+      'Global'
+      'West Europe'
+    ]
+    field: 'properties.impactedServices[*].ImpactedRegions[*].RegionName'
+  }
+]
+param name = 'ialawaf001'
+// Non-required parameters
+param actions = [
+  {
+    actionGroupId: '<actionGroupId>'
+  }
+]
+param location = 'global'
+param scopes = [
+  '<id>'
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -555,6 +740,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -666,7 +857,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -675,10 +865,6 @@ Tags of the resource.
 | `name` | string | The name of the activity log alert. |
 | `resourceGroupName` | string | The resource group the activity log alert was deployed into. |
 | `resourceId` | string | The resource ID of the activity log alert. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

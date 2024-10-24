@@ -49,8 +49,14 @@ param ruleSets array = []
 @description('Optional. Array of AFD endpoint objects.')
 param afdEndpoints array = []
 
+@description('Optional. Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies for details).')
+param securityPolicies securityPolicyType = []
+
 @description('Optional. Endpoint tags.')
 param tags object?
+
+@description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentitiesType
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -81,7 +87,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -101,6 +107,21 @@ var formattedRoleAssignments = [
       : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
   })
 ]
+
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -124,6 +145,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' = {
   name: name
   location: location
+  identity: identity
   sku: {
     name: sku
   }
@@ -251,6 +273,22 @@ module profile_afdEndpoints 'afdEndpoint/main.bicep' = [
   }
 ]
 
+module profile_securityPolicies 'securityPolicies/main.bicep' = [
+  for (securityPolicy, index) in securityPolicies: {
+    name: '${uniqueString(deployment().name)}-Profile-SecurityPolicy-${index}'
+    dependsOn: [
+      profile_afdEndpoints
+      profile_customDomains
+    ]
+    params: {
+      name: securityPolicy.name
+      profileName: profile.name
+      associations: securityPolicy.associations
+      wafPolicyResourceId: securityPolicy.wafPolicyResourceId
+    }
+  }
+]
+
 @description('The name of the CDN profile.')
 output name string = profile.name
 
@@ -275,9 +313,32 @@ output endpointId string = !empty(endpointProperties) ? profile_endpoint.outputs
 @description('The uri of the CDN profile endpoint.')
 output uri string = !empty(endpointProperties) ? profile_endpoint.outputs.uri : ''
 
+@description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string = profile.?identity.?principalId ?? ''
+
 // =============== //
 //   Definitions   //
 // =============== //
+
+type managedIdentitiesType = {
+  @description('Optional. Enables system assigned managed identity on the resource.')
+  systemAssigned: bool?
+
+  @description('Optional. The resource ID(s) to assign to the resource.')
+  userAssignedResourceIds: string[]?
+}?
+
+import { associationsType } from 'securityPolicies/main.bicep'
+type securityPolicyType = {
+  @description('Required. Name of the security policy.')
+  name: string
+
+  @description('Required. Domain names and URL patterns to math with this association.')
+  associations: associationsType
+
+  @description('Required. Resource ID of WAF policy.')
+  wafPolicyResourceId: string
+}[]
 
 type lockType = {
   @description('Optional. Specify the name of lock.')
