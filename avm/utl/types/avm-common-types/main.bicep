@@ -405,6 +405,7 @@ type secretSetOutputType = {
 }
 
 @export()
+@description('A map of the exported secrets')
 type secretsOutputType = {
   @description('An exported secret\'s references.')
   *: secretSetOutputType
