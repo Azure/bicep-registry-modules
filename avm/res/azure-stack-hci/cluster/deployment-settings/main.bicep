@@ -226,7 +226,9 @@ resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings
 
 @description('The name of the cluster deployment settings.')
 output name string = deploymentSettings.name
+
 @description('The ID of the cluster deployment settings.')
 output resourceId string = deploymentSettings.id
+
 @description('The resource group of the cluster deployment settings.')
 output resourceGroupName string = resourceGroup().name
