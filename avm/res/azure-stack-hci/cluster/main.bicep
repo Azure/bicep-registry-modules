@@ -259,7 +259,7 @@ output location string = cluster.location
 // =============== //
 
 @export()
-type networkIntent = {
+type networkIntentType = {
   @description('Required. The names of the network adapters to include in the intent.')
   adapter: string[]
 
