@@ -405,6 +405,7 @@ type secretToSetType = {
   value: string
 }
 
+@export()
 type secretsOutputType = {
   @description('An exported secret\'s references.')
   *: secretSetType
