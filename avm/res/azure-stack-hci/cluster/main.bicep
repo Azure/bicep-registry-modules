@@ -31,7 +31,7 @@ param deploymentOperations string[] = ['Validate', 'Deploy']
 param deploymentPrefix string
 
 @description('Required. Names of the cluster node Arc Machine resources. These are the name of the Arc Machine resources created when the new HCI nodes were Arc initialized. Example: [hci-node-1, hci-node-2].')
-param clusterNodeNames array
+param clusterNodeNames string[]
 
 @description('Required. The domain name of the Active Directory Domain Services. Example: "contoso.com".')
 param domainFqdn string
