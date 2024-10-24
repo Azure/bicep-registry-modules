@@ -57,8 +57,5 @@ module testDeployment '../../../main.bicep' = [
       enableSessionRecording: true
       enablePrivateOnlyBastion: true
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
