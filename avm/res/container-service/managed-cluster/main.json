@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "14675004991337717729"
+      "templateHash": "13920170205449884683"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -775,7 +775,8 @@
       "nullable": true,
       "allowedValues": [
         "azure",
-        "calico"
+        "calico",
+        "cilium"
       ],
       "metadata": {
         "description": "Optional. Specifies the network policy used for building Kubernetes network. - calico or azure."
@@ -1693,8 +1694,8 @@
         "networkProfile": {
           "networkDataplane": "[parameters('networkDataplane')]",
           "networkPlugin": "[parameters('networkPlugin')]",
-          "networkPluginMode": "[parameters('networkPluginMode')]",
-          "networkPolicy": "[parameters('networkPolicy')]",
+          "networkPluginMode": "[if(equals(parameters('networkDataplane'), 'cilium'), 'overlay', parameters('networkPluginMode'))]",
+          "networkPolicy": "[if(equals(parameters('networkDataplane'), 'cilium'), 'cilium', parameters('networkPolicy'))]",
           "podCidr": "[parameters('podCidr')]",
           "serviceCidr": "[parameters('serviceCidr')]",
           "dnsServiceIP": "[parameters('dnsServiceIP')]",
