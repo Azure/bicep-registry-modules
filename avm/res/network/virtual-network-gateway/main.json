@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "583126277202468137"
+      "templateHash": "14112536574076076539"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -1645,7 +1645,7 @@
     "defaultBgpIpAddresses": {
       "type": "string",
       "metadata": {
-        "description": " The default Azure BGP peer IP address."
+        "description": "The default Azure BGP peer IP address."
       },
       "value": "[if(variables('isBgp'), join(reference('virtualNetworkGateway').bgpSettings.bgpPeeringAddresses[0].defaultBgpIpAddresses, ','), '')]"
     },

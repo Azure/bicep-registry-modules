@@ -500,7 +500,7 @@ output asn int = virtualNetworkGateway.properties.bgpSettings.asn
 @description('The public IP address of the virtual network gateway.')
 output publicIpAddress string = !empty(existingFirstPipResourceId) ? reference(existingFirstPipResourceId,'2023-04-01').properties.ipAddress: publicIPAddress[0].outputs.ipAddress
 
-@description(' The default Azure BGP peer IP address.')
+@description('The default Azure BGP peer IP address.')
 output defaultBgpIpAddresses string = isBgp ? join(virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[0].defaultBgpIpAddresses, ','): '' //'Not applicable (No Bgp)'
 
 @description('The custom Azure APIPA BGP IP address.')
