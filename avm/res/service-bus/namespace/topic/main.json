@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "782028791267114581"
+      "version": "0.30.23.60470",
+      "templateHash": "8911539763995397815"
     },
     "name": "Service Bus Namespace Topic",
     "description": "This module deploys a Service Bus Namespace Topic.",
@@ -364,18 +364,7 @@
     },
     "authorizationRules": {
       "type": "array",
-      "defaultValue": [
-        {
-          "name": "RootManageSharedAccessKey",
-          "properties": {
-            "rights": [
-              "Listen",
-              "Manage",
-              "Send"
-            ]
-          }
-        }
-      ],
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. Authorization Rules for the Service Bus Topic."
       }
@@ -494,7 +483,9 @@
           "name": {
             "value": "[parameters('authorizationRules')[copyIndex()].name]"
           },
-          "rights": "[if(contains(parameters('authorizationRules')[copyIndex()], 'rights'), createObject('value', parameters('authorizationRules')[copyIndex()].rights), createObject('value', createArray()))]"
+          "rights": {
+            "value": "[coalesce(tryGet(parameters('authorizationRules')[copyIndex()], 'rights'), createArray())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -502,8 +493,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "6843568331497160185"
+              "version": "0.30.23.60470",
+              "templateHash": "1348283370469099109"
             },
             "name": "Service Bus Namespace Topic Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Topic Authorization Rule.",
@@ -652,8 +643,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "13559505347925945415"
+              "version": "0.30.23.60470",
+              "templateHash": "2560238010859719670"
             },
             "name": "Service Bus Namespace Topic Subscription",
             "description": "This module deploys a Service Bus Namespace Topic Subscription.",
