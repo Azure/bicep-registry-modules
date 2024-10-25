@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "6397771352503979306"
+      "version": "0.30.23.60470",
+      "templateHash": "11203076592722611139"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -237,7 +237,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -1142,7 +1142,7 @@
         "capacity": 2
       },
       "metadata": {
-        "description": "Required. The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default."
+        "description": "Optional. The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default."
       }
     },
     "zoneRedundant": {
@@ -1509,8 +1509,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "16659347344675880024"
+              "version": "0.30.23.60470",
+              "templateHash": "4728331591356881277"
             },
             "name": "Service Bus Namespace Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Authorization Rule.",
@@ -1613,8 +1613,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "2437567647402328568"
+              "version": "0.30.23.60470",
+              "templateHash": "1218226237647695558"
             },
             "name": "Service Bus Namespace Disaster Recovery Configs",
             "description": "This module deploys a Service Bus Namespace Disaster Recovery Config",
@@ -1718,8 +1718,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "5021121087195745079"
+              "version": "0.30.23.60470",
+              "templateHash": "16589713685358551002"
             },
             "name": "Service Bus Namespace Migration Configuration",
             "description": "This module deploys a Service Bus Namespace Migration Configuration.",
@@ -1823,8 +1823,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "18220065019802173538"
+              "version": "0.30.23.60470",
+              "templateHash": "10055705590102866988"
             },
             "name": "Service Bus Namespace Network Rule Sets",
             "description": "This module deploys a ServiceBus Namespace Network Rule Set.",
@@ -2023,8 +2023,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "12442268068778335924"
+              "version": "0.30.23.60470",
+              "templateHash": "13425705366730697938"
             },
             "name": "Service Bus Namespace Queue",
             "description": "This module deploys a Service Bus Namespace Queue.",
@@ -2411,8 +2411,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "13378473188831787359"
+                      "version": "0.30.23.60470",
+                      "templateHash": "13793175890494658919"
                     },
                     "name": "Service Bus Namespace Queue Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Queue Authorization Rule.",
@@ -2592,8 +2592,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "782028791267114581"
+              "version": "0.30.23.60470",
+              "templateHash": "16840842185273289430"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic.",
@@ -3089,8 +3089,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "6843568331497160185"
+                      "version": "0.30.23.60470",
+                      "templateHash": "1348283370469099109"
                     },
                     "name": "Service Bus Namespace Topic Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Topic Authorization Rule.",
@@ -3239,8 +3239,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "13559505347925945415"
+                      "version": "0.30.23.60470",
+                      "templateHash": "2560238010859719670"
                     },
                     "name": "Service Bus Namespace Topic Subscription",
                     "description": "This module deploys a Service Bus Namespace Topic Subscription.",

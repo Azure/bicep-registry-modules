@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "15059379956726052447"
+      "version": "0.30.23.60470",
+      "templateHash": "2112385645205183034"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace.",
@@ -631,8 +631,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "1745671120474305926"
+              "version": "0.30.23.60470",
+              "templateHash": "8028201980853199520"
             },
             "name": "Log Analytics Workspace Storage Insight Configs",
             "description": "This module deploys a Log Analytics Workspace Storage Insight Config.",
@@ -775,8 +775,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "12032441371027552374"
+              "version": "0.30.23.60470",
+              "templateHash": "1524032160953098939"
             },
             "name": "Log Analytics Workspace Linked Services",
             "description": "This module deploys a Log Analytics Workspace Linked Service.",
@@ -799,7 +799,7 @@
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Required. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access."
+                "description": "Optional. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access."
               }
             },
             "writeAccessResourceId": {
@@ -897,8 +897,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "12623216644328477682"
+              "version": "0.30.23.60470",
+              "templateHash": "16040380910189891293"
             },
             "name": "Log Analytics Workspace Linked Storage Accounts",
             "description": "This module deploys a Log Analytics Workspace Linked Storage Account.",
@@ -1020,8 +1020,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "7683333179440464721"
+              "version": "0.30.23.60470",
+              "templateHash": "7572266675487147820"
             },
             "name": "Log Analytics Workspace Saved Searches",
             "description": "This module deploys a Log Analytics Workspace Saved Search.",
@@ -1186,8 +1186,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "5765609820817623497"
+              "version": "0.30.23.60470",
+              "templateHash": "8816832199581598050"
             },
             "name": "Log Analytics Workspace Data Exports",
             "description": "This module deploys a Log Analytics Workspace Data Export.",
@@ -1335,8 +1335,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "13460038983765020046"
+              "version": "0.30.23.60470",
+              "templateHash": "10275938611959517944"
             },
             "name": "Log Analytics Workspace Datasources",
             "description": "This module deploys a Log Analytics Workspace Data Source.",
@@ -1369,7 +1369,7 @@
                 "LinuxPerformanceCollection"
               ],
               "metadata": {
-                "description": "Required. The kind of the DataSource."
+                "description": "Optional. The kind of the DataSource."
               }
             },
             "tags": {
@@ -1566,8 +1566,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10380077652898392916"
+              "version": "0.30.23.60470",
+              "templateHash": "2417830359794202602"
             },
             "name": "Log Analytics Workspace Tables",
             "description": "This module deploys a Log Analytics Workspace Table.",

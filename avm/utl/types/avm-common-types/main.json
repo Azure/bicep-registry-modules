@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "3702359687684026662"
+      "templateHash": "10247512052602214331"
     },
     "name": "Default interface types for AVM modules",
     "description": "This module provides you with all common variants for AVM interfaces to be used in AVM modules.\n\nDetails for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/interfaces).\n",
@@ -520,7 +520,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. Fqdn that resolves to private endpoint IP address."
+            "description": "Optional. FQDN that resolves to private endpoint IP address."
           }
         },
         "ipAddresses": {
@@ -885,7 +885,28 @@
         "description": "An AVM-aligned type for a customer-managed key."
       }
     },
-    "secretSetType": {
+    "secretToSetType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the secret to set."
+          }
+        },
+        "value": {
+          "type": "securestring",
+          "metadata": {
+            "description": "Required. The value of the secret to set."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for the secret to set via the secrets export feature."
+      }
+    },
+    "secretSetOutputType": {
       "type": "object",
       "properties": {
         "secretResourceId": {
@@ -912,35 +933,18 @@
         "description": "An AVM-aligned type for the output of the secret set via the secrets export feature."
       }
     },
-    "secretToSetType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the secret to set."
-          }
-        },
-        "value": {
-          "type": "securestring",
-          "metadata": {
-            "description": "Required. The value of the secret to set."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "An AVM-aligned type for the secret to set via the secrets export feature."
-      }
-    },
     "secretsOutputType": {
       "type": "object",
       "properties": {},
       "additionalProperties": {
-        "$ref": "#/definitions/secretSetType",
+        "$ref": "#/definitions/secretSetOutputType",
         "metadata": {
           "description": "An exported secret's references."
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "A map of the exported secrets"
       }
     }
   },
