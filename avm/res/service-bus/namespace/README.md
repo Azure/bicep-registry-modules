@@ -297,7 +297,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     }
     managedIdentities: {
       systemAssigned: true
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -560,7 +560,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -829,7 +829,7 @@ param lock = {
 }
 param managedIdentities = {
   systemAssigned: true
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -1062,19 +1062,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    disableLocalAuth: true
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourcesIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    minimumTlsVersion: '1.2'
     networkRuleSets: {
       defaultAction: 'Deny'
       ipRules: [
@@ -1095,7 +1083,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         }
       ]
     }
-    premiumMessagingPartitions: 1
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -1140,11 +1127,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         roleAssignments: []
       }
     ]
-    roleAssignments: []
-    skuObject: {
-      capacity: 2
-      name: 'Premium'
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -1223,28 +1205,8 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         }
       ]
     },
-    "disableLocalAuth": {
-      "value": true
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourcesIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "minimumTlsVersion": {
-      "value": "1.2"
     },
     "networkRuleSets": {
       "value": {
@@ -1267,9 +1229,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           }
         ]
       }
-    },
-    "premiumMessagingPartitions": {
-      "value": 1
     },
     "privateEndpoints": {
       "value": [
@@ -1320,15 +1279,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           "roleAssignments": []
         }
       ]
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "skuObject": {
-      "value": {
-        "capacity": 2,
-        "name": "Premium"
-      }
     },
     "tags": {
       "value": {
@@ -1404,19 +1354,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param disableLocalAuth = true
 param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
-param managedIdentities = {
-  systemAssigned: true
-  userAssignedResourcesIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-param minimumTlsVersion = '1.2'
 param networkRuleSets = {
   defaultAction: 'Deny'
   ipRules: [
@@ -1437,7 +1375,6 @@ param networkRuleSets = {
     }
   ]
 }
-param premiumMessagingPartitions = 1
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -1482,11 +1419,6 @@ param queues = [
     roleAssignments: []
   }
 ]
-param roleAssignments = []
-param skuObject = {
-  capacity: 2
-  name: 'Premium'
-}
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
