@@ -1527,7 +1527,6 @@ param topics = [
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Service Bus Namespace. |
-| [`skuObject`](#parameter-skuobject) | object | The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default. |
 
 **Optional parameters**
 
@@ -1552,6 +1551,7 @@ param topics = [
 | [`queues`](#parameter-queues) | array | The queues to create in the service bus namespace. |
 | [`requireInfrastructureEncryption`](#parameter-requireinfrastructureencryption) | bool | Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`skuObject`](#parameter-skuobject) | object | The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`topics`](#parameter-topics) | array | The topics to create in the service bus namespace. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Enabled by default in order to align with resiliency best practices, thus requires Premium SKU. |
@@ -1562,54 +1562,6 @@ Name of the Service Bus Namespace.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `skuObject`
-
-The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default.
-
-- Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      capacity: 2
-      name: 'Premium'
-  }
-  ```
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-skuobjectname) | string | Name of this SKU. - Basic, Standard, Premium. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`capacity`](#parameter-skuobjectcapacity) | int | The specified messaging units for the tier. Only used for Premium Sku tier. |
-
-### Parameter: `skuObject.name`
-
-Name of this SKU. - Basic, Standard, Premium.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Basic'
-    'Premium'
-    'Standard'
-  ]
-  ```
-
-### Parameter: `skuObject.capacity`
-
-The specified messaging units for the tier. Only used for Premium Sku tier.
-
-- Required: No
-- Type: int
 
 ### Parameter: `alternateName`
 
@@ -2217,15 +2169,13 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+**Optional parameters**
 
-Fqdn that resolves to private endpoint IP address.
-
-- Required: No
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
@@ -2233,6 +2183,13 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -3047,6 +3004,54 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `skuObject`
+
+The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      capacity: 2
+      name: 'Premium'
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-skuobjectname) | string | Name of this SKU. - Basic, Standard, Premium. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`capacity`](#parameter-skuobjectcapacity) | int | The specified messaging units for the tier. Only used for Premium Sku tier. |
+
+### Parameter: `skuObject.name`
+
+Name of this SKU. - Basic, Standard, Premium.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Premium'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `skuObject.capacity`
+
+The specified messaging units for the tier. Only used for Premium Sku tier.
+
+- Required: No
+- Type: int
 
 ### Parameter: `tags`
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "7552798270388663352"
+      "templateHash": "11203076592722611139"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -237,7 +237,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -1142,7 +1142,7 @@
         "capacity": 2
       },
       "metadata": {
-        "description": "Required. The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default."
+        "description": "Optional. The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default."
       }
     },
     "zoneRedundant": {
@@ -1824,7 +1824,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
+              <<<<<<< HEAD
               "templateHash": "10915287587573662426"
+              =======
+              "templateHash": "10055705590102866988"
+              >>>>>>> dff75dccd17a34f1621168600cddfc386ca2682f
             },
             "name": "Service Bus Namespace Network Rule Sets",
             "description": "This module deploys a ServiceBus Namespace Network Rule Set.",
@@ -2593,7 +2597,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
+              <<<<<<< HEAD
               "templateHash": "8911539763995397815"
+              =======
+              "templateHash": "16840842185273289430"
+              >>>>>>> dff75dccd17a34f1621168600cddfc386ca2682f
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic.",

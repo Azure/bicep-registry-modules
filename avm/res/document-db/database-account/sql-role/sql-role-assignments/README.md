@@ -21,7 +21,6 @@ This module deploys a SQL Role Assignment in a CosmosDB Account.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the SQL Role Assignment. |
-| [`principalId`](#parameter-principalid) | string | Id needs to be granted. |
 | [`roleDefinitionId`](#parameter-roledefinitionid) | string | Id of the SQL Role Definition. |
 
 **Conditional parameters**
@@ -30,20 +29,18 @@ This module deploys a SQL Role Assignment in a CosmosDB Account.
 | :-- | :-- | :-- |
 | [`databaseAccountName`](#parameter-databaseaccountname) | string | The name of the parent Database Account. Required if the template is used in a standalone deployment. |
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-principalid) | string | Id needs to be granted. |
+
 ### Parameter: `name`
 
 Name of the SQL Role Assignment.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `principalId`
-
-Id needs to be granted.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `roleDefinitionId`
 
@@ -58,6 +55,14 @@ The name of the parent Database Account. Required if the template is used in a s
 
 - Required: Yes
 - Type: string
+
+### Parameter: `principalId`
+
+Id needs to be granted.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ## Outputs
 

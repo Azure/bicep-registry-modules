@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 @maxLength(24)
 param name string
 
-@description('Required. The mapping JSON that determines how normalized data is converted to FHIR Observations.')
+@description('Optional. The mapping JSON that determines how normalized data is converted to FHIR Observations.')
 param destinationMapping object = {
   templateType: 'CollectionFhir'
   template: []

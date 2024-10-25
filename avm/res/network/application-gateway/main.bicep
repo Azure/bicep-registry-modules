@@ -483,7 +483,7 @@ output privateEndpoints array = [
 
 type managedIdentitiesType = {
   @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]
+  userAssignedResourceIds: string[]?
 }?
 
 type lockType = {
@@ -560,7 +560,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private IP addresses of the private endpoint.')
