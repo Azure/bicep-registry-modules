@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "8596416910359280940"
+      "version": "0.30.23.60470",
+      "templateHash": "17374623663141250391"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -591,7 +591,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The name of the extension."
+            "description": "Optional. The name of the extension."
           }
         },
         "releaseNamespace": {
@@ -612,7 +612,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The release train of the extension."
+            "description": "Optional. The release train of the extension."
           }
         },
         "configurationProtectedSettings": {
@@ -2550,7 +2550,7 @@
             "value": "[parameters('location')]"
           },
           "name": {
-            "value": "flux"
+            "value": "[coalesce(tryGet(parameters('fluxExtension'), 'name'), 'flux')]"
           },
           "releaseNamespace": {
             "value": "[coalesce(tryGet(parameters('fluxExtension'), 'releaseNamespace'), 'flux-system')]"

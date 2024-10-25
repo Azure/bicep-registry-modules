@@ -798,7 +798,7 @@ type virtualMachineConfigurationType = {
   @description('Optional. The availability zone of the virtual machine. If set to 0, no availability zone is used (default).')
   zone: 0 | 1 | 2 | 3?
 
-  @description('Required. The virtual machine size. Defaults to \'Standard_D2s_v3\'.')
+  @description('Optional. The virtual machine size. Defaults to \'Standard_D2s_v3\'.')
   size: string?
 
   @description('Conditional. The username for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module.')

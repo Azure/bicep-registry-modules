@@ -1180,6 +1180,11 @@ The files to upload to the Assets Storage Account.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-storageaccountfilestouploadname) | string | The name of the environment variable. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`secureValue`](#parameter-storageaccountfilestouploadsecurevalue) | securestring | The value of the secure environment variable. |
 | [`value`](#parameter-storageaccountfilestouploadvalue) | string | The value of the environment variable. |
 
