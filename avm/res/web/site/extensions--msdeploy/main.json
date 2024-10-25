@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.3.12046",
-      "templateHash": "6041792177778980481"
+      "version": "0.30.23.60470",
+      "templateHash": "10249716032875912201"
     },
     "name": "Site Deployment Extension ",
     "description": "This module deploys a Site extension for MSDeploy.",
@@ -23,7 +23,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Required. Sets the MSDeployment Properties."
+        "description": "Optional. Sets the MSDeployment Properties."
       }
     }
   },

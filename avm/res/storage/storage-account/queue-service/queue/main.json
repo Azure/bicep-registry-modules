@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "10115426598853997979"
+      "templateHash": "16727764470773042011"
     },
     "name": "Storage Account Queues",
     "description": "This module deploys a Storage Account Queue.",
@@ -107,7 +107,7 @@
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Required. A name-value pair that represents queue metadata."
+        "description": "Optional. A name-value pair that represents queue metadata."
       }
     },
     "roleAssignments": {

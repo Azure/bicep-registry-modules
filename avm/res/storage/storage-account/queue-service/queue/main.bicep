@@ -9,7 +9,7 @@ param storageAccountName string
 @description('Required. The name of the storage queue to deploy.')
 param name string
 
-@description('Required. A name-value pair that represents queue metadata.')
+@description('Optional. A name-value pair that represents queue metadata.')
 param metadata object = {}
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.1.0'
