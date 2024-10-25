@@ -175,7 +175,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Non-required parameters
     appInsightsConnectionString: '<appInsightsConnectionString>'
     certificateKeyVaultProperties: {
-      identity: '<identity>'
+      identityResourceId: '<identityResourceId>'
       keyVaultUrl: '<keyVaultUrl>'
     }
     dnsSuffix: 'contoso.com'
@@ -283,7 +283,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     },
     "certificateKeyVaultProperties": {
       "value": {
-        "identity": "<identity>",
+        "identityResourceId": "<identityResourceId>",
         "keyVaultUrl": "<keyVaultUrl>"
       }
     },
@@ -414,6 +414,11 @@ param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'amemax001'
 // Non-required parameters
 param appInsightsConnectionString = '<appInsightsConnectionString>'
+param certificateKeyVaultProperties = {
+  identityResourceId: '<identityResourceId>'
+  keyVaultUrl: '<keyVaultUrl>'
+}
+param dnsSuffix = 'contoso.com'
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetId = '<infrastructureSubnetId>'
@@ -833,12 +838,12 @@ A key vault reference to the certificate to use for the custom domain.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`identity`](#parameter-certificatekeyvaultpropertiesidentity) | string | The resoource ID of the identity. This is the identity that will be used to access the key vault. |
+| [`identityResourceId`](#parameter-certificatekeyvaultpropertiesidentityresourceid) | string | The resource ID of the identity. This is the identity that will be used to access the key vault. |
 | [`keyVaultUrl`](#parameter-certificatekeyvaultpropertieskeyvaulturl) | string | A key vault URL referencing the wildcard certificate that will be used for the custom domain. |
 
-### Parameter: `certificateKeyVaultProperties.identity`
+### Parameter: `certificateKeyVaultProperties.identityResourceId`
 
-The resoource ID of the identity. This is the identity that will be used to access the key vault.
+The resource ID of the identity. This is the identity that will be used to access the key vault.
 
 - Required: Yes
 - Type: string

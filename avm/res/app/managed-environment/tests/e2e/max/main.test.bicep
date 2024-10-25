@@ -71,7 +71,7 @@ module testDeployment '../../../main.bicep' = [
       internal: true
       dnsSuffix: 'contoso.com'
       certificateKeyVaultProperties: {
-        identity: nestedDependencies.outputs.managedIdentityResourceId
+        identityResourceId: nestedDependencies.outputs.managedIdentityResourceId
         keyVaultUrl: '${nestedDependencies.outputs.keyVaultUri}secrets/${split(nestedDependencies.outputs.certificateSecretUrl, '/')[4]}'
       }
       dockerBridgeCidr: '172.16.0.1/28'
