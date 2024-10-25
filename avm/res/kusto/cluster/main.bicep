@@ -391,7 +391,7 @@ output privateEndpoints array = [
 // =============== //
 
 type acceptedAudienceType = {
-  @description('Optional. GUID or valid URL representing an accepted audience.')
+  @description('Required. GUID or valid URL representing an accepted audience.')
   value: string
 }?
 
@@ -488,7 +488,7 @@ type managedIdentitiesType = {
   systemAssigned: bool?
 
   @description('Optional. The resource id(s) to assign to the resource.')
-  userAssignedResourceIds: string[]
+  userAssignedResourceIds: string[]?
 }?
 
 type privateEndpointType = {
@@ -531,7 +531,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private IP addresses of the private endpoint.')

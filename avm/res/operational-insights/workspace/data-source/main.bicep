@@ -8,7 +8,7 @@ param logAnalyticsWorkspaceName string
 @description('Required. Name of the solution.')
 param name string
 
-@description('Required. The kind of the DataSource.')
+@description('Optional. The kind of the DataSource.')
 @allowed([
   'AzureActivityLog'
   'WindowsEvent'

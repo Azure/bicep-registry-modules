@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the parent site resource.')
 param appName string
 
-@description('Required. The logs settings configuration.')
+@description('Optional. The logs settings configuration.')
 param logsConfiguration object?
 
 resource app 'Microsoft.Web/sites@2023-12-01' existing = {
