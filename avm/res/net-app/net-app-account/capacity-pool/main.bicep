@@ -23,9 +23,6 @@ param tags object?
 ])
 param serviceLevel string = 'Standard'
 
-@description('Required. Network features available to the volume, or current state of update (Basic/Standard).')
-param networkFeatures string = 'Standard'
-
 @description('Required. Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104).')
 param size int
 
@@ -122,7 +119,6 @@ module capacityPool_volumes 'volume/main.bicep' = [
       remoteVolumeRegion: volume.?remoteVolumeRegion ?? ''
       remoteVolumeResourceId: volume.?remoteVolumeResourceId ?? ''
       replicationSchedule: volume.?replicationSchedule ?? ''
-      snapshotPolicyId: volume.?snapshotPolicyId ?? ''
       snapshotPolicyName: volume.?snapshotPolicyName ?? 'snapshotPolicy'
       snapshotPolicyLocation: volume.?snapshotPolicyLocation ?? ''
       snapEnabled: volume.?snapEnabled ?? false

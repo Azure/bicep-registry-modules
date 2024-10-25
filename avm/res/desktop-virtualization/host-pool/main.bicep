@@ -447,7 +447,7 @@ type privateEndpointType = {
 
   @sys.description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @sys.description('Required. Fqdn that resolves to private endpoint IP address.')
+    @sys.description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @sys.description('Required. A list of private IP addresses of the private endpoint.')
