@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.p2svpngateway-${serv
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'vscmin'
+param serviceShort string = 'vscmax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 //param namePrefix string = '#_namePrefix_#'
@@ -57,9 +57,21 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}p2sVpnGw'
       virtualHubId: nestedDependencies.outputs.virtualHubResourceId
       vpnServerConfigurationId: nestedDependencies.outputs.vpnServerConfigurationResourceId
+      customDnsServers: [
+        '10.50.10.50'
+        '10.50.50.50'
+      ]
+      isRoutingPreferenceInternet: false
       p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
+      enableInternetSecurity: false
       vpnClientAddressPoolAddressPrefixes: [
         '10.0.2.0/24'
+      ]
+      vpnGatewayScaleUnit: 5
+      propagatedRouteTableIds: [
+        {
+          id: nestedDependencies.outputs.virtualHubResourceId
+        }
       ]
     }
   }

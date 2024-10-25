@@ -2,19 +2,48 @@ metadata name = 'P2S VPN Gateway'
 metadata description = 'This module deploys a Virtual Hub P2S Gateway.'
 metadata owner = 'Azure/module-maintainers'
 
+@description('Required. The name of the P2S VPN Gateway.')
 param name string
 
-param location string
+@description('Required. Location where all resources will be created.')
+param location string = resourceGroup().location
 
+@description('Optional. The custom DNS servers for the P2S VPN Gateway.')
 param customDnsServers array = []
 
+@description('Optional. The routing preference for the P2S VPN Gateway, Internet or Microsoft network.')
 param isRoutingPreferenceInternet bool?
 
-param virtualHubId string
+@description('Required. The name of the P2S Connection Configuration.')
+param p2SConnectionConfigurationsName string?
 
+@description('Optional. Enable/Disable Internet Security; "Propagate Default Route".')
+param enableInternetSecurity bool?
+
+@description('Optional. The Resource ID of the associated Virtual Hub Route Table.')
+param associatedRouteTableId string?
+
+@description('Optional. The Resource ID of the inbound route map.')
+param inboundRouteMapId string?
+
+@description('Optional. The Resource ID of the outbound route map.')
+param outboundRouteMapId string?
+
+param propagatedRouteTableIds array = []
+
+param propagatedRouteTableLabels array = []
+
+param vnetRoutesStaticRoutes vnetRoutesStaticRoutesType?
+param vpnClientAddressPoolAddressPrefixes array = []
+
+@description('Required. The resource ID of the gateways virtual hub.')
+param virtualHubId string?
+
+@description('Optional. The scale unit of the VPN Gateway.')
 param vpnGatewayScaleUnit int?
 
-param vpnServerConfigurationId string?
+@description('Required. The resource ID of the VPN Server Configuration.')
+param vpnServerConfigurationId string
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -54,52 +83,33 @@ resource p2sVpnGateway 'Microsoft.Network/p2svpnGateways@2024-01-01' = {
   properties: {
     customDnsServers: customDnsServers
     isRoutingPreferenceInternet: isRoutingPreferenceInternet
-    /*p2SConnectionConfigurations: [
+    p2SConnectionConfigurations: [
       {
-        id:
-        name:
+        name: p2SConnectionConfigurationsName
         properties: {
-          enableInternetSecurity:
+          enableInternetSecurity: enableInternetSecurity
           routingConfiguration: {
             associatedRouteTable: {
-              id:
+              id: associatedRouteTableId
             }
             inboundRouteMap: {
-              id:
+              id: inboundRouteMapId
             }
             outboundRouteMap: {
-              id: 
+              id: outboundRouteMapId
             }
             propagatedRouteTables: {
-              ids: [
-                {
-                  id:
-                }
-              ]
-              labels: [
-              ]
+              ids: propagatedRouteTableIds
+              labels: propagatedRouteTableLabels
             }
-            vnetRoutes: {
-              staticRoutes: [
-                {
-                  addressPrefixes: [
-                  ]
-                  name:
-                  nextHopIpAddress:
-                }
-              ]
-              staticRoutesConfig: {
-                vnetLocalRouteOverrideCriteria:
-              }
-            }
+            vnetRoutes: vnetRoutesStaticRoutes
           }
           vpnClientAddressPool: {
-            addressPrefixes: [
-            ]
+            addressPrefixes: vpnClientAddressPoolAddressPrefixes
           }
         }
       }
-    ]*/
+    ]
     virtualHub: {
       id: virtualHubId
     }
@@ -144,3 +154,23 @@ type lockType = {
   @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
+
+type vnetRoutesStaticRoutesType = {
+  staticRoutes: [
+    {
+      @description('Optional. The address prefixes of the static route.')
+      addressPrefixes: array?
+
+      @description('Optional. The name of the static route.')
+      name: string?
+
+      @description('Optional. The next hop IP of the static route.')
+      nextHopIpAddress: string?
+    }
+  ]
+  staticRoutesConfig: {
+    @description('Optional. ')
+    vnetLocalRouteOverrideCriteria: string?
+  }
+}
+
