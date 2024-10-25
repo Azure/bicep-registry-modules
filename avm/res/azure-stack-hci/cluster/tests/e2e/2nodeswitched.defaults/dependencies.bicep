@@ -131,7 +131,7 @@ var arcNodeResourceIds = [
 
 var tenantId = subscription().tenantId
 
-module hciHostDeployment '../../../../../../utilities/e2e-template-assets/templates/azure-stack-hci/modules/azureStackHCIHost/hciHostDeployment.bicep' = {
+module hciHostDeployment '../_template-assets/azureStackHCIHost/hciHostDeployment.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy-${location}-${serviceShort}${namePrefix}'
   params: {
     hciHostAssignPublicIp: hciHostAssignPublicIp
@@ -157,7 +157,7 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   properties: {}
 }
 
-module hciClusterPreqs '../../../../../../utilities/e2e-template-assets/templates/azure-stack-hci/modules/azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
+module hciClusterPreqs '../_template-assets/azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
   dependsOn: [
     hciHostDeployment
   ]
