@@ -495,25 +495,25 @@ output activeActive bool = virtualNetworkGateway.properties.activeActive
 output location string = virtualNetworkGateway.location
 
 @description('The ASN (Autonomous System Number) of the virtual network gateway.')
-output asn int = virtualNetworkGateway.properties.bgpSettings.asn
+output asn int? = isBgp ? virtualNetworkGateway.properties.bgpSettings.asn : null //'Not applicable (No Bgp)'
 
 @description('The public IP address of the virtual network gateway.')
-output publicIpAddress string = !empty(existingFirstPipResourceId) ? reference(existingFirstPipResourceId,'2023-04-01').properties.ipAddress: publicIPAddress[0].outputs.ipAddress
+output publicIpAddress string = !empty(existingFirstPipResourceId) ? reference(existingFirstPipResourceId,'2023-04-01').ipAddress: publicIPAddress[0].outputs.ipAddress
 
 @description('The default Azure BGP peer IP address.')
-output defaultBgpIpAddresses string = isBgp ? join(virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[0].defaultBgpIpAddresses, ','): '' //'Not applicable (No Bgp)'
+output defaultBgpIpAddresses string? = isBgp ? join(virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[0].defaultBgpIpAddresses, ','): null //'Not applicable (No Bgp)'
 
 @description('The custom Azure APIPA BGP IP address.')
-output customBgpIpAddresses string = isBgp ? join(virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[0].customBgpIpAddresses, ','): '' //'Not applicable (No Bgp)'
+output customBgpIpAddresses string? = isBgp ? join(virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[0].customBgpIpAddresses, ','): null //'Not applicable (No Bgp)'
 
 @description('The second public IP address of the virtual network gateway (Active-Active mode).')
-output secondPublicIpAddress string = isActiveActive ? !empty(existingSecondPipResourceIdVar) ? reference(existingSecondPipResourceIdVar,'2023-04-01').properties.ipAddress: publicIPAddress[1].outputs.ipAddress: '' // 'Not applicable (Active-Passive mode)'
+output secondPublicIpAddress string? = isActiveActive ? !empty(existingSecondPipResourceIdVar) ? reference(existingSecondPipResourceIdVar,'2023-04-01').ipAddress: publicIPAddress[1].outputs.ipAddress: null // 'Not applicable (Active-Passive mode)'
 
 @description('The second default Azure BGP peer IP address (Active-Active mode).')
-output secondBgpIpAddress string = isActiveActive && isBgp ? join(virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[1].defaultBgpIpAddresses, ','): '' //'Not applicable (Active-Passive mode)'
+output secondBgpIpAddress string? = isActiveActive && isBgp ? join(virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[1].defaultBgpIpAddresses, ','): null //'Not applicable (Active-Passive mode)'
 
 @description('The second custom Azure APIPA BGP IP address (Active-Active mode).')
-output secondCustomBgpIpAddress string = isActiveActive && isBgp ? join(virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[1].customBgpIpAddresses, ','): '' //'Not applicable (Active-Passive mode)'
+output secondCustomBgpIpAddress string? = isActiveActive && isBgp ? join(virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[1].customBgpIpAddresses, ','): null //'Not applicable (Active-Passive mode)'
 
 
 // =============== //
