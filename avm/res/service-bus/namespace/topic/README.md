@@ -72,21 +72,7 @@ Authorization Rules for the Service Bus Topic.
 
 - Required: No
 - Type: array
-- Default:
-  ```Bicep
-  [
-    {
-      name: 'RootManageSharedAccessKey'
-      properties: {
-        rights: [
-          'Listen'
-          'Manage'
-          'Send'
-        ]
-      }
-    }
-  ]
-  ```
+- Default: `[]`
 
 ### Parameter: `autoDeleteOnIdle`
 
@@ -329,7 +315,184 @@ The subscriptions of the topic.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-subscriptionsname) | string | The name of the service bus namespace topic subscription. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoDeleteOnIdle`](#parameter-subscriptionsautodeleteonidle) | string | ISO 8601 timespan idle interval after which the syubscription is automatically deleted. The minimum duration is 5 minutes. |
+| [`clientAffineProperties`](#parameter-subscriptionsclientaffineproperties) | object | The properties that are associated with a subscription that is client-affine. |
+| [`deadLetteringOnFilterEvaluationExceptions`](#parameter-subscriptionsdeadletteringonfilterevaluationexceptions) | bool | A value that indicates whether a subscription has dead letter support when a message expires. |
+| [`deadLetteringOnMessageExpiration`](#parameter-subscriptionsdeadletteringonmessageexpiration) | bool | A value that indicates whether a subscription has dead letter support when a message expires. |
+| [`defaultMessageTimeToLive`](#parameter-subscriptionsdefaultmessagetimetolive) | string | ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes. |
+| [`duplicateDetectionHistoryTimeWindow`](#parameter-subscriptionsduplicatedetectionhistorytimewindow) | string | ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes. |
+| [`enableBatchedOperations`](#parameter-subscriptionsenablebatchedoperations) | bool | A value that indicates whether server-side batched operations are enabled. |
+| [`forwardDeadLetteredMessagesTo`](#parameter-subscriptionsforwarddeadletteredmessagesto) | string | The name of the recipient entity to which all the messages sent to the subscription are forwarded to. |
+| [`forwardTo`](#parameter-subscriptionsforwardto) | string | The name of the recipient entity to which all the messages sent to the subscription are forwarded to. |
+| [`isClientAffine`](#parameter-subscriptionsisclientaffine) | bool | A value that indicates whether the subscription supports the concept of session. |
+| [`lockDuration`](#parameter-subscriptionslockduration) | string | ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute. |
+| [`maxDeliveryCount`](#parameter-subscriptionsmaxdeliverycount) | int | Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10. |
+| [`requiresSession`](#parameter-subscriptionsrequiressession) | bool | A value that indicates whether the subscription supports the concept of session. |
+| [`status`](#parameter-subscriptionsstatus) | string | Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown. |
+
+### Parameter: `subscriptions.name`
+
+The name of the service bus namespace topic subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subscriptions.autoDeleteOnIdle`
+
+ISO 8601 timespan idle interval after which the syubscription is automatically deleted. The minimum duration is 5 minutes.
+
+- Required: No
+- Type: string
+
+### Parameter: `subscriptions.clientAffineProperties`
+
+The properties that are associated with a subscription that is client-affine.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`clientId`](#parameter-subscriptionsclientaffinepropertiesclientid) | string | Indicates the Client ID of the application that created the client-affine subscription. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`isDurable`](#parameter-subscriptionsclientaffinepropertiesisdurable) | bool | For client-affine subscriptions, this value indicates whether the subscription is durable or not. |
+| [`isShared`](#parameter-subscriptionsclientaffinepropertiesisshared) | bool | For client-affine subscriptions, this value indicates whether the subscription is shared or not. |
+
+### Parameter: `subscriptions.clientAffineProperties.clientId`
+
+Indicates the Client ID of the application that created the client-affine subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subscriptions.clientAffineProperties.isDurable`
+
+For client-affine subscriptions, this value indicates whether the subscription is durable or not.
+
+- Required: No
+- Type: bool
+
+### Parameter: `subscriptions.clientAffineProperties.isShared`
+
+For client-affine subscriptions, this value indicates whether the subscription is shared or not.
+
+- Required: No
+- Type: bool
+
+### Parameter: `subscriptions.deadLetteringOnFilterEvaluationExceptions`
+
+A value that indicates whether a subscription has dead letter support when a message expires.
+
+- Required: No
+- Type: bool
+
+### Parameter: `subscriptions.deadLetteringOnMessageExpiration`
+
+A value that indicates whether a subscription has dead letter support when a message expires.
+
+- Required: No
+- Type: bool
+
+### Parameter: `subscriptions.defaultMessageTimeToLive`
+
+ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes.
+
+- Required: No
+- Type: string
+
+### Parameter: `subscriptions.duplicateDetectionHistoryTimeWindow`
+
+ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes.
+
+- Required: No
+- Type: string
+
+### Parameter: `subscriptions.enableBatchedOperations`
+
+A value that indicates whether server-side batched operations are enabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `subscriptions.forwardDeadLetteredMessagesTo`
+
+The name of the recipient entity to which all the messages sent to the subscription are forwarded to.
+
+- Required: No
+- Type: string
+
+### Parameter: `subscriptions.forwardTo`
+
+The name of the recipient entity to which all the messages sent to the subscription are forwarded to.
+
+- Required: No
+- Type: string
+
+### Parameter: `subscriptions.isClientAffine`
+
+A value that indicates whether the subscription supports the concept of session.
+
+- Required: No
+- Type: bool
+
+### Parameter: `subscriptions.lockDuration`
+
+ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute.
+
+- Required: No
+- Type: string
+
+### Parameter: `subscriptions.maxDeliveryCount`
+
+Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10.
+
+- Required: No
+- Type: int
+
+### Parameter: `subscriptions.requiresSession`
+
+A value that indicates whether the subscription supports the concept of session.
+
+- Required: No
+- Type: bool
+
+### Parameter: `subscriptions.status`
+
+Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Active'
+    'Creating'
+    'Deleting'
+    'Disabled'
+    'ReceiveDisabled'
+    'Renaming'
+    'Restoring'
+    'SendDisabled'
+    'Unknown'
+  ]
+  ```
 
 ### Parameter: `supportOrdering`
 
