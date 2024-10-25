@@ -497,30 +497,22 @@ output location string = virtualNetworkGateway.location
 @description('The ASN (Autonomous System Number) of the virtual network gateway.')
 output asn int = virtualNetworkGateway.properties.bgpSettings.asn
 
-// Public IP Address
 @description('The public IP address of the virtual network gateway.')
 output publicIpAddress string = !empty(existingFirstPipResourceId) ? reference(existingFirstPipResourceId,'2023-04-01').properties.ipAddress: publicIPAddress[0].outputs.ipAddress
 
-// Default Azure BGP peer IP address
 @description(' The default Azure BGP peer IP address.')
 output defaultBgpIpAddresses string = isBgp ? join(virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[0].defaultBgpIpAddresses, ','): '' //'Not applicable (No Bgp)'
 
-//Custom Azure APIPA BGP IP address
 @description('The custom Azure APIPA BGP IP address.')
-//output customBgpIpAddress string = clusterSettings.?customBgpIpAddresses
 output customBgpIpAddresses string = isBgp ? join(virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[0].customBgpIpAddresses, ','): '' //'Not applicable (No Bgp)'
 
-// Second Public IP Address
 @description('The second public IP address of the virtual network gateway (Active-Active mode).')
 output secondPublicIpAddress string = isActiveActive ? !empty(existingSecondPipResourceIdVar) ? reference(existingSecondPipResourceIdVar,'2023-04-01').properties.ipAddress: publicIPAddress[1].outputs.ipAddress: '' // 'Not applicable (Active-Passive mode)'
 
-// Second Default Azure BGP peer IP address
 @description('The second default Azure BGP peer IP address (Active-Active mode).')
-//output secondCustomBgpIpAddress string = isActiveActive ? clusterSettings.?secondCustomBgpIpAddresses : 'Not applicable (Active-Passive mode)'
 output secondBgpIpAddress string = isActiveActive && isBgp ? join(virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[1].defaultBgpIpAddresses, ','): '' //'Not applicable (Active-Passive mode)'
 
 @description('The second custom Azure APIPA BGP IP address (Active-Active mode).')
-//output secondCustomBgpIpAddress string = isActiveActive ? clusterSettings.?secondCustomBgpIpAddresses : 'Not applicable (Active-Passive mode)'
 output secondCustomBgpIpAddress string = isActiveActive && isBgp ? join(virtualNetworkGateway.properties.bgpSettings.bgpPeeringAddresses[1].customBgpIpAddresses, ','): '' //'Not applicable (Active-Passive mode)'
 
 

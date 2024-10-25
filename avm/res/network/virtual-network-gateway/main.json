@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "1499507825797406827"
+      "templateHash": "583126277202468137"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -1627,6 +1627,55 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('virtualNetworkGateway', '2023-04-01', 'full').location]"
+    },
+    "asn": {
+      "type": "int",
+      "metadata": {
+        "description": "The ASN (Autonomous System Number) of the virtual network gateway."
+      },
+      "value": "[reference('virtualNetworkGateway').bgpSettings.asn]"
+    },
+    "publicIpAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "The public IP address of the virtual network gateway."
+      },
+      "value": "[if(not(empty(parameters('existingFirstPipResourceId'))), reference(parameters('existingFirstPipResourceId'), '2023-04-01').properties.ipAddress, reference(format('publicIPAddress[{0}]', 0)).outputs.ipAddress.value)]"
+    },
+    "defaultBgpIpAddresses": {
+      "type": "string",
+      "metadata": {
+        "description": " The default Azure BGP peer IP address."
+      },
+      "value": "[if(variables('isBgp'), join(reference('virtualNetworkGateway').bgpSettings.bgpPeeringAddresses[0].defaultBgpIpAddresses, ','), '')]"
+    },
+    "customBgpIpAddresses": {
+      "type": "string",
+      "metadata": {
+        "description": "The custom Azure APIPA BGP IP address."
+      },
+      "value": "[if(variables('isBgp'), join(reference('virtualNetworkGateway').bgpSettings.bgpPeeringAddresses[0].customBgpIpAddresses, ','), '')]"
+    },
+    "secondPublicIpAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "The second public IP address of the virtual network gateway (Active-Active mode)."
+      },
+      "value": "[if(variables('isActiveActive'), if(not(empty(variables('existingSecondPipResourceIdVar'))), reference(variables('existingSecondPipResourceIdVar'), '2023-04-01').properties.ipAddress, reference(format('publicIPAddress[{0}]', 1)).outputs.ipAddress.value), '')]"
+    },
+    "secondBgpIpAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "The second default Azure BGP peer IP address (Active-Active mode)."
+      },
+      "value": "[if(and(variables('isActiveActive'), variables('isBgp')), join(reference('virtualNetworkGateway').bgpSettings.bgpPeeringAddresses[1].defaultBgpIpAddresses, ','), '')]"
+    },
+    "secondCustomBgpIpAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "The second custom Azure APIPA BGP IP address (Active-Active mode)."
+      },
+      "value": "[if(and(variables('isActiveActive'), variables('isBgp')), join(reference('virtualNetworkGateway').bgpSettings.bgpPeeringAddresses[1].customBgpIpAddresses, ','), '')]"
     }
   }
 }

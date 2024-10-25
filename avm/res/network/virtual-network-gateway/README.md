@@ -3179,10 +3179,17 @@ Specifies the VPN type.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `activeActive` | bool | Shows if the virtual network gateway is configured in Active-Active mode. |
+| `asn` | int | The ASN (Autonomous System Number) of the virtual network gateway. |
+| `customBgpIpAddresses` | string | The custom Azure APIPA BGP IP address. |
+| `defaultBgpIpAddresses` | string |  The default Azure BGP peer IP address. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the virtual network gateway. |
+| `publicIpAddress` | string | The public IP address of the virtual network gateway. |
 | `resourceGroupName` | string | The resource group the virtual network gateway was deployed. |
 | `resourceId` | string | The resource ID of the virtual network gateway. |
+| `secondBgpIpAddress` | string | The second default Azure BGP peer IP address (Active-Active mode). |
+| `secondCustomBgpIpAddress` | string | The second custom Azure APIPA BGP IP address (Active-Active mode). |
+| `secondPublicIpAddress` | string | The second public IP address of the virtual network gateway (Active-Active mode). |
 
 ## Cross-referenced modules
 
