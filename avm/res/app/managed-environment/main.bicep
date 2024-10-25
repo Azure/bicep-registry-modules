@@ -320,7 +320,7 @@ type roleAssignmentType = {
 }[]?
 
 type certificateKeyVaultPropertiesType = {
-  @description('Required. The resoource ID of the identity. This is the identity that will be used to access the key vault.')
+  @description('Required. The resource ID of the identity. This is the identity that will be used to access the key vault.')
   identity: string
 
   @description('Required. A key vault URL referencing the wildcard certificate that will be used for the custom domain.')
