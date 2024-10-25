@@ -299,7 +299,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       managedIdentities: {
         systemAssigned: true
-        userAssignedResourcesIds: [
+        userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
@@ -307,9 +307,5 @@ module testDeployment '../../../main.bicep' = [
       publicNetworkAccess: 'Enabled'
       minimumTlsVersion: '1.2'
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

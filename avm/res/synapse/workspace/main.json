@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "3075067451671021037"
+      "version": "0.30.23.60470",
+      "templateHash": "13977544414417545286"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -21,6 +21,7 @@
           "items": {
             "type": "string"
           },
+          "nullable": true,
           "metadata": {
             "description": "Optional. The resource ID(s) to assign to the resource."
           }
@@ -228,7 +229,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -925,8 +926,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "4134219125418987684"
+              "version": "0.30.23.60470",
+              "templateHash": "2875700223215345190"
             },
             "name": "Synapse Workspace Integration Runtimes",
             "description": "This module deploys a Synapse Workspace Integration Runtime.",
@@ -1023,8 +1024,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "4045748488403006026"
+              "version": "0.30.23.60470",
+              "templateHash": "6457069339265019781"
             }
           },
           "parameters": {
@@ -1111,8 +1112,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "6170014210030770909"
+              "version": "0.30.23.60470",
+              "templateHash": "15229329511207297146"
             },
             "name": "Synapse Workspaces Keys",
             "description": "This module deploys a Synapse Workspaces Key.",
@@ -1219,8 +1220,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "15890618337043813918"
+              "version": "0.30.23.60470",
+              "templateHash": "11234358964964275645"
             },
             "name": "Synapse Workspaces Administrators",
             "description": "This module deploys Synapse Workspaces Administrators.",
@@ -1334,8 +1335,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "6729418057172891787"
+              "version": "0.30.23.60470",
+              "templateHash": "1410907925603155251"
             },
             "name": "Synapse Workspaces Firewall Rules",
             "description": "This module deploys Synapse Workspaces Firewall Rules.",
