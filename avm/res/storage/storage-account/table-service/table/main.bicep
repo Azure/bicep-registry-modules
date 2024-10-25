@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment.')
 param storageAccountName string
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.1.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 

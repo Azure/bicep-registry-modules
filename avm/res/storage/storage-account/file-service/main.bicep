@@ -18,7 +18,7 @@ param shareDeleteRetentionPolicy object = {
   days: 7
 }
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.1.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
