@@ -57,18 +57,7 @@ param enablePartitioning bool = false
 param enableExpress bool = false
 
 @description('Optional. Authorization Rules for the Service Bus Topic.')
-param authorizationRules array = [
-  {
-    name: 'RootManageSharedAccessKey'
-    properties: {
-      rights: [
-        'Listen'
-        'Manage'
-        'Send'
-      ]
-    }
-  }
-]
+param authorizationRules array = []
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -151,7 +140,7 @@ module topic_authorizationRules 'authorization-rule/main.bicep' = [
       namespaceName: namespaceName
       topicName: topic.name
       name: authorizationRule.name
-      rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
+      rights: authorizationRule.?rights ?? []
     }
   }
 ]
