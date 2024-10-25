@@ -146,7 +146,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     location: '<location>'
     managedIdentities: {
       systemAssigned: false
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -188,7 +188,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     "managedIdentities": {
       "value": {
         "systemAssigned": false,
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -224,7 +224,7 @@ param customerManagedKey = {
 param location = '<location>'
 param managedIdentities = {
   systemAssigned: false
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
