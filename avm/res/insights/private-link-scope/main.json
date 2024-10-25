@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.3.12046",
-      "templateHash": "5947451992668490696"
+      "version": "0.30.23.60470",
+      "templateHash": "11811489211976276991"
     },
     "name": "Azure Monitor Private Link Scopes",
     "description": "This module deploys an Azure Monitor Private Link Scope.",
@@ -214,7 +214,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -601,8 +601,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "16277811786602972091"
+              "version": "0.30.23.60470",
+              "templateHash": "2722460902727903283"
             },
             "name": "Private Link Scope Scoped Resources",
             "description": "This module deploys a Private Link Scope Scoped Resource.",

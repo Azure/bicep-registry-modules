@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "10748276001217770184"
+      "version": "0.30.23.60470",
+      "templateHash": "7064419851782803288"
     },
     "name": "Relay Namespaces",
     "description": "This module deploys a Relay Namespace",
@@ -214,7 +214,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -710,8 +710,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "13234316448276715063"
+              "version": "0.30.23.60470",
+              "templateHash": "9137586793857005081"
             },
             "name": "Relay Namespace Authorization Rules",
             "description": "This module deploys a Relay Namespace Authorization Rule.",
@@ -809,8 +809,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "13158990350519912635"
+              "version": "0.30.23.60470",
+              "templateHash": "9578854855013298380"
             },
             "name": "Relay Namespace Network Rules Sets",
             "description": "This module deploys a Relay Namespace Network Rule Set.",
@@ -938,8 +938,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "3066452421480890151"
+              "version": "0.30.23.60470",
+              "templateHash": "16821503954722419440"
             },
             "name": "Relay Namespace Hybrid Connections",
             "description": "This module deploys a Relay Namespace Hybrid Connection.",
@@ -1223,8 +1223,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "11780139902470137859"
+                      "version": "0.30.23.60470",
+                      "templateHash": "4431168643851665214"
                     },
                     "name": "Hybrid Connection Authorization Rules",
                     "description": "This module deploys a Hybrid Connection Authorization Rule.",
@@ -1366,8 +1366,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "25032660008872161"
+              "version": "0.30.23.60470",
+              "templateHash": "10679723922873486376"
             },
             "name": "Relay Namespace WCF Relays",
             "description": "This module deploys a Relay Namespace WCF Relay.",
@@ -1671,8 +1671,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "9846145731132177305"
+                      "version": "0.30.23.60470",
+                      "templateHash": "15492272456787428584"
                     },
                     "name": "WCF Relay Authorization Rules",
                     "description": "This module deploys a WCF Relay Authorization Rule.",

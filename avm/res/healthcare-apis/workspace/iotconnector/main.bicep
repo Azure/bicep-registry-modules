@@ -19,7 +19,7 @@ param consumerGroup string = name
 @description('Required. Namespace of the Event Hub to connect to.')
 param eventHubNamespaceName string
 
-@description('Required. The mapping JSON that determines how incoming device data is normalized.')
+@description('Optional. The mapping JSON that determines how incoming device data is normalized.')
 param deviceMapping object = {
   templateType: 'CollectionContent'
   template: []
