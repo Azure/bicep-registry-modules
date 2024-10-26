@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "2886040651089761865"
+      "templateHash": "13300542630733457081"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -236,7 +236,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint ip address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -791,7 +791,7 @@
             "type": "string"
           },
           "metadata": {
-            "description": "Optional. Default to []. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: \"23.40.210.245\" or \"23.40.210.0/8\"."
+            "description": "Required. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: \"23.40.210.245\" or \"23.40.210.0/8\"."
           }
         },
         "networkAclBypass": {
@@ -830,7 +830,7 @@
             }
           },
           "metadata": {
-            "description": "Optional. Default to []. List of Virtual Network ACL rules configured for the Cosmos DB account.."
+            "description": "Required. List of Virtual Network ACL rules configured for the Cosmos DB account.."
           }
         }
       }
@@ -892,7 +892,7 @@
         "Standard"
       ],
       "metadata": {
-        "description": "Optional. Default to Standard. The offer type for the Cosmos DB database account."
+        "description": "Optional. Default to Standard. The offer type for the Azure Cosmos DB database account."
       }
     },
     "locations": {
@@ -1152,7 +1152,7 @@
         "publicNetworkAccess": "Disabled"
       },
       "metadata": {
-        "description": "Optional. The network configuration of this module."
+        "description": "Optional. The network configuration of this module. Defaults to `{ ipRules: [], virtualNetworkRules: [], publicNetworkAccess: 'Disabled' }`."
       }
     },
     "minimumTlsVersion": {
@@ -1787,7 +1787,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "2916914405670681340"
+              "templateHash": "13088569006752107887"
             },
             "name": "DocumentDB Database Account SQL Role.",
             "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account.",
@@ -1995,7 +1995,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.30.23.60470",
-                      "templateHash": "14629860270436011718"
+                      "templateHash": "4561927123418147924"
                     },
                     "name": "DocumentDB Database Account SQL Role Assignments.",
                     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account.",
@@ -2018,7 +2018,7 @@
                       "type": "string",
                       "defaultValue": "",
                       "metadata": {
-                        "description": "Required. Id needs to be granted."
+                        "description": "Optional. Id needs to be granted."
                       }
                     },
                     "roleDefinitionId": {

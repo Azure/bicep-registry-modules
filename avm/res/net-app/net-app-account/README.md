@@ -1226,7 +1226,7 @@ The managed identity definition for this resource.
 
 The resource ID(s) to assign to the resource.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `roleAssignments`
