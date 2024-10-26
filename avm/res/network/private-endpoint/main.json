@@ -6,6 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
+      "templateHash": "602726199400096960"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -105,6 +106,7 @@
             },
             "requestMessage": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
               }
@@ -136,6 +138,16 @@
               "items": {
                 "type": "string"
               },
+              "metadata": {
+                "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
+              }
+            },
+            "privateLinkServiceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource id of private link service."
+              }
+            },
             "requestMessage": {
               "type": "string",
               "nullable": true,
@@ -158,8 +170,9 @@
       "properties": {
         "fqdn": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. Fqdn that resolves to private endpoint IP address."
+            "description": "Optional. FQDN that resolves to private endpoint IP address."
           }
         },
         "ipAddresses": {
@@ -176,6 +189,26 @@
         "__bicep_export!": true
       }
     },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
           }
         }
       },
