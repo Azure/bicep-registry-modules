@@ -63,22 +63,22 @@ param networkAcls object?
 ])
 param publicNetworkAccess string = ''
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.1.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.1.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.1.0'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Resource tags.')
 param tags object?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.1.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -404,7 +404,7 @@ output privateEndpoints privateEndpointOutputType[] = [
 
 @description('The properties of the created secrets.')
 output secrets credentialOutputType[] = [
-  #disable-next-line outputs-should-not-contain-secrets // Only returning the references, not a secret value
+  #disable-next-line outputs-should-not-contain-secrets // Only returning the references, not any secret value
   for index in range(0, length(secrets ?? [])): {
     resourceId: keyVault_secrets[index].outputs.resourceId
     uri: keyVault_secrets[index].outputs.secretUri

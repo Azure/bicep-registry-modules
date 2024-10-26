@@ -56,7 +56,7 @@ param kty string = 'EC'
 @description('Optional. Key release policy.')
 param releasePolicy object?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.1.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -131,11 +131,11 @@ resource key 'Microsoft.KeyVault/vaults/keys@2022-07-01' = {
     keySize: keySize
     kty: kty
     release_policy: releasePolicy ?? {}
-    ...(empty(rotationPolicy)
-      ? {}
-      : {
+    ...(!empty(rotationPolicy)
+      ? {
           rotationPolicy: rotationPolicy
-        })
+        }
+      : {})
   }
 }
 
