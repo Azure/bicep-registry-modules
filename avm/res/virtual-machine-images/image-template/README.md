@@ -58,14 +58,14 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       type: 'PlatformImage'
       version: 'latest'
     }
+    name: 'vmiitmin001'
+    // Non-required parameters
+    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
-    name: 'vmiitmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -100,19 +100,19 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         "version": "latest"
       }
     },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
     "name": {
       "value": "vmiitmin001"
     },
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     }
   }
 }
@@ -142,14 +142,14 @@ param imageSource = {
   type: 'PlatformImage'
   version: 'latest'
 }
+param name = 'vmiitmin001'
+// Non-required parameters
+param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
-param name = 'vmiitmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -194,11 +194,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       type: 'PlatformImage'
       version: 'latest'
     }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     name: 'vmiitmax001'
     // Non-required parameters
     buildTimeoutInMinutes: 60
@@ -226,6 +221,11 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     optimizeVmBoot: 'Enabled'
     osDiskSizeGB: 127
@@ -318,13 +318,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         "version": "latest"
       }
     },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
     "name": {
       "value": "vmiitmax001"
     },
@@ -361,6 +354,13 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "optimizeVmBoot": {
@@ -466,11 +466,6 @@ param imageSource = {
   type: 'PlatformImage'
   version: 'latest'
 }
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
 param name = 'vmiitmax001'
 // Non-required parameters
 param buildTimeoutInMinutes = 60
@@ -498,6 +493,11 @@ param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 param optimizeVmBoot = 'Enabled'
 param osDiskSizeGB = 127
@@ -576,11 +576,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       type: 'PlatformImage'
       version: 'latest'
     }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     name: 'vmiitwaf001'
     // Non-required parameters
     customizationSteps: [
@@ -590,6 +585,11 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       }
     ]
     location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     subnetResourceId: '<subnetResourceId>'
     tags: {
       Environment: 'Non-Prod'
@@ -630,13 +630,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         "version": "latest"
       }
     },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
     "name": {
       "value": "vmiitwaf001"
     },
@@ -651,6 +644,13 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -690,11 +690,6 @@ param imageSource = {
   type: 'PlatformImage'
   version: 'latest'
 }
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
 param name = 'vmiitwaf001'
 // Non-required parameters
 param customizationSteps = [
@@ -704,6 +699,11 @@ param customizationSteps = [
   }
 ]
 param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 param subnetResourceId = '<subnetResourceId>'
 param tags = {
   Environment: 'Non-Prod'
@@ -749,7 +749,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`baseTime`](#parameter-basetime) | string | Do not provide a value! This date value is used to generate a unique image template name. |
+| [`baseTime`](#parameter-basetime) | string | Do not provide a value! This date is used to generate a unique image template name. |
 
 ### Parameter: `distributions`
 
@@ -769,7 +769,7 @@ Image source definition in object format.
 
 The managed identity definition for this resource.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 **Optional parameters**
@@ -782,7 +782,7 @@ The managed identity definition for this resource.
 
 The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `name`
@@ -1157,7 +1157,7 @@ List of User-Assigned Identities associated to the Build VM for accessing Azure 
 
 ### Parameter: `baseTime`
 
-Do not provide a value! This date value is used to generate a unique image template name.
+Do not provide a value! This date is used to generate a unique image template name.
 
 - Required: No
 - Type: string

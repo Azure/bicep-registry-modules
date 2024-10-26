@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "12024958859514872959"
+      "version": "0.30.23.60470",
+      "templateHash": "1061724596337882078"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store.",
@@ -237,7 +237,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -838,8 +838,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "11258786733278014615"
+              "version": "0.30.23.60470",
+              "templateHash": "7176115037834080970"
             },
             "name": "App Configuration Stores Key Values",
             "description": "This module deploys an App Configuration Store Key Value.",
@@ -959,8 +959,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "12501157551760596905"
+              "version": "0.30.23.60470",
+              "templateHash": "7558745915280433021"
             },
             "name": "App Configuration Replicas",
             "description": "This module deploys an App Configuration Replica.",
@@ -976,13 +976,13 @@
             "appConfigurationName": {
               "type": "string",
               "metadata": {
-                "description": "Optional. The name of the parent app configuration store."
+                "description": "Conditional. The name of the parent app configuration store. Required if the template is used in a standalone deployment."
               }
             },
             "replicaLocation": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Location of the replica."
+                "description": "Required. Location of the replica."
               }
             }
           },
