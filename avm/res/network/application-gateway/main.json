@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "17187265964548508241"
+      "version": "0.30.23.60470",
+      "templateHash": "8237956651125434199"
     },
     "name": "Network Application Gateways",
     "description": "This module deploys a Network Application Gateway.",
@@ -21,6 +21,7 @@
           "items": {
             "type": "string"
           },
+          "nullable": true,
           "metadata": {
             "description": "Optional. The resource ID(s) to assign to the resource."
           }
@@ -228,7 +229,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {

@@ -235,7 +235,7 @@ type manualPrivateLinkServiceConnectionType = {
     privateLinkServiceId: string
 
     @description('Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.')
-    requestMessage: string
+    requestMessage: string?
   }
 }
 
@@ -259,8 +259,8 @@ type privateLinkServiceConnectionType = {
 
 @export()
 type customDnsConfigType = {
-  @description('Required. Fqdn that resolves to private endpoint IP address.')
-  fqdn: string
+  @description('Optional. FQDN that resolves to private endpoint IP address.')
+  fqdn: string?
 
   @description('Required. A list of private IP addresses of the private endpoint.')
   ipAddresses: string[]

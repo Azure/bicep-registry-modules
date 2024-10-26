@@ -14,7 +14,7 @@ param tags object?
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
-@description('Optional. Default to Standard. The offer type for the Cosmos DB database account.')
+@description('Optional. Default to Standard. The offer type for the Azure Cosmos DB database account.')
 @allowed([
   'Standard'
 ])
@@ -149,7 +149,7 @@ param privateEndpoints privateEndpointType
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
-@description('Optional. The network configuration of this module.')
+@description('Optional. The network configuration of this module. Defaults to `{ ipRules: [], virtualNetworkRules: [], publicNetworkAccess: \'Disabled\' }`.')
 param networkRestrictions networkRestrictionsType = {
   ipRules: []
   virtualNetworkRules: []
@@ -742,7 +742,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint ip address.')
+    @description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private ip addresses of the private endpoint.')
@@ -958,7 +958,7 @@ type secretsOutputType = {
 }
 
 type networkRestrictionsType = {
-  @description('Optional. Default to []. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: "23.40.210.245" or "23.40.210.0/8".')
+  @description('Required. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: "23.40.210.245" or "23.40.210.0/8".')
   ipRules: string[]
 
   @description('Optional. Default to AzureServices. Specifies the network ACL bypass for Azure services.')
@@ -967,7 +967,7 @@ type networkRestrictionsType = {
   @description('Optional. Default to Enabled. Whether requests from Public Network are allowed.')
   publicNetworkAccess: ('Enabled' | 'Disabled')?
 
-  @description('Optional. Default to []. List of Virtual Network ACL rules configured for the Cosmos DB account..')
+  @description('Required. List of Virtual Network ACL rules configured for the Cosmos DB account..')
   virtualNetworkRules: {
     @description('Required. Resource ID of a subnet.')
     subnetResourceId: string

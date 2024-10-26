@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "14675004991337717729"
+      "templateHash": "17374623663141250391"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -591,7 +591,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The name of the extension."
+            "description": "Optional. The name of the extension."
           }
         },
         "releaseNamespace": {
@@ -612,7 +612,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The release train of the extension."
+            "description": "Optional. The release train of the extension."
           }
         },
         "configurationProtectedSettings": {
@@ -844,6 +844,17 @@
         "description": "Optional. Specifies outbound (egress) routing method."
       }
     },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "Base",
+      "allowedValues": [
+        "Base",
+        "Automatic"
+      ],
+      "metadata": {
+        "description": "Optional. Name of a managed cluster SKU."
+      }
+    },
     "skuTier": {
       "type": "string",
       "defaultValue": "Standard",
@@ -950,11 +961,25 @@
         "description": "Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled."
       }
     },
+    "nodeProvisioningProfile": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Node provisioning settings that apply to the whole cluster."
+      }
+    },
     "nodeResourceGroup": {
       "type": "string",
       "defaultValue": "[format('{0}_aks_{1}_nodes', resourceGroup().name, parameters('name'))]",
       "metadata": {
         "description": "Optional. Name of the resource group containing agent pool nodes."
+      }
+    },
+    "nodeResourceGroupProfile": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The node resource group configuration profile."
       }
     },
     "authorizedIPRanges": {
@@ -1623,7 +1648,7 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "sku": {
-        "name": "Base",
+        "name": "[parameters('skuName')]",
         "tier": "[parameters('skuTier')]"
       },
       "properties": {
@@ -1681,6 +1706,8 @@
         "enableRBAC": "[parameters('enableRBAC')]",
         "disableLocalAccounts": "[parameters('disableLocalAccounts')]",
         "nodeResourceGroup": "[parameters('nodeResourceGroup')]",
+        "nodeResourceGroupProfile": "[parameters('nodeResourceGroupProfile')]",
+        "nodeProvisioningProfile": "[parameters('nodeProvisioningProfile')]",
         "enablePodSecurityPolicy": "[parameters('enablePodSecurityPolicy')]",
         "workloadAutoScalerProfile": {
           "keda": {
@@ -1908,8 +1935,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "2505380725266419010"
+              "version": "0.28.1.47646",
+              "templateHash": "14041521425406296021"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
@@ -2105,8 +2132,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "13856766172443517827"
+              "version": "0.28.1.47646",
+              "templateHash": "9210340338669366768"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
@@ -2523,7 +2550,7 @@
             "value": "[parameters('location')]"
           },
           "name": {
-            "value": "flux"
+            "value": "[coalesce(tryGet(parameters('fluxExtension'), 'name'), 'flux')]"
           },
           "releaseNamespace": {
             "value": "[coalesce(tryGet(parameters('fluxExtension'), 'releaseNamespace'), 'flux-system')]"
