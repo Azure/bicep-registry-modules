@@ -12,21 +12,6 @@ param administratorLogin string?
 @secure()
 param administratorLoginPassword string?
 
-@allowed([
-  'Disabled'
-  'Enabled'
-])
-@description('Optional. If Enabled, Azure Active Directory authentication is enabled.')
-param activeDirectoryAuth string = 'Enabled'
-
-@allowed([
-  'Disabled'
-  'Enabled'
-])
-@description('Optional. If Enabled, password authentication is enabled.')
-#disable-next-line secure-secrets-in-params
-param passwordAuth string = 'Disabled'
-
 @description('Optional. Tenant id of the server.')
 param tenantId string?
 
@@ -262,8 +247,8 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' =
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
     authConfig: {
-      activeDirectoryAuth: activeDirectoryAuth
-      passwordAuth: passwordAuth
+      activeDirectoryAuth: !empty(administrators) ? 'enabled' : 'disabled'
+      passwordAuth: !empty(administratorLogin) && !empty(administratorLoginPassword) ? 'enabled' : 'disabled'
       tenantId: tenantId
     }
     availabilityZone: availabilityZone
