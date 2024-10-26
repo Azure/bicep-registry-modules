@@ -48,3 +48,12 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+module test 'br/public:avm/res/key-vault/vault:0.9.0' = {
+  scope:
+  name:
+  params: {
+    name:
+    createMode:
+  }
+}
