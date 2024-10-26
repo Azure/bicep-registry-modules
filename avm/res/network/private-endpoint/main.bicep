@@ -257,6 +257,7 @@ type privateLinkServiceConnectionType = {
   }
 }
 
+@export()
 type customDnsConfigType = {
   @description('Required. Fqdn that resolves to private endpoint IP address.')
   fqdn: string

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "13235129882824889187"
+      "templateHash": "6259300398392693827"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -182,6 +182,9 @@
             "description": "Required. A list of private IP addresses of the private endpoint."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "lockType": {
