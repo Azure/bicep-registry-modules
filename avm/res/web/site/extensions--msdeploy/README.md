@@ -21,6 +21,11 @@ This module deploys a Site extension for MSDeploy.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`appName`](#parameter-appname) | string | The name of the parent site resource. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`msDeployConfiguration`](#parameter-msdeployconfiguration) | object | Sets the MSDeployment Properties. |
 
 ### Parameter: `appName`

@@ -20,12 +20,6 @@ This module deploys a Replication Fabric for Azure to Azure disaster recovery sc
 
 ## Parameters
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`location`](#parameter-location) | string | The recovery location the fabric represents. |
-
 **Conditional parameters**
 
 | Parameter | Type | Description |
@@ -36,8 +30,16 @@ This module deploys a Replication Fabric for Azure to Azure disaster recovery sc
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`location`](#parameter-location) | string | The recovery location the fabric represents. |
 | [`name`](#parameter-name) | string | The name of the fabric. |
 | [`replicationContainers`](#parameter-replicationcontainers) | array | Replication containers to create. |
+
+### Parameter: `recoveryVaultName`
+
+The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `location`
 
@@ -46,13 +48,6 @@ The recovery location the fabric represents.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-
-### Parameter: `recoveryVaultName`
-
-The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `name`
 
