@@ -3638,7 +3638,7 @@ The name of the local user used for SFTP Authentication.
 
 The permission scopes of the local user.
 
-- Required: No
+- Required: Yes
 - Type: array
 
 **Required parameters**

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "10610484509382588218"
+      "templateHash": "15740385007917657019"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -232,7 +232,6 @@
           "items": {
             "$ref": "#/definitions/permissionScopeType"
           },
-          "nullable": true,
           "metadata": {
             "description": "Required. The permission scopes of the local user."
           }

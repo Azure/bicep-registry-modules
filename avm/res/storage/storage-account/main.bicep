@@ -819,7 +819,7 @@ type localUserType = {
   homeDirectory: string?
 
   @description('Required. The permission scopes of the local user.')
-  permissionScopes: permissionScopeType[]?
+  permissionScopes: permissionScopeType[]
 
   @description('Optional. The local user SSH authorized keys for SFTP.')
   sshAuthorizedKeys: sshAuthorizedKeyType[]?
