@@ -498,7 +498,7 @@ resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments
   }
 ]
 
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-storageAccount-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -706,13 +706,13 @@ output location string = storageAccount.location
 output serviceEndpoints object = storageAccount.properties.primaryEndpoints
 
 @description('The private endpoints of the Storage Account.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: storageAccount_privateEndpoints[i].outputs.name
-    resourceId: storageAccount_privateEndpoints[i].outputs.resourceId
-    groupId: storageAccount_privateEndpoints[i].outputs.groupId
-    customDnsConfig: storageAccount_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: storageAccount_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: storageAccount_privateEndpoints[index].outputs.name
+    resourceId: storageAccount_privateEndpoints[index].outputs.resourceId
+    groupId: storageAccount_privateEndpoints[index].outputs.groupId
+    customDnsConfigs: storageAccount_privateEndpoints[index].outputs.customDnsConfig
+    networkInterfaceResourceIds: storageAccount_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -725,6 +725,30 @@ output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
 // =============== //
 //   Definitions   //
 // =============== //
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
 @export()
 type networkAclsType = {
