@@ -305,7 +305,7 @@ module keyVault_keys 'key/main.bicep' = [
   }
 ]
 
-module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.8.0' = [
+module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-keyVault-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -397,8 +397,8 @@ output privateEndpoints privateEndpointOutputType[] = [
     name: keyVault_privateEndpoints[index].outputs.name
     resourceId: keyVault_privateEndpoints[index].outputs.resourceId
     groupId: keyVault_privateEndpoints[index].outputs.groupId
-    customDnsConfig: keyVault_privateEndpoints[index].outputs.customDnsConfig
-    networkInterfaceIds: keyVault_privateEndpoints[index].outputs.networkInterfaceIds
+    customDnsConfigs: keyVault_privateEndpoints[index].outputs.customDnsConfig
+    networkInterfaceResourceIds: keyVault_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -424,7 +424,6 @@ output keys credentialOutputType[] = [
 // ================ //
 // Definitions      //
 // ================ //
-
 @export()
 type privateEndpointOutputType = {
   @description('The name of the private endpoint.')
@@ -434,19 +433,19 @@ type privateEndpointOutputType = {
   resourceId: string
 
   @description('The group Id for the private endpoint Group.')
-  groupId: string
+  groupId: string?
 
   @description('The custom DNS configurations of the private endpoint.')
-  customDnsConfig: {
-    @description('Fqdn that resolves to private endpoint IP address.')
-    fqdn: string
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
 
     @description('A list of private IP addresses of the private endpoint.')
     ipAddresses: string[]
-  }[]?
+  }[]
 
   @description('The IDs of the network interfaces associated with the private endpoint.')
-  networkInterfaceIds: string[]
+  networkInterfaceResourceIds: string[]
 }
 
 @export()
