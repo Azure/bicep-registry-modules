@@ -44,6 +44,7 @@ param skuName string = 'Standard_GRS'
   'Premium'
   'Hot'
   'Cool'
+  'Cold'
 ])
 @description('Conditional. Required if the Storage Account kind is set to BlobStorage. The access tier is used for billing. The "Premium" access tier is the default value for premium block blobs storage account type and it cannot be changed for the premium block blobs storage account type.')
 param accessTier string = 'Hot'
@@ -130,7 +131,7 @@ param enableHierarchicalNamespace bool = false
 param enableSftp bool = false
 
 @description('Optional. Local users to deploy for SFTP authentication.')
-param localUsers array = []
+param localUsers localUserType[]?
 
 @description('Optional. Enables local users feature, if set to true.')
 param isLocalUserEnabled bool = false
@@ -563,7 +564,7 @@ module storageAccount_managementPolicies 'management-policy/main.bicep' = if (!e
 
 // SFTP user settings
 module storageAccount_localUsers 'local-user/main.bicep' = [
-  for (localUser, index) in localUsers: {
+  for (localUser, index) in (localUsers ?? []): {
     name: '${uniqueString(deployment().name, location)}-Storage-LocalUsers-${index}'
     params: {
       storageAccountName: storageAccount.name
@@ -773,4 +774,29 @@ type secretsExportConfigurationType = {
 
   @description('Optional. The connectionString2 secret name to create.')
   connectionString2: string?
+}
+
+import { sshAuthorizedKeyType, permissionScopeType } from 'local-user/main.bicep'
+@export()
+type localUserType = {
+  @description('Required. The name of the local user used for SFTP Authentication.')
+  name: string
+
+  @description('Optional. Indicates whether shared key exists. Set it to false to remove existing shared key.')
+  hasSharedKey: bool?
+
+  @description('Required. Indicates whether SSH key exists. Set it to false to remove existing SSH key.')
+  hasSshKey: bool
+
+  @description('Required. Indicates whether SSH password exists. Set it to false to remove existing SSH password.')
+  hasSshPassword: bool
+
+  @description('Optional. The local user home directory.')
+  homeDirectory: string?
+
+  @description('Required. The permission scopes of the local user.')
+  permissionScopes: permissionScopeType[]?
+
+  @description('Optional. The local user SSH authorized keys for SFTP.')
+  sshAuthorizedKeys: sshAuthorizedKeyType[]?
 }

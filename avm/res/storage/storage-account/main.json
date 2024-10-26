@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "4420850353095628584"
+      "templateHash": "4507716063208350948"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -122,6 +122,66 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The connectionString2 secret name to create."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "localUserType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the local user used for SFTP Authentication."
+          }
+        },
+        "hasSharedKey": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether shared key exists. Set it to false to remove existing shared key."
+          }
+        },
+        "hasSshKey": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Indicates whether SSH key exists. Set it to false to remove existing SSH key."
+          }
+        },
+        "hasSshPassword": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Indicates whether SSH password exists. Set it to false to remove existing SSH password."
+          }
+        },
+        "homeDirectory": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The local user home directory."
+          }
+        },
+        "permissionScopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/permissionScopeType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Required. The permission scopes of the local user."
+          }
+        },
+        "sshAuthorizedKeys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/sshAuthorizedKeyType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The local user SSH authorized keys for SFTP."
           }
         }
       },
@@ -484,6 +544,34 @@
         }
       }
     },
+    "permissionScopeType": {
+      "type": "object",
+      "properties": {
+        "permissions": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The permissions for the local user. Possible values include: Read (r), Write (w), Delete (d), List (l), and Create (c)."
+          }
+        },
+        "resourceName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of resource, normally the container name or the file share name, used by the local user."
+          }
+        },
+        "service": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The service used by the local user, e.g. blob, file."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "local-user/main.bicep"
+        }
+      }
+    },
     "privateEndpointMultiServiceType": {
       "type": "object",
       "properties": {
@@ -715,6 +803,29 @@
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
         }
       }
+    },
+    "sshAuthorizedKeyType": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Description used to store the function/usage of the key."
+          }
+        },
+        "key": {
+          "type": "securestring",
+          "metadata": {
+            "description": "Required. SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g. ssh-rsa AAAABBBB."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "local-user/main.bicep"
+        }
+      }
     }
   },
   "parameters": {
@@ -786,7 +897,8 @@
       "allowedValues": [
         "Premium",
         "Hot",
-        "Cool"
+        "Cool",
+        "Cold"
       ],
       "metadata": {
         "description": "Conditional. Required if the Storage Account kind is set to BlobStorage. The access tier is used for billing. The \"Premium\" access tier is the default value for premium block blobs storage account type and it cannot be changed for the premium block blobs storage account type."
@@ -950,7 +1062,10 @@
     },
     "localUsers": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/localUserType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Local users to deploy for SFTP authentication."
       }
@@ -2120,7 +2235,7 @@
     "storageAccount_localUsers": {
       "copy": {
         "name": "storageAccount_localUsers",
-        "count": "[length(parameters('localUsers'))]"
+        "count": "[length(coalesce(parameters('localUsers'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -2135,25 +2250,25 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('localUsers')[copyIndex()].name]"
+            "value": "[coalesce(parameters('localUsers'), createArray())[copyIndex()].name]"
           },
           "hasSshKey": {
-            "value": "[parameters('localUsers')[copyIndex()].hasSshKey]"
+            "value": "[coalesce(parameters('localUsers'), createArray())[copyIndex()].hasSshKey]"
           },
           "hasSshPassword": {
-            "value": "[parameters('localUsers')[copyIndex()].hasSshPassword]"
+            "value": "[coalesce(parameters('localUsers'), createArray())[copyIndex()].hasSshPassword]"
           },
           "permissionScopes": {
-            "value": "[parameters('localUsers')[copyIndex()].permissionScopes]"
+            "value": "[coalesce(parameters('localUsers'), createArray())[copyIndex()].permissionScopes]"
           },
           "hasSharedKey": {
-            "value": "[tryGet(parameters('localUsers')[copyIndex()], 'hasSharedKey')]"
+            "value": "[tryGet(coalesce(parameters('localUsers'), createArray())[copyIndex()], 'hasSharedKey')]"
           },
           "homeDirectory": {
-            "value": "[tryGet(parameters('localUsers')[copyIndex()], 'homeDirectory')]"
+            "value": "[tryGet(coalesce(parameters('localUsers'), createArray())[copyIndex()], 'homeDirectory')]"
           },
           "sshAuthorizedKeys": {
-            "value": "[tryGet(parameters('localUsers')[copyIndex()], 'sshAuthorizedKeys')]"
+            "value": "[tryGet(coalesce(parameters('localUsers'), createArray())[copyIndex()], 'sshAuthorizedKeys')]"
           }
         },
         "template": {
@@ -2164,40 +2279,58 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "4771770611168248415"
+              "templateHash": "6948167054606558594"
             },
             "name": "Storage Account Local Users",
             "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
-            "sshAuthorizedKeysType": {
-              "type": "secureObject",
+            "sshAuthorizedKeyType": {
+              "type": "object",
               "properties": {
-                "secureList": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "description": {
-                        "type": "string",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. Description used to store the function/usage of the key."
-                        }
-                      },
-                      "key": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g. ssh-rsa AAAABBBB."
-                        }
-                      }
-                    }
-                  },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. The list of SSH authorized keys."
+                    "description": "Optional. Description used to store the function/usage of the key."
+                  }
+                },
+                "key": {
+                  "type": "securestring",
+                  "metadata": {
+                    "description": "Required. SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g. ssh-rsa AAAABBBB."
                   }
                 }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "permissionScopeType": {
+              "type": "object",
+              "properties": {
+                "permissions": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The permissions for the local user. Possible values include: Read (r), Write (w), Delete (d), List (l), and Create (c)."
+                  }
+                },
+                "resourceName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of resource, normally the container name or the file share name, used by the local user."
+                  }
+                },
+                "service": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The service used by the local user, e.g. blob, file."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
               }
             }
           },
@@ -2243,12 +2376,18 @@
             },
             "permissionScopes": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/permissionScopeType"
+              },
               "metadata": {
                 "description": "Required. The permission scopes of the local user."
               }
             },
             "sshAuthorizedKeys": {
-              "$ref": "#/definitions/sshAuthorizedKeysType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/sshAuthorizedKeyType"
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optional. The local user SSH authorized keys for SFTP."
@@ -2272,7 +2411,7 @@
                 "hasSshPassword": "[parameters('hasSshPassword')]",
                 "homeDirectory": "[parameters('homeDirectory')]",
                 "permissionScopes": "[parameters('permissionScopes')]",
-                "sshAuthorizedKeys": "[tryGet(parameters('sshAuthorizedKeys'), 'secureList')]"
+                "sshAuthorizedKeys": "[parameters('sshAuthorizedKeys')]"
               },
               "dependsOn": [
                 "storageAccount"
