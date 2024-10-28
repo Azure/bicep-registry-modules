@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "15801074137418249415"
+      "templateHash": "15876773286910776098"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -354,7 +354,8 @@
     },
     "virtualNetworkName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
+      "minLength": 2,
       "maxLength": 64,
       "metadata": {
         "description": "Optional. The name of the virtual network. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.\n"
