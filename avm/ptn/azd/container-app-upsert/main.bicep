@@ -113,7 +113,7 @@ resource existingApp 'Microsoft.App/containerApps@2023-05-02-preview' existing =
   name: name
 }
 
-module app 'br/public:avm/ptn/azd/acr-container-app:0.1.0' = {
+module app 'br/public:avm/ptn/azd/acr-container-app:0.1.1' = {
   name: '${uniqueString(deployment().name, location)}-container-app-update'
   params: {
     name: name
