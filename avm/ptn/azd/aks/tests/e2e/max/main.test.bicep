@@ -63,18 +63,7 @@ module testDeployment '../../../main.bicep' = [
       containerRegistryName: '${uniqueString(deployment().name, enforcedLocation)}testcontainerregistry${serviceShort}'
       skuTier: 'Free'
       webApplicationRoutingEnabled: true
-      agentPools: [
-        {
-          name: 'npuserpool'
-          mode: 'User'
-          osType: 'Linux'
-          maxPods: 30
-          type: 'VirtualMachineScaleSets'
-          maxSurge: '33%'
-          vmSize: 'standard_a2_v2'
-        }
-      ]
-      logAnalyticsName: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+      monitoringWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsResourceId
       keyVaultName: 'kv${uniqueString(deployment().name)}-${serviceShort}'
       location: enforcedLocation
       principalId: nestedDependencies.outputs.identityPrincipalId
@@ -83,6 +72,34 @@ module testDeployment '../../../main.bicep' = [
       principalType: 'ServicePrincipal'
       containerRegistryRoleName: containerRegistryRoleName
       aksClusterRoleAssignmentName: aksClusterRoleAssignmentName
+      agentPoolConfig: [
+        {
+          name: 'npuserpool'
+          mode: 'User'
+          osType: 'Linux'
+          maxPods: 30
+          type: 'VirtualMachineScaleSets'
+          maxSurge: '33%'
+          vmSize: 'Standard_DS2_v2'
+        }
+      ]
+      agentPoolSize: 'Standard'
+      systemPoolConfig: [
+        {
+          name: 'npsystem'
+          mode: 'System'
+          vmSize: 'Standard_DS2_v2'
+          count: 3
+          minCount: 3
+          maxCount: 5
+          enableAutoScaling: true
+          availabilityZones: [
+            1
+            2
+            3
+          ]
+        }
+      ]
     }
   }
 ]

@@ -17,7 +17,7 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Enable/Disable Azure Databricks service in the solution.')
+@description('Optional. Enable/Disable Azure Databricks service within the solution.')
 param enableDatabricks bool = false
 
 @description('Optional. This option allows the solution to be connected to a VNET that the customer provides. If you have an existing VNET that was made for this solution, you can specify it here. If you do not use this option, this module will make a new VNET for you.')
