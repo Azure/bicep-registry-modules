@@ -89,7 +89,7 @@ param networkIntents array
 @description('Required. Specify whether the Storage Network connectivity is switched or switchless.')
 param storageConnectivitySwitchless bool
 
-@description('Required. Enable storage auto IP assignment. This should be true for most deployments except when deploying a three-node switchless cluster, in which case storage IPs should be configured before deployment and this value set to false.')
+@description('Optional. Enable storage auto IP assignment. This should be true for most deployments except when deploying a three-node switchless cluster, in which case storage IPs should be configured before deployment and this value set to false.')
 param enableStorageAutoIp bool = true
 
 @description('Required. An array of JSON objects that define the storage network configuration for the cluster. Each object should contain the adapterName, VLAN properties, and (optionally) IP configurations.')
