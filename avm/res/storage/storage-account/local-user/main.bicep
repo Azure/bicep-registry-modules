@@ -25,7 +25,7 @@ param homeDirectory string = ''
 param permissionScopes array
 
 @description('Optional. The local user SSH authorized keys for SFTP.')
-param sshAuthorizedKeys sshAuthorizedKeysType
+param sshAuthorizedKeys sshAuthorizedKeysType?
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = {
   name: storageAccountName
@@ -67,4 +67,4 @@ type sshAuthorizedKeysType = {
     @description('Required. SSH public key base64 encoded. The format should be: \'{keyType} {keyData}\', e.g. ssh-rsa AAAABBBB.')
     key: string
   }[]
-}?
+}

@@ -21,6 +21,11 @@ This module deploys a Site logs Configuration.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`appName`](#parameter-appname) | string | The name of the parent site resource. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`logsConfiguration`](#parameter-logsconfiguration) | object | The logs settings configuration. |
 
 ### Parameter: `appName`

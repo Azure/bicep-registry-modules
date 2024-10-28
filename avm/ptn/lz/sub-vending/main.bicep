@@ -122,10 +122,11 @@ param virtualNetworkResourceGroupLockEnabled bool = true
 ''')
 param virtualNetworkLocation string = deployment().location
 
+@minLength(2)
 @maxLength(64)
 @description('''Optional. The name of the virtual network. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.
 ''')
-param virtualNetworkName string = ''
+param virtualNetworkName string?
 
 @description('''Optional. An object of tag key/value pairs to be set on the Virtual Network that is created.
 
