@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "14555459005793836910"
+      "version": "0.30.23.60470",
+      "templateHash": "4851309199341985144"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -1060,6 +1060,176 @@
                     "description": "Optional. A value that indicates whether the subscription supports the concept of session."
                   }
                 },
+                "rules": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The name of the service bus namespace topic subscription rule."
+                        }
+                      },
+                      "action": {
+                        "type": "object",
+                        "properties": {
+                          "compatibilityLevel": {
+                            "type": "int",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
+                            }
+                          },
+                          "requiresPreprocessing": {
+                            "type": "bool",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+                            }
+                          },
+                          "sqlExpression": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. SQL expression. e.g. MyProperty='ABC'"
+                            }
+                          }
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression"
+                        }
+                      },
+                      "correlationFilter": {
+                        "type": "object",
+                        "properties": {
+                          "contentType": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Content type of the message."
+                            }
+                          },
+                          "correlationId": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Identifier of the correlation."
+                            }
+                          },
+                          "label": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Application specific label."
+                            }
+                          },
+                          "messageId": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Identifier of the message."
+                            }
+                          },
+                          "properties": {
+                            "type": "array",
+                            "allowedValues": [
+                              {}
+                            ],
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. dictionary object for custom filters"
+                            }
+                          },
+                          "replyTo": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Address of the queue to reply to."
+                            }
+                          },
+                          "replyToSessionId": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Session identifier to reply to."
+                            }
+                          },
+                          "requiresPreprocessing": {
+                            "type": "bool",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+                            }
+                          },
+                          "sessionId": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Session identifier."
+                            }
+                          },
+                          "to": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Optional. Address to send to."
+                            }
+                          }
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Properties of correlationFilter"
+                        }
+                      },
+                      "filterType": {
+                        "type": "string",
+                        "allowedValues": [
+                          "CorrelationFilter",
+                          "SqlFilter"
+                        ],
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Filter type that is evaluated against a BrokeredMessage."
+                        }
+                      },
+                      "sqlFilter": {
+                        "type": "object",
+                        "properties": {
+                          "compatibilityLevel": {
+                            "type": "int",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
+                            }
+                          },
+                          "requiresPreprocessing": {
+                            "type": "bool",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+                            }
+                          },
+                          "sqlExpression": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. SQL expression. e.g. MyProperty='ABC'"
+                            }
+                          }
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Properties of sqlFilter"
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The subscription rules"
+                  }
+                },
                 "status": {
                   "type": "string",
                   "allowedValues": [
@@ -1468,8 +1638,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "16894150656839211462"
+              "version": "0.30.23.60470",
+              "templateHash": "4728331591356881277"
             },
             "name": "Service Bus Namespace Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Authorization Rule.",
@@ -1572,8 +1742,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "5291933683239809881"
+              "version": "0.30.23.60470",
+              "templateHash": "1218226237647695558"
             },
             "name": "Service Bus Namespace Disaster Recovery Configs",
             "description": "This module deploys a Service Bus Namespace Disaster Recovery Config",
@@ -1677,8 +1847,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "1979996026271958468"
+              "version": "0.30.23.60470",
+              "templateHash": "16589713685358551002"
             },
             "name": "Service Bus Namespace Migration Configuration",
             "description": "This module deploys a Service Bus Namespace Migration Configuration.",
@@ -1782,8 +1952,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "2567977628816180304"
+              "version": "0.30.23.60470",
+              "templateHash": "10055705590102866988"
             },
             "name": "Service Bus Namespace Network Rule Sets",
             "description": "This module deploys a ServiceBus Namespace Network Rule Set.",
@@ -1982,8 +2152,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "16865717026433728292"
+              "version": "0.30.23.60470",
+              "templateHash": "7498488486983491567"
             },
             "name": "Service Bus Namespace Queue",
             "description": "This module deploys a Service Bus Namespace Queue.",
@@ -2356,8 +2526,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "15391519662555721522"
+                      "version": "0.30.23.60470",
+                      "templateHash": "13793175890494658919"
                     },
                     "name": "Service Bus Namespace Queue Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Queue Authorization Rule.",
@@ -2537,8 +2707,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "10953229984809736827"
+              "version": "0.30.23.60470",
+              "templateHash": "9239479891739811869"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic.",
@@ -3020,8 +3190,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "11438474699882792252"
+                      "version": "0.30.23.60470",
+                      "templateHash": "1348283370469099109"
                     },
                     "name": "Service Bus Namespace Topic Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Topic Authorization Rule.",
@@ -3160,6 +3330,9 @@
                   "requiresSession": {
                     "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'requiresSession'), false())]"
                   },
+                  "rules": {
+                    "value": "[tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'rules')]"
+                  },
                   "status": {
                     "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'status'), 'Active')]"
                   }
@@ -3170,8 +3343,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "13876094385420679023"
+                      "version": "0.30.23.60470",
+                      "templateHash": "10276453737025789282"
                     },
                     "name": "Service Bus Namespace Topic Subscription",
                     "description": "This module deploys a Service Bus Namespace Topic Subscription.",
@@ -3287,6 +3460,13 @@
                         "description": "Optional. A value that indicates whether the subscription supports the concept of session."
                       }
                     },
+                    "rules": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. The subscription rules"
+                      }
+                    },
                     "status": {
                       "type": "string",
                       "defaultValue": "Active",
@@ -3327,6 +3507,115 @@
                         "requiresSession": "[parameters('requiresSession')]",
                         "status": "[parameters('status')]"
                       }
+                    },
+                    {
+                      "copy": {
+                        "name": "subscription_rule",
+                        "count": "[length(coalesce(parameters('rules'), createArray()))]"
+                      },
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('{0}-rule-{1}', deployment().name, copyIndex())]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "name": {
+                            "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].name]"
+                          },
+                          "subscriptionName": {
+                            "value": "[parameters('name')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "languageVersion": "2.0",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.30.23.60470",
+                              "templateHash": "11445949177763307107"
+                            },
+                            "name": "Service Bus Namespace Topic Subscription Rule",
+                            "description": "This module deploys a Service Bus Namespace Topic Subscription Rule.",
+                            "owner": "Azure/module-maintainers"
+                          },
+                          "parameters": {
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The name of the service bus namespace topic subscription rule."
+                              }
+                            },
+                            "subscriptionName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent Service Bus Namespace. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "action": {
+                              "type": "object",
+                              "defaultValue": {},
+                              "metadata": {
+                                "description": "Opional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression"
+                              }
+                            },
+                            "correlationFilter": {
+                              "type": "object",
+                              "defaultValue": {},
+                              "metadata": {
+                                "description": "Opional. Properties of correlationFilter"
+                              }
+                            },
+                            "filterType": {
+                              "type": "string",
+                              "nullable": true,
+                              "allowedValues": [
+                                "CorrelationFilter",
+                                "SqlFilter"
+                              ],
+                              "metadata": {
+                                "description": "Optional. Filter type that is evaluated against a BrokeredMessage."
+                              }
+                            },
+                            "sqlFilter": {
+                              "type": "object",
+                              "defaultValue": {},
+                              "metadata": {
+                                "description": "Opional. Properties of sqlFilter"
+                              }
+                            }
+                          },
+                          "resources": {
+                            "subscription": {
+                              "existing": true,
+                              "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+                              "apiVersion": "2022-10-01-preview",
+                              "name": "[parameters('subscriptionName')]"
+                            },
+                            "symbolicname": {
+                              "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+                              "apiVersion": "2022-10-01-preview",
+                              "name": "[format('{0}/{1}/{2}/{3}', split(parameters('subscriptionName'), '/')[0], split(parameters('subscriptionName'), '/')[1], split(parameters('subscriptionName'), '/')[2], parameters('name'))]",
+                              "properties": {
+                                "action": "[parameters('action')]",
+                                "correlationFilter": "[parameters('correlationFilter')]",
+                                "filterType": "[parameters('filterType')]",
+                                "sqlFilter": "[parameters('sqlFilter')]"
+                              },
+                              "dependsOn": [
+                                "subscription"
+                              ]
+                            }
+                          }
+                        }
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaceName'), parameters('topicName'), parameters('name'))]"
+                      ]
                     }
                   ],
                   "outputs": {

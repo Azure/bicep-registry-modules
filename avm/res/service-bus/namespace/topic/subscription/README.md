@@ -15,6 +15,7 @@ This module deploys a Service Bus Namespace Topic Subscription.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.ServiceBus/namespaces/topics/subscriptions` | [2021-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2021-11-01/namespaces/topics/subscriptions) |
+| `Microsoft.ServiceBus/namespaces/topics/subscriptions/rules` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/topics/subscriptions/rules) |
 
 ## Parameters
 
@@ -48,6 +49,7 @@ This module deploys a Service Bus Namespace Topic Subscription.
 | [`lockDuration`](#parameter-lockduration) | string | ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute. |
 | [`maxDeliveryCount`](#parameter-maxdeliverycount) | int | Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10. |
 | [`requiresSession`](#parameter-requiressession) | bool | A value that indicates whether the subscription supports the concept of session. |
+| [`rules`](#parameter-rules) | array | The subscription rules |
 | [`status`](#parameter-status) | string | Enumerates the possible values for the status of a messaging entity. |
 
 ### Parameter: `name`
@@ -174,6 +176,14 @@ A value that indicates whether the subscription supports the concept of session.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `rules`
+
+The subscription rules
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `status`
 

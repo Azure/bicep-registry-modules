@@ -1,0 +1,83 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.30.23.60470",
+      "templateHash": "11445949177763307107"
+    },
+    "name": "Service Bus Namespace Topic Subscription Rule",
+    "description": "This module deploys a Service Bus Namespace Topic Subscription Rule.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the service bus namespace topic subscription rule."
+      }
+    },
+    "subscriptionName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Service Bus Namespace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "action": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Opional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression"
+      }
+    },
+    "correlationFilter": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Opional. Properties of correlationFilter"
+      }
+    },
+    "filterType": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "CorrelationFilter",
+        "SqlFilter"
+      ],
+      "metadata": {
+        "description": "Optional. Filter type that is evaluated against a BrokeredMessage."
+      }
+    },
+    "sqlFilter": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Opional. Properties of sqlFilter"
+      }
+    }
+  },
+  "resources": {
+    "subscription": {
+      "existing": true,
+      "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[parameters('subscriptionName')]"
+    },
+    "symbolicname": {
+      "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[format('{0}/{1}/{2}/{3}', split(parameters('subscriptionName'), '/')[0], split(parameters('subscriptionName'), '/')[1], split(parameters('subscriptionName'), '/')[2], parameters('name'))]",
+      "properties": {
+        "action": "[parameters('action')]",
+        "correlationFilter": "[parameters('correlationFilter')]",
+        "filterType": "[parameters('filterType')]",
+        "sqlFilter": "[parameters('sqlFilter')]"
+      },
+      "dependsOn": [
+        "subscription"
+      ]
+    }
+  }
+}
