@@ -6,6 +6,12 @@ metadata owner = 'Azure/module-maintainers'
 param name string
 
 @description('Conditional. The name of the parent Service Bus Namespace. Required if the template is used in a standalone deployment.')
+param namespaceName string
+
+@description('Conditional. The name of the parent Service Bus Namespace Topic. Required if the template is used in a standalone deployment.')
+param topicName string
+
+@description('Conditional. The name of the parent Service Bus Namespace. Required if the template is used in a standalone deployment.')
 param subscriptionName string
 
 @description('Opional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression')
@@ -24,13 +30,21 @@ param filterType string?
 @description('Opional. Properties of sqlFilter')
 param sqlFilter object = {}
 
-resource subscription 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2022-10-01-preview' existing = {
-  name: subscriptionName
+resource namespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' existing = {
+  name: namespaceName
+
+  resource topic 'topics@2022-10-01-preview' existing = {
+    name: topicName
+
+    resource subscription 'subscriptions@2021-11-01' existing = {
+      name: subscriptionName
+    }
+  }
 }
 
 resource symbolicname 'Microsoft.ServiceBus/namespaces/topics/subscriptions/rules@2022-10-01-preview' = {
   name: name
-  parent: subscription
+  parent: namespace::topic::subscription
   properties: {
     action: action
     correlationFilter: correlationFilter

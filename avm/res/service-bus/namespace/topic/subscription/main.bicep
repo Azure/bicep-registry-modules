@@ -102,6 +102,12 @@ module subscription_rule 'rule/main.bicep' = [
     params: {
       name: rule.name
       subscriptionName: subscription.name
+      namespaceName: namespaceName
+      topicName: topicName
+      action: rule.?action
+      correlationFilter: rule.?correlationFilter
+      filterType: rule.?filterType
+      sqlFilter: rule.?sqlFilter
     }
   }
 ]
