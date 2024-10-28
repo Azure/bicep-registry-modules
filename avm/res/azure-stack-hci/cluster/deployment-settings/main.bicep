@@ -71,7 +71,7 @@ param storageConfigurationMode string = 'Express'
 @description('Required. The subnet mask pf the Management Network for the HCI cluster - ex: 255.255.252.0.')
 param subnetMask string
 
-@description('Required. The default gateway of the Management Network. Exameple: 192.168.0.1.')
+@description('Required. The default gateway of the Management Network. Example: 192.168.0.1.')
 param defaultGateway string
 
 @description('Required. The starting IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs.')
