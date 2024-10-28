@@ -8,8 +8,9 @@ param name string
 @description('Optional. Location for all Resources in the solution.')
 param location string = resourceGroup().location
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The lock settings for all Resources in the solution.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Tags for all Resources in the solution.')
 param tags object?
@@ -30,7 +31,7 @@ param logAnalyticsWorkspaceResourceId string?
 param keyVaultResourceId string?
 
 @description('Optional. Array of users or groups who are in charge of the solution.')
-param solutionAdministrators userGroupRoleAssignmentType?
+param solutionAdministrators userGroupRoleAssignmentType[]?
 
 @description('Optional. Additional options that can affect some components of the solution and how they are configured.')
 param advancedOptions advancedOptionsType?
@@ -365,8 +366,8 @@ resource kvExisting 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!creat
   )
 }
 
-module vnet 'br/public:avm/res/network/virtual-network:0.2.0' = if (createNewVNET) {
-  name: vnetName
+module vnet 'br/public:avm/res/network/virtual-network:0.5.0' = if (createNewVNET) {
+  name: '${deployment().name}-vnet-${vnetName}'
   params: {
     // Required parameters
     addressPrefixes: [
@@ -393,15 +394,15 @@ module vnet 'br/public:avm/res/network/virtual-network:0.2.0' = if (createNewVNE
     dnsServers: []
     enableTelemetry: enableTelemetry
     location: location
-    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+    roleAssignments: !empty(ownerRoleAssignments) ? ownerRoleAssignments : []
     lock: lock
     subnets: subnets
     tags: tags
   }
 }
 
-module nsgPrivateLink 'br/public:avm/res/network/network-security-group:0.4.0' = if (createNewVNET) {
-  name: nsgNamePrivateLink
+module nsgPrivateLink 'br/public:avm/res/network/network-security-group:0.5.0' = if (createNewVNET) {
+  name: '${deployment().name}-nsg-${nsgNamePrivateLink}'
   params: {
     // Required parameters
     name: nsgNamePrivateLink
@@ -419,15 +420,15 @@ module nsgPrivateLink 'br/public:avm/res/network/network-security-group:0.4.0' =
     ]
     enableTelemetry: enableTelemetry
     location: location
-    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+    roleAssignments: !empty(ownerRoleAssignments) ? ownerRoleAssignments : []
     lock: lock
     tags: tags
     securityRules: nsgRulesPrivateLink
   }
 }
 
-module nsgDbwFrontend 'br/public:avm/res/network/network-security-group:0.4.0' = if (createNewVNET && enableDatabricks) {
-  name: nsgNameDbwFrontend
+module nsgDbwFrontend 'br/public:avm/res/network/network-security-group:0.5.0' = if (createNewVNET && enableDatabricks) {
+  name: '${deployment().name}-nsg-${nsgNameDbwFrontend}'
   params: {
     // Required parameters
     name: nsgNameDbwFrontend
@@ -445,15 +446,15 @@ module nsgDbwFrontend 'br/public:avm/res/network/network-security-group:0.4.0' =
     ]
     enableTelemetry: enableTelemetry
     location: location
-    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+    roleAssignments: !empty(ownerRoleAssignments) ? ownerRoleAssignments : []
     lock: lock
     tags: tags
     securityRules: nsgRulesDbw
   }
 }
 
-module nsgDbwBackend 'br/public:avm/res/network/network-security-group:0.4.0' = if (createNewVNET && enableDatabricks) {
-  name: nsgNameDbwBackend
+module nsgDbwBackend 'br/public:avm/res/network/network-security-group:0.5.0' = if (createNewVNET && enableDatabricks) {
+  name: '${deployment().name}-nsg-${nsgNameDbwBackend}'
   params: {
     // Required parameters
     name: nsgNameDbwBackend
@@ -471,7 +472,7 @@ module nsgDbwBackend 'br/public:avm/res/network/network-security-group:0.4.0' = 
     ]
     enableTelemetry: enableTelemetry
     location: location
-    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+    roleAssignments: !empty(ownerRoleAssignments) ? ownerRoleAssignments : []
     lock: lock
     tags: tags
     securityRules: nsgRulesDbw
@@ -479,14 +480,14 @@ module nsgDbwBackend 'br/public:avm/res/network/network-security-group:0.4.0' = 
 }
 
 module dnsZoneSaBlob 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (createNewVNET && enableDatabricks) {
-  name: privateDnsZoneNameSaBlob
+  name: '${deployment().name}-private-dns-zone-${privateDnsZoneNameSaBlob}'
   params: {
     // Required parameters
     name: privateDnsZoneNameSaBlob
     // Non-required parameters
     enableTelemetry: enableTelemetry
     location: 'global'
-    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+    roleAssignments: !empty(ownerRoleAssignments) ? ownerRoleAssignments : []
     lock: lock
     tags: tags
     virtualNetworkLinks: [
@@ -498,8 +499,8 @@ module dnsZoneSaBlob 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (cr
   }
 }
 
-module log 'br/public:avm/res/operational-insights/workspace:0.5.0' = if (createNewLog) {
-  name: logName
+module log 'br/public:avm/res/operational-insights/workspace:0.7.1' = if (createNewLog) {
+  name: '${deployment().name}-law-${logName}'
   params: {
     // Required parameters
     name: logName
@@ -509,15 +510,15 @@ module log 'br/public:avm/res/operational-insights/workspace:0.5.0' = if (create
     diagnosticSettings: []
     enableTelemetry: enableTelemetry
     location: location
-    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+    roleAssignments: !empty(ownerRoleAssignments) ? ownerRoleAssignments : []
     lock: lock
     skuName: 'PerGB2018'
     tags: tags
   }
 }
 
-module kv 'br/public:avm/res/key-vault/vault:0.7.0' = if (createNewKV) {
-  name: kvName
+module kv 'br/public:avm/res/key-vault/vault:0.9.0' = if (createNewKV) {
+  name: '${deployment().name}-vault-${kvName}'
   params: {
     // Required parameters
     name: kvName
@@ -562,7 +563,15 @@ module kv 'br/public:avm/res/key-vault/vault:0.7.0' = if (createNewKV) {
         name: '${name}-kv-pep'
         location: location
         subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
-        privateDnsZoneResourceIds: createNewVNET ? [dnsZoneKv.outputs.resourceId] : []
+        privateDnsZoneGroup: createNewVNET
+          ? {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: dnsZoneKv.outputs.resourceId
+                }
+              ]
+            }
+          : null
         tags: tags
         enableTelemetry: enableTelemetry
         lock: lock
@@ -577,15 +586,15 @@ module kv 'br/public:avm/res/key-vault/vault:0.7.0' = if (createNewKV) {
   }
 }
 
-module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (createNewVNET && createNewKV) {
-  name: privateDnsZoneNameKv
+module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (createNewVNET && createNewKV) {
+  name: '${deployment().name}-private-dns-zone-${privateDnsZoneNameKv}'
   params: {
     // Required parameters
     name: privateDnsZoneNameKv
     // Non-required parameters
     enableTelemetry: enableTelemetry
     location: 'global'
-    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+    roleAssignments: !empty(ownerRoleAssignments) ? ownerRoleAssignments : []
     lock: lock
     tags: tags
     virtualNetworkLinks: [
@@ -597,8 +606,8 @@ module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (create
   }
 }
 
-module accessConnector 'br/public:avm/res/databricks/access-connector:0.2.0' = if (enableDatabricks) {
-  name: dbwAccessConnectorName
+module accessConnector 'br/public:avm/res/databricks/access-connector:0.3.0' = if (enableDatabricks) {
+  name: '${deployment().name}-access-connector-${dbwAccessConnectorName}'
   params: {
     // Required parameters
     name: dbwAccessConnectorName
@@ -609,13 +618,13 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:0.2.0' = i
     managedIdentities: {
       systemAssigned: true
     }
-    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+    roleAssignments: !empty(ownerRoleAssignments) ? ownerRoleAssignments : []
     tags: tags
   }
 }
 
-module dbw 'br/public:avm/res/databricks/workspace:0.6.0' = if (enableDatabricks) {
-  name: dbwName
+module dbw 'br/public:avm/res/databricks/workspace:0.8.5' = if (enableDatabricks) {
+  name: '${deployment().name}-databricks-workspace-${dbwName}'
   params: {
     // Required parameters
     name: dbwName
@@ -649,22 +658,38 @@ module dbw 'br/public:avm/res/databricks/workspace:0.6.0' = if (enableDatabricks
         location: location
         service: 'databricks_ui_api'
         subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
-        privateDnsZoneResourceIds: createNewVNET ? [dnsZoneDbw.outputs.resourceId] : []
+        privateDnsZoneGroup: createNewVNET
+          ? {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: dnsZoneDbw.outputs.resourceId
+                }
+              ]
+            }
+          : null
         tags: tags
         enableTelemetry: enableTelemetry
         lock: lock
-        roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+        roleAssignments: !empty(ownerRoleAssignments) ? ownerRoleAssignments : []
       }
       {
         name: '${name}-dbw-auth-pep'
         location: location
         service: 'browser_authentication'
         subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
-        privateDnsZoneResourceIds: createNewVNET ? [dnsZoneDbw.outputs.resourceId] : []
+        privateDnsZoneGroup: createNewVNET
+          ? {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: dnsZoneDbw.outputs.resourceId
+                }
+              ]
+            }
+          : null
         tags: tags
         enableTelemetry: enableTelemetry
         lock: lock
-        roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+        roleAssignments: !empty(ownerRoleAssignments) ? ownerRoleAssignments : []
       }
     ]
     privateStorageAccount: 'Enabled'
@@ -675,7 +700,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.6.0' = if (enableDatabricks
     // which means that your workspace data plane does not need network security group rules
     // to connect to the Azure Databricks control plane. Otherwise, select All Rules.
     requiredNsgRules: empty(dbwIpRules) ? 'NoAzureDatabricksRules' : 'AllRules' // In some environments with 'NoAzureDatabricksRules' cluster cannot be created
-    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+    roleAssignments: !empty(ownerRoleAssignments) ? ownerRoleAssignments : []
     skuName: 'premium' // We need premium to use VNET injection, Private Connectivity (Requires Premium Plan)
     storageAccountName: null // TODO add existing one (maybe with PEP) - https://learn.microsoft.com/en-us/azure/databricks/security/network/storage/firewall-support
     storageAccountPrivateEndpoints: [
@@ -684,26 +709,34 @@ module dbw 'br/public:avm/res/databricks/workspace:0.6.0' = if (enableDatabricks
         location: location
         service: 'blob'
         subnetResourceId: vnetCfg.subnetResourceIdPrivateLink
-        privateDnsZoneResourceIds: createNewVNET ? [dnsZoneSaBlob.outputs.resourceId] : []
+        privateDnsZoneGroup: createNewVNET
+          ? {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: dnsZoneSaBlob.outputs.resourceId
+                }
+              ]
+            }
+          : null
         tags: tags
         enableTelemetry: enableTelemetry
         lock: lock
-        roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+        roleAssignments: !empty(ownerRoleAssignments) ? ownerRoleAssignments : []
       }
     ]
     tags: tags
   }
 }
 
-module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (createNewVNET && enableDatabricks) {
-  name: privateDnsZoneNameDbw
+module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (createNewVNET && enableDatabricks) {
+  name: '${deployment().name}-private-dns-zone-${privateDnsZoneNameDbw}'
   params: {
     // Required parameters
     name: privateDnsZoneNameDbw
     // Non-required parameters
     enableTelemetry: enableTelemetry
     location: 'global'
-    roleAssignments: empty(ownerRoleAssignments) ? [] : ownerRoleAssignments
+    roleAssignments: !empty(ownerRoleAssignments) ? ownerRoleAssignments : []
     lock: lock
     tags: tags
     virtualNetworkLinks: [
@@ -784,22 +817,13 @@ output databricksResourceGroupName string = enableDatabricks ? dbw.outputs.resou
 // ================ //
 
 @export()
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-@export()
 type userGroupRoleAssignmentType = {
   @description('Required. The principal ID of the principal (user/group) to assign the role to.')
   principalId: string
 
   @description('Required. The principal type of the assigned principal ID.')
   principalType: ('Group' | 'User')
-}[]
+}
 
 @export()
 type networkAclsType = {

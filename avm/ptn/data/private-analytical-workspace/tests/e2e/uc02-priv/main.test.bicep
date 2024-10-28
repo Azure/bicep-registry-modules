@@ -51,7 +51,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}002'
       tags: {
         Owner: 'Contoso'
         CostCenter: '123-456-789'
@@ -65,6 +65,9 @@ module testDeployment '../../../main.bicep' = [
         databricks: {
           subnetNameFrontend: last(split(nestedDependencies.outputs.subnetResourceIds[1], '/'))
           subnetNameBackend: last(split(nestedDependencies.outputs.subnetResourceIds[2], '/'))
+        }
+        keyVault: {
+          enablePurgeProtection: false // For the purposes of the test, we disable purge protection
         }
       }
     }
