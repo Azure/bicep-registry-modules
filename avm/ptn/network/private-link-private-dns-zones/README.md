@@ -103,10 +103,19 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
   name: 'privateLinkPrivateDnsZonesDeployment'
   params: {
     location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'pdnsZonesLock'
+    }
     privateLinkPrivateDnsZones: [
       'testpdnszone1.int'
       'testpdnszone2.local'
     ]
+    tags: {
+      Environment: 'Example'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
     virtualNetworkResourceIdsToLinkTo: [
       '<vnetResourceId>'
     ]
@@ -129,11 +138,24 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
     "location": {
       "value": "<location>"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "pdnsZonesLock"
+      }
+    },
     "privateLinkPrivateDnsZones": {
       "value": [
         "testpdnszone1.int",
         "testpdnszone2.local"
       ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Example",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     },
     "virtualNetworkResourceIdsToLinkTo": {
       "value": [
@@ -155,10 +177,19 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 using 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>'
 
 param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'pdnsZonesLock'
+}
 param privateLinkPrivateDnsZones = [
   'testpdnszone1.int'
   'testpdnszone2.local'
 ]
+param tags = {
+  Environment: 'Example'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
 param virtualNetworkResourceIdsToLinkTo = [
   '<vnetResourceId>'
 ]
