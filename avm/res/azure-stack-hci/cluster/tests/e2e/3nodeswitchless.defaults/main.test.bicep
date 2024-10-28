@@ -3,11 +3,6 @@ targetScope = 'subscription'
 metadata name = 'Deploy Azure Stack HCI Cluster in Azure with a 3 node switchless configuration'
 metadata description = 'This test deploys an Azure VM to host a 3 node switchless Azure Stack HCI cluster, validates the cluster configuration, and then deploys the cluster.'
 
-@description('Optional. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure.')
-@maxLength(15)
-@minLength(4)
-param name string = 'hcicluster'
-
 @description('Optional. Location for all resources.')
 param location string = deployment().location
 
@@ -45,8 +40,8 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
 
+var name = 'hcicluster'
 var deploymentPrefix = take(uniqueString(namePrefix, serviceShort), 8)
-var deploymentOperations = ['Validate', 'Deploy']
 
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'southeastasia'
