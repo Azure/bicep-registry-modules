@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "1896118867042621626"
+      "templateHash": "17544740987961555702"
     },
     "name": "avm/ptn/network/private-link-private-dns-zones",
     "description": "Private Link Private DNS Zones",
@@ -39,7 +39,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.1.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
         }
       }
     }
