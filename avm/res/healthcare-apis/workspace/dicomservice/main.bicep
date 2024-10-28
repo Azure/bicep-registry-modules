@@ -13,7 +13,7 @@ param workspaceName string
 @description('Optional. Specify URLs of origin sites that can access this API, or use "*" to allow access from any site.')
 param corsOrigins array?
 
-@description('Optional. Specify HTTP headers which can be used during the request. Use "*" for any header.')
+@description('Required. Specify HTTP headers which can be used during the request. Use "*" for any header.')
 param corsHeaders array
 
 @allowed([

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "15332291729708806177"
+      "version": "0.30.23.60470",
+      "templateHash": "5695254204931774513"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace.",
@@ -237,7 +237,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -905,8 +905,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10257599829745692462"
+              "version": "0.30.23.60470",
+              "templateHash": "4370778315266456162"
             },
             "name": "Event Hub Namespace Authorization Rule",
             "description": "This module deploys an Event Hub Namespace Authorization Rule.",
@@ -1002,8 +1002,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "11417529326547724260"
+              "version": "0.30.23.60470",
+              "templateHash": "60777592128484407"
             },
             "name": "Event Hub Namespace Disaster Recovery Configs",
             "description": "This module deploys an Event Hub Namespace Disaster Recovery Config.",
@@ -1118,8 +1118,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "11002403097253998911"
+              "version": "0.30.23.60470",
+              "templateHash": "8801225791166116780"
             },
             "name": "Event Hub Namespace Event Hubs",
             "description": "This module deploys an Event Hub Namespace Event Hub.",
@@ -1543,8 +1543,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "3193397457060310848"
+                      "version": "0.30.23.60470",
+                      "templateHash": "3600583163344820893"
                     },
                     "name": "Event Hub Namespace Event Hub Consumer Groups",
                     "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group.",
@@ -1647,8 +1647,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "15510112090713187287"
+                      "version": "0.30.23.60470",
+                      "templateHash": "5255101507494543017"
                     },
                     "name": "Event Hub Namespace Event Hub Authorization Rules",
                     "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule.",
@@ -1783,8 +1783,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10667940256299428520"
+              "version": "0.30.23.60470",
+              "templateHash": "11642938165424421063"
             },
             "name": "Event Hub Namespace Network Rule Sets",
             "description": "This module deploys an Event Hub Namespace Network Rule Set.",

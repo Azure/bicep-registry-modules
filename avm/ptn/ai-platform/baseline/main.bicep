@@ -17,35 +17,35 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. The name of the user assigned identity for the AI Studio hub. If not provided, the hub will use a system assigned identity.')
+@description('Optional. The name of the user-assigned identity for the AI Studio hub. If not provided, the hub will use a system-assigned identity.')
 param managedIdentityName string?
 
 @description('Optional. Configuration for the Log Analytics workspace.')
-param logAnalyticsConfiguration logAnalyticsConfigurationType
+param logAnalyticsConfiguration logAnalyticsConfigurationType?
 
 @description('Optional. Configuration for the key vault.')
-param keyVaultConfiguration keyVaultConfigurationType
+param keyVaultConfiguration keyVaultConfigurationType?
 
 @description('Optional. Configuration for the storage account.')
-param storageAccountConfiguration storageAccountConfigurationType
+param storageAccountConfiguration storageAccountConfigurationType?
 
 @description('Optional. Configuration for the container registry.')
-param containerRegistryConfiguration containerRegistryConfigurationType
+param containerRegistryConfiguration containerRegistryConfigurationType?
 
 @description('Optional. Configuration for Application Insights.')
-param applicationInsightsConfiguration applicationInsightsConfigurationType
+param applicationInsightsConfiguration applicationInsightsConfigurationType?
 
 @description('Optional. Configuration for the AI Studio workspace.')
-param workspaceConfiguration workspaceConfigurationType
+param workspaceConfiguration workspaceConfigurationType?
 
 @description('Optional. Configuration for the virtual network.')
-param virtualNetworkConfiguration virtualNetworkConfigurationType
+param virtualNetworkConfiguration virtualNetworkConfigurationType?
 
 @description('Optional. Configuration for the Azure Bastion host.')
-param bastionConfiguration bastionConfigurationType
+param bastionConfiguration bastionConfigurationType?
 
 @description('Optional. Configuration for the virtual machine.')
-param virtualMachineConfiguration virtualMachineConfigurationType
+param virtualMachineConfiguration virtualMachineConfigurationType?
 
 // ============== //
 // Variables      //
@@ -617,19 +617,22 @@ output virtualMachineName string = createVirtualMachine ? virtualMachine.outputs
 // Definitions      //
 // ================ //
 
+@export()
 type logAnalyticsConfigurationType = {
   @description('Optional. The name of the Log Analytics workspace.')
   name: string?
-}?
+}
 
+@export()
 type keyVaultConfigurationType = {
   @description('Optional. The name of the key vault.')
   name: string?
 
   @description('Optional. Provide \'true\' to enable Key Vault\'s purge protection feature. Defaults to \'true\'.')
   enablePurgeProtection: bool?
-}?
+}
 
+@export()
 type storageAccountConfigurationType = {
   @description('Optional. The name of the storage account.')
   name: string?
@@ -647,21 +650,24 @@ type storageAccountConfigurationType = {
 
   @description('Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. Defaults to \'false\'.')
   allowSharedKeyAccess: bool?
-}?
+}
 
+@export()
 type containerRegistryConfigurationType = {
   @description('Optional. The name of the container registry.')
   name: string?
 
   @description('Optional. Whether the trust policy is enabled for the container registry. Defaults to \'enabled\'.')
   trustPolicyStatus: 'enabled' | 'disabled'?
-}?
+}
 
+@export()
 type applicationInsightsConfigurationType = {
   @description('Optional. The name of the Application Insights resource.')
   name: string?
-}?
+}
 
+@export()
 type workspaceConfigurationType = {
   @description('Optional. The name of the AI Studio workspace hub.')
   name: string?
@@ -676,8 +682,8 @@ type workspaceConfigurationType = {
   networkIsolationMode: 'AllowInternetOutbound' | 'AllowOnlyApprovedOutbound'?
 
   @description('Optional. The outbound rules for the managed network of the workspace hub.')
-  networkOutboundRules: networkOutboundRuleType
-}?
+  networkOutboundRules: networkOutboundRuleType?
+}
 
 type virtualNetworkSubnetConfigurationType = {
   @description('Optional. The name of the subnet to create.')
@@ -688,8 +694,9 @@ type virtualNetworkSubnetConfigurationType = {
 
   @description('Optional. The resource ID of an existing network security group to associate with the subnet.')
   networkSecurityGroupResourceId: string?
-}?
+}
 
+@export()
 type virtualNetworkConfigurationType = {
   @description('Optional. Whether to create an associated virtual network. Defaults to \'true\'.')
   enabled: bool?
@@ -701,9 +708,10 @@ type virtualNetworkConfigurationType = {
   addressPrefix: string?
 
   @description('Optional. Configuration for the virual network subnet.')
-  subnet: virtualNetworkSubnetConfigurationType
-}?
+  subnet: virtualNetworkSubnetConfigurationType?
+}
 
+@export()
 type bastionConfigurationType = {
   @description('Optional. Whether to create a Bastion host in the virtual network. Defaults to \'true\'.')
   enabled: bool?
@@ -737,7 +745,7 @@ type bastionConfigurationType = {
 
   @description('Optional. The scale units for the Bastion Host resource.')
   scaleUnits: int?
-}?
+}
 
 type nicConfigurationConfigurationType = {
   @description('Optional. The name of the network interface.')
@@ -751,7 +759,7 @@ type nicConfigurationConfigurationType = {
 
   @description('Optional. The resource ID of an existing network security group to associate with the network interface.')
   networkSecurityGroupResourceId: string?
-}?
+}
 
 type osDiskType = {
   @description('Optional. The disk name.')
@@ -784,9 +792,9 @@ type osDiskType = {
     @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
     diskEncryptionSetResourceId: string?
   }
-}?
+}
 
-@secure()
+@export()
 type virtualMachineConfigurationType = {
   @description('Optional. Whether to create a virtual machine in the associated virtual network. Defaults to \'true\'.')
   enabled: bool?
@@ -798,23 +806,24 @@ type virtualMachineConfigurationType = {
   @description('Optional. The availability zone of the virtual machine. If set to 0, no availability zone is used (default).')
   zone: 0 | 1 | 2 | 3?
 
-  @description('Required. The virtual machine size. Defaults to \'Standard_D2s_v3\'.')
+  @description('Optional. The virtual machine size. Defaults to \'Standard_D2s_v3\'.')
   size: string?
 
   @description('Conditional. The username for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module.')
   adminUsername: string?
 
   @description('Conditional. The password for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module.')
+  @secure()
   adminPassword: string?
 
   @description('Optional. Configuration for the virtual machine network interface.')
-  nicConfigurationConfiguration: nicConfigurationConfigurationType
+  nicConfigurationConfiguration: nicConfigurationConfigurationType?
 
   @description('Optional. OS image reference. In case of marketplace images, it\'s the combination of the publisher, offer, sku, version attributes. In case of custom images it\'s the resource ID of the custom image.')
   imageReference: object?
 
   @description('Optional. Specifies the OS disk.')
-  osDisk: osDiskType
+  osDisk: osDiskType?
 
   @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to \'true\'.')
   encryptionAtHost: bool?
@@ -830,7 +839,7 @@ type virtualMachineConfigurationType = {
 
   @description('Optional. The resource Id of a maintenance configuration for the virtual machine.')
   maintenanceConfigurationResourceId: string?
-}?
+}
 
 @discriminator('type')
 type OutboundRuleType = FqdnOutboundRuleType | PrivateEndpointOutboundRule | ServiceTagOutboundRule
@@ -890,4 +899,4 @@ type ServiceTagOutboundRule = {
 type networkOutboundRuleType = {
   @sys.description('Required. The outbound rule. The name of the rule is the object key.')
   *: OutboundRuleType
-}?
+}

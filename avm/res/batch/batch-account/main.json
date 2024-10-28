@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "10214588768781913112"
+      "version": "0.30.23.60470",
+      "templateHash": "9326027237179724855"
     },
     "name": "Batch Accounts",
     "description": "This module deploys a Batch Account.",
@@ -308,7 +308,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
