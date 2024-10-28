@@ -76,7 +76,7 @@ param backendPoolType string = 'NodeIPConfiguration'
 ])
 param outboundType string = 'loadBalancer'
 
-@description('Optional. Name of a managed cluster SKU.')
+@description('Optional. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS (https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION. Name of a managed cluster SKU.')
 @allowed([
   'Base'
   'Automatic'
@@ -131,7 +131,7 @@ param aadProfileEnableAzureRBAC bool = enableRBAC
 @description('Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled.')
 param disableLocalAccounts bool = true
 
-@description('Optional. Node provisioning settings that apply to the whole cluster.')
+@description('Optional. AUTO MODE IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS (https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION. Node provisioning settings that apply to the whole cluster.')
 param nodeProvisioningProfile object?
 
 @description('Optional. Name of the resource group containing agent pool nodes.')
