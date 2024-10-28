@@ -1266,7 +1266,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`advancedOptions`](#parameter-advancedoptions) | object | Additional options that can affect some components of the solution and how they are configured. |
-| [`enableDatabricks`](#parameter-enabledatabricks) | bool | Enable/Disable Azure Databricks service in the solution. |
+| [`enableDatabricks`](#parameter-enabledatabricks) | bool | Enable/Disable Azure Databricks service within the solution. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`keyVaultResourceId`](#parameter-keyvaultresourceid) | string | If you already have a Key Vault that you want to use with the solution, you can specify it here. Otherwise, this module will create a new Key Vault for you. |
 | [`location`](#parameter-location) | string | Location for all Resources in the solution. |
@@ -1450,7 +1450,7 @@ The name of the existing Private Link Subnet within the Virtual Network in the p
 
 ### Parameter: `enableDatabricks`
 
-Enable/Disable Azure Databricks service in the solution.
+Enable/Disable Azure Databricks service within the solution.
 
 - Required: No
 - Type: bool

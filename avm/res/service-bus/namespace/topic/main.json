@@ -5,14 +5,159 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "782028791267114581"
+      "version": "0.30.23.60470",
+      "templateHash": "718453666158486848"
     },
     "name": "Service Bus Namespace Topic",
     "description": "This module deploys a Service Bus Namespace Topic.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "subscriptionType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the service bus namespace topic subscription."
+          }
+        },
+        "autoDeleteOnIdle": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. ISO 8601 timespan idle interval after which the syubscription is automatically deleted. The minimum duration is 5 minutes."
+          }
+        },
+        "clientAffineProperties": {
+          "type": "object",
+          "properties": {
+            "clientId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Indicates the Client ID of the application that created the client-affine subscription."
+              }
+            },
+            "isDurable": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. For client-affine subscriptions, this value indicates whether the subscription is durable or not."
+              }
+            },
+            "isShared": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. For client-affine subscriptions, this value indicates whether the subscription is shared or not."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The properties that are associated with a subscription that is client-affine."
+          }
+        },
+        "deadLetteringOnMessageExpiration": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A value that indicates whether a subscription has dead letter support when a message expires."
+          }
+        },
+        "deadLetteringOnFilterEvaluationExceptions": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A value that indicates whether a subscription has dead letter support when a message expires."
+          }
+        },
+        "defaultMessageTimeToLive": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes."
+          }
+        },
+        "duplicateDetectionHistoryTimeWindow": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes."
+          }
+        },
+        "enableBatchedOperations": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A value that indicates whether server-side batched operations are enabled."
+          }
+        },
+        "forwardDeadLetteredMessagesTo": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+          }
+        },
+        "forwardTo": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+          }
+        },
+        "isClientAffine": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+          }
+        },
+        "lockDuration": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute."
+          }
+        },
+        "maxDeliveryCount": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10."
+          }
+        },
+        "requiresSession": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+          }
+        },
+        "status": {
+          "type": "string",
+          "allowedValues": [
+            "Active",
+            "Creating",
+            "Deleting",
+            "Disabled",
+            "ReceiveDisabled",
+            "Renaming",
+            "Restoring",
+            "SendDisabled",
+            "Unknown"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -36,225 +181,87 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.0"
+        }
+      }
     },
     "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       },
-      "nullable": true
-    },
-    "subscriptionsType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the service bus namespace topic subscription."
-            }
-          },
-          "autoDeleteOnIdle": {
-            "type": "string",
-            "metadata": {
-              "description": "Optional. ISO 8601 timespan idle interval after which the syubscription is automatically deleted. The minimum duration is 5 minutes."
-            }
-          },
-          "clientAffineProperties": {
-            "type": "object",
-            "properties": {
-              "clientId": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. Indicates the Client ID of the application that created the client-affine subscription."
-                }
-              },
-              "isDurable": {
-                "type": "bool",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. For client-affine subscriptions, this value indicates whether the subscription is durable or not."
-                }
-              },
-              "isShared": {
-                "type": "bool",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. For client-affine subscriptions, this value indicates whether the subscription is shared or not."
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The properties that are associated with a subscription that is client-affine."
-            }
-          },
-          "deadLetteringOnMessageExpiration": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A value that indicates whether a subscription has dead letter support when a message expires."
-            }
-          },
-          "deadLetteringOnFilterEvaluationExceptions": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A value that indicates whether a subscription has dead letter support when a message expires."
-            }
-          },
-          "defaultMessageTimeToLive": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes."
-            }
-          },
-          "duplicateDetectionHistoryTimeWindow": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes."
-            }
-          },
-          "enableBatchedOperations": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A value that indicates whether server-side batched operations are enabled."
-            }
-          },
-          "forwardDeadLetteredMessagesTo": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
-            }
-          },
-          "forwardTo": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
-            }
-          },
-          "isClientAffine": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A value that indicates whether the subscription supports the concept of session."
-            }
-          },
-          "lockDuration": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute."
-            }
-          },
-          "maxDeliveryCount": {
-            "type": "int",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10."
-            }
-          },
-          "requiresSession": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A value that indicates whether the subscription supports the concept of session."
-            }
-          },
-          "status": {
-            "type": "string",
-            "allowedValues": [
-              "Active",
-              "Creating",
-              "Deleting",
-              "Disabled",
-              "ReceiveDisabled",
-              "Renaming",
-              "Restoring",
-              "SendDisabled",
-              "Unknown"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown."
-            }
-          }
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.0"
         }
-      },
-      "nullable": true
+      }
     }
   },
   "parameters": {
@@ -364,37 +371,34 @@
     },
     "authorizationRules": {
       "type": "array",
-      "defaultValue": [
-        {
-          "name": "RootManageSharedAccessKey",
-          "properties": {
-            "rights": [
-              "Listen",
-              "Manage",
-              "Send"
-            ]
-          }
-        }
-      ],
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. Authorization Rules for the Service Bus Topic."
       }
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
     },
     "subscriptions": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/subscriptionType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The subscriptions of the topic."
       }
@@ -494,7 +498,9 @@
           "name": {
             "value": "[parameters('authorizationRules')[copyIndex()].name]"
           },
-          "rights": "[if(contains(parameters('authorizationRules')[copyIndex()], 'rights'), createObject('value', parameters('authorizationRules')[copyIndex()].rights), createObject('value', createArray()))]"
+          "rights": {
+            "value": "[coalesce(tryGet(parameters('authorizationRules')[copyIndex()], 'rights'), createArray())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -502,8 +508,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "6843568331497160185"
+              "version": "0.30.23.60470",
+              "templateHash": "1348283370469099109"
             },
             "name": "Service Bus Namespace Topic Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Topic Authorization Rule.",
@@ -652,8 +658,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "13559505347925945415"
+              "version": "0.30.23.60470",
+              "templateHash": "2560238010859719670"
             },
             "name": "Service Bus Namespace Topic Subscription",
             "description": "This module deploys a Service Bus Namespace Topic Subscription.",

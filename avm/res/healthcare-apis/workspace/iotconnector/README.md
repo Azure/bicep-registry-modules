@@ -24,7 +24,6 @@ This module deploys a Healthcare API Workspace IoT Connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`deviceMapping`](#parameter-devicemapping) | object | The mapping JSON that determines how incoming device data is normalized. |
 | [`eventHubName`](#parameter-eventhubname) | string | Event Hub name to connect to. |
 | [`eventHubNamespaceName`](#parameter-eventhubnamespacename) | string | Namespace of the Event Hub to connect to. |
 | [`name`](#parameter-name) | string | The name of the MedTech service. |
@@ -40,26 +39,13 @@ This module deploys a Healthcare API Workspace IoT Connector.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`consumerGroup`](#parameter-consumergroup) | string | Consumer group of the event hub to connected to. |
+| [`deviceMapping`](#parameter-devicemapping) | object | The mapping JSON that determines how incoming device data is normalized. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`fhirdestination`](#parameter-fhirdestination) | object | FHIR Destination. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-
-### Parameter: `deviceMapping`
-
-The mapping JSON that determines how incoming device data is normalized.
-
-- Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      template: []
-      templateType: 'CollectionContent'
-  }
-  ```
 
 ### Parameter: `eventHubName`
 
@@ -96,6 +82,20 @@ Consumer group of the event hub to connected to.
 - Required: No
 - Type: string
 - Default: `[parameters('name')]`
+
+### Parameter: `deviceMapping`
+
+The mapping JSON that determines how incoming device data is normalized.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      template: []
+      templateType: 'CollectionContent'
+  }
+  ```
 
 ### Parameter: `diagnosticSettings`
 
