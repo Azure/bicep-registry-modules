@@ -5,6 +5,13 @@ metadata owner = 'jtracey93'
 @description('Optional. Azure region where the each of the Private Link Private DNS Zones created will be deployed, default to Resource Group location if not specified.')
 param location string = resourceGroup().location
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.1.0'
+@description('Optional. The lock settings for the Private Link Private DNS Zones created.')
+param lock lockType?
+
+@description('Optional. Tags of the Private Link Private DNS Zones created.')
+param tags object?
+
 @description('''
 Optional. An array of Private Link Private DNS Zones to create. Each item must be a valid DNS zone name.
 
@@ -287,7 +294,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module pdnsZones 'br/public:avm/res/network/private-dns-zone:0.3.0' = [
+module pdnsZones 'br/public:avm/res/network/private-dns-zone:0.6.0' = [
   for zone in combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink: {
     name: '${uniqueString(deployment().name, zone.pdnsZoneName, location)}-pdns-zone-deployment'
     params: {
@@ -298,6 +305,9 @@ module pdnsZones 'br/public:avm/res/network/private-dns-zone:0.3.0' = [
           virtualNetworkResourceId: vnet
         }
       ]
+      lock: lock
+      tags: tags
+      enableTelemetry: enableTelemetry
     }
   }
 ]
