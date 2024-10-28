@@ -72,6 +72,8 @@ function Initialize-DeploymentRemoval {
         # The initial sequence is a general order-recommendation
         $RemoveFirstSequence = @(
             'Microsoft.Authorization/locks',
+            'Microsoft.VirtualMachineImages/imageTemplates', # Must be removed before their MSI & should be removed before its entities permissions are removed
+            'Microsoft.DevOpsInfrastructure/pools' # Must be removed before vnet role assignments and other resources it depends on like a virtual network
             'Microsoft.Authorization/roleAssignments',
             'Microsoft.Insights/diagnosticSettings',
             'Microsoft.Network/privateEndpoints/privateDnsZoneGroups',
@@ -91,7 +93,6 @@ function Initialize-DeploymentRemoval {
             'Microsoft.MachineLearningServices/workspaces',
             'Microsoft.Compute/virtualMachines',
             'Microsoft.ContainerInstance/containerGroups' # Must be removed before their MSI
-            'Microsoft.VirtualMachineImages/imageTemplates', # Must be removed before their MSI
             'Microsoft.ManagedIdentity/userAssignedIdentities',
             'Microsoft.Databricks/workspaces'
             'Microsoft.Resources/resourceGroups'

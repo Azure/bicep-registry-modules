@@ -1,0 +1,204 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.30.23.60470",
+      "templateHash": "12832989826838310090"
+    },
+    "name": "Azure NetApp Files Snapshot Policy",
+    "description": "This module deploys a Snapshot Policy for an Azure NetApp File.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "netAppAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "snapshotPolicyName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the snapshot policy."
+      }
+    },
+    "snapshotPolicyLocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. The location of the snapshot policy."
+      }
+    },
+    "dailyHour": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. The daily snapshot hour."
+      }
+    },
+    "dailyMinute": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. The daily snapshot minute."
+      }
+    },
+    "dailySnapshotsToKeep": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. Daily snapshot count to keep."
+      }
+    },
+    "dailyUsedBytes": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. Daily snapshot used bytes."
+      }
+    },
+    "hourlyMinute": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. The hourly snapshot minute."
+      }
+    },
+    "hourlySnapshotsToKeep": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. Hourly snapshot count to keep."
+      }
+    },
+    "hourlyUsedBytes": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. Hourly snapshot used bytes."
+      }
+    },
+    "daysOfMonth": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The monthly snapshot day."
+      }
+    },
+    "monthlyHour": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. The monthly snapshot hour."
+      }
+    },
+    "monthlyMinute": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. The monthly snapshot minute."
+      }
+    },
+    "monthlySnapshotsToKeep": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. Monthly snapshot count to keep."
+      }
+    },
+    "monthlyUsedBytes": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. Monthly snapshot used bytes."
+      }
+    },
+    "weeklyDay": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The weekly snapshot day."
+      }
+    },
+    "weeklyHour": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. The weekly snapshot hour."
+      }
+    },
+    "weeklyMinute": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. The weekly snapshot minute."
+      }
+    },
+    "weeklySnapshotsToKeep": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. Weekly snapshot count to keep."
+      }
+    },
+    "weeklyUsedBytes": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. Weekly snapshot used bytes."
+      }
+    },
+    "snapEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Indicates whether the snapshot policy is enabled."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('snapEnabled')]",
+      "type": "Microsoft.NetApp/netAppAccounts/snapshotPolicies",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('snapshotPolicyName'))]",
+      "location": "[parameters('snapshotPolicyLocation')]",
+      "properties": {
+        "enabled": "[parameters('snapEnabled')]",
+        "dailySchedule": {
+          "hour": "[parameters('dailyHour')]",
+          "minute": "[parameters('dailyMinute')]",
+          "snapshotsToKeep": "[parameters('dailySnapshotsToKeep')]",
+          "usedBytes": "[parameters('dailyUsedBytes')]"
+        },
+        "hourlySchedule": {
+          "minute": "[parameters('hourlyMinute')]",
+          "snapshotsToKeep": "[parameters('hourlySnapshotsToKeep')]",
+          "usedBytes": "[parameters('hourlyUsedBytes')]"
+        },
+        "monthlySchedule": {
+          "daysOfMonth": "[parameters('daysOfMonth')]",
+          "hour": "[parameters('monthlyHour')]",
+          "minute": "[parameters('monthlyMinute')]",
+          "snapshotsToKeep": "[parameters('monthlySnapshotsToKeep')]",
+          "usedBytes": "[parameters('monthlyUsedBytes')]"
+        },
+        "weeklySchedule": {
+          "day": "[parameters('weeklyDay')]",
+          "hour": "[parameters('weeklyHour')]",
+          "minute": "[parameters('weeklyMinute')]",
+          "snapshotsToKeep": "[parameters('weeklySnapshotsToKeep')]",
+          "usedBytes": "[parameters('weeklyUsedBytes')]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource IDs of the snapshot Policy created within volume."
+      },
+      "value": "[resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', parameters('netAppAccountName'), parameters('snapshotPolicyName'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Backup Policy."
+      },
+      "value": "[parameters('snapshotPolicyName')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the Snapshot was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

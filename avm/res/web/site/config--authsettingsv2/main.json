@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "8625962477180026020"
+      "version": "0.30.23.60470",
+      "templateHash": "7782125422759995841"
     },
     "name": "Site Auth Settings V2 Config",
     "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -26,6 +26,7 @@
         "functionapp,workflowapp",
         "functionapp,workflowapp,linux",
         "functionapp,linux,container",
+        "functionapp,linux,container,azurecontainerapps",
         "app,linux",
         "app",
         "linux,api",
@@ -47,7 +48,7 @@
   "resources": [
     {
       "type": "Microsoft.Web/sites/config",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2023-12-01",
       "name": "[format('{0}/{1}', parameters('appName'), 'authsettingsV2')]",
       "kind": "[parameters('kind')]",
       "properties": "[parameters('authSettingV2Configuration')]"

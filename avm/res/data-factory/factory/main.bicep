@@ -9,13 +9,13 @@ param name string
 param managedVirtualNetworkName string = ''
 
 @description('Optional. An array of managed private endpoints objects created in the Data Factory managed virtual network.')
-param managedPrivateEndpoints array = []
+param managedPrivateEndpoints managedPrivateEndpointType[] = []
 
 @description('Optional. An array of objects for the configuration of an Integration Runtime.')
-param integrationRuntimes array = []
+param integrationRuntimes integrationRuntimesType = []
 
 @description('Optional. An array of objects for the configuration of Linked Services.')
-param linkedServices array = []
+param linkedServices linkedServicesType = []
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -111,7 +111,7 @@ var builtInRoleNames = {
   )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -120,6 +120,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
@@ -224,11 +235,9 @@ module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
       dataFactoryName: dataFactory.name
       name: integrationRuntime.name
       type: integrationRuntime.type
-      integrationRuntimeCustomDescription: integrationRuntime.?integrationRuntimeCustomDescription ?? 'Managed Integration Runtime created by avm-res-datafactory-factories'
-      managedVirtualNetworkName: contains(integrationRuntime, 'managedVirtualNetworkName')
-        ? integrationRuntime.managedVirtualNetworkName
-        : ''
-      typeProperties: contains(integrationRuntime, 'typeProperties') ? integrationRuntime.typeProperties : {}
+      integrationRuntimeCustomDescription: integrationRuntime.?integrationRuntimeCustomDescription
+      managedVirtualNetworkName: integrationRuntime.?managedVirtualNetworkName
+      typeProperties: integrationRuntime.?typeProperties
     }
     dependsOn: [
       dataFactory_managedVirtualNetwork
@@ -248,6 +257,9 @@ module dataFactory_linkedServices 'linked-service/main.bicep' = [
       parameters: linkedService.?parameters
       description: linkedService.?description
     }
+    dependsOn: [
+      dataFactory_integrationRuntimes
+    ]
   }
 ]
 
@@ -292,14 +304,10 @@ resource dataFactory_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2
 ]
 
 resource dataFactory_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(dataFactory.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(dataFactory.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -311,7 +319,7 @@ resource dataFactory_roleAssignments 'Microsoft.Authorization/roleAssignments@20
   }
 ]
 
-module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-dataFactory-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -352,8 +360,7 @@ module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -367,7 +374,7 @@ module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:
 @description('The Name of the Azure Data Factory instance.')
 output name string = dataFactory.name
 
-@description('The Resource ID of the Data factory.')
+@description('The Resource ID of the Data Factory.')
 output resourceId string = dataFactory.id
 
 @description('The name of the Resource Group with the Data factory.')
@@ -378,6 +385,17 @@ output systemAssignedMIPrincipalId string = dataFactory.?identity.?principalId ?
 
 @description('The location the resource was deployed into.')
 output location string = dataFactory.location
+
+@description('The private endpoints of the Data Factory.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: dataFactory_privateEndpoints[i].outputs.name
+    resourceId: dataFactory_privateEndpoints[i].outputs.resourceId
+    groupId: dataFactory_privateEndpoints[i].outputs.groupId
+    customDnsConfig: dataFactory_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: dataFactory_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
 
 // =============== //
 //   Definitions   //
@@ -400,6 +418,9 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -438,11 +459,20 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
@@ -453,7 +483,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private IP addresses of the private endpoint.')
@@ -557,3 +587,54 @@ type customerManagedKeyType = {
   @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
 }?
+
+type managedPrivateEndpointType = {
+  @description('Required. Specify the name of managed private endpoint.')
+  name: string
+
+  @description('Required. Specify the sub-resource of the managed private endpoint.')
+  groupId: string
+
+  @description('Required. Specify the resource ID to create the managed private endpoint for.')
+  privateLinkResourceId: string
+
+  @description('Optional. Specify the FQDNS of the linked resources to create private endpoints for, depending on the type of linked resource this is required.')
+  fqdns: string[]?
+}
+
+type integrationRuntimesType = {
+  @description('Required. Specify the name of integration runtime.')
+  name: string
+
+  @description('Required. Specify the type of the integration runtime.')
+  type: ('Managed' | 'SelfHosted')
+
+  @description('Optional. Specify custom description for the integration runtime.')
+  integrationRuntimeCustomDescription: string?
+
+  @description('Optional. Specify managed vritual network name for the integration runtime to link to.')
+  managedVirtualNetworkName: string?
+
+  @description('Optional. Integration Runtime type properties. Required if type is "Managed".')
+  typeProperties: object?
+}[]
+
+type linkedServicesType = {
+  @description('Required. The name of the Linked Service.')
+  name: string
+
+  @description('Required. The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information.')
+  type: string
+
+  @description('Optional. Used to add connection properties for your linked services.')
+  typeProperties: object?
+
+  @description('Optional. The name of the Integration Runtime to use.')
+  integrationRuntimeName: string?
+
+  @description('Optional. Use this to add parameters for a linked service connection string.')
+  parameters: object?
+
+  @description('Optional. The description of the Integration Runtime.')
+  description: string?
+}[]

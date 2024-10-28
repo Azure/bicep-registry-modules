@@ -155,7 +155,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -164,6 +164,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -221,15 +232,11 @@ resource job_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?
   scope: job
 }
 
-resource automationAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(job.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+resource job_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(job.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -296,6 +303,9 @@ type lockType = {
 }
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -419,7 +429,7 @@ type containerProbeType = {
     @maxValue(65535)
     port: int
 
-    @description('Required. Scheme to use for connecting to the host. Defaults to HTTP.')
+    @description('Optional. Scheme to use for connecting to the host. Defaults to HTTP.')
     scheme: ('HTTP' | 'HTTPS')?
   }?
 
@@ -440,7 +450,7 @@ type containerProbeType = {
 
   @description('Optional. TCPSocket specifies an action involving a TCP port.')
   tcpSocket: {
-    @description('Optional. Host name to connect to, defaults to the pod IP.')
+    @description('Required. Host name to connect to, defaults to the pod IP.')
     host: string
 
     @description('Required. Name of the port to access on the container. If not specified, the containerPort is used.')
@@ -473,7 +483,7 @@ type containerResourceType = {
   })
   cpu: string
 
-  @description('Optional. The required memory.')
+  @description('Required. The required memory.')
   @metadata({
     example: '''
     '250Mb'
@@ -541,7 +551,7 @@ type jobScaleType = {
   @description('Optional. Interval to check each event source in seconds. Defaults to 30s.')
   pollingInterval: int?
 
-  @description('Optional. Scaling rules for the job.')
+  @description('Required. Scaling rules for the job.')
   @metadata({
     example: '''
     [
@@ -562,7 +572,7 @@ type jobScaleType = {
     '''
   })
   rules: {
-    @description('Required. Authentication secrets for the scale rule.')
+    @description('Optional. Authentication secrets for the scale rule.')
     auth: {
       @description('Required. Name of the secret from which to pull the auth params.')
       secretRef: string
@@ -571,7 +581,7 @@ type jobScaleType = {
       triggerParameter: string
     }[]?
 
-    @description('Optional. Metadata properties to describe the scale rule.')
+    @description('Required. Metadata properties to describe the scale rule.')
     @metadata({
       example: '''
     {
@@ -588,7 +598,7 @@ type jobScaleType = {
     @description('Required. The name of the scale rule.')
     name: string
 
-    @description('Optional. The type of the rule.')
+    @description('Required. The type of the rule.')
     @metadata({
       example: '''
       "azure-servicebus"
@@ -601,10 +611,10 @@ type jobScaleType = {
 }
 
 type initContainerType = {
-  @description('Optional. Container start command arguments.')
+  @description('Required. Container start command arguments.')
   args: string[]
 
-  @description('Optional. Container start command.')
+  @description('Required. Container start command.')
   command: string[]
 
   @description('Optional. The environment variables to set in the container.')
@@ -630,7 +640,7 @@ type initContainerType = {
   @description('Required. The name of the container.')
   name: string
 
-  @description('Required. Container resource requirements.')
+  @description('Optional. Container resource requirements.')
   resources: containerResourceType?
 
   @description('Optional. The volume mounts to attach to the container.')

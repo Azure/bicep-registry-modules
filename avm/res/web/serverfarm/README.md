@@ -8,7 +8,6 @@ This module deploys an App Service Plan.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -47,8 +46,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   params: {
     // Required parameters
     name: 'wsfmin001'
-    skuCapacity: 2
-    skuName: 'S1'
     // Non-required parameters
     location: '<location>'
   }
@@ -60,7 +57,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -71,18 +68,28 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     "name": {
       "value": "wsfmin001"
     },
-    "skuCapacity": {
-      "value": 2
-    },
-    "skuName": {
-      "value": "S1"
-    },
     // Non-required parameters
     "location": {
       "value": "<location>"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/serverfarm:<version>'
+
+// Required parameters
+param name = 'wsfmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -103,8 +110,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   params: {
     // Required parameters
     name: 'wsfmax001'
-    skuCapacity: 1
-    skuName: 'S1'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -129,11 +134,13 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     perSiteScaling: true
     roleAssignments: [
       {
+        name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -144,12 +151,14 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    skuCapacity: 3
+    skuName: 'P1v3'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zoneRedundant: false
+    zoneRedundant: true
   }
 }
 ```
@@ -159,7 +168,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -169,12 +178,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     // Required parameters
     "name": {
       "value": "wsfmax001"
-    },
-    "skuCapacity": {
-      "value": 1
-    },
-    "skuName": {
-      "value": "S1"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -211,11 +214,13 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "97fc1da9-bfe4-409d-b17a-da9a82fad0d0",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -227,6 +232,12 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         }
       ]
     },
+    "skuCapacity": {
+      "value": 3
+    },
+    "skuName": {
+      "value": "P1v3"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -235,10 +246,73 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     },
     "zoneRedundant": {
-      "value": false
+      "value": true
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/serverfarm:<version>'
+
+// Required parameters
+param name = 'wsfmax001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSettingwsfmax'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param kind = 'App'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'lock'
+}
+param perSiteScaling = true
+param roleAssignments = [
+  {
+    name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param skuCapacity = 3
+param skuName = 'P1v3'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param zoneRedundant = true
 ```
 
 </details>
@@ -259,8 +333,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   params: {
     // Required parameters
     name: 'wsfwaf001'
-    skuCapacity: 2
-    skuName: 'P1v3'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -282,12 +354,14 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       kind: 'CanNotDelete'
       name: 'lock'
     }
+    skuCapacity: 3
+    skuName: 'P1v3'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zoneRedundant: false
+    zoneRedundant: true
   }
 }
 ```
@@ -297,7 +371,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -307,12 +381,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     // Required parameters
     "name": {
       "value": "wsfwaf001"
-    },
-    "skuCapacity": {
-      "value": 2
-    },
-    "skuName": {
-      "value": "P1v3"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -343,6 +411,12 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         "name": "lock"
       }
     },
+    "skuCapacity": {
+      "value": 3
+    },
+    "skuName": {
+      "value": "P1v3"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -351,7 +425,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     },
     "zoneRedundant": {
-      "value": false
+      "value": true
     }
   }
 }
@@ -360,6 +434,48 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/serverfarm:<version>'
+
+// Required parameters
+param name = 'wsfwaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSettingwsfwaf'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param kind = 'App'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'lock'
+}
+param skuCapacity = 3
+param skuName = 'P1v3'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param zoneRedundant = true
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -368,8 +484,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the app service plan. |
-| [`skuCapacity`](#parameter-skucapacity) | int | Number of workers associated with the App Service Plan. |
-| [`skuName`](#parameter-skuname) | string | The name of the SKU will Determine the tier, size, family of the App Service Plan. |
 
 **Conditional parameters**
 
@@ -391,6 +505,8 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 | [`maximumElasticWorkerCount`](#parameter-maximumelasticworkercount) | int | Maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan. |
 | [`perSiteScaling`](#parameter-persitescaling) | bool | If true, apps assigned to this App Service plan can be scaled independently. If false, apps assigned to this App Service plan will scale to all instances of the plan. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`skuCapacity`](#parameter-skucapacity) | int | Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones. |
+| [`skuName`](#parameter-skuname) | string | The name of the SKU will Determine the tier, size, family of the App Service Plan. This defaults to P1v3 to leverage availability zones. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`targetWorkerCount`](#parameter-targetworkercount) | int | Scaling worker count. |
 | [`targetWorkerSize`](#parameter-targetworkersize) | int | The instance size of the hosting plan (small, medium, or large). |
@@ -403,27 +519,6 @@ Name of the app service plan.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `skuCapacity`
-
-Number of workers associated with the App Service Plan.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `skuName`
-
-The name of the SKU will Determine the tier, size, family of the App Service Plan.
-
-- Required: Yes
-- Type: string
-- Example:
-  ```Bicep
-  'F1'
-  'B1'
-  'P1v3'
-  'I1v2'
-  ```
 
 ### Parameter: `reserved`
 
@@ -650,6 +745,14 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+  - `'Web Plan Contributor'`
+  - `'Website Contributor'`
 
 **Required parameters**
 
@@ -666,6 +769,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -716,6 +820,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -731,6 +842,30 @@ The principal type of the assigned principal ID.
     'ServicePrincipal'
     'User'
   ]
+  ```
+
+### Parameter: `skuCapacity`
+
+Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones.
+
+- Required: No
+- Type: int
+- Default: `3`
+
+### Parameter: `skuName`
+
+The name of the SKU will Determine the tier, size, family of the App Service Plan. This defaults to P1v3 to leverage availability zones.
+
+- Required: No
+- Type: string
+- Default: `'P1v3'`
+- Example:
+  ```Bicep
+  'F1'
+  'B1'
+  'P1v3'
+  'I1v2'
+  'FC1'
   ```
 
 ### Parameter: `tags`
@@ -780,7 +915,6 @@ Zone Redundant server farms can only be used on Premium or ElasticPremium SKU ti
 - Type: bool
 - Default: `[if(or(startsWith(parameters('skuName'), 'P'), startsWith(parameters('skuName'), 'EP')), true(), false())]`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -789,10 +923,6 @@ Zone Redundant server farms can only be used on Premium or ElasticPremium SKU ti
 | `name` | string | The name of the app service plan. |
 | `resourceGroupName` | string | The resource group the app service plan was deployed into. |
 | `resourceId` | string | The resource ID of the app service plan. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

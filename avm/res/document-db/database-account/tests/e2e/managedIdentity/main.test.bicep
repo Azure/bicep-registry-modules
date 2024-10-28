@@ -17,9 +17,9 @@ param serviceShort string = 'dddaumi'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-// Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
+// The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'eastasia'
+var enforcedLocation = 'eastus2'
 
 // ============ //
 // Dependencies //
@@ -65,6 +65,7 @@ module testDeployment '../../../main.bicep' = {
         principalType: 'ServicePrincipal'
       }
       {
+        name: guid('Custom seed ${namePrefix}${serviceShort}')
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
@@ -79,7 +80,4 @@ module testDeployment '../../../main.bicep' = {
       }
     ]
   }
-  dependsOn: [
-    nestedDependencies
-  ]
 }

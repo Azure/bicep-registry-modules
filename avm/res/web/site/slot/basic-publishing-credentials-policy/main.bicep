@@ -21,7 +21,7 @@ param slotName string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-resource app 'Microsoft.Web/sites@2022-09-01' existing = {
+resource app 'Microsoft.Web/sites@2023-12-01' existing = {
   name: appName
 
   resource slot 'slots' existing = {
@@ -29,7 +29,7 @@ resource app 'Microsoft.Web/sites@2022-09-01' existing = {
   }
 }
 
-resource basicPublishingCredentialsPolicy 'Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies@2022-09-01' = {
+resource basicPublishingCredentialsPolicy 'Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies@2023-12-01' = {
   #disable-next-line BCP225 // False-positive. Value is required.
   name: name
   location: location

@@ -82,9 +82,13 @@ module testDeployment '../../../main.bicep' = [
         {
           service: 'blob'
           subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           tags: {
             'hidden-title': 'This is visible in the resource name'
             Environment: 'Non-Prod'
@@ -94,42 +98,66 @@ module testDeployment '../../../main.bicep' = [
         {
           service: 'blob'
           subnetResourceId: nestedDependencies.outputs.customSubnet2ResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
           service: 'table'
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
           service: 'queue'
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
           service: 'file'
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
           service: 'web'
         }
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
           service: 'dfs'
         }
@@ -222,8 +250,6 @@ module testDeployment '../../../main.bicep' = [
             metadata: {
               testKey: 'testValue'
             }
-            enableWORM: true
-            WORMRetention: 666
             allowProtectedAppendWrites: false
           }
         ]
@@ -255,11 +281,13 @@ module testDeployment '../../../main.bicep' = [
             shareQuota: 5120
             roleAssignments: [
               {
+                name: 'cff1213b-7877-4425-b67c-bb1de8950dfb'
                 roleDefinitionIdOrName: 'Owner'
                 principalId: nestedDependencies.outputs.managedIdentityPrincipalId
                 principalType: 'ServicePrincipal'
               }
               {
+                name: guid('Custom seed ${namePrefix}${serviceShort}-share-avdprofiles')
                 roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
                 principalId: nestedDependencies.outputs.managedIdentityPrincipalId
                 principalType: 'ServicePrincipal'
@@ -402,11 +430,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
+          name: '30b99723-a3d8-4e31-8872-b80c960d62bd'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

@@ -17,9 +17,9 @@ param serviceShort string = 'dddaskvs'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-// Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
+// The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'eastasia'
+var enforcedLocation = 'eastus2'
 
 // ============== //
 // General resources
@@ -48,9 +48,24 @@ module testDeployment '../../../main.bicep' = {
   params: {
     location: enforcedLocation
     name: '${namePrefix}-kv-ref'
-    secretsKeyVault: {
-      keyVaultName: nestedDependencies.outputs.keyVaultName
-      primaryReadonlyConnectionStringSecretName: 'custom-secret-name'
+    secretsExportConfiguration: {
+      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+      primaryReadOnlyKeySecretName: 'primaryReadOnlyKey'
+      primaryWriteKeySecretName: 'primaryWriteKey'
+      primaryReadonlyConnectionStringSecretName: 'primaryReadonlyConnectionString'
+      primaryWriteConnectionStringSecretName: 'primaryWriteConnectionString'
+      secondaryReadonlyConnectionStringSecretName: 'secondaryReadonlyConnectionString'
+      secondaryReadonlyKeySecretName: 'secondaryReadonlyKey'
+      secondaryWriteConnectionStringSecretName: 'secondaryWriteConnectionString'
+      secondaryWriteKeySecretName: 'secondaryWriteKey'
     }
   }
 }
+
+// Output usage examples
+output specificSecret string = testDeployment.outputs.exportedSecrets.primaryReadOnlyKey.secretResourceId
+output allEportedSecrets object = testDeployment.outputs.exportedSecrets
+output allExportedSecretResourceIds array = map(
+  items(testDeployment.outputs.exportedSecrets),
+  item => item.value.secretResourceId
+)

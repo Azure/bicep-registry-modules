@@ -66,23 +66,12 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       location: resourceLocation
-      skuObject: {
-        name: 'Premium'
-        capacity: 2
-      }
-      premiumMessagingPartitions: 1
-      zoneRedundant: true
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
-      roleAssignments: []
       networkRuleSets: {
         defaultAction: 'Deny'
         trustedServiceAccessEnabled: true
@@ -180,9 +169,13 @@ module testDeployment '../../../main.bicep' = [
         {
           service: 'namespace'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           tags: {
             'hidden-title': 'This is visible in the resource name'
             Environment: 'Non-Prod'
@@ -190,19 +183,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      managedIdentities: {
-        systemAssigned: true
-        userAssignedResourcesIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
-      }
-      disableLocalAuth: true
       publicNetworkAccess: 'Enabled'
-      minimumTlsVersion: '1.2'
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

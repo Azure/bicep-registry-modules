@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "14968464858285923305"
+      "version": "0.30.23.60470",
+      "templateHash": "4771770611168248415"
     },
     "name": "Storage Account Local Users",
     "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication.",
@@ -40,8 +40,7 @@
             "description": "Optional. The list of SSH authorized keys."
           }
         }
-      },
-      "nullable": true
+      }
     }
   },
   "parameters": {
@@ -92,6 +91,7 @@
     },
     "sshAuthorizedKeys": {
       "$ref": "#/definitions/sshAuthorizedKeysType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The local user SSH authorized keys for SFTP."
       }
