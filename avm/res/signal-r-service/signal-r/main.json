@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "7109443914368923423"
+      "templateHash": "16927696189835004733"
     },
     "name": "SignalR Service SignalR",
     "description": "This module deploys a SignalR Service SignalR.",
@@ -667,7 +667,7 @@
     },
     "signalR": {
       "type": "Microsoft.SignalRService/signalR",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2022-02-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "kind": "[parameters('kind')]",
@@ -1527,14 +1527,14 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('signalR', '2024-03-01', 'full').location]"
+      "value": "[reference('signalR', '2022-02-01', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('signalR', '2024-03-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('signalR', '2022-02-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "privateEndpoints": {
       "type": "array",

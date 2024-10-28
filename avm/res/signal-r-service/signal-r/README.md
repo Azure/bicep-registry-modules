@@ -24,7 +24,7 @@ This module deploys a SignalR Service SignalR.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.SignalRService/signalR` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SignalRService/2024-03-01/signalR) |
+| `Microsoft.SignalRService/signalR` | [2022-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SignalRService/2022-02-01/signalR) |
 
 ## Usage examples
 
@@ -978,13 +978,15 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-**Optional parameters**
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
+Fqdn that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
@@ -992,13 +994,6 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
-
-### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
-
-FQDN that resolves to private endpoint IP address.
-
-- Required: No
-- Type: string
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 

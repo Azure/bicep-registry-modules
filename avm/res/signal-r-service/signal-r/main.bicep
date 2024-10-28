@@ -225,7 +225,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource signalR 'Microsoft.SignalRService/signalR@2024-03-01' = {
+resource signalR 'Microsoft.SignalRService/signalR@2022-02-01' = {
   name: name
   location: location
   kind: kind
