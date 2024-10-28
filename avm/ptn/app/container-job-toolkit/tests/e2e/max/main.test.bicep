@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Pass in existing resources'
+metadata name = 'Using large parameter set'
 metadata description = 'This instance deploys the module with existing resources.'
 
 // ========== //
