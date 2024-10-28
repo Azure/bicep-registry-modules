@@ -429,7 +429,7 @@ type containerProbeType = {
     @maxValue(65535)
     port: int
 
-    @description('Required. Scheme to use for connecting to the host. Defaults to HTTP.')
+    @description('Optional. Scheme to use for connecting to the host. Defaults to HTTP.')
     scheme: ('HTTP' | 'HTTPS')?
   }?
 
@@ -450,7 +450,7 @@ type containerProbeType = {
 
   @description('Optional. TCPSocket specifies an action involving a TCP port.')
   tcpSocket: {
-    @description('Optional. Host name to connect to, defaults to the pod IP.')
+    @description('Required. Host name to connect to, defaults to the pod IP.')
     host: string
 
     @description('Required. Name of the port to access on the container. If not specified, the containerPort is used.')
@@ -483,7 +483,7 @@ type containerResourceType = {
   })
   cpu: string
 
-  @description('Optional. The required memory.')
+  @description('Required. The required memory.')
   @metadata({
     example: '''
     '250Mb'
@@ -551,7 +551,7 @@ type jobScaleType = {
   @description('Optional. Interval to check each event source in seconds. Defaults to 30s.')
   pollingInterval: int?
 
-  @description('Optional. Scaling rules for the job.')
+  @description('Required. Scaling rules for the job.')
   @metadata({
     example: '''
     [
@@ -572,7 +572,7 @@ type jobScaleType = {
     '''
   })
   rules: {
-    @description('Required. Authentication secrets for the scale rule.')
+    @description('Optional. Authentication secrets for the scale rule.')
     auth: {
       @description('Required. Name of the secret from which to pull the auth params.')
       secretRef: string
@@ -581,7 +581,7 @@ type jobScaleType = {
       triggerParameter: string
     }[]?
 
-    @description('Optional. Metadata properties to describe the scale rule.')
+    @description('Required. Metadata properties to describe the scale rule.')
     @metadata({
       example: '''
     {
@@ -598,7 +598,7 @@ type jobScaleType = {
     @description('Required. The name of the scale rule.')
     name: string
 
-    @description('Optional. The type of the rule.')
+    @description('Required. The type of the rule.')
     @metadata({
       example: '''
       "azure-servicebus"
@@ -611,10 +611,10 @@ type jobScaleType = {
 }
 
 type initContainerType = {
-  @description('Optional. Container start command arguments.')
+  @description('Required. Container start command arguments.')
   args: string[]
 
-  @description('Optional. Container start command.')
+  @description('Required. Container start command.')
   command: string[]
 
   @description('Optional. The environment variables to set in the container.')
@@ -640,7 +640,7 @@ type initContainerType = {
   @description('Required. The name of the container.')
   name: string
 
-  @description('Required. Container resource requirements.')
+  @description('Optional. Container resource requirements.')
   resources: containerResourceType?
 
   @description('Optional. The volume mounts to attach to the container.')

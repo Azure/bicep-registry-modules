@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.3.12046",
-      "templateHash": "16399924782439066553"
+      "version": "0.30.23.60470",
+      "templateHash": "13036318518380500677"
     },
     "name": "Azure NetApp Files Backup Policy",
     "description": "This module deploys a Backup Policy for Azure NetApp File.",
@@ -22,31 +22,31 @@
       "type": "string",
       "defaultValue": "backupPolicy",
       "metadata": {
-        "description": "Required. The name of the backup policy."
+        "description": "Optional. The name of the backup policy."
       }
     },
     "backupPolicyLocation": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The location of the backup policy. Required if the template is used in a standalone deployment."
+        "description": "Required. The location of the backup policy. Required if the template is used in a standalone deployment."
       }
     },
     "dailyBackupsToKeep": {
       "type": "int",
       "metadata": {
-        "description": "Optional. The daily backups to keep."
+        "description": "Required. The daily backups to keep."
       }
     },
     "monthlyBackupsToKeep": {
       "type": "int",
       "metadata": {
-        "description": "Optional. The monthly backups to keep."
+        "description": "Required. The monthly backups to keep."
       }
     },
     "weeklyBackupsToKeep": {
       "type": "int",
       "metadata": {
-        "description": "Optional. The weekly backups to keep."
+        "description": "Required. The weekly backups to keep."
       }
     },
     "backupEnabled": {

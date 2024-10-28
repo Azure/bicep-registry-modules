@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "1745671120474305926"
+      "version": "0.30.23.60470",
+      "templateHash": "8028201980853199520"
     },
     "name": "Log Analytics Workspace Storage Insight Configs",
     "description": "This module deploys a Log Analytics Workspace Storage Insight Config.",

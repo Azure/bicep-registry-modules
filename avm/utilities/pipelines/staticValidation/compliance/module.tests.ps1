@@ -629,13 +629,34 @@ Describe 'Module tests' -Tag 'Module' {
 
                     if (-not $isRequired) {
                         $description = $templateFileParameters.$parameter.metadata.description
-                        if ($description -match "\('Required\.") {
+                        if ($description -match '^Required\.') {
                             $incorrectParameters += $parameter
                         }
                     }
                 }
 
                 $incorrectParameters | Should -BeNullOrEmpty -Because ('only required parameters in the template file should have a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
+            }
+
+            It '[<moduleFolderName>] All required parameters & UDTs in template file should have description that start with "(Required|Conditional).".' -TestCases $moduleFolderTestCases {
+                param (
+                    [hashtable] $templateFileContent,
+                    [hashtable] $templateFileParameters
+                )
+
+                $incorrectParameters = @()
+                foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object -Culture 'en-US')) {
+                    $isRequired = Get-IsParameterRequired -TemplateFileContent $templateFileContent -Parameter $templateFileParameters.$parameter
+
+                    if ($isRequired) {
+                        $description = $templateFileParameters.$parameter.metadata.description
+                        if ($description -notmatch '^(Required|Conditional)\.') {
+                            $incorrectParameters += $parameter
+                        }
+                    }
+                }
+
+                $incorrectParameters | Should -BeNullOrEmpty -Because ('required parameters in the template file should have a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
 
             Context 'Schema-based User-defined-types tests' -Tag 'UDT' {
@@ -670,12 +691,12 @@ Describe 'Module tests' -Tag 'Module' {
                             link          = "$interfaceBase/diagnostic-settings"
                         }
                         @{
-                            parameterName  = 'roleAssignments'
-                            link           = "$interfaceBase/role-assignments"
+                            parameterName = 'roleAssignments'
+                            link          = "$interfaceBase/role-assignments"
                         }
                         @{
-                            parameterName  = 'lock'
-                            link           = "$interfaceBase/resource-locks"
+                            parameterName = 'lock'
+                            link          = "$interfaceBase/resource-locks"
                         }
                         @{
                             parameterName = 'managedIdentities'

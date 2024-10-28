@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "14447016685732236984"
+      "templateHash": "17027452417371199673"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -828,7 +828,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "7661706938502506866"
+              "templateHash": "9127977884501208410"
             },
             "name": "CDN Profiles Secret",
             "description": "This module deploys a CDN Profile Secret.",
@@ -857,7 +857,7 @@
                 "UrlSigningKey"
               ],
               "metadata": {
-                "description": "Required. The type of the secrect."
+                "description": "Optional. The type of the secrect."
               }
             },
             "secretSourceResourceId": {

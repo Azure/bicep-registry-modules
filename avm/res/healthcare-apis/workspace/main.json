@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "17512289027426655191"
+      "version": "0.30.23.60470",
+      "templateHash": "2224027190177398808"
     },
     "name": "Healthcare API Workspaces",
     "description": "This module deploys a Healthcare API Workspace.",
@@ -382,8 +382,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "17664239331720913904"
+              "version": "0.30.23.60470",
+              "templateHash": "14455646643849754189"
             },
             "name": "Healthcare API Workspace FHIR Services",
             "description": "This module deploys a Healthcare API Workspace FHIR Service.",
@@ -1116,8 +1116,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "1751217677948929755"
+              "version": "0.30.23.60470",
+              "templateHash": "8075255504556528583"
             },
             "name": "Healthcare API Workspace DICOM Services",
             "description": "This module deploys a Healthcare API Workspace DICOM Service.",
@@ -1318,7 +1318,7 @@
             "corsHeaders": {
               "type": "array",
               "metadata": {
-                "description": "Optional. Specify HTTP headers which can be used during the request. Use \"*\" for any header."
+                "description": "Required. Specify HTTP headers which can be used during the request. Use \"*\" for any header."
               }
             },
             "corsMethods": {
@@ -1583,8 +1583,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "13346867265471851551"
+              "version": "0.30.23.60470",
+              "templateHash": "960125802721112117"
             },
             "name": "Healthcare API Workspace IoT Connectors",
             "description": "This module deploys a Healthcare API Workspace IoT Connector.",
@@ -1801,7 +1801,7 @@
                 "template": []
               },
               "metadata": {
-                "description": "Required. The mapping JSON that determines how incoming device data is normalized."
+                "description": "Optional. The mapping JSON that determines how incoming device data is normalized."
               }
             },
             "fhirdestination": {
@@ -1970,8 +1970,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "12659357611219228021"
+                      "version": "0.30.23.60470",
+                      "templateHash": "9211958556323045062"
                     },
                     "name": "Healthcare API Workspace IoT Connector FHIR Destinations",
                     "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination.",
@@ -1992,7 +1992,7 @@
                         "template": []
                       },
                       "metadata": {
-                        "description": "Required. The mapping JSON that determines how normalized data is converted to FHIR Observations."
+                        "description": "Optional. The mapping JSON that determines how normalized data is converted to FHIR Observations."
                       }
                     },
                     "iotConnectorName": {
