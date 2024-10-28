@@ -94,7 +94,6 @@ function Get-ReferenceObject {
         $resultSet.resourceReferences += @() + $moduleContent | Where-Object { $_ -match "^resource .+ '(.+?)' .+$" } | ForEach-Object { $matches[1] }
         $resultSet.remoteReferences += @() + $moduleContent | Where-Object { $_ -match "^module .+ '(.+:.+?)' .+$" } | ForEach-Object { $matches[1] }
         $resultSet.remoteReferences += @() + $moduleContent | Where-Object { $_ -match "^import .+ '(.+:.+?)'$" } | ForEach-Object { $matches[1] }
-
     }
 
     return @{
