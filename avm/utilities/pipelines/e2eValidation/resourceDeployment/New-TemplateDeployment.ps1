@@ -388,7 +388,7 @@ function New-TemplateDeploymentInner {
                         $deployments = Get-DeploymentForScope @getDeploymentInputObject
 
                         If ($deployments.ProvisioningState -notcontains 'Failed') {
-                            Write-Verbose "An error occured while checking the state of the deployment, but it still appears to be running with the state [$($deployments.ProvisioningState)]. Pipeline will continue monitoring the state of the existing deployment."
+                            Write-Verbose "An error occured while checking the state of the deployment, but it still appears to be running with the state [$($deployments.ProvisioningState)]. Pipeline will continue monitoring the state of the existing parent deployment."
 
                             While ($deployments.ProvisioningState -contains 'Running') {
                                 Write-Verbose 'Deployment is still running. Waiting for 15 seconds before checking again..'

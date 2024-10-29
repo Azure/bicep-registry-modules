@@ -41,7 +41,7 @@ param arbDeploymentServicePrincipalSecret string = ''
 param hciResourceProviderObjectId string = ''
 
 var name = 'hcicluster'
-var deploymentPrefix = take(uniqueString(namePrefix, serviceShort), 8)
+var deploymentPrefix = 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
 
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'southeastasia'
