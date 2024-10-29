@@ -353,7 +353,7 @@ resource kvExisting 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!creat
 }
 
 module vnet 'br/public:avm/res/network/virtual-network:0.5.0' = if (createNewVNET) {
-  name: take('${deployment().name}-vnet-${vnetName}', 64)
+  name: '${uniqueString(deployment().name, location)}-vnet-${vnetName}'
   params: {
     // Required parameters
     addressPrefixes: [
@@ -388,7 +388,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.5.0' = if (createNewVNE
 }
 
 module nsgPrivateLink 'br/public:avm/res/network/network-security-group:0.5.0' = if (createNewVNET) {
-  name: take('${deployment().name}-nsg-${nsgNamePrivateLink}', 64)
+  name: '${uniqueString(deployment().name, location)}-nsg-${nsgNamePrivateLink}'
   params: {
     // Required parameters
     name: nsgNamePrivateLink
@@ -414,7 +414,7 @@ module nsgPrivateLink 'br/public:avm/res/network/network-security-group:0.5.0' =
 }
 
 module nsgDbwFrontend 'br/public:avm/res/network/network-security-group:0.5.0' = if (createNewVNET && enableDatabricks) {
-  name: take('${deployment().name}-nsg-${nsgNameDbwFrontend}', 64)
+  name: '${uniqueString(deployment().name, location)}-nsg-${nsgNameDbwFrontend}'
   params: {
     // Required parameters
     name: nsgNameDbwFrontend
@@ -440,7 +440,7 @@ module nsgDbwFrontend 'br/public:avm/res/network/network-security-group:0.5.0' =
 }
 
 module nsgDbwBackend 'br/public:avm/res/network/network-security-group:0.5.0' = if (createNewVNET && enableDatabricks) {
-  name: take('${deployment().name}-nsg-${nsgNameDbwBackend}', 64)
+  name: '${uniqueString(deployment().name, location)}-nsg-${nsgNameDbwBackend}'
   params: {
     // Required parameters
     name: nsgNameDbwBackend
@@ -466,7 +466,7 @@ module nsgDbwBackend 'br/public:avm/res/network/network-security-group:0.5.0' = 
 }
 
 module dnsZoneSaBlob 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (createNewVNET && enableDatabricks) {
-  name: take('${deployment().name}-zone-${privateDnsZoneNameSaBlob}', 64)
+  name: '${uniqueString(deployment().name, location)}-zone-${privateDnsZoneNameSaBlob}'
   params: {
     // Required parameters
     name: privateDnsZoneNameSaBlob
@@ -486,7 +486,7 @@ module dnsZoneSaBlob 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (cr
 }
 
 module log 'br/public:avm/res/operational-insights/workspace:0.7.1' = if (createNewLog) {
-  name: take('${deployment().name}-law-${logName}', 64)
+  name: '${uniqueString(deployment().name, location)}-law-${logName}'
   params: {
     // Required parameters
     name: logName
@@ -504,7 +504,7 @@ module log 'br/public:avm/res/operational-insights/workspace:0.7.1' = if (create
 }
 
 module kv 'br/public:avm/res/key-vault/vault:0.9.0' = if (createNewKV) {
-  name: take('${deployment().name}-vault-${kvName}', 64)
+  name: '${uniqueString(deployment().name, location)}-vault-${kvName}'
   params: {
     // Required parameters
     name: kvName
@@ -573,7 +573,7 @@ module kv 'br/public:avm/res/key-vault/vault:0.9.0' = if (createNewKV) {
 }
 
 module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (createNewVNET && createNewKV) {
-  name: take('${deployment().name}-zone-${privateDnsZoneNameKv}', 64)
+  name: '${uniqueString(deployment().name, location)}-zone-${privateDnsZoneNameKv}'
   params: {
     // Required parameters
     name: privateDnsZoneNameKv
@@ -593,7 +593,7 @@ module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (create
 }
 
 module accessConnector 'br/public:avm/res/databricks/access-connector:0.3.0' = if (enableDatabricks) {
-  name: take('${deployment().name}-connector-${dbwAccessConnectorName}', 64)
+  name: '${uniqueString(deployment().name, location)}-connector-${dbwAccessConnectorName}'
   params: {
     // Required parameters
     name: dbwAccessConnectorName
@@ -610,7 +610,7 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:0.3.0' = i
 }
 
 module dbw 'br/public:avm/res/databricks/workspace:0.8.5' = if (enableDatabricks) {
-  name: take('${deployment().name}-workspace-${dbwName}', 64)
+  name: '${uniqueString(deployment().name, location)}-workspace-${dbwName}'
   params: {
     // Required parameters
     name: dbwName
@@ -715,7 +715,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.8.5' = if (enableDatabricks
 }
 
 module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (createNewVNET && enableDatabricks) {
-  name: take('${deployment().name}-zone-${privateDnsZoneNameDbw}', 64)
+  name: '${uniqueString(deployment().name, location)}-zone-${privateDnsZoneNameDbw}'
   params: {
     // Required parameters
     name: privateDnsZoneNameDbw

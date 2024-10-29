@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "12082535146794341987"
+      "templateHash": "928189945777087235"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -590,7 +590,7 @@
       "condition": "[variables('createNewVNET')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-vnet-{1}', deployment().name, variables('vnetName')), 64)]",
+      "name": "[format('{0}-vnet-{1}', uniqueString(deployment().name, parameters('location')), variables('vnetName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2189,7 +2189,7 @@
       "condition": "[variables('createNewVNET')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-nsg-{1}', deployment().name, variables('nsgNamePrivateLink')), 64)]",
+      "name": "[format('{0}-nsg-{1}', uniqueString(deployment().name, parameters('location')), variables('nsgNamePrivateLink'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2842,7 +2842,7 @@
       "condition": "[and(variables('createNewVNET'), parameters('enableDatabricks'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-nsg-{1}', deployment().name, variables('nsgNameDbwFrontend')), 64)]",
+      "name": "[format('{0}-nsg-{1}', uniqueString(deployment().name, parameters('location')), variables('nsgNameDbwFrontend'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3495,7 +3495,7 @@
       "condition": "[and(variables('createNewVNET'), parameters('enableDatabricks'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-nsg-{1}', deployment().name, variables('nsgNameDbwBackend')), 64)]",
+      "name": "[format('{0}-nsg-{1}', uniqueString(deployment().name, parameters('location')), variables('nsgNameDbwBackend'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -4148,7 +4148,7 @@
       "condition": "[and(variables('createNewVNET'), parameters('enableDatabricks'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-zone-{1}', deployment().name, variables('privateDnsZoneNameSaBlob')), 64)]",
+      "name": "[format('{0}-zone-{1}', uniqueString(deployment().name, parameters('location')), variables('privateDnsZoneNameSaBlob'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -7210,7 +7210,7 @@
       "condition": "[variables('createNewLog')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-law-{1}', deployment().name, variables('logName')), 64)]",
+      "name": "[format('{0}-law-{1}', uniqueString(deployment().name, parameters('location')), variables('logName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -9279,7 +9279,7 @@
       "condition": "[variables('createNewKV')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-vault-{1}', deployment().name, variables('kvName')), 64)]",
+      "name": "[format('{0}-vault-{1}', uniqueString(deployment().name, parameters('location')), variables('kvName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -12294,7 +12294,7 @@
       "condition": "[and(variables('createNewVNET'), variables('createNewKV'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-zone-{1}', deployment().name, variables('privateDnsZoneNameKv')), 64)]",
+      "name": "[format('{0}-zone-{1}', uniqueString(deployment().name, parameters('location')), variables('privateDnsZoneNameKv'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -15356,7 +15356,7 @@
       "condition": "[parameters('enableDatabricks')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-connector-{1}', deployment().name, variables('dbwAccessConnectorName')), 64)]",
+      "name": "[format('{0}-connector-{1}', uniqueString(deployment().name, parameters('location')), variables('dbwAccessConnectorName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -15698,7 +15698,7 @@
       "condition": "[parameters('enableDatabricks')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-workspace-{1}', deployment().name, variables('dbwName')), 64)]",
+      "name": "[format('{0}-workspace-{1}', uniqueString(deployment().name, parameters('location')), variables('dbwName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -18417,7 +18417,7 @@
       "condition": "[and(variables('createNewVNET'), parameters('enableDatabricks'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-zone-{1}', deployment().name, variables('privateDnsZoneNameDbw')), 64)]",
+      "name": "[format('{0}-zone-{1}', uniqueString(deployment().name, parameters('location')), variables('privateDnsZoneNameDbw'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

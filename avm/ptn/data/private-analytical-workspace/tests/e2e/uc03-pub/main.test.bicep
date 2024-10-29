@@ -39,7 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
     location: enforcedLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-001'
   }
 }
 
