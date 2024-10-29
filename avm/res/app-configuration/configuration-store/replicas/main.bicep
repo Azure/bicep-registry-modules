@@ -5,10 +5,10 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. Name of the replica.')
 param name string
 
-@description('Optional. The name of the parent app configuration store.')
+@description('Conditional. The name of the parent app configuration store. Required if the template is used in a standalone deployment.')
 param appConfigurationName string
 
-@description('Optional. Location of the replica.')
+@description('Required. Location of the replica.')
 param replicaLocation string
 
 resource appConfiguration 'Microsoft.AppConfiguration/configurationStores@2023-03-01' existing = {

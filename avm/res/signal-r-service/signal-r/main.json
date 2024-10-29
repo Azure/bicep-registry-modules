@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "16576967735793916107"
+      "version": "0.30.23.60470",
+      "templateHash": "18392200258467570081"
     },
     "name": "SignalR Service SignalR",
     "description": "This module deploys a SignalR Service SignalR.",
@@ -214,7 +214,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {

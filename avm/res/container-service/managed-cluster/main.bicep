@@ -76,6 +76,13 @@ param backendPoolType string = 'NodeIPConfiguration'
 ])
 param outboundType string = 'loadBalancer'
 
+@description('Optional. Name of a managed cluster SKU.')
+@allowed([
+  'Base'
+  'Automatic'
+])
+param skuName string = 'Base'
+
 @description('Optional. Tier of a managed cluster SKU.')
 @allowed([
   'Free'
@@ -124,8 +131,14 @@ param aadProfileEnableAzureRBAC bool = enableRBAC
 @description('Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled.')
 param disableLocalAccounts bool = true
 
+@description('Optional. Node provisioning settings that apply to the whole cluster.')
+param nodeProvisioningProfile object?
+
 @description('Optional. Name of the resource group containing agent pool nodes.')
 param nodeResourceGroup string = '${resourceGroup().name}_aks_${name}_nodes'
+
+@description('Optional. The node resource group configuration profile.')
+param nodeResourceGroupProfile object?
 
 @description('Optional. IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer.')
 param authorizedIPRanges string[]?
@@ -537,7 +550,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
   tags: tags
   identity: identity
   sku: {
-    name: 'Base'
+    name: skuName
     tier: skuTier
   }
   properties: {
@@ -678,6 +691,8 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
     enableRBAC: enableRBAC
     disableLocalAccounts: disableLocalAccounts
     nodeResourceGroup: nodeResourceGroup
+    nodeResourceGroupProfile: nodeResourceGroupProfile
+    nodeProvisioningProfile: nodeProvisioningProfile
     enablePodSecurityPolicy: enablePodSecurityPolicy
     workloadAutoScalerProfile: {
       keda: {
@@ -879,7 +894,7 @@ module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/exte
     extensionType: 'microsoft.flux'
     fluxConfigurations: fluxExtension.?configurations
     location: location
-    name: 'flux'
+    name: fluxExtension.?name ?? 'flux'
     releaseNamespace: fluxExtension.?releaseNamespace ?? 'flux-system'
     releaseTrain: fluxExtension.?releaseTrain ?? 'Stable'
     version: fluxExtension.?version
@@ -1229,7 +1244,7 @@ type fluxConfigurationProtectedSettingsType = {
 
 @export()
 type extensionType = {
-  @description('Required. The name of the extension.')
+  @description('Optional. The name of the extension.')
   name: string?
 
   @description('Optional. Namespace where the extension Release must be placed.')
@@ -1238,7 +1253,7 @@ type extensionType = {
   @description('Optional. Namespace where the extension will be created for an Namespace scoped extension.')
   targetNamespace: string?
 
-  @description('Required. The release train of the extension.')
+  @description('Optional. The release train of the extension.')
   releaseTrain: string?
 
   @description('Optional. The configuration protected settings of the extension.')
