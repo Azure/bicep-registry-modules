@@ -7,6 +7,7 @@ This module deploys a Service Bus Namespace Topic.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -509,3 +510,11 @@ Value that indicates whether the topic supports ordering.
 | `name` | string | The name of the deployed topic. |
 | `resourceGroupName` | string | The resource group of the deployed topic. |
 | `resourceId` | string | The resource ID of the deployed topic. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.2.0` | Remote reference |

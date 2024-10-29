@@ -2646,6 +2646,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
 | `br/public:avm/res/operations-management/solution:0.1.3` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.1.0` | Remote reference |
 
 ## Data Collection
 
