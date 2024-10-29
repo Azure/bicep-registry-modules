@@ -16,7 +16,7 @@ param resourceGroupName string = 'dep-${namePrefix}-data-privateanalyticalworksp
 var enforcedLocation = 'northeurope'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dpawuc03pub'
+param serviceShort string = 'dpawu3p'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -39,7 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
     location: enforcedLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-001'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-1'
   }
 }
 
