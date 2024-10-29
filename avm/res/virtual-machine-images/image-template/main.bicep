@@ -56,7 +56,7 @@ param vmUserAssignedIdentities array = []
 
 import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Required. The managed identity definition for this resource.')
-param managedIdentities managedIdentityOnlyUserAssignedType?
+param managedIdentities managedIdentityOnlyUserAssignedType
 
 @description('Optional. Configuration options and list of validations to be performed on the resulting image.')
 param validationProcess validationProcessType?
