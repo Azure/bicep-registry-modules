@@ -273,28 +273,14 @@ var subnets = concat(
           name: subnetNameDbwFrontend
           addressPrefix: subnetDbwFrontendDefaultAddressPrefix
           networkSecurityGroupResourceId: nsgDbwFrontend.outputs.resourceId
-          delegations: [
-            {
-              name: 'Microsoft.Databricks/workspaces'
-              properties: {
-                serviceName: 'Microsoft.Databricks/workspaces'
-              }
-            }
-          ]
+          delegation: 'Microsoft.Databricks/workspaces'
         }
         {
           // a container subnet (sometimes called the private subnet)
           name: subnetNameDbwBackend
           addressPrefix: subnetDbwBackendDefaultAddressPrefix
           networkSecurityGroupResourceId: nsgDbwBackend.outputs.resourceId
-          delegations: [
-            {
-              name: 'Microsoft.Databricks/workspaces'
-              properties: {
-                serviceName: 'Microsoft.Databricks/workspaces'
-              }
-            }
-          ]
+          delegation: 'Microsoft.Databricks/workspaces'
         }
       ]
     : []

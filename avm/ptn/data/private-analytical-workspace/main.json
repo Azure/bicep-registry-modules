@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "5240327924338956496"
+      "templateHash": "12082535146794341987"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -637,7 +637,7 @@
             "value": "[parameters('lock')]"
           },
           "subnets": {
-            "value": "[concat(createArray(createObject('name', variables('subnetNamePrivateLink'), 'addressPrefix', variables('subnetPrivateLinkDefaultAddressPrefix'), 'networkSecurityGroupResourceId', reference('nsgPrivateLink').outputs.resourceId.value)), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwFrontend'), 'addressPrefix', variables('subnetDbwFrontendDefaultAddressPrefix'), 'networkSecurityGroupResourceId', reference('nsgDbwFrontend').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces')))), createObject('name', variables('subnetNameDbwBackend'), 'addressPrefix', variables('subnetDbwBackendDefaultAddressPrefix'), 'networkSecurityGroupResourceId', reference('nsgDbwBackend').outputs.resourceId.value, 'delegations', createArray(createObject('name', 'Microsoft.Databricks/workspaces', 'properties', createObject('serviceName', 'Microsoft.Databricks/workspaces'))))), createArray()))]"
+            "value": "[concat(createArray(createObject('name', variables('subnetNamePrivateLink'), 'addressPrefix', variables('subnetPrivateLinkDefaultAddressPrefix'), 'networkSecurityGroupResourceId', reference('nsgPrivateLink').outputs.resourceId.value)), if(parameters('enableDatabricks'), createArray(createObject('name', variables('subnetNameDbwFrontend'), 'addressPrefix', variables('subnetDbwFrontendDefaultAddressPrefix'), 'networkSecurityGroupResourceId', reference('nsgDbwFrontend').outputs.resourceId.value, 'delegation', 'Microsoft.Databricks/workspaces'), createObject('name', variables('subnetNameDbwBackend'), 'addressPrefix', variables('subnetDbwBackendDefaultAddressPrefix'), 'networkSecurityGroupResourceId', reference('nsgDbwBackend').outputs.resourceId.value, 'delegation', 'Microsoft.Databricks/workspaces')), createArray()))]"
           },
           "tags": {
             "value": "[parameters('tags')]"
