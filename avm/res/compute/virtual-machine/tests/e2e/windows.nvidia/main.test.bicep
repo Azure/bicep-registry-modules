@@ -11,6 +11,10 @@ metadata description = 'This instance deploys the module for a VM with dedicated
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${serviceShort}-rg'
 
+// Capacity constraints for VM type
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'uksouth'
+
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'cvmwinnv'
 
@@ -20,9 +24,6 @@ param password string = newGuid()
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
-
-#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-var enforcedLocation = 'eastus'
 
 // ============ //
 // Dependencies //

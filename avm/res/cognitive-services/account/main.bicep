@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of Cognitive Services account.')
 param name string
 
-@description('Required. Kind of the Cognitive Services. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
+@description('Required. Kind of the Cognitive Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
 @allowed([
   'AIServices'
   'AnomalyDetector'
@@ -34,7 +34,7 @@ param name string
 ])
 param kind string
 
-@description('Optional. SKU of the Cognitive Services resource. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
+@description('Optional. SKU of the Cognitive Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
 @allowed([
   'C2'
   'C3'
@@ -64,11 +64,10 @@ param diagnosticSettings diagnosticSettingType
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.')
 @allowed([
-  ''
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 @description('Conditional. Subdomain name used for token-based authentication. Required if \'networkAcls\' or \'privateEndpoints\' are set.')
 param customSubDomainName string?
@@ -103,6 +102,7 @@ param customerManagedKey customerManagedKeyType
 @description('Optional. The flag to enable dynamic throttling.')
 param dynamicThrottlingEnabled bool = false
 
+@secure()
 @description('Optional. Resource migration token.')
 param migrationToken string?
 
@@ -123,6 +123,9 @@ param enableTelemetry bool = true
 
 @description('Optional. Array of deployments about cognitive service accounts to create.')
 param deployments deploymentsType
+
+@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
+param secretsExportConfiguration secretsExportConfigurationType?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -238,7 +241,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -247,6 +250,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -305,7 +319,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
           ipRules: networkAcls.?ipRules ?? []
         }
       : null
-    publicNetworkAccess: !empty(publicNetworkAccess)
+    publicNetworkAccess: publicNetworkAccess != null
       ? publicNetworkAccess
       : (!empty(networkAcls) ? 'Enabled' : 'Disabled')
     allowedFqdnList: allowedFqdnList
@@ -389,7 +403,7 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
   }
 ]
 
-module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.8.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -430,8 +444,7 @@ module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endp
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -443,14 +456,10 @@ module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endp
 ]
 
 resource cognitiveService_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(cognitiveService.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(cognitiveService.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -461,6 +470,36 @@ resource cognitiveService_roleAssignments 'Microsoft.Authorization/roleAssignmen
     scope: cognitiveService
   }
 ]
+
+module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
+  name: '${uniqueString(deployment().name, location)}-secrets-kv'
+  scope: resourceGroup(
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
+    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+  )
+  params: {
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    secretsToSet: union(
+      [],
+      contains(secretsExportConfiguration!, 'accessKey1Name')
+        ? [
+            {
+              name: secretsExportConfiguration!.accessKey1Name
+              value: cognitiveService.listKeys().key1
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'accessKey2Name')
+        ? [
+            {
+              name: secretsExportConfiguration!.accessKey2Name
+              value: cognitiveService.listKeys().key2
+            }
+          ]
+        : []
+    )
+  }
+}
 
 @description('The name of the cognitive services account.')
 output name string = cognitiveService.name
@@ -474,11 +513,30 @@ output resourceGroupName string = resourceGroup().name
 @description('The service endpoint of the cognitive services account.')
 output endpoint string = cognitiveService.properties.endpoint
 
+@description('All endpoints available for the cognitive services account, types depends on the cognitive service kind.')
+output endpoints endpointsType = cognitiveService.properties.endpoints
+
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string = cognitiveService.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = cognitiveService.location
+
+@description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
+output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
+  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  : {}
+
+@description('The private endpoints of the congitive services account.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: cognitiveService_privateEndpoints[i].outputs.name
+    resourceId: cognitiveService_privateEndpoints[i].outputs.resourceId
+    groupId: cognitiveService_privateEndpoints[i].outputs.groupId
+    customDnsConfig: cognitiveService_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: cognitiveService_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
 
 // ================ //
 // Definitions      //
@@ -529,6 +587,9 @@ type diagnosticSettingType = {
 }[]?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -567,11 +628,20 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
@@ -582,7 +652,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private IP addresses of the private endpoint.')
@@ -687,3 +757,27 @@ type deploymentsType = {
   @description('Optional. The name of RAI policy.')
   raiPolicyName: string?
 }[]?
+
+type endpointsType = {
+  @description('Type of the endpoint.')
+  name: string?
+  @description('The endpoint URI.')
+  endpoint: string?
+}?
+
+type secretsExportConfigurationType = {
+  @description('Required. The key vault name where to store the keys and connection strings generated by the modules.')
+  keyVaultResourceId: string
+
+  @description('Optional. The name for the accessKey1 secret to create.')
+  accessKey1Name: string?
+
+  @description('Optional. The name for the accessKey2 secret to create.')
+  accessKey2Name: string?
+}
+
+import { secretSetType } from 'modules/keyVaultExport.bicep'
+type secretsOutputType = {
+  @description('An exported secret\'s references.')
+  *: secretSetType
+}

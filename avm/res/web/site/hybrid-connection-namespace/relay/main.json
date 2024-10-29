@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "3173546331275321765"
+      "version": "0.30.23.60470",
+      "templateHash": "9545759447796150909"
     },
     "name": "Web/Function Apps Hybrid Connection Relay",
     "description": "This module deploys a Site Hybrid Connection Namespace Relay.",
@@ -35,7 +35,7 @@
   "resources": [
     {
       "type": "Microsoft.Web/sites/hybridConnectionNamespaces/relays",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2023-12-01",
       "name": "[format('{0}/{1}/{2}', parameters('appName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10])]",
       "properties": {
         "serviceBusNamespace": "[split(parameters('hybridConnectionResourceId'), '/')[8]]",

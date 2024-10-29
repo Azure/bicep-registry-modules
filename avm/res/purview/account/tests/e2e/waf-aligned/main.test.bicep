@@ -20,8 +20,8 @@ param serviceShort string = 'pvawaf'
 param namePrefix string = '#_namePrefix_#'
 
 // Set to fixed location as the RP function returns unsupported locations
-// Right now (2024/03) the following locations are supported: eastus, eastus2, southcentralus, westcentralus, westus, westus2, westus3
-param enforcedLocation string = 'eastus'
+// Right now (2024/07) the following locations are supported: uksouth
+param enforcedLocation string = 'uksouth'
 
 // =========== //
 // Deployments //
@@ -87,45 +87,65 @@ module testDeployment '../../../main.bicep' = [
       ]
       accountPrivateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.purviewAccountPrivateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.purviewAccountPrivateDNSResourceId
+              }
+            ]
+          }
           service: 'account'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
       portalPrivateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.purviewPortalPrivateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.purviewPortalPrivateDNSResourceId
+              }
+            ]
+          }
           service: 'portal'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
       storageBlobPrivateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.storageBlobPrivateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.storageBlobPrivateDNSResourceId
+              }
+            ]
+          }
           service: 'blob'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
       storageQueuePrivateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.storageQueuePrivateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.storageQueuePrivateDNSResourceId
+              }
+            ]
+          }
           service: 'queue'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
       eventHubPrivateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.eventHubPrivateDNSResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.eventHubPrivateDNSResourceId
+              }
+            ]
+          }
           service: 'namespace'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }

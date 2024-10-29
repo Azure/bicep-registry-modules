@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "15656278354863511578"
+      "version": "0.30.23.60470",
+      "templateHash": "4286918441341976962"
     },
     "name": "Firewall Policy Rule Collection Groups",
     "description": "This module deploys a Firewall Policy Rule Collection Group.",

@@ -22,6 +22,7 @@ $script:MgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-0
 $script:TenantDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#'
 $script:telemetryResCsvLink = 'https://aka.ms/avm/index/bicep/res/csv'
 $script:telemetryPtnCsvLink = 'https://aka.ms/avm/index/bicep/ptn/csv'
+$script:telemetryUtlCsvLink = 'https://aka.ms/avm/index/bicep/utl/csv'
 $script:moduleFolderPaths = $moduleFolderPaths
 
 # Shared exception messages
@@ -59,11 +60,13 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
         $moduleFolderTestCases = [System.Collections.ArrayList] @()
         foreach ($moduleFolderPath in $moduleFolderPaths) {
-            $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
+            $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
+            $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
             $moduleFolderTestCases += @{
                 moduleFolderName = $resourceTypeIdentifier
                 moduleFolderPath = $moduleFolderPath
                 isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+                moduleType       = $moduleType
             }
         }
 
@@ -100,13 +103,19 @@ Describe 'File/folder tests' -Tag 'Modules' {
         It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
             param(
-                [string] $moduleFolderPath
+                [string] $moduleFolderPath,
+                [string] $moduleType
             )
 
             $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
 
             # Use correct telemetry link based on file path
-            $telemetryCsvLink = $moduleFolderPath -match '[\\|\/]res[\\|\/]' ? $telemetryResCsvLink : $telemetryPtnCsvLink
+            switch ($moduleType) {
+                'res' { $telemetryCsvLink = $telemetryResCsvLink; break }
+                'ptn' { $telemetryCsvLink = $telemetryPtnCsvLink; break }
+                'utl' { $telemetryCsvLink = $telemetryUtlCsvLink; break }
+                Default {}
+            }
 
             # Fetch CSV
             # =========
@@ -146,13 +155,13 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
         $topLevelModuleTestCases = [System.Collections.ArrayList]@()
         foreach ($moduleFolderPath in $moduleFolderPaths) {
-            $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
-            $moduleTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[1] # 'avm/res|ptn/<provider>/<resourceType>' would return 'res|ptn'
+            $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
+            $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
             if (($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) {
                 $topLevelModuleTestCases += @{
-                    moduleFolderName     = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
-                    moduleFolderPath     = $moduleFolderPath
-                    moduleTypeIdentifier = $moduleTypeIdentifier
+                    moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+                    moduleFolderPath = $moduleFolderPath
+                    moduleType       = $moduleType
                 }
             }
         }
@@ -187,7 +196,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $pathExisting | Should -Be $true
         }
 
-        It '[<moduleFolderName>] Module should contain a [` tests/e2e/*waf-aligned `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleTypeIdentifier -eq 'res' }) {
+        It '[<moduleFolderName>] Module should contain a [` tests/e2e/*waf-aligned `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
             param(
                 [string] $moduleFolderPath
@@ -197,7 +206,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $wafAlignedFolder | Should -Not -BeNullOrEmpty
         }
 
-        It '[<moduleFolderName>] Module should contain a [` tests/e2e/*defaults `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleTypeIdentifier -eq 'res' }) {
+        It '[<moduleFolderName>] Module should contain a [` tests/e2e/*defaults `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
             param(
                 [string] $moduleFolderPath
@@ -235,8 +244,8 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
     $pipelineTestCases = [System.Collections.ArrayList] @()
     foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-        $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
-        $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}')[1]
+        $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/' # 'avm/res|ptn|utl/<provider>/<resourceType>' would return '<provider>/<resourceType>'
+        $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[1]
 
         $isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
         if ($isTopLevelModule) {
@@ -290,7 +299,7 @@ Describe 'Module tests' -Tag 'Module' {
 
         foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-            $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
+            $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/' # 'avm/res|ptn|utl/<provider>/<resourceType>' would return '<provider>/<resourceType>'
             $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
 
             $readmeFileTestCases += @{
@@ -348,7 +357,7 @@ Describe 'Module tests' -Tag 'Module' {
                 continue
             }
 
-            $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
+            $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/' # 'avm/res|ptn|utl/<provider>/<resourceType>' would return '<provider>/<resourceType>'
 
             $armTemplateTestCases += @{
                 moduleFolderName = $resourceTypeIdentifier
@@ -385,7 +394,7 @@ Describe 'Module tests' -Tag 'Module' {
             $newJson = ConvertTo-OrderedHashtable -JSONInputObject (ConvertTo-Json $newJson -Depth 99)
 
             # compare
-      (ConvertTo-Json $originalJson -Depth 99) | Should -Be (ConvertTo-Json $newJson -Depth 99) -Because "the [$moduleFolderName] [main.json] should be based on the latest [main.bicep] file. Please run [` bicep build >bicepFilePath< `] using the latest Bicep CLI version."
+            (ConvertTo-Json $originalJson -Depth 99) | Should -Be (ConvertTo-Json $newJson -Depth 99) -Because "the [$moduleFolderName] [main.json] should be based on the latest [main.bicep] file. Please run [` bicep build >bicepFilePath< `] using the latest Bicep CLI version."
 
             # Reset template file to original state
             git checkout HEAD -- $armTemplatePath
@@ -400,7 +409,8 @@ Describe 'Module tests' -Tag 'Module' {
             $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
             $templateFileContent = $builtTestFileMap[$templateFilePath]
 
-            $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
+            $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
+            $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
 
             # Test file setup
             $moduleFolderTestCases += @{
@@ -410,6 +420,7 @@ Describe 'Module tests' -Tag 'Module' {
                 templateFileParameters = Resolve-ReadMeParameterList -TemplateFileContent $templateFileContent
                 readMeFilePath         = Join-Path (Split-Path $templateFilePath) 'README.md'
                 isTopLevelModule       = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+                moduleType             = $moduleType
             }
         }
 
@@ -453,7 +464,7 @@ Describe 'Module tests' -Tag 'Module' {
                     [hashtable] $templateFileContent
                 )
                 $Schemaverion = $templateFileContent.'$schema'
-              ($Schemaverion.Substring(0, 5) -eq 'https') | Should -Be $true
+                ($Schemaverion.Substring(0, 5) -eq 'https') | Should -Be $true
             }
 
             It '[<moduleFolderName>] The template file should contain required elements [schema], [contentVersion], [resources].' -TestCases $moduleFolderTestCases {
@@ -509,7 +520,8 @@ Describe 'Module tests' -Tag 'Module' {
                 }
             }
 
-            It '[<moduleFolderName>] The telemetry parameter should be present & have the expected type, default value & metadata description.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+            # If any resources in the module are deployed, a telemetry deployment should be carried out as well
+            It '[<moduleFolderName>] The telemetry parameter should be present & have the expected type, default value & metadata description.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule -and $_.templateFileContent.resources.count -gt 0 }) {
 
                 param(
                     [hashtable] $templateFileParameters
@@ -617,13 +629,34 @@ Describe 'Module tests' -Tag 'Module' {
 
                     if (-not $isRequired) {
                         $description = $templateFileParameters.$parameter.metadata.description
-                        if ($description -match "\('Required\.") {
+                        if ($description -match '^Required\.') {
                             $incorrectParameters += $parameter
                         }
                     }
                 }
 
                 $incorrectParameters | Should -BeNullOrEmpty -Because ('only required parameters in the template file should have a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
+            }
+
+            It '[<moduleFolderName>] All required parameters & UDTs in template file should have description that start with "(Required|Conditional).".' -TestCases $moduleFolderTestCases {
+                param (
+                    [hashtable] $templateFileContent,
+                    [hashtable] $templateFileParameters
+                )
+
+                $incorrectParameters = @()
+                foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object -Culture 'en-US')) {
+                    $isRequired = Get-IsParameterRequired -TemplateFileContent $templateFileContent -Parameter $templateFileParameters.$parameter
+
+                    if ($isRequired) {
+                        $description = $templateFileParameters.$parameter.metadata.description
+                        if ($description -notmatch '^(Required|Conditional)\.') {
+                            $incorrectParameters += $parameter
+                        }
+                    }
+                }
+
+                $incorrectParameters | Should -BeNullOrEmpty -Because ('required parameters in the template file should have a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
 
             Context 'Schema-based User-defined-types tests' -Tag 'UDT' {
@@ -633,12 +666,13 @@ Describe 'Module tests' -Tag 'Module' {
                 $udtSpecificTestCases = [System.Collections.ArrayList] @() # Specific UDT test cases for singular UDTs (e.g. tags)
                 foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-                    if ($moduleFolderPath -match '[\/|\\]avm[\/|\\]ptn[\/|\\]') {
-                        # Skip UDT interface tests for ptn modules
+                    if ($moduleFolderPath -match '[\/|\\]avm[\/|\\](ptn|utl)[\/|\\]') {
+                        # Skip UDT interface tests for ptn & utl modules
                         continue
                     }
 
-                    $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
+                    $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
+                    $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
                     $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
                     $templateFileContent = $builtTestFileMap[$templateFilePath]
 
@@ -646,6 +680,7 @@ Describe 'Module tests' -Tag 'Module' {
                         moduleFolderName         = $resourceTypeIdentifier
                         templateFileContent      = $templateFileContent
                         templateFileContentBicep = Get-Content $templateFilePath
+                        moduleType               = $moduleType
                     }
 
                     # Setting expected URL only for those that doen't have multiple different variants
@@ -653,34 +688,26 @@ Describe 'Module tests' -Tag 'Module' {
                     $udtCases = @(
                         @{
                             parameterName = 'diagnosticSettings'
-                            udtName       = 'diagnosticSettingType'
                             link          = "$interfaceBase/diagnostic-settings"
                         }
                         @{
-                            parameterName  = 'roleAssignments'
-                            udtName        = 'roleAssignmentType'
-                            udtExpectedUrl = "$interfaceBase/role-assignments/udt-schema"
-                            link           = "$interfaceBase/role-assignments"
+                            parameterName = 'roleAssignments'
+                            link          = "$interfaceBase/role-assignments"
                         }
                         @{
-                            parameterName  = 'lock'
-                            udtName        = 'lockType'
-                            udtExpectedUrl = "$interfaceBase/resource-locks/udt-schema"
-                            link           = "$interfaceBase/resource-locks"
+                            parameterName = 'lock'
+                            link          = "$interfaceBase/resource-locks"
                         }
                         @{
                             parameterName = 'managedIdentities'
-                            udtName       = 'managedIdentitiesType'
                             link          = "$interfaceBase/managed-identities"
                         }
                         @{
                             parameterName = 'privateEndpoints'
-                            udtName       = 'privateEndpointType'
                             link          = "$interfaceBase/private-endpoints"
                         }
                         @{
                             parameterName = 'customerManagedKey'
-                            udtName       = 'customerManagedKeyType'
                             link          = "$interfaceBase/customer-managed-keys"
                         }
                     )
@@ -691,86 +718,29 @@ Describe 'Module tests' -Tag 'Module' {
                             templateFileContent      = $templateFileContent
                             templateFileContentBicep = Get-Content $templateFilePath
                             parameterName            = $udtCase.parameterName
-                            udtName                  = $udtCase.udtName
                             expectedUdtUrl           = $udtCase.udtExpectedUrl ? $udtCase.udtExpectedUrl : ''
                             link                     = $udtCase.link
                         }
                     }
                 }
 
-                It '[<moduleFolderName>] If template has a parameter [<parameterName>], it should implement the user-defined type [<udtName>]' -TestCases $udtTestCases {
+                It '[<moduleFolderName>] If template has a parameter [<parameterName>], it should implement AVM''s corresponding user-defined type.' -TestCases $udtTestCases {
 
                     param(
                         [hashtable] $templateFileContent,
                         [string[]] $templateFileContentBicep,
                         [string] $parameterName,
-                        [string] $udtName,
-                        [string] $expectedUdtUrl,
                         [string] $link
                     )
 
                     if ($templateFileContent.parameters.Keys -contains $parameterName) {
-                        $templateFileContent.parameters.$parameterName.Keys | Should -Contain '$ref' -Because "the [$parameterName] parameter should use a user-defined type. For information please review the [AVM Specs]($link)."
-                        $templateFileContent.parameters.$parameterName.'$ref' | Should -Be "#/definitions/$udtName" -Because "the [$parameterName] parameter should use a user-defined type [$udtName]. For information please review the [AVM Specs]($link)."
 
-                        if (-not [String]::IsNullOrEmpty($expectedUdtUrl)) {
-                            $implementedSchemaStartIndex = $templateFileContentBicep.IndexOf("type $udtName = {")
-                            $implementedSchemaEndIndex = $implementedSchemaStartIndex + 1
-                            while ($templateFileContentBicep[$implementedSchemaEndIndex] -notmatch '^\}.*' -and $implementedSchemaEndIndex -lt $templateFileContentBicep.Length) {
-                                $implementedSchemaEndIndex++
-                            }
-                            if ($implementedSchemaEndIndex -eq $templateFileContentBicep.Length) {
-                                throw "Failed to identify [$udtName] user-defined type in template."
-                            }
-                            $implementedSchema = $templateFileContentBicep[$implementedSchemaStartIndex..$implementedSchemaEndIndex]
-
-                            try {
-                                $rawResponse = Invoke-WebRequest -Uri $expectedUdtUrl
-                                if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
-                                    $expectedSchemaFull = $rawResponse.Content -split '\n'
-                                } else {
-                                    throw "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
-                                }
-                            } catch {
-                                Write-Warning "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
-                                return
-                            }
-
-                            $expectedSchemaStartIndex = $expectedSchemaFull.IndexOf("type $udtName = {")
-                            $expectedSchemaEndIndex = $expectedSchemaStartIndex + 1
-                            while ($expectedSchemaFull[$expectedSchemaEndIndex] -notmatch '^\}.*' -and $expectedSchemaEndIndex -lt $expectedSchemaFull.Length) {
-                                $expectedSchemaEndIndex++
-                            }
-                            if ($expectedSchemaEndIndex -eq $expectedSchemaFull.Length) {
-                                throw "Failed to identify [$udtName] user-defined type in expected schema at URL [$expectedUdtUrl]."
-                            }
-                            $expectedSchema = $expectedSchemaFull[$expectedSchemaStartIndex..$expectedSchemaEndIndex]
-
-                            if ($templateFileContentBicep -match '@sys\.([a-zA-Z]+)\(') {
-                                # Handing cases where the template may use the @sys namespace explicitly
-                                $expectedSchema = $expectedSchema | ForEach-Object { $_ -replace '@([a-zA-Z]+)\(', '@sys.$1(' }
-                            }
-
-                            $formattedDiff = @()
-                            foreach ($finding in (Compare-Object $implementedSchema $expectedSchema)) {
-                                if ($finding.SideIndicator -eq '=>') {
-                                    $formattedDiff += ('+ {0}' -f $finding.InputObject)
-                                } elseif ($finding.SideIndicator -eq '<=') {
-                                    $formattedDiff += ('- {0}' -f $finding.InputObject)
-                                }
-                            }
-
-                            if ($formattedDiff.Count -gt 0) {
-                                $warningMessage = "The implemented user-defined type is not the same as the expected user-defined type ({0}) defined in the AVM specs ({1}) and should not have diff`n{2}" -f $expectedUdtUrl, $link, ($formattedDiff | Out-String)
-                                Write-Warning $warningMessage
-
-                                # Adding also to output to show in GitHub CI
-                                $mdFormattedDiff = ($formattedDiff -join '</br>') -replace '\|', '\|'
-                                $mdFormattedWarningMessage = 'The implemented user-defined type is not the same as the expected [user-defined type]({0}) defined in the [AVM specs]({1}) and should not have diff</br><pre>{2}</pre>' -f $expectedUdtUrl, $link, $mdFormattedDiff
-                                Write-Output @{
-                                    Warning = $mdFormattedWarningMessage
-                                }
-                            }
+                        if ($templateFileContent.parameters.$parameterName.Keys -contains 'items') {
+                            # If parameter is an array, the UDT may focus on each element
+                            $templateFileContent.parameters.$parameterName.items.Keys | Should -Contain '$ref' -Because "the [$parameterName] parameter should use a user-defined type. For information please review the [AVM Specs]($link)."
+                        } else {
+                            # If not, the parameter itself should reference a UDT
+                            $templateFileContent.parameters.$parameterName.Keys | Should -Contain '$ref' -Because "the [$parameterName] parameter should use a user-defined type. For information please review the [AVM Specs]($link)."
                         }
                     } else {
                         Set-ItResult -Skipped -Because "the module template has no [$parameterName] parameter."
@@ -832,7 +802,8 @@ Describe 'Module tests' -Tag 'Module' {
         }
 
         Context 'Resources' {
-            It '[<moduleFolderName>] Telemetry deployment should be present in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+            # If any resources in the module are deployed, a telemetry deployment should be carried out as well
+            It '[<moduleFolderName>] Telemetry deployment should be present in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule -and $_.templateFileContent.resources.count -gt 0 }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -865,7 +836,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
 
                 if (-not $telemetryDeployment) {
-                    Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
+                    Set-ItResult -Skipped -Because 'telemetry was not implemented in template'
                     return
                 }
 
@@ -888,7 +859,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
 
                 if (-not $telemetryDeployment) {
-                    Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
+                    Set-ItResult -Skipped -Because 'telemetry was not implemented in template'
                     return
                 }
 
@@ -900,11 +871,31 @@ Describe 'Module tests' -Tag 'Module' {
 
                 param(
                     [string] $templateFilePath,
+                    [string] $moduleType,
                     [hashtable] $templateFileContent
                 )
 
+                # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
+                if ($templateFileContent.resources.GetType().Name -eq 'Object[]') {
+                    $templateResources = $templateFileContent.resources
+                } else {
+                    $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
+                }
+
+                $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
+
+                if (-not $telemetryDeployment) {
+                    Set-ItResult -Skipped -Because 'telemetry was not implemented in template'
+                    return
+                }
+
                 # Use correct telemetry link based on file path
-                $telemetryCsvLink = $templateFilePath -match '[\\|\/]res[\\|\/]' ? $telemetryResCsvLink : $telemetryPtnCsvLink
+                switch ($moduleType) {
+                    'res' { $telemetryCsvLink = $telemetryResCsvLink; break }
+                    'ptn' { $telemetryCsvLink = $telemetryPtnCsvLink; break }
+                    'utl' { $telemetryCsvLink = $telemetryUtlCsvLink; break }
+                    Default {}
+                }
 
                 # Fetch CSV
                 # =========
@@ -933,13 +924,8 @@ Describe 'Module tests' -Tag 'Module' {
 
                 # Collect resource & compare
                 # ==========================
-                # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
-                if ($templateFileContent.resources.GetType().Name -eq 'Object[]') {
-                    $templateResources = $templateFileContent.resources
-                } else {
-                    $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
-                }
-                $telemetryDeploymentName = ($templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' }).name # The AVM telemetry prefix
+
+                $telemetryDeploymentName = $telemetryDeployment.name # The AVM telemetry prefix
                 $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
             }
         }
@@ -1015,6 +1001,11 @@ Describe 'Module tests' -Tag 'Module' {
                     [hashtable] $templateFileContent,
                     [string] $templateFilePath
                 )
+
+                if ($templateFileContent.resources.count -eq 0) {
+                    Set-ItResult -Skipped -Because 'with no resources are deployed in the template, the test is not required'
+                    return
+                }
 
                 $outputs = $templateFileContent.outputs.Keys
                 $deploymentScope = Get-ScopeOfTemplateFile -TemplateFilePath $templateFilePath
@@ -1122,8 +1113,9 @@ Describe 'Governance tests' {
     $governanceTestCases = [System.Collections.ArrayList] @()
     foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-        $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
-        $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}')[1]
+        $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
+        $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
+        $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[1]
 
         $isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
         if ($isTopLevelModule) {
@@ -1132,6 +1124,7 @@ Describe 'Governance tests' {
                 relativeModulePath = $relativeModulePath
                 repoRootPath       = $repoRootPath
                 moduleFolderName   = $resourceTypeIdentifier
+                moduleType         = $moduleType
             }
         }
     }
@@ -1213,13 +1206,16 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
                 $testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US'
                 foreach ($testFilePath in $testFilePaths) {
                     $testFileContent = Get-Content $testFilePath
-                    $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # 'avm/res|ptn/<provider>/<resourceType>' would return '<provider>/<resourceType>'
+                    $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
+                    $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
 
                     $deploymentTestFileTestCases += @{
-                        testName         = Split-Path (Split-Path $testFilePath) -Leaf
-                        testFilePath     = $testFilePath
-                        testFileContent  = $testFileContent
-                        moduleFolderName = $resourceTypeIdentifier
+                        testName                = Split-Path (Split-Path $testFilePath) -Leaf
+                        testFilePath            = $testFilePath
+                        testFileContent         = $testFileContent
+                        compiledTestFileContent = $builtTestFileMap[$testFilePath]
+                        moduleFolderName        = $resourceTypeIdentifier
+                        moduleType              = $moduleType
                     }
                 }
             }
@@ -1228,9 +1224,16 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
         It '[<moduleFolderName>] Bicep test deployment files should contain a parameter [serviceShort] for test case [<testName>]' -TestCases $deploymentTestFileTestCases {
 
             param(
-                [object[]] $testFileContent
+                [object[]] $testFileContent,
+                [hashtable] $compiledTestFileContent
             )
-      ($testFileContent -match "^param serviceShort string = '(.*)$") | Should -Not -BeNullOrEmpty -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*''].'
+
+            if ($compiledTestFileContent.resources.count -eq 0) {
+                Set-ItResult -Skipped -Because 'with no deployments in the test file, the test is not required.'
+                return
+            }
+
+            ($testFileContent -match "^param serviceShort string = '(.*)$") | Should -Not -BeNullOrEmpty -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*''].'
         }
 
         It '[<moduleFolderName>] [<testName>] Bicep test deployment files in a [defaults] folder should have a parameter [serviceShort] with a value ending with [min]' -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/](.+\.)?defaults[\\|\/].*' }) {
@@ -1277,7 +1280,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
             param(
                 [object[]] $testFileContent
             )
-      ($testFileContent | Out-String) | Should -Match 'metadata name = .+' -Because 'Test cases should contain a metadata string [name] in the format `metadata name = ''One cake of a name''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
+            ($testFileContent | Out-String) | Should -Match 'metadata name = .+' -Because 'Test cases should contain a metadata string [name] in the format `metadata name = ''One cake of a name''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
         }
 
         It '[<moduleFolderName>] Bicep test deployment files should contain a metadata string [description] for test case [<testName>]' -TestCases $deploymentTestFileTestCases {
@@ -1285,23 +1288,35 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
             param(
                 [object[]] $testFileContent
             )
-      ($testFileContent | Out-String) | Should -Match 'metadata description = .+' -Because 'Test cases should contain a metadata string [description] in the format `metadata description = ''The cake is a lie''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
+            ($testFileContent | Out-String) | Should -Match 'metadata description = .+' -Because 'Test cases should contain a metadata string [description] in the format `metadata description = ''The cake is a lie''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
         }
 
         It "[<moduleFolderName>] Bicep test deployment files should contain a parameter [namePrefix] with value ['#_namePrefix_#'] for test case [<testName>]" -TestCases $deploymentTestFileTestCases {
 
             param(
-                [object[]] $testFileContent
+                [object[]] $testFileContent,
+                [hashtable] $compiledTestFileContent
             )
 
-      ($testFileContent | Out-String) | Should -Match "param namePrefix string = '#_namePrefix_#'" -Because 'The test CI needs this value to ensure that deployed resources have unique names per fork.'
+            if ($compiledTestFileContent.resources.count -eq 0) {
+                Set-ItResult -Skipped -Because 'without deployments in the test file, the test is not required.'
+                return
+            }
+
+            ($testFileContent | Out-String) | Should -Match "param namePrefix string = '#_namePrefix_#'" -Because 'The test CI needs this value to ensure that deployed resources have unique names per fork.'
         }
 
         It "[<moduleFolderName>] Bicep test deployment files should invoke test like [`module testDeployment '../.*main.bicep' = [ or {`] for test case [<testName>]" -TestCases $deploymentTestFileTestCases {
 
             param(
-                [object[]] $testFileContent
+                [object[]] $testFileContent,
+                [hashtable] $compiledTestFileContent
             )
+
+            if ($compiledTestFileContent.resources.count -eq 0) {
+                Set-ItResult -Skipped -Because 'without deployments in the test file, the test is not required.'
+                return
+            }
 
             $testIndex = ($testFileContent | Select-String ("^module testDeployment '..\/.*main.bicep' = .*[\[|\{]$") | ForEach-Object { $_.LineNumber - 1 })[0]
 
@@ -1311,22 +1326,18 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
         It '[<moduleFolderName>] Bicep test deployment name should contain [`-test-`] for test case [<testName>]' -TestCases $deploymentTestFileTestCases {
 
             param(
-                [object[]] $testFileContent
+                [object[]] $testFileContent,
+                [hashtable] $compiledTestFileContent
             )
+
+            if ($compiledTestFileContent.resources.count -eq 0) {
+                Set-ItResult -Skipped -Because 'without deployments in the test file, the test is not required.'
+                return
+            }
 
             $expectedNameFormat = ($testFileContent | Out-String) -match '\s*name:.+-test-.+\s*'
 
             $expectedNameFormat | Should -Be $true -Because 'the handle ''-test-'' should be part of the module test invocation''s resource name to allow identification.'
-        }
-
-        It '[<moduleFolderName>] Bicep test deployment should have parameter [`serviceShort`] for test case [<testName>]' -TestCases $deploymentTestFileTestCases {
-
-            param(
-                [object[]] $testFileContent
-            )
-
-            $hasExpectedParam = ($testFileContent | Out-String) -match '\s*param\s+serviceShort\s+string\s*'
-            $hasExpectedParam | Should -Be $true
         }
     }
 }

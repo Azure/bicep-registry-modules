@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "9732417431098147370"
+      "version": "0.29.47.4906",
+      "templateHash": "18021918128213514276"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database.",
@@ -217,7 +217,7 @@
     },
     "zoneRedundant": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Whether or not this database is zone redundant."
       }
@@ -355,7 +355,7 @@
     },
     "maintenanceConfigurationId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Maintenance configuration ID assigned to the database. This configuration defines the period when the maintenance updates will occur."
       }
@@ -404,7 +404,7 @@
         "highAvailabilityReplicaCount": "[parameters('highAvailabilityReplicaCount')]",
         "requestedBackupStorageRedundancy": "[parameters('requestedBackupStorageRedundancy')]",
         "isLedgerOn": "[parameters('isLedgerOn')]",
-        "maintenanceConfigurationId": "[if(not(empty(parameters('maintenanceConfigurationId'))), parameters('maintenanceConfigurationId'), null())]",
+        "maintenanceConfigurationId": "[parameters('maintenanceConfigurationId')]",
         "elasticPoolId": "[parameters('elasticPoolId')]",
         "createMode": "[parameters('createMode')]",
         "sourceDatabaseId": "[if(not(empty(parameters('sourceDatabaseResourceId'))), parameters('sourceDatabaseResourceId'), null())]",
@@ -474,8 +474,12 @@
           "databaseName": {
             "value": "[parameters('name')]"
           },
-          "diffBackupIntervalInHours": "[if(contains(parameters('backupShortTermRetentionPolicy'), 'diffBackupIntervalInHours'), createObject('value', parameters('backupShortTermRetentionPolicy').diffBackupIntervalInHours), createObject('value', 24))]",
-          "retentionDays": "[if(contains(parameters('backupShortTermRetentionPolicy'), 'retentionDays'), createObject('value', parameters('backupShortTermRetentionPolicy').retentionDays), createObject('value', 7))]"
+          "diffBackupIntervalInHours": {
+            "value": "[coalesce(tryGet(parameters('backupShortTermRetentionPolicy'), 'diffBackupIntervalInHours'), 24)]"
+          },
+          "retentionDays": {
+            "value": "[coalesce(tryGet(parameters('backupShortTermRetentionPolicy'), 'retentionDays'), 7)]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -483,8 +487,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "2539756678143412969"
+              "version": "0.29.47.4906",
+              "templateHash": "8635162595153731245"
             },
             "name": "Azure SQL Server Database Short Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
@@ -574,10 +578,18 @@
           "databaseName": {
             "value": "[parameters('name')]"
           },
-          "weeklyRetention": "[if(contains(parameters('backupLongTermRetentionPolicy'), 'weeklyRetention'), createObject('value', parameters('backupLongTermRetentionPolicy').weeklyRetention), createObject('value', ''))]",
-          "monthlyRetention": "[if(contains(parameters('backupLongTermRetentionPolicy'), 'monthlyRetention'), createObject('value', parameters('backupLongTermRetentionPolicy').monthlyRetention), createObject('value', ''))]",
-          "yearlyRetention": "[if(contains(parameters('backupLongTermRetentionPolicy'), 'yearlyRetention'), createObject('value', parameters('backupLongTermRetentionPolicy').yearlyRetention), createObject('value', ''))]",
-          "weekOfYear": "[if(contains(parameters('backupLongTermRetentionPolicy'), 'weekOfYear'), createObject('value', parameters('backupLongTermRetentionPolicy').weekOfYear), createObject('value', 1))]"
+          "weeklyRetention": {
+            "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPolicy'), 'weeklyRetention'), '')]"
+          },
+          "monthlyRetention": {
+            "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPolicy'), 'monthlyRetention'), '')]"
+          },
+          "yearlyRetention": {
+            "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPolicy'), 'yearlyRetention'), '')]"
+          },
+          "weekOfYear": {
+            "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPolicy'), 'weekOfYear'), 1)]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -585,8 +597,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "10544886139268607584"
+              "version": "0.29.47.4906",
+              "templateHash": "2778016138108001251"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "13756500824845705848"
+      "version": "0.30.23.60470",
+      "templateHash": "1499507825797406827"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -43,6 +43,13 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            }
+          },
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
@@ -223,6 +230,146 @@
         }
       },
       "nullable": true
+    },
+    "activePassiveNoBgpType": {
+      "type": "object",
+      "properties": {
+        "clusterMode": {
+          "type": "string",
+          "allowedValues": [
+            "activePassiveNoBgp"
+          ]
+        }
+      }
+    },
+    "activeActiveNoBgpType": {
+      "type": "object",
+      "properties": {
+        "clusterMode": {
+          "type": "string",
+          "allowedValues": [
+            "activeActiveNoBgp"
+          ]
+        },
+        "existingSecondPipResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway."
+          }
+        },
+        "secondPipName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix."
+          }
+        }
+      }
+    },
+    "activePassiveBgpType": {
+      "type": "object",
+      "properties": {
+        "clusterMode": {
+          "type": "string",
+          "allowedValues": [
+            "activePassiveBgp"
+          ]
+        },
+        "asn": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 0,
+          "maxValue": 4294967295,
+          "metadata": {
+            "description": "Optional. The Autonomous System Number value. If it's not provided, a default '65515' value will be assigned to the ASN."
+          }
+        },
+        "customBgpIpAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration."
+          }
+        }
+      }
+    },
+    "activeActiveBgpType": {
+      "type": "object",
+      "properties": {
+        "clusterMode": {
+          "type": "string",
+          "allowedValues": [
+            "activeActiveBgp"
+          ]
+        },
+        "existingSecondPipResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway."
+          }
+        },
+        "secondPipName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix."
+          }
+        },
+        "asn": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 0,
+          "maxValue": 4294967295,
+          "metadata": {
+            "description": "Optional. The Autonomous System Number value. If it's not provided, a default '65515' value will be assigned to the ASN."
+          }
+        },
+        "customBgpIpAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration."
+          }
+        },
+        "secondCustomBgpIpAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration."
+          }
+        }
+      }
+    },
+    "clusterSettingType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "clusterMode",
+        "mapping": {
+          "activeActiveNoBgp": {
+            "$ref": "#/definitions/activeActiveNoBgpType"
+          },
+          "activeActiveBgp": {
+            "$ref": "#/definitions/activeActiveBgpType"
+          },
+          "activePassiveBgp": {
+            "$ref": "#/definitions/activePassiveBgpType"
+          },
+          "activePassiveNoBgp": {
+            "$ref": "#/definitions/activePassiveNoBgpType"
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -239,18 +386,18 @@
         "description": "Optional. Location for all resources."
       }
     },
-    "gatewayPipName": {
+    "existingFirstPipResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The Public IP resource ID to associate to the Virtual Network Gateway. If empty, then a new Public IP will be created and applied to the Virtual Network Gateway."
+      }
+    },
+    "firstPipName": {
       "type": "string",
       "defaultValue": "[format('{0}-pip1', parameters('name'))]",
       "metadata": {
-        "description": "Optional. Specifies the name of the Public IP used by the Virtual Network Gateway. If it's not provided, a '-pip' suffix will be appended to the gateway's name."
-      }
-    },
-    "activeGatewayPipName": {
-      "type": "string",
-      "defaultValue": "[format('{0}-pip2', parameters('name'))]",
-      "metadata": {
-        "description": "Optional. Specifies the name of the Public IP used by the Virtual Network Gateway when active-active configuration is required. If it's not provided, a '-pip' suffix will be appended to the gateway's name."
+        "description": "Optional. Specifies the name of the Public IP to be created for the Virtual Network Gateway. This will only take effect if no existing Public IP is provided. If neither an existing Public IP nor this parameter is specified, a new Public IP will be created with a default name, using the gateway's name with the '-pip1' suffix."
       }
     },
     "publicIPPrefixResourceId": {
@@ -262,7 +409,11 @@
     },
     "publicIpZones": {
       "type": "array",
-      "defaultValue": [],
+      "defaultValue": [
+        1,
+        2,
+        3
+      ],
       "metadata": {
         "description": "Optional. Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones."
       }
@@ -271,7 +422,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. DNS name(s) of the Public IP resource(s). If you enabled active-active configuration, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com."
+        "description": "Optional. DNS name(s) of the Public IP resource(s). If you enabled Active-Active mode, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com."
       }
     },
     "gatewayType": {
@@ -298,6 +449,7 @@
     },
     "skuName": {
       "type": "string",
+      "defaultValue": "[if(equals(parameters('gatewayType'), 'VPN'), 'VpnGw1AZ', 'ErGw1AZ')]",
       "allowedValues": [
         "Basic",
         "VpnGw1",
@@ -338,25 +490,10 @@
         "description": "Required. Virtual Network resource ID."
       }
     },
-    "activeActive": {
-      "type": "bool",
-      "defaultValue": true,
+    "clusterSettings": {
+      "$ref": "#/definitions/clusterSettingType",
       "metadata": {
-        "description": "Optional. Value to specify if the Gateway should be deployed in active-active or active-passive configuration."
-      }
-    },
-    "enableBgp": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Value to specify if BGP is enabled or not."
-      }
-    },
-    "asn": {
-      "type": "int",
-      "defaultValue": 65815,
-      "metadata": {
-        "description": "Optional. ASN value."
+        "description": "Required. Specifies one of the following four configurations: Active-Active with (clusterMode = activeActiveBgp) or without (clusterMode = activeActiveNoBgp) BGP, Active-Passive with (clusterMode = activePassiveBgp) or without (clusterMode = activePassiveNoBgp) BGP."
       }
     },
     "vpnClientAddressPoolPrefix": {
@@ -485,27 +622,28 @@
   "variables": {
     "copy": [
       {
-        "name": "zones",
-        "count": "[length(parameters('publicIpZones'))]",
-        "input": "[string(parameters('publicIpZones')[copyIndex('zones')])]"
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
     "gatewayPipAllocationMethod": "[if(equals(parameters('skuName'), 'Basic'), 'Dynamic', 'Static')]",
-    "isActiveActiveValid": "[if(not(equals(parameters('gatewayType'), 'ExpressRoute')), parameters('activeActive'), false())]",
-    "virtualGatewayPipNameVar": "[if(variables('isActiveActiveValid'), createArray(parameters('gatewayPipName'), parameters('activeGatewayPipName')), createArray(parameters('gatewayPipName')))]",
-    "vpnTypeVar": "[if(not(equals(parameters('gatewayType'), 'ExpressRoute')), parameters('vpnType'), 'PolicyBased')]",
-    "isBgpValid": "[if(not(equals(parameters('gatewayType'), 'ExpressRoute')), parameters('enableBgp'), false())]",
-    "bgpSettings": {
-      "asn": "[parameters('asn')]"
-    },
-    "ipConfiguration": "[if(variables('isActiveActiveValid'), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName')))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', if(variables('isActiveActiveValid'), resourceId('Microsoft.Network/publicIPAddresses', parameters('activeGatewayPipName')), resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName'))))), 'name', 'vNetGatewayConfig2')), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName')))), 'name', 'vNetGatewayConfig1')))]",
+    "isExpressRoute": "[equals(parameters('gatewayType'), 'ExpressRoute')]",
+    "vpnTypeVar": "[if(not(variables('isExpressRoute')), parameters('vpnType'), 'PolicyBased')]",
+    "isBgp": "[and(or(equals(parameters('clusterSettings').clusterMode, 'activeActiveBgp'), equals(parameters('clusterSettings').clusterMode, 'activePassiveBgp')), not(variables('isExpressRoute')))]",
+    "isActiveActive": "[and(or(equals(parameters('clusterSettings').clusterMode, 'activeActiveNoBgp'), equals(parameters('clusterSettings').clusterMode, 'activeActiveBgp')), not(variables('isExpressRoute')))]",
+    "existingSecondPipResourceIdVar": "[if(variables('isActiveActive'), tryGet(parameters('clusterSettings'), 'existingSecondPipResourceId'), null())]",
+    "secondPipNameVar": "[if(variables('isActiveActive'), coalesce(tryGet(parameters('clusterSettings'), 'secondPipName'), format('{0}-pip2', parameters('name'))), null())]",
+    "arrayPipNameVar": "[if(variables('isActiveActive'), concat(if(not(empty(parameters('existingFirstPipResourceId'))), createArray(), createArray(parameters('firstPipName'))), if(not(empty(variables('existingSecondPipResourceIdVar'))), createArray(), createArray(variables('secondPipNameVar')))), concat(if(not(empty(parameters('existingFirstPipResourceId'))), createArray(), createArray(parameters('firstPipName')))))]",
+    "bgpSettingsVar": "[if(variables('isActiveActive'), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))), createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'secondCustomBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig2', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))))]",
+    "ipConfiguration": "[if(variables('isActiveActive'), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('existingFirstPipResourceId'))), parameters('existingFirstPipResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('firstPipName'))))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', if(variables('isActiveActive'), if(not(empty(variables('existingSecondPipResourceIdVar'))), variables('existingSecondPipResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('secondPipNameVar'))), if(not(empty(parameters('existingFirstPipResourceId'))), parameters('existingFirstPipResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('firstPipName')))))), 'name', 'vNetGatewayConfig2')), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('existingFirstPipResourceId'))), parameters('existingFirstPipResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('firstPipName'))))), 'name', 'vNetGatewayConfig1')))]",
     "vpnClientConfiguration": "[if(not(empty(parameters('clientRootCertData'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'vpnClientRootCertificates', createArray(createObject('name', 'RootCert1', 'properties', createObject('publicCertData', parameters('clientRootCertData')))), 'vpnClientRevokedCertificates', if(not(empty(parameters('clientRevokedCertThumbprint'))), createArray(createObject('name', 'RevokedCert1', 'properties', createObject('thumbprint', parameters('clientRevokedCertThumbprint')))), null())), if(not(empty(parameters('vpnClientAadConfiguration'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'aadTenant', parameters('vpnClientAadConfiguration').aadTenant, 'aadAudience', parameters('vpnClientAadConfiguration').aadAudience, 'aadIssuer', parameters('vpnClientAadConfiguration').aadIssuer, 'vpnAuthenticationTypes', parameters('vpnClientAadConfiguration').vpnAuthenticationTypes, 'vpnClientProtocols', parameters('vpnClientAadConfiguration').vpnClientProtocols), null()))]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
@@ -538,13 +676,13 @@
       "tags": "[parameters('tags')]",
       "properties": {
         "ipConfigurations": "[variables('ipConfiguration')]",
-        "activeActive": "[variables('isActiveActiveValid')]",
+        "activeActive": "[variables('isActiveActive')]",
         "allowRemoteVnetTraffic": "[parameters('allowRemoteVnetTraffic')]",
         "allowVirtualWanTraffic": "[parameters('allowVirtualWanTraffic')]",
-        "enableBgp": "[variables('isBgpValid')]",
-        "bgpSettings": "[if(variables('isBgpValid'), variables('bgpSettings'), null())]",
+        "enableBgp": "[variables('isBgp')]",
+        "bgpSettings": "[if(variables('isBgp'), variables('bgpSettingsVar'), null())]",
         "disableIPSecReplayProtection": "[parameters('disableIPSecReplayProtection')]",
-        "enableDnsForwarding": "[if(equals(parameters('gatewayType'), 'ExpressRoute'), parameters('enableDnsForwarding'), null())]",
+        "enableDnsForwarding": "[if(not(variables('isExpressRoute')), parameters('enableDnsForwarding'), null())]",
         "enablePrivateIpAddress": "[parameters('enablePrivateIpAddress')]",
         "enableBgpRouteTranslationForNat": "[parameters('enableBgpRouteTranslationForNat')]",
         "gatewayType": "[parameters('gatewayType')]",
@@ -619,20 +757,20 @@
     "virtualNetworkGateway_roleAssignments": {
       "copy": {
         "name": "virtualNetworkGateway_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.Network/virtualNetworkGateways/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "virtualNetworkGateway"
@@ -641,13 +779,13 @@
     "publicIPAddress": {
       "copy": {
         "name": "publicIPAddress",
-        "count": "[length(variables('virtualGatewayPipNameVar'))]",
+        "count": "[length(variables('arrayPipNameVar'))]",
         "mode": "serial",
         "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[variables('virtualGatewayPipNameVar')[copyIndex()]]",
+      "name": "[variables('arrayPipNameVar')[copyIndex()]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -655,7 +793,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('virtualGatewayPipNameVar')[copyIndex()]]"
+            "value": "[variables('arrayPipNameVar')[copyIndex()]]"
           },
           "diagnosticSettings": {
             "value": "[parameters('publicIpDiagnosticSettings')]"
@@ -674,10 +812,10 @@
             "value": "[parameters('tags')]"
           },
           "skuName": "[if(equals(parameters('skuName'), 'Basic'), createObject('value', 'Basic'), createObject('value', 'Standard'))]",
-          "zones": "[if(not(equals(parameters('skuName'), 'Basic')), createObject('value', variables('zones')), createObject('value', createArray()))]",
+          "zones": "[if(not(equals(parameters('skuName'), 'Basic')), createObject('value', parameters('publicIpZones')), createObject('value', createArray()))]",
           "dnsSettings": {
             "value": {
-              "domainNameLabel": "[if(equals(length(variables('virtualGatewayPipNameVar')), length(parameters('domainNameLabel'))), parameters('domainNameLabel')[copyIndex()], variables('virtualGatewayPipNameVar')[copyIndex()])]",
+              "domainNameLabel": "[if(equals(length(variables('arrayPipNameVar')), length(parameters('domainNameLabel'))), parameters('domainNameLabel')[copyIndex()], variables('arrayPipNameVar')[copyIndex()])]",
               "domainNameLabelScope": ""
             }
           }
@@ -689,8 +827,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "11486686724612026983"
+              "version": "0.29.47.4906",
+              "templateHash": "14450344965065009842"
             },
             "name": "Public IP Addresses",
             "description": "This module deploys a Public IP Address.",
@@ -702,10 +840,17 @@
               "items": {
                 "type": "object",
                 "properties": {
+                  "name": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                    }
+                  },
                   "roleDefinitionIdOrName": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                     }
                   },
                   "principalId": {
@@ -739,7 +884,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -833,11 +978,15 @@
                   "type": "object",
                   "properties": {
                     "id": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource ID of the DDOS protection plan associated with the public IP address."
+                      }
                     }
                   },
+                  "nullable": true,
                   "metadata": {
-                    "description": "Required. The DDoS protection plan ID associated with the public IP address."
+                    "description": "Optional. The DDoS protection plan associated with the public IP address."
                   }
                 },
                 "protectionMode": {
@@ -881,12 +1030,19 @@
                           "metadata": {
                             "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
                           }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                          }
                         }
                       }
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
                     }
                   },
                   "metricCategories": {
@@ -899,12 +1055,19 @@
                           "metadata": {
                             "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
                           }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                          }
                         }
                       }
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                      "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
                     }
                   },
                   "logAnalyticsDestinationType": {
@@ -985,7 +1148,19 @@
             },
             "zones": {
               "type": "array",
-              "nullable": true,
+              "items": {
+                "type": "int"
+              },
+              "defaultValue": [
+                1,
+                2,
+                3
+              ],
+              "allowedValues": [
+                1,
+                2,
+                3
+              ],
               "metadata": {
                 "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from."
               }
@@ -1053,7 +1228,7 @@
             "roleAssignments": {
               "$ref": "#/definitions/roleAssignmentType",
               "metadata": {
-                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                "description": "Optional. Array of role assignments to create."
               }
             },
             "enableTelemetry": {
@@ -1085,6 +1260,13 @@
             }
           },
           "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
@@ -1102,8 +1284,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1121,7 +1303,7 @@
             },
             "publicIpAddress": {
               "type": "Microsoft.Network/publicIPAddresses",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2023-09-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1129,7 +1311,7 @@
                 "name": "[parameters('skuName')]",
                 "tier": "[parameters('skuTier')]"
               },
-              "zones": "[parameters('zones')]",
+              "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
               "properties": {
                 "ddosSettings": "[parameters('ddosSettings')]",
                 "dnsSettings": "[parameters('dnsSettings')]",
@@ -1137,7 +1319,7 @@
                 "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
                 "publicIPPrefix": "[if(not(empty(parameters('publicIpPrefixResourceId'))), createObject('id', parameters('publicIpPrefixResourceId')), null())]",
                 "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
-                "ipTags": []
+                "ipTags": null
               }
             },
             "publicIpAddress_lock": {
@@ -1157,20 +1339,20 @@
             "publicIpAddress_roleAssignments": {
               "copy": {
                 "name": "publicIpAddress_roleAssignments",
-                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', parameters('name'))]",
-              "name": "[guid(resourceId('Microsoft.Network/publicIPAddresses', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/publicIPAddresses', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
-                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               },
               "dependsOn": [
                 "publicIpAddress"
@@ -1186,12 +1368,30 @@
               "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
+                "copy": [
+                  {
+                    "name": "metrics",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                    "input": {
+                      "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                      "timeGrain": null
+                    }
+                  },
+                  {
+                    "name": "logs",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                    "input": {
+                      "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                      "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                    }
+                  }
+                ],
                 "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
                 "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
                 "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
                 "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-                "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
-                "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())))]",
                 "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
                 "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
               },
@@ -1227,14 +1427,14 @@
               "metadata": {
                 "description": "The public IP address of the public IP address resource."
               },
-              "value": "[if(contains(reference('publicIpAddress'), 'ipAddress'), reference('publicIpAddress').ipAddress, '')]"
+              "value": "[coalesce(tryGet(reference('publicIpAddress'), 'ipAddress'), '')]"
             },
             "location": {
               "type": "string",
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('publicIpAddress', '2023-04-01', 'full').location]"
+              "value": "[reference('publicIpAddress', '2023-09-01', 'full').location]"
             }
           }
         }
@@ -1260,11 +1460,21 @@
           "virtualNetworkGatewayName": {
             "value": "[parameters('name')]"
           },
-          "externalMappings": "[if(contains(parameters('natRules')[copyIndex()], 'externalMappings'), createObject('value', parameters('natRules')[copyIndex()].externalMappings), createObject('value', createArray()))]",
-          "internalMappings": "[if(contains(parameters('natRules')[copyIndex()], 'internalMappings'), createObject('value', parameters('natRules')[copyIndex()].internalMappings), createObject('value', createArray()))]",
-          "ipConfigurationId": "[if(contains(parameters('natRules')[copyIndex()], 'ipConfigurationId'), createObject('value', parameters('natRules')[copyIndex()].ipConfigurationId), createObject('value', ''))]",
-          "mode": "[if(contains(parameters('natRules')[copyIndex()], 'mode'), createObject('value', parameters('natRules')[copyIndex()].mode), createObject('value', ''))]",
-          "type": "[if(contains(parameters('natRules')[copyIndex()], 'type'), createObject('value', parameters('natRules')[copyIndex()].type), createObject('value', ''))]"
+          "externalMappings": {
+            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'externalMappings'), createArray())]"
+          },
+          "internalMappings": {
+            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'internalMappings'), createArray())]"
+          },
+          "ipConfigurationId": {
+            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'ipConfigurationId'), '')]"
+          },
+          "mode": {
+            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'mode'), '')]"
+          },
+          "type": {
+            "value": "[coalesce(tryGet(parameters('natRules')[copyIndex()], 'type'), '')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1272,8 +1482,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "14162654774301828518"
+              "version": "0.30.23.60470",
+              "templateHash": "15500017864202979057"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a Virtual Network Gateway NAT Rule.",
@@ -1407,7 +1617,7 @@
     "activeActive": {
       "type": "bool",
       "metadata": {
-        "description": "Shows if the virtual network gateway is configured in active-active mode."
+        "description": "Shows if the virtual network gateway is configured in Active-Active mode."
       },
       "value": "[reference('virtualNetworkGateway').activeActive]"
     },

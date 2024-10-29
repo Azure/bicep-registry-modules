@@ -9,19 +9,17 @@ metadata description = 'This instance deploys the module in alignment with the b
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-// e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
 param resourceGroupName string = 'dep-${namePrefix}-documentdb.databaseaccounts-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-// e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
 param serviceShort string = 'dddawaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-// Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
+// The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'eastasia'
+var enforcedLocation = 'eastus2'
 
 // ============ //
 // Dependencies //
@@ -84,9 +82,13 @@ module testDeployment '../../../main.bicep' = {
     ]
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+            }
+          ]
+        }
         service: 'Sql'
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
         tags: {
@@ -116,8 +118,4 @@ module testDeployment '../../../main.bicep' = {
       Role: 'DeploymentValidation'
     }
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
 }

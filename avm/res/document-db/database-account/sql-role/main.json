@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "6438933554145929110"
+      "version": "0.30.23.60470",
+      "templateHash": "13088569006752107887"
     },
     "name": "DocumentDB Database Account SQL Role.",
     "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account.",
@@ -91,8 +91,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "5774063578247320117"
+              "version": "0.30.23.60470",
+              "templateHash": "5054354703268051893"
             },
             "name": "DocumentDB Database Account SQL Role Definitions.",
             "description": "This module deploys a SQL Role Definision in a CosmosDB Account.",
@@ -212,8 +212,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "4968352550056104037"
+              "version": "0.30.23.60470",
+              "templateHash": "4561927123418147924"
             },
             "name": "DocumentDB Database Account SQL Role Assignments.",
             "description": "This module deploys a SQL Role Assignment in a CosmosDB Account.",
@@ -236,7 +236,7 @@
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Required. Id needs to be granted."
+                "description": "Optional. Id needs to be granted."
               }
             },
             "roleDefinitionId": {

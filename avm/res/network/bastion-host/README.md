@@ -18,7 +18,7 @@ This module deploys a Bastion Host.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/bastionHosts` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/bastionHosts) |
+| `Microsoft.Network/bastionHosts` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/bastionHosts) |
 | `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 
 ## Usage examples
@@ -32,7 +32,8 @@ The following section provides usage examples for the module, which were used to
 - [With a custom public IP address deployed by the module](#example-1-with-a-custom-public-ip-address-deployed-by-the-module)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Private-only deployment](#example-4-private-only-deployment)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _With a custom public IP address deployed by the module_
 
@@ -99,7 +100,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -164,6 +165,61 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/bastion-host:<version>'
+
+// Required parameters
+param name = 'nbhctmpip001'
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+// Non-required parameters
+param location = '<location>'
+param publicIPAddressObject = {
+  allocationMethod: 'Static'
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      metricCategories: [
+        {
+          category: 'AllMetrics'
+        }
+      ]
+      name: 'customSetting'
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+  name: 'nbhctmpip001-pip'
+  publicIPPrefixResourceId: ''
+  roleAssignments: [
+    {
+      principalId: '<principalId>'
+      principalType: 'ServicePrincipal'
+      roleDefinitionIdOrName: 'Reader'
+    }
+  ]
+  skuName: 'Standard'
+  skuTier: 'Regional'
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+  zones: [
+    1
+    2
+    3
+  ]
+}
+```
+
+</details>
+<p>
+
 ### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -191,7 +247,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -211,6 +267,23 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/bastion-host:<version>'
+
+// Required parameters
+param name = 'nbhmin001'
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -254,11 +327,13 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     }
     roleAssignments: [
       {
+        name: 'a9329bd8-d7c8-4915-9dfe-04197fa5bf45'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -276,6 +351,11 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    zones: [
+      1
+      2
+      3
+    ]
   }
 }
 ```
@@ -285,7 +365,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -338,11 +418,13 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "a9329bd8-d7c8-4915-9dfe-04197fa5bf45",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -366,6 +448,13 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "zones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
     }
   }
 }
@@ -374,7 +463,157 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/bastion-host:<version>'
+
+// Required parameters
+param name = 'nbhmax001'
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+// Non-required parameters
+param bastionSubnetPublicIpResourceId = '<bastionSubnetPublicIpResourceId>'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableCopyPaste = true
+param enableFileCopy = false
+param enableIpConnect = false
+param enableShareableLink = false
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'a9329bd8-d7c8-4915-9dfe-04197fa5bf45'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param scaleUnits = 4
+param skuName = 'Standard'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param zones = [
+  1
+  2
+  3
+]
+```
+
+</details>
+<p>
+
+### Example 4: _Private-only deployment_
+
+This instance deploys the module as private-only Bastion deployment.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
+  name: 'bastionHostDeployment'
+  params: {
+    // Required parameters
+    name: 'nbhprv001'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+    // Non-required parameters
+    enablePrivateOnlyBastion: true
+    enableSessionRecording: true
+    location: '<location>'
+    skuName: 'Premium'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nbhprv001"
+    },
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
+    },
+    // Non-required parameters
+    "enablePrivateOnlyBastion": {
+      "value": true
+    },
+    "enableSessionRecording": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "skuName": {
+      "value": "Premium"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/bastion-host:<version>'
+
+// Required parameters
+param name = 'nbhprv001'
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+// Non-required parameters
+param enablePrivateOnlyBastion = true
+param enableSessionRecording = true
+param location = '<location>'
+param skuName = 'Premium'
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -422,7 +661,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -486,6 +725,43 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/bastion-host:<version>'
+
+// Required parameters
+param name = 'nbhwaf001'
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+// Non-required parameters
+param bastionSubnetPublicIpResourceId = '<bastionSubnetPublicIpResourceId>'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableCopyPaste = true
+param enableFileCopy = false
+param enableIpConnect = false
+param enableShareableLink = false
+param location = '<location>'
+param scaleUnits = 4
+param skuName = 'Standard'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -500,21 +776,24 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`bastionSubnetPublicIpResourceId`](#parameter-bastionsubnetpublicipresourceid) | string | The Public IP resource ID to associate to the azureBastionSubnet. If empty, then the Public IP that is created as part of this module will be applied to the azureBastionSubnet. |
+| [`bastionSubnetPublicIpResourceId`](#parameter-bastionsubnetpublicipresourceid) | string | The Public IP resource ID to associate to the azureBastionSubnet. If empty, then the Public IP that is created as part of this module will be applied to the azureBastionSubnet. This parameter is ignored when enablePrivateOnlyBastion is true. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`disableCopyPaste`](#parameter-disablecopypaste) | bool | Choose to disable or enable Copy Paste. |
-| [`enableFileCopy`](#parameter-enablefilecopy) | bool | Choose to disable or enable File Copy. |
-| [`enableIpConnect`](#parameter-enableipconnect) | bool | Choose to disable or enable IP Connect. |
+| [`disableCopyPaste`](#parameter-disablecopypaste) | bool | Choose to disable or enable Copy Paste. For Basic SKU Copy/Paste is always enabled. |
+| [`enableFileCopy`](#parameter-enablefilecopy) | bool | Choose to disable or enable File Copy. Not supported for Basic SKU. |
+| [`enableIpConnect`](#parameter-enableipconnect) | bool | Choose to disable or enable IP Connect. Not supported for Basic SKU. |
 | [`enableKerberos`](#parameter-enablekerberos) | bool | Choose to disable or enable Kerberos authentication. |
-| [`enableShareableLink`](#parameter-enableshareablelink) | bool | Choose to disable or enable Shareable Link. |
+| [`enablePrivateOnlyBastion`](#parameter-enableprivateonlybastion) | bool | Choose to disable or enable Private-only Bastion deployment. The Premium SKU is required for this feature. |
+| [`enableSessionRecording`](#parameter-enablesessionrecording) | bool | Choose to disable or enable Session Recording feature. The Premium SKU is required for this feature. If Session Recording is enabled, the Native client support will be disabled. |
+| [`enableShareableLink`](#parameter-enableshareablelink) | bool | Choose to disable or enable Shareable Link. Not supported for Basic SKU. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`publicIPAddressObject`](#parameter-publicipaddressobject) | object | Specifies the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided. |
+| [`publicIPAddressObject`](#parameter-publicipaddressobject) | object | Specifies the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided. This parameter is ignored when enablePrivateOnlyBastion is true. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`scaleUnits`](#parameter-scaleunits) | int | The scale units for the Bastion Host resource. |
+| [`scaleUnits`](#parameter-scaleunits) | int | The scale units for the Bastion Host resource. The Basic SKU only supports 2 scale units. |
 | [`skuName`](#parameter-skuname) | string | The SKU of this Bastion Host. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`zones`](#parameter-zones) | array | A list of availability zones denoting where the Bastion Host resource needs to come from. |
 
 ### Parameter: `name`
 
@@ -532,7 +811,7 @@ Shared services Virtual Network resource Id.
 
 ### Parameter: `bastionSubnetPublicIpResourceId`
 
-The Public IP resource ID to associate to the azureBastionSubnet. If empty, then the Public IP that is created as part of this module will be applied to the azureBastionSubnet.
+The Public IP resource ID to associate to the azureBastionSubnet. If empty, then the Public IP that is created as part of this module will be applied to the azureBastionSubnet. This parameter is ignored when enablePrivateOnlyBastion is true.
 
 - Required: No
 - Type: string
@@ -652,7 +931,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 ### Parameter: `disableCopyPaste`
 
-Choose to disable or enable Copy Paste.
+Choose to disable or enable Copy Paste. For Basic SKU Copy/Paste is always enabled.
 
 - Required: No
 - Type: bool
@@ -660,7 +939,7 @@ Choose to disable or enable Copy Paste.
 
 ### Parameter: `enableFileCopy`
 
-Choose to disable or enable File Copy.
+Choose to disable or enable File Copy. Not supported for Basic SKU.
 
 - Required: No
 - Type: bool
@@ -668,7 +947,7 @@ Choose to disable or enable File Copy.
 
 ### Parameter: `enableIpConnect`
 
-Choose to disable or enable IP Connect.
+Choose to disable or enable IP Connect. Not supported for Basic SKU.
 
 - Required: No
 - Type: bool
@@ -682,9 +961,25 @@ Choose to disable or enable Kerberos authentication.
 - Type: bool
 - Default: `False`
 
+### Parameter: `enablePrivateOnlyBastion`
+
+Choose to disable or enable Private-only Bastion deployment. The Premium SKU is required for this feature.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableSessionRecording`
+
+Choose to disable or enable Session Recording feature. The Premium SKU is required for this feature. If Session Recording is enabled, the Native client support will be disabled.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `enableShareableLink`
 
-Choose to disable or enable Shareable Link.
+Choose to disable or enable Shareable Link. Not supported for Basic SKU.
 
 - Required: No
 - Type: bool
@@ -744,7 +1039,7 @@ Specify the name of lock.
 
 ### Parameter: `publicIPAddressObject`
 
-Specifies the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided.
+Specifies the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided. This parameter is ignored when enablePrivateOnlyBastion is true.
 
 - Required: No
 - Type: object
@@ -761,6 +1056,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -777,6 +1078,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -827,6 +1129,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -846,7 +1155,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `scaleUnits`
 
-The scale units for the Bastion Host resource.
+The scale units for the Bastion Host resource. The Basic SKU only supports 2 scale units.
 
 - Required: No
 - Type: int
@@ -863,6 +1172,7 @@ The SKU of this Bastion Host.
   ```Bicep
   [
     'Basic'
+    'Premium'
     'Standard'
   ]
   ```
@@ -874,6 +1184,21 @@ Tags of the resource.
 - Required: No
 - Type: object
 
+### Parameter: `zones`
+
+A list of availability zones denoting where the Bastion Host resource needs to come from.
+
+- Required: No
+- Type: array
+- Default: `[]`
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ## Outputs
 
@@ -891,7 +1216,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/public-ip-address:0.4.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.6.0` | Remote reference |
 
 ## Data Collection
 

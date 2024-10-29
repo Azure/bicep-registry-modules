@@ -8,7 +8,6 @@ This module deploys an Azure Compute Gallery (formerly known as Shared Image Gal
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -59,7 +58,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -76,6 +75,22 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/gallery:<version>'
+
+// Required parameters
+param name = 'cgmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -106,9 +121,20 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         name: 'cgmax-appd-002'
         roleAssignments: [
           {
+            name: '4ef8d3d3-54be-4522-92c3-284977292d87'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         supportedOSType: 'Windows'
@@ -180,7 +206,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           product: 'testProduct'
           publisher: 'testPublisher'
         }
-        securityType: 'TrustedLaunch'
+        securityType: 'Standard'
         vCPUs: {
           max: 8
           min: 2
@@ -270,11 +296,13 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     }
     roleAssignments: [
       {
+        name: '3bd58a78-108d-4f87-b404-0a03e49303d8'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -299,7 +327,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -321,9 +349,20 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           "name": "cgmax-appd-002",
           "roleAssignments": [
             {
+              "name": "4ef8d3d3-54be-4522-92c3-284977292d87",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "supportedOSType": "Windows"
@@ -397,7 +436,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
             "product": "testProduct",
             "publisher": "testPublisher"
           },
-          "securityType": "TrustedLaunch",
+          "securityType": "Standard",
           "vCPUs": {
             "max": 8,
             "min": 2
@@ -493,11 +532,13 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "3bd58a78-108d-4f87-b404-0a03e49303d8",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -517,6 +558,227 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/gallery:<version>'
+
+// Required parameters
+param name = 'cgmax001'
+// Non-required parameters
+param applications = [
+  {
+    name: 'cgmax-appd-001'
+    supportedOSType: 'Linux'
+  }
+  {
+    name: 'cgmax-appd-002'
+    roleAssignments: [
+      {
+        name: '4ef8d3d3-54be-4522-92c3-284977292d87'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    supportedOSType: 'Windows'
+  }
+]
+param images = [
+  {
+    architecture: 'x64'
+    description: 'testDescription'
+    endOfLife: '2033-01-01'
+    eula: 'test Eula'
+    excludedDiskTypes: [
+      'Standard_LRS'
+    ]
+    hyperVGeneration: 'V1'
+    identifier: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+    }
+    name: 'az-imgd-ws-001'
+    osState: 'Generalized'
+    osType: 'Windows'
+    privacyStatementUri: 'https://testPrivacyStatementUri.com'
+    purchasePlan: {
+      name: 'testPlanName1'
+      product: 'testProduct1'
+      publisher: 'testPublisher1'
+    }
+    releaseNoteUri: 'https://testReleaseNoteUri.com'
+  }
+  {
+    hyperVGeneration: 'V2'
+    identifier: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition-hibernate'
+    }
+    isAcceleratedNetworkSupported: false
+    isHibernateSupported: true
+    memory: {
+      max: 16
+      min: 4
+    }
+    name: 'az-imgd-ws-002'
+    osState: 'Generalized'
+    osType: 'Windows'
+    vCPUs: {
+      max: 8
+      min: 2
+    }
+  }
+  {
+    hyperVGeneration: 'V2'
+    identifier: {
+      offer: 'WindowsDesktop'
+      publisher: 'MicrosoftWindowsDesktop'
+      sku: 'Win11-21H2'
+    }
+    memory: {
+      max: 16
+      min: 4
+    }
+    name: 'az-imgd-wdtl-003'
+    osState: 'Generalized'
+    osType: 'Windows'
+    purchasePlan: {
+      name: 'testPlanName'
+      product: 'testProduct'
+      publisher: 'testPublisher'
+    }
+    securityType: 'Standard'
+    vCPUs: {
+      max: 8
+      min: 2
+    }
+  }
+  {
+    hyperVGeneration: 'V2'
+    identifier: {
+      offer: '0001-com-ubuntu-minimal-focal'
+      publisher: 'canonical'
+      sku: '22_04-lts-gen2'
+    }
+    isAcceleratedNetworkSupported: false
+    memory: {
+      max: 32
+      min: 4
+    }
+    name: 'az-imgd-us-004'
+    osState: 'Generalized'
+    osType: 'Linux'
+    vCPUs: {
+      max: 4
+      min: 1
+    }
+  }
+  {
+    hyperVGeneration: 'V2'
+    identifier: {
+      offer: '0001-com-ubuntu-minimal-focal'
+      publisher: 'canonical'
+      sku: '20_04-lts-gen2'
+    }
+    isAcceleratedNetworkSupported: true
+    memory: {
+      max: 32
+      min: 4
+    }
+    name: 'az-imgd-us-005'
+    osState: 'Generalized'
+    osType: 'Linux'
+    vCPUs: {
+      max: 4
+      min: 1
+    }
+  }
+  {
+    architecture: 'x64'
+    description: 'testDescription'
+    endOfLife: '2033-01-01'
+    eula: 'test Eula'
+    excludedDiskTypes: [
+      'Standard_LRS'
+    ]
+    hyperVGeneration: 'V2'
+    identifier: {
+      offer: '0001-com-ubuntu-server-focal'
+      publisher: 'canonical'
+      sku: '20_04-lts-gen2'
+    }
+    isAcceleratedNetworkSupported: false
+    isHibernateSupported: true
+    memory: {
+      max: 32
+      min: 4
+    }
+    name: 'az-imgd-us-006'
+    osState: 'Generalized'
+    osType: 'Linux'
+    privacyStatementUri: 'https://testPrivacyStatementUri.com'
+    purchasePlan: {
+      name: 'testPlanName'
+      product: 'testProduct'
+      publisher: 'testPublisher'
+    }
+    releaseNoteUri: 'https://testReleaseNoteUri.com'
+    securityType: 'TrustedLaunch'
+    vCPUs: {
+      max: 4
+      min: 1
+    }
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: '3bd58a78-108d-4f87-b404-0a03e49303d8'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -572,7 +834,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -623,6 +885,44 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/gallery:<version>'
+
+// Required parameters
+param name = 'cgwaf001'
+// Non-required parameters
+param applications = [
+  {
+    name: 'cgwaf-appd-001'
+    supportedOSType: 'Windows'
+  }
+]
+param images = [
+  {
+    identifier: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+    }
+    name: 'az-imgd-ws-001'
+    osState: 'Generalized'
+    osType: 'Windows'
+  }
+]
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -943,6 +1243,8 @@ The security type of the image. Requires a hyperVGeneration V2. Defaults to `Sta
     'ConfidentialVMSupported'
     'Standard'
     'TrustedLaunch'
+    'TrustedLaunchAndConfidentialVmSupported'
+    'TrustedLaunchSupported'
   ]
   ```
 
@@ -1024,6 +1326,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Compute Gallery Sharing Admin'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1040,6 +1349,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1090,6 +1400,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -1135,7 +1452,6 @@ Tags for all resources.
   }
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1145,10 +1461,6 @@ Tags for all resources.
 | `name` | string | The name of the deployed image gallery. |
 | `resourceGroupName` | string | The resource group of the deployed image gallery. |
 | `resourceId` | string | The resource ID of the deployed image gallery. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

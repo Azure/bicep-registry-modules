@@ -7,8 +7,6 @@ This module deploys a Log Analytics Workspace Data Source.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -22,7 +20,6 @@ This module deploys a Log Analytics Workspace Data Source.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-kind) | string | The kind of the DataSource. |
 | [`name`](#parameter-name) | string | Name of the solution. |
 
 **Conditional parameters**
@@ -40,6 +37,7 @@ This module deploys a Log Analytics Workspace Data Source.
 | [`eventTypes`](#parameter-eventtypes) | array | Windows event types to configure when kind is WindowsEvent. |
 | [`instanceName`](#parameter-instancename) | string | Name of the instance to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject. |
 | [`intervalSeconds`](#parameter-intervalseconds) | int | Interval in seconds to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject. |
+| [`kind`](#parameter-kind) | string | The kind of the DataSource. |
 | [`linkedResourceId`](#parameter-linkedresourceid) | string | Resource ID of the resource to be linked. |
 | [`objectName`](#parameter-objectname) | string | Name of the object to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject. |
 | [`performanceCounters`](#parameter-performancecounters) | array | List of counters to configure when the kind is LinuxPerformanceObject. |
@@ -47,27 +45,6 @@ This module deploys a Log Analytics Workspace Data Source.
 | [`syslogName`](#parameter-syslogname) | string | System log to configure when kind is LinuxSyslog. |
 | [`syslogSeverities`](#parameter-syslogseverities) | array | Severities to configure when kind is LinuxSyslog. |
 | [`tags`](#parameter-tags) | object | Tags to configure in the resource. |
-
-### Parameter: `kind`
-
-The kind of the DataSource.
-
-- Required: No
-- Type: string
-- Default: `'AzureActivityLog'`
-- Allowed:
-  ```Bicep
-  [
-    'AzureActivityLog'
-    'IISLogs'
-    'LinuxPerformanceCollection'
-    'LinuxPerformanceObject'
-    'LinuxSyslog'
-    'LinuxSyslogCollection'
-    'WindowsEvent'
-    'WindowsPerformanceCounter'
-  ]
-  ```
 
 ### Parameter: `name`
 
@@ -122,6 +99,27 @@ Interval in seconds to configure when kind is WindowsPerformanceCounter or Linux
 - Required: No
 - Type: int
 - Default: `60`
+
+### Parameter: `kind`
+
+The kind of the DataSource.
+
+- Required: No
+- Type: string
+- Default: `'AzureActivityLog'`
+- Allowed:
+  ```Bicep
+  [
+    'AzureActivityLog'
+    'IISLogs'
+    'LinuxPerformanceCollection'
+    'LinuxPerformanceObject'
+    'LinuxSyslog'
+    'LinuxSyslogCollection'
+    'WindowsEvent'
+    'WindowsPerformanceCounter'
+  ]
+  ```
 
 ### Parameter: `linkedResourceId`
 
@@ -178,7 +176,6 @@ Tags to configure in the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -186,11 +183,3 @@ Tags to configure in the resource.
 | `name` | string | The name of the deployed data source. |
 | `resourceGroupName` | string | The resource group where the data source is deployed. |
 | `resourceId` | string | The resource ID of the deployed data source. |
-
-## Cross-referenced modules
-
-_None_
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

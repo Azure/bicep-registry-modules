@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "12924779272926798782"
+      "version": "0.30.23.60470",
+      "templateHash": "4561927123418147924"
     },
     "name": "DocumentDB Database Account SQL Role Assignments.",
     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account.",
@@ -28,7 +28,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Required. Id needs to be granted."
+        "description": "Optional. Id needs to be granted."
       }
     },
     "roleDefinitionId": {

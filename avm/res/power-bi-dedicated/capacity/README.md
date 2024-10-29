@@ -8,7 +8,6 @@ This module deploys a Power BI Dedicated Capacity.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -63,7 +62,7 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -90,6 +89,28 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/power-bi-dedicated/capacity:<version>'
+
+// Required parameters
+param members = [
+  '<managedIdentityPrincipalId>'
+]
+param name = 'pbdcapmin001'
+param sku = {
+  capacity: 1
+}
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -156,7 +177,7 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -225,6 +246,57 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/power-bi-dedicated/capacity:<version>'
+
+// Required parameters
+param members = [
+  '<managedIdentityPrincipalId>'
+]
+param name = 'pbdcapmax001'
+param sku = {
+  capacity: 1
+  name: 'A1'
+  tier: 'PBIE_Azure'
+}
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param mode = 'Gen2'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
@@ -266,7 +338,7 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -311,6 +383,36 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/power-bi-dedicated/capacity:<version>'
+
+// Required parameters
+param members = [
+  '<managedIdentityPrincipalId>'
+]
+param name = 'pbdcapwaf001'
+param sku = {
+  capacity: 1
+}
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -480,6 +582,14 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Log Analytics Contributor'`
+  - `'Log Analytics Reader'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -570,7 +680,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -579,10 +688,6 @@ Tags of the resource.
 | `name` | string | The Name of the PowerBi Embedded instance. |
 | `resourceGroupName` | string | The name of the resource group the PowerBi Embedded was created in. |
 | `resourceId` | string | The resource ID of the PowerBi Embedded instance. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

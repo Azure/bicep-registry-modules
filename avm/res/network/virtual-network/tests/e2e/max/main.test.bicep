@@ -97,7 +97,22 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
-          roleDefinitionIdOrName: 'Reader'
+          name: 'f5c27a7b-9b18-4dc1-b002-db3c38e80b64'
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
@@ -114,31 +129,33 @@ module testDeployment '../../../main.bicep' = [
           networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
           roleAssignments: [
             {
-              roleDefinitionIdOrName: 'Reader'
+              roleDefinitionIdOrName: 'Owner'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId(
+                'Microsoft.Authorization/roleDefinitions',
+                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              )
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
           ]
           routeTableResourceId: nestedDependencies.outputs.routeTableResourceId
           serviceEndpoints: [
-            {
-              service: 'Microsoft.Storage'
-            }
-            {
-              service: 'Microsoft.Sql'
-            }
+            'Microsoft.Storage'
+            'Microsoft.Sql'
           ]
         }
         {
           addressPrefix: cidrSubnet(addressPrefix, 24, 2)
-          delegations: [
-            {
-              name: 'netappDel'
-              properties: {
-                serviceName: 'Microsoft.Netapp/volumes'
-              }
-            }
-          ]
+          delegation: 'Microsoft.Netapp/volumes'
           name: '${namePrefix}-az-subnet-x-002'
           networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
         }
@@ -172,9 +189,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

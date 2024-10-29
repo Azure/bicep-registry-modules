@@ -26,8 +26,8 @@ This module deploys an Event Grid Namespace.
 | `Microsoft.EventGrid/namespaces/topics/eventSubscriptions` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/topics/eventSubscriptions) |
 | `Microsoft.EventGrid/namespaces/topicSpaces` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/topicSpaces) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -40,7 +40,7 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
 - [MQTT Broker with routing to a namespace topic](#example-3-mqtt-broker-with-routing-to-a-namespace-topic)
-- [MQTT Broker with routing to a namespace topic](#example-4-mqtt-broker-with-routing-to-a-namespace-topic)
+- [MQTT Broker with routing to a custom topic](#example-4-mqtt-broker-with-routing-to-a-custom-topic)
 - [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -69,7 +69,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -86,6 +86,22 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/namespace:<version>'
+
+// Required parameters
+param name = 'egnmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -134,9 +150,13 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
     }
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -145,19 +165,25 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         subnetResourceId: '<subnetResourceId>'
       }
     ]
     roleAssignments: [
       {
+        name: 'bde32b53-e30c-41d0-a338-c637853fe524'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -289,7 +315,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -337,9 +363,13 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -348,9 +378,13 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -358,11 +392,13 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "bde32b53-e30c-41d0-a338-c637853fe524",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -492,6 +528,204 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/namespace:<version>'
+
+// Required parameters
+param name = 'egnmax001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    name: 'bde32b53-e30c-41d0-a338-c637853fe524'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param topics = [
+  {
+    eventRetentionInDays: 7
+    eventSubscriptions: [
+      {
+        deliveryConfiguration: {
+          deliveryMode: 'Queue'
+          queue: {
+            eventTimeToLive: 'P7D'
+            maxDeliveryCount: 10
+            receiveLockDurationInSeconds: 60
+          }
+        }
+        name: 'subscription1'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+      }
+      {
+        deliveryConfiguration: {
+          deliveryMode: 'Push'
+          push: {
+            deliveryWithResourceIdentity: {
+              destination: {
+                endpointType: 'EventHub'
+                properties: {
+                  deliveryAttributeMappings: [
+                    {
+                      name: 'StaticHeader1'
+                      properties: {
+                        isSecret: false
+                        value: 'staticVaule'
+                      }
+                      type: 'Static'
+                    }
+                    {
+                      name: 'DynamicHeader1'
+                      properties: {
+                        sourceField: 'id'
+                      }
+                      type: 'Dynamic'
+                    }
+                    {
+                      name: 'StaticSecretHeader1'
+                      properties: {
+                        isSecret: true
+                        value: 'Hidden'
+                      }
+                      type: 'Static'
+                    }
+                  ]
+                  resourceId: '<resourceId>'
+                }
+              }
+              identity: {
+                type: 'UserAssigned'
+                userAssignedIdentity: '<userAssignedIdentity>'
+              }
+            }
+            eventTimeToLive: 'P7D'
+            maxDeliveryCount: 10
+          }
+        }
+        name: 'subscription2'
+      }
+    ]
+    name: 'topic1'
+  }
+  {
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    name: 'topic2'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+  }
+]
 ```
 
 </details>
@@ -654,7 +888,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -833,9 +1067,156 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 </details>
 <p>
 
-### Example 4: _MQTT Broker with routing to a namespace topic_
+<details>
 
-This instance deploys the module as a MQTT Broker with routing to a topic within the same Eventgrid namespace.
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/namespace:<version>'
+
+// Required parameters
+param name = 'egnmqttct001'
+// Non-required parameters
+param alternativeAuthenticationNameSources = [
+  'ClientCertificateEmail'
+  'ClientCertificateUri'
+]
+param clientGroups = [
+  {
+    description: 'this is group1'
+    name: 'group1'
+    query: 'attributes.keyName IN [\'a\', \'b\', \'c\']'
+  }
+]
+param clients = [
+  {
+    attributes: {
+      deviceTypes: [
+        'Fan'
+        'Light'
+      ]
+      floor: 12
+      room: '345'
+    }
+    authenticationName: 'client2auth'
+    clientCertificateAuthenticationAllowedThumbprints: [
+      '1111111111111111111111111111111111111111'
+      '2222222222222222222222222222222222222222'
+    ]
+    clientCertificateAuthenticationValidationSchema: 'ThumbprintMatch'
+    description: 'this is client2'
+    name: 'client1'
+    state: 'Enabled'
+  }
+  {
+    clientCertificateAuthenticationAllowedThumbprints: [
+      '3333333333333333333333333333333333333333'
+    ]
+    clientCertificateAuthenticationValidationSchema: 'ThumbprintMatch'
+    name: 'client2'
+  }
+  {
+    name: 'client3'
+  }
+  {
+    clientCertificateAuthenticationValidationSchema: 'IpMatchesAuthenticationName'
+    name: 'client4'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param maximumClientSessionsPerAuthenticationName = 5
+param maximumSessionExpiryInHours = 2
+param permissionBindings = [
+  {
+    clientGroupName: 'group1'
+    description: 'this is binding1'
+    name: 'bindiing1'
+    permission: 'Publisher'
+    topicSpaceName: 'topicSpace1'
+  }
+  {
+    clientGroupName: 'group1'
+    name: 'bindiing2'
+    permission: 'Subscriber'
+    topicSpaceName: 'topicSpace2'
+  }
+]
+param routeTopicResourceId = '<routeTopicResourceId>'
+param routingEnrichments = {
+  dynamic: [
+    {
+      key: 'dynamic1'
+      value: '<value>'
+    }
+  ]
+  static: [
+    {
+      key: 'static1'
+      value: 'value1'
+      valueType: 'String'
+    }
+    {
+      key: 'static2'
+      value: 'value2'
+      valueType: 'String'
+    }
+  ]
+}
+param routingIdentityInfo = {
+  type: 'UserAssigned'
+  userAssignedIdentity: '<userAssignedIdentity>'
+}
+param topics = [
+  {
+    name: 'topic1'
+  }
+]
+param topicSpaces = [
+  {
+    name: 'topicSpace1'
+    topicTemplates: [
+      'devices/foo/bar'
+      'devices/topic1/+'
+    ]
+  }
+  {
+    name: 'topicSpace2'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    topicTemplates: [
+      'devices/topic1/+'
+    ]
+  }
+]
+param topicSpacesState = 'Enabled'
+```
+
+</details>
+<p>
+
+### Example 4: _MQTT Broker with routing to a custom topic_
+
+This instance deploys the module as a MQTT Broker with routing to a custom topic.
 
 
 <details>
@@ -990,7 +1371,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1169,6 +1550,153 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/namespace:<version>'
+
+// Required parameters
+param name = 'egnmqttnt001'
+// Non-required parameters
+param alternativeAuthenticationNameSources = [
+  'ClientCertificateEmail'
+  'ClientCertificateUri'
+]
+param clientGroups = [
+  {
+    description: 'this is group1'
+    name: 'group1'
+    query: 'attributes.keyName IN [\'a\', \'b\', \'c\']'
+  }
+]
+param clients = [
+  {
+    attributes: {
+      deviceTypes: [
+        'Fan'
+        'Light'
+      ]
+      floor: 12
+      room: '345'
+    }
+    authenticationName: 'client2auth'
+    clientCertificateAuthenticationAllowedThumbprints: [
+      '1111111111111111111111111111111111111111'
+      '2222222222222222222222222222222222222222'
+    ]
+    clientCertificateAuthenticationValidationSchema: 'ThumbprintMatch'
+    description: 'this is client2'
+    name: 'client1'
+    state: 'Enabled'
+  }
+  {
+    clientCertificateAuthenticationAllowedThumbprints: [
+      '3333333333333333333333333333333333333333'
+    ]
+    clientCertificateAuthenticationValidationSchema: 'ThumbprintMatch'
+    name: 'client2'
+  }
+  {
+    name: 'client3'
+  }
+  {
+    clientCertificateAuthenticationValidationSchema: 'IpMatchesAuthenticationName'
+    name: 'client4'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param maximumClientSessionsPerAuthenticationName = 5
+param maximumSessionExpiryInHours = 2
+param permissionBindings = [
+  {
+    clientGroupName: 'group1'
+    description: 'this is binding1'
+    name: 'bindiing1'
+    permission: 'Publisher'
+    topicSpaceName: 'topicSpace1'
+  }
+  {
+    clientGroupName: 'group1'
+    name: 'bindiing2'
+    permission: 'Subscriber'
+    topicSpaceName: 'topicSpace2'
+  }
+]
+param routeTopicResourceId = '<routeTopicResourceId>'
+param routingEnrichments = {
+  dynamic: [
+    {
+      key: 'dynamic1'
+      value: '<value>'
+    }
+  ]
+  static: [
+    {
+      key: 'static1'
+      value: 'value1'
+      valueType: 'String'
+    }
+    {
+      key: 'static2'
+      value: 'value2'
+      valueType: 'String'
+    }
+  ]
+}
+param routingIdentityInfo = {
+  type: 'UserAssigned'
+  userAssignedIdentity: '<userAssignedIdentity>'
+}
+param topics = [
+  {
+    name: 'topic1'
+  }
+]
+param topicSpaces = [
+  {
+    name: 'topicSpace1'
+    topicTemplates: [
+      'devices/foo/bar'
+      'devices/topic1/+'
+    ]
+  }
+  {
+    name: 'topicSpace2'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    topicTemplates: [
+      'devices/topic1/+'
+    ]
+  }
+]
+param topicSpacesState = 'Enabled'
+```
+
+</details>
+<p>
+
 ### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -1196,9 +1724,13 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
     location: '<location>'
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -1207,9 +1739,13 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -1244,7 +1780,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1272,9 +1808,13 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -1283,9 +1823,13 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -1323,6 +1867,78 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/namespace:<version>'
+
+// Required parameters
+param name = 'egnwaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -1706,10 +2322,9 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
 | [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
-| [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars. |
+| [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
 | [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
@@ -1741,15 +2356,13 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+**Optional parameters**
 
-Fqdn that resolves to private endpoint IP address.
-
-- Required: No
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
@@ -1757,6 +2370,13 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -1881,7 +2501,7 @@ Specify the name of lock.
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
-A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars.
+A message passed to the owner of the remote resource with the manual connection request.
 
 - Required: No
 - Type: string
@@ -1893,19 +2513,64 @@ The name of the private endpoint.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneGroupName`
+### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
-The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
+The private DNS zone group to configure for the private endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS zone group config.
 
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneResourceIds`
+### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
-The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
+The name of the Private DNS Zone Group.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -1927,6 +2592,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
 
 **Required parameters**
 
@@ -1943,6 +2619,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-privateendpointsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-privateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `privateEndpoints.roleAssignments.principalId`
@@ -1989,6 +2666,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -2045,6 +2729,20 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Azure Resource Notifications System Topics Subscriber'`
+  - `'Contributor'`
+  - `'EventGrid Contributor'`
+  - `'EventGrid Data Contributor'`
+  - `'EventGrid Data Receiver'`
+  - `'EventGrid Data Sender'`
+  - `'EventGrid EventSubscription Contributor'`
+  - `'EventGrid EventSubscription Reader'`
+  - `'EventGrid TopicSpaces Publisher'`
+  - `'EventGrid TopicSpaces Subscriber'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -2061,6 +2759,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -2107,6 +2806,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -2178,13 +2884,13 @@ Indicates if Topic Spaces Configuration is enabled for the namespace. This enabl
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the EventGrid Namespace was deployed into. |
 | `name` | string | The name of the EventGrid Namespace. |
+| `privateEndpoints` | array | The private endpoints of the EventGrid Namespace. |
 | `resourceGroupName` | string | The name of the resource group the EventGrid Namespace was created in. |
 | `resourceId` | string | The resource ID of the EventGrid Namespace. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
@@ -2196,7 +2902,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
 
 ## Data Collection
 

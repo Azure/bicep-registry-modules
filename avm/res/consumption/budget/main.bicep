@@ -39,7 +39,7 @@ param endDate string = ''
   'GreaterThan'
   'GreaterThanOrEqualTo'
 ])
-@description('Required. The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`.')
+@description('Optional. The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`.')
 param operator string = 'GreaterThan'
 
 @maxLength(5)
@@ -65,7 +65,7 @@ param actionGroups array?
   'Actual'
   'Forecasted'
 ])
-@description('Required. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.')
+@description('Optional. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.')
 param thresholdType string = 'Actual'
 
 @description('Optional. The filter to use for restricting which resources are considered within the budget.')

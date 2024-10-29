@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "7822017473517560623"
+      "version": "0.30.23.60470",
+      "templateHash": "1273376840607599272"
     },
     "name": "Bastion Hosts",
     "description": "This module deploys a Bastion Host.",
@@ -43,6 +43,13 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            }
+          },
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
@@ -224,7 +231,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The Public IP resource ID to associate to the azureBastionSubnet. If empty, then the Public IP that is created as part of this module will be applied to the azureBastionSubnet."
+        "description": "Optional. The Public IP resource ID to associate to the azureBastionSubnet. If empty, then the Public IP that is created as part of this module will be applied to the azureBastionSubnet. This parameter is ignored when enablePrivateOnlyBastion is true."
       }
     },
     "publicIPAddressObject": {
@@ -233,7 +240,7 @@
         "name": "[format('{0}-pip', parameters('name'))]"
       },
       "metadata": {
-        "description": "Optional. Specifies the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided."
+        "description": "Optional. Specifies the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided. This parameter is ignored when enablePrivateOnlyBastion is true."
       }
     },
     "diagnosticSettings": {
@@ -253,6 +260,7 @@
       "defaultValue": "Basic",
       "allowedValues": [
         "Basic",
+        "Premium",
         "Standard"
       ],
       "metadata": {
@@ -263,21 +271,21 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Choose to disable or enable Copy Paste."
+        "description": "Optional. Choose to disable or enable Copy Paste. For Basic SKU Copy/Paste is always enabled."
       }
     },
     "enableFileCopy": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Choose to disable or enable File Copy."
+        "description": "Optional. Choose to disable or enable File Copy. Not supported for Basic SKU."
       }
     },
     "enableIpConnect": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Choose to disable or enable IP Connect."
+        "description": "Optional. Choose to disable or enable IP Connect. Not supported for Basic SKU."
       }
     },
     "enableKerberos": {
@@ -291,14 +299,28 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Choose to disable or enable Shareable Link."
+        "description": "Optional. Choose to disable or enable Shareable Link. Not supported for Basic SKU."
+      }
+    },
+    "enableSessionRecording": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Choose to disable or enable Session Recording feature. The Premium SKU is required for this feature. If Session Recording is enabled, the Native client support will be disabled."
+      }
+    },
+    "enablePrivateOnlyBastion": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Choose to disable or enable Private-only Bastion deployment. The Premium SKU is required for this feature."
       }
     },
     "scaleUnits": {
       "type": "int",
       "defaultValue": 2,
       "metadata": {
-        "description": "Optional. The scale units for the Bastion Host resource."
+        "description": "Optional. The scale units for the Bastion Host resource. The Basic SKU only supports 2 scale units."
       }
     },
     "roleAssignments": {
@@ -320,14 +342,36 @@
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
+    },
+    "zones": {
+      "type": "array",
+      "items": {
+        "type": "int"
+      },
+      "defaultValue": [],
+      "allowedValues": [
+        1,
+        2,
+        3
+      ],
+      "metadata": {
+        "description": "Optional. A list of availability zones denoting where the Bastion Host resource needs to come from."
+      }
     }
   },
   "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
@@ -354,14 +398,15 @@
     },
     "azureBastion": {
       "type": "Microsoft.Network/bastionHosts",
-      "apiVersion": "2022-11-01",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "sku": {
         "name": "[parameters('skuName')]"
       },
-      "properties": "[union(createObject('scaleUnits', if(equals(parameters('skuName'), 'Basic'), 2, parameters('scaleUnits')), 'ipConfigurations', createArray(createObject('name', 'IpConfAzureBastionSubnet', 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureBastionSubnet', parameters('virtualNetworkResourceId')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('bastionSubnetPublicIpResourceId'))), parameters('bastionSubnetPublicIpResourceId'), reference('publicIPAddress').outputs.resourceId.value)))))), 'enableKerberos', parameters('enableKerberos')), if(equals(parameters('skuName'), 'Standard'), createObject('enableTunneling', equals(parameters('skuName'), 'Standard'), 'disableCopyPaste', parameters('disableCopyPaste'), 'enableFileCopy', parameters('enableFileCopy'), 'enableIpConnect', parameters('enableIpConnect'), 'enableShareableLink', parameters('enableShareableLink')), createObject()))]",
+      "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
+      "properties": "[union(createObject('scaleUnits', if(equals(parameters('skuName'), 'Basic'), 2, parameters('scaleUnits')), 'ipConfigurations', createArray(createObject('name', 'IpConfAzureBastionSubnet', 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureBastionSubnet', parameters('virtualNetworkResourceId')))), if(not(parameters('enablePrivateOnlyBastion')), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('bastionSubnetPublicIpResourceId'))), parameters('bastionSubnetPublicIpResourceId'), reference('publicIPAddress').outputs.resourceId.value))), createObject()))))), if(or(or(equals(parameters('skuName'), 'Basic'), equals(parameters('skuName'), 'Standard')), equals(parameters('skuName'), 'Premium')), createObject('enableKerberos', parameters('enableKerberos')), createObject()), if(or(equals(parameters('skuName'), 'Standard'), equals(parameters('skuName'), 'Premium')), createObject('enableTunneling', if(equals(parameters('skuName'), 'Standard'), true(), if(parameters('enableSessionRecording'), false(), true())), 'disableCopyPaste', parameters('disableCopyPaste'), 'enableFileCopy', parameters('enableFileCopy'), 'enableIpConnect', parameters('enableIpConnect'), 'enableShareableLink', parameters('enableShareableLink')), createObject()), if(equals(parameters('skuName'), 'Premium'), createObject('enableSessionRecording', parameters('enableSessionRecording'), 'enablePrivateOnlyBastion', parameters('enablePrivateOnlyBastion')), createObject()))]",
       "dependsOn": [
         "publicIPAddress"
       ]
@@ -415,27 +460,27 @@
     "azureBastion_roleAssignments": {
       "copy": {
         "name": "azureBastion_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.Network/bastionHosts/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.Network/bastionHosts', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/bastionHosts', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "azureBastion"
       ]
     },
     "publicIPAddress": {
-      "condition": "[empty(parameters('bastionSubnetPublicIpResourceId'))]",
+      "condition": "[and(empty(parameters('bastionSubnetPublicIpResourceId')), not(parameters('enablePrivateOnlyBastion')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Bastion-PIP', uniqueString(deployment().name, parameters('location')))]",
@@ -482,7 +527,7 @@
             "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'tags'), parameters('tags'))]"
           },
           "zones": {
-            "value": "[tryGet(parameters('publicIPAddressObject'), 'zones')]"
+            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'zones'), if(greater(length(parameters('zones')), 0), parameters('zones'), null()))]"
           }
         },
         "template": {
@@ -492,8 +537,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "4718335757080871925"
+              "version": "0.29.47.4906",
+              "templateHash": "16693645977675862540"
             },
             "name": "Public IP Addresses",
             "description": "This module deploys a Public IP Address.",
@@ -505,6 +550,13 @@
               "items": {
                 "type": "object",
                 "properties": {
+                  "name": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                    }
+                  },
                   "roleDefinitionIdOrName": {
                     "type": "string",
                     "metadata": {
@@ -642,8 +694,9 @@
                       }
                     }
                   },
+                  "nullable": true,
                   "metadata": {
-                    "description": "Required. The DDoS protection plan associated with the public IP address."
+                    "description": "Optional. The DDoS protection plan associated with the public IP address."
                   }
                 },
                 "protectionMode": {
@@ -917,6 +970,13 @@
             }
           },
           "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
@@ -927,15 +987,15 @@
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
             }
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.6.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -989,20 +1049,20 @@
             "publicIpAddress_roleAssignments": {
               "copy": {
                 "name": "publicIpAddress_roleAssignments",
-                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', parameters('name'))]",
-              "name": "[guid(resourceId('Microsoft.Network/publicIPAddresses', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/publicIPAddresses', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               },
               "dependsOn": [
                 "publicIpAddress"
@@ -1118,7 +1178,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('azureBastion', '2022-11-01', 'full').location]"
+      "value": "[reference('azureBastion', '2024-01-01', 'full').location]"
     },
     "ipConfAzureBastionSubnet": {
       "type": "object",
