@@ -14,6 +14,7 @@ This module deploys Fabric capacities, which provide the compute resources for a
 
 | Resource Type | API Version |
 | :-- | :-- |
+| `Microsoft.Authorization/locks` | [2016-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/locks) |
 | `Microsoft.Fabric/capacities` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates) |
 
 ## Usage examples
@@ -25,7 +26,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/fabric/capacity:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [WAF-aligned](#example-2-waf-aligned)
+- [Using only defaults](#example-2-using-only-defaults)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -102,7 +104,96 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _WAF-aligned_
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
+  name: 'capacityDeployment'
+  params: {
+    // Required parameters
+    adminMembers: [
+      '<adminMembersSecret>'
+    ]
+    name: 'fcmax001'
+    // Non-required parameters
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminMembers": {
+      "value": [
+        "<adminMembersSecret>"
+      ]
+    },
+    "name": {
+      "value": "fcmax001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/fabric/capacity:<version>'
+
+// Required parameters
+param adminMembers = [
+  '<adminMembersSecret>'
+]
+param name = 'fcmax001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -197,6 +288,7 @@ param skuName = 'F64'
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`skuName`](#parameter-skuname) | string | SKU tier of the Fabric resource. |
 | [`skuTier`](#parameter-skutier) | string | SKU name of the Fabric resource. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -230,6 +322,42 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `lock`
+
+The lock settings of the service.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+
+### Parameter: `lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
 
 ### Parameter: `skuName`
 
