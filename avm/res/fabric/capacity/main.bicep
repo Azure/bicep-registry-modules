@@ -34,8 +34,9 @@ param skuTier string = 'Fabric'
 @description('Required. List of admin members. Format: ["something@domain.com"].')
 param adminMembers array
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -104,15 +105,3 @@ output name string = fabricCapacity.name
 
 @description('The location the resource was deployed into.')
 output location string = fabricCapacity.location
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?

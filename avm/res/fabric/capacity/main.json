@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.3.12046",
-      "templateHash": "1497867980658367575"
+      "templateHash": "4050250114148213748"
     },
     "name": "Fabric Capacities",
     "description": "This module deploys Fabric capacities, which provide the compute resources for all the experiences in Fabric.",
@@ -36,7 +36,12 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -98,6 +103,7 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
