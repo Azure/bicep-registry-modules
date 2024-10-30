@@ -18,6 +18,12 @@ This module deploys a Virtual Network Subnet.
 
 ## Parameters
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-name) | string | The Name of the subnet resource. |
+
 **Conditional parameters**
 
 | Parameter | Type | Description |
@@ -43,11 +49,12 @@ This module deploys a Virtual Network Subnet.
 | [`serviceEndpoints`](#parameter-serviceendpoints) | array | The service endpoints to enable on the subnet. |
 | [`sharingScope`](#parameter-sharingscope) | string | Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty. |
 
-**Requird parameters**
+### Parameter: `name`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The Name of the subnet resource. |
+The Name of the subnet resource.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `addressPrefix`
 
@@ -276,13 +283,6 @@ Set this property to Tenant to allow sharing subnet with other subscriptions in 
     'Tenant'
   ]
   ```
-
-### Parameter: `name`
-
-The Name of the subnet resource.
-
-- Required: Yes
-- Type: string
 
 ## Outputs
 
