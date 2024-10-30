@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "17348768657218656945"
+      "templateHash": "12984545577624848737"
     },
     "name": "Public IP Prefixes",
     "description": "This module deploys a Public IP Prefix.",
@@ -292,7 +292,7 @@
     },
     "publicIpPrefix": {
       "type": "Microsoft.Network/publicIPPrefixes",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -372,7 +372,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('publicIpPrefix', '2023-09-01', 'full').location]"
+      "value": "[reference('publicIpPrefix', '2024-01-01', 'full').location]"
     }
   }
 }
