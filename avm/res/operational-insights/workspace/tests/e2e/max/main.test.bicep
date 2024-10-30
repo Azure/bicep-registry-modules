@@ -175,13 +175,18 @@ module testDeployment '../../../main.bicep' = [
       ]
       gallerySolutions: [
         {
-          name: 'AzureAutomation'
-          product: 'OMSGallery'
+          name: 'AzureAutomation(${namePrefix}${serviceShort}001)'
+          product: 'OMSGallery/AzureAutomation'
           publisher: 'Microsoft'
         }
         {
-          name: 'SecurityInsights'
-          product: 'OMSGallery'
+          name: 'SecurityInsights(${namePrefix}${serviceShort}001)'
+          product: 'OMSGallery/SecurityInsights'
+          publisher: 'Microsoft'
+        }
+        {
+          name: 'SQLAuditing(${namePrefix}${serviceShort}001)'
+          product: 'SQLAuditing'
           publisher: 'Microsoft'
         }
       ]

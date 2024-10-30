@@ -48,7 +48,7 @@ param dataSources array = []
 param tables array = []
 
 @description('Optional. List of gallerySolutions to be created in the log analytics workspace.')
-param gallerySolutions array = []
+param gallerySolutions gallerySolutionType[]?
 
 @description('Optional. Onboard the Log Analytics Workspace to Sentinel. Requires \'SecurityInsights\' solution to be in gallerySolutions.')
 param onboardWorkspaceToSentinel bool = false
@@ -348,14 +348,14 @@ module logAnalyticsWorkspace_tables 'table/main.bicep' = [
   }
 ]
 
-module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/solution:0.1.3' = [
-  for (gallerySolution, index) in gallerySolutions: if (!empty(gallerySolutions)) {
+module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/solution:0.2.0' = [
+  for (gallerySolution, index) in gallerySolutions ?? []: if (!empty(gallerySolutions)) {
     name: '${uniqueString(deployment().name, location)}-LAW-Solution-${index}'
     params: {
       name: gallerySolution.name
       location: location
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
-      product: gallerySolution.?product
+      product: gallerySolution.product
       publisher: gallerySolution.?publisher
       enableTelemetry: gallerySolution.?enableTelemetry ?? enableTelemetry
     }
@@ -364,8 +364,8 @@ module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/
 
 // Onboard the Log Analytics Workspace to Sentinel if SecurityInsights is in gallerySolutions and onboardWorkspaceToSentinel is set to true
 resource logAnalyticsWorkspace_sentinelOnboarding 'Microsoft.SecurityInsights/onboardingStates@2024-03-01' = if (!empty(filter(
-  gallerySolutions,
-  item => item.name == 'SecurityInsights'
+  gallerySolutions ?? [],
+  item => startsWith(item.name, 'SecurityInsights')
 )) && onboardWorkspaceToSentinel) {
   name: 'default'
   scope: logAnalyticsWorkspace
@@ -470,4 +470,22 @@ type diagnosticSettingType = {
 
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
+}
+
+@export()
+type gallerySolutionType = {
+  @description('''Required. Name of the solution.
+  For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.
+  For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.
+  The solution type is case-sensitive.''')
+  name: string
+
+  @description('''Required. The product name of the deployed solution.
+  For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.
+  For a third party solution, it can be anything.
+  This is case sensitive.''')
+  product: string
+
+  @description('Optional. The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value.')
+  publisher: string?
 }

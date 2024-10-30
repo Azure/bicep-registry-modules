@@ -168,8 +168,8 @@ module testDeployment '../../../main.bicep' = [
       ]
       gallerySolutions: [
         {
-          name: 'AzureAutomation'
-          product: 'OMSGallery'
+          name: 'AzureAutomation(${namePrefix}${serviceShort}001)'
+          product: 'OMSGallery/AzureAutomation'
           publisher: 'Microsoft'
         }
       ]
