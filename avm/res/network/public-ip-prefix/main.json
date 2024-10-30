@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "5789100347914691136"
+      "templateHash": "17348768657218656945"
     },
     "name": "Public IP Prefixes",
     "description": "This module deploys a Public IP Prefix.",
@@ -155,7 +155,7 @@
         "Regional"
       ],
       "metadata": {
-        "description": "Optional. Tier of a public IP prefix SKU."
+        "description": "Optional. Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty."
       }
     },
     "location": {
@@ -241,7 +241,7 @@
         3
       ],
       "metadata": {
-        "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from."
+        "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from. This is only applicable for regional public IP prefixes and must be empty for global public IP prefixes."
       }
     },
     "enableTelemetry": {

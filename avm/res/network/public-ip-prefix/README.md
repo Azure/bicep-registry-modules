@@ -120,6 +120,7 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
     location: '<location>'
     publicIPAddressVersion: 'IPv6'
     tier: 'Global'
+    zones: []
   }
 }
 ```
@@ -152,6 +153,9 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
     },
     "tier": {
       "value": "Global"
+    },
+    "zones": {
+      "value": []
     }
   }
 }
@@ -174,6 +178,7 @@ param prefixLength = 127
 param location = '<location>'
 param publicIPAddressVersion = 'IPv6'
 param tier = 'Global'
+param zones = []
 ```
 
 </details>
@@ -479,8 +484,8 @@ param tags = {
 | [`publicIPAddressVersion`](#parameter-publicipaddressversion) | string | The public IP address version. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`tier`](#parameter-tier) | string | Tier of a public IP prefix SKU. |
-| [`zones`](#parameter-zones) | array | A list of availability zones denoting the IP allocated for the resource needs to come from. |
+| [`tier`](#parameter-tier) | string | Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty. |
+| [`zones`](#parameter-zones) | array | A list of availability zones denoting the IP allocated for the resource needs to come from. This is only applicable for regional public IP prefixes and must be empty for global public IP prefixes. |
 
 ### Parameter: `name`
 
@@ -712,7 +717,7 @@ Tags of the resource.
 
 ### Parameter: `tier`
 
-Tier of a public IP prefix SKU.
+Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty.
 
 - Required: No
 - Type: string
@@ -727,7 +732,7 @@ Tier of a public IP prefix SKU.
 
 ### Parameter: `zones`
 
-A list of availability zones denoting the IP allocated for the resource needs to come from.
+A list of availability zones denoting the IP allocated for the resource needs to come from. This is only applicable for regional public IP prefixes and must be empty for global public IP prefixes.
 
 - Required: No
 - Type: array

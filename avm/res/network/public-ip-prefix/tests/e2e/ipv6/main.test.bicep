@@ -46,6 +46,7 @@ module testDeployment '../../../main.bicep' = [
       prefixLength: 127
       publicIPAddressVersion: 'IPv6'
       tier: 'Global'
+      zones: []
     }
   }
 ]

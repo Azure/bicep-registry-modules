@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 @minLength(1)
 param name string
 
-@description('Optional. Tier of a public IP prefix SKU.')
+@description('Optional. Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty.')
 @allowed([
   'Global'
   'Regional'
@@ -45,7 +45,7 @@ param customIPPrefix object = {}
 @description('Optional. The list of tags associated with the public IP prefix.')
 param ipTags ipTagType[]?
 
-@description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from.')
+@description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from. This is only applicable for regional public IP prefixes and must be empty for global public IP prefixes.')
 @allowed([
   1
   2
