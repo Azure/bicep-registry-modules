@@ -27,8 +27,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/public-ip-prefix:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [IPv6 Public IP Prefix](#example-2-ipv6-public-ip-prefix)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -99,7 +100,86 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _IPv6 Public IP Prefix_
+
+This instance deploys the module using the IPv6 version of the Public IP Prefix.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
+  name: 'publicIpPrefixDeployment'
+  params: {
+    // Required parameters
+    name: 'npipip6001'
+    prefixLength: 127
+    // Non-required parameters
+    location: '<location>'
+    publicIPAddressVersion: 'IPv6'
+    tier: 'Global'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "npipip6001"
+    },
+    "prefixLength": {
+      "value": 127
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "publicIPAddressVersion": {
+      "value": "IPv6"
+    },
+    "tier": {
+      "value": "Global"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/public-ip-prefix:<version>'
+
+// Required parameters
+param name = 'npipip6001'
+param prefixLength = 127
+// Non-required parameters
+param location = '<location>'
+param publicIPAddressVersion = 'IPv6'
+param tier = 'Global'
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -292,7 +372,7 @@ param zones = [
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -396,8 +476,10 @@ param tags = {
 | [`ipTags`](#parameter-iptags) | array | The list of tags associated with the public IP prefix. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`publicIPAddressVersion`](#parameter-publicipaddressversion) | string | The public IP address version. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`tier`](#parameter-tier) | string | Tier of a public IP prefix SKU. |
 | [`zones`](#parameter-zones) | array | A list of availability zones denoting the IP allocated for the resource needs to come from. |
 
 ### Parameter: `name`
@@ -501,6 +583,21 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `publicIPAddressVersion`
+
+The public IP address version.
+
+- Required: No
+- Type: string
+- Default: `'IPv4'`
+- Allowed:
+  ```Bicep
+  [
+    'IPv4'
+    'IPv6'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -612,6 +709,21 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `tier`
+
+Tier of a public IP prefix SKU.
+
+- Required: No
+- Type: string
+- Default: `'Regional'`
+- Allowed:
+  ```Bicep
+  [
+    'Global'
+    'Regional'
+  ]
+  ```
 
 ### Parameter: `zones`
 

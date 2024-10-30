@@ -6,13 +6,27 @@ metadata owner = 'Azure/module-maintainers'
 @minLength(1)
 param name string
 
+@description('Optional. Tier of a public IP prefix SKU.')
+@allowed([
+  'Global'
+  'Regional'
+])
+param tier string = 'Regional'
+
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
 @description('Required. Length of the Public IP Prefix.')
 @minValue(21)
-@maxValue(31)
+@maxValue(127)
 param prefixLength int
+
+@description('Optional. The public IP address version.')
+@allowed([
+  'IPv4'
+  'IPv6'
+])
+param publicIPAddressVersion string = 'IPv4'
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The lock settings of the service.')
@@ -100,11 +114,12 @@ resource publicIpPrefix 'Microsoft.Network/publicIPPrefixes@2023-09-01' = {
   tags: tags
   sku: {
     name: 'Standard'
+    tier: tier
   }
   zones: map(zones, zone => string(zone))
   properties: {
     customIPPrefix: !empty(customIPPrefix) ? customIPPrefix : null
-    publicIPAddressVersion: 'IPv4'
+    publicIPAddressVersion: publicIPAddressVersion
     prefixLength: prefixLength
     ipTags: ipTags
   }

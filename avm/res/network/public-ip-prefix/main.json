@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "16572668482474117000"
+      "templateHash": "5789100347914691136"
     },
     "name": "Public IP Prefixes",
     "description": "This module deploys a Public IP Prefix.",
@@ -147,6 +147,17 @@
         "description": "Required. The name of the Public IP Prefix."
       }
     },
+    "tier": {
+      "type": "string",
+      "defaultValue": "Regional",
+      "allowedValues": [
+        "Global",
+        "Regional"
+      ],
+      "metadata": {
+        "description": "Optional. Tier of a public IP prefix SKU."
+      }
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -157,9 +168,20 @@
     "prefixLength": {
       "type": "int",
       "minValue": 21,
-      "maxValue": 31,
+      "maxValue": 127,
       "metadata": {
         "description": "Required. Length of the Public IP Prefix."
+      }
+    },
+    "publicIPAddressVersion": {
+      "type": "string",
+      "defaultValue": "IPv4",
+      "allowedValues": [
+        "IPv4",
+        "IPv6"
+      ],
+      "metadata": {
+        "description": "Optional. The public IP address version."
       }
     },
     "lock": {
@@ -275,12 +297,13 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "sku": {
-        "name": "Standard"
+        "name": "Standard",
+        "tier": "[parameters('tier')]"
       },
       "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
       "properties": {
         "customIPPrefix": "[if(not(empty(parameters('customIPPrefix'))), parameters('customIPPrefix'), null())]",
-        "publicIPAddressVersion": "IPv4",
+        "publicIPAddressVersion": "[parameters('publicIPAddressVersion')]",
         "prefixLength": "[parameters('prefixLength')]",
         "ipTags": "[parameters('ipTags')]"
       }
