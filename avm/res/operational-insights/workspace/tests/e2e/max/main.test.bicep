@@ -179,6 +179,11 @@ module testDeployment '../../../main.bicep' = [
           product: 'OMSGallery'
           publisher: 'Microsoft'
         }
+        {
+          name: 'SecurityInsights'
+          product: 'OMSGallery'
+          publisher: 'Microsoft'
+        }
       ]
       linkedServices: [
         {

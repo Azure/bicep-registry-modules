@@ -27,6 +27,7 @@ This module deploys a Log Analytics Workspace.
 | `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/storageInsightConfigs) |
 | `Microsoft.OperationalInsights/workspaces/tables` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces/tables) |
 | `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
+| `Microsoft.SecurityInsights/onboardingStates` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/onboardingStates) |
 
 ## Usage examples
 
@@ -1157,6 +1158,11 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         product: 'OMSGallery'
         publisher: 'Microsoft'
       }
+      {
+        name: 'SecurityInsights'
+        product: 'OMSGallery'
+        publisher: 'Microsoft'
+      }
     ]
     linkedServices: [
       {
@@ -1456,6 +1462,11 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       "value": [
         {
           "name": "AzureAutomation",
+          "product": "OMSGallery",
+          "publisher": "Microsoft"
+        },
+        {
+          "name": "SecurityInsights",
           "product": "OMSGallery",
           "publisher": "Microsoft"
         }
@@ -1774,6 +1785,11 @@ param diagnosticSettings = [
 param gallerySolutions = [
   {
     name: 'AzureAutomation'
+    product: 'OMSGallery'
+    publisher: 'Microsoft'
+  }
+  {
+    name: 'SecurityInsights'
     product: 'OMSGallery'
     publisher: 'Microsoft'
   }
@@ -2483,6 +2499,7 @@ param useResourcePermissions = true
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
+| [`onboardWorkspaceToSentinel`](#parameter-onboardworkspacetosentinel) | bool | Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' solution to be in gallerySolutions. |
 | [`publicNetworkAccessForIngestion`](#parameter-publicnetworkaccessforingestion) | string | The network access type for accessing Log Analytics ingestion. |
 | [`publicNetworkAccessForQuery`](#parameter-publicnetworkaccessforquery) | string | The network access type for accessing Log Analytics query. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -2783,7 +2800,7 @@ The managed identity definition for this resource. Only one type of identity is 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -2794,10 +2811,18 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
+
+### Parameter: `onboardWorkspaceToSentinel`
+
+Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' solution to be in gallerySolutions.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `publicNetworkAccessForIngestion`
 
@@ -3023,7 +3048,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/operations-management/solution:0.1.0` | Remote reference |
+| `br/public:avm/res/operations-management/solution:0.1.3` | Remote reference |
 
 ## Data Collection
 

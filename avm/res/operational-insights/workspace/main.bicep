@@ -50,6 +50,9 @@ param tables array = []
 @description('Optional. List of gallerySolutions to be created in the log analytics workspace.')
 param gallerySolutions array = []
 
+@description('Optional. Onboard the Log Analytics Workspace to Sentinel. Requires \'SecurityInsights\' solution to be in gallerySolutions.')
+param onboardWorkspaceToSentinel bool = false
+
 @description('Optional. Number of days data will be retained for.')
 @minValue(0)
 @maxValue(730)
@@ -75,7 +78,7 @@ param publicNetworkAccessForQuery string = 'Enabled'
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
-param managedIdentities managedIdentityAllType
+param managedIdentities managedIdentityAllType?
 
 @description('Optional. Set to \'true\' to use resource or workspace permissions and \'false\' (or leave empty) to require workspace permissions.')
 param useResourcePermissions bool = false
@@ -88,11 +91,11 @@ param forceCmkForQuery bool = true
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType[]
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -345,7 +348,7 @@ module logAnalyticsWorkspace_tables 'table/main.bicep' = [
   }
 ]
 
-module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/solution:0.1.0' = [
+module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/solution:0.1.3' = [
   for (gallerySolution, index) in gallerySolutions: if (!empty(gallerySolutions)) {
     name: '${uniqueString(deployment().name, location)}-LAW-Solution-${index}'
     params: {
@@ -358,6 +361,16 @@ module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/
     }
   }
 ]
+
+// Onboard the Log Analytics Workspace to Sentinel if SecurityInsights is in gallerySolutions and onboardWorkspaceToSentinel is set to true
+resource logAnalyticsWorkspace_sentinelOnboarding 'Microsoft.SecurityInsights/onboardingStates@2024-03-01' = if (!empty(filter(
+  gallerySolutions,
+  item => item.name == 'SecurityInsights'
+)) && onboardWorkspaceToSentinel) {
+  name: 'default'
+  scope: logAnalyticsWorkspace
+  properties: {}
+}
 
 resource logAnalyticsWorkspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
