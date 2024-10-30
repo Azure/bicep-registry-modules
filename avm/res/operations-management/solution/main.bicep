@@ -10,7 +10,7 @@ metadata owner = 'Azure/module-maintainers'
 })
 @description('''Required. Name of the solution.
 For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.
-For solutions authored by third parties, the name must be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.
+For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.
 The solution type is case-sensitive.''')
 param name string
 

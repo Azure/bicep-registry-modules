@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "10948305220182691756"
+      "templateHash": "10030719373987466691"
     },
     "name": "Operations Management Solutions",
     "description": "This module deploys an Operations Management Solution.",
@@ -16,7 +16,7 @@
       "type": "string",
       "metadata": {
         "example": "  - AntiMalware(contoso-Logs)\n  - MyThirdPartySolution[contoso-Logs]\n  ",
-        "description": "Required. Name of the solution.\nFor solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.\nFor solutions authored by third parties, the name must be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.\nThe solution type is case-sensitive."
+        "description": "Required. Name of the solution.\nFor solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.\nFor solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.\nThe solution type is case-sensitive."
       }
     },
     "logAnalyticsWorkspaceName": {

@@ -198,7 +198,7 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
   params: {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
-    name: '<name>'
+    name: 'omsnonms001'
     product: 'nonmsTestSolutionProduct'
     // Non-required parameters
     location: '<location>'
@@ -224,7 +224,7 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
       "value": "<logAnalyticsWorkspaceName>"
     },
     "name": {
-      "value": "<name>"
+      "value": "omsnonms001"
     },
     "product": {
       "value": "nonmsTestSolutionProduct"
@@ -252,7 +252,7 @@ using 'br/public:avm/res/operations-management/solution:<version>'
 
 // Required parameters
 param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
-param name = '<name>'
+param name = 'omsnonms001'
 param product = 'nonmsTestSolutionProduct'
 // Non-required parameters
 param location = '<location>'
@@ -427,7 +427,7 @@ param publisher = 'Microsoft'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`logAnalyticsWorkspaceName`](#parameter-loganalyticsworkspacename) | string | Name of the Log Analytics workspace where the solution will be deployed/enabled. |
-| [`name`](#parameter-name) | string | Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name must be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive. |
+| [`name`](#parameter-name) | string | Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive. |
 | [`product`](#parameter-product) | string | The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive. |
 
 **Optional parameters**
@@ -447,7 +447,7 @@ Name of the Log Analytics workspace where the solution will be deployed/enabled.
 
 ### Parameter: `name`
 
-Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name must be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive.
+Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive.
 
 - Required: Yes
 - Type: string
