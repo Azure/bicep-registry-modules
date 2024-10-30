@@ -214,6 +214,7 @@ function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $
     $kv.EnableSoftDelete | Should -Be $EnableSoftDelete
     $kv.SoftDeleteRetentionInDays | Should -Be $RetentionInDays
     $kv.PublicNetworkAccess | Should -Be $PublicNetworkAccess
+    $kv.EnablePurgeProtection | Should -Be $false
     $kv.AccessPolicies | Should -BeNullOrEmpty
     $kv.NetworkAcls.DefaultAction | Should -Be 'Deny'
     $kv.NetworkAcls.Bypass | Should -Be 'None'
