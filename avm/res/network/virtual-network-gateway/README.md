@@ -3182,6 +3182,7 @@ Specifies the VPN type.
 | `asn` | int | The ASN (Autonomous System Number) of the virtual network gateway. |
 | `customBgpIpAddresses` | string | The custom Azure APIPA BGP IP address. |
 | `defaultBgpIpAddresses` | string | The default Azure BGP peer IP address. |
+| `ipConfigurations` | array | The IPconfigurations object of the Virtual Network Gateway. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the virtual network gateway. |
 | `publicIpAddress` | string | The public IP address of the virtual network gateway. |

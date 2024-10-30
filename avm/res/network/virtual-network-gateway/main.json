@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "8620447722364642222"
+      "templateHash": "13981694724189921501"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -1634,7 +1634,15 @@
       "metadata": {
         "description": "The ASN (Autonomous System Number) of the virtual network gateway."
       },
-      "value": "[if(variables('isBgp'), reference('virtualNetworkGateway').bgpSettings.asn, null())]"
+      "value": "[reference('virtualNetworkGateway').bgpSettings.asn]"
+    },
+    "ipConfigurations": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "The IPconfigurations object of the Virtual Network Gateway."
+      },
+      "value": "[reference('virtualNetworkGateway').ipConfigurations]"
     },
     "publicIpAddress": {
       "type": "string",

@@ -495,7 +495,10 @@ output activeActive bool = virtualNetworkGateway.properties.activeActive
 output location string = virtualNetworkGateway.location
 
 @description('The ASN (Autonomous System Number) of the virtual network gateway.')
-output asn int? = isBgp ? virtualNetworkGateway.properties.bgpSettings.asn : null //'Not applicable (No Bgp)'
+output asn int? = virtualNetworkGateway.properties.bgpSettings.asn
+
+@description('The IPconfigurations object of the Virtual Network Gateway.')
+output ipConfigurations array? = virtualNetworkGateway.properties.ipConfigurations
 
 @description('The public IP address of the virtual network gateway.')
 output publicIpAddress string = !empty(existingFirstPipResourceId) ? reference(existingFirstPipResourceId,'2023-04-01').ipAddress: publicIPAddress[0].outputs.ipAddress
