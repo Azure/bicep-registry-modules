@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Microsoft solution'
-metadata description = 'This instance deploys the module with a Microsoft solution.'
+metadata name = 'SQLAuditing solution'
+metadata description = 'This instance deploys the module with the SQLAuditing solution. This solution is authored by Microsoft, but uses a non-standard value for the `product` parameter.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-operationsmanagement.solutio
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'omsms'
+param serviceShort string = 'omssqa'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -48,10 +48,10 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    name: 'AzureAutomation(${nestedDependencies.outputs.logAnalyticsWorkspaceName})'
+    name: 'SQLAuditing(${nestedDependencies.outputs.logAnalyticsWorkspaceName})'
     location: resourceLocation
     logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
-    product: 'OMSGallery/AzureAutomation'
+    product: 'SQLAuditing'
     publisher: 'Microsoft'
   }
 }
