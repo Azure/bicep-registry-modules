@@ -200,8 +200,8 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     ]
     gallerySolutions: [
       {
-        name: 'AzureAutomation'
-        product: 'OMSGallery'
+        name: 'AzureAutomation(oiwadv001)'
+        product: 'OMSGallery/AzureAutomation'
         publisher: 'Microsoft'
       }
     ]
@@ -508,8 +508,8 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "gallerySolutions": {
       "value": [
         {
-          "name": "AzureAutomation",
-          "product": "OMSGallery",
+          "name": "AzureAutomation(oiwadv001)",
+          "product": "OMSGallery/AzureAutomation",
           "publisher": "Microsoft"
         }
       ]
@@ -826,8 +826,8 @@ param diagnosticSettings = [
 ]
 param gallerySolutions = [
   {
-    name: 'AzureAutomation'
-    product: 'OMSGallery'
+    name: 'AzureAutomation(oiwadv001)'
+    product: 'OMSGallery/AzureAutomation'
     publisher: 'Microsoft'
   }
 ]
@@ -1154,13 +1154,18 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     ]
     gallerySolutions: [
       {
-        name: 'AzureAutomation'
-        product: 'OMSGallery'
+        name: 'AzureAutomation(oiwmax001)'
+        product: 'OMSGallery/AzureAutomation'
         publisher: 'Microsoft'
       }
       {
-        name: 'SecurityInsights'
-        product: 'OMSGallery'
+        name: 'SecurityInsights(oiwmax001)'
+        product: 'OMSGallery/SecurityInsights'
+        publisher: 'Microsoft'
+      }
+      {
+        name: 'SQLAuditing(oiwmax001)'
+        product: 'SQLAuditing'
         publisher: 'Microsoft'
       }
     ]
@@ -1462,13 +1467,18 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "gallerySolutions": {
       "value": [
         {
-          "name": "AzureAutomation",
-          "product": "OMSGallery",
+          "name": "AzureAutomation(oiwmax001)",
+          "product": "OMSGallery/AzureAutomation",
           "publisher": "Microsoft"
         },
         {
-          "name": "SecurityInsights",
-          "product": "OMSGallery",
+          "name": "SecurityInsights(oiwmax001)",
+          "product": "OMSGallery/SecurityInsights",
+          "publisher": "Microsoft"
+        },
+        {
+          "name": "SQLAuditing(oiwmax001)",
+          "product": "SQLAuditing",
           "publisher": "Microsoft"
         }
       ]
@@ -1788,13 +1798,18 @@ param diagnosticSettings = [
 ]
 param gallerySolutions = [
   {
-    name: 'AzureAutomation'
-    product: 'OMSGallery'
+    name: 'AzureAutomation(oiwmax001)'
+    product: 'OMSGallery/AzureAutomation'
     publisher: 'Microsoft'
   }
   {
-    name: 'SecurityInsights'
-    product: 'OMSGallery'
+    name: 'SecurityInsights(oiwmax001)'
+    product: 'OMSGallery/SecurityInsights'
+    publisher: 'Microsoft'
+  }
+  {
+    name: 'SQLAuditing(oiwmax001)'
+    product: 'SQLAuditing'
     publisher: 'Microsoft'
   }
 ]
@@ -2083,8 +2098,8 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     ]
     gallerySolutions: [
       {
-        name: 'AzureAutomation'
-        product: 'OMSGallery'
+        name: 'AzureAutomation(oiwwaf001)'
+        product: 'OMSGallery/AzureAutomation'
         publisher: 'Microsoft'
       }
     ]
@@ -2252,8 +2267,8 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "gallerySolutions": {
       "value": [
         {
-          "name": "AzureAutomation",
-          "product": "OMSGallery",
+          "name": "AzureAutomation(oiwwaf001)",
+          "product": "OMSGallery/AzureAutomation",
           "publisher": "Microsoft"
         }
       ]
@@ -2429,8 +2444,8 @@ param diagnosticSettings = [
 ]
 param gallerySolutions = [
   {
-    name: 'AzureAutomation'
-    product: 'OMSGallery'
+    name: 'AzureAutomation(oiwwaf001)'
+    product: 'OMSGallery/AzureAutomation'
     publisher: 'Microsoft'
   }
 ]
@@ -2739,7 +2754,40 @@ List of gallerySolutions to be created in the log analytics workspace.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-gallerysolutionsname) | string | Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive. |
+| [`product`](#parameter-gallerysolutionsproduct) | string | The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`publisher`](#parameter-gallerysolutionspublisher) | string | The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value. |
+
+### Parameter: `gallerySolutions.name`
+
+Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gallerySolutions.product`
+
+The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gallerySolutions.publisher`
+
+The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value.
+
+- Required: No
+- Type: string
 
 ### Parameter: `linkedServices`
 
@@ -3053,7 +3101,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/operations-management/solution:0.1.3` | Remote reference |
+| `br/public:avm/res/operations-management/solution:0.2.0` | Remote reference |
 
 ## Data Collection
 
