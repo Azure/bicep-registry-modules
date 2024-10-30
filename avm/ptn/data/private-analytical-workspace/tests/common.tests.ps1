@@ -213,8 +213,8 @@ function Test-VerifyKeyVault($KeyVaultResourceGroupName, $KeyVaultName, $Tags, $
     $kv.EnableRbacAuthorization | Should -Be $true
     $kv.EnableSoftDelete | Should -Be $EnableSoftDelete
     $kv.SoftDeleteRetentionInDays | Should -Be $RetentionInDays
-    $kv.PublicNetworkAccess | Should -Be $PublicNetworkAccess
     $kv.EnablePurgeProtection | Should -Be $false
+    $kv.PublicNetworkAccess | Should -Be $PublicNetworkAccess
     $kv.AccessPolicies | Should -BeNullOrEmpty
     $kv.NetworkAcls.DefaultAction | Should -Be 'Deny'
     $kv.NetworkAcls.Bypass | Should -Be 'None'
