@@ -9,8 +9,8 @@ metadata owner = 'Azure/module-maintainers'
   '''
 })
 @description('''Required. Name of the solution.
-For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.
-For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.
+For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`.
+For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`.
 The solution type is case-sensitive.''')
 param name string
 
@@ -20,8 +20,13 @@ param logAnalyticsWorkspaceName string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+@metadata({
+  example: '''
+  - OMSGallery/AntiMalware
+  '''
+})
 @description('''Required. The product name of the deployed solution.
-For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.
+For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`.
 For a third party solution, it can be anything.
 This is case sensitive.''')
 param product string
