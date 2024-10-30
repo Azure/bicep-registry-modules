@@ -1184,6 +1184,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     managedIdentities: {
       systemAssigned: true
     }
+    onboardWorkspaceToSentinel: true
     publicNetworkAccessForIngestion: 'Disabled'
     publicNetworkAccessForQuery: 'Disabled'
     roleAssignments: [
@@ -1502,6 +1503,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         "systemAssigned": true
       }
     },
+    "onboardWorkspaceToSentinel": {
+      "value": true
+    },
     "publicNetworkAccessForIngestion": {
       "value": "Disabled"
     },
@@ -1814,6 +1818,7 @@ param lock = {
 param managedIdentities = {
   systemAssigned: true
 }
+param onboardWorkspaceToSentinel = true
 param publicNetworkAccessForIngestion = 'Disabled'
 param publicNetworkAccessForQuery = 'Disabled'
 param roleAssignments = [

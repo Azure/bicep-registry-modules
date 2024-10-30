@@ -185,6 +185,7 @@ module testDeployment '../../../main.bicep' = [
           publisher: 'Microsoft'
         }
       ]
+      onboardWorkspaceToSentinel: true
       linkedServices: [
         {
           name: 'Automation'
