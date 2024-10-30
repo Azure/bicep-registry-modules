@@ -116,6 +116,12 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
     name: 'npipmax001'
     prefixLength: 28
     // Non-required parameters
+    ipTags: [
+      {
+        ipTagType: 'RoutingPreference'
+        tag: 'Internet'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -173,6 +179,14 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
       "value": 28
     },
     // Non-required parameters
+    "ipTags": {
+      "value": [
+        {
+          "ipTagType": "RoutingPreference",
+          "tag": "Internet"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -234,6 +248,12 @@ using 'br/public:avm/res/network/public-ip-prefix:<version>'
 param name = 'npipmax001'
 param prefixLength = 28
 // Non-required parameters
+param ipTags = [
+  {
+    ipTagType: 'RoutingPreference'
+    tag: 'Internet'
+  }
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -373,6 +393,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`customIPPrefix`](#parameter-customipprefix) | object | The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`ipTags`](#parameter-iptags) | array | The list of tags associated with the public IP prefix. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -408,6 +429,34 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `ipTags`
+
+The list of tags associated with the public IP prefix.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipTagType`](#parameter-iptagsiptagtype) | string | The IP tag type. |
+| [`tag`](#parameter-iptagstag) | string | The IP tag. |
+
+### Parameter: `ipTags.ipTagType`
+
+The IP tag type.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipTags.tag`
+
+The IP tag.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `location`
 

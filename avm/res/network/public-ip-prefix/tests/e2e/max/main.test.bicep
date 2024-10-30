@@ -88,6 +88,12 @@ module testDeployment '../../../main.bicep' = [
         1
         2
       ]
+      ipTags: [
+        {
+          ipTagType: 'RoutingPreference'
+          tag: 'Internet'
+        }
+      ]
     }
   }
 ]
