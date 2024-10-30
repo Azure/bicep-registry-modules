@@ -48,7 +48,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    name: '${namePrefix}${serviceShort}001'
+    name: '${namePrefix}${serviceShort}001[${nestedDependencies.outputs.logAnalyticsWorkspaceName}]'
     location: resourceLocation
     logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
     product: 'nonmsTestSolutionProduct'
