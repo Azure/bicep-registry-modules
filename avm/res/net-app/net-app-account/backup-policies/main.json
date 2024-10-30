@@ -1,0 +1,97 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.30.23.60470",
+      "templateHash": "13036318518380500677"
+    },
+    "name": "Azure NetApp Files Backup Policy",
+    "description": "This module deploys a Backup Policy for Azure NetApp File.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "netAppAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "backupPolicyName": {
+      "type": "string",
+      "defaultValue": "backupPolicy",
+      "metadata": {
+        "description": "Optional. The name of the backup policy."
+      }
+    },
+    "backupPolicyLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The location of the backup policy. Required if the template is used in a standalone deployment."
+      }
+    },
+    "dailyBackupsToKeep": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. The daily backups to keep."
+      }
+    },
+    "monthlyBackupsToKeep": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. The monthly backups to keep."
+      }
+    },
+    "weeklyBackupsToKeep": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. The weekly backups to keep."
+      }
+    },
+    "backupEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Indicates whether the backup policy is enabled."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.NetApp/netAppAccounts/backupPolicies",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupPolicyName'))]",
+      "location": "[parameters('backupPolicyLocation')]",
+      "properties": {
+        "dailyBackupsToKeep": "[parameters('dailyBackupsToKeep')]",
+        "enabled": "[parameters('backupEnabled')]",
+        "monthlyBackupsToKeep": "[parameters('monthlyBackupsToKeep')]",
+        "weeklyBackupsToKeep": "[parameters('weeklyBackupsToKeep')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource IDs of the backup Policy created within volume."
+      },
+      "value": "[resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), parameters('backupPolicyName'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Backup Policy."
+      },
+      "value": "[parameters('backupPolicyName')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the Backup Policy was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

@@ -327,7 +327,7 @@ runs:
           Write-Output ('{0}={1}' -f 'deploymentNames', ($res.deploymentNames | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT
 
           # Populate further outputs
-          $deploymentOutput = $res.deploymentOutput | ConvertTo-Json -Depth 99 -Compress
+          $deploymentOutput = ($res.deploymentOutput | ConvertTo-Json -Depth 99 -Compress) -replace "'", "''" # Escaping single quotes for resilient access in subsequent steps
           Write-Output ('{0}={1}' -f 'deploymentOutput', $deploymentOutput) >> $env:GITHUB_OUTPUT
 
           Write-Verbose "Deployment output: $deploymentOutput" -Verbose

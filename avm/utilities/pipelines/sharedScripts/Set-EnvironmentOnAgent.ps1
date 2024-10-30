@@ -114,6 +114,9 @@ Optional. The PowerShell modules that should be installed on the agent.
     }
 )
 
+.PARAMETER InstallLatestPwshVersion
+Optional. Enable to install the latest PowerShell version
+
 .EXAMPLE
 Set-EnvironmentOnAgent
 
@@ -133,7 +136,10 @@ function Set-EnvironmentOnAgent {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $false)]
-        [Hashtable[]] $PSModules = @()
+        [Hashtable[]] $PSModules = @(),
+
+        [Parameter(Mandatory = $false)]
+        [switch] $InstallLatestPwshVersion
     )
 
     ############################
@@ -258,10 +264,12 @@ function Set-EnvironmentOnAgent {
     }
 
     Write-Verbose ('Install-CustomModule end') -Verbose
+}
 
-    #####################################
-    ##  TEMP PowerShell installation   ##
-    #####################################
+if ($InstallLatestPwshVersion) {
+    Write-Verbose '=======================' -Verbose
+    Write-Verbose 'PowerShell installation' -Verbose
+    Write-Verbose '=======================' -Verbose
 
     # Update the list of packages
     sudo apt-get update

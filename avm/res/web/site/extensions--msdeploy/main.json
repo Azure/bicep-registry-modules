@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "8769701913978391000"
+      "templateHash": "10249716032875912201"
     },
     "name": "Site Deployment Extension ",
     "description": "This module deploys a Site extension for MSDeploy.",
@@ -23,7 +23,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Required. Sets the MSDeployment Properties."
+        "description": "Optional. Sets the MSDeployment Properties."
       }
     }
   },
@@ -31,7 +31,7 @@
     "app": {
       "existing": true,
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2023-12-01",
       "name": "[parameters('appName')]"
     },
     "msdeploy": {
