@@ -926,4 +926,4 @@ type securityRulesType = {
   }
 }[]?
 
-import { lockType, roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.1.0'
+import { lockType, roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'

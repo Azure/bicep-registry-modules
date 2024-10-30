@@ -336,6 +336,6 @@ type environmentVariablesType = {
   value: string?
 }
 
-import { lockType, roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.1.0'
+import { lockType, roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 
 import { securityRulesType, secretType } from 'modules/deploy_services.bicep'
