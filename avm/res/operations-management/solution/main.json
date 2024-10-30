@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "15717010400137824549"
+      "templateHash": "16107249205150547694"
     },
     "name": "Operations Management Solutions",
     "description": "This module deploys an Operations Management Solution.",
@@ -15,8 +15,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "example": "  - AntiMalware(contoso-Logs)\n  - MyThirdPartySolution[contoso-Logs]\n  ",
-        "description": "Required. Name of the solution.\nFor solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`.\nFor solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`.\nThe solution type is case-sensitive."
+        "description": "Required. Name of the solution.\nFor solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.\nFor solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.\nThe solution type is case-sensitive."
       }
     },
     "logAnalyticsWorkspaceName": {
@@ -35,8 +34,7 @@
     "product": {
       "type": "string",
       "metadata": {
-        "example": "  - OMSGallery/AntiMalware\n  ",
-        "description": "Required. The product name of the deployed solution.\nFor Microsoft published gallery solution it should be `OMSGallery/{solutionType}`.\nFor a third party solution, it can be anything.\nThis is case sensitive."
+        "description": "Required. The product name of the deployed solution.\nFor Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.\nFor a third party solution, it can be anything.\nThis is case sensitive."
       }
     },
     "publisher": {

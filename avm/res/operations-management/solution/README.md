@@ -427,8 +427,8 @@ param publisher = 'Microsoft'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`logAnalyticsWorkspaceName`](#parameter-loganalyticsworkspacename) | string | Name of the Log Analytics workspace where the solution will be deployed/enabled. |
-| [`name`](#parameter-name) | string | Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`.<p>The solution type is case-sensitive. |
-| [`product`](#parameter-product) | string | The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`.<p>For a third party solution, it can be anything.<p>This is case sensitive. |
+| [`name`](#parameter-name) | string | Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive. |
+| [`product`](#parameter-product) | string | The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive. |
 
 **Optional parameters**
 
@@ -447,26 +447,17 @@ Name of the Log Analytics workspace where the solution will be deployed/enabled.
 
 ### Parameter: `name`
 
-Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`.<p>The solution type is case-sensitive.
+Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive.
 
 - Required: Yes
 - Type: string
-- Example:
-  ```Bicep
-  - AntiMalware(contoso-Logs)
-  - MyThirdPartySolution[contoso-Logs]
-  ```
 
 ### Parameter: `product`
 
-The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`.<p>For a third party solution, it can be anything.<p>This is case sensitive.
+The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive.
 
 - Required: Yes
 - Type: string
-- Example:
-  ```Bicep
-  - OMSGallery/AntiMalware
-  ```
 
 ### Parameter: `enableTelemetry`
 
