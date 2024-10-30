@@ -27,7 +27,8 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Microsoft solution](#example-2-microsoft-solution)
 - [Non-Microsoft solution](#example-3-non-microsoft-solution)
-- [WAF-aligned](#example-4-waf-aligned)
+- [SQLAuditing solution](#example-4-sqlauditing-solution)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -261,7 +262,86 @@ param publisher = 'nonmsTestSolutionPublisher'
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 4: _SQLAuditing solution_
+
+This instance deploys the module with the SQLAuditing solution. This solution is authored by Microsoft, but uses a non-standard value for the `product` parameter.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module solution 'br/public:avm/res/operations-management/solution:<version>' = {
+  name: 'solutionDeployment'
+  params: {
+    // Required parameters
+    logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
+    name: '<name>'
+    product: 'SQLAuditing'
+    // Non-required parameters
+    location: '<location>'
+    publisher: 'Microsoft'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "logAnalyticsWorkspaceName": {
+      "value": "<logAnalyticsWorkspaceName>"
+    },
+    "name": {
+      "value": "<name>"
+    },
+    "product": {
+      "value": "SQLAuditing"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "publisher": {
+      "value": "Microsoft"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operations-management/solution:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
+param name = '<name>'
+param product = 'SQLAuditing'
+// Non-required parameters
+param location = '<location>'
+param publisher = 'Microsoft'
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
