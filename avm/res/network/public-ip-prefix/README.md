@@ -119,8 +119,6 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
     // Non-required parameters
     location: '<location>'
     publicIPAddressVersion: 'IPv6'
-    tier: 'Global'
-    zones: []
   }
 }
 ```
@@ -150,12 +148,6 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
     },
     "publicIPAddressVersion": {
       "value": "IPv6"
-    },
-    "tier": {
-      "value": "Global"
-    },
-    "zones": {
-      "value": []
     }
   }
 }
@@ -177,8 +169,6 @@ param prefixLength = 127
 // Non-required parameters
 param location = '<location>'
 param publicIPAddressVersion = 'IPv6'
-param tier = 'Global'
-param zones = []
 ```
 
 </details>
