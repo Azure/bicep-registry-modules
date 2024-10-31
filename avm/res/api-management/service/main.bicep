@@ -409,7 +409,7 @@ module service_identityProviders 'identity-provider/main.bicep' = [
   }
 ]
 
-module service_loggers 'loggers/main.bicep' = [
+module service_loggers 'logger/main.bicep' = [
   for (logger, index) in loggers: {
     name: '${uniqueString(deployment().name, location)}-Apim-Logger-${index}'
     params: {
