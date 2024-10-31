@@ -16,7 +16,7 @@ This module deploys a Public IP Prefix.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/publicIPPrefixes` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPPrefixes) |
+| `Microsoft.Network/publicIPPrefixes` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/publicIPPrefixes) |
 
 ## Usage examples
 
@@ -27,8 +27,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/public-ip-prefix:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [IPv6 Public IP Prefix](#example-2-ipv6-public-ip-prefix)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -99,7 +100,81 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _IPv6 Public IP Prefix_
+
+This instance deploys the module using the IPv6 version of the Public IP Prefix.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
+  name: 'publicIpPrefixDeployment'
+  params: {
+    // Required parameters
+    name: 'npipip6001'
+    prefixLength: 127
+    // Non-required parameters
+    location: '<location>'
+    publicIPAddressVersion: 'IPv6'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "npipip6001"
+    },
+    "prefixLength": {
+      "value": 127
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "publicIPAddressVersion": {
+      "value": "IPv6"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/public-ip-prefix:<version>'
+
+// Required parameters
+param name = 'npipip6001'
+param prefixLength = 127
+// Non-required parameters
+param location = '<location>'
+param publicIPAddressVersion = 'IPv6'
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -116,6 +191,12 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
     name: 'npipmax001'
     prefixLength: 28
     // Non-required parameters
+    ipTags: [
+      {
+        ipTagType: 'RoutingPreference'
+        tag: 'Internet'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -173,6 +254,14 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
       "value": 28
     },
     // Non-required parameters
+    "ipTags": {
+      "value": [
+        {
+          "ipTagType": "RoutingPreference",
+          "tag": "Internet"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -234,6 +323,12 @@ using 'br/public:avm/res/network/public-ip-prefix:<version>'
 param name = 'npipmax001'
 param prefixLength = 28
 // Non-required parameters
+param ipTags = [
+  {
+    ipTagType: 'RoutingPreference'
+    tag: 'Internet'
+  }
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -272,7 +367,7 @@ param zones = [
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -373,11 +468,14 @@ param tags = {
 | :-- | :-- | :-- |
 | [`customIPPrefix`](#parameter-customipprefix) | object | The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`ipTags`](#parameter-iptags) | array | The list of tags associated with the public IP prefix. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`publicIPAddressVersion`](#parameter-publicipaddressversion) | string | The public IP address version. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`zones`](#parameter-zones) | array | A list of availability zones denoting the IP allocated for the resource needs to come from. |
+| [`tier`](#parameter-tier) | string | Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty. |
+| [`zones`](#parameter-zones) | array | A list of availability zones denoting the IP allocated for the resource needs to come from. This is only applicable for regional public IP prefixes and must be empty for global public IP prefixes. |
 
 ### Parameter: `name`
 
@@ -408,6 +506,34 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `ipTags`
+
+The list of tags associated with the public IP prefix.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipTagType`](#parameter-iptagsiptagtype) | string | The IP tag type. |
+| [`tag`](#parameter-iptagstag) | string | The IP tag. |
+
+### Parameter: `ipTags.ipTagType`
+
+The IP tag type.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipTags.tag`
+
+The IP tag.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `location`
 
@@ -452,6 +578,21 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `publicIPAddressVersion`
+
+The public IP address version.
+
+- Required: No
+- Type: string
+- Default: `'IPv4'`
+- Allowed:
+  ```Bicep
+  [
+    'IPv4'
+    'IPv6'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -564,9 +705,24 @@ Tags of the resource.
 - Required: No
 - Type: object
 
+### Parameter: `tier`
+
+Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty.
+
+- Required: No
+- Type: string
+- Default: `'Regional'`
+- Allowed:
+  ```Bicep
+  [
+    'Global'
+    'Regional'
+  ]
+  ```
+
 ### Parameter: `zones`
 
-A list of availability zones denoting the IP allocated for the resource needs to come from.
+A list of availability zones denoting the IP allocated for the resource needs to come from. This is only applicable for regional public IP prefixes and must be empty for global public IP prefixes.
 
 - Required: No
 - Type: array

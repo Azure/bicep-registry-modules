@@ -8,6 +8,7 @@ This module deploys a Virtual Machine Image Template that can be consumed by Azu
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -58,14 +59,14 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       type: 'PlatformImage'
       version: 'latest'
     }
-    name: 'vmiitmin001'
-    // Non-required parameters
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
+    name: 'vmiitmin001'
+    // Non-required parameters
+    location: '<location>'
   }
 }
 ```
@@ -100,19 +101,19 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         "version": "latest"
       }
     },
-    "name": {
-      "value": "vmiitmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
+    },
+    "name": {
+      "value": "vmiitmin001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -142,14 +143,14 @@ param imageSource = {
   type: 'PlatformImage'
   version: 'latest'
 }
-param name = 'vmiitmin001'
-// Non-required parameters
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
+param name = 'vmiitmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -194,6 +195,11 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       type: 'PlatformImage'
       version: 'latest'
     }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     name: 'vmiitmax001'
     // Non-required parameters
     buildTimeoutInMinutes: 60
@@ -221,11 +227,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
     }
     optimizeVmBoot: 'Enabled'
     osDiskSizeGB: 127
@@ -318,6 +319,13 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         "version": "latest"
       }
     },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
     "name": {
       "value": "vmiitmax001"
     },
@@ -354,13 +362,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
       }
     },
     "optimizeVmBoot": {
@@ -466,6 +467,11 @@ param imageSource = {
   type: 'PlatformImage'
   version: 'latest'
 }
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 param name = 'vmiitmax001'
 // Non-required parameters
 param buildTimeoutInMinutes = 60
@@ -493,11 +499,6 @@ param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
 }
 param optimizeVmBoot = 'Enabled'
 param osDiskSizeGB = 127
@@ -576,6 +577,11 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       type: 'PlatformImage'
       version: 'latest'
     }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     name: 'vmiitwaf001'
     // Non-required parameters
     customizationSteps: [
@@ -585,11 +591,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       }
     ]
     location: '<location>'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     subnetResourceId: '<subnetResourceId>'
     tags: {
       Environment: 'Non-Prod'
@@ -630,6 +631,13 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         "version": "latest"
       }
     },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
     "name": {
       "value": "vmiitwaf001"
     },
@@ -644,13 +652,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     },
     "location": {
       "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -690,6 +691,11 @@ param imageSource = {
   type: 'PlatformImage'
   version: 'latest'
 }
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 param name = 'vmiitwaf001'
 // Non-required parameters
 param customizationSteps = [
@@ -699,11 +705,6 @@ param customizationSteps = [
   }
 ]
 param location = '<location>'
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
 param subnetResourceId = '<subnetResourceId>'
 param tags = {
   Environment: 'Non-Prod'
@@ -769,7 +770,7 @@ Image source definition in object format.
 
 The managed identity definition for this resource.
 
-- Required: No
+- Required: Yes
 - Type: object
 
 **Optional parameters**
@@ -1173,6 +1174,14 @@ Do not provide a value! This date is used to generate a unique image template na
 | `resourceGroupName` | string | The resource group the image template was deployed into. |
 | `resourceId` | string | The resource ID of the image template. |
 | `runThisCommand` | string | The command to run in order to trigger the image build. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Notes
 
