@@ -375,4 +375,7 @@ output privateEndpoints array = [
 //   Definitions   //
 // =============== //
 
-import { lockType, roleAssignmentType, managedIdentityAllType, privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.1.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
