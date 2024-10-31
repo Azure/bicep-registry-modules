@@ -14,7 +14,7 @@
 #/avm/ptn/avd-lza/session-hosts/ @Azure/avm-ptn-avd-lza-sessionhosts-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/acr-container-app/ @Azure/avm-ptn-azd-acrcontainerapp-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/aks/ @Azure/avm-ptn-azd-aks-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/ptn/azd/aks-automatic-cluster/ @Azure/avm-ptn-azd-aks-automatic-cluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/azd/aks-automatic-cluster/ @Azure/avm-ptn-azd-aksautomaticcluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/apim-api/ @Azure/avm-ptn-azd-apimapi-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/container-app-upsert/ @Azure/avm-ptn-azd-containerappupsert-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/azd/container-apps-stack/ @Azure/avm-ptn-azd-containerappsstack-module-owners-bicep @Azure/avm-module-reviewers-bicep
