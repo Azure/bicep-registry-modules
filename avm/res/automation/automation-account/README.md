@@ -246,8 +246,8 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     disableLocalAuth: true
     gallerySolutions: [
       {
-        name: 'Updates'
-        product: 'OMSGallery'
+        name: '<name>'
+        product: 'OMSGallery/Updates'
         publisher: 'Microsoft'
       }
     ]
@@ -507,8 +507,8 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     "gallerySolutions": {
       "value": [
         {
-          "name": "Updates",
-          "product": "OMSGallery",
+          "name": "<name>",
+          "product": "OMSGallery/Updates",
           "publisher": "Microsoft"
         }
       ]
@@ -784,8 +784,8 @@ param diagnosticSettings = [
 param disableLocalAuth = true
 param gallerySolutions = [
   {
-    name: 'Updates'
-    product: 'OMSGallery'
+    name: '<name>'
+    product: 'OMSGallery/Updates'
     publisher: 'Microsoft'
   }
 ]
@@ -1025,8 +1025,8 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     disableLocalAuth: true
     gallerySolutions: [
       {
-        name: 'Updates'
-        product: 'OMSGallery'
+        name: '<name>'
+        product: 'OMSGallery/Updates'
         publisher: 'Microsoft'
       }
     ]
@@ -1235,8 +1235,8 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     "gallerySolutions": {
       "value": [
         {
-          "name": "Updates",
-          "product": "OMSGallery",
+          "name": "<name>",
+          "product": "OMSGallery/Updates",
           "publisher": "Microsoft"
         }
       ]
@@ -1461,8 +1461,8 @@ param diagnosticSettings = [
 param disableLocalAuth = true
 param gallerySolutions = [
   {
-    name: 'Updates'
-    product: 'OMSGallery'
+    name: '<name>'
+    product: 'OMSGallery/Updates'
     publisher: 'Microsoft'
   }
 ]
@@ -1946,7 +1946,40 @@ List of gallerySolutions to be created in the linked log analytics workspace.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-gallerysolutionsname) | string | Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive. |
+| [`product`](#parameter-gallerysolutionsproduct) | string | The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`publisher`](#parameter-gallerysolutionspublisher) | string | The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value. |
+
+### Parameter: `gallerySolutions.name`
+
+Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gallerySolutions.product`
+
+The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gallerySolutions.publisher`
+
+The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value.
+
+- Required: No
+- Type: string
 
 ### Parameter: `jobSchedules`
 
@@ -2650,7 +2683,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
-| `br/public:avm/res/operations-management/solution:0.1.3` | Remote reference |
+| `br/public:avm/res/operations-management/solution:0.2.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Data Collection
