@@ -37,6 +37,9 @@ param publicIPAddressVersion string = 'IPv4'
 @description('Optional. The DNS settings of the public IP address.')
 param dnsSettings dnsSettingsType?
 
+@description('Optional. The list of tags associated with the public IP address.')
+param ipTags ipTagType[]?
+
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
@@ -162,7 +165,7 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2023-09-01' = {
         }
       : null
     idleTimeoutInMinutes: idleTimeoutInMinutes
-    ipTags: null // Note: Requires feature 'Microsoft.Network/AllowBringYourOwnPublicIpAddress' to be registered on the subscription
+    ipTags: ipTags
   }
 }
 
@@ -265,4 +268,13 @@ type ddosSettingsType = {
   }?
   @description('Required. The DDoS protection policy customizations.')
   protectionMode: 'Enabled'
+}
+
+@export()
+type ipTagType = {
+  @description('Required. The IP tag type.')
+  ipTagType: string
+
+  @description('Required. The IP tag.')
+  tag: string
 }
