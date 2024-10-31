@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "7676062632439815762"
+      "templateHash": "17391549919743437794"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.",
@@ -2602,12 +2602,12 @@
             "value": "[coalesce(tryGet(parameters('loggers')[copyIndex()], 'credentials'), createObject())]"
           },
           "isBuffered": {
-            "value": "[coalesce(tryGet(parameters('loggers')[copyIndex()], 'isBuffered'), true())]"
+            "value": "[tryGet(parameters('loggers')[copyIndex()], 'isBuffered')]"
           },
-          "loggerDescription": {
-            "value": "[coalesce(tryGet(parameters('loggers')[copyIndex()], 'loggerDescription'), '')]"
+          "description": {
+            "value": "[tryGet(parameters('loggers')[copyIndex()], 'loggerDescription')]"
           },
-          "loggerType": {
+          "type": {
             "value": "[coalesce(tryGet(parameters('loggers')[copyIndex()], 'loggerType'), 'azureMonitor')]"
           },
           "targetResourceId": {
@@ -2621,7 +2621,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "12834599511984803283"
+              "templateHash": "11939692347898757759"
             },
             "name": "API Management Service Loggers",
             "description": "This module deploys an API Management Service Logger.",
@@ -2640,8 +2640,9 @@
                 "description": "Required. Resource Name."
               }
             },
-            "loggerDescription": {
+            "description": {
               "type": "string",
+              "defaultValue": "",
               "metadata": {
                 "description": "Optional. Logger description."
               }
@@ -2653,7 +2654,7 @@
                 "description": "Optional. Whether records are buffered in the logger before publishing."
               }
             },
-            "loggerType": {
+            "type": {
               "type": "string",
               "allowedValues": [
                 "applicationInsights",
@@ -2684,9 +2685,9 @@
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "credentials": "[parameters('credentials')]",
-                "description": "[parameters('loggerDescription')]",
+                "description": "[parameters('description')]",
                 "isBuffered": "[parameters('isBuffered')]",
-                "loggerType": "[parameters('loggerType')]",
+                "loggerType": "[parameters('type')]",
                 "resourceId": "[parameters('targetResourceId')]"
               }
             }

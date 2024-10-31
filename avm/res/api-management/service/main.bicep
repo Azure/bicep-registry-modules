@@ -416,9 +416,9 @@ module service_loggers 'logger/main.bicep' = [
       name: logger.name
       apiManagementServiceName: service.name
       credentials: logger.?credentials ?? {}
-      isBuffered: logger.?isBuffered ?? true
-      loggerDescription: logger.?loggerDescription ?? ''
-      loggerType: logger.?loggerType ?? 'azureMonitor'
+      isBuffered: logger.?isBuffered
+      description: logger.?loggerDescription
+      type: logger.?loggerType ?? 'azureMonitor'
       targetResourceId: logger.?targetResourceId ?? ''
     }
     dependsOn: [
