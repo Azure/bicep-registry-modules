@@ -41,7 +41,7 @@ param variables array = []
 param linkedWorkspaceResourceId string = ''
 
 @description('Optional. List of gallerySolutions to be created in the linked log analytics workspace.')
-param gallerySolutions array = []
+param gallerySolutions gallerySolutionType[]?
 
 @description('Optional. List of softwareUpdateConfigurations to be created in the automation account.')
 param softwareUpdateConfigurations array = []
@@ -323,14 +323,14 @@ module automationAccount_linkedService 'modules/linked-service.bicep' = if (!emp
   )
 }
 
-module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.1.3' = [
-  for (gallerySolution, index) in gallerySolutions: if (!empty(linkedWorkspaceResourceId)) {
+module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.2.0' = [
+  for (gallerySolution, index) in gallerySolutions ?? []: if (!empty(linkedWorkspaceResourceId)) {
     name: '${uniqueString(deployment().name, location)}-AutoAccount-Solution-${index}'
     params: {
       name: gallerySolution.name
       location: location
       logAnalyticsWorkspaceName: last(split(linkedWorkspaceResourceId, '/'))!
-      product: gallerySolution.?product
+      product: gallerySolution.product
       publisher: gallerySolution.?publisher
       enableTelemetry: enableTelemetry
     }
@@ -549,4 +549,22 @@ type credentialType = {
 
   @sys.description('Optional. Description of the credential.')
   description: string?
+}
+
+@export()
+type gallerySolutionType = {
+  @description('''Required. Name of the solution.
+  For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.
+  For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.
+  The solution type is case-sensitive.''')
+  name: string
+
+  @description('''Required. The product name of the deployed solution.
+  For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.
+  For a third party solution, it can be anything.
+  This is case sensitive.''')
+  product: string
+
+  @description('Optional. The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value.')
+  publisher: string?
 }
