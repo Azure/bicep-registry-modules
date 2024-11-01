@@ -144,16 +144,19 @@ output resourceGroupName string = resourceGroup().name
 @sys.description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string = volumeGroup.?identity.?principalId ?? ''
 
-@sys.description('The resources IDs of the deployed Elastic SAN Volumes.')
-output volumeResourceIds array = [
-  for index in range(0, length(volumes ?? [])): volumeGroup_volumes[index].outputs.resourceId
+@sys.description('Details on the deployed Elastic SAN Volumes.')
+output volumes volumeGroupOutputType[] = [
+  for (volume, i) in (volumes ?? []): {
+    resourceId: volumeGroup_volumes[i].outputs.resourceId
+    snapshots: volumeGroup_volumes[i].outputs.snapshots
+  }
 ]
 
 // ================ //
 // Definitions      //
 // ================ //
 
-import { volumeSnapshotType } from 'volume/main.bicep'
+import { volumeSnapshotType, volumeSnapshotOutputType } from 'volume/main.bicep'
 
 @export()
 type volumeType = {
@@ -176,4 +179,13 @@ type virtualNetworkRuleType = {
   @sys.minLength(1)
   @sys.description('Required. The resource ID of the subnet in the virtual network.')
   virtualNetworkSubnetResourceId: string
+}
+
+@export()
+type volumeGroupOutputType = {
+  @sys.description('The resource ID of the deployed Elastic SAN Volume.')
+  resourceId: string
+
+  @sys.description('Details on the deployed Elastic SAN Volume Snapshots.')
+  snapshots: volumeSnapshotOutputType[]
 }
