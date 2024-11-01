@@ -7,6 +7,7 @@ This module deploys an Azure SQL Server Database.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -265,7 +266,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -375,7 +376,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -634,7 +635,6 @@ The database SKU.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-skuname) | string | The name of the SKU, typically, a letter + Number code, e.g. P3. |
-| [`tier`](#parameter-skutier) | string | The tier or edition of the particular SKU, e.g. Basic, Premium. |
 
 **Optional parameters**
 
@@ -643,19 +643,13 @@ The database SKU.
 | [`capacity`](#parameter-skucapacity) | int | The capacity of the particular SKU. |
 | [`family`](#parameter-skufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
 | [`size`](#parameter-skusize) | string | Size of the particular SKU. |
+| [`tier`](#parameter-skutier) | string | The tier or edition of the particular SKU, e.g. Basic, Premium. |
 
 ### Parameter: `sku.name`
 
 The name of the SKU, typically, a letter + Number code, e.g. P3.
 
 - Required: Yes
-- Type: string
-
-### Parameter: `sku.tier`
-
-The tier or edition of the particular SKU, e.g. Basic, Premium.
-
-- Required: No
 - Type: string
 
 ### Parameter: `sku.capacity`
@@ -675,6 +669,13 @@ If the service has different generations of hardware, for the same SKU, then tha
 ### Parameter: `sku.size`
 
 Size of the particular SKU.
+
+- Required: No
+- Type: string
+
+### Parameter: `sku.tier`
+
+The tier or edition of the particular SKU, e.g. Basic, Premium.
 
 - Required: No
 - Type: string
@@ -730,3 +731,11 @@ Whether or not this database is zone redundant.
 | `name` | string | The name of the deployed database. |
 | `resourceGroupName` | string | The resource group of the deployed database. |
 | `resourceId` | string | The resource ID of the deployed database. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |

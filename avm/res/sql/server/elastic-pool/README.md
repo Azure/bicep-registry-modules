@@ -156,6 +156,7 @@ The per database settings for the elastic pool.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`maxCapacity`](#parameter-perdatabasesettingsmaxcapacity) | string | The maximum capacity any one database can consume. Examples: '0.5', '2'. |
 | [`minCapacity`](#parameter-perdatabasesettingsmincapacity) | string | The minimum capacity all databases are guaranteed. Examples: '0.5', '1'. |
 
 **Optional parameters**
@@ -164,11 +165,12 @@ The per database settings for the elastic pool.
 | :-- | :-- | :-- |
 | [`autoPauseDelay`](#parameter-perdatabasesettingsautopausedelay) | int | Auto Pause Delay for per database within pool. |
 
-**Reqired parameters**
+### Parameter: `perDatabaseSettings.maxCapacity`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`maxCapacity`](#parameter-perdatabasesettingsmaxcapacity) | string | The maximum capacity any one database can consume. Examples: '0.5', '2'. |
+The maximum capacity any one database can consume. Examples: '0.5', '2'.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `perDatabaseSettings.minCapacity`
 
@@ -183,13 +185,6 @@ Auto Pause Delay for per database within pool.
 
 - Required: No
 - Type: int
-
-### Parameter: `perDatabaseSettings.maxCapacity`
-
-The maximum capacity any one database can consume. Examples: '0.5', '2'.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `preferredEnclaveType`
 
