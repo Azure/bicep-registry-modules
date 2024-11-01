@@ -21,6 +21,9 @@ param serviceShort string = 'sqlswaf'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -36,7 +39,8 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: enforcedLocation
@@ -88,9 +92,11 @@ module testDeployment '../../../main.bicep' = {
     elasticPools: [
       {
         name: '${namePrefix}-${serviceShort}-ep-001'
-        skuName: 'GP_Gen5'
-        skuTier: 'GeneralPurpose'
-        skuCapacity: 10
+        sku: {
+          name: 'GP_Gen5'
+          tier: 'GeneralPurpose'
+          capacity: 10
+        }
         maintenanceConfigurationId: '${subscription().id}/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_${enforcedLocation}_DB_1'
       }
     ]
@@ -98,9 +104,11 @@ module testDeployment '../../../main.bicep' = {
       {
         name: '${namePrefix}-${serviceShort}db-001'
         collation: 'SQL_Latin1_General_CP1_CI_AS'
-        skuTier: 'GeneralPurpose'
-        skuName: 'ElasticPool'
-        skuCapacity: 0
+        sku: {
+          name: 'ElasticPool'
+          tier: 'GeneralPurpose'
+          capacity: 0
+        }
         maxSizeBytes: 34359738368
         licenseType: 'LicenseIncluded'
         diagnosticSettings: [
@@ -112,11 +120,7 @@ module testDeployment '../../../main.bicep' = {
             workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
           }
         ]
-        elasticPoolId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}/elasticPools/${namePrefix}-${serviceShort}-ep-001'
-        encryptionProtectorObj: {
-          serverKeyType: 'AzureKeyVault'
-          serverKeyName: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
-        }
+        elasticPoolResourceId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}/elasticPools/${namePrefix}-${serviceShort}-ep-001'
         backupShortTermRetentionPolicy: {
           retentionDays: 14
         }
@@ -125,6 +129,10 @@ module testDeployment '../../../main.bicep' = {
         }
       }
     ]
+    encryptionProtectorObj: {
+      serverKeyType: 'AzureKeyVault'
+      serverKeyName: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
+    }
     securityAlertPolicies: [
       {
         name: 'Default'
