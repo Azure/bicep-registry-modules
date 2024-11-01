@@ -112,7 +112,7 @@ type elasticPoolPerDatabaseSettingsType = {
   @description('Optional. Auto Pause Delay for per database within pool.')
   autoPauseDelay: int?
 
-  @description('Reqired. The maximum capacity any one database can consume. Examples: \'0.5\', \'2\'.')
+  @description('Required. The maximum capacity any one database can consume. Examples: \'0.5\', \'2\'.')
   maxCapacity: string
 
   // using string as minCapacity can be fractional
