@@ -73,8 +73,6 @@ param enableTelemetry bool = true
 
 */
 
-param virtualNetworkRules string[]?
-
 // TODO: Your module should support the following optional parameters. However, please review and remove any parameters that are unnecessary.
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
@@ -104,6 +102,19 @@ var calculatedSku = sku == 'Premium_LRS' ? (availabilityZone != null ? 'Premium_
 // For Premium_LRS only one zone is utilized - needs to be specified
 // ZRS is only available in France Central, North Europe, West Europe and West US 2.
 var calculatedZone = sku == 'Premium_LRS' ? (availabilityZone != null ? ['${availabilityZone}'] : null) : null
+
+/*
+  Create an array of array of virtual network rules from the volume groups.
+  Goal is to understand if any virtual network rules are set across all volume groups.
+  [{ virtualNetworkSubnetResourceId: id }, { virtualNetworkSubnetResourceId: id }]
+  [{ virtualNetworkSubnetResourceId: id }]
+*/
+var tempVirtualNetworkRules = [
+  for volumeGroup in volumeGroups ?? []: map(volumeGroup.virtualNetworkRules ?? [], virtualNetworkRule => {
+    virtualNetworkSubnetResourceId: virtualNetworkRule.virtualNetworkSubnetResourceId
+  })
+]
+var virtualNetworkRules = flatten(tempVirtualNetworkRules) // Flatten the array of arrays
 
 // Disable by default
 // Enabled only when explicitly set to 'Enabled' or
@@ -166,7 +177,7 @@ module elasticSan_volumeGroups 'volume-group/main.bicep' = [
       name: volumeGroup.name
       managedIdentities: managedIdentities
       customerManagedKey: customerManagedKey
-      subnetNetworkRules: null
+      virtualNetworkRules: volumeGroup.virtualNetworkRules
     }
   }
 ]
@@ -201,17 +212,22 @@ output systemAssignedMIPrincipalId string = elasticSan.?identity.?principalId ??
 // Definitions      //
 // ================ //
 
+import { virtualNetworkRuleType } from './volume-group/main.bicep'
+
 @export()
 type volumeGroupType = {
   @sys.minLength(3)
   @sys.maxLength(63)
   @sys.description('Required. The name of the Elastic SAN Volume Group.')
   name: string
+
+  @sys.description('Optional. List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint.')
+  virtualNetworkRules: virtualNetworkRuleType[]?
 }
 
 /*
 
-import { volumeGroupType } from './volume-group/main.bicep'
+
 
 @export()
 type elasticSanType = {
