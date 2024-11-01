@@ -55,6 +55,38 @@ param tags object?
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+// ============== //
+// Variables      //
+// ============== //
+
+// Default to Premium_ZRS unless the user specifically chooses Premium_LRS and specifies an availability zone number.
+var calculatedSku = sku == 'Premium_LRS' ? (availabilityZone != null ? 'Premium_LRS' : 'Premium_ZRS') : 'Premium_ZRS'
+
+// For Premium_ZRS all zones are utilized - no need to specify the zone
+// For Premium_LRS only one zone is utilized - needs to be specified
+// ZRS is only available in France Central, North Europe, West Europe and West US 2.
+var calculatedZone = sku == 'Premium_LRS' ? (availabilityZone != null ? ['${availabilityZone}'] : null) : null
+
+/*
+  Create an array of array of virtual network rules from the volume groups.
+  Goal is to understand if any virtual network rules are set across all volume groups.
+  [{ virtualNetworkSubnetResourceId: id }, { virtualNetworkSubnetResourceId: id }]
+  [{ virtualNetworkSubnetResourceId: id }]
+*/
+var tempVirtualNetworkRules = [
+  for volumeGroup in volumeGroups ?? []: map(volumeGroup.virtualNetworkRules ?? [], virtualNetworkRule => {
+    virtualNetworkSubnetResourceId: virtualNetworkRule.virtualNetworkSubnetResourceId
+  })
+]
+var virtualNetworkRules = flatten(tempVirtualNetworkRules) // Flatten the array of arrays
+
+// Disable by default
+// Enabled only when explicitly set to 'Enabled' or
+// when 'publicNetworkAccess' not explicitly set and both private endpoints and virtual network rules are empty
+var calculatedPublicNetworkAccess = !empty(publicNetworkAccess)
+  ? any(publicNetworkAccess)
+  : (!empty(privateEndpoints) ? 'Disabled' : (!empty(virtualNetworkRules) ? 'Disabled' : 'Enabled'))
+
 /*
 
 
@@ -90,38 +122,6 @@ param roleAssignments roleAssignmentType[]?
 import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
-
-// ============== //
-// Variables      //
-// ============== //
-
-// Default to Premium_ZRS unless the user specifically chooses Premium_LRS and specifies an availability zone number.
-var calculatedSku = sku == 'Premium_LRS' ? (availabilityZone != null ? 'Premium_LRS' : 'Premium_ZRS') : 'Premium_ZRS'
-
-// For Premium_ZRS all zones are utilized - no need to specify the zone
-// For Premium_LRS only one zone is utilized - needs to be specified
-// ZRS is only available in France Central, North Europe, West Europe and West US 2.
-var calculatedZone = sku == 'Premium_LRS' ? (availabilityZone != null ? ['${availabilityZone}'] : null) : null
-
-/*
-  Create an array of array of virtual network rules from the volume groups.
-  Goal is to understand if any virtual network rules are set across all volume groups.
-  [{ virtualNetworkSubnetResourceId: id }, { virtualNetworkSubnetResourceId: id }]
-  [{ virtualNetworkSubnetResourceId: id }]
-*/
-var tempVirtualNetworkRules = [
-  for volumeGroup in volumeGroups ?? []: map(volumeGroup.virtualNetworkRules ?? [], virtualNetworkRule => {
-    virtualNetworkSubnetResourceId: virtualNetworkRule.virtualNetworkSubnetResourceId
-  })
-]
-var virtualNetworkRules = flatten(tempVirtualNetworkRules) // Flatten the array of arrays
-
-// Disable by default
-// Enabled only when explicitly set to 'Enabled' or
-// when 'publicNetworkAccess' not explicitly set and both private endpoints and virtual network rules are empty
-var calculatedPublicNetworkAccess = !empty(publicNetworkAccess)
-  ? any(publicNetworkAccess)
-  : (!empty(privateEndpoints) ? 'Disabled' : (!empty(virtualNetworkRules) ? 'Disabled' : 'Enabled'))
 
 // ============== //
 // Resources      //
