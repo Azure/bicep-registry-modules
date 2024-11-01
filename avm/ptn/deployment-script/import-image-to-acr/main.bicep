@@ -169,7 +169,7 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.4.0' = {
     tags: tags
     managedIdentities: useExistingManagedIdentity
       // ? managedIdentities // once the referenced module is using the common type
-      ? { userAssignedResourcesIds: managedIdentities.userAssignedResourceIds! }
+      ? { userAssignedResourcesIds: managedIdentities.?userAssignedResourceIds! }
       : { userAssignedResourcesIds: [newManagedIdentity.id] }
     kind: 'AzureCLI'
     runOnce: runOnce
