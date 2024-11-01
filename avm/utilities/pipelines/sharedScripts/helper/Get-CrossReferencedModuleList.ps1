@@ -92,7 +92,7 @@ function Get-ReferenceObject {
         $moduleContent = $TemplateMap[$involvedFilePath]
 
         $resultSet.resourceReferences += @() + $moduleContent | Where-Object { $_ -match "^resource .+ '(.+?)' .+$" } | ForEach-Object { $matches[1] }
-        $resultSet.remoteReferences += @() + $moduleContent | Where-Object { $_ -match "^module .+ '(.+:.+?)' .+$" } | ForEach-Object { $matches[1] }
+        $resultSet.remoteReferences += @() + $moduleContent | Where-Object { $_ -match "^module .+ '(.+:.+?)' .+$" -or $_ -match "^import .+ '(.+:.+?)'$" } | ForEach-Object { $matches[1] }
     }
 
     return @{

@@ -34,6 +34,10 @@ param skuTier string = 'Fabric'
 @description('Required. List of admin members. Format: ["something@domain.com"].')
 param adminMembers array
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+@description('Optional. The lock settings of the service.')
+param lock lockType?
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -73,6 +77,17 @@ resource fabricCapacity 'Microsoft.Fabric/capacities@2023-11-01' = {
       members: adminMembers
     }
   }
+}
+
+resource fabricCapacity_lock 'Microsoft.Authorization/locks@2016-09-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
+  }
+  scope: fabricCapacity
 }
 
 // ============ //

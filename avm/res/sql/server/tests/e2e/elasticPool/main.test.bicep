@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'Using elastic pool'
+metadata description = 'This instance deploys the module with an elastic pool.'
 
 // ========== //
 // Parameters //
@@ -9,13 +9,17 @@ metadata description = 'This instance deploys the module in alignment with the b
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-operationsmanagement.solutions-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-sql.servers-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'omswaf'
+param serviceShort string = 'ssep'
+
+@description('Optional. The password to leverage for the login.')
+@secure()
+param password string = newGuid()
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -31,15 +35,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  params: {
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    location: resourceLocation
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -50,11 +45,29 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'AzureAutomation(${nestedDependencies.outputs.logAnalyticsWorkspaceName})'
+      name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
-      product: 'OMSGallery/AzureAutomation'
-      publisher: 'Microsoft'
+      administratorLogin: 'adminUserName'
+      administratorLoginPassword: password
+      elasticPools: [
+        // bare minimum elastic pool: only a name is specified
+        {
+          name: '${namePrefix}-${serviceShort}-ep-001'
+        }
+        // more complex elastic pool with non-default SKU and per database settings
+        {
+          name: '${namePrefix}-${serviceShort}-ep-002'
+          sku: {
+            name: 'GP_Gen5'
+            tier: 'GeneralPurpose'
+            capacity: 4
+          }
+          perDatabaseSettings: {
+            minCapacity: '0.5'
+            maxCapacity: '4'
+          }
+        }
+      ]
     }
   }
 ]
