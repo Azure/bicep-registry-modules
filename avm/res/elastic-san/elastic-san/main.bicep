@@ -34,8 +34,8 @@ param baseSizeTiB int = 1
 @sys.description('Optional. Size of the Elastic SAN additional capacity (TiB).')
 param extendedCapacitySizeTiB int = 0
 
-@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints or Virtual Network Rules are set.')
-@allowed([
+@sys.description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints or Virtual Network Rules are set.')
+@sys.allowed([
   'Enabled'
   'Disabled'
 ])
@@ -86,42 +86,6 @@ var virtualNetworkRules = flatten(tempVirtualNetworkRules) // Flatten the array 
 var calculatedPublicNetworkAccess = !empty(publicNetworkAccess)
   ? any(publicNetworkAccess)
   : (!empty(privateEndpoints) ? 'Disabled' : (!empty(virtualNetworkRules) ? 'Disabled' : 'Enabled'))
-
-/*
-
-
-
-
-
-####################################
-
-
-
-
-
-
-
-
-
-*/
-
-// TODO: Your module should support the following optional parameters. However, please review and remove any parameters that are unnecessary.
-
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
-@sys.description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingFullType[]?
-
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
-@sys.description('Optional. The lock settings of the service.')
-param lock lockType?
-
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
-@sys.description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType[]?
-
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
-@sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
-param privateEndpoints privateEndpointMultiServiceType[]?
 
 // ============== //
 // Resources      //
@@ -175,12 +139,49 @@ module elasticSan_volumeGroups 'volume-group/main.bicep' = [
     params: {
       elasticSanName: elasticSan.name
       name: volumeGroup.name
+      volumes: volumeGroup.volumes
+      virtualNetworkRules: volumeGroup.virtualNetworkRules
       managedIdentities: managedIdentities
       customerManagedKey: customerManagedKey
-      virtualNetworkRules: volumeGroup.virtualNetworkRules
     }
   }
 ]
+
+/*
+
+
+
+
+
+####################################
+
+
+
+
+
+
+
+
+
+*/
+
+// TODO: Your module should support the following optional parameters. However, please review and remove any parameters that are unnecessary.
+
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+@sys.description('Optional. The diagnostic settings of the service.')
+param diagnosticSettings diagnosticSettingFullType[]?
+
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+@sys.description('Optional. The lock settings of the service.')
+param lock lockType?
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+@sys.description('Optional. Array of role assignments to create.')
+param roleAssignments roleAssignmentType[]?
+
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+@sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
+param privateEndpoints privateEndpointMultiServiceType[]?
 
 // ============ //
 // Outputs      //
@@ -212,7 +213,7 @@ output systemAssignedMIPrincipalId string = elasticSan.?identity.?principalId ??
 // Definitions      //
 // ================ //
 
-import { virtualNetworkRuleType } from './volume-group/main.bicep'
+import { volumeType, virtualNetworkRuleType } from './volume-group/main.bicep'
 
 @export()
 type volumeGroupType = {
@@ -220,6 +221,9 @@ type volumeGroupType = {
   @sys.maxLength(63)
   @sys.description('Required. The name of the Elastic SAN Volume Group.')
   name: string
+
+  @sys.description('Optional. List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group.')
+  volumes: volumeType[]?
 
   @sys.description('Optional. List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint.')
   virtualNetworkRules: virtualNetworkRuleType[]?
