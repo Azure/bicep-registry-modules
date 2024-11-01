@@ -460,7 +460,7 @@ output privateEndpoints array = [
 // =============== //
 
 @export()
-@description('An object describing the synapse workspace administrator child resource properties.')
+@description('The synapse workspace administrator\'s interface.')
 type administratorType = {
   @description('Required. Workspace active directory administrator type.')
   administratorType: string
@@ -479,7 +479,7 @@ type administratorType = {
 }
 
 @export()
-@description('An object describing the synapse workspace firewall rule child resource properties.')
+@description('The synapse workspace firewall rule\'s interface.')
 type firewallRuleType = {
   @description('Required. The name of the firewall rule.')
   name: string

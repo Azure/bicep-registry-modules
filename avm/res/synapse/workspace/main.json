@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "2666130062458245644"
+      "templateHash": "14298198840929360566"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -44,7 +44,7 @@
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "An object describing the synapse workspace administrator child resource properties."
+        "description": "The synapse workspace administrator's interface."
       }
     },
     "firewallRuleType": {
@@ -71,7 +71,7 @@
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "An object describing the synapse workspace firewall rule child resource properties."
+        "description": "The synapse workspace firewall rule's interface."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
