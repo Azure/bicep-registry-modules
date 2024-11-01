@@ -55,24 +55,27 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}p2sVpnGw'
-      virtualHubId: nestedDependencies.outputs.virtualHubResourceId
-      vpnServerConfigurationId: nestedDependencies.outputs.vpnServerConfigurationResourceId
       customDnsServers: [
         '10.50.10.50'
         '10.50.50.50'
       ]
       isRoutingPreferenceInternet: false
-      p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
       enableInternetSecurity: false
+      associatedRouteTableName: 'noneRouteTable'
+      inboundRouteMapResourceId: nestedDependencies.outputs.hubRouteMapResourceId
+      outboundRouteMapResourceId: nestedDependencies.outputs.hubRouteMapResourceId
+      propagatedRouteTableNames: [
+        nestedDependencies.outputs.hubRouteTableName
+      ]
+      propagatedLabelNames: nestedDependencies.outputs.hubRouteTableLabels
+      //vnetRoutesStaticRoutes: WTF is this?
       vpnClientAddressPoolAddressPrefixes: [
         '10.0.2.0/24'
       ]
+      virtualHubId: nestedDependencies.outputs.virtualHubResourceId
       vpnGatewayScaleUnit: 5
-      propagatedRouteTableIds: [
-        {
-          id: nestedDependencies.outputs.virtualHubResourceId
-        }
-      ]
+      vpnServerConfigurationId: nestedDependencies.outputs.vpnServerConfigurationResourceId
+      p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
     }
   }
 ]

@@ -8,6 +8,16 @@ param name string
 @description('Required. Location where all resources will be created.')
 param location string = resourceGroup().location
 
+@allowed([
+  'noneRouteTable'
+  'defaultRouteTable'
+])
+@description('Conditional. The name of the associated route table, required if deploying in a Secure Virtual Hub; cannot be a custom route table.')
+param associatedRouteTableName string?
+
+@description('Conditional. The names of the route tables to propagate to the P2S VPN Gateway.')
+param propagatedRouteTableNames array = []
+
 @description('Optional. The custom DNS servers for the P2S VPN Gateway.')
 param customDnsServers array = []
 
@@ -20,24 +30,19 @@ param p2SConnectionConfigurationsName string?
 @description('Optional. Enable/Disable Internet Security; "Propagate Default Route".')
 param enableInternetSecurity bool?
 
-@description('Optional. The Resource ID of the associated Virtual Hub Route Table.')
-param associatedRouteTableId string?
-
 @description('Optional. The Resource ID of the inbound route map.')
-param inboundRouteMapId string?
+param inboundRouteMapResourceId string?
 
 @description('Optional. The Resource ID of the outbound route map.')
-param outboundRouteMapId string?
+param outboundRouteMapResourceId string?
 
-param propagatedRouteTableIds array = []
-
-param propagatedRouteTableLabels array = []
+param propagatedLabelNames array = []
 
 param vnetRoutesStaticRoutes vnetRoutesStaticRoutesType?
 param vpnClientAddressPoolAddressPrefixes array = []
 
 @description('Required. The resource ID of the gateways virtual hub.')
-param virtualHubId string?
+param virtualHubId string
 
 @description('Optional. The scale unit of the VPN Gateway.')
 param vpnGatewayScaleUnit int?
@@ -53,6 +58,13 @@ param lock lockType
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+// =============== //
+
+@description('Extract the virtual hub name from the virtual hub ID.')
+var virtualHubName = split(virtualHubId, '/')[8]
+
+// ============== //
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -89,18 +101,22 @@ resource p2sVpnGateway 'Microsoft.Network/p2svpnGateways@2024-01-01' = {
         properties: {
           enableInternetSecurity: enableInternetSecurity
           routingConfiguration: {
-            associatedRouteTable: {
-              id: associatedRouteTableId
+            associatedRouteTable:  {
+              id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables','${virtualHubName}','${associatedRouteTableName}')
             }
-            inboundRouteMap: {
-              id: inboundRouteMapId
-            }
-            outboundRouteMap: {
-              id: outboundRouteMapId
-            }
+            inboundRouteMap: (!empty(inboundRouteMapResourceId)) ? {
+              id:  inboundRouteMapResourceId
+            } : null
+            outboundRouteMap: (!empty(outboundRouteMapResourceId)) ? {
+              id: outboundRouteMapResourceId
+            } : null
             propagatedRouteTables: {
-              ids: propagatedRouteTableIds
-              labels: propagatedRouteTableLabels
+              ids: [
+                for table in (propagatedRouteTableNames): {
+                  id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables','${virtualHubName}','${table}')
+                }
+              ]
+              labels: propagatedLabelNames
             }
             vnetRoutes: vnetRoutesStaticRoutes
           }
