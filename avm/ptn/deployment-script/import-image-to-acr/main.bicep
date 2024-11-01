@@ -20,8 +20,9 @@ param runOnce bool = false
 @description('Optional. If set, the `Contributor` role will be granted to the managed identity (passed by the `managedIdentities` parameter or create with the name specified in parameter `managedIdentityName`), which is needed to import images into the Azure Container Registry. Defaults to `true`.')
 param assignRbacRole bool = true
 
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Conditional. The managed identity definition for this resource. Required if `assignRbacRole` is `true` and `managedIdentityName` is `null`.')
-param managedIdentities managedIdentitiesType?
+param managedIdentities managedIdentityOnlyUserAssignedType?
 
 @description('Conditional. Name of the Managed Identity resource to create. Required if `assignRbacRole` is `true` and `managedIdentities` is `null`. Defaults to `id-ContainerRegistryImport`.')
 param managedIdentityName string?
@@ -87,7 +88,7 @@ param tags object?
 // Variables      //
 // ============== //
 
-var useExistingManagedIdentity = length(managedIdentities.?userAssignedResourcesIds ?? []) > 0
+var useExistingManagedIdentity = length(managedIdentities.?userAssignedResourceIds ?? []) > 0
 
 // ============== //
 // Resources      //
@@ -118,7 +119,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' existing = {
 
 // needed to "convert" resourceIds to principalId
 resource existingManagedIdentities 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = [
-  for resourceId in (managedIdentities.?userAssignedResourcesIds ?? []): if (assignRbacRole) {
+  for resourceId in (managedIdentities.?userAssignedResourceIds ?? []): if (assignRbacRole) {
     name: last(split(resourceId, '/'))
     scope: resourceGroup(split(resourceId, '/')[2], split(resourceId, '/')[4]) // get the resource group from the managed identity, as it could be in another resource group
   }
@@ -132,7 +133,7 @@ resource newManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@20
 
 // assign the Contributor role to the managed identity (new or existing) to import images into the ACR
 resource acrRoleAssignmentExistingManagedIdentities 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for i in range(0, length(assignRbacRole ? (managedIdentities.?userAssignedResourcesIds ?? []) : [])): if (useExistingManagedIdentity && assignRbacRole) {
+  for i in range(0, length(assignRbacRole ? (managedIdentities.?userAssignedResourceIds ?? []) : [])): if (useExistingManagedIdentity && assignRbacRole) {
     name: guid('roleAssignment-acr-${existingManagedIdentities[i].name}')
     scope: acr
     properties: {
@@ -247,9 +248,4 @@ type importedImageType = {
 
   @description('Required. The image name in the Azure Container Registry.')
   acrHostedImage: string
-}
-
-type managedIdentitiesType = {
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourcesIds: string[]
 }
