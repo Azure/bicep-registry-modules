@@ -497,6 +497,7 @@ The password for the source registry. Required if the source registry is private
 - Required: No
 - Type: securestring
 - Default: `''`
+- Example: `keyVault.getSecret("keyVaultSecretName")`
 
 ### Parameter: `sourceRegistryUsername`
 

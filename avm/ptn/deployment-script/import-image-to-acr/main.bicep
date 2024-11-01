@@ -42,6 +42,7 @@ param sourceRegistryUsername string = ''
 
 @description('Optional. The password for the source registry. Required if the source registry is private, or to logon to the public docker registry.')
 @secure()
+@metadata({ example: 'keyVault.getSecret("keyVaultSecretName")' })
 param sourceRegistryPassword string = ''
 
 @description('Optional. The new image name in the ACR. You can use this to import a publically available image with a custom name for later updating from e.g., your build pipeline.')
@@ -167,7 +168,8 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.4.0' = {
     location: location
     tags: tags
     managedIdentities: useExistingManagedIdentity
-      ? managedIdentities
+      // ? managedIdentities // once the referenced module is using the common type
+      ? { userAssignedResourcesIds: managedIdentities.userAssignedResourceIds! }
       : { userAssignedResourcesIds: [newManagedIdentity.id] }
     kind: 'AzureCLI'
     runOnce: runOnce
