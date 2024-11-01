@@ -209,7 +209,7 @@ module configurationStore_keyValues 'key-value/main.bicep' = [
   }
 ]
 
-module configurationStore_replicas 'replicas/main.bicep' = [
+module configurationStore_replicas 'replica/main.bicep' = [
   for (replicaLocation, index) in (replicaLocations ?? []): {
     name: '${uniqueString(deployment().name, location)}-AppConfig-Replicas-${index}'
     params: {
