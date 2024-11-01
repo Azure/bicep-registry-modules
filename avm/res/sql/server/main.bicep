@@ -34,10 +34,10 @@ param tags object?
 param enableTelemetry bool = true
 
 @description('Optional. The databases to create in the server.')
-param databases array = []
+param databases databasePropertyType[] = []
 
 @description('Optional. The Elastic Pools to create in the server.')
-param elasticPools array = []
+param elasticPools elasticPoolPropertyType[] = []
 
 @description('Optional. The firewall rules to create in the server.')
 param firewallRules array = []
@@ -52,7 +52,15 @@ param securityAlertPolicies array = []
 param keys array = []
 
 @description('Conditional. The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided.')
-param administrators object = {}
+param administrators ServerExternalAdministratorType?
+
+@description('Optional. The Client id used for cross tenant CMK scenario.')
+@minLength(36)
+@maxLength(36)
+param federatedClientId string?
+
+@description('Optional. A CMK URI of the key to use for encryption.')
+param keyId string?
 
 @allowed([
   '1.0'
@@ -112,7 +120,7 @@ param encryptionProtectorObj object = {}
 param vulnerabilityAssessmentsObj object = {}
 
 @description('Optional. The audit settings configuration.')
-param auditSettings auditSettingsType?
+param auditSettings auditSettingsType = {} //Use the defaults from the child module
 
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
@@ -197,16 +205,10 @@ resource server 'Microsoft.Sql/servers@2023-08-01-preview' = {
   properties: {
     administratorLogin: !empty(administratorLogin) ? administratorLogin : null
     administratorLoginPassword: !empty(administratorLoginPassword) ? administratorLoginPassword : null
-    administrators: !empty(administrators)
-      ? {
-          administratorType: 'ActiveDirectory'
-          azureADOnlyAuthentication: administrators.azureADOnlyAuthentication
-          login: administrators.login
-          principalType: administrators.principalType
-          sid: administrators.sid
-          tenantId: administrators.?tenantId ?? tenant().tenantId
-        }
-      : null
+    administrators: union({ administratorType: 'ActiveDirectory' }, administrators ?? {})
+    federatedClientId: federatedClientId
+    isIPv6Enabled: isIPv6Enabled
+    keyId: keyId
     version: '12.0'
     minimalTlsVersion: minimalTlsVersion
     primaryUserAssignedIdentityId: !empty(primaryUserAssignedIdentityId) ? primaryUserAssignedIdentityId : null
@@ -214,7 +216,6 @@ resource server 'Microsoft.Sql/servers@2023-08-01-preview' = {
       ? publicNetworkAccess
       : (!empty(privateEndpoints) && empty(firewallRules) && empty(virtualNetworkRules) ? 'Disabled' : null)
     restrictOutboundNetworkAccess: !empty(restrictOutboundNetworkAccess) ? restrictOutboundNetworkAccess : null
-    isIPv6Enabled: isIPv6Enabled
   }
 }
 
@@ -249,36 +250,53 @@ module server_databases 'database/main.bicep' = [
   for (database, index) in databases: {
     name: '${uniqueString(deployment().name, location)}-Sql-DB-${index}'
     params: {
-      name: database.name
+      // properties derived from parent server resource, no override allowed
       serverName: server.name
-      skuTier: database.?skuTier ?? 'GeneralPurpose'
-      skuName: database.?skuName ?? 'GP_Gen5_2'
-      skuCapacity: database.?skuCapacity
-      skuFamily: database.?skuFamily ?? ''
-      skuSize: database.?skuSize ?? ''
-      collation: database.?collation ?? 'SQL_Latin1_General_CP1_CI_AS'
-      maxSizeBytes: database.?maxSizeBytes ?? 34359738368
-      autoPauseDelay: database.?autoPauseDelay ?? 0
-      diagnosticSettings: database.?diagnosticSettings
-      isLedgerOn: database.?isLedgerOn ?? false
       location: location
-      licenseType: database.?licenseType ?? ''
-      maintenanceConfigurationId: database.?maintenanceConfigurationId
-      minCapacity: database.?minCapacity ?? ''
-      highAvailabilityReplicaCount: database.?highAvailabilityReplicaCount ?? 0
-      readScale: database.?readScale ?? 'Disabled'
-      requestedBackupStorageRedundancy: database.?requestedBackupStorageRedundancy ?? ''
-      sampleName: database.?sampleName ?? ''
+
+      // properties from the database object. If not provided, parent server resource properties will be used
       tags: database.?tags ?? tags
-      zoneRedundant: database.?zoneRedundant ?? true
-      elasticPoolId: database.?elasticPoolId ?? ''
-      backupShortTermRetentionPolicy: database.?backupShortTermRetentionPolicy ?? {}
-      backupLongTermRetentionPolicy: database.?backupLongTermRetentionPolicy ?? {}
-      createMode: database.?createMode ?? 'Default'
-      sourceDatabaseResourceId: database.?sourceDatabaseResourceId ?? ''
-      sourceDatabaseDeletionDate: database.?sourceDatabaseDeletionDate ?? ''
-      recoveryServicesRecoveryPointResourceId: database.?recoveryServicesRecoveryPointResourceId ?? ''
-      restorePointInTime: database.?restorePointInTime ?? ''
+
+      // properties from the databse object. If not provided, defaults specified in the child resource will be used
+      name: database.name
+      sku: database.?sku
+      autoPauseDelay: database.?autoPauseDelay
+      availabilityZone: database.?availabilityZone
+      catalogCollation: database.?catalogCollation
+      collation: database.?collation
+      createMode: database.?createMode
+      elasticPoolResourceId: database.?elasticPoolResourceId
+      encryptionProtector: database.?encryptionProtector
+      encryptionProtectorAutoRotation: database.?encryptionProtectorAutoRotation
+      federatedClientId: database.?federatedClientId
+      freeLimitExhaustionBehavior: database.?freeLimitExhaustionBehavior
+      highAvailabilityReplicaCount: database.?highAvailabilityReplicaCount
+      isLedgerOn: database.?isLedgerOn
+      licenseType: database.?licenseType
+      longTermRetentionBackupResourceId: database.?longTermRetentionBackupResourceId
+      maintenanceConfigurationId: database.?maintenanceConfigurationId
+      manualCutover: database.?manualCutover
+      maxSizeBytes: database.?maxSizeBytes
+      minCapacity: database.?minCapacity
+      performCutover: database.?performCutover
+      preferredEnclaveType: database.?preferredEnclaveType
+      readScale: database.?readScale
+      recoverableDatabaseResourceId: database.?recoverableDatabaseResourceId
+      recoveryServicesRecoveryPointResourceId: database.?recoveryServicesRecoveryPointResourceId
+      requestedBackupStorageRedundancy: database.?requestedBackupStorageRedundancy
+      restorableDroppedDatabaseResourceId: database.?restorableDroppedDatabaseResourceId
+      restorePointInTime: database.?restorePointInTime
+      sampleName: database.?sampleName
+      secondaryType: database.?secondaryType
+      sourceDatabaseDeletionDate: database.?sourceDatabaseDeletionDate
+      sourceDatabaseResourceId: database.?sourceDatabaseResourceId
+      sourceResourceId: database.?sourceResourceId
+      useFreeLimit: database.?useFreeLimit
+      zoneRedundant: database.?zoneRedundant
+
+      diagnosticSettings: database.?diagnosticSettings
+      backupShortTermRetentionPolicy: database.?backupShortTermRetentionPolicy
+      backupLongTermRetentionPolicy: database.?backupLongTermRetentionPolicy
     }
     dependsOn: [
       server_elasticPools // Enables us to add databases to existing elastic pools
@@ -290,21 +308,26 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
   for (elasticPool, index) in elasticPools: {
     name: '${uniqueString(deployment().name, location)}-SQLServer-ElasticPool-${index}'
     params: {
-      name: elasticPool.name
+      // properties derived from parent server resource, no override allowed
       serverName: server.name
-      databaseMaxCapacity: elasticPool.?databaseMaxCapacity ?? 2
-      databaseMinCapacity: elasticPool.?databaseMinCapacity ?? 0
-      highAvailabilityReplicaCount: elasticPool.?highAvailabilityReplicaCount
-      licenseType: elasticPool.?licenseType ?? 'LicenseIncluded'
-      maintenanceConfigurationId: elasticPool.?maintenanceConfigurationId
-      maxSizeBytes: elasticPool.?maxSizeBytes ?? 34359738368
-      minCapacity: elasticPool.?minCapacity
-      skuCapacity: elasticPool.?skuCapacity ?? 2
-      skuName: elasticPool.?skuName ?? 'GP_Gen5'
-      skuTier: elasticPool.?skuTier ?? 'GeneralPurpose'
-      zoneRedundant: elasticPool.?zoneRedundant ?? true
       location: location
+
+      // properties from the elastic pool object. If not provided, parent server resource properties will be used
       tags: elasticPool.?tags ?? tags
+
+      // properties from the elastic pool object. If not provided, defaults specified in the child resource will be used
+      name: elasticPool.name
+      sku: elasticPool.?sku
+      autoPauseDelay: elasticPool.?autoPauseDelay
+      availabilityZone: elasticPool.?availabilityZone
+      highAvailabilityReplicaCount: elasticPool.?highAvailabilityReplicaCount
+      licenseType: elasticPool.?licenseType
+      maintenanceConfigurationId: elasticPool.?maintenanceConfigurationId
+      maxSizeBytes: elasticPool.?maxSizeBytes
+      minCapacity: elasticPool.?minCapacity
+      perDatabaseSettings: elasticPool.?perDatabaseSettings
+      preferredEnclaveType: elasticPool.?preferredEnclaveType
+      zoneRedundant: elasticPool.?zoneRedundant
     }
   }
 ]
@@ -444,23 +467,19 @@ module server_encryptionProtector 'encryption-protector/main.bicep' = if (!empty
   ]
 }
 
-module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSettings)) {
+module server_audit_settings 'audit-settings/main.bicep' = if (auditSettings != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-AuditSettings'
   params: {
     serverName: server.name
     name: auditSettings.?name ?? 'default'
-    state: auditSettings.?state ?? 'Disabled'
-    auditActionsAndGroups: auditSettings.?auditActionsAndGroups ?? [
-      'BATCH_COMPLETED_GROUP'
-      'SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP'
-      'FAILED_DATABASE_AUTHENTICATION_GROUP'
-    ]
-    isAzureMonitorTargetEnabled: auditSettings.?isAzureMonitorTargetEnabled ?? false
-    isDevopsAuditEnabled: auditSettings.?isDevopsAuditEnabled ?? false
-    isManagedIdentityInUse: auditSettings.?isManagedIdentityInUse ?? false
-    isStorageSecondaryKeyInUse: auditSettings.?isStorageSecondaryKeyInUse ?? false
-    queueDelayMs: auditSettings.?queueDelayMs ?? 1000
-    retentionDays: auditSettings.?retentionDays ?? 90
+    state: auditSettings.?state
+    auditActionsAndGroups: auditSettings.?auditActionsAndGroups
+    isAzureMonitorTargetEnabled: auditSettings.?isAzureMonitorTargetEnabled
+    isDevopsAuditEnabled: auditSettings.?isDevopsAuditEnabled
+    isManagedIdentityInUse: auditSettings.?isManagedIdentityInUse
+    isStorageSecondaryKeyInUse: auditSettings.?isStorageSecondaryKeyInUse
+    queueDelayMs: auditSettings.?queueDelayMs
+    retentionDays: auditSettings.?retentionDays
     storageAccountResourceId: auditSettings.?storageAccountResourceId
   }
 }
@@ -684,8 +703,8 @@ type auditSettingsType = {
   @description('Optional. Specifies the number of days to keep in the audit logs in the storage account.')
   retentionDays: int?
 
-  @description('Required. Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required.')
-  state: 'Enabled' | 'Disabled'
+  @description('Optional. Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required.')
+  state: 'Enabled' | 'Disabled'?
 
   @description('Optional. Specifies the identifier key of the auditing storage account.')
   storageAccountResourceId: string?
@@ -701,6 +720,205 @@ type secretsExportConfigurationType = {
   @description('Optional. The sqlAzureConnectionString secret name to create.')
   sqlAzureConnectionStringSercretName: string?
 }?
+
+type ServerExternalAdministratorType = {
+  @description('Optional. Type of the sever administrator.')
+  administratorType: 'ActiveDirectory'?
+
+  @description('Required. Azure Active Directory only Authentication enabled.')
+  azureADOnlyAuthentication: bool
+
+  @description('Required. Login name of the server administrator.')
+  login: string
+
+  @description('Required. Principal Type of the sever administrator.')
+  principalType: 'Application' | 'Group' | 'User'
+
+  @description('Required. SID (object ID) of the server administrator.')
+  sid: string
+
+  @description('Optional. Tenant ID of the administrator.')
+  tenantId: string?
+}
+
+@export()
+type databasePropertyType = {
+  @description('Required. The name of the Elastic Pool.')
+  name: string
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
+
+  @description('Optional. The database SKU.')
+  sku: databaseSkuType?
+
+  @description('Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled.')
+  autoPauseDelay: int?
+
+  @description('Optional. Specifies the availability zone the database is pinned to.')
+  availabilityZone: '1' | '2' | '3' | 'NoPreference'?
+
+  @description('Optional. Collation of the metadata catalog.')
+  catalogCollation: string?
+
+  @description('Optional. The collation of the database.')
+  collation: string?
+
+  @description('Optional. Specifies the mode of database creation.')
+  createMode:
+    | 'Copy'
+    | 'Default'
+    | 'OnlineSecondary'
+    | 'PointInTimeRestore'
+    | 'Recovery'
+    | 'Restore'
+    | 'RestoreExternalBackup'
+    | 'RestoreExternalBackupSecondary'
+    | 'RestoreLongTermRetentionBackup'
+    | 'Secondary'?
+
+  @description('Optional. The resource identifier of the elastic pool containing this database.')
+  elasticPoolResourceId: string?
+
+  @description('Optional. The azure key vault URI of the database if it\'s configured with per Database Customer Managed Keys.')
+  encryptionProtector: string?
+
+  @description('Optional. The flag to enable or disable auto rotation of database encryption protector AKV key.')
+  encryptionProtectorAutoRotation: bool?
+
+  @description('Optional. The Client id used for cross tenant per database CMK scenario.')
+  @minLength(36)
+  @maxLength(36)
+  federatedClientId: string?
+
+  @description('Optional. Specifies the behavior when monthly free limits are exhausted for the free database.')
+  freeLimitExhaustionBehavior: 'AutoPause' | 'BillOverUsage'?
+
+  @description('Optional. The number of secondary replicas associated with the database that are used to provide high availability. Not applicable to a Hyperscale database within an elastic pool.')
+  highAvailabilityReplicaCount: int?
+
+  @description('Optional. Whether or not this database is a ledger database, which means all tables in the database are ledger tables.')
+  isLedgerOn: bool?
+
+  // keys
+  @description('Optional. The license type to apply for this database.')
+  licenseType: 'BasePrice' | 'LicenseIncluded'?
+
+  @description('Optional. The resource identifier of the long term retention backup associated with create operation of this database.')
+  longTermRetentionBackupResourceId: string?
+
+  @description('Optional. Maintenance configuration id assigned to the database. This configuration defines the period when the maintenance updates will occur.')
+  maintenanceConfigurationId: string?
+
+  @description('Optional. Whether or not customer controlled manual cutover needs to be done during Update Database operation to Hyperscale tier.')
+  manualCutover: bool?
+
+  @description('Optional. The max size of the database expressed in bytes.')
+  maxSizeBytes: int?
+
+  // string to enable fractional values
+  @description('Optional. Minimal capacity that database will always have allocated, if not paused.')
+  minCapacity: string?
+
+  @description('Optional. To trigger customer controlled manual cutover during the wait state while Scaling operation is in progress.')
+  performCutover: bool?
+
+  @description('Optional. Type of enclave requested on the database.')
+  preferredEnclaveType: 'Default' | 'VBS'?
+
+  @description('Optional. The state of read-only routing. If enabled, connections that have application intent set to readonly in their connection string may be routed to a readonly secondary replica in the same region. Not applicable to a Hyperscale database within an elastic pool.')
+  readScale: 'Disabled' | 'Enabled'?
+
+  @description('Optional. The resource identifier of the recoverable database associated with create operation of this database.')
+  recoverableDatabaseResourceId: string?
+
+  @description('Optional. The resource identifier of the recovery point associated with create operation of this database.')
+  recoveryServicesRecoveryPointResourceId: string?
+
+  @description('Optional. The storage account type to be used to store backups for this database.')
+  requestedBackupStorageRedundancy: 'Geo' | 'GeoZone' | 'Local' | 'Zone'?
+
+  @description('Optional. The resource identifier of the restorable dropped database associated with create operation of this database.')
+  restorableDroppedDatabaseResourceId: string?
+
+  @description('Optional. Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database.')
+  restorePointInTime: string?
+
+  @description('Optional. The name of the sample schema to apply when creating this database.')
+  sampleName: string?
+
+  @description('Optional. The secondary type of the database if it is a secondary.')
+  secondaryType: 'Geo' | 'Named' | 'Standby'?
+
+  @description('Optional. Specifies the time that the database was deleted.')
+  sourceDatabaseDeletionDate: string?
+
+  @description('Optional. The resource identifier of the source database associated with create operation of this database.')
+  sourceDatabaseResourceId: string?
+
+  @description('Optional. The resource identifier of the source associated with the create operation of this database.')
+  sourceResourceId: string?
+
+  @description('Optional. Whether or not the database uses free monthly limits. Allowed on one database in a subscription.')
+  useFreeLimit: bool?
+
+  @description('Optional. Whether or not this database is zone redundant, which means the replicas of this database will be spread across multiple availability zones.')
+  zoneRedundant: bool?
+
+  @description('Optional. The diagnostic settings of the service.')
+  diagnosticSettings: diagnosticSettingType?
+
+  @description('Optional. The short term backup retention policy for the database.')
+  backupShortTermRetentionPolicy: shortTermBackupRetentionPolicyType?
+
+  @description('Optional. The long term backup retention policy for the database.')
+  backupLongTermRetentionPolicy: longTermBackupRetentionPolicyType?
+}
+
+@export()
+type elasticPoolPropertyType = {
+  @description('Required. The name of the Elastic Pool.')
+  name: string
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
+
+  @description('Optional. The elastic pool SKU.')
+  sku: elasticPoolSkuType?
+
+  @description('Optional. Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled.')
+  autoPauseDelay: int?
+
+  @description('Optional. Specifies the availability zone the pool\'s primary replica is pinned to.')
+  availabilityZone: '1' | '2' | '3' | 'NoPreference'?
+
+  @description('Optional. The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools.')
+  highAvailabilityReplicaCount: int?
+
+  @description('Optional. The license type to apply for this elastic pool.')
+  licenseType: 'BasePrice' | 'LicenseIncluded'?
+
+  @description('Optional. Maintenance configuration id assigned to the elastic pool. This configuration defines the period when the maintenance updates will will occur.')
+  maintenanceConfigurationId: string?
+
+  @description('Optional. The storage limit for the database elastic pool in bytes.')
+  maxSizeBytes: int?
+
+  @description('Optional. Minimal capacity that serverless pool will not shrink below, if not paused.')
+  minCapacity: int?
+
+  @description('Optional. The per database settings for the elastic pool.')
+  perDatabaseSettings: elasticPoolPerDatabaseSettingsType?
+
+  @description('Optional. Type of enclave requested on the elastic pool.')
+  preferredEnclaveType: 'Default' | 'VBS'?
+
+  @description('Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones.')
+  zoneRedundant: bool?
+}
+
+import { elasticPoolPerDatabaseSettingsType, elasticPoolSkuType } from 'elastic-pool/main.bicep'
+import { databaseSkuType, diagnosticSettingType, shortTermBackupRetentionPolicyType, longTermBackupRetentionPolicyType } from 'database/main.bicep'
 
 import { secretSetType } from 'modules/keyVaultExport.bicep'
 type secretsOutputType = {

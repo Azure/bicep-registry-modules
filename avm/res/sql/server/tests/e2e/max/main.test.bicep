@@ -113,18 +113,22 @@ module testDeployment '../../../main.bicep' = {
     elasticPools: [
       {
         name: '${namePrefix}-${serviceShort}-ep-001'
-        skuName: 'GP_Gen5'
-        skuTier: 'GeneralPurpose'
-        skuCapacity: 10
+        sku: {
+          name: 'GP_Gen5'
+          tier: 'GeneralPurpose'
+          capacity: 10
+        }
       }
     ]
     databases: [
       {
         name: '${namePrefix}-${serviceShort}db-001'
         collation: 'SQL_Latin1_General_CP1_CI_AS'
-        skuTier: 'GeneralPurpose'
-        skuName: 'ElasticPool'
-        skuCapacity: 0
+        sku: {
+          name: 'ElasticPool'
+          tier: 'GeneralPurpose'
+          capacity: 0
+        }
         maxSizeBytes: 34359738368
         licenseType: 'LicenseIncluded'
         diagnosticSettings: [
@@ -136,11 +140,7 @@ module testDeployment '../../../main.bicep' = {
             workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
           }
         ]
-        elasticPoolId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}/elasticPools/${namePrefix}-${serviceShort}-ep-001'
-        encryptionProtectorObj: {
-          serverKeyType: 'AzureKeyVault'
-          serverKeyName: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
-        }
+        elasticPoolResourceId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}/elasticPools/${namePrefix}-${serviceShort}-ep-001'
         backupShortTermRetentionPolicy: {
           retentionDays: 14
         }
@@ -149,6 +149,10 @@ module testDeployment '../../../main.bicep' = {
         }
       }
     ]
+    encryptionProtectorObj: {
+      serverKeyType: 'AzureKeyVault'
+      serverKeyName: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
+    }
     firewallRules: [
       {
         name: 'AllowAllWindowsAzureIps'
