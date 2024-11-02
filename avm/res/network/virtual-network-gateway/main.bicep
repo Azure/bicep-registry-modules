@@ -495,7 +495,7 @@ output activeActive bool = virtualNetworkGateway.properties.activeActive
 output location string = virtualNetworkGateway.location
 
 @description('The ASN (Autonomous System Number) of the virtual network gateway.')
-output asn int? = virtualNetworkGateway.properties.bgpSettings.asn
+output asn int? = isBgp ? virtualNetworkGateway.properties.bgpSettings.asn : null
 
 @description('The IPconfigurations object of the Virtual Network Gateway.')
 output ipConfigurations array? = virtualNetworkGateway.properties.ipConfigurations
