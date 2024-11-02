@@ -24,7 +24,7 @@ param managedIdentities managedIdentityAllType?
 
 import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @sys.description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType?
+param customerManagedKey customerManagedKeyType? // This requires KV with enabled purge protection
 
 // ============== //
 // Variables      //
