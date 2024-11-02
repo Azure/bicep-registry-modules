@@ -47,7 +47,7 @@ var identity = !empty(managedIdentities)
 
 var networkRules = [
   for (virtualNetworkRule, i) in (virtualNetworkRules ?? []): {
-    action: 'Allow'
+    action: 'Allow' // Deny is not allowed for Network Rule Action.
     id: virtualNetworkRule.virtualNetworkSubnetResourceId
   }
 ]
