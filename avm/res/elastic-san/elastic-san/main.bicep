@@ -133,8 +133,8 @@ module elasticSan_volumeGroups 'volume-group/main.bicep' = [
     params: {
       elasticSanName: elasticSan.name
       name: volumeGroup.name
-      volumes: volumeGroup.volumes
-      virtualNetworkRules: volumeGroup.virtualNetworkRules
+      volumes: volumeGroup.?volumes
+      virtualNetworkRules: volumeGroup.?virtualNetworkRules
       managedIdentities: managedIdentities
       customerManagedKey: customerManagedKey
     }
