@@ -150,6 +150,8 @@ output systemAssignedMIPrincipalId string = volumeGroup.?identity.?principalId ?
 output volumes volumeOutputType[] = [
   for (volume, i) in (volumes ?? []): {
     resourceId: volumeGroup_volumes[i].outputs.resourceId
+    name: volumeGroup_volumes[i].outputs.name
+    resourceGroupName: volumeGroup_volumes[i].outputs.resourceGroupName
     snapshots: volumeGroup_volumes[i].outputs.snapshots
   }
 ]
@@ -187,6 +189,12 @@ type virtualNetworkRuleType = {
 type volumeOutputType = {
   @sys.description('The resource ID of the deployed Elastic SAN Volume.')
   resourceId: string
+
+  @sys.description('The name of the deployed Elastic SAN Volume.')
+  name: string
+
+  @sys.description('The resource group of the deployed Elastic SAN Volume.')
+  resourceGroupName: string
 
   @sys.description('Details on the deployed Elastic SAN Volume Snapshots.')
   snapshots: volumeSnapshotOutputType[]
