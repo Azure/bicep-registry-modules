@@ -34,7 +34,7 @@ param baseSizeTiB int = 1
 @sys.description('Optional. Size of the Elastic SAN additional capacity (TiB).')
 param extendedCapacitySizeTiB int = 0
 
-@sys.description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints or Virtual Network Rules are set.')
+@sys.description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be `Disabled`, which necessitates the use of private endpoints. If not specified, public access will be `Disabled` by default when private endpoints are used without Virtual Network Rules. Setting public network access to `Disabled` while using Virtual Network Rules will result in an error.')
 @sys.allowed([
   'Enabled'
   'Disabled'
