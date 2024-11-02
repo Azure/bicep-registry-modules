@@ -82,6 +82,8 @@ output resourceGroupName string = resourceGroup().name
 output snapshots volumeSnapshotOutputType[] = [
   for (snapshot, i) in (snapshots ?? []): {
     resourceId: volume_snapshots[i].outputs.resourceId
+    name: volume_snapshots[i].outputs.name
+    resourceGroupName: volume_snapshots[i].outputs.resourceGroupName
   }
 ]
 
@@ -101,4 +103,10 @@ type volumeSnapshotType = {
 type volumeSnapshotOutputType = {
   @sys.description('The resource ID of the deployed Elastic SAN Volume Snapshot.')
   resourceId: string
+
+  @sys.description('The name of the deployed Elastic SAN Volume Snapshot.')
+  name: string
+
+  @sys.description('The resource group of the deployed Elastic SAN Volume Snapshot.')
+  resourceGroupName: string
 }
