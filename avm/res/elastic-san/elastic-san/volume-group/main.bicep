@@ -143,6 +143,9 @@ output name string = volumeGroup.name
 @sys.description('The resource group of the deployed Elastic SAN Volume Group.')
 output resourceGroupName string = resourceGroup().name
 
+@sys.description('The principal ID of the system assigned identity of the deployed Elastic SAN Volume Group.')
+output systemAssignedMIPrincipalId string = volumeGroup.?identity.?principalId ?? ''
+
 @sys.description('Details on the deployed Elastic SAN Volumes.')
 output volumes volumeOutputType[] = [
   for (volume, i) in (volumes ?? []): {

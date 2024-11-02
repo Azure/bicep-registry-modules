@@ -168,6 +168,7 @@ output resourceGroupName string = resourceGroup().name
 output volumeGroups volumeGroupOutputType[] = [
   for (volumeGroup, i) in (volumeGroups ?? []): {
     resourceId: elasticSan_volumeGroups[i].outputs.resourceId
+    systemAssignedMIPrincipalId: elasticSan_volumeGroups[i].outputs.systemAssignedMIPrincipalId
     volumes: elasticSan_volumeGroups[i].outputs.volumes
   }
 ]
@@ -196,6 +197,9 @@ type volumeGroupType = {
 type volumeGroupOutputType = {
   @sys.description('The resource ID of the deployed Elastic SAN Volume Group.')
   resourceId: string
+
+  @sys.description('The principal ID of the system assigned identity of the deployed Elastic SAN Volume Group.')
+  systemAssignedMIPrincipalId: string
 
   @sys.description('Details on the deployed Elastic SAN Volumes.')
   volumes: volumeOutputType[]
