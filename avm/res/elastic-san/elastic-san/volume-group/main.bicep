@@ -125,7 +125,7 @@ module volumeGroup_volumes 'volume/main.bicep' = [
       volumeGroupName: volumeGroup.name
       name: volume.name
       sizeGiB: volume.sizeGiB
-      snapshots: volume.snapshots
+      snapshots: volume.?snapshots
     }
   }
 ]
