@@ -74,12 +74,19 @@ var totalVirtualNetworkRules = reduce(
   (cur, next) => cur + next
 )
 
-// Disable by default
-// Enabled only when explicitly set to 'Enabled' or
-// when 'publicNetworkAccess' not explicitly set and both private endpoints and virtual network rules are empty
+// When 'publicNetworkAccess' is explicitly set we need to use that value and not to overrule it
+// If user has set 'publicNetworkAccess' to 'Disabled' and they specified any virtual network rule, the deployment will fail
+// (Virtual Network Rules require 'Enabled' public network access)
+//
+// When 'publicNetworkAccess' is NOT explicitly set and virtual network rules are NOT set and private endpoints are NOT set,
+// public network access must be 'Enabled'.
+// When 'publicNetworkAccess' is NOT explicitly set and any virtual network rules are set (regardless of the presence of private endpoints),
+// public network access must be 'Enabled'.
+// When 'publicNetworkAccess' is NOT explicitly set and virtual network rules are NOT set and private endpoints are set,
+// we can configure public network access to 'Disabled'.
 var calculatedPublicNetworkAccess = !empty(publicNetworkAccess)
   ? any(publicNetworkAccess)
-  : (!empty(privateEndpoints) ? 'Disabled' : (totalVirtualNetworkRules > 0 ? 'Disabled' : 'Enabled'))
+  : (totalVirtualNetworkRules > 0 ? 'Enabled' : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled'))
 
 // ============== //
 // Resources      //
