@@ -92,22 +92,24 @@ resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2023-01-01' 
     encryption: !empty(customerManagedKey)
       ? 'EncryptionAtRestWithCustomerManagedKey'
       : 'EncryptionAtRestWithPlatformKey'
-    encryptionProperties: {
-      identity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-        ? {
-            userAssignedIdentity: cMKUserAssignedIdentity.id
-          }
-        : null
-      keyVaultProperties: !empty(customerManagedKey)
-        ? {
-            keyName: customerManagedKey!.keyName
-            keyVaultUri: cMKKeyVault.properties.vaultUri
-            keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-              ? customerManagedKey!.keyVersion
-              : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-          }
-        : null
-    }
+    encryptionProperties: !empty(customerManagedKey)
+      ? {
+          identity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+            ? {
+                userAssignedIdentity: cMKUserAssignedIdentity.id
+              }
+            : null
+          keyVaultProperties: !empty(customerManagedKey)
+            ? {
+                keyName: customerManagedKey!.keyName
+                keyVaultUri: cMKKeyVault.properties.vaultUri
+                keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
+                  ? customerManagedKey!.keyVersion
+                  : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+              }
+            : null
+        }
+      : null
     networkAcls: {
       virtualNetworkRules: networkRules
     }
