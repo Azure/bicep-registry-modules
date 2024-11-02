@@ -67,25 +67,19 @@ var calculatedSku = sku == 'Premium_LRS' ? (availabilityZone != null ? 'Premium_
 // ZRS is only available in France Central, North Europe, West Europe and West US 2.
 var calculatedZone = sku == 'Premium_LRS' ? (availabilityZone != null ? ['${availabilityZone}'] : null) : null
 
-/*
-  Create an array of array of virtual network rules from the volume groups.
-  Goal is to understand if any virtual network rules are set across all volume groups.
-  [{ virtualNetworkSubnetResourceId: id }, { virtualNetworkSubnetResourceId: id }]
-  [{ virtualNetworkSubnetResourceId: id }]
-*/
-var tempVirtualNetworkRules = [
-  for volumeGroup in volumeGroups ?? []: map(volumeGroup.virtualNetworkRules ?? [], virtualNetworkRule => {
-    virtualNetworkSubnetResourceId: virtualNetworkRule.virtualNetworkSubnetResourceId
-  })
-]
-var virtualNetworkRules = flatten(tempVirtualNetworkRules) // Flatten the array of arrays
+// Summarize the total number of virtual network rules across all volume groups.
+var totalVirtualNetworkRules = reduce(
+  map(volumeGroups ?? [], volumeGroup => length(volumeGroup.?virtualNetworkRules ?? [])),
+  0,
+  (cur, next) => cur + next
+)
 
 // Disable by default
 // Enabled only when explicitly set to 'Enabled' or
 // when 'publicNetworkAccess' not explicitly set and both private endpoints and virtual network rules are empty
 var calculatedPublicNetworkAccess = !empty(publicNetworkAccess)
   ? any(publicNetworkAccess)
-  : (!empty(privateEndpoints) ? 'Disabled' : (!empty(virtualNetworkRules) ? 'Disabled' : 'Enabled'))
+  : (!empty(privateEndpoints) ? 'Disabled' : (totalVirtualNetworkRules > 0 ? 'Disabled' : 'Enabled'))
 
 // ============== //
 // Resources      //
@@ -147,11 +141,84 @@ module elasticSan_volumeGroups 'volume-group/main.bicep' = [
   }
 ]
 
+// ============ //
+// Outputs      //
+// ============ //
+
+@sys.description('The resource ID of the deployed Elastic SAN.')
+output resourceId string = elasticSan.id
+
+@sys.description('The name of the deployed Elastic SAN.')
+output name string = elasticSan.name
+
+@sys.description('The location the resource was deployed into.')
+output location string = elasticSan.location
+
+@sys.description('The resource group of the deployed Elastic SAN.')
+output resourceGroupName string = resourceGroup().name
+
+@sys.description('Details on the deployed Elastic SAN Volume Groups.')
+output volumeGroups volumeGroupOutputType[] = [
+  for (volumeGroup, i) in (volumeGroups ?? []): {
+    resourceId: elasticSan_volumeGroups[i].outputs.resourceId
+    systemAssignedMIPrincipalId: elasticSan_volumeGroups[i].outputs.systemAssignedMIPrincipalId
+    volumes: elasticSan_volumeGroups[i].outputs.volumes
+  }
+]
+
+// ================ //
+// Definitions      //
+// ================ //
+
+import { volumeType, virtualNetworkRuleType, volumeOutputType } from './volume-group/main.bicep'
+
+@export()
+type volumeGroupType = {
+  @sys.minLength(3)
+  @sys.maxLength(63)
+  @sys.description('Required. The name of the Elastic SAN Volume Group.')
+  name: string
+
+  @sys.description('Optional. List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group.')
+  volumes: volumeType[]?
+
+  @sys.description('Optional. List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint.')
+  virtualNetworkRules: virtualNetworkRuleType[]?
+}
+
+@export()
+type volumeGroupOutputType = {
+  @sys.description('The resource ID of the deployed Elastic SAN Volume Group.')
+  resourceId: string
+
+  @sys.description('The principal ID of the system assigned identity of the deployed Elastic SAN Volume Group.')
+  systemAssignedMIPrincipalId: string
+
+  @sys.description('Details on the deployed Elastic SAN Volumes.')
+  volumes: volumeOutputType[]
+}
+
 /*
 
+TODO:
+out elasticSan_volumeGroups
+
+
+@sys.description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string = elasticSan.systemData..?principalId ?? ''
 
 
 
+@description('The private endpoints of the app configuration.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: configurationStore_privateEndpoints[i].outputs.name
+    resourceId: configurationStore_privateEndpoints[i].outputs.resourceId
+    groupId: configurationStore_privateEndpoints[i].outputs.groupId
+    customDnsConfig: configurationStore_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: configurationStore_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
 
 ####################################
 
@@ -183,51 +250,12 @@ import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-com
 @sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
-// ============ //
-// Outputs      //
-// ============ //
-
-@sys.description('The resource ID of the deployed Elastic SAN.')
-output resourceId string = elasticSan.id
-
-@sys.description('The name of the deployed Elastic SAN.')
-output name string = elasticSan.name
-
-@sys.description('The location the resource was deployed into.')
-output location string = elasticSan.location
-
-@sys.description('The resource group of the deployed Elastic SAN.')
-output resourceGroupName string = resourceGroup().name
-
-@sys.description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = elasticSan.?identity.?principalId ?? ''
-
 // @sys.description('The resource ids of the deployed Elastic SAN Volume Groups.')
 // output volumeGroupResourceIds array = [
 //   for index in range(0, length(elasticSan.?volumeGroups ?? [])): elasticSan_volumeGroups[index].outputs.resourceId
 // ]
 
 // TODO: Add additional outputs as needed
-
-// ================ //
-// Definitions      //
-// ================ //
-
-import { volumeType, virtualNetworkRuleType } from './volume-group/main.bicep'
-
-@export()
-type volumeGroupType = {
-  @sys.minLength(3)
-  @sys.maxLength(63)
-  @sys.description('Required. The name of the Elastic SAN Volume Group.')
-  name: string
-
-  @sys.description('Optional. List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group.')
-  volumes: volumeType[]?
-
-  @sys.description('Optional. List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint.')
-  virtualNetworkRules: virtualNetworkRuleType[]?
-}
 
 /*
 
@@ -244,37 +272,4 @@ type elasticSanType = {
 }
 
 
-
-resource symbolicname 'Microsoft.ElasticSan/elasticSans/volumegroups@2023-01-01' = {
-  name: 'string'
-  parent: resourceSymbolicName
-  identity: {
-    type: 'string'
-    userAssignedIdentities: {
-      {customized property}: {}
-    }
-  }
-  properties: {
-    encryption: 'string'
-    encryptionProperties: {
-      identity: {
-        userAssignedIdentity: 'string'
-      }
-      keyVaultProperties: {
-        keyName: 'string'
-        keyVaultUri: 'string'
-        keyVersion: 'string'
-      }
-    }
-    networkAcls: {
-      virtualNetworkRules: [
-        {
-          action: 'Allow'
-          id: 'string'
-        }
-      ]
-    }
-    protocolType: 'string'
-  }
-}
 */
