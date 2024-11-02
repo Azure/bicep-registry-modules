@@ -41,14 +41,6 @@ param extendedCapacitySizeTiB int = 0
 ])
 param publicNetworkAccess string?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
-@sys.description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentityAllType?
-
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
-@sys.description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType?
-
 @sys.description('Optional. Tags of the Elastic SAN resource.')
 param tags object?
 
@@ -142,8 +134,8 @@ module elasticSan_volumeGroups 'volume-group/main.bicep' = [
       name: volumeGroup.name
       volumes: volumeGroup.?volumes
       virtualNetworkRules: volumeGroup.?virtualNetworkRules
-      managedIdentities: managedIdentities
-      customerManagedKey: customerManagedKey
+      managedIdentities: volumeGroup.?managedIdentities
+      customerManagedKey: volumeGroup.?customerManagedKey
     }
   }
 ]
@@ -177,6 +169,7 @@ output volumeGroups volumeGroupOutputType[] = [
 // Definitions      //
 // ================ //
 
+import { managedIdentityAllType, customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 import { volumeType, virtualNetworkRuleType, volumeOutputType } from './volume-group/main.bicep'
 
 @export()
@@ -191,6 +184,12 @@ type volumeGroupType = {
 
   @sys.description('Optional. List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint.')
   virtualNetworkRules: virtualNetworkRuleType[]?
+
+  @sys.description('Optional. The managed identity definition for this resource.')
+  managedIdentities: managedIdentityAllType?
+
+  @sys.description('Optional. The customer managed key definition.')
+  customerManagedKey: customerManagedKeyType?
 }
 
 @export()
