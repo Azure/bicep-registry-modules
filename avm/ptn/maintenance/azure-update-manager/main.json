@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "11182838882417022823"
+      "templateHash": "1165940603614445135"
     },
     "name": "update-manager-configuration",
     "description": "This module creates multiple maintenance windows for Azure update manager and assigns them to existing VMs dynamically using tags .",
@@ -222,7 +222,7 @@
       "type": "string",
       "defaultValue": "[deployment().location]",
       "metadata": {
-        "description": "The location where the resources will be deployed."
+        "description": "Optional. The location where the resources will be deployed."
       }
     },
     "maintenanceConfigurationsResourceGroupNeworExisting": {
@@ -233,14 +233,14 @@
         "existing"
       ],
       "metadata": {
-        "description": "Choose whether to choose an existing Resource Group to deploy Maintenance Configurations and related resources or create a new one."
+        "description": "Optional. Choose whether to choose an existing Resource Group to deploy Maintenance Configurations and related resources or create a new one."
       }
     },
     "maintenanceConfigurationsResourceGroupName": {
       "type": "string",
       "defaultValue": "myMaintenanceConfigurations-RG",
       "metadata": {
-        "description": "The name of the resource group where the maintenance configurations will be created."
+        "description": "Optional. The name of the resource group where the maintenance configurations will be created."
       }
     },
     "maintenanceConfigurations": {
@@ -327,28 +327,28 @@
         }
       ],
       "metadata": {
-        "description": "The array of maintenance configurations to be created."
+        "description": "Optional. The array of maintenance configurations to be created."
       }
     },
     "enableAUMTagName": {
       "type": "string",
       "defaultValue": "aum_maintenance",
       "metadata": {
-        "description": "The tag name that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager."
+        "description": "Optional. The tag name that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager."
       }
     },
     "enableAUMTagValue": {
       "type": "string",
       "defaultValue": "Enabled",
       "metadata": {
-        "description": "The tag value that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager."
+        "description": "Optional. The tag value that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager."
       }
     },
     "maintenanceConfigEnrollmentTagName": {
       "type": "string",
       "defaultValue": "aum_maintenance_config",
       "metadata": {
-        "description": "The tag name that will be used to filter the VMs/ARC enabled servers to assign to a maintenance configuration."
+        "description": "Optional. The tag name that will be used to filter the VMs/ARC enabled servers to assign to a maintenance configuration."
       }
     },
     "policyDeploymentManagedIdentityName": {
@@ -356,7 +356,7 @@
       "defaultValue": "id-aumpolicy-contributor-001",
       "maxLength": 63,
       "metadata": {
-        "description": "The name of the managed identity that will be used to deploy the policies."
+        "description": "Optional. The name of the managed identity that will be used to deploy the policies."
       }
     },
     "enableTelemetry": {
@@ -1811,25 +1811,40 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "5673124942160070725"
+              "templateHash": "13995364584817632567"
             }
           },
           "parameters": {
             "maintenanceConfigResourceGroupName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the resource group containing the maintenance configuration."
+              }
             },
             "maintenanceConfigName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the maintenance configuration."
+              }
             },
             "maintenanceConfigAssignmentName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the maintenance configuration assignment."
+              }
             },
             "filter": {
-              "type": "object"
+              "type": "object",
+              "metadata": {
+                "description": "Required. The filter object which contains details of the filter to be applied."
+              }
             },
             "subscriptionId": {
               "type": "string",
-              "defaultValue": "[subscription().id]"
+              "defaultValue": "[subscription().id]",
+              "metadata": {
+                "description": "Required. The id of the subscription where assignment is to be created."
+              }
             }
           },
           "resources": [
@@ -1845,13 +1860,19 @@
             }
           ],
           "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the maintenance configuration assignment."
+              },
+              "value": "[parameters('maintenanceConfigAssignmentName')]"
+            },
             "maintenanceConfigAssignmentId": {
               "type": "string",
+              "metadata": {
+                "description": "The id of the maintenance configuration assignment."
+              },
               "value": "[subscriptionResourceId('Microsoft.Maintenance/configurationAssignments', parameters('maintenanceConfigAssignmentName'))]"
-            },
-            "maintenanceConfigAssignmentName": {
-              "type": "string",
-              "value": "[parameters('maintenanceConfigAssignmentName')]"
             }
           }
         }
@@ -3271,6 +3292,9 @@
   "outputs": {
     "maintenanceConfigurationIds": {
       "type": "array",
+      "metadata": {
+        "description": "The resource IDs of the maintenance configurations."
+      },
       "copy": {
         "count": "[length(range(0, length(parameters('maintenanceConfigurations'))))]",
         "input": {
