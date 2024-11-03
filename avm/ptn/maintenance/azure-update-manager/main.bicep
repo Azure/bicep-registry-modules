@@ -7,7 +7,7 @@ metadata category = 'Compute'
 targetScope = 'subscription'
 
 //PARAMETERS
-@description('The location where the resources will be deployed.')
+@description('Optional. The location where the resources will be deployed.')
 param location string = deployment().location
 
 @description('Choose whether to choose an existing Resource Group to deploy Maintenance Configurations and related resources or create a new one.')
@@ -17,10 +17,10 @@ param location string = deployment().location
 ])
 param maintenanceConfigurationsResourceGroupNeworExisting string = 'new'
 
-@description('The name of the resource group where the maintenance configurations will be created.')
+@description('Optional. The name of the resource group where the maintenance configurations will be created.')
 param maintenanceConfigurationsResourceGroupName string = 'myMaintenanceConfigurations-RG'
 
-@description('The array of maintenance configurations to be created.')
+@description('Optional. The array of maintenance configurations to be created.')
 param maintenanceConfigurations array = [
   {
     maintenanceConfigName: 'maintenance_ring-01'
@@ -103,16 +103,16 @@ param maintenanceConfigurations array = [
   }
 ]
 
-@description('The tag name that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager.')
+@description('Optional. The tag name that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager.')
 param enableAUMTagName string = 'aum_maintenance'
 
-@description('The tag value that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager.')
+@description('Optional. The tag value that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager.')
 param enableAUMTagValue string = 'Enabled'
 
-@description('The tag name that will be used to filter the VMs/ARC enabled servers to assign to a maintenance configuration.')
+@description('Optional. The tag name that will be used to filter the VMs/ARC enabled servers to assign to a maintenance configuration.')
 param maintenanceConfigEnrollmentTagName string = 'aum_maintenance_config'
 
-@description('The name of the managed identity that will be used to deploy the policies.')
+@description('Optional. The name of the managed identity that will be used to deploy the policies.')
 @maxLength(63)
 param policyDeploymentManagedIdentityName string = 'id-aumpolicy-contributor-001'
 
