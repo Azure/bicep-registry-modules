@@ -69,7 +69,7 @@ module testDeployment '../../../main.bicep' = {
       }
       {
         maintenanceConfigName: 'maintenance_ring-02'
-        location: location
+        location: resourceLocation
         installPatches: {
           linuxParameters: {
             classificationsToInclude: [
