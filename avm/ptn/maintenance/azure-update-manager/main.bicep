@@ -10,7 +10,7 @@ targetScope = 'subscription'
 @description('Optional. The location where the resources will be deployed.')
 param location string = deployment().location
 
-@description('Choose whether to choose an existing Resource Group to deploy Maintenance Configurations and related resources or create a new one.')
+@description('Optional. Choose whether to choose an existing Resource Group to deploy Maintenance Configurations and related resources or create a new one.')
 @allowed([
   'new'
   'existing'
@@ -461,6 +461,7 @@ module requireAUMTagPolicyAssignment 'modules/policyAssignments.bicep' = {
 }
 
 // OUTPUTS
+@description('The resource IDs of the maintenance configurations.')
 output maintenanceConfigurationIds array = [
   for i in range(0, length(maintenanceConfigurations)): {
     id: maintenance_configurations[i].outputs.resourceId
