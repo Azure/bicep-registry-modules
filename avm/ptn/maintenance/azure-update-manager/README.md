@@ -1,6 +1,6 @@
-# Azure Update Manager
+# update-manager-configuration `[Maintenance/AzureUpdateManager]`
 
-This module deploys multiple maintenance windows for Azure update manager and assigns them to existing VMs dynamically using tags.
+This module creates multiple maintenance windows for Azure update manager and assigns them to existing VMs dynamically using tags .
 
 ## Navigation
 
@@ -16,12 +16,14 @@ This module deploys multiple maintenance windows for Azure update manager and as
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
+| `Microsoft.Authorization/policyAssignments` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-06-01/policyAssignments) |
+| `Microsoft.Authorization/policyDefinitions` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2021-06-01/policyDefinitions) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
+| `Microsoft.Maintenance/configurationAssignments` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments) |
 | `Microsoft.Maintenance/maintenanceConfigurations` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/maintenanceConfigurations) |
-| `Microsoft.Maintenance/configurationAssignments` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/microsoft.maintenance/2023-04-01/configurationassignments)|
-| `Microsoft.Authorization/policyDefinitions` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/microsoft.authorization/2021-06-01/policydefinitions) |
-| `Microsoft.Authorization/policyAssignments` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/microsoft.authorization/2022-06-01/policyassignments) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
+| `Microsoft.Resources/resourceGroups` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2021-04-01/resourceGroups) |
 
 ## Usage examples
 
@@ -31,115 +33,20 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/maintenance/azure-update-manager:<version>`.
 
-- [Using only defaults.](#example-1-using-only-defaults)
-- [Using large parameter set.](#example-2-using-large-parameter-set)
+- [Defaults](#example-1-defaults)
+- [Waf-Aligned](#example-2-waf-aligned)
 
-### Example 1: _Using only defaults._
-
-This instance deploys the module with the minimum set of required parameters.
-
+### Example 1: _Defaults_
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module updateManagerConfig 'br/public:avm/ptn/maintenance/azure-update-manager:<version>' = {
-  name: 'updateManagerConfigDeployment'
-  params: {
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/maintenance/azure-update-manager:<version>'
-
-
-```
-
-</details>
-<p>
-
-### Example 2: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module updateManagerConfig 'br/public:avm/ptn/maintenance/azure-update-manager:<version>' = {
-  name: 'updateManagerConfigDeployment'
+module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<version>' = {
+  name: 'azureUpdateManagerDeployment'
   params: {
     location: '<location>'
-    maintenanceConfigurationsResourceGroupNeworExisting: 'new'
-    maintenanceConfigurationsResourceGroupName: '<maintenanceConfigurationsResourceGroupName>'
-    maintenanceConfigurations:[
-      {
-        maintenanceConfigName: 'maintenance_ring-01'
-        location: location
-        installPatches: {
-          linuxParameters: {
-            classificationsToInclude:'<classificationsToInclude>'
-            packageNameMasksToExclude: '<packageNameMasksToExclude>'
-            packageNameMasksToInclude: '<packageNameMasksToInclude>'
-          }
-          rebootSetting: 'IfRequired'
-          windowsParameters: {
-            classificationsToInclude: '<classificationsToInclude>'
-            kbNumbersToExclude: '<kbNumbersToExclude>'
-            kbNumbersToInclude: '<kbNumbersToInclude>'
-          }
-        }
-        lock: {
-          kind: 'CanNotDelete'
-          name: 'myCustomLockName'
-        }
-        maintenanceWindow: {
-          duration: '03:00'
-          expirationDateTime: '9999-12-31 23:59:59'
-          recurEvery: '1Day'
-          startDateTime: '2022-12-31 13:00'
-          timeZone: 'UTC'
-        }
-        visibility: 'Custom'
-        resourceFilter: {
-          resourceGroups: '<resourceGroups>'
-          osTypes: '<osTypes>'
-          locations: '<locations>'
-        }
-      }
-    ]
-    enableAUMTagName:'<enableAUMTagName>'
-    enableAUMTagValue: '<enableAUMTagValue>'
-    maintenanceConfigEnrollmentTagName: '<maintenanceConfigEnrollmentTagName>'
-    policyDeploymentManagedIdentityName: '<policyDeploymentManagedIdentityName>'
-    enableTelemetry: '<enableTelemetry>'
   }
 }
 ```
@@ -158,62 +65,6 @@ module updateManagerConfig 'br/public:avm/ptn/maintenance/azure-update-manager:<
   "parameters": {
     "location": {
       "value": "<location>"
-    },
-    "maintenanceConfigurationsResourceGroupNeworExisting":{
-      "value": "new"
-    },
-    "maintenanceConfigurationsResourceGroupName": {
-      "value": "<maintenanceConfigurationsResourceGroupName>"
-    },
-    "maintenanceConfigurations": {
-      "value": [
-        {
-          "maintenanceConfigName": "maintenance_ring-01",
-          "location": "[parameters('location')]",
-          "installPatches": {
-            "linuxParameters": {
-              "classificationsToInclude": "<classificationsToInclude>",
-              "packageNameMasksToExclude": "<packageNameMasksToExclude>",
-              "packageNameMasksToInclude": "<packageNameMasksToInclude>"
-            },
-            "rebootSetting": "IfRequired",
-            "windowsParameters": {
-              "classificationsToInclude": "<classificationsToInclude>'",
-              "kbNumbersToExclude": "<kbNumbersToExclude>",
-              "kbNumbersToInclude": "<kbNumbersToInclude>"
-            }
-          },
-          "lock": {},
-          "maintenanceWindow": {
-            "duration": "03:00",
-            "expirationDateTime":"9999-12-31 23:59:59",
-            "recurEvery": "1Day",
-            "startDateTime": "2022-12-31 13:00",
-            "timeZone": "UTC"
-          },
-          "visibility": "Custom",
-          "resourceFilter": {
-            "resourceGroups": "<resourceGroups>",
-            "osTypes": "<osTypes>",
-            "locations": "<locations>"
-          }
-        }
-      ]
-    },
-    "enableAUMTagName": {
-      "value": "<enableAUMTagName>"
-    },
-    "enableAUMTagValue": {
-      "value": "<enableAUMTagValue>"
-    },
-    "maintenanceConfigEnrollmentTagName": {
-      "value": "<maintenanceConfigEnrollmentTagName>"
-    },
-    "policyDeploymentManagedIdentityName": {
-      "value": "<policyDeploymentManagedIdentityName>"
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     }
   }
 }
@@ -230,55 +81,335 @@ module updateManagerConfig 'br/public:avm/ptn/maintenance/azure-update-manager:<
 using 'br/public:avm/ptn/maintenance/azure-update-manager:<version>'
 
 param location = '<location>'
-param maintenanceConfigurationsResourceGroupNeworExisting = 'new'
-param maintenanceConfigurationsResourceGroupName = '<maintenanceConfigurationsResourceGroupName>'
-param maintenanceConfigurations = [
-        {
-          maintenanceConfigName: 'maintenance_ring-01'
-          location: location
-          installPatches: {
-            linuxParameters: {
-              classificationsToInclude:'<classificationsToInclude>'
-              packageNameMasksToExclude: '<packageNameMasksToExclude>'
-              packageNameMasksToInclude: '<packageNameMasksToInclude>'
-            }
-            rebootSetting: 'IfRequired'
-            windowsParameters: {
-              classificationsToInclude: '<classificationsToInclude>'
-              kbNumbersToExclude: '<kbNumbersToExclude>'
-              kbNumbersToInclude: '<kbNumbersToInclude>'
-            }
-          }
-          lock: {
-            kind: 'CanNotDelete'
-            name: 'myCustomLockName'
-          }
-          maintenanceWindow: {
-            duration: '03:00'
-            expirationDateTime: '9999-12-31 23:59:59'
-            recurEvery: '1Day'
-            startDateTime: '2022-12-31 13:00'
-            timeZone: 'UTC'
-          }
-          visibility: 'Custom'
-          resourceFilter: {
-            resourceGroups: '<resourceGroups>'
-            osTypes: '<osTypes>'
-            locations: '<locations>'
-          }
-        }
-      ]
-param enableAUMTagName = '<enableAUMTagName>'
-param enableAUMTagValue = '<enableAUMTagValue>'
-param maintenanceConfigEnrollmentTagName = '<maintenanceConfigEnrollmentTagName>'
-param policyDeploymentManagedIdentityName = '<policyDeploymentManagedIdentityName>'
-param enableTelemetry = '<enableTelemetry>'
-
 ```
 
 </details>
 <p>
 
+### Example 2: _Waf-Aligned_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<version>' = {
+  name: 'azureUpdateManagerDeployment'
+  params: {
+    enableAUMTagName: 'aum_maintenance'
+    enableAUMTagValue: 'Enabled'
+    location: '<location>'
+    maintenanceConfigEnrollmentTagName: 'aum_maintenance_config'
+    maintenanceConfigurations: [
+      {
+        installPatches: {
+          linuxParameters: {
+            classificationsToInclude: [
+              'Critical'
+              'Security'
+            ]
+            packageNameMasksToExclude: []
+            packageNameMasksToInclude: []
+          }
+          rebootSetting: 'IfRequired'
+          windowsParameters: {
+            classificationsToInclude: [
+              'Critical'
+              'Security'
+            ]
+            kbNumbersToExclude: []
+            kbNumbersToInclude: []
+          }
+        }
+        location: '<location>'
+        lock: {}
+        maintenanceConfigName: 'maintenance_ring-01'
+        maintenanceWindow: {
+          duration: '03:00'
+          expirationDateTime: '<expirationDateTime>'
+          recurEvery: '1Day'
+          startDateTime: '2024-09-19 00:00'
+          timeZone: 'UTC'
+        }
+        resourceFilter: {
+          locations: []
+          osTypes: [
+            'Linux'
+            'Windows'
+          ]
+          resourceGroups: []
+        }
+        visibility: 'Custom'
+      }
+      {
+        installPatches: {
+          linuxParameters: {
+            classificationsToInclude: [
+              'Other'
+            ]
+            packageNameMasksToExclude: []
+            packageNameMasksToInclude: []
+          }
+          rebootSetting: 'IfRequired'
+          windowsParameters: {
+            classificationsToInclude: [
+              'FeaturePack'
+              'ServicePack'
+            ]
+            kbNumbersToExclude: []
+            kbNumbersToInclude: []
+          }
+        }
+        location: '<location>'
+        lock: {}
+        maintenanceConfigName: 'maintenance_ring-02'
+        maintenanceWindow: {
+          duration: '05:00'
+          expirationDateTime: '<expirationDateTime>'
+          recurEvery: 'Week Saturday,Sunday'
+          startDateTime: '2024-09-19 00:00'
+          timeZone: 'UTC'
+        }
+        resourceFilter: {
+          locations: []
+          osTypes: [
+            'Linux'
+            'Windows'
+          ]
+          resourceGroups: []
+        }
+        visibility: 'Custom'
+      }
+    ]
+    maintenanceConfigurationsResourceGroupName: 'maumwaf-aum-RG'
+    maintenanceConfigurationsResourceGroupNeworExisting: 'new'
+    policyDeploymentManagedIdentityName: 'id-aumpolicy-contributor-001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "enableAUMTagName": {
+      "value": "aum_maintenance"
+    },
+    "enableAUMTagValue": {
+      "value": "Enabled"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "maintenanceConfigEnrollmentTagName": {
+      "value": "aum_maintenance_config"
+    },
+    "maintenanceConfigurations": {
+      "value": [
+        {
+          "installPatches": {
+            "linuxParameters": {
+              "classificationsToInclude": [
+                "Critical",
+                "Security"
+              ],
+              "packageNameMasksToExclude": [],
+              "packageNameMasksToInclude": []
+            },
+            "rebootSetting": "IfRequired",
+            "windowsParameters": {
+              "classificationsToInclude": [
+                "Critical",
+                "Security"
+              ],
+              "kbNumbersToExclude": [],
+              "kbNumbersToInclude": []
+            }
+          },
+          "location": "<location>",
+          "lock": {},
+          "maintenanceConfigName": "maintenance_ring-01",
+          "maintenanceWindow": {
+            "duration": "03:00",
+            "expirationDateTime": "<expirationDateTime>",
+            "recurEvery": "1Day",
+            "startDateTime": "2024-09-19 00:00",
+            "timeZone": "UTC"
+          },
+          "resourceFilter": {
+            "locations": [],
+            "osTypes": [
+              "Linux",
+              "Windows"
+            ],
+            "resourceGroups": []
+          },
+          "visibility": "Custom"
+        },
+        {
+          "installPatches": {
+            "linuxParameters": {
+              "classificationsToInclude": [
+                "Other"
+              ],
+              "packageNameMasksToExclude": [],
+              "packageNameMasksToInclude": []
+            },
+            "rebootSetting": "IfRequired",
+            "windowsParameters": {
+              "classificationsToInclude": [
+                "FeaturePack",
+                "ServicePack"
+              ],
+              "kbNumbersToExclude": [],
+              "kbNumbersToInclude": []
+            }
+          },
+          "location": "<location>",
+          "lock": {},
+          "maintenanceConfigName": "maintenance_ring-02",
+          "maintenanceWindow": {
+            "duration": "05:00",
+            "expirationDateTime": "<expirationDateTime>",
+            "recurEvery": "Week Saturday,Sunday",
+            "startDateTime": "2024-09-19 00:00",
+            "timeZone": "UTC"
+          },
+          "resourceFilter": {
+            "locations": [],
+            "osTypes": [
+              "Linux",
+              "Windows"
+            ],
+            "resourceGroups": []
+          },
+          "visibility": "Custom"
+        }
+      ]
+    },
+    "maintenanceConfigurationsResourceGroupName": {
+      "value": "maumwaf-aum-RG"
+    },
+    "maintenanceConfigurationsResourceGroupNeworExisting": {
+      "value": "new"
+    },
+    "policyDeploymentManagedIdentityName": {
+      "value": "id-aumpolicy-contributor-001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/maintenance/azure-update-manager:<version>'
+
+param enableAUMTagName = 'aum_maintenance'
+param enableAUMTagValue = 'Enabled'
+param location = '<location>'
+param maintenanceConfigEnrollmentTagName = 'aum_maintenance_config'
+param maintenanceConfigurations = [
+  {
+    installPatches: {
+      linuxParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+        packageNameMasksToExclude: []
+        packageNameMasksToInclude: []
+      }
+      rebootSetting: 'IfRequired'
+      windowsParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+        kbNumbersToExclude: []
+        kbNumbersToInclude: []
+      }
+    }
+    location: '<location>'
+    lock: {}
+    maintenanceConfigName: 'maintenance_ring-01'
+    maintenanceWindow: {
+      duration: '03:00'
+      expirationDateTime: '<expirationDateTime>'
+      recurEvery: '1Day'
+      startDateTime: '2024-09-19 00:00'
+      timeZone: 'UTC'
+    }
+    resourceFilter: {
+      locations: []
+      osTypes: [
+        'Linux'
+        'Windows'
+      ]
+      resourceGroups: []
+    }
+    visibility: 'Custom'
+  }
+  {
+    installPatches: {
+      linuxParameters: {
+        classificationsToInclude: [
+          'Other'
+        ]
+        packageNameMasksToExclude: []
+        packageNameMasksToInclude: []
+      }
+      rebootSetting: 'IfRequired'
+      windowsParameters: {
+        classificationsToInclude: [
+          'FeaturePack'
+          'ServicePack'
+        ]
+        kbNumbersToExclude: []
+        kbNumbersToInclude: []
+      }
+    }
+    location: '<location>'
+    lock: {}
+    maintenanceConfigName: 'maintenance_ring-02'
+    maintenanceWindow: {
+      duration: '05:00'
+      expirationDateTime: '<expirationDateTime>'
+      recurEvery: 'Week Saturday,Sunday'
+      startDateTime: '2024-09-19 00:00'
+      timeZone: 'UTC'
+    }
+    resourceFilter: {
+      locations: []
+      osTypes: [
+        'Linux'
+        'Windows'
+      ]
+      resourceGroups: []
+    }
+    visibility: 'Custom'
+  }
+]
+param maintenanceConfigurationsResourceGroupName = 'maumwaf-aum-RG'
+param maintenanceConfigurationsResourceGroupNeworExisting = 'new'
+param policyDeploymentManagedIdentityName = 'id-aumpolicy-contributor-001'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -286,15 +417,31 @@ param enableTelemetry = '<enableTelemetry>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableAUMTagName`](#parameter-enableaumtagname) | string | The name of the tag that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager. |
+| [`enableAUMTagValue`](#parameter-enableaumtagvalue) | string | The value of the tag that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager. Only the VMs/ARC enabled servers with Tags of the combination `<enableAUMTagName>`:`<enableAUMTagValue>` will be considered for Maintenance Configuration dynamic scoping. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`location`](#parameter-location) | string | Azure region where the maintenance configurations and managed identity will be deployed, default to deployment location if not specified. |
-| [`maintenanceConfigurationsResourceGroupNeworExisting`](#parameter-maintenanceConfigurationsResourceGroupNeworExisting) | string | Specify whether to create a new or use an existing Resource Group to deploy the maintenance configurations and User Assigned Managed Identity.|
-|[`maintenanceConfigurationsResourceGroupName`](#parameter-maintenanceConfigurationsResourceGroupName) | string | Name of the new/existing Resource Group to deploy the maintenance configurations and User Assigned Managed Identity.|
-| [`maintenanceConfigurations`](#parameter-maintenanceConfigurations)| array | An array of objects which contain the properties of the maintenance configurations to be created. |
-|[`enableAUMTagName`](#parameter-enableAUMTagName) | string | The name of the tag that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager.|
-|[`enableAUMTagValue`](#parameter-enableAUMTagValue)| string | The value of the tag that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager. Only the VMs/ARC enabled servers with Tags of the combination `<enableAUMTagName>`:`<enableAUMTagValue>` will be considered for Maintenance Configuration dynamic scoping. |
-|[`maintenanceConfigEnrollmentTagName`](#parameter-maintenanceConfigEnrollmentTagName)| string  | The name of the tag that will be used to filter the VMs/ARC enabled servers to assign to a maintenance configuration. The value of this tag should contain the name of the maintenance configuration which the VM/ARC enabled server should belong to, specified in the parameter `maintenanceConfigurations`|
-|[`policyDeploymentManagedIdentityName`](#parameter-policyDeploymentManagedIdentityName) | string | The name of the User Assigned Managed Identity that will be used to deploy the policies.|
+| [`location`](#parameter-location) | string | Azure region where the maintenance configurations and associated resources will be deployed to, default to deployment location if not specified. |
+| [`maintenanceConfigEnrollmentTagName`](#parameter-maintenanceconfigenrollmenttagname) | string | The name of the tag that will be used to filter the VMs/ARC enabled servers to assign to a maintenance configuration. The value of this tag should contain the name of the maintenance configuration which the VM/ARC enabled server should belong to, specified in the parameter `maintenanceConfigurations`. |
+| [`maintenanceConfigurations`](#parameter-maintenanceconfigurations) | array | An array of objects which contain the properties of the maintenance configurations to be created. |
+| [`maintenanceConfigurationsResourceGroupName`](#parameter-maintenanceconfigurationsresourcegroupname) | string | Name of the new/existing Resource Group to deploy the maintenance configurations and associated resources. |
+| [`maintenanceConfigurationsResourceGroupNeworExisting`](#parameter-maintenanceconfigurationsresourcegroupneworexisting) | string | Choose whether to create a new or use an existing Resource Group to deploy the maintenance configurations and User Assigned Managed Identity. Defaults to `new`. |
+| [`policyDeploymentManagedIdentityName`](#parameter-policydeploymentmanagedidentityname) | string | The name of the User Assigned Managed Identity that will be used to deploy the policies. |
+
+### Parameter: `enableAUMTagName`
+
+The name of the tag that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager.
+
+- Required: No
+- Type: string
+- Default: `'aum_maintenance'`
+
+### Parameter: `enableAUMTagValue`
+
+The value of the tag that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager. Only the VMs/ARC enabled servers with Tags of the combination `<enableAUMTagName>`:`<enableAUMTagValue>` will be considered for Maintenance Configuration dynamic scoping.
+
+- Required: No
+- Type: string
+- Default: `'Enabled'`
 
 ### Parameter: `enableTelemetry`
 
@@ -306,35 +453,19 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `location`
 
-Azure region where the maintenance configurations and managed identity will be deployed, default to deployment location if not specified.
+Azure region where the maintenance configurations and associated resources will be deployed to, default to deployment location if not specified.
 
 - Required: No
 - Type: string
 - Default: `[deployment().location]`
 
-### Parameter: `maintenanceConfigurationsResourceGroupNeworExisting`
+### Parameter: `maintenanceConfigEnrollmentTagName`
 
-Specify whether to create a new or use an existing Resource Group to deploy the maintenance configurations and User Assigned Managed Identity.
-
-- Required: No
-- Type: string
-- Default: `new`
-- Allowed values:
-  ```Bicep
-  [
-    'new'
-    'existing'
-  ]
-  ```
-
-### Parameter: `maintenanceConfigurationsResourceGroupName`
-
-Name of the new/existing Resource Group to deploy the maintenance configurations and User Assigned Managed Identity.
+The name of the tag that will be used to filter the VMs/ARC enabled servers to assign to a maintenance configuration. The value of this tag should contain the name of the maintenance configuration which the VM/ARC enabled server should belong to, specified in the parameter `maintenanceConfigurations`.
 
 - Required: No
 - Type: string
-- Default: `myMaintenanceConfigurations-RG`
-
+- Default: `'aum_maintenance_config'`
 
 ### Parameter: `maintenanceConfigurations`
 
@@ -346,8 +477,6 @@ An array of objects which contain the properties of the maintenance configuratio
   ```Bicep
   [
     {
-      maintenanceConfigName: 'maintenance_ring-01'
-      location: location
       installPatches: {
         linuxParameters: {
           classificationsToInclude: [
@@ -367,7 +496,9 @@ An array of objects which contain the properties of the maintenance configuratio
           kbNumbersToInclude: []
         }
       }
+      location: '[parameters(\'location\')]'
       lock: {}
+      maintenanceConfigName: 'maintenance_ring-01'
       maintenanceWindow: {
         duration: '03:00'
         expirationDateTime: null
@@ -375,83 +506,80 @@ An array of objects which contain the properties of the maintenance configuratio
         startDateTime: '2024-09-19 00:00'
         timeZone: 'UTC'
       }
-      visibility: 'Custom'
       resourceFilter: {
-        resourceGroups: []
-        osTypes: [
-          'Windows'
-          'Linux'
-        ]
         locations: []
+        osTypes: [
+          'Linux'
+          'Windows'
+        ]
+        resourceGroups: []
       }
+      visibility: 'Custom'
     }
     {
-    maintenanceConfigName: 'maintenance_ring-02'
-    location: location
-    installPatches: {
-      linuxParameters: {
-        classificationsToInclude: [
-          'Other'
-        ]
-        packageNameMasksToExclude: []
-        packageNameMasksToInclude: []
+      installPatches: {
+        linuxParameters: {
+          classificationsToInclude: [
+            'Other'
+          ]
+          packageNameMasksToExclude: []
+          packageNameMasksToInclude: []
+        }
+        rebootSetting: 'IfRequired'
+        windowsParameters: {
+          classificationsToInclude: [
+            'FeaturePack'
+            'ServicePack'
+          ]
+          kbNumbersToExclude: []
+          kbNumbersToInclude: []
+        }
       }
-      rebootSetting: 'IfRequired'
-      windowsParameters: {
-        classificationsToInclude: [
-          'FeaturePack'
-          'ServicePack'
-        ]
-        kbNumbersToExclude: []
-        kbNumbersToInclude: []
+      location: '[parameters(\'location\')]'
+      lock: {}
+      maintenanceConfigName: 'maintenance_ring-02'
+      maintenanceWindow: {
+        duration: '05:00'
+        expirationDateTime: null
+        recurEvery: 'Week Saturday,Sunday'
+        startDateTime: '2024-09-19 00:00'
+        timeZone: 'UTC'
       }
+      resourceFilter: {
+        locations: []
+        osTypes: [
+          'Linux'
+          'Windows'
+        ]
+        resourceGroups: []
+      }
+      visibility: 'Custom'
     }
-    lock: {}
-    maintenanceWindow: {
-      duration: '05:00'
-      expirationDateTime: null
-      recurEvery: 'Week Saturday,Sunday'
-      startDateTime: '2024-09-19 00:00'
-      timeZone: 'UTC'
-    }
-    visibility: 'Custom'
-    resourceFilter: {
-      resourceGroups: []
-      osTypes: [
-        'Windows'
-        'Linux'
-      ]
-      locations: []
-    }
-  }
   ]
   ```
 
-### Parameter: `enableAUMTagName`
+### Parameter: `maintenanceConfigurationsResourceGroupName`
 
-The name of the tag that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager. If this tag is present on the Azure VMs/ARC enabled servers with value specified in the parameter `enableAUMTagValue`, the resource is enrolled to a maintenance configuration specified in the value of the tag `maintenanceConfigEnrollmentTagName`
-
-- Required: No
-- Type: string
-- Default: `aum_maintenance`
-
-### Parameter: `enableAUMTagValue`
-
-The value of the tag that will be used to filter the Azure VMs/ARC enabled servers for enabling Azure Update Manager.  An Azure VM/ ARC enabled server is enrolled to a maintenance configuration specified in the value of the tag `maintenanceConfigEnrollmentTagName` only if the tag `enableAUMTagName` has the value `enableAUMTagValue`.
-
-*e.g.* : With the default parameters, an Azure VM/ARC enabled server is enrolled to a maintenance configuration if the resource has a tag `aum_maintenance`: `Enabled`
+Name of the new/existing Resource Group to deploy the maintenance configurations and associated resources.
 
 - Required: No
 - Type: string
-- Default: `Enabled`
+- Default: `'myMaintenanceConfigurations-RG'`
 
-### Parameter: `maintenanceConfigEnrollmentTagName`
+### Parameter: `maintenanceConfigurationsResourceGroupNeworExisting`
 
-The name of the tag that will be used to filter the VMs/ARC enabled servers to assign to a maintenance configuration. The value of this tag should contain the name of the maintenance configuration which the VM/ARC enabled server should belong to, specified in the parameter `maintenanceConfigurations`
+Choose whether to create a new or use an existing Resource Group to deploy the maintenance configurations and User Assigned Managed Identity. Defaults to `new`.
 
 - Required: No
 - Type: string
-- Default: `aum_maintenance_config`
+- Default: `'new'`
+- Allowed:
+  ```Bicep
+  [
+    'existing'
+    'new'
+  ]
+  ```
 
 ### Parameter: `policyDeploymentManagedIdentityName`
 
@@ -459,15 +587,13 @@ The name of the User Assigned Managed Identity that will be used to deploy the p
 
 - Required: No
 - Type: string
-- Default: `id-aumpolicy-contributor-001`
-
+- Default: `'id-aumpolicy-contributor-001'`
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `maintenanceConfigurationIds` | array | The array with the IDs of the maintenance configurations created.  |
-
+| `maintenanceConfigurationIds` | array | The resource IDs of the maintenance configurations. |
 
 ## Cross-referenced modules
 
@@ -475,10 +601,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/resources/resource-group:0.4.0` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference|
 | `br/public:avm/res/maintenance/maintenance-configuration:0.3.0` | Remote reference |
-
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
+| `br/public:avm/res/resources/resource-group:0.4.0` | Remote reference |
 
 ## Data Collection
 

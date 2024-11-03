@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "1165940603614445135"
+      "templateHash": "17047474377590938340"
     },
     "name": "update-manager-configuration",
     "description": "This module creates multiple maintenance windows for Azure update manager and assigns them to existing VMs dynamically using tags .",
@@ -222,7 +222,7 @@
       "type": "string",
       "defaultValue": "[deployment().location]",
       "metadata": {
-        "description": "Optional. The location where the resources will be deployed."
+        "description": "Optional. Azure region where the maintenance configurations and associated resources will be deployed to, default to deployment location if not specified."
       }
     },
     "maintenanceConfigurationsResourceGroupNeworExisting": {
@@ -233,14 +233,14 @@
         "existing"
       ],
       "metadata": {
-        "description": "Optional. Choose whether to choose an existing Resource Group to deploy Maintenance Configurations and related resources or create a new one."
+        "description": "Optional. Choose whether to create a new or use an existing Resource Group to deploy the maintenance configurations and User Assigned Managed Identity. Defaults to `new`."
       }
     },
     "maintenanceConfigurationsResourceGroupName": {
       "type": "string",
       "defaultValue": "myMaintenanceConfigurations-RG",
       "metadata": {
-        "description": "Optional. The name of the resource group where the maintenance configurations will be created."
+        "description": "Optional. Name of the new/existing Resource Group to deploy the maintenance configurations and associated resources."
       }
     },
     "maintenanceConfigurations": {
@@ -327,28 +327,28 @@
         }
       ],
       "metadata": {
-        "description": "Optional. The array of maintenance configurations to be created."
+        "description": "Optional. An array of objects which contain the properties of the maintenance configurations to be created."
       }
     },
     "enableAUMTagName": {
       "type": "string",
       "defaultValue": "aum_maintenance",
       "metadata": {
-        "description": "Optional. The tag name that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager."
+        "description": "Optional. The name of the tag that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager."
       }
     },
     "enableAUMTagValue": {
       "type": "string",
       "defaultValue": "Enabled",
       "metadata": {
-        "description": "Optional. The tag value that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager."
+        "description": "Optional. The value of the tag that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager. Only the VMs/ARC enabled servers with Tags of the combination `<enableAUMTagName>`:`<enableAUMTagValue>` will be considered for Maintenance Configuration dynamic scoping."
       }
     },
     "maintenanceConfigEnrollmentTagName": {
       "type": "string",
       "defaultValue": "aum_maintenance_config",
       "metadata": {
-        "description": "Optional. The tag name that will be used to filter the VMs/ARC enabled servers to assign to a maintenance configuration."
+        "description": "Optional. The name of the tag that will be used to filter the VMs/ARC enabled servers to assign to a maintenance configuration. The value of this tag should contain the name of the maintenance configuration which the VM/ARC enabled server should belong to, specified in the parameter `maintenanceConfigurations`."
       }
     },
     "policyDeploymentManagedIdentityName": {
@@ -356,7 +356,7 @@
       "defaultValue": "id-aumpolicy-contributor-001",
       "maxLength": 63,
       "metadata": {
-        "description": "Optional. The name of the managed identity that will be used to deploy the policies."
+        "description": "Optional. The name of the User Assigned Managed Identity that will be used to deploy the policies."
       }
     },
     "enableTelemetry": {

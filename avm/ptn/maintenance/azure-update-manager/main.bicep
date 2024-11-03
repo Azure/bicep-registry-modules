@@ -7,20 +7,20 @@ metadata category = 'Compute'
 targetScope = 'subscription'
 
 //PARAMETERS
-@description('Optional. The location where the resources will be deployed.')
+@description('Optional. Azure region where the maintenance configurations and associated resources will be deployed to, default to deployment location if not specified.')
 param location string = deployment().location
 
-@description('Optional. Choose whether to choose an existing Resource Group to deploy Maintenance Configurations and related resources or create a new one.')
+@description('Optional. Choose whether to create a new or use an existing Resource Group to deploy the maintenance configurations and User Assigned Managed Identity. Defaults to `new`.')
 @allowed([
   'new'
   'existing'
 ])
 param maintenanceConfigurationsResourceGroupNeworExisting string = 'new'
 
-@description('Optional. The name of the resource group where the maintenance configurations will be created.')
+@description('Optional. Name of the new/existing Resource Group to deploy the maintenance configurations and associated resources.')
 param maintenanceConfigurationsResourceGroupName string = 'myMaintenanceConfigurations-RG'
 
-@description('Optional. The array of maintenance configurations to be created.')
+@description('Optional. An array of objects which contain the properties of the maintenance configurations to be created.')
 param maintenanceConfigurations array = [
   {
     maintenanceConfigName: 'maintenance_ring-01'
@@ -103,16 +103,16 @@ param maintenanceConfigurations array = [
   }
 ]
 
-@description('Optional. The tag name that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager.')
+@description('Optional. The name of the tag that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager.')
 param enableAUMTagName string = 'aum_maintenance'
 
-@description('Optional. The tag value that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager.')
+@description('Optional. The value of the tag that will be used to filter the VMs/ARC enabled servers for enabling Azure Update Manager. Only the VMs/ARC enabled servers with Tags of the combination `<enableAUMTagName>`:`<enableAUMTagValue>` will be considered for Maintenance Configuration dynamic scoping.')
 param enableAUMTagValue string = 'Enabled'
 
-@description('Optional. The tag name that will be used to filter the VMs/ARC enabled servers to assign to a maintenance configuration.')
+@description('Optional. The name of the tag that will be used to filter the VMs/ARC enabled servers to assign to a maintenance configuration. The value of this tag should contain the name of the maintenance configuration which the VM/ARC enabled server should belong to, specified in the parameter `maintenanceConfigurations`.')
 param maintenanceConfigEnrollmentTagName string = 'aum_maintenance_config'
 
-@description('Optional. The name of the managed identity that will be used to deploy the policies.')
+@description('Optional. The name of the User Assigned Managed Identity that will be used to deploy the policies.')
 @maxLength(63)
 param policyDeploymentManagedIdentityName string = 'id-aumpolicy-contributor-001'
 
