@@ -1,5 +1,5 @@
-metadata name = 'Using only defaults.'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 targetScope = 'subscription'
 
@@ -7,7 +7,7 @@ targetScope = 'subscription'
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ammin'
+param serviceShort string = 'maummax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
