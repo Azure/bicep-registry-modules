@@ -116,6 +116,9 @@ param maintenanceConfigEnrollmentTagName string = 'aum_maintenance_config'
 @maxLength(63)
 param policyDeploymentManagedIdentityName string = 'id-aumpolicy-contributor-001'
 
+@description('Optional. Resource tags, which will be added to all resources.')
+param tags object?
+
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -175,6 +178,7 @@ module maintenanceConfig_rg 'br/public:avm/res/resources/resource-group:0.4.0' =
   params: {
     name: maintenanceConfigurationsResourceGroupName
     location: location
+    tags: tags
   }
 }
 @description('Creates a user-assigned managed identity for policy deployment.')
@@ -184,6 +188,7 @@ module id_aumpolicy_contributor 'br/public:avm/res/managed-identity/user-assigne
   params: {
     name: policyDeploymentManagedIdentityName
     location: location
+    tags: tags
     enableTelemetry: enableTelemetry
   }
   dependsOn: [
@@ -204,7 +209,7 @@ module maintenance_configurations 'br/public:avm/res/maintenance/maintenance-con
       maintenanceWindow: maintenanceConfiguration.?maintenanceWindow
       visibility: maintenanceConfiguration.?visibility
       lock: maintenanceConfiguration.?lock
-      tags: maintenanceConfiguration.?tags
+      tags: union(maintenanceConfiguration.?tags, tags ?? {})
       roleAssignments: maintenanceConfiguration.?roleAssignments
       extensionProperties: {
         InGuestPatchMode: 'User'

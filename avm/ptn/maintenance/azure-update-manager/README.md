@@ -432,6 +432,7 @@ param policyDeploymentManagedIdentityName = 'id-aumpolicy-contributor-001'
 | [`maintenanceConfigurationsResourceGroupName`](#parameter-maintenanceconfigurationsresourcegroupname) | string | Name of the new/existing Resource Group to deploy the maintenance configurations and associated resources. |
 | [`maintenanceConfigurationsResourceGroupNeworExisting`](#parameter-maintenanceconfigurationsresourcegroupneworexisting) | string | Choose whether to create a new or use an existing Resource Group to deploy the maintenance configurations and User Assigned Managed Identity. Defaults to `new`. |
 | [`policyDeploymentManagedIdentityName`](#parameter-policydeploymentmanagedidentityname) | string | The name of the User Assigned Managed Identity that will be used to deploy the policies. |
+| [`tags`](#parameter-tags) | object | Resource tags, which will be added to all resources. |
 
 ### Parameter: `enableAUMTagName`
 
@@ -594,6 +595,13 @@ The name of the User Assigned Managed Identity that will be used to deploy the p
 - Required: No
 - Type: string
 - Default: `'id-aumpolicy-contributor-001'`
+
+### Parameter: `tags`
+
+Resource tags, which will be added to all resources.
+
+- Required: No
+- Type: object
 
 ## Outputs
 
