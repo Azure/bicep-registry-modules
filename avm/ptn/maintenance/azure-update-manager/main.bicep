@@ -208,6 +208,9 @@ module maintenance_configurations 'br/public:avm/res/maintenance/maintenance-con
       maintenanceScope: 'InGuestPatch'
       enableTelemetry: enableTelemetry
     }
+    dependsOn: [
+      maintenanceConfig_rg
+    ]
   }
 ]
 
