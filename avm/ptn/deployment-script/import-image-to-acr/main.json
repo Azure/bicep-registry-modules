@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.3.12046",
-      "templateHash": "17375159703541878382"
+      "version": "0.30.23.60470",
+      "templateHash": "13499969833198262162"
     },
     "name": "import-image-to-acr",
     "description": "This modules deployes an image to an Azure Container Registry.",
@@ -30,17 +30,24 @@
         }
       }
     },
-    "managedIdentitiesType": {
+    "managedIdentityOnlyUserAssignedType": {
       "type": "object",
       "properties": {
-        "userAssignedResourcesIds": {
+        "userAssignedResourceIds": {
           "type": "array",
           "items": {
             "type": "string"
           },
+          "nullable": true,
           "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
           }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
         }
       }
     }
@@ -87,7 +94,7 @@
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityOnlyUserAssignedType",
       "nullable": true,
       "metadata": {
         "description": "Conditional. The managed identity definition for this resource. Required if `assignRbacRole` is `true` and `managedIdentityName` is `null`."
@@ -122,6 +129,7 @@
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
+        "example": "keyVault.getSecret(\"keyVaultSecretName\")",
         "description": "Optional. The password for the source registry. Required if the source registry is private, or to logon to the public docker registry."
       }
     },
@@ -193,7 +201,7 @@
     }
   },
   "variables": {
-    "useExistingManagedIdentity": "[greater(length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray())), 0)]"
+    "useExistingManagedIdentity": "[greater(length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())), 0)]"
   },
   "resources": {
     "avmTelemetry": {
@@ -225,15 +233,15 @@
     "existingManagedIdentities": {
       "copy": {
         "name": "existingManagedIdentities",
-        "count": "[length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()))]"
+        "count": "[length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()))]"
       },
       "condition": "[parameters('assignRbacRole')]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2023-01-31",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray())[copyIndex()], '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray())[copyIndex()], '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray())[copyIndex()], '/'))]"
+      "subscriptionId": "[split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())[copyIndex()], '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())[copyIndex()], '/')[4]]",
+      "name": "[last(split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())[copyIndex()], '/'))]"
     },
     "newManagedIdentity": {
       "condition": "[and(not(variables('useExistingManagedIdentity')), parameters('assignRbacRole'))]",
@@ -246,22 +254,22 @@
     "acrRoleAssignmentExistingManagedIdentities": {
       "copy": {
         "name": "acrRoleAssignmentExistingManagedIdentities",
-        "count": "[length(range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray()))))]"
+        "count": "[length(range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), createArray()))))]"
       },
       "condition": "[and(variables('useExistingManagedIdentity'), parameters('assignRbacRole'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('acrName'))]",
-      "name": "[guid(format('roleAssignment-acr-{0}', last(split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray())[range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray())))[copyIndex()]], '/'))))]",
+      "name": "[guid(format('roleAssignment-acr-{0}', last(split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())[range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), createArray())))[copyIndex()]], '/'))))]",
       "properties": {
-        "principalId": "[reference(format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray())))[copyIndex()])).principalId]",
+        "principalId": "[reference(format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), createArray())))[copyIndex()])).principalId]",
         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
         "acr",
-        "[format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray())))[copyIndex()])]",
-        "[format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray())))[copyIndex()])]"
+        "[format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), createArray())))[copyIndex()])]",
+        "[format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), createArray())))[copyIndex()])]"
       ]
     },
     "acrRoleAssignmentNewManagedIdentity": {
@@ -299,7 +307,7 @@
           "tags": {
             "value": "[parameters('tags')]"
           },
-          "managedIdentities": "[if(variables('useExistingManagedIdentity'), createObject('value', parameters('managedIdentities')), createObject('value', createObject('userAssignedResourcesIds', createArray(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), 'id-ContainerRegistryImport'))))))]",
+          "managedIdentities": "[if(variables('useExistingManagedIdentity'), createObject('value', createObject('userAssignedResourcesIds', tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'))), createObject('value', createObject('userAssignedResourcesIds', createArray(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), 'id-ContainerRegistryImport'))))))]",
           "kind": {
             "value": "AzureCLI"
           },
