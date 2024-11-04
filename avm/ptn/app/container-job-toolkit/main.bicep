@@ -44,6 +44,7 @@ param appInsightsConnectionString string?
 @maxLength(24)
 param keyVaultName string = 'kv${uniqueString(name, location, resourceGroup().name)}'
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The permissions that will be assigned to the Key Vault. The managed Identity will be assigned the permissions to get and list secrets.')
 param keyVaultRoleAssignments roleAssignmentType[]?
 
@@ -64,6 +65,7 @@ param deployDnsZoneContainerRegistry bool = true
 @description('Conditional. The address prefix for the virtual network needs to be at least a /16. Three subnets will be created (the first /24 will be used for private endpoints, the second /24 for service endpoints and the second /23 is used for the workload). Required if `zoneRedundant` for consumption plan is desired or `deployInVnet` is `true`.')
 param addressPrefix string = '10.50.0.0/16' // set a default value for the cidrSubnet calculation, even if not used
 
+import { securityRulesType } from 'modules/deploy_services.bicep'
 @description('Optional. Network security group, that will be added to the workload subnet.')
 param customNetworkSecurityGroups securityRulesType
 
@@ -105,6 +107,7 @@ param memory string = '2Gi'
 })
 param environmentVariables environmentVariablesType[]?
 
+import { secretType } from 'modules/deploy_services.bicep'
 @description('Optional. The secrets of the Container App. They will be added to Key Vault and configured as secrets in the Container App Job. The application insights connection string will be added automatically as `applicationinsightsconnectionstring`, if `appInsightsConnectionString` is set.')
 @metadata({
   example: '''
@@ -162,6 +165,7 @@ param workloadProfileName string?
 })
 param tags object?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -216,7 +220,7 @@ module services 'modules/deploy_services.bicep' = {
 }
 
 // import the image to the ACR that will be used to run the job
-module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.3.2' = {
+module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.4.0' = {
   name: '${uniqueString(deployment().name, location)}-import-image'
   params: {
     name: '${name}-import-image'
@@ -225,7 +229,7 @@ module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.3
     acrName: services.outputs.registryName
     image: containerImageSource
     newImageName: newContainerImageName
-    managedIdentities: { userAssignedResourcesIds: [services.outputs.userManagedIdentityResourceId] }
+    managedIdentities: { userAssignedResourceIds: [services.outputs.userManagedIdentityResourceId] }
     overwriteExistingImage: overwriteExistingImage
     initialScriptDelay: 10
     retryMax: 3
@@ -335,7 +339,3 @@ type environmentVariablesType = {
   @description('Conditional. The environment variable value. Required if `secretRef` is null.')
   value: string?
 }
-
-import { lockType, roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
-
-import { securityRulesType, secretType } from 'modules/deploy_services.bicep'
