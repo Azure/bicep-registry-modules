@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "17047474377590938340"
+      "templateHash": "14570608763922499099"
     },
     "name": "update-manager-configuration",
     "description": "This module creates multiple maintenance windows for Azure update manager and assigns them to existing VMs dynamically using tags .",
@@ -1934,7 +1934,9 @@
             ]
           },
           "metadata": {
-            "value": {}
+            "value": {
+              "assignedBy": "maintenance/azure-update-manager"
+            }
           },
           "nonComplianceMessages": {
             "value": []
@@ -2226,7 +2228,9 @@
             ]
           },
           "metadata": {
-            "value": {}
+            "value": {
+              "assignedBy": "maintenance/azure-update-manager"
+            }
           },
           "nonComplianceMessages": {
             "value": []
@@ -2518,7 +2522,9 @@
             ]
           },
           "metadata": {
-            "value": {}
+            "value": {
+              "assignedBy": "maintenance/azure-update-manager"
+            }
           },
           "nonComplianceMessages": {
             "value": []
@@ -3045,7 +3051,9 @@
             "value": []
           },
           "metadata": {
-            "value": {}
+            "value": {
+              "assignedBy": "maintenance/azure-update-manager"
+            }
           },
           "nonComplianceMessages": {
             "value": [
