@@ -22,9 +22,6 @@ param serviceShort string = 'maummin'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Generated. Used as a basis for unique resource names.')
-param baseTime string = utcNow('u')
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -48,7 +45,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       // You parameters go here
       location: resourceLocation
-      maintenanceConfigurationsResourceGroupName: '${namePrefix}-${serviceShort}-${iteration}-${substring(uniqueString(baseTime), 0, 3)}-RG'
+      maintenanceConfigurationsResourceGroupName: '${namePrefix}-${serviceShort}-RG'
     }
   }
 ]

@@ -50,7 +50,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
   name: 'azureUpdateManagerDeployment'
   params: {
     // Required parameters
-    maintenanceConfigurationsResourceGroupName: '<maintenanceConfigurationsResourceGroupName>'
+    maintenanceConfigurationsResourceGroupName: 'maummin-RG'
     // Non-required parameters
     location: '<location>'
   }
@@ -71,7 +71,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
   "parameters": {
     // Required parameters
     "maintenanceConfigurationsResourceGroupName": {
-      "value": "<maintenanceConfigurationsResourceGroupName>"
+      "value": "maummin-RG"
     },
     // Non-required parameters
     "location": {
@@ -92,7 +92,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
 using 'br/public:avm/ptn/maintenance/azure-update-manager:<version>'
 
 // Required parameters
-param maintenanceConfigurationsResourceGroupName = '<maintenanceConfigurationsResourceGroupName>'
+param maintenanceConfigurationsResourceGroupName = 'maummin-RG'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -114,7 +114,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
   name: 'azureUpdateManagerDeployment'
   params: {
     // Required parameters
-    maintenanceConfigurationsResourceGroupName: '<maintenanceConfigurationsResourceGroupName>'
+    maintenanceConfigurationsResourceGroupName: 'maumwaf-RG'
     // Non-required parameters
     enableAUMTagName: 'aum_maintenance'
     enableAUMTagValue: 'Enabled'
@@ -201,7 +201,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
         visibility: 'Custom'
       }
     ]
-    policyDeploymentManagedIdentityName: '<policyDeploymentManagedIdentityName>'
+    policyDeploymentManagedIdentityName: 'id-aumpolicy-contributor-maumwaf'
   }
 }
 ```
@@ -220,7 +220,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
   "parameters": {
     // Required parameters
     "maintenanceConfigurationsResourceGroupName": {
-      "value": "<maintenanceConfigurationsResourceGroupName>"
+      "value": "maumwaf-RG"
     },
     // Non-required parameters
     "enableAUMTagName": {
@@ -319,7 +319,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
       ]
     },
     "policyDeploymentManagedIdentityName": {
-      "value": "<policyDeploymentManagedIdentityName>"
+      "value": "id-aumpolicy-contributor-maumwaf"
     }
   }
 }
@@ -336,7 +336,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
 using 'br/public:avm/ptn/maintenance/azure-update-manager:<version>'
 
 // Required parameters
-param maintenanceConfigurationsResourceGroupName = '<maintenanceConfigurationsResourceGroupName>'
+param maintenanceConfigurationsResourceGroupName = 'maumwaf-RG'
 // Non-required parameters
 param enableAUMTagName = 'aum_maintenance'
 param enableAUMTagValue = 'Enabled'
@@ -423,7 +423,7 @@ param maintenanceConfigurations = [
     visibility: 'Custom'
   }
 ]
-param policyDeploymentManagedIdentityName = '<policyDeploymentManagedIdentityName>'
+param policyDeploymentManagedIdentityName = 'id-aumpolicy-contributor-maumwaf'
 ```
 
 </details>
@@ -594,7 +594,7 @@ The name of the User Assigned Managed Identity that will be used to deploy the p
 
 - Required: No
 - Type: string
-- Default: `[format('id-aumpolicy-contributor-{0}', substring(uniqueString(deployment().name, parameters('location')), 0, 3))]`
+- Default: `'id-aumpolicy-contributor-01'`
 
 ### Parameter: `tags`
 

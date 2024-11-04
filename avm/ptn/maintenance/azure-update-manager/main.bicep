@@ -107,7 +107,7 @@ param maintenanceConfigEnrollmentTagName string = 'aum_maintenance_config'
 
 @description('Optional. The name of the User Assigned Managed Identity that will be used to deploy the policies.')
 @maxLength(63)
-param policyDeploymentManagedIdentityName string = 'id-aumpolicy-contributor-${substring(uniqueString(deployment().name,location), 0, 3)}'
+param policyDeploymentManagedIdentityName string = 'id-aumpolicy-contributor-01'
 
 @description('Optional. Resource tags, which will be added to all resources.')
 param tags object?

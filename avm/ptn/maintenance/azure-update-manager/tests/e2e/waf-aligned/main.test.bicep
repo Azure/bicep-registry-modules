@@ -22,9 +22,6 @@ param serviceShort string = 'maumwaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Generated. Used as a basis for unique resource names.')
-param baseTime string = utcNow('u')
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -47,10 +44,10 @@ module testDeployment '../../../main.bicep' = [
     params: {
       // You parameters go here
       location: resourceLocation
-      maintenanceConfigurationsResourceGroupName: '${namePrefix}-${serviceShort}-${iteration}-${substring(uniqueString(baseTime), 0, 3)}-RG'
+      maintenanceConfigurationsResourceGroupName: '${namePrefix}-${serviceShort}-RG'
       maintenanceConfigurations: [
         {
-          maintenanceConfigName: 'maintenance_ring-${serviceShort}-01'
+          maintenanceConfigName: 'maintenance_ring-${namePrefix}-${serviceShort}-01'
           location: resourceLocation
           installPatches: {
             linuxParameters: {
@@ -90,7 +87,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          maintenanceConfigName: 'maintenance_ring-${serviceShort}-02'
+          maintenanceConfigName: 'maintenance_ring-${namePrefix}-${serviceShort}-02'
           location: resourceLocation
           installPatches: {
             linuxParameters: {
@@ -132,7 +129,7 @@ module testDeployment '../../../main.bicep' = [
       enableAUMTagName: 'aum_maintenance'
       enableAUMTagValue: 'Enabled'
       maintenanceConfigEnrollmentTagName: 'aum_maintenance_config'
-      policyDeploymentManagedIdentityName: 'id-aumpolicy-contributor-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+      policyDeploymentManagedIdentityName: 'id-aumpolicy-contributor-${namePrefix}-${serviceShort}'
     }
   }
 ]
