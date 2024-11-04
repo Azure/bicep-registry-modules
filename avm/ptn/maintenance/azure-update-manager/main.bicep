@@ -10,8 +10,8 @@ targetScope = 'subscription'
 @description('Optional. Azure region where the maintenance configurations and associated resources will be deployed to, default to deployment location if not specified.')
 param location string = deployment().location
 
-@description('Optional. Name of the Resource Group to deploy the maintenance configurations and associated resources.')
-param maintenanceConfigurationsResourceGroupName string = 'myMaintenanceConfigurations-RG'
+@description('Required. Name of the Resource Group to deploy the maintenance configurations and associated resources.')
+param maintenanceConfigurationsResourceGroupName string
 
 @description('Optional. An array of objects which contain the properties of the maintenance configurations to be created.')
 param maintenanceConfigurations array = [
@@ -107,7 +107,7 @@ param maintenanceConfigEnrollmentTagName string = 'aum_maintenance_config'
 
 @description('Optional. The name of the User Assigned Managed Identity that will be used to deploy the policies.')
 @maxLength(63)
-param policyDeploymentManagedIdentityName string = 'id-aumpolicy-contributor-001'
+param policyDeploymentManagedIdentityName string = 'id-aumpolicy-contributor-${substring(uniqueString(deployment().name,location), 0, 3)}'
 
 @description('Optional. Resource tags, which will be added to all resources.')
 param tags object?

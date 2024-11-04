@@ -49,8 +49,10 @@ This instance deploys the module with the minimum set of required parameters.
 module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<version>' = {
   name: 'azureUpdateManagerDeployment'
   params: {
-    location: '<location>'
+    // Required parameters
     maintenanceConfigurationsResourceGroupName: '<maintenanceConfigurationsResourceGroupName>'
+    // Non-required parameters
+    location: '<location>'
   }
 }
 ```
@@ -67,11 +69,13 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "location": {
-      "value": "<location>"
-    },
+    // Required parameters
     "maintenanceConfigurationsResourceGroupName": {
       "value": "<maintenanceConfigurationsResourceGroupName>"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -87,8 +91,10 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
 ```bicep-params
 using 'br/public:avm/ptn/maintenance/azure-update-manager:<version>'
 
-param location = '<location>'
+// Required parameters
 param maintenanceConfigurationsResourceGroupName = '<maintenanceConfigurationsResourceGroupName>'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -107,6 +113,9 @@ This instance deploys the module in alignment with the best-practices of the Azu
 module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<version>' = {
   name: 'azureUpdateManagerDeployment'
   params: {
+    // Required parameters
+    maintenanceConfigurationsResourceGroupName: '<maintenanceConfigurationsResourceGroupName>'
+    // Non-required parameters
     enableAUMTagName: 'aum_maintenance'
     enableAUMTagValue: 'Enabled'
     location: '<location>'
@@ -192,7 +201,6 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
         visibility: 'Custom'
       }
     ]
-    maintenanceConfigurationsResourceGroupName: '<maintenanceConfigurationsResourceGroupName>'
     policyDeploymentManagedIdentityName: '<policyDeploymentManagedIdentityName>'
   }
 }
@@ -210,6 +218,11 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
+    "maintenanceConfigurationsResourceGroupName": {
+      "value": "<maintenanceConfigurationsResourceGroupName>"
+    },
+    // Non-required parameters
     "enableAUMTagName": {
       "value": "aum_maintenance"
     },
@@ -305,9 +318,6 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
         }
       ]
     },
-    "maintenanceConfigurationsResourceGroupName": {
-      "value": "<maintenanceConfigurationsResourceGroupName>"
-    },
     "policyDeploymentManagedIdentityName": {
       "value": "<policyDeploymentManagedIdentityName>"
     }
@@ -325,6 +335,9 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
 ```bicep-params
 using 'br/public:avm/ptn/maintenance/azure-update-manager:<version>'
 
+// Required parameters
+param maintenanceConfigurationsResourceGroupName = '<maintenanceConfigurationsResourceGroupName>'
+// Non-required parameters
 param enableAUMTagName = 'aum_maintenance'
 param enableAUMTagValue = 'Enabled'
 param location = '<location>'
@@ -410,7 +423,6 @@ param maintenanceConfigurations = [
     visibility: 'Custom'
   }
 ]
-param maintenanceConfigurationsResourceGroupName = '<maintenanceConfigurationsResourceGroupName>'
 param policyDeploymentManagedIdentityName = '<policyDeploymentManagedIdentityName>'
 ```
 
@@ -418,6 +430,12 @@ param policyDeploymentManagedIdentityName = '<policyDeploymentManagedIdentityNam
 <p>
 
 ## Parameters
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`maintenanceConfigurationsResourceGroupName`](#parameter-maintenanceconfigurationsresourcegroupname) | string | Name of the Resource Group to deploy the maintenance configurations and associated resources. |
 
 **Optional parameters**
 
@@ -429,9 +447,15 @@ param policyDeploymentManagedIdentityName = '<policyDeploymentManagedIdentityNam
 | [`location`](#parameter-location) | string | Azure region where the maintenance configurations and associated resources will be deployed to, default to deployment location if not specified. |
 | [`maintenanceConfigEnrollmentTagName`](#parameter-maintenanceconfigenrollmenttagname) | string | The name of the tag that will be used to filter the VMs/ARC enabled servers to assign to a maintenance configuration. The value of this tag should contain the name of the maintenance configuration which the VM/ARC enabled server should belong to, specified in the parameter `maintenanceConfigurations`. |
 | [`maintenanceConfigurations`](#parameter-maintenanceconfigurations) | array | An array of objects which contain the properties of the maintenance configurations to be created. |
-| [`maintenanceConfigurationsResourceGroupName`](#parameter-maintenanceconfigurationsresourcegroupname) | string | Name of the Resource Group to deploy the maintenance configurations and associated resources. |
 | [`policyDeploymentManagedIdentityName`](#parameter-policydeploymentmanagedidentityname) | string | The name of the User Assigned Managed Identity that will be used to deploy the policies. |
 | [`tags`](#parameter-tags) | object | Resource tags, which will be added to all resources. |
+
+### Parameter: `maintenanceConfigurationsResourceGroupName`
+
+Name of the Resource Group to deploy the maintenance configurations and associated resources.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `enableAUMTagName`
 
@@ -564,21 +588,13 @@ An array of objects which contain the properties of the maintenance configuratio
   ]
   ```
 
-### Parameter: `maintenanceConfigurationsResourceGroupName`
-
-Name of the Resource Group to deploy the maintenance configurations and associated resources.
-
-- Required: No
-- Type: string
-- Default: `'myMaintenanceConfigurations-RG'`
-
 ### Parameter: `policyDeploymentManagedIdentityName`
 
 The name of the User Assigned Managed Identity that will be used to deploy the policies.
 
 - Required: No
 - Type: string
-- Default: `'id-aumpolicy-contributor-001'`
+- Default: `[format('id-aumpolicy-contributor-{0}', substring(uniqueString(deployment().name, parameters('location')), 0, 3))]`
 
 ### Parameter: `tags`
 

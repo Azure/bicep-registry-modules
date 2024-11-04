@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "8568802139352170206"
+      "templateHash": "10948863787463679945"
     },
     "name": "update-manager-configuration",
     "description": "This module creates multiple maintenance windows for Azure update manager and assigns them to existing VMs dynamically using tags .",
@@ -227,9 +227,8 @@
     },
     "maintenanceConfigurationsResourceGroupName": {
       "type": "string",
-      "defaultValue": "myMaintenanceConfigurations-RG",
       "metadata": {
-        "description": "Optional. Name of the Resource Group to deploy the maintenance configurations and associated resources."
+        "description": "Required. Name of the Resource Group to deploy the maintenance configurations and associated resources."
       }
     },
     "maintenanceConfigurations": {
@@ -342,7 +341,7 @@
     },
     "policyDeploymentManagedIdentityName": {
       "type": "string",
-      "defaultValue": "id-aumpolicy-contributor-001",
+      "defaultValue": "[format('id-aumpolicy-contributor-{0}', substring(uniqueString(deployment().name, parameters('location')), 0, 3))]",
       "maxLength": 63,
       "metadata": {
         "description": "Optional. The name of the User Assigned Managed Identity that will be used to deploy the policies."
