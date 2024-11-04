@@ -48,10 +48,10 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    name: 'AzureAutomation'
+    name: 'AzureAutomation(${nestedDependencies.outputs.logAnalyticsWorkspaceName})'
     location: resourceLocation
     logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
-    product: 'OMSGallery'
+    product: 'OMSGallery/AzureAutomation'
     publisher: 'Microsoft'
   }
 }

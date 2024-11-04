@@ -39,6 +39,12 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      autoNodeOsUpgradeProfileUpgradeChannel: 'NodeImage'
+      disableLocalAccounts: true
+      enableKeyvaultSecretsProvider: true
+      enableSecretRotation: true
+      kedaAddon: true
+      kubernetesVersion: '1.28'
       maintenanceConfigurations: [
         {
           name: 'aksManagedAutoUpgradeSchedule'
@@ -62,14 +68,25 @@ module testDeployment '../../../main.bicep' = [
       managedIdentities: {
         systemAssigned: true
       }
+      nodeProvisioningProfile: {
+        mode: 'Auto'
+      }
+      nodeResourceGroupProfile: {
+        restrictionLevel: 'ReadOnly'
+      }
+      outboundType: 'managedNATGateway'
       primaryAgentPoolProfiles: [
         {
           name: 'systempool'
           count: 3
-          vmSize: 'Standard_DS2_v2'
+          vmSize: 'Standard_DS4_v2'
           mode: 'System'
         }
       ]
+      publicNetworkAccess: 'Enabled'
+      skuName: 'Automatic'
+      vpaAddon: true
+      webApplicationRoutingEnabled: true
     }
   }
 ]
