@@ -262,7 +262,9 @@ module setPrereqPolicyAssignment 'modules/policyAssignments.bicep' = {
     identity: 'UserAssigned'
     userAssignedIdentityId: id_aumpolicy_contributor.outputs.resourceId
     roleDefinitionIds: ['/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c']
-    metadata: {}
+    metadata: {
+      assignedBy: 'maintenance/azure-update-manager'
+    }
     nonComplianceMessages: []
     enforcementMode: 'Default'
     subscriptionId: subscription().subscriptionId
@@ -297,7 +299,9 @@ module configurePeriodicCheckingAzureVMsWin 'modules/policyAssignments.bicep' = 
       identity: 'UserAssigned'
       userAssignedIdentityId: id_aumpolicy_contributor.outputs.resourceId
       roleDefinitionIds: ['/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c']
-      metadata: {}
+      metadata: {
+        assignedBy: 'maintenance/azure-update-manager'
+      }
       nonComplianceMessages: []
       enforcementMode: 'Default'
       subscriptionId: subscription().subscriptionId
@@ -333,7 +337,9 @@ module configurePeriodicCheckingARCServersWindows 'modules/policyAssignments.bic
       identity: 'UserAssigned'
       userAssignedIdentityId: id_aumpolicy_contributor.outputs.resourceId
       roleDefinitionIds: ['/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c']
-      metadata: {}
+      metadata: {
+        assignedBy: 'maintenance/azure-update-manager'
+      }
       nonComplianceMessages: []
       enforcementMode: 'Default'
       subscriptionId: subscription().subscriptionId
@@ -445,7 +451,9 @@ module requireAUMTagPolicyAssignment 'modules/policyAssignments.bicep' = {
     identity: 'UserAssigned'
     userAssignedIdentityId: id_aumpolicy_contributor.outputs.resourceId
     roleDefinitionIds: []
-    metadata: {}
+    metadata: {
+      assignedBy: 'maintenance/azure-update-manager'
+    }
     nonComplianceMessages: [
       {
         message: 'Please ensure that the following tags are applied to the VMs/ARC Servers - ${enableAUMTagName}: [Enabled/Disabled], ${maintenanceConfigEnrollmentTagName}: ${replace(replace(string(maintenanceConfigNames),'"',''),',','/')} '
