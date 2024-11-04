@@ -244,9 +244,9 @@ module maintenance_configuration_assignments 'modules/configAssignments.bicep' =
 
 @description('Assigns the prerequisite policy for Azure Update Manager.')
 module setPrereqPolicyAssignment 'modules/policyAssignments.bicep' = {
-  name: 'AzureUpdateManagerPrerequisitePolicyAssignment'
+  name: take('prereqpolassi-${substring(uniqueString(deployment().name, location), 0, 4)}-deployment', 64)
   params: {
-    name: take('prereqpolassi-${substring(uniqueString(deployment().name, location), 0, 4)}-deployment', 64)
+    name: 'AUMPrereqPolicyAssignment-${substring(uniqueString(deployment().name, location), 0, 4)}'
     displayName: 'Azure Update Manager prerequisites settings update based on Tags'
     description: 'Azure Update Manager prerequisites settings update based on Tags of the Azure VMs/ARC enabled Servers'
     policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/9905ca54-1471-49c6-8291-7582c04cd4d4'
@@ -286,7 +286,7 @@ module configurePeriodicCheckingAzureVMsWin 'modules/policyAssignments.bicep' = 
       64
     )
     params: {
-      name: 'AUMConfigurePeriodicCheckingAzVMPolicyAssignment${osType}'
+      name: 'AUMConfigurePeriodicCheckingAzVMPolicyAssignment${osType}-${substring(uniqueString(deployment().name, location), 0, 4)}'
       displayName: 'Azure Update Manager enabling periodic assessment on Azure VMs based on Tags for ${osType}'
       description: 'This policy enables periodic checking for updates on Azure based on Tags of the Azure VMs for ${osType}'
       policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/59efceea-0c96-497e-a4a1-4eb2290dac15'
@@ -327,7 +327,7 @@ module configurePeriodicCheckingARCServersWindows 'modules/policyAssignments.bic
       64
     )
     params: {
-      name: 'AUMConfigurePeriodicCheckingARCVMPolicyAssignment${osType}'
+      name: 'AUMConfigurePeriodicCheckingARCVMPolicyAssignment${osType}-${substring(uniqueString(deployment().name, location), 0, 4)}'
       displayName: 'Azure Update Manager enabling periodic assessment on ARC Servers based on Tags for ${osType}'
       description: 'This policy enables periodic checking for updates on Azure based on Tags of the ARC Servers for ${osType}'
       policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/bfea026e-043f-4ff4-9d1b-bf301ca7ff46'
@@ -363,7 +363,7 @@ module configurePeriodicCheckingARCServersWindows 'modules/policyAssignments.bic
 module requireAUMTagPolicyDefinition 'modules/policyDefinition.bicep' = {
   name: take('aumtagpoldef-${substring(uniqueString(deployment().name, location), 0, 4)}-deployment', 64)
   params: {
-    name: 'requireAUMTagPolicyDefinition'
+    name: 'requireAUMTagPolicyDefinition-${substring(uniqueString(deployment().name, location), 0, 4)}'
     displayName: 'Require tags on Azure VMs/ARC enabled servers for Azure Update Manager maintenance'
     description: 'Enforces existence of tags on Azure VMs/ARC enabled servers for Azure Update Manager maintenance. Does not apply to other resources/resource groups.'
     mode: 'Indexed'
@@ -441,7 +441,7 @@ module requireAUMTagPolicyDefinition 'modules/policyDefinition.bicep' = {
 module requireAUMTagPolicyAssignment 'modules/policyAssignments.bicep' = {
   name: take('aumtagpolassi-${substring(uniqueString(deployment().name, location), 0, 4)}-deployment', 64)
   params: {
-    name: 'requireAUMTagPolicyAssignment'
+    name: 'requireAUMTagPolicyAssignment-${substring(uniqueString(deployment().name, location), 0, 4)}'
     displayName: 'Require AUM maintenance ring tag on Azure VMs/ARC enabled servers'
     description: 'Enforces existence of a tag on Azure VMs/ARC enabled servers.'
     policyDefinitionId: requireAUMTagPolicyDefinition.outputs.resourceId

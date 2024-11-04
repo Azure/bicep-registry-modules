@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "11086777283245045479"
+      "templateHash": "1614271792495509793"
     },
     "name": "update-manager-configuration",
     "description": "This module creates multiple maintenance windows for Azure update manager and assigns them to existing VMs dynamically using tags .",
@@ -1882,7 +1882,7 @@
     "setPrereqPolicyAssignment": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "AzureUpdateManagerPrerequisitePolicyAssignment",
+      "name": "[take(format('prereqpolassi-{0}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1891,7 +1891,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[take(format('prereqpolassi-{0}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]"
+            "value": "[format('AUMPrereqPolicyAssignment-{0}', substring(uniqueString(deployment().name, parameters('location')), 0, 4))]"
           },
           "displayName": {
             "value": "Azure Update Manager prerequisites settings update based on Tags"
@@ -2187,7 +2187,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('AUMConfigurePeriodicCheckingAzVMPolicyAssignment{0}', variables('osTypes')[copyIndex()])]"
+            "value": "[format('AUMConfigurePeriodicCheckingAzVMPolicyAssignment{0}-{1}', variables('osTypes')[copyIndex()], substring(uniqueString(deployment().name, parameters('location')), 0, 4))]"
           },
           "displayName": {
             "value": "[format('Azure Update Manager enabling periodic assessment on Azure VMs based on Tags for {0}', variables('osTypes')[copyIndex()])]"
@@ -2481,7 +2481,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('AUMConfigurePeriodicCheckingARCVMPolicyAssignment{0}', variables('osTypes')[copyIndex()])]"
+            "value": "[format('AUMConfigurePeriodicCheckingARCVMPolicyAssignment{0}-{1}', variables('osTypes')[copyIndex()], substring(uniqueString(deployment().name, parameters('location')), 0, 4))]"
           },
           "displayName": {
             "value": "[format('Azure Update Manager enabling periodic assessment on ARC Servers based on Tags for {0}', variables('osTypes')[copyIndex()])]"
@@ -2769,7 +2769,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "requireAUMTagPolicyDefinition"
+            "value": "[format('requireAUMTagPolicyDefinition-{0}', substring(uniqueString(deployment().name, parameters('location')), 0, 4))]"
           },
           "displayName": {
             "value": "Require tags on Azure VMs/ARC enabled servers for Azure Update Manager maintenance"
@@ -3012,7 +3012,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "requireAUMTagPolicyAssignment"
+            "value": "[format('requireAUMTagPolicyAssignment-{0}', substring(uniqueString(deployment().name, parameters('location')), 0, 4))]"
           },
           "displayName": {
             "value": "Require AUM maintenance ring tag on Azure VMs/ARC enabled servers"
