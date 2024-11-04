@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "14083839706326855017"
+      "templateHash": "8568802139352170206"
     },
     "name": "update-manager-configuration",
     "description": "This module creates multiple maintenance windows for Azure update manager and assigns them to existing VMs dynamically using tags .",
@@ -225,22 +225,11 @@
         "description": "Optional. Azure region where the maintenance configurations and associated resources will be deployed to, default to deployment location if not specified."
       }
     },
-    "maintenanceConfigurationsResourceGroupNeworExisting": {
-      "type": "string",
-      "defaultValue": "new",
-      "allowedValues": [
-        "new",
-        "existing"
-      ],
-      "metadata": {
-        "description": "Optional. Choose whether to create a new or use an existing Resource Group to deploy the maintenance configurations and User Assigned Managed Identity. Defaults to `new`."
-      }
-    },
     "maintenanceConfigurationsResourceGroupName": {
       "type": "string",
       "defaultValue": "myMaintenanceConfigurations-RG",
       "metadata": {
-        "description": "Optional. Name of the new/existing Resource Group to deploy the maintenance configurations and associated resources."
+        "description": "Optional. Name of the Resource Group to deploy the maintenance configurations and associated resources."
       }
     },
     "maintenanceConfigurations": {
@@ -309,7 +298,7 @@
           },
           "lock": {},
           "maintenanceWindow": {
-            "duration": "05:00",
+            "duration": "03:00",
             "expirationDateTime": null,
             "recurEvery": "Week Saturday,Sunday",
             "startDateTime": "2024-09-19 00:00",
@@ -420,15 +409,7 @@
         }
       }
     },
-    "existingResourceGroup": {
-      "condition": "[equals(parameters('maintenanceConfigurationsResourceGroupNeworExisting'), 'existing')]",
-      "existing": true,
-      "type": "Microsoft.Resources/resourceGroups",
-      "apiVersion": "2021-04-01",
-      "name": "[parameters('maintenanceConfigurationsResourceGroupName')]"
-    },
     "maintenanceConfig_rg": {
-      "condition": "[equals(parameters('maintenanceConfigurationsResourceGroupNeworExisting'), 'new')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "maintenanceConfig_rg",
@@ -1379,7 +1360,6 @@
         }
       },
       "dependsOn": [
-        "existingResourceGroup",
         "maintenanceConfig_rg"
       ],
       "metadata": {

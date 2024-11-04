@@ -10,14 +10,7 @@ targetScope = 'subscription'
 @description('Optional. Azure region where the maintenance configurations and associated resources will be deployed to, default to deployment location if not specified.')
 param location string = deployment().location
 
-@description('Optional. Choose whether to create a new or use an existing Resource Group to deploy the maintenance configurations and User Assigned Managed Identity. Defaults to `new`.')
-@allowed([
-  'new'
-  'existing'
-])
-param maintenanceConfigurationsResourceGroupNeworExisting string = 'new'
-
-@description('Optional. Name of the new/existing Resource Group to deploy the maintenance configurations and associated resources.')
+@description('Optional. Name of the Resource Group to deploy the maintenance configurations and associated resources.')
 param maintenanceConfigurationsResourceGroupName string = 'myMaintenanceConfigurations-RG'
 
 @description('Optional. An array of objects which contain the properties of the maintenance configurations to be created.')
@@ -85,7 +78,7 @@ param maintenanceConfigurations array = [
     }
     lock: {}
     maintenanceWindow: {
-      duration: '05:00'
+      duration: '03:00'
       expirationDateTime: null
       recurEvery: 'Week Saturday,Sunday'
       startDateTime: '2024-09-19 00:00'
@@ -169,11 +162,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource existingResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (maintenanceConfigurationsResourceGroupNeworExisting == 'existing') {
-  name: maintenanceConfigurationsResourceGroupName
-}
 @description('Creates a resource group for Azure Update Manager maintenance configurations.')
-module maintenanceConfig_rg 'br/public:avm/res/resources/resource-group:0.4.0' = if (maintenanceConfigurationsResourceGroupNeworExisting == 'new') {
+module maintenanceConfig_rg 'br/public:avm/res/resources/resource-group:0.4.0' = {
   name: 'maintenanceConfig_rg'
   params: {
     name: maintenanceConfigurationsResourceGroupName
@@ -193,7 +183,6 @@ module id_aumpolicy_contributor 'br/public:avm/res/managed-identity/user-assigne
   }
   dependsOn: [
     maintenanceConfig_rg
-    existingResourceGroup
   ]
 }
 

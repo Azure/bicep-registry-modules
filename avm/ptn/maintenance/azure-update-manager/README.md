@@ -50,6 +50,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
   name: 'azureUpdateManagerDeployment'
   params: {
     location: '<location>'
+    maintenanceConfigurationsResourceGroupName: '<maintenanceConfigurationsResourceGroupName>'
   }
 }
 ```
@@ -68,6 +69,9 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
   "parameters": {
     "location": {
       "value": "<location>"
+    },
+    "maintenanceConfigurationsResourceGroupName": {
+      "value": "<maintenanceConfigurationsResourceGroupName>"
     }
   }
 }
@@ -84,6 +88,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
 using 'br/public:avm/ptn/maintenance/azure-update-manager:<version>'
 
 param location = '<location>'
+param maintenanceConfigurationsResourceGroupName = '<maintenanceConfigurationsResourceGroupName>'
 ```
 
 </details>
@@ -129,7 +134,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
         }
         location: '<location>'
         lock: {}
-        maintenanceConfigName: 'maintenance_ring-01'
+        maintenanceConfigName: 'maintenance_ring-maumwaf-01'
         maintenanceWindow: {
           duration: '03:00'
           expirationDateTime: '<expirationDateTime>'
@@ -168,9 +173,9 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
         }
         location: '<location>'
         lock: {}
-        maintenanceConfigName: 'maintenance_ring-02'
+        maintenanceConfigName: 'maintenance_ring-maumwaf-02'
         maintenanceWindow: {
-          duration: '05:00'
+          duration: '03:00'
           expirationDateTime: '<expirationDateTime>'
           recurEvery: 'Week Saturday,Sunday'
           startDateTime: '2024-09-19 00:00'
@@ -187,9 +192,8 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
         visibility: 'Custom'
       }
     ]
-    maintenanceConfigurationsResourceGroupName: 'maumwaf-aum-RG'
-    maintenanceConfigurationsResourceGroupNeworExisting: 'new'
-    policyDeploymentManagedIdentityName: 'id-aumpolicy-contributor-001'
+    maintenanceConfigurationsResourceGroupName: '<maintenanceConfigurationsResourceGroupName>'
+    policyDeploymentManagedIdentityName: '<policyDeploymentManagedIdentityName>'
   }
 }
 ```
@@ -242,7 +246,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
           },
           "location": "<location>",
           "lock": {},
-          "maintenanceConfigName": "maintenance_ring-01",
+          "maintenanceConfigName": "maintenance_ring-maumwaf-01",
           "maintenanceWindow": {
             "duration": "03:00",
             "expirationDateTime": "<expirationDateTime>",
@@ -281,9 +285,9 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
           },
           "location": "<location>",
           "lock": {},
-          "maintenanceConfigName": "maintenance_ring-02",
+          "maintenanceConfigName": "maintenance_ring-maumwaf-02",
           "maintenanceWindow": {
-            "duration": "05:00",
+            "duration": "03:00",
             "expirationDateTime": "<expirationDateTime>",
             "recurEvery": "Week Saturday,Sunday",
             "startDateTime": "2024-09-19 00:00",
@@ -302,13 +306,10 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
       ]
     },
     "maintenanceConfigurationsResourceGroupName": {
-      "value": "maumwaf-aum-RG"
-    },
-    "maintenanceConfigurationsResourceGroupNeworExisting": {
-      "value": "new"
+      "value": "<maintenanceConfigurationsResourceGroupName>"
     },
     "policyDeploymentManagedIdentityName": {
-      "value": "id-aumpolicy-contributor-001"
+      "value": "<policyDeploymentManagedIdentityName>"
     }
   }
 }
@@ -351,7 +352,7 @@ param maintenanceConfigurations = [
     }
     location: '<location>'
     lock: {}
-    maintenanceConfigName: 'maintenance_ring-01'
+    maintenanceConfigName: 'maintenance_ring-maumwaf-01'
     maintenanceWindow: {
       duration: '03:00'
       expirationDateTime: '<expirationDateTime>'
@@ -390,9 +391,9 @@ param maintenanceConfigurations = [
     }
     location: '<location>'
     lock: {}
-    maintenanceConfigName: 'maintenance_ring-02'
+    maintenanceConfigName: 'maintenance_ring-maumwaf-02'
     maintenanceWindow: {
-      duration: '05:00'
+      duration: '03:00'
       expirationDateTime: '<expirationDateTime>'
       recurEvery: 'Week Saturday,Sunday'
       startDateTime: '2024-09-19 00:00'
@@ -409,9 +410,8 @@ param maintenanceConfigurations = [
     visibility: 'Custom'
   }
 ]
-param maintenanceConfigurationsResourceGroupName = 'maumwaf-aum-RG'
-param maintenanceConfigurationsResourceGroupNeworExisting = 'new'
-param policyDeploymentManagedIdentityName = 'id-aumpolicy-contributor-001'
+param maintenanceConfigurationsResourceGroupName = '<maintenanceConfigurationsResourceGroupName>'
+param policyDeploymentManagedIdentityName = '<policyDeploymentManagedIdentityName>'
 ```
 
 </details>
@@ -429,8 +429,7 @@ param policyDeploymentManagedIdentityName = 'id-aumpolicy-contributor-001'
 | [`location`](#parameter-location) | string | Azure region where the maintenance configurations and associated resources will be deployed to, default to deployment location if not specified. |
 | [`maintenanceConfigEnrollmentTagName`](#parameter-maintenanceconfigenrollmenttagname) | string | The name of the tag that will be used to filter the VMs/ARC enabled servers to assign to a maintenance configuration. The value of this tag should contain the name of the maintenance configuration which the VM/ARC enabled server should belong to, specified in the parameter `maintenanceConfigurations`. |
 | [`maintenanceConfigurations`](#parameter-maintenanceconfigurations) | array | An array of objects which contain the properties of the maintenance configurations to be created. |
-| [`maintenanceConfigurationsResourceGroupName`](#parameter-maintenanceconfigurationsresourcegroupname) | string | Name of the new/existing Resource Group to deploy the maintenance configurations and associated resources. |
-| [`maintenanceConfigurationsResourceGroupNeworExisting`](#parameter-maintenanceconfigurationsresourcegroupneworexisting) | string | Choose whether to create a new or use an existing Resource Group to deploy the maintenance configurations and User Assigned Managed Identity. Defaults to `new`. |
+| [`maintenanceConfigurationsResourceGroupName`](#parameter-maintenanceconfigurationsresourcegroupname) | string | Name of the Resource Group to deploy the maintenance configurations and associated resources. |
 | [`policyDeploymentManagedIdentityName`](#parameter-policydeploymentmanagedidentityname) | string | The name of the User Assigned Managed Identity that will be used to deploy the policies. |
 | [`tags`](#parameter-tags) | object | Resource tags, which will be added to all resources. |
 
@@ -546,7 +545,7 @@ An array of objects which contain the properties of the maintenance configuratio
       lock: {}
       maintenanceConfigName: 'maintenance_ring-02'
       maintenanceWindow: {
-        duration: '05:00'
+        duration: '03:00'
         expirationDateTime: null
         recurEvery: 'Week Saturday,Sunday'
         startDateTime: '2024-09-19 00:00'
@@ -567,26 +566,11 @@ An array of objects which contain the properties of the maintenance configuratio
 
 ### Parameter: `maintenanceConfigurationsResourceGroupName`
 
-Name of the new/existing Resource Group to deploy the maintenance configurations and associated resources.
+Name of the Resource Group to deploy the maintenance configurations and associated resources.
 
 - Required: No
 - Type: string
 - Default: `'myMaintenanceConfigurations-RG'`
-
-### Parameter: `maintenanceConfigurationsResourceGroupNeworExisting`
-
-Choose whether to create a new or use an existing Resource Group to deploy the maintenance configurations and User Assigned Managed Identity. Defaults to `new`.
-
-- Required: No
-- Type: string
-- Default: `'new'`
-- Allowed:
-  ```Bicep
-  [
-    'existing'
-    'new'
-  ]
-  ```
 
 ### Parameter: `policyDeploymentManagedIdentityName`
 

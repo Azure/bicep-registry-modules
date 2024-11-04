@@ -22,6 +22,9 @@ param serviceShort string = 'maumwaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -44,11 +47,10 @@ module testDeployment '../../../main.bicep' = [
     params: {
       // You parameters go here
       location: resourceLocation
-      maintenanceConfigurationsResourceGroupNeworExisting: 'new'
-      maintenanceConfigurationsResourceGroupName: '${namePrefix}-${serviceShort}-aum-RG'
+      maintenanceConfigurationsResourceGroupName: '${namePrefix}-${serviceShort}-${iteration}-${substring(uniqueString(baseTime), 0, 3)}-RG'
       maintenanceConfigurations: [
         {
-          maintenanceConfigName: 'maintenance_ring-01'
+          maintenanceConfigName: 'maintenance_ring-${serviceShort}-01'
           location: resourceLocation
           installPatches: {
             linuxParameters: {
@@ -88,7 +90,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          maintenanceConfigName: 'maintenance_ring-02'
+          maintenanceConfigName: 'maintenance_ring-${serviceShort}-02'
           location: resourceLocation
           installPatches: {
             linuxParameters: {
@@ -110,7 +112,7 @@ module testDeployment '../../../main.bicep' = [
           }
           lock: {}
           maintenanceWindow: {
-            duration: '05:00'
+            duration: '03:00'
             expirationDateTime: null
             recurEvery: 'Week Saturday,Sunday'
             startDateTime: '2024-09-19 00:00'
@@ -130,7 +132,7 @@ module testDeployment '../../../main.bicep' = [
       enableAUMTagName: 'aum_maintenance'
       enableAUMTagValue: 'Enabled'
       maintenanceConfigEnrollmentTagName: 'aum_maintenance_config'
-      policyDeploymentManagedIdentityName: 'id-aumpolicy-contributor-001'
+      policyDeploymentManagedIdentityName: 'id-aumpolicy-contributor-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     }
   }
 ]
