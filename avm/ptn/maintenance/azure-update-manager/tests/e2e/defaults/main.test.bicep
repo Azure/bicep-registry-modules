@@ -29,11 +29,6 @@ param namePrefix string = '#_namePrefix_#'
 // General resources
 // =================
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: resourceLocation
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -45,7 +40,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       // You parameters go here
       location: resourceLocation
-      maintenanceConfigurationsResourceGroupName: '${namePrefix}-${serviceShort}-RG'
+      maintenanceConfigurationsResourceGroupName: resourceGroupName
     }
   }
 ]

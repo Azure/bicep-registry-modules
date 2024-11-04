@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "12116943653678303354"
+      "templateHash": "13291329474574839012"
     },
     "name": "update-manager-configuration",
     "description": "This module creates multiple maintenance windows for Azure update manager and assigns them to existing VMs dynamically using tags .",
@@ -411,7 +411,7 @@
     "maintenanceConfig_rg": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "maintenanceConfig_rg",
+      "name": "[take(format('rg-{0}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -893,7 +893,7 @@
     "id_aumpolicy_contributor": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "userAssignedManagedIdentity",
+      "name": "[take(format('mi-{0}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "resourceGroup": "[parameters('maintenanceConfigurationsResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1372,7 +1372,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('maintenanceConfiguration-{0}', parameters('maintenanceConfigurations')[copyIndex()].maintenanceConfigName), 63)]",
+      "name": "[take(format('mainconf-{0}-{1}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4), parameters('maintenanceConfigurations')[copyIndex()].maintenanceConfigName), 64)]",
       "resourceGroup": "[parameters('maintenanceConfigurationsResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1759,7 +1759,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('maintenanceConfigAssignment-{0}', parameters('maintenanceConfigurations')[copyIndex()].maintenanceConfigName), 63)]",
+      "name": "[take(format('mainconfassi-{0}-{1}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4), parameters('maintenanceConfigurations')[copyIndex()].maintenanceConfigName), 64)]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1888,7 +1888,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "AzureUpdateManagerPrerequisitePolicyAssignment"
+            "value": "[take(format('prereqpolassi-{0}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]"
           },
           "displayName": {
             "value": "Azure Update Manager prerequisites settings update based on Tags"
@@ -2175,7 +2175,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('AUMConfigurePeriodicCheckingAzVMPolicyAssignment{0}', variables('osTypes')[copyIndex()])]",
+      "name": "[take(format('periodiccheckvmpolassi-{0}-{1}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4), variables('osTypes')[copyIndex()]), 64)]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2469,7 +2469,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('AUMConfigurePeriodicCheckingARCVMPolicyAssignment{0}', variables('osTypes')[copyIndex()])]",
+      "name": "[take(format('periodiccheckarcpolassi-{0}-{1}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4), variables('osTypes')[copyIndex()]), 64)]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2757,7 +2757,7 @@
     "requireAUMTagPolicyDefinition": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "requireAUMTagPolicyDefinition",
+      "name": "[take(format('aumtagpoldef-{0}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -3000,7 +3000,7 @@
     "requireAUMTagPolicyAssignment": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "requireAUMTagPolicyAssignment",
+      "name": "[take(format('aumtagpolassi-{0}-deployment', substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {

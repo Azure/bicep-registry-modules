@@ -161,10 +161,9 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
     }
   }
 }
-
 @description('Creates a resource group for Azure Update Manager maintenance configurations.')
 module maintenanceConfig_rg 'br/public:avm/res/resources/resource-group:0.4.0' = {
-  name: 'maintenanceConfig_rg'
+  name: take('rg-${substring(uniqueString(deployment().name, location), 0, 4)}-deployment', 64)
   params: {
     name: maintenanceConfigurationsResourceGroupName
     location: location
@@ -173,7 +172,7 @@ module maintenanceConfig_rg 'br/public:avm/res/resources/resource-group:0.4.0' =
 }
 @description('Creates a user-assigned managed identity for policy deployment.')
 module id_aumpolicy_contributor 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
-  name: 'userAssignedManagedIdentity'
+  name: take('mi-${substring(uniqueString(deployment().name, location), 0, 4)}-deployment', 64)
   scope: resourceGroup(maintenanceConfigurationsResourceGroupName)
   params: {
     name: policyDeploymentManagedIdentityName
@@ -189,7 +188,10 @@ module id_aumpolicy_contributor 'br/public:avm/res/managed-identity/user-assigne
 @description('Creates maintenance configurations based on the provided parameters.')
 module maintenance_configurations 'br/public:avm/res/maintenance/maintenance-configuration:0.3.0' = [
   for (maintenanceConfiguration, i) in maintenanceConfigurations: {
-    name: take('maintenanceConfiguration-${maintenanceConfiguration.maintenanceConfigName}', 63)
+    name: take(
+      'mainconf-${substring(uniqueString(deployment().name, location), 0, 4)}-${maintenanceConfiguration.maintenanceConfigName}-deployment',
+      64
+    )
     scope: resourceGroup(maintenanceConfigurationsResourceGroupName)
     params: {
       name: maintenanceConfiguration.maintenanceConfigName
@@ -212,7 +214,10 @@ module maintenance_configurations 'br/public:avm/res/maintenance/maintenance-con
 @description('Assigns maintenance configurations to resources based on the provided filters.')
 module maintenance_configuration_assignments 'modules/configAssignments.bicep' = [
   for (maintenanceConfiguration, i) in maintenanceConfigurations: {
-    name: take('maintenanceConfigAssignment-${maintenanceConfiguration.maintenanceConfigName}', 63)
+    name: take(
+      'mainconfassi-${substring(uniqueString(deployment().name, location), 0, 4)}-${maintenanceConfiguration.maintenanceConfigName}-deployment',
+      64
+    )
     params: {
       maintenanceConfigResourceGroupName: maintenanceConfigurationsResourceGroupName
       maintenanceConfigName: maintenance_configurations[i].outputs.name
@@ -238,7 +243,7 @@ module maintenance_configuration_assignments 'modules/configAssignments.bicep' =
 module setPrereqPolicyAssignment 'modules/policyAssignments.bicep' = {
   name: 'AzureUpdateManagerPrerequisitePolicyAssignment'
   params: {
-    name: 'AzureUpdateManagerPrerequisitePolicyAssignment'
+    name: take('prereqpolassi-${substring(uniqueString(deployment().name, location), 0, 4)}-deployment', 64)
     displayName: 'Azure Update Manager prerequisites settings update based on Tags'
     description: 'Azure Update Manager prerequisites settings update based on Tags of the Azure VMs/ARC enabled Servers'
     policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/9905ca54-1471-49c6-8291-7582c04cd4d4'
@@ -273,7 +278,10 @@ module setPrereqPolicyAssignment 'modules/policyAssignments.bicep' = {
 @batchSize(1)
 module configurePeriodicCheckingAzureVMsWin 'modules/policyAssignments.bicep' = [
   for osType in osTypes: {
-    name: 'AUMConfigurePeriodicCheckingAzVMPolicyAssignment${osType}'
+    name: take(
+      'periodiccheckvmpolassi-${substring(uniqueString(deployment().name, location), 0, 4)}-${osType}-deployment',
+      64
+    )
     params: {
       name: 'AUMConfigurePeriodicCheckingAzVMPolicyAssignment${osType}'
       displayName: 'Azure Update Manager enabling periodic assessment on Azure VMs based on Tags for ${osType}'
@@ -311,7 +319,10 @@ module configurePeriodicCheckingAzureVMsWin 'modules/policyAssignments.bicep' = 
 @batchSize(1)
 module configurePeriodicCheckingARCServersWindows 'modules/policyAssignments.bicep' = [
   for osType in osTypes: {
-    name: 'AUMConfigurePeriodicCheckingARCVMPolicyAssignment${osType}'
+    name: take(
+      'periodiccheckarcpolassi-${substring(uniqueString(deployment().name, location), 0, 4)}-${osType}-deployment',
+      64
+    )
     params: {
       name: 'AUMConfigurePeriodicCheckingARCVMPolicyAssignment${osType}'
       displayName: 'Azure Update Manager enabling periodic assessment on ARC Servers based on Tags for ${osType}'
@@ -347,7 +358,7 @@ module configurePeriodicCheckingARCServersWindows 'modules/policyAssignments.bic
 
 @description('Defines a policy to enforce tags on Azure VMs/ARC enabled servers for Azure Update Manager maintenance.')
 module requireAUMTagPolicyDefinition 'modules/policyDefinition.bicep' = {
-  name: 'requireAUMTagPolicyDefinition'
+  name: take('aumtagpoldef-${substring(uniqueString(deployment().name, location), 0, 4)}-deployment', 64)
   params: {
     name: 'requireAUMTagPolicyDefinition'
     displayName: 'Require tags on Azure VMs/ARC enabled servers for Azure Update Manager maintenance'
@@ -425,7 +436,7 @@ module requireAUMTagPolicyDefinition 'modules/policyDefinition.bicep' = {
 
 @description('Assigns the policy to enforce tags on Azure VMs/ARC enabled servers for Azure Update Manager maintenance.')
 module requireAUMTagPolicyAssignment 'modules/policyAssignments.bicep' = {
-  name: 'requireAUMTagPolicyAssignment'
+  name: take('aumtagpolassi-${substring(uniqueString(deployment().name, location), 0, 4)}-deployment', 64)
   params: {
     name: 'requireAUMTagPolicyAssignment'
     displayName: 'Require AUM maintenance ring tag on Azure VMs/ARC enabled servers'

@@ -50,7 +50,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
   name: 'azureUpdateManagerDeployment'
   params: {
     // Required parameters
-    maintenanceConfigurationsResourceGroupName: 'maummin-RG'
+    maintenanceConfigurationsResourceGroupName: '<maintenanceConfigurationsResourceGroupName>'
     // Non-required parameters
     location: '<location>'
   }
@@ -71,7 +71,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
   "parameters": {
     // Required parameters
     "maintenanceConfigurationsResourceGroupName": {
-      "value": "maummin-RG"
+      "value": "<maintenanceConfigurationsResourceGroupName>"
     },
     // Non-required parameters
     "location": {
@@ -92,7 +92,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
 using 'br/public:avm/ptn/maintenance/azure-update-manager:<version>'
 
 // Required parameters
-param maintenanceConfigurationsResourceGroupName = 'maummin-RG'
+param maintenanceConfigurationsResourceGroupName = '<maintenanceConfigurationsResourceGroupName>'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -114,7 +114,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
   name: 'azureUpdateManagerDeployment'
   params: {
     // Required parameters
-    maintenanceConfigurationsResourceGroupName: 'maumwaf-RG'
+    maintenanceConfigurationsResourceGroupName: '<maintenanceConfigurationsResourceGroupName>'
     // Non-required parameters
     enableAUMTagName: 'aum_maintenance'
     enableAUMTagValue: 'Enabled'
@@ -220,7 +220,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
   "parameters": {
     // Required parameters
     "maintenanceConfigurationsResourceGroupName": {
-      "value": "maumwaf-RG"
+      "value": "<maintenanceConfigurationsResourceGroupName>"
     },
     // Non-required parameters
     "enableAUMTagName": {
@@ -336,7 +336,7 @@ module azureUpdateManager 'br/public:avm/ptn/maintenance/azure-update-manager:<v
 using 'br/public:avm/ptn/maintenance/azure-update-manager:<version>'
 
 // Required parameters
-param maintenanceConfigurationsResourceGroupName = 'maumwaf-RG'
+param maintenanceConfigurationsResourceGroupName = '<maintenanceConfigurationsResourceGroupName>'
 // Non-required parameters
 param enableAUMTagName = 'aum_maintenance'
 param enableAUMTagValue = 'Enabled'
