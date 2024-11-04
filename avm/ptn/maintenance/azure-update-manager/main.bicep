@@ -209,7 +209,7 @@ module maintenance_configurations 'br/public:avm/res/maintenance/maintenance-con
       maintenanceWindow: maintenanceConfiguration.?maintenanceWindow
       visibility: maintenanceConfiguration.?visibility
       lock: maintenanceConfiguration.?lock
-      tags: union(maintenanceConfiguration.?tags, tags ?? {})
+      tags: maintenanceConfiguration.?tags
       roleAssignments: maintenanceConfiguration.?roleAssignments
       extensionProperties: {
         InGuestPatchMode: 'User'

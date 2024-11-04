@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "1192016639167626520"
+      "templateHash": "14083839706326855017"
     },
     "name": "update-manager-configuration",
     "description": "This module creates multiple maintenance windows for Azure update manager and assigns them to existing VMs dynamically using tags .",
@@ -1420,7 +1420,7 @@
             "value": "[tryGet(parameters('maintenanceConfigurations')[copyIndex()], 'lock')]"
           },
           "tags": {
-            "value": "[union(tryGet(parameters('maintenanceConfigurations')[copyIndex()], 'tags'), coalesce(parameters('tags'), createObject()))]"
+            "value": "[tryGet(parameters('maintenanceConfigurations')[copyIndex()], 'tags')]"
           },
           "roleAssignments": {
             "value": "[tryGet(parameters('maintenanceConfigurations')[copyIndex()], 'roleAssignments')]"
