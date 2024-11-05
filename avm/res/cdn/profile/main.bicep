@@ -47,7 +47,7 @@ param originGroups originGroupType[] = []
 param ruleSets ruleSetType[] = []
 
 @description('Optional. Array of AFD endpoint objects.')
-param afdEndpoints array = []
+param afdEndpoints afdEndpointType[] = []
 
 @description('Optional. Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies for details).')
 param securityPolicies securityPolicyType = []
@@ -320,6 +320,7 @@ output systemAssignedMIPrincipalId string = profile.?identity.?principalId ?? ''
 //   Definitions   //
 // =============== //
 
+import { afdEndpointType } from 'afdEndpoint/main.bicep'
 import { originGroupType } from 'origingroup/main.bicep'
 import { originType } from 'origingroup//origin/main.bicep'
 import { associationsType } from 'securityPolicies/main.bicep'
