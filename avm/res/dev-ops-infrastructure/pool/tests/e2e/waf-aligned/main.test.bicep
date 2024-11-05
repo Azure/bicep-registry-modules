@@ -19,15 +19,15 @@ param namePrefix string = '#_namePrefix_#'
 
 @description('Required. Name of the Azure DevOps organization. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureDevOpsOrganizationName\'.')
 @secure()
-param azureDevOpsOrganizationName string = ''
+param azureDevOpsOrganizationName string
 
 @description('Required. Name of the Azure DevOps WAF Project. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureDevOpsProjectName\'.')
 @secure()
-param azureDevOpsProjectName string = ''
+param azureDevOpsProjectName string
 
 @description('Required. The object ID of the Entra ID-provided DevOpsInfrastructure principal. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-DevOpsInfrastructureObjectID\'.')
 @secure()
-param devOpsInfrastructureObjectID string = ''
+param devOpsInfrastructureObjectID string
 
 // The Managed DevOps Pools resource is not available in all regions
 #disable-next-line no-hardcoded-location

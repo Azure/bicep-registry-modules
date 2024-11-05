@@ -22,7 +22,7 @@ param namePrefix string = '#_namePrefix_#'
 
 @description('Required. Email address used by resource. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-adminMembersSecret\'.')
 @secure()
-param adminMembersSecret string = ''
+param adminMembersSecret string
 
 // ============ //
 // Dependencies //

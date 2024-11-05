@@ -22,7 +22,7 @@ param namePrefix string = '#_namePrefix_#'
 
 @description('Required. The tenant Id of the lighthouse tenant. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-LighthouseManagedByTenantId\'.')
 @secure()
-param lighthouseManagedByTenantId string = ''
+param lighthouseManagedByTenantId string
 
 // ============ //
 // Dependencies //
