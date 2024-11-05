@@ -6,20 +6,21 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "12362484650887783977"
+      "templateHash": "4914178335181880981"
     },
     "name": "Operations Management Solutions",
     "description": "This module deploys an Operations Management Solution.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "gallerySolutionType": {
+    "solutionPlanType": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. Name of the solution.\nFor solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.\nFor solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.\nThe solution type is case-sensitive."
+            "description": "Optional. Name of the solution to be created.\nFor solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.\nFor solutions authored by third parties, it can be anything.\nThe solution type is case-sensitive.\nIf not provided, the value of the `name` parameter will be used."
           }
         },
         "product": {
@@ -48,6 +49,12 @@
         "description": "Required. Name of the solution.\nFor solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.\nFor solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.\nThe solution type is case-sensitive."
       }
     },
+    "plan": {
+      "$ref": "#/definitions/solutionPlanType",
+      "metadata": {
+        "description": "Required. Plan for solution object supported by the OperationsManagement resource provider."
+      }
+    },
     "logAnalyticsWorkspaceName": {
       "type": "string",
       "metadata": {
@@ -59,19 +66,6 @@
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "Optional. Location for all resources."
-      }
-    },
-    "product": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. The product name of the deployed solution.\nFor Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.\nFor a third party solution, it can be anything.\nThis is case sensitive."
-      }
-    },
-    "publisher": {
-      "type": "string",
-      "defaultValue": "Microsoft",
-      "metadata": {
-        "description": "Optional. The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`."
       }
     },
     "enableTelemetry": {
@@ -118,10 +112,10 @@
         "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
       },
       "plan": {
-        "name": "[parameters('name')]",
+        "name": "[coalesce(tryGet(parameters('plan'), 'name'), parameters('name'))]",
         "promotionCode": "",
-        "product": "[parameters('product')]",
-        "publisher": "[parameters('publisher')]"
+        "product": "[parameters('plan').product]",
+        "publisher": "[coalesce(parameters('plan').publisher, 'Microsoft')]"
       },
       "dependsOn": [
         "logAnalyticsWorkspace"
