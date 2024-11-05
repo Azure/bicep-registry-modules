@@ -66,6 +66,19 @@ resource origin 'Microsoft.Cdn/profiles/originGroups/origins@2023-05-01' = {
   }
 }
 
+@description('The name of the origin.')
+output name string = origin.name
+
+@description('The resource id of the origin.')
+output resourceId string = origin.id
+
+@description('The name of the resource group the origin was created in.')
+output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
 @export()
 type originType = {
   @description('Required. The name of the origion.')
@@ -98,12 +111,3 @@ type originType = {
   @description('Optional. The properties of the private link resource for private origin.')
   sharedPrivateLinkResource: object?
 }
-
-@description('The name of the origin.')
-output name string = origin.name
-
-@description('The resource id of the origin.')
-output resourceId string = origin.id
-
-@description('The name of the resource group the origin was created in.')
-output resourceGroupName string = resourceGroup().name

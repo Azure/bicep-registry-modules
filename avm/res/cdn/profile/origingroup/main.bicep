@@ -62,6 +62,22 @@ module originGroup_origins 'origin/main.bicep' = [
   }
 ]
 
+@description('The name of the origin group.')
+output name string = originGroup.name
+
+@description('The resource id of the origin group.')
+output resourceId string = originGroup.id
+
+@description('The name of the resource group the origin group was created in.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The location the resource was deployed into.')
+output location string = profile.location
+
+// =============== //
+//   Definitions   //
+// =============== //
+
 import { originType } from './origin/main.bicep'
 @export()
 type originGroupType = {
@@ -84,6 +100,7 @@ type originGroupType = {
   origins: originType[]
 }
 
+@export()
 type loadBalancingSettingsType = {
   @description('Required. Additional latency in milliseconds for probes to the backend. Must be between 0 and 1000.')
   additionalLatencyInMilliseconds: int
@@ -95,6 +112,7 @@ type loadBalancingSettingsType = {
   successfulSamplesRequired: int
 }
 
+@export()
 type healthProbeSettingsType = {
   @description('Optional. The path relative to the origin that is used to determine the health of the origin.')
   probePath: string?
@@ -108,15 +126,3 @@ type healthProbeSettingsType = {
   @description('Optional. The number of seconds between health probes.Default is 240sec.')
   probeIntervalInSeconds: int?
 }
-
-@description('The name of the origin group.')
-output name string = originGroup.name
-
-@description('The resource id of the origin group.')
-output resourceId string = originGroup.id
-
-@description('The name of the resource group the origin group was created in.')
-output resourceGroupName string = resourceGroup().name
-
-@description('The location the resource was deployed into.')
-output location string = profile.location
