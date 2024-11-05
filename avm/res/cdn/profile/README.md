@@ -1211,6 +1211,250 @@ Array of origin group objects. Required if the afdEndpoints is specified.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`loadBalancingSettings`](#parameter-origingroupsloadbalancingsettings) | object | Load balancing settings for a backend pool. |
+| [`name`](#parameter-origingroupsname) | string | The name of the origin group. |
+| [`origins`](#parameter-origingroupsorigins) | array | The list of origins within the origin group. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`healthProbeSettings`](#parameter-origingroupshealthprobesettings) | object | Health probe settings to the origin that is used to determine the health of the origin. |
+| [`sessionAffinityState`](#parameter-origingroupssessionaffinitystate) | string | Whether to allow session affinity on this host. |
+| [`trafficRestorationTimeToHealedOrNewEndpointsInMinutes`](#parameter-origingroupstrafficrestorationtimetohealedornewendpointsinminutes) | int | Time in minutes to shift the traffic to the endpoint gradually when an unhealthy endpoint comes healthy or a new endpoint is added. Default is 10 mins. |
+
+### Parameter: `originGroups.loadBalancingSettings`
+
+Load balancing settings for a backend pool.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`additionalLatencyInMilliseconds`](#parameter-origingroupsloadbalancingsettingsadditionallatencyinmilliseconds) | int | Additional latency in milliseconds for probes to the backend. Must be between 0 and 1000. |
+| [`sampleSize`](#parameter-origingroupsloadbalancingsettingssamplesize) | int | Number of samples to consider for load balancing decisions. |
+| [`successfulSamplesRequired`](#parameter-origingroupsloadbalancingsettingssuccessfulsamplesrequired) | int | Number of samples within the sample window that must be successful to mark the backend as healthy. |
+
+### Parameter: `originGroups.loadBalancingSettings.additionalLatencyInMilliseconds`
+
+Additional latency in milliseconds for probes to the backend. Must be between 0 and 1000.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `originGroups.loadBalancingSettings.sampleSize`
+
+Number of samples to consider for load balancing decisions.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `originGroups.loadBalancingSettings.successfulSamplesRequired`
+
+Number of samples within the sample window that must be successful to mark the backend as healthy.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `originGroups.name`
+
+The name of the origin group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `originGroups.origins`
+
+The list of origins within the origin group.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`hostName`](#parameter-origingroupsoriginshostname) | string | The address of the origin. Domain names, IPv4 addresses, and IPv6 addresses are supported.This should be unique across all origins in an endpoint. |
+| [`name`](#parameter-origingroupsoriginsname) | string | The name of the origion. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabledState`](#parameter-origingroupsoriginsenabledstate) | string | Whether to enable health probes to be made against backends defined under backendPools. Health probes can only be disabled if there is a single enabled backend in single enabled backend pool. |
+| [`enforceCertificateNameCheck`](#parameter-origingroupsoriginsenforcecertificatenamecheck) | bool | Whether to enable certificate name check at origin level. |
+| [`httpPort`](#parameter-origingroupsoriginshttpport) | int | The value of the HTTP port. Must be between 1 and 65535. |
+| [`httpsPort`](#parameter-origingroupsoriginshttpsport) | int | The value of the HTTPS port. Must be between 1 and 65535. |
+| [`originHostHeader`](#parameter-origingroupsoriginsoriginhostheader) | string | The host header value sent to the origin with each request. If you leave this blank, the request hostname determines this value. Azure Front Door origins, such as Web Apps, Blob Storage, and Cloud Services require this host header value to match the origin hostname by default. This overrides the host header defined at Endpoint. |
+| [`priority`](#parameter-origingroupsoriginspriority) | int | Priority of origin in given origin group for load balancing. Higher priorities will not be used for load balancing if any lower priority origin is healthy.Must be between 1 and 5. |
+| [`sharedPrivateLinkResource`](#parameter-origingroupsoriginssharedprivatelinkresource) | object | The properties of the private link resource for private origin. |
+| [`weight`](#parameter-origingroupsoriginsweight) | int | Weight of the origin in given origin group for load balancing. Must be between 1 and 1000. |
+
+### Parameter: `originGroups.origins.hostName`
+
+The address of the origin. Domain names, IPv4 addresses, and IPv6 addresses are supported.This should be unique across all origins in an endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `originGroups.origins.name`
+
+The name of the origion.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `originGroups.origins.enabledState`
+
+Whether to enable health probes to be made against backends defined under backendPools. Health probes can only be disabled if there is a single enabled backend in single enabled backend pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `originGroups.origins.enforceCertificateNameCheck`
+
+Whether to enable certificate name check at origin level.
+
+- Required: No
+- Type: bool
+
+### Parameter: `originGroups.origins.httpPort`
+
+The value of the HTTP port. Must be between 1 and 65535.
+
+- Required: No
+- Type: int
+
+### Parameter: `originGroups.origins.httpsPort`
+
+The value of the HTTPS port. Must be between 1 and 65535.
+
+- Required: No
+- Type: int
+
+### Parameter: `originGroups.origins.originHostHeader`
+
+The host header value sent to the origin with each request. If you leave this blank, the request hostname determines this value. Azure Front Door origins, such as Web Apps, Blob Storage, and Cloud Services require this host header value to match the origin hostname by default. This overrides the host header defined at Endpoint.
+
+- Required: No
+- Type: string
+
+### Parameter: `originGroups.origins.priority`
+
+Priority of origin in given origin group for load balancing. Higher priorities will not be used for load balancing if any lower priority origin is healthy.Must be between 1 and 5.
+
+- Required: No
+- Type: int
+
+### Parameter: `originGroups.origins.sharedPrivateLinkResource`
+
+The properties of the private link resource for private origin.
+
+- Required: No
+- Type: object
+
+### Parameter: `originGroups.origins.weight`
+
+Weight of the origin in given origin group for load balancing. Must be between 1 and 1000.
+
+- Required: No
+- Type: int
+
+### Parameter: `originGroups.healthProbeSettings`
+
+Health probe settings to the origin that is used to determine the health of the origin.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`probeIntervalInSeconds`](#parameter-origingroupshealthprobesettingsprobeintervalinseconds) | int | The number of seconds between health probes.Default is 240sec. |
+| [`probePath`](#parameter-origingroupshealthprobesettingsprobepath) | string | The path relative to the origin that is used to determine the health of the origin. |
+| [`probeProtocol`](#parameter-origingroupshealthprobesettingsprobeprotocol) | string | Protocol to use for health probe. |
+| [`probeRequestType`](#parameter-origingroupshealthprobesettingsproberequesttype) | string | The request type to probe. |
+
+### Parameter: `originGroups.healthProbeSettings.probeIntervalInSeconds`
+
+The number of seconds between health probes.Default is 240sec.
+
+- Required: No
+- Type: int
+
+### Parameter: `originGroups.healthProbeSettings.probePath`
+
+The path relative to the origin that is used to determine the health of the origin.
+
+- Required: No
+- Type: string
+
+### Parameter: `originGroups.healthProbeSettings.probeProtocol`
+
+Protocol to use for health probe.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Http'
+    'Https'
+    'NotSet'
+  ]
+  ```
+
+### Parameter: `originGroups.healthProbeSettings.probeRequestType`
+
+The request type to probe.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'GET'
+    'HEAD'
+    'NotSet'
+  ]
+  ```
+
+### Parameter: `originGroups.sessionAffinityState`
+
+Whether to allow session affinity on this host.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `originGroups.trafficRestorationTimeToHealedOrNewEndpointsInMinutes`
+
+Time in minutes to shift the traffic to the endpoint gradually when an unhealthy endpoint comes healthy or a new endpoint is added. Default is 10 mins.
+
+- Required: No
+- Type: int
+
 ### Parameter: `afdEndpoints`
 
 Array of AFD endpoint objects.

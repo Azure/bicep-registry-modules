@@ -40,8 +40,10 @@ param secrets array = []
 @description('Optional. Array of custom domain objects.')
 param customDomains array = []
 
+import { originGroupType } from './origingroup/main.bicep'
+
 @description('Conditional. Array of origin group objects. Required if the afdEndpoints is specified.')
-param originGroups array = []
+param originGroups originGroupType[] = []
 
 @description('Optional. Array of rule set objects.')
 param ruleSets array = []
