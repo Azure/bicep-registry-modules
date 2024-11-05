@@ -53,7 +53,7 @@ resource solution 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' 
     name: plan.?name ?? name
     promotionCode: ''
     product: plan.product
-    publisher: plan.publisher ?? 'Microsoft'
+    publisher: plan.?publisher ?? 'Microsoft'
   }
 }
 
