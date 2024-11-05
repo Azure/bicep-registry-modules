@@ -38,7 +38,7 @@ param endpointProperties object?
 param secrets array = []
 
 @description('Optional. Array of custom domain objects.')
-param customDomains array = []
+param customDomains customDomainType[] = []
 
 @description('Conditional. Array of origin group objects. Required if the afdEndpoints is specified.')
 param originGroups originGroupType[] = []
@@ -321,6 +321,7 @@ output systemAssignedMIPrincipalId string = profile.?identity.?principalId ?? ''
 // =============== //
 
 import { afdEndpointType } from 'afdEndpoint/main.bicep'
+import { customDomainType } from 'customdomain/main.bicep'
 import { originGroupType } from 'origingroup/main.bicep'
 import { originType } from 'origingroup//origin/main.bicep'
 import { associationsType } from 'securityPolicies/main.bicep'

@@ -1736,6 +1736,95 @@ Array of custom domain objects.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificateType`](#parameter-customdomainscertificatetype) | string | The type of the certificate. |
+| [`hostName`](#parameter-customdomainshostname) | string | The host name of the custom domain. |
+| [`name`](#parameter-customdomainsname) | string | The name of the custom domain. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureDnsZoneResourceId`](#parameter-customdomainsazurednszoneresourceid) | string | The resource ID of the Azure DNS zone. |
+| [`extendedProperties`](#parameter-customdomainsextendedproperties) | object | Extended properties. |
+| [`minimumTlsVersion`](#parameter-customdomainsminimumtlsversion) | string | The minimum TLS version. |
+| [`preValidatedCustomDomainResourceId`](#parameter-customdomainsprevalidatedcustomdomainresourceid) | string | The resource ID of the pre-validated custom domain. |
+| [`secretName`](#parameter-customdomainssecretname) | string | The name of the secret. |
+
+### Parameter: `customDomains.certificateType`
+
+The type of the certificate.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureFirstPartyManagedCertificate'
+    'CustomerCertificate'
+    'ManagedCertificate'
+  ]
+  ```
+
+### Parameter: `customDomains.hostName`
+
+The host name of the custom domain.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customDomains.name`
+
+The name of the custom domain.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customDomains.azureDnsZoneResourceId`
+
+The resource ID of the Azure DNS zone.
+
+- Required: No
+- Type: string
+
+### Parameter: `customDomains.extendedProperties`
+
+Extended properties.
+
+- Required: No
+- Type: object
+
+### Parameter: `customDomains.minimumTlsVersion`
+
+The minimum TLS version.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'TLS10'
+    'TLS12'
+  ]
+  ```
+
+### Parameter: `customDomains.preValidatedCustomDomainResourceId`
+
+The resource ID of the pre-validated custom domain.
+
+- Required: No
+- Type: string
+
+### Parameter: `customDomains.secretName`
+
+The name of the secret.
+
+- Required: No
+- Type: string
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
