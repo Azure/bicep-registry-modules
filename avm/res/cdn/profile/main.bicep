@@ -40,13 +40,11 @@ param secrets array = []
 @description('Optional. Array of custom domain objects.')
 param customDomains array = []
 
-import { originGroupType } from './origingroup/main.bicep'
-
 @description('Conditional. Array of origin group objects. Required if the afdEndpoints is specified.')
 param originGroups originGroupType[] = []
 
 @description('Optional. Array of rule set objects.')
-param ruleSets array = []
+param ruleSets ruleSetType[] = []
 
 @description('Optional. Array of AFD endpoint objects.')
 param afdEndpoints array = []
@@ -322,6 +320,12 @@ output systemAssignedMIPrincipalId string = profile.?identity.?principalId ?? ''
 //   Definitions   //
 // =============== //
 
+import { originGroupType } from 'origingroup/main.bicep'
+import { originType } from 'origingroup//origin/main.bicep'
+import { associationsType } from 'securityPolicies/main.bicep'
+import { ruleSetType } from 'ruleset/main.bicep'
+import { ruleType } from 'ruleset/rule/main.bicep'
+
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
   systemAssigned: bool?
@@ -330,7 +334,7 @@ type managedIdentitiesType = {
   userAssignedResourceIds: string[]?
 }?
 
-import { associationsType } from 'securityPolicies/main.bicep'
+@export()
 type securityPolicyType = {
   @description('Required. Name of the security policy.')
   name: string

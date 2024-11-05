@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "5961561626296542308"
+      "templateHash": "11841958934987705352"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -60,6 +60,9 @@
             }
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "lockType": {
@@ -412,6 +415,161 @@
           "sourceTemplate": "origingroup/main.bicep"
         }
       }
+    },
+    "originType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the origion."
+          }
+        },
+        "hostName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The address of the origin. Domain names, IPv4 addresses, and IPv6 addresses are supported.This should be unique across all origins in an endpoint."
+          }
+        },
+        "enabledState": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to enable health probes to be made against backends defined under backendPools. Health probes can only be disabled if there is a single enabled backend in single enabled backend pool."
+          }
+        },
+        "enforceCertificateNameCheck": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to enable certificate name check at origin level."
+          }
+        },
+        "httpPort": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The value of the HTTP port. Must be between 1 and 65535."
+          }
+        },
+        "httpsPort": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The value of the HTTPS port. Must be between 1 and 65535."
+          }
+        },
+        "originHostHeader": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The host header value sent to the origin with each request. If you leave this blank, the request hostname determines this value. Azure Front Door origins, such as Web Apps, Blob Storage, and Cloud Services require this host header value to match the origin hostname by default. This overrides the host header defined at Endpoint."
+          }
+        },
+        "priority": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Priority of origin in given origin group for load balancing. Higher priorities will not be used for load balancing if any lower priority origin is healthy.Must be between 1 and 5."
+          }
+        },
+        "weight": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Weight of the origin in given origin group for load balancing. Must be between 1 and 1000."
+          }
+        },
+        "sharedPrivateLinkResource": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The properties of the private link resource for private origin."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "origingroup//origin/main.bicep"
+        }
+      }
+    },
+    "ruleSetType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the rule set."
+          }
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ruleType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of rules."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "ruleset/main.bicep"
+        }
+      }
+    },
+    "ruleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the rule."
+          }
+        },
+        "order": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The order in which the rules are applied for the endpoint."
+          }
+        },
+        "actions": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of actions that are executed when all the conditions of a rule are satisfied.."
+          }
+        },
+        "conditions": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of conditions that must be matched for the actions to be executed."
+          }
+        },
+        "matchProcessingBehavior": {
+          "type": "string",
+          "allowedValues": [
+            "Continue",
+            "Stop"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "ruleset/rule/main.bicep"
+        }
+      }
     }
   },
   "parameters": {
@@ -495,6 +653,9 @@
     },
     "ruleSets": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/ruleSetType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Array of rule set objects."
@@ -1361,7 +1522,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "6608728661425344468"
+              "templateHash": "16217295599910774344"
             },
             "name": "CDN Profiles Origin Group",
             "description": "This module deploys a CDN Profile Origin Group.",
@@ -1443,6 +1604,9 @@
                     "description": "Required. Number of samples within the sample window that must be successful to mark the backend as healthy."
                   }
                 }
+              },
+              "metadata": {
+                "__bicep_export!": true
               }
             },
             "healthProbeSettingsType": {
@@ -1486,6 +1650,9 @@
                     "description": "Optional. The number of seconds between health probes.Default is 240sec."
                   }
                 }
+              },
+              "metadata": {
+                "__bicep_export!": true
               }
             },
             "originType": {
@@ -2010,11 +2177,84 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "11520922481694023973"
+              "templateHash": "16732533364121829939"
             },
             "name": "CDN Profiles Rule Sets",
             "description": "This module deploys a CDN Profile rule set.",
             "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "ruleSetType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of the rule set."
+                  }
+                },
+                "rules": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ruleType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of rules."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "ruleType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the rule."
+                  }
+                },
+                "order": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. The order in which the rules are applied for the endpoint."
+                  }
+                },
+                "actions": {
+                  "type": "array",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A list of actions that are executed when all the conditions of a rule are satisfied.."
+                  }
+                },
+                "conditions": {
+                  "type": "array",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A list of conditions that must be matched for the actions to be executed."
+                  }
+                },
+                "matchProcessingBehavior": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Continue",
+                    "Stop"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "rule/main.bicep"
+                }
+              }
+            }
           },
           "parameters": {
             "name": {
@@ -2031,6 +2271,9 @@
             },
             "rules": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/ruleType"
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optinal. The rules to apply to the rule set."
@@ -2096,11 +2339,58 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.30.23.60470",
-                      "templateHash": "8818585542646204223"
+                      "templateHash": "3869961366760145374"
                     },
                     "name": "CDN Profiles Rules",
                     "description": "This module deploys a CDN Profile rule.",
                     "owner": "Azure/module-maintainers"
+                  },
+                  "definitions": {
+                    "ruleType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The name of the rule."
+                          }
+                        },
+                        "order": {
+                          "type": "int",
+                          "metadata": {
+                            "description": "Required. The order in which the rules are applied for the endpoint."
+                          }
+                        },
+                        "actions": {
+                          "type": "array",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. A list of actions that are executed when all the conditions of a rule are satisfied.."
+                          }
+                        },
+                        "conditions": {
+                          "type": "array",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. A list of conditions that must be matched for the actions to be executed."
+                          }
+                        },
+                        "matchProcessingBehavior": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Continue",
+                            "Stop"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true
+                      }
+                    }
                   },
                   "parameters": {
                     "name": {

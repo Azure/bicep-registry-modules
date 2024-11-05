@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "6608728661425344468"
+      "templateHash": "16217295599910774344"
     },
     "name": "CDN Profiles Origin Group",
     "description": "This module deploys a CDN Profile Origin Group.",
@@ -88,6 +88,9 @@
             "description": "Required. Number of samples within the sample window that must be successful to mark the backend as healthy."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "healthProbeSettingsType": {
@@ -131,6 +134,9 @@
             "description": "Optional. The number of seconds between health probes.Default is 240sec."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "originType": {

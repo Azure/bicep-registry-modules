@@ -1688,6 +1688,89 @@ Array of rule set objects.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-rulesetsname) | string | Name of the rule set. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`rules`](#parameter-rulesetsrules) | array | Array of rules. |
+
+### Parameter: `ruleSets.name`
+
+Name of the rule set.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ruleSets.rules`
+
+Array of rules.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-rulesetsrulesname) | string | The name of the rule. |
+| [`order`](#parameter-rulesetsrulesorder) | int | The order in which the rules are applied for the endpoint. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`actions`](#parameter-rulesetsrulesactions) | array | A list of actions that are executed when all the conditions of a rule are satisfied.. |
+| [`conditions`](#parameter-rulesetsrulesconditions) | array | A list of conditions that must be matched for the actions to be executed. |
+| [`matchProcessingBehavior`](#parameter-rulesetsrulesmatchprocessingbehavior) | string | If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue. |
+
+### Parameter: `ruleSets.rules.name`
+
+The name of the rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ruleSets.rules.order`
+
+The order in which the rules are applied for the endpoint.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `ruleSets.rules.actions`
+
+A list of actions that are executed when all the conditions of a rule are satisfied..
+
+- Required: No
+- Type: array
+
+### Parameter: `ruleSets.rules.conditions`
+
+A list of conditions that must be matched for the actions to be executed.
+
+- Required: No
+- Type: array
+
+### Parameter: `ruleSets.rules.matchProcessingBehavior`
+
+If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Continue'
+    'Stop'
+  ]
+  ```
+
 ### Parameter: `secrets`
 
 Array of secret objects.
