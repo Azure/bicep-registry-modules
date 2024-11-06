@@ -8,20 +8,14 @@ For solutions authored by third parties, the name should be in the pattern: `Sol
 The solution type is case-sensitive.''')
 param name string
 
+@description('Required. Plan for solution object supported by the OperationsManagement resource provider.')
+param plan solutionPlanType
+
 @description('Required. Name of the Log Analytics workspace where the solution will be deployed/enabled.')
 param logAnalyticsWorkspaceName string
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
-
-@description('''Required. The product name of the deployed solution.
-For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.
-For a third party solution, it can be anything.
-This is case sensitive.''')
-param product string
-
-@description('Optional. The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`.')
-param publisher string = 'Microsoft'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -56,10 +50,10 @@ resource solution 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' 
     workspaceResourceId: logAnalyticsWorkspace.id
   }
   plan: {
-    name: name
+    name: plan.?name ?? name
     promotionCode: ''
-    product: product
-    publisher: publisher
+    product: plan.product
+    publisher: plan.?publisher ?? 'Microsoft'
   }
 }
 
@@ -74,3 +68,26 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = solution.location
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+type solutionPlanType = {
+  @description('''Optional. Name of the solution to be created.
+  For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.
+  For solutions authored by third parties, it can be anything.
+  The solution type is case-sensitive.
+  If not provided, the value of the `name` parameter will be used.''')
+  name: string?
+
+  @description('''Required. The product name of the deployed solution.
+  For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.
+  For a third party solution, it can be anything.
+  This is case sensitive.''')
+  product: string
+
+  @description('Optional. The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value.')
+  publisher: string?
+}
