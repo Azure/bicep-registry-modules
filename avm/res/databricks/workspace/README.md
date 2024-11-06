@@ -127,9 +127,9 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
     }
     customerManagedKeyManagedDisk: {
+      autoRotationDisabled: true
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
-      rotationToLatestKeyVersionEnabled: true
     }
     customPrivateSubnetName: '<customPrivateSubnetName>'
     customPublicSubnetName: '<customPublicSubnetName>'
@@ -270,9 +270,9 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     },
     "customerManagedKeyManagedDisk": {
       "value": {
+        "autoRotationDisabled": true,
         "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "rotationToLatestKeyVersionEnabled": true
+        "keyVaultResourceId": "<keyVaultResourceId>"
       }
     },
     "customPrivateSubnetName": {
@@ -449,9 +449,9 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
 }
 param customerManagedKeyManagedDisk = {
+  autoRotationDisabled: true
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
-  rotationToLatestKeyVersionEnabled: true
 }
 param customPrivateSubnetName = '<customPrivateSubnetName>'
 param customPublicSubnetName = '<customPublicSubnetName>'
@@ -580,7 +580,6 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     customerManagedKeyManagedDisk: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
-      rotationToLatestKeyVersionEnabled: true
     }
     customPrivateSubnetName: '<customPrivateSubnetName>'
     customPublicSubnetName: '<customPublicSubnetName>'
@@ -704,8 +703,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     "customerManagedKeyManagedDisk": {
       "value": {
         "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "rotationToLatestKeyVersionEnabled": true
+        "keyVaultResourceId": "<keyVaultResourceId>"
       }
     },
     "customPrivateSubnetName": {
@@ -866,7 +864,6 @@ param customerManagedKey = {
 param customerManagedKeyManagedDisk = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
-  rotationToLatestKeyVersionEnabled: true
 }
 param customPrivateSubnetName = '<customPrivateSubnetName>'
 param customPublicSubnetName = '<customPublicSubnetName>'
@@ -1087,7 +1084,7 @@ The customer managed key definition to use for the managed service.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time. |
 | [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
@@ -1106,7 +1103,7 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 ### Parameter: `customerManagedKey.keyVersion`
 
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time.
 
 - Required: No
 - Type: string
@@ -1136,8 +1133,8 @@ The customer managed key definition to use for the managed disk.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeymanageddiskkeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
-| [`rotationToLatestKeyVersionEnabled`](#parameter-customermanagedkeymanageddiskrotationtolatestkeyversionenabled) | bool | Indicate whether the latest key version should be automatically used for Managed Disk Encryption. Enabled by default. |
+| [`autoRotationDisabled`](#parameter-customermanagedkeymanageddiskautorotationdisabled) | bool | If configured, instead of auto-rotating to the latest key version, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-customermanagedkeymanageddiskkeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationDisabled' setting. |
 | [`userAssignedIdentityResourceId`](#parameter-customermanagedkeymanageddiskuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKeyManagedDisk.keyName`
@@ -1154,19 +1151,19 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 - Required: Yes
 - Type: string
 
-### Parameter: `customerManagedKeyManagedDisk.keyVersion`
+### Parameter: `customerManagedKeyManagedDisk.autoRotationDisabled`
 
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
-
-- Required: No
-- Type: string
-
-### Parameter: `customerManagedKeyManagedDisk.rotationToLatestKeyVersionEnabled`
-
-Indicate whether the latest key version should be automatically used for Managed Disk Encryption. Enabled by default.
+If configured, instead of auto-rotating to the latest key version, the latest key version at the time of the deployment is used.
 
 - Required: No
 - Type: bool
+
+### Parameter: `customerManagedKeyManagedDisk.keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationDisabled' setting.
+
+- Required: No
+- Type: string
 
 ### Parameter: `customerManagedKeyManagedDisk.userAssignedIdentityResourceId`
 
@@ -1465,7 +1462,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints. |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -1490,7 +1487,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 ### Parameter: `privateEndpoints.service`
 
-The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
+The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints.
 
 - Required: Yes
 - Type: string
@@ -1688,7 +1685,7 @@ The private DNS zone group to configure for the private endpoint.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
 
 **Optional parameters**
 
@@ -1698,7 +1695,7 @@ The private DNS zone group to configure for the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
 
-The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
 
 - Required: Yes
 - Type: array
@@ -1713,7 +1710,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
 
@@ -1724,7 +1721,7 @@ The resource id of the private DNS zone.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
-The name of the private DNS zone group config.
+The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
@@ -2065,7 +2062,7 @@ Configuration details for private endpoints for the managed workspace storage ac
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`service`](#parameter-storageaccountprivateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
+| [`service`](#parameter-storageaccountprivateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints. |
 | [`subnetResourceId`](#parameter-storageaccountprivateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -2090,7 +2087,7 @@ Configuration details for private endpoints for the managed workspace storage ac
 
 ### Parameter: `storageAccountPrivateEndpoints.service`
 
-The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
+The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints.
 
 - Required: Yes
 - Type: string
@@ -2288,7 +2285,7 @@ The private DNS zone group to configure for the private endpoint.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`privateDnsZoneGroupConfigs`](#parameter-storageaccountprivateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroupConfigs`](#parameter-storageaccountprivateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
 
 **Optional parameters**
 
@@ -2298,7 +2295,7 @@ The private DNS zone group to configure for the private endpoint.
 
 ### Parameter: `storageAccountPrivateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
 
-The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
 
 - Required: Yes
 - Type: array
@@ -2313,7 +2310,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-storageaccountprivateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+| [`name`](#parameter-storageaccountprivateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
 
 ### Parameter: `storageAccountPrivateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
 
@@ -2324,7 +2321,7 @@ The resource id of the private DNS zone.
 
 ### Parameter: `storageAccountPrivateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
-The name of the private DNS zone group config.
+The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
@@ -2493,16 +2490,16 @@ Address prefix for Managed virtual network.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `managedResourceGroupId` | string | The resource ID of the managed resource group. |
 | `managedResourceGroupName` | string | The name of the managed resource group. |
+| `managedResourceGroupResourceId` | string | The resource ID of the managed resource group. |
 | `name` | string | The name of the deployed databricks workspace. |
 | `privateEndpoints` | array | The private endpoints of the Databricks Workspace. |
 | `resourceGroupName` | string | The resource group of the deployed databricks workspace. |
 | `resourceId` | string | The resource ID of the deployed databricks workspace. |
-| `storageAccountId` | string | The resource ID of the DBFS storage account. |
 | `storageAccountName` | string | The name of the DBFS storage account. |
+| `storageAccountResourceId` | string | The resource ID of the DBFS storage account. |
 | `storagePrivateEndpoints` | array | The private endpoints of the Databricks Workspace Storage. |
-| `workspaceId` | string | The unique identifier of the databricks workspace in databricks control plane. |
+| `workspaceResourceId` | string | The unique identifier of the databricks workspace in databricks control plane. |
 | `workspaceUrl` | string | The workspace URL which is of the format 'adb-{workspaceId}.{random}.azuredatabricks.net'. |
 
 ## Cross-referenced modules
@@ -2512,6 +2509,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
 
 ## Notes
 
