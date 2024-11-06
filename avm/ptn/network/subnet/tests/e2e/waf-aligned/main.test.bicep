@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.'
+metadata name = 'Using only defaults'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-ptn-pl-pdns-zones-${serviceS
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'plpdnswaf'
+param serviceShort string = 'plpdnsmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -50,9 +50,9 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      virtualNetworkResourceIdsToLinkTo: [
-        nestedDependencies.outputs.vnetResourceId
-      ]
+      name: 'subnet'
+      addressPrefix: cidrSubnet(nestedDependencies.outputs.addressPrefix, 24, 0)
+      virtualNetworkResourceId: nestedDependencies.outputs.vnetResourceId
     }
   }
 ]
