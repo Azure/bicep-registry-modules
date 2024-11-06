@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "10216591470402784498"
+      "templateHash": "2751115045431358145"
     },
     "name": "Azure Container Registry (ACR) Webhooks",
     "description": "This module deploys an Azure Container Registry (ACR) Webhook.",
@@ -91,12 +91,12 @@
     "registry": {
       "existing": true,
       "type": "Microsoft.ContainerRegistry/registries",
-      "apiVersion": "2023-06-01-preview",
+      "apiVersion": "2023-07-01",
       "name": "[parameters('registryName')]"
     },
     "webhook": {
       "type": "Microsoft.ContainerRegistry/registries/webhooks",
-      "apiVersion": "2023-06-01-preview",
+      "apiVersion": "2023-07-01",
       "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -160,7 +160,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('webhook', '2023-06-01-preview', 'full').location]"
+      "value": "[reference('webhook', '2023-07-01', 'full').location]"
     }
   }
 }

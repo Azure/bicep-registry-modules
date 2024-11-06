@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "7759513970094711275"
+      "templateHash": "3894662056174582097"
     },
     "name": "Container Registries Credential Sets",
     "description": "This module deploys an ACR Credential Set.",
@@ -91,12 +91,12 @@
     "registry": {
       "existing": true,
       "type": "Microsoft.ContainerRegistry/registries",
-      "apiVersion": "2023-06-01-preview",
+      "apiVersion": "2023-07-01",
       "name": "[parameters('registryName')]"
     },
     "credentialSet": {
       "type": "Microsoft.ContainerRegistry/registries/credentialSets",
-      "apiVersion": "2023-11-01-preview",
+      "apiVersion": "2023-07-01",
       "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
       "identity": "[variables('identity')]",
       "properties": {
@@ -135,7 +135,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('credentialSet', '2023-11-01-preview', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('credentialSet', '2023-07-01', 'full'), 'identity'), 'principalId'), '')]"
     }
   }
 }

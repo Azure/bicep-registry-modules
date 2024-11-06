@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "1562487272905881590"
+      "templateHash": "13974929685283405845"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR).",
@@ -631,35 +631,6 @@
         "description": "Optional. The number of days to retain an untagged manifest after which it gets purged."
       }
     },
-    "azureADAuthenticationAsArmPolicyStatus": {
-      "type": "string",
-      "defaultValue": "enabled",
-      "allowedValues": [
-        "disabled",
-        "enabled"
-      ],
-      "metadata": {
-        "description": "Optional. The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled."
-      }
-    },
-    "softDeletePolicyStatus": {
-      "type": "string",
-      "defaultValue": "disabled",
-      "allowedValues": [
-        "disabled",
-        "enabled"
-      ],
-      "metadata": {
-        "description": "Optional. Soft Delete policy status. Default is disabled."
-      }
-    },
-    "softDeletePolicyDays": {
-      "type": "int",
-      "defaultValue": 7,
-      "metadata": {
-        "description": "Optional. The number of days after which a soft-deleted item is permanently deleted."
-      }
-    },
     "dataEndpointEnabled": {
       "type": "bool",
       "defaultValue": false,
@@ -770,13 +741,6 @@
         "description": "Optional. The diagnostic settings of the service."
       }
     },
-    "anonymousPullEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Enables registry-wide pull from unauthenticated clients. It's in preview and available in the Standard and Premium service tiers."
-      }
-    },
     "customerManagedKey": {
       "$ref": "#/definitions/customerManagedKeyType",
       "metadata": {
@@ -881,7 +845,7 @@
     },
     "registry": {
       "type": "Microsoft.ContainerRegistry/registries",
-      "apiVersion": "2023-06-01-preview",
+      "apiVersion": "2023-07-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
@@ -890,21 +854,13 @@
         "name": "[parameters('acrSku')]"
       },
       "properties": {
-        "anonymousPullEnabled": "[parameters('anonymousPullEnabled')]",
         "adminUserEnabled": "[parameters('acrAdminUserEnabled')]",
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('status', 'enabled', 'keyVaultProperties', createObject('identity', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), ''))), reference('cMKUserAssignedIdentity').clientId, null()), 'keyIdentifier', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), reference('cMKKeyVault::cMKKey').keyUriWithVersion))), null())]",
         "policies": {
-          "azureADAuthenticationAsArmPolicy": {
-            "status": "[parameters('azureADAuthenticationAsArmPolicyStatus')]"
-          },
           "exportPolicy": "[if(equals(parameters('acrSku'), 'Premium'), createObject('status', parameters('exportPolicyStatus')), null())]",
           "quarantinePolicy": "[if(equals(parameters('acrSku'), 'Premium'), createObject('status', parameters('quarantinePolicyStatus')), null())]",
           "trustPolicy": "[if(equals(parameters('acrSku'), 'Premium'), createObject('type', 'Notary', 'status', parameters('trustPolicyStatus')), null())]",
-          "retentionPolicy": "[if(equals(parameters('acrSku'), 'Premium'), createObject('days', parameters('retentionPolicyDays'), 'status', parameters('retentionPolicyStatus')), null())]",
-          "softDeletePolicy": {
-            "retentionDays": "[parameters('softDeletePolicyDays')]",
-            "status": "[parameters('softDeletePolicyStatus')]"
-          }
+          "retentionPolicy": "[if(equals(parameters('acrSku'), 'Premium'), createObject('days', parameters('retentionPolicyDays'), 'status', parameters('retentionPolicyStatus')), null())]"
         },
         "dataEndpointEnabled": "[parameters('dataEndpointEnabled')]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkRuleSetIpRules'))), 'Disabled', null()))]",
@@ -1029,7 +985,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "17963190751439748514"
+              "templateHash": "4789254076074317463"
             },
             "name": "Container Registries scopeMaps",
             "description": "This module deploys an Azure Container Registry (ACR) scopeMap.",
@@ -1070,12 +1026,12 @@
             "registry": {
               "existing": true,
               "type": "Microsoft.ContainerRegistry/registries",
-              "apiVersion": "2023-06-01-preview",
+              "apiVersion": "2023-07-01",
               "name": "[parameters('registryName')]"
             },
             "scopeMap": {
               "type": "Microsoft.ContainerRegistry/registries/scopeMaps",
-              "apiVersion": "2023-06-01-preview",
+              "apiVersion": "2023-07-01",
               "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
               "properties": {
                 "actions": "[parameters('actions')]",
@@ -1156,7 +1112,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "4997004041066797666"
+              "templateHash": "10304581537446508561"
             },
             "name": "Azure Container Registry (ACR) Replications",
             "description": "This module deploys an Azure Container Registry (ACR) Replication.",
@@ -1212,12 +1168,12 @@
             "registry": {
               "existing": true,
               "type": "Microsoft.ContainerRegistry/registries",
-              "apiVersion": "2023-06-01-preview",
+              "apiVersion": "2023-07-01",
               "name": "[parameters('registryName')]"
             },
             "replication": {
               "type": "Microsoft.ContainerRegistry/registries/replications",
-              "apiVersion": "2023-06-01-preview",
+              "apiVersion": "2023-07-01",
               "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1257,7 +1213,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('replication', '2023-06-01-preview', 'full').location]"
+              "value": "[reference('replication', '2023-07-01', 'full').location]"
             }
           }
         }
@@ -1304,7 +1260,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "7759513970094711275"
+              "templateHash": "3894662056174582097"
             },
             "name": "Container Registries Credential Sets",
             "description": "This module deploys an ACR Credential Set.",
@@ -1389,12 +1345,12 @@
             "registry": {
               "existing": true,
               "type": "Microsoft.ContainerRegistry/registries",
-              "apiVersion": "2023-06-01-preview",
+              "apiVersion": "2023-07-01",
               "name": "[parameters('registryName')]"
             },
             "credentialSet": {
               "type": "Microsoft.ContainerRegistry/registries/credentialSets",
-              "apiVersion": "2023-11-01-preview",
+              "apiVersion": "2023-07-01",
               "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
               "identity": "[variables('identity')]",
               "properties": {
@@ -1433,7 +1389,7 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[coalesce(tryGet(tryGet(reference('credentialSet', '2023-11-01-preview', 'full'), 'identity'), 'principalId'), '')]"
+              "value": "[coalesce(tryGet(tryGet(reference('credentialSet', '2023-07-01', 'full'), 'identity'), 'principalId'), '')]"
             }
           }
         }
@@ -1607,7 +1563,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "10216591470402784498"
+              "templateHash": "2751115045431358145"
             },
             "name": "Azure Container Registry (ACR) Webhooks",
             "description": "This module deploys an Azure Container Registry (ACR) Webhook.",
@@ -1692,12 +1648,12 @@
             "registry": {
               "existing": true,
               "type": "Microsoft.ContainerRegistry/registries",
-              "apiVersion": "2023-06-01-preview",
+              "apiVersion": "2023-07-01",
               "name": "[parameters('registryName')]"
             },
             "webhook": {
               "type": "Microsoft.ContainerRegistry/registries/webhooks",
-              "apiVersion": "2023-06-01-preview",
+              "apiVersion": "2023-07-01",
               "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1761,7 +1717,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('webhook', '2023-06-01-preview', 'full').location]"
+              "value": "[reference('webhook', '2023-07-01', 'full').location]"
             }
           }
         }
@@ -2571,14 +2527,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('registry', '2023-06-01-preview', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('registry', '2023-07-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('registry', '2023-06-01-preview', 'full').location]"
+      "value": "[reference('registry', '2023-07-01', 'full').location]"
     },
     "credentialSetsSystemAssignedMIPrincipalIds": {
       "type": "array",

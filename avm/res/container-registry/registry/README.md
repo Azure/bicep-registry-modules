@@ -17,11 +17,11 @@ This module deploys an Azure Container Registry (ACR).
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries) |
+| `Microsoft.ContainerRegistry/registries` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries) |
 | `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
-| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/credentialSets) |
-| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
-| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/scopeMaps) |
+| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/credentialSets) |
+| `Microsoft.ContainerRegistry/registries/replications` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
+| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/scopeMaps) |
 | `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
@@ -38,9 +38,9 @@ The following section provides usage examples for the module, which were used to
 - [Using cache rules](#example-1-using-cache-rules)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using encryption with Customer-Managed-Key](#example-3-using-encryption-with-customer-managed-key)
-- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Max](#example-4-max)
 - [Using `scopeMaps` in parameter set](#example-5-using-scopemaps-in-parameter-set)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Waf-Aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using cache rules_
 
@@ -384,10 +384,7 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 4: _Max_
 
 <details>
 
@@ -883,10 +880,7 @@ param scopeMaps = [
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
+### Example 6: _Waf-Aligned_
 
 <details>
 
@@ -1102,8 +1096,6 @@ param trustPolicyStatus = 'enabled'
 | :-- | :-- | :-- |
 | [`acrAdminUserEnabled`](#parameter-acradminuserenabled) | bool | Enable admin user that have push / pull permission to the registry. |
 | [`acrSku`](#parameter-acrsku) | string | Tier of your Azure container registry. |
-| [`anonymousPullEnabled`](#parameter-anonymouspullenabled) | bool | Enables registry-wide pull from unauthenticated clients. It's in preview and available in the Standard and Premium service tiers. |
-| [`azureADAuthenticationAsArmPolicyStatus`](#parameter-azureadauthenticationasarmpolicystatus) | string | The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled. |
 | [`cacheRules`](#parameter-cacherules) | array | Array of Cache Rules. |
 | [`credentialSets`](#parameter-credentialsets) | array | Array of Credential Sets. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -1125,8 +1117,6 @@ param trustPolicyStatus = 'enabled'
 | [`retentionPolicyStatus`](#parameter-retentionpolicystatus) | string | The value that indicates whether the retention policy is enabled or not. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scopeMaps`](#parameter-scopemaps) | array | Scope maps setting. |
-| [`softDeletePolicyDays`](#parameter-softdeletepolicydays) | int | The number of days after which a soft-deleted item is permanently deleted. |
-| [`softDeletePolicyStatus`](#parameter-softdeletepolicystatus) | string | Soft Delete policy status. Default is disabled. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`trustPolicyStatus`](#parameter-trustpolicystatus) | string | The value that indicates whether the trust policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'. |
 | [`webhooks`](#parameter-webhooks) | array | All webhooks to create. |
@@ -1160,29 +1150,6 @@ Tier of your Azure container registry.
     'Basic'
     'Premium'
     'Standard'
-  ]
-  ```
-
-### Parameter: `anonymousPullEnabled`
-
-Enables registry-wide pull from unauthenticated clients. It's in preview and available in the Standard and Premium service tiers.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `azureADAuthenticationAsArmPolicyStatus`
-
-The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled.
-
-- Required: No
-- Type: string
-- Default: `'enabled'`
-- Allowed:
-  ```Bicep
-  [
-    'disabled'
-    'enabled'
   ]
   ```
 
@@ -2155,29 +2122,6 @@ The name of the scope map.
 
 - Required: No
 - Type: string
-
-### Parameter: `softDeletePolicyDays`
-
-The number of days after which a soft-deleted item is permanently deleted.
-
-- Required: No
-- Type: int
-- Default: `7`
-
-### Parameter: `softDeletePolicyStatus`
-
-Soft Delete policy status. Default is disabled.
-
-- Required: No
-- Type: string
-- Default: `'disabled'`
-- Allowed:
-  ```Bicep
-  [
-    'disabled'
-    'enabled'
-  ]
-  ```
 
 ### Parameter: `tags`
 

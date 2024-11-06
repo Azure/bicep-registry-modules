@@ -55,23 +55,6 @@ param retentionPolicyStatus string = 'enabled'
 @description('Optional. The number of days to retain an untagged manifest after which it gets purged.')
 param retentionPolicyDays int = 15
 
-@allowed([
-  'disabled'
-  'enabled'
-])
-@description('Optional. The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled.')
-param azureADAuthenticationAsArmPolicyStatus string = 'enabled'
-
-@allowed([
-  'disabled'
-  'enabled'
-])
-@description('Optional. Soft Delete policy status. Default is disabled.')
-param softDeletePolicyStatus string = 'disabled'
-
-@description('Optional. The number of days after which a soft-deleted item is permanently deleted.')
-param softDeletePolicyDays int = 7
-
 @description('Optional. Enable a single data endpoint per region for serving data. Not relevant in case of disabled public access. Note, requires the \'acrSku\' to be \'Premium\'.')
 param dataEndpointEnabled bool = false
 
@@ -129,9 +112,6 @@ param enableTelemetry bool = true
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
-
-@description('Optional. Enables registry-wide pull from unauthenticated clients. It\'s in preview and available in the Standard and Premium service tiers.')
-param anonymousPullEnabled bool = false
 
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
@@ -239,7 +219,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' = {
+resource registry 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
   name: name
   location: location
   identity: identity
@@ -248,7 +228,6 @@ resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' = 
     name: acrSku
   }
   properties: {
-    anonymousPullEnabled: anonymousPullEnabled
     adminUserEnabled: acrAdminUserEnabled
     encryption: !empty(customerManagedKey)
       ? {
@@ -264,9 +243,6 @@ resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' = 
         }
       : null
     policies: {
-      azureADAuthenticationAsArmPolicy: {
-        status: azureADAuthenticationAsArmPolicyStatus
-      }
       exportPolicy: acrSku == 'Premium'
         ? {
             status: exportPolicyStatus
@@ -289,10 +265,6 @@ resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' = 
             status: retentionPolicyStatus
           }
         : null
-      softDeletePolicy: {
-        retentionDays: softDeletePolicyDays
-        status: softDeletePolicyStatus
-      }
     }
     dataEndpointEnabled: dataEndpointEnabled
     publicNetworkAccess: !empty(publicNetworkAccess)
