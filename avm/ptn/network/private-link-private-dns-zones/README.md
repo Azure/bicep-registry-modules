@@ -331,11 +331,9 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
 - Default:
   ```Bicep
   [
-    '{regionCode}.privatelink.backup.windowsazure.com'
     '{regionName}.data.privatelink.azurecr.io'
-    '{regionName}.privatelink.batch.azure.com'
-    '{regionName}.service.privatelink.batch.azure.com'
     'privatelink-global.wvd.microsoft.com'
+    'privatelink.{regionCode}.backup.windowsazure.com'
     'privatelink.{regionName}.azmk8s.io'
     'privatelink.{regionName}.kusto.windows.net'
     'privatelink.adf.azure.com'
@@ -357,6 +355,7 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
     'privatelink.azureiotcentral.com'
     'privatelink.azurestaticapps.net'
     'privatelink.azurewebsites.net'
+    'privatelink.batch.azure.com'
     'privatelink.blob.core.windows.net'
     'privatelink.cassandra.cosmos.azure.com'
     'privatelink.cognitiveservices.azure.com'
@@ -440,6 +439,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-dns-zone:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Data Collection
 
