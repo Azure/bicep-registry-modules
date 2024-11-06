@@ -5,14 +5,14 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the parent site resource.')
 param appName string
 
-@description('Required. The web settings api management configuration.')
+@description('Optional. The web settings api management configuration.')
 param apiManagementConfiguration object?
 
-resource app 'Microsoft.Web/sites@2022-09-01' existing = {
+resource app 'Microsoft.Web/sites@2023-12-01' existing = {
   name: appName
 }
 
-resource webSettings 'Microsoft.Web/sites/config@2022-09-01' = {
+resource webSettings 'Microsoft.Web/sites/config@2023-12-01' = {
   name: 'web'
   kind: 'string'
   parent: app

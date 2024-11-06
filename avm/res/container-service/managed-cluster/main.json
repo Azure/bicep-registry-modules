@@ -591,7 +591,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The name of the extension."
+            "description": "Optional. The name of the extension."
           }
         },
         "releaseNamespace": {
@@ -612,7 +612,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The release train of the extension."
+            "description": "Optional. The release train of the extension."
           }
         },
         "configurationProtectedSettings": {
@@ -705,9 +705,46 @@
           }
         }
       },
+      "nullable": true,
       "metadata": {
         "__bicep_export!": true
       }
+    },
+    "istioServiceMeshCertificateAuthorityType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a Certificate Authority from."
+          }
+        },
+        "certChainObjectName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Certificate chain object name in Azure Key Vault."
+          }
+        },
+        "certObjectName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Intermediate certificate object name in Azure Key Vault."
+          }
+        },
+        "keyObjectName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Intermediate certificate private key object name in Azure Key Vault."
+          }
+        },
+        "rootCertObjectName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Root certificate object name in Azure Key Vault."
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -845,6 +882,17 @@
         "description": "Optional. Specifies outbound (egress) routing method."
       }
     },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "Base",
+      "allowedValues": [
+        "Base",
+        "Automatic"
+      ],
+      "metadata": {
+        "description": "Optional. Name of a managed cluster SKU."
+      }
+    },
     "skuTier": {
       "type": "string",
       "defaultValue": "Standard",
@@ -951,11 +999,25 @@
         "description": "Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled."
       }
     },
+    "nodeProvisioningProfile": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Node provisioning settings that apply to the whole cluster."
+      }
+    },
     "nodeResourceGroup": {
       "type": "string",
       "defaultValue": "[format('{0}_aks_{1}_nodes', resourceGroup().name, parameters('name'))]",
       "metadata": {
         "description": "Optional. Name of the resource group containing agent pool nodes."
+      }
+    },
+    "nodeResourceGroupProfile": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The node resource group configuration profile."
       }
     },
     "authorizedIPRanges": {
@@ -1540,6 +1602,40 @@
       "metadata": {
         "description": "Optional. A comma-separated list of Kubernetes cluster metrics annotations."
       }
+    },
+    "istioServiceMeshEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether the Istio ServiceMesh add-on is enabled or not."
+      }
+    },
+    "istioServiceMeshRevisions": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The list of revisions of the Istio control plane. When an upgrade is not in progress, this holds one value. When canary upgrade is in progress, this can only hold two consecutive values."
+      }
+    },
+    "istioServiceMeshInternalIngressGatewayEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether the Internal Istio Ingress Gateway is enabled or not."
+      }
+    },
+    "istioServiceMeshExternalIngressGatewayEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether the External Istio Ingress Gateway is enabled or not."
+      }
+    },
+    "istioServiceMeshCertificateAuthority": {
+      "$ref": "#/definitions/istioServiceMeshCertificateAuthorityType",
+      "metadata": {
+        "description": "Optional. The Istio Certificate Authority definition."
+      }
     }
   },
   "variables": {
@@ -1624,7 +1720,7 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "sku": {
-        "name": "Base",
+        "name": "[parameters('skuName')]",
         "tier": "[parameters('skuTier')]"
       },
       "properties": {
@@ -1682,6 +1778,8 @@
         "enableRBAC": "[parameters('enableRBAC')]",
         "disableLocalAccounts": "[parameters('disableLocalAccounts')]",
         "nodeResourceGroup": "[parameters('nodeResourceGroup')]",
+        "nodeResourceGroupProfile": "[parameters('nodeResourceGroupProfile')]",
+        "nodeProvisioningProfile": "[parameters('nodeProvisioningProfile')]",
         "enablePodSecurityPolicy": "[parameters('enablePodSecurityPolicy')]",
         "workloadAutoScalerProfile": {
           "keda": {
@@ -1776,7 +1874,8 @@
             "enabled": "[parameters('enableStorageProfileSnapshotController')]"
           }
         },
-        "supportPlan": "[parameters('supportPlan')]"
+        "supportPlan": "[parameters('supportPlan')]",
+        "serviceMeshProfile": "[if(parameters('istioServiceMeshEnabled'), createObject('istio', createObject('revisions', if(not(empty(parameters('istioServiceMeshRevisions'))), parameters('istioServiceMeshRevisions'), null()), 'components', createObject('ingressGateways', createArray(createObject('enabled', parameters('istioServiceMeshInternalIngressGatewayEnabled'), 'mode', 'Internal'), createObject('enabled', parameters('istioServiceMeshExternalIngressGatewayEnabled'), 'mode', 'External'))), 'certificateAuthority', if(not(empty(parameters('istioServiceMeshCertificateAuthority'))), createObject('plugin', createObject('certChainObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'certChainObjectName'), 'certObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'certObjectName'), 'keyObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'keyObjectName'), 'keyVaultId', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'keyVaultResourceId'), 'rootCertObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'rootCertObjectName'))), null())), 'mode', 'Istio'), null())]"
       }
     },
     "managedCluster_lock": {
@@ -2524,7 +2623,7 @@
             "value": "[parameters('location')]"
           },
           "name": {
-            "value": "flux"
+            "value": "[coalesce(tryGet(parameters('fluxExtension'), 'name'), 'flux')]"
           },
           "releaseNamespace": {
             "value": "[coalesce(tryGet(parameters('fluxExtension'), 'releaseNamespace'), 'flux-system')]"

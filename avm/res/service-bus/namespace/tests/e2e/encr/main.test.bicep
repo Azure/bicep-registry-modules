@@ -64,7 +64,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       managedIdentities: {
         systemAssigned: false
-        userAssignedResourcesIds: [
+        userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
