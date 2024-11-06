@@ -114,6 +114,19 @@ var identity = !empty(managedIdentities)
     }
   : null
 
+var formattedDaysData = agentProfile.kind == 'Stateless' && !empty(agentProfile.?resourcePredictions.daysData)
+  ? map(
+      ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      day =>
+        contains(agentProfile.?resourcePredictions.daysData, day)
+          ? {
+              '${agentProfile.?resourcePredictions.daysData[day].startTime}': agentProfile.?resourcePredictions.daysData[day].startAgentCount
+              '${agentProfile.?resourcePredictions.daysData[day].endTime}': agentProfile.?resourcePredictions.daysData[day].endAgentCount
+            }
+          : {}
+    )
+  : null
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.devopsinfrastructure-pool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -133,13 +146,29 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource managedDevOpsPool 'Microsoft.DevOpsInfrastructure/pools@2024-04-04-preview' = {
+resource managedDevOpsPool 'Microsoft.DevOpsInfrastructure/pools@2024-10-19' = {
   name: name
   location: location
   tags: tags
   identity: identity
   properties: {
-    agentProfile: agentProfile
+    // agentProfile: agentProfile
+    agentProfile: agentProfile.kind == 'Stateful'
+      ? {
+          kind: 'Stateful'
+          maxAgentLifetime: agentProfile.maxAgentLifetime
+          gracePeriodTimeSpan: agentProfile.gracePeriodTimeSpan
+          resourcePredictions: agentProfile.resourcePredictions
+          resourcePredictionsProfile: agentProfile.resourcePredictionsProfile
+        }
+      : {
+          kind: 'Stateless'
+          resourcePredictions: {
+            timeZone: agentProfile.resourcePredictions.timeZone
+            daysData: formattedDaysData
+          }
+          resourcePredictionsProfile: agentProfile.resourcePredictionsProfile
+        }
     devCenterProjectResourceId: devCenterProjectResourceId
     fabricProfile: {
       sku: {
