@@ -7,7 +7,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment.')
 param recoveryVaultName string
 
-@description('Required. The recovery location the fabric represents.')
+@description('Optional. The recovery location the fabric represents.')
 param location string = resourceGroup().location
 
 @description('Optional. The name of the fabric.')
@@ -33,9 +33,7 @@ module fabric_replicationContainers 'replication-protection-container/main.bicep
       name: container.name
       recoveryVaultName: recoveryVaultName
       replicationFabricName: name
-      replicationContainerMappings: contains(container, 'replicationContainerMappings')
-        ? container.replicationContainerMappings
-        : []
+      replicationContainerMappings: container.?replicationContainerMappings
     }
     dependsOn: [
       replicationFabric

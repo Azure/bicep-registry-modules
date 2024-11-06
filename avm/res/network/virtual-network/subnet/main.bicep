@@ -2,7 +2,7 @@ metadata name = 'Virtual Network Subnets'
 metadata description = 'This module deploys a Virtual Network Subnet.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Requird. The Name of the subnet resource.')
+@description('Required. The Name of the subnet resource.')
 param name string
 
 @description('Conditional. The name of the parent virtual network. Required if the template is used in a standalone deployment.')
@@ -57,7 +57,7 @@ param applicationGatewayIPConfigurations array = []
 @description('Optional. An array of service endpoint policies.')
 param serviceEndpointPolicies array = []
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.1.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 

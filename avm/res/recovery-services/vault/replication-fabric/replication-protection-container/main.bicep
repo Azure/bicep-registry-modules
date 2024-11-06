@@ -31,19 +31,15 @@ module fabric_container_containerMappings 'replication-protection-container-mapp
   for (mapping, index) in replicationContainerMappings: {
     name: '${deployment().name}-Map-${index}'
     params: {
-      name: contains(mapping, 'name') ? mapping.name : ''
-      policyId: contains(mapping, 'policyId') ? mapping.policyId : ''
-      policyName: contains(mapping, 'policyName') ? mapping.policyName : ''
+      name: mapping.?name
+      policyId: mapping.?policyId
+      policyName: mapping.?policyName
       recoveryVaultName: recoveryVaultName
       replicationFabricName: replicationFabricName
       sourceProtectionContainerName: name
-      targetProtectionContainerId: contains(mapping, 'targetProtectionContainerId')
-        ? mapping.targetProtectionContainerId
-        : ''
-      targetContainerFabricName: contains(mapping, 'targetContainerFabricName')
-        ? mapping.targetContainerFabricName
-        : replicationFabricName
-      targetContainerName: contains(mapping, 'targetContainerName') ? mapping.targetContainerName : ''
+      targetProtectionContainerId: mapping.?targetProtectionContainerId
+      targetContainerFabricName: mapping.?targetContainerFabricName
+      targetContainerName: mapping.?targetContainerName
     }
     dependsOn: [
       replicationContainer

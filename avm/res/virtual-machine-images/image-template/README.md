@@ -8,6 +8,7 @@ This module deploys a Virtual Machine Image Template that can be consumed by Azu
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -749,7 +750,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`baseTime`](#parameter-basetime) | string | Do not provide a value! This date value is used to generate a unique image template name. |
+| [`baseTime`](#parameter-basetime) | string | Do not provide a value! This date is used to generate a unique image template name. |
 
 ### Parameter: `distributions`
 
@@ -782,7 +783,7 @@ The managed identity definition for this resource.
 
 The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `name`
@@ -1157,7 +1158,7 @@ List of User-Assigned Identities associated to the Build VM for accessing Azure 
 
 ### Parameter: `baseTime`
 
-Do not provide a value! This date value is used to generate a unique image template name.
+Do not provide a value! This date is used to generate a unique image template name.
 
 - Required: No
 - Type: string
@@ -1173,6 +1174,14 @@ Do not provide a value! This date value is used to generate a unique image templ
 | `resourceGroupName` | string | The resource group the image template was deployed into. |
 | `resourceId` | string | The resource ID of the image template. |
 | `runThisCommand` | string | The command to run in order to trigger the image build. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Notes
 

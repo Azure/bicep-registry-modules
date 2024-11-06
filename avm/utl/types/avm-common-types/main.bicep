@@ -221,7 +221,7 @@ type privateEndpointPrivateDnsZoneGroupType = {
 }
 
 type privateEndpointCustomDnsConfigType = {
-  @description('Required. Fqdn that resolves to private endpoint IP address.')
+  @description('Optional. FQDN that resolves to private endpoint IP address.')
   fqdn: string?
 
   @description('Required. A list of private IP addresses of the private endpoint.')
@@ -362,7 +362,7 @@ type privateEndpointMultiServiceType = {
 // ======================== //
 
 @export()
-@description('An AVM-aligned type for a customer-managed key.')
+@description('An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key.')
 type customerManagedKeyType = {
   @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
   keyVaultResourceId: string
@@ -370,8 +370,27 @@ type customerManagedKeyType = {
   @description('Required. The name of the customer managed key to use for encryption.')
   keyName: string
 
-  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
+  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time.')
   keyVersion: string?
+
+  @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
+  userAssignedIdentityResourceId: string?
+}
+
+@export()
+@description('An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.')
+type customerManagedKeyWithAutoRotateType = {
+  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
+  keyVaultResourceId: string
+
+  @description('Required. The name of the customer managed key to use for encryption.')
+  keyName: string
+
+  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per \'autoRotationDisabled\' setting.')
+  keyVersion: string?
+
+  @description('Optional. If configured, instead of auto-rotating to the latest key version, the latest key version at the time of the deployment is used.')
+  autoRotationDisabled: bool?
 
   @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
@@ -380,20 +399,6 @@ type customerManagedKeyType = {
 // ================== //
 //   Secrets Export   //
 // ================== //
-
-@export()
-@description('An AVM-aligned type for the output of the secret set via the secrets export feature.')
-type secretSetType = {
-  @description('The resourceId of the exported secret.')
-  secretResourceId: string
-
-  @description('The secret URI of the exported secret.')
-  secretUri: string
-
-  @description('The secret URI with version of the exported secret.')
-  secretUriWithVersion: string
-}
-
 @export()
 @description('An AVM-aligned type for the secret to set via the secrets export feature.')
 type secretToSetType = {
@@ -405,7 +410,22 @@ type secretToSetType = {
   value: string
 }
 
+@export()
+@description('An AVM-aligned type for the output of the secret set via the secrets export feature.')
+type secretSetOutputType = {
+  @description('The resourceId of the exported secret.')
+  secretResourceId: string
+
+  @description('The secret URI of the exported secret.')
+  secretUri: string
+
+  @description('The secret URI with version of the exported secret.')
+  secretUriWithVersion: string
+}
+
+@export()
+@description('A map of the exported secrets')
 type secretsOutputType = {
   @description('An exported secret\'s references.')
-  *: secretSetType
+  *: secretSetOutputType
 }

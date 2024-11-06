@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'MQTT Broker with routing to a namespace topic'
-metadata description = 'This instance deploys the module as a MQTT Broker with routing to a topic within the same Eventgrid namespace.'
+metadata name = 'MQTT Broker with routing to a custom topic'
+metadata description = 'This instance deploys the module as a MQTT Broker with routing to a custom topic.'
 
 // ========== //
 // Parameters //

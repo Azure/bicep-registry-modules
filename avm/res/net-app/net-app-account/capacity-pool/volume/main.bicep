@@ -8,31 +8,31 @@ param netAppAccountName string
 @description('Conditional. The name of the parent capacity pool. Required if the template is used in a standalone deployment.')
 param capacityPoolName string
 
-@description('Optional. If enabled (true) the pool can contain cool Access enabled volumes.')
+@description('Required. If enabled (true) the pool can contain cool Access enabled volumes.')
 param coolAccess bool
 
-@description('Optional. Specifies the number of days after which data that is not accessed by clients will be tiered.')
+@description('Required. Specifies the number of days after which data that is not accessed by clients will be tiered.')
 param coolnessPeriod int
 
 @description('Optional. determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read).')
 param coolAccessRetrievalPolicy string = 'Default'
 
-@description('Optional. The source of the encryption key.')
+@description('Required. The source of the encryption key.')
 param encryptionKeySource string
 
-@description('Optional. The resource ID of the key vault private endpoint.')
+@description('Required. The resource ID of the key vault private endpoint.')
 param keyVaultPrivateEndpointResourceId string
 
-@description('Optional. Indicates whether the local volume is the source or destination for the Volume Replication (src/dst).')
+@description('Required. Indicates whether the local volume is the source or destination for the Volume Replication (src/dst).')
 param endpointType string
 
-@description('Optional. The remote region for the other end of the Volume Replication.')
+@description('Required. The remote region for the other end of the Volume Replication.')
 param remoteVolumeRegion string
 
-@description('Optional. The resource ID of the remote volume.')
+@description('Required. The resource ID of the remote volume.')
 param remoteVolumeResourceId string
 
-@description('Optional. The replication schedule for the volume.')
+@description('Required. The replication schedule for the volume.')
 param replicationSchedule string
 
 @description('Optional. Indicates whether the backup policy is enabled.')
@@ -41,70 +41,70 @@ param backupEnabled bool = false
 @description('Optional. The name of the backup policy.')
 param backupPolicyName string = 'backupPolicy'
 
-@description('Optional. The daily snapshot hour.')
+@description('Required. The daily snapshot hour.')
 param dailyHour int
 
-@description('Optional. The daily snapshot minute.')
+@description('Required. The daily snapshot minute.')
 param dailyMinute int
 
-@description('Optional. Daily snapshot count to keep.')
+@description('Required. Daily snapshot count to keep.')
 param dailySnapshotsToKeep int
 
-@description('Optional. Daily snapshot used bytes.')
+@description('Required. Daily snapshot used bytes.')
 param dailyUsedBytes int
 
-@description('Optional. The hourly snapshot minute.')
+@description('Required. The hourly snapshot minute.')
 param hourlyMinute int
 
-@description('Optional. Hourly snapshot count to keep.')
+@description('Required. Hourly snapshot count to keep.')
 param hourlySnapshotsToKeep int
 
-@description('Optional. Hourly snapshot used bytes.')
+@description('Required. Hourly snapshot used bytes.')
 param hourlyUsedBytes int
 
-@description('Optional. The monthly snapshot day.')
+@description('Required. The monthly snapshot day.')
 param daysOfMonth string
 
-@description('Optional. The monthly snapshot hour.')
+@description('Required. The monthly snapshot hour.')
 param monthlyHour int
 
-@description('Optional. The monthly snapshot minute.')
+@description('Required. The monthly snapshot minute.')
 param monthlyMinute int
 
-@description('Optional. Monthly snapshot count to keep.')
+@description('Required. Monthly snapshot count to keep.')
 param monthlySnapshotsToKeep int
 
-@description('Optional. Monthly snapshot used bytes.')
+@description('Required. Monthly snapshot used bytes.')
 param monthlyUsedBytes int
 
-@description('Optional. The weekly snapshot day.')
+@description('Required. The weekly snapshot day.')
 param weeklyDay string
 
-@description('Optional. The weekly snapshot hour.')
+@description('Required. The weekly snapshot hour.')
 param weeklyHour int
 
-@description('Optional. The weekly snapshot minute.')
+@description('Required. The weekly snapshot minute.')
 param weeklyMinute int
 
-@description('Optional. Weekly snapshot count to keep.')
+@description('Required. Weekly snapshot count to keep.')
 param weeklySnapshotsToKeep int
 
-@description('Optional. Weekly snapshot used bytes.')
+@description('Required. Weekly snapshot used bytes.')
 param weeklyUsedBytes int
 
 @description('Optional. Indicates whether the snapshot policy is enabled.')
 param snapEnabled bool = true
 
-@description('Optional. The name of the snapshot policy.')
+@description('Required. The name of the snapshot policy.')
 param snapshotPolicyName string
 
-@description('Optional. The daily backups to keep.')
+@description('Required. The daily backups to keep.')
 param dailyBackupsToKeep int
 
-@description('Optional. The monthly backups to keep.')
+@description('Required. The monthly backups to keep.')
 param monthlyBackupsToKeep int
 
-@description('Optional. The weekly backups to keep.')
+@description('Required. The weekly backups to keep.')
 param weeklyBackupsToKeep int
 
 @description('Optional. The name of the backup vault.')
@@ -113,25 +113,22 @@ param backupVaultName string = 'vault'
 @description('Optional. The location of the backup vault.')
 param backupVaultLocation string = resourceGroup().location
 
-@description('Optional. The name of the backup.')
+@description('Required. The name of the backup.')
 param backupName string
 
-@description('Optional. The label of the backup.')
+@description('Required. The label of the backup.')
 param backupLabel string
 
-@description('Optional. Indicates whether to use an existing snapshot.')
+@description('Required. Indicates whether to use an existing snapshot.')
 param useExistingSnapshot bool
 
-@description('Optional. The name of the snapshot.')
+@description('Required. The name of the snapshot.')
 param snapshotName string
 
-@description('Optional. The snapshot Policy id.')
-param snapshotPolicyId string
-
-@description('Optional. The resource ID of the volume.')
+@description('Required. The resource ID of the volume.')
 param volumeResourceId string
 
-@description('Optional. The type of the volume. DataProtection volumes are used for replication.')
+@description('Required. The type of the volume. DataProtection volumes are used for replication.')
 param volumeType string
 
 @description('Required. The name of the pool volume.')
@@ -146,10 +143,10 @@ param zones array = ['1']
 @description('Optional. If Backup policy is enforced.')
 param policyEnforced bool = false
 
-@description('Optional. The backup policy location.')
+@description('Required. The backup policy location.')
 param backupPolicyLocation string
 
-@description('Optional. The location of snashot policies.')
+@description('Required. The location of snashot policies.')
 param snapshotPolicyLocation string
 
 @description('Optional. The pool service level. Must match the one of the parent capacity pool.')
@@ -188,7 +185,7 @@ param exportPolicyRules array = []
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@description('Optional. The Id of the Backup Vault.')
+@description('Required. The Id of the Backup Vault.')
 param backupVaultId string
 
 @description('Optional. Boolean to enable replication.')
