@@ -63,9 +63,14 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     cacheRules: [
       {
         credentialSetResourceId: '<credentialSetResourceId>'
-        name: 'customRule'
+        name: 'customRuleWithAuth'
         sourceRepository: 'docker.io/library/hello-world'
         targetRepository: 'cached-docker-hub/hello-world'
+      }
+      {
+        name: 'customRuleWithoutAuth'
+        sourceRepository: 'mcr.microsoft.com/bicep/avm/*'
+        targetRepository: 'avm/*'
       }
     ]
     credentialSets: [
@@ -116,9 +121,14 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       "value": [
         {
           "credentialSetResourceId": "<credentialSetResourceId>",
-          "name": "customRule",
+          "name": "customRuleWithAuth",
           "sourceRepository": "docker.io/library/hello-world",
           "targetRepository": "cached-docker-hub/hello-world"
+        },
+        {
+          "name": "customRuleWithoutAuth",
+          "sourceRepository": "mcr.microsoft.com/bicep/avm/*",
+          "targetRepository": "avm/*"
         }
       ]
     },
@@ -165,9 +175,14 @@ param acrSku = 'Standard'
 param cacheRules = [
   {
     credentialSetResourceId: '<credentialSetResourceId>'
-    name: 'customRule'
+    name: 'customRuleWithAuth'
     sourceRepository: 'docker.io/library/hello-world'
     targetRepository: 'cached-docker-hub/hello-world'
+  }
+  {
+    name: 'customRuleWithoutAuth'
+    sourceRepository: 'mcr.microsoft.com/bicep/avm/*'
+    targetRepository: 'avm/*'
   }
 ]
 param credentialSets = [
