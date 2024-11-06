@@ -201,8 +201,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     gallerySolutions: [
       {
         name: 'AzureAutomation(oiwadv001)'
-        product: 'OMSGallery/AzureAutomation'
-        publisher: 'Microsoft'
+        plan: {
+          product: 'OMSGallery/AzureAutomation'
+        }
       }
     ]
     linkedServices: [
@@ -509,8 +510,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       "value": [
         {
           "name": "AzureAutomation(oiwadv001)",
-          "product": "OMSGallery/AzureAutomation",
-          "publisher": "Microsoft"
+          "plan": {
+            "product": "OMSGallery/AzureAutomation"
+          }
         }
       ]
     },
@@ -827,8 +829,9 @@ param diagnosticSettings = [
 param gallerySolutions = [
   {
     name: 'AzureAutomation(oiwadv001)'
-    product: 'OMSGallery/AzureAutomation'
-    publisher: 'Microsoft'
+    plan: {
+      product: 'OMSGallery/AzureAutomation'
+    }
   }
 ]
 param linkedServices = [
@@ -1155,18 +1158,24 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     gallerySolutions: [
       {
         name: 'AzureAutomation(oiwmax001)'
-        product: 'OMSGallery/AzureAutomation'
-        publisher: 'Microsoft'
+        plan: {
+          product: 'OMSGallery/AzureAutomation'
+        }
       }
       {
         name: 'SecurityInsights(oiwmax001)'
-        product: 'OMSGallery/SecurityInsights'
-        publisher: 'Microsoft'
+        plan: {
+          product: 'OMSGallery/SecurityInsights'
+          publisher: 'Microsoft'
+        }
       }
       {
         name: 'SQLAuditing(oiwmax001)'
-        product: 'SQLAuditing'
-        publisher: 'Microsoft'
+        plan: {
+          name: 'SQLAuditing(oiwmax001)'
+          product: 'SQLAuditing'
+          publisher: 'Microsoft'
+        }
       }
     ]
     linkedServices: [
@@ -1468,18 +1477,24 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       "value": [
         {
           "name": "AzureAutomation(oiwmax001)",
-          "product": "OMSGallery/AzureAutomation",
-          "publisher": "Microsoft"
+          "plan": {
+            "product": "OMSGallery/AzureAutomation"
+          }
         },
         {
           "name": "SecurityInsights(oiwmax001)",
-          "product": "OMSGallery/SecurityInsights",
-          "publisher": "Microsoft"
+          "plan": {
+            "product": "OMSGallery/SecurityInsights",
+            "publisher": "Microsoft"
+          }
         },
         {
           "name": "SQLAuditing(oiwmax001)",
-          "product": "SQLAuditing",
-          "publisher": "Microsoft"
+          "plan": {
+            "name": "SQLAuditing(oiwmax001)",
+            "product": "SQLAuditing",
+            "publisher": "Microsoft"
+          }
         }
       ]
     },
@@ -1799,18 +1814,24 @@ param diagnosticSettings = [
 param gallerySolutions = [
   {
     name: 'AzureAutomation(oiwmax001)'
-    product: 'OMSGallery/AzureAutomation'
-    publisher: 'Microsoft'
+    plan: {
+      product: 'OMSGallery/AzureAutomation'
+    }
   }
   {
     name: 'SecurityInsights(oiwmax001)'
-    product: 'OMSGallery/SecurityInsights'
-    publisher: 'Microsoft'
+    plan: {
+      product: 'OMSGallery/SecurityInsights'
+      publisher: 'Microsoft'
+    }
   }
   {
     name: 'SQLAuditing(oiwmax001)'
-    product: 'SQLAuditing'
-    publisher: 'Microsoft'
+    plan: {
+      name: 'SQLAuditing(oiwmax001)'
+      product: 'SQLAuditing'
+      publisher: 'Microsoft'
+    }
   }
 ]
 param linkedServices = [
@@ -2099,8 +2120,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     gallerySolutions: [
       {
         name: 'AzureAutomation(oiwwaf001)'
-        product: 'OMSGallery/AzureAutomation'
-        publisher: 'Microsoft'
+        plan: {
+          product: 'OMSGallery/AzureAutomation'
+        }
       }
     ]
     linkedServices: [
@@ -2268,8 +2290,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       "value": [
         {
           "name": "AzureAutomation(oiwwaf001)",
-          "product": "OMSGallery/AzureAutomation",
-          "publisher": "Microsoft"
+          "plan": {
+            "product": "OMSGallery/AzureAutomation"
+          }
         }
       ]
     },
@@ -2445,8 +2468,9 @@ param diagnosticSettings = [
 param gallerySolutions = [
   {
     name: 'AzureAutomation(oiwwaf001)'
-    product: 'OMSGallery/AzureAutomation'
-    publisher: 'Microsoft'
+    plan: {
+      product: 'OMSGallery/AzureAutomation'
+    }
   }
 ]
 param linkedServices = [
@@ -2760,13 +2784,7 @@ List of gallerySolutions to be created in the log analytics workspace.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-gallerysolutionsname) | string | Name of the solution.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.<p>The solution type is case-sensitive. |
-| [`product`](#parameter-gallerysolutionsproduct) | string | The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`publisher`](#parameter-gallerysolutionspublisher) | string | The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value. |
+| [`plan`](#parameter-gallerysolutionsplan) | object | Plan for solution object supported by the OperationsManagement resource provider. |
 
 ### Parameter: `gallerySolutions.name`
 
@@ -2775,14 +2793,41 @@ Name of the solution.<p>For solutions authored by Microsoft, the name must be in
 - Required: Yes
 - Type: string
 
-### Parameter: `gallerySolutions.product`
+### Parameter: `gallerySolutions.plan`
+
+Plan for solution object supported by the OperationsManagement resource provider.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`product`](#parameter-gallerysolutionsplanproduct) | string | The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-gallerysolutionsplanname) | string | Name of the solution to be created.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, it can be anything.<p>The solution type is case-sensitive.<p>If not provided, the value of the `name` parameter will be used. |
+| [`publisher`](#parameter-gallerysolutionsplanpublisher) | string | The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value. |
+
+### Parameter: `gallerySolutions.plan.product`
 
 The product name of the deployed solution.<p>For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.<p>For a third party solution, it can be anything.<p>This is case sensitive.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `gallerySolutions.publisher`
+### Parameter: `gallerySolutions.plan.name`
+
+Name of the solution to be created.<p>For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.<p>For solutions authored by third parties, it can be anything.<p>The solution type is case-sensitive.<p>If not provided, the value of the `name` parameter will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `gallerySolutions.plan.publisher`
 
 The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value.
 
@@ -3101,7 +3146,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/operations-management/solution:0.2.0` | Remote reference |
+| `br/public:avm/res/operations-management/solution:0.3.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Data Collection
