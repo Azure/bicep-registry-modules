@@ -1439,43 +1439,57 @@ This parameter allows you to specify additional settings for Azure Key Vault if 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`createMode`](#parameter-advancedoptionskeyvaultcreatemode) | string | The vault's create mode to indicate whether the vault need to be recovered or not. - 'recover' or 'default'. The dafult value is: 'default'. |
-| [`enablePurgeProtection`](#parameter-advancedoptionskeyvaultenablepurgeprotection) | bool | Provide 'true' to enable Key Vault's purge protection feature. The dafult value is: 'true'. |
-| [`enableSoftDelete`](#parameter-advancedoptionskeyvaultenablesoftdelete) | bool | Switch to enable/disable Key Vault's soft delete feature. The dafult value is: 'true'. |
-| [`sku`](#parameter-advancedoptionskeyvaultsku) | string | Specifies the SKU for the vault. - 'premium' or 'standard'. The dafult value is: 'premium'. |
-| [`softDeleteRetentionInDays`](#parameter-advancedoptionskeyvaultsoftdeleteretentionindays) | int | Soft delete data retention days. It accepts >=7 and <=90. The dafult value is: '90'. |
+| [`createMode`](#parameter-advancedoptionskeyvaultcreatemode) | string | The vault's create mode to indicate whether the vault need to be recovered or not. The default value is: 'default'. |
+| [`enablePurgeProtection`](#parameter-advancedoptionskeyvaultenablepurgeprotection) | bool | Provide 'true' to enable Key Vault's purge protection feature. The default value is: 'true'. |
+| [`enableSoftDelete`](#parameter-advancedoptionskeyvaultenablesoftdelete) | bool | Switch to enable/disable Key Vault's soft delete feature. The default value is: 'true'. |
+| [`sku`](#parameter-advancedoptionskeyvaultsku) | string | Specifies the SKU for the vault. The default value is: 'premium'. |
+| [`softDeleteRetentionInDays`](#parameter-advancedoptionskeyvaultsoftdeleteretentionindays) | int | Soft delete data retention days. It accepts >=7 and <=90. The default value is: '90'. |
 
 ### Parameter: `advancedOptions.keyVault.createMode`
 
-The vault's create mode to indicate whether the vault need to be recovered or not. - 'recover' or 'default'. The dafult value is: 'default'.
+The vault's create mode to indicate whether the vault need to be recovered or not. The default value is: 'default'.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'default'
+    'recover'
+  ]
+  ```
 
 ### Parameter: `advancedOptions.keyVault.enablePurgeProtection`
 
-Provide 'true' to enable Key Vault's purge protection feature. The dafult value is: 'true'.
+Provide 'true' to enable Key Vault's purge protection feature. The default value is: 'true'.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `advancedOptions.keyVault.enableSoftDelete`
 
-Switch to enable/disable Key Vault's soft delete feature. The dafult value is: 'true'.
+Switch to enable/disable Key Vault's soft delete feature. The default value is: 'true'.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `advancedOptions.keyVault.sku`
 
-Specifies the SKU for the vault. - 'premium' or 'standard'. The dafult value is: 'premium'.
+Specifies the SKU for the vault. The default value is: 'premium'.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'premium'
+    'standard'
+  ]
+  ```
 
 ### Parameter: `advancedOptions.keyVault.softDeleteRetentionInDays`
 
-Soft delete data retention days. It accepts >=7 and <=90. The dafult value is: '90'.
+Soft delete data retention days. It accepts >=7 and <=90. The default value is: '90'.
 
 - Required: No
 - Type: int
@@ -1491,19 +1505,19 @@ This parameter allows you to specify additional settings for Azure Log Analytics
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dailyQuotaGb`](#parameter-advancedoptionsloganalyticsworkspacedailyquotagb) | int | The workspace daily quota for ingestion. The dafult value is: '-1' (not limited). |
-| [`dataRetention`](#parameter-advancedoptionsloganalyticsworkspacedataretention) | int | Number of days data will be retained for. The dafult value is: '365'. |
+| [`dailyQuotaGb`](#parameter-advancedoptionsloganalyticsworkspacedailyquotagb) | int | The workspace daily quota for ingestion. The default value is: '-1' (not limited). |
+| [`dataRetention`](#parameter-advancedoptionsloganalyticsworkspacedataretention) | int | Number of days data will be retained for. The default value is: '365'. |
 
 ### Parameter: `advancedOptions.logAnalyticsWorkspace.dailyQuotaGb`
 
-The workspace daily quota for ingestion. The dafult value is: '-1' (not limited).
+The workspace daily quota for ingestion. The default value is: '-1' (not limited).
 
 - Required: No
 - Type: int
 
 ### Parameter: `advancedOptions.logAnalyticsWorkspace.dataRetention`
 
-Number of days data will be retained for. The dafult value is: '365'.
+Number of days data will be retained for. The default value is: '365'.
 
 - Required: No
 - Type: int
@@ -1710,6 +1724,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/private-dns-zone:0.6.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.5.0` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.7.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Notes
 
