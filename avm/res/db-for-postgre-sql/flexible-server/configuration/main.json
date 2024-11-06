@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "11184980891224869481"
+      "templateHash": "6763309870198457151"
     },
     "name": "DBforPostgreSQL Flexible Server Configurations",
     "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration.",
@@ -52,8 +52,8 @@
       "apiVersion": "2022-12-01",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
       "properties": {
-        "source": "[if(not(empty(parameters('source'))), parameters('source'), null())]",
-        "value": "[if(not(empty(parameters('value'))), parameters('value'), null())]"
+        "source": "[parameters('source')]",
+        "value": "[parameters('value')]"
       },
       "dependsOn": [
         "flexibleServer"

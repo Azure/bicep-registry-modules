@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "3373279209001366495"
+      "templateHash": "8859937791081113052"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -1055,7 +1055,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "8538777017463575324"
+              "templateHash": "3788962983487396437"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database.",
@@ -1101,8 +1101,8 @@
               "apiVersion": "2022-12-01",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
-                "collation": "[if(not(empty(parameters('collation'))), parameters('collation'), null())]",
-                "charset": "[if(not(empty(parameters('charset'))), parameters('charset'), null())]"
+                "collation": "[parameters('collation')]",
+                "charset": "[parameters('charset')]"
               },
               "dependsOn": [
                 "flexibleServer"
@@ -1282,7 +1282,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "11184980891224869481"
+              "templateHash": "6763309870198457151"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration.",
@@ -1328,8 +1328,8 @@
               "apiVersion": "2022-12-01",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
-                "source": "[if(not(empty(parameters('source'))), parameters('source'), null())]",
-                "value": "[if(not(empty(parameters('value'))), parameters('value'), null())]"
+                "source": "[parameters('source')]",
+                "value": "[parameters('value')]"
               },
               "dependsOn": [
                 "flexibleServer"
