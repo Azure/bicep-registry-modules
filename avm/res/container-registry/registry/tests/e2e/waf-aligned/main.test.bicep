@@ -79,9 +79,6 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       exportPolicyStatus: 'enabled'
-      azureADAuthenticationAsArmPolicyStatus: 'enabled'
-      softDeletePolicyStatus: 'disabled'
-      softDeletePolicyDays: 7
       quarantinePolicyStatus: 'enabled'
       replications: [
         {

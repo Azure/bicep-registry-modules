@@ -22,7 +22,7 @@ This module deploys an Azure Container Registry (ACR).
 | `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/credentialSets) |
 | `Microsoft.ContainerRegistry/registries/replications` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
 | `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/scopeMaps) |
-| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
+| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
@@ -38,9 +38,9 @@ The following section provides usage examples for the module, which were used to
 - [Using cache rules](#example-1-using-cache-rules)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using encryption with Customer-Managed-Key](#example-3-using-encryption-with-customer-managed-key)
-- [Max](#example-4-max)
+- [Using large parameter set](#example-4-using-large-parameter-set)
 - [Using `scopeMaps` in parameter set](#example-5-using-scopemaps-in-parameter-set)
-- [Waf-Aligned](#example-6-waf-aligned)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using cache rules_
 
@@ -384,7 +384,10 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 4: _Max_
+### Example 4: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -399,7 +402,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     // Non-required parameters
     acrAdminUserEnabled: false
     acrSku: 'Premium'
-    azureADAuthenticationAsArmPolicyStatus: 'enabled'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -485,8 +487,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    softDeletePolicyDays: 7
-    softDeletePolicyStatus: 'disabled'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -525,9 +525,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     },
     "acrSku": {
       "value": "Premium"
-    },
-    "azureADAuthenticationAsArmPolicyStatus": {
-      "value": "enabled"
     },
     "diagnosticSettings": {
       "value": [
@@ -634,12 +631,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         }
       ]
     },
-    "softDeletePolicyDays": {
-      "value": 7
-    },
-    "softDeletePolicyStatus": {
-      "value": "disabled"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -677,7 +668,6 @@ param name = 'crrmax001'
 // Non-required parameters
 param acrAdminUserEnabled = false
 param acrSku = 'Premium'
-param azureADAuthenticationAsArmPolicyStatus = 'enabled'
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -763,8 +753,6 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
-param softDeletePolicyDays = 7
-param softDeletePolicyStatus = 'disabled'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -880,7 +868,10 @@ param scopeMaps = [
 </details>
 <p>
 
-### Example 6: _Waf-Aligned_
+### Example 6: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -895,7 +886,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     // Non-required parameters
     acrAdminUserEnabled: false
     acrSku: 'Premium'
-    azureADAuthenticationAsArmPolicyStatus: 'enabled'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -925,8 +915,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         name: '<name>'
       }
     ]
-    softDeletePolicyDays: 7
-    softDeletePolicyStatus: 'disabled'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -959,9 +947,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     },
     "acrSku": {
       "value": "Premium"
-    },
-    "azureADAuthenticationAsArmPolicyStatus": {
-      "value": "enabled"
     },
     "diagnosticSettings": {
       "value": [
@@ -1004,12 +989,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         }
       ]
     },
-    "softDeletePolicyDays": {
-      "value": 7
-    },
-    "softDeletePolicyStatus": {
-      "value": "disabled"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -1039,7 +1018,6 @@ param name = 'crrwaf001'
 // Non-required parameters
 param acrAdminUserEnabled = false
 param acrSku = 'Premium'
-param azureADAuthenticationAsArmPolicyStatus = 'enabled'
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1069,8 +1047,6 @@ param replications = [
     name: '<name>'
   }
 ]
-param softDeletePolicyDays = 7
-param softDeletePolicyStatus = 'disabled'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
