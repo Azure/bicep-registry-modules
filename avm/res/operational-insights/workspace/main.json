@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "9393937982090823665"
+      "templateHash": "15477650738706698985"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace.",
@@ -1933,11 +1933,7 @@
             "value": "[parameters('name')]"
           },
           "plan": {
-            "value": {
-              "name": "[tryGet(coalesce(parameters('gallerySolutions'), createArray())[copyIndex()].plan, 'name')]",
-              "product": "[coalesce(parameters('gallerySolutions'), createArray())[copyIndex()].plan.product]",
-              "publisher": "[tryGet(coalesce(parameters('gallerySolutions'), createArray())[copyIndex()].plan, 'publisher')]"
-            }
+            "value": "[coalesce(parameters('gallerySolutions'), createArray())[copyIndex()].plan]"
           },
           "enableTelemetry": {
             "value": "[coalesce(tryGet(coalesce(parameters('gallerySolutions'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"

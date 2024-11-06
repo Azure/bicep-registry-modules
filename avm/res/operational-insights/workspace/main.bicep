@@ -355,11 +355,7 @@ module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/
       name: gallerySolution.name
       location: location
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
-      plan: {
-        name: gallerySolution.plan.?name
-        product: gallerySolution.plan.product
-        publisher: gallerySolution.plan.?publisher
-      }
+      plan: gallerySolution.plan
       enableTelemetry: gallerySolution.?enableTelemetry ?? enableTelemetry
     }
   }
