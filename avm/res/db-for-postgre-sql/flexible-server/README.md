@@ -147,7 +147,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
-    name: 'dfpsfse001'
+    name: 'dfpsfsmax001'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -183,7 +183,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dfpsfse001"
+      "value": "dfpsfsmax001"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
@@ -233,7 +233,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
-param name = 'dfpsfse001'
+param name = 'dfpsfsmax001'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -2395,7 +2395,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.8.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.1.0` | Remote reference |
 
 ## Data Collection
 
