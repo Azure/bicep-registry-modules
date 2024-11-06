@@ -25,7 +25,7 @@ param namePrefix string = '#_namePrefix_#'
 
 @description('Required. The object id of the AzureDatabricks Enterprise Application. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureDatabricksEnterpriseApplicationObjectId\'.')
 @secure()
-param azureDatabricksEnterpriseApplicationObjectId string = ''
+param azureDatabricksEnterpriseApplicationObjectId string
 
 // ============ //
 // Dependencies //
@@ -139,7 +139,7 @@ module testDeployment '../../../main.bicep' = [
       customerManagedKeyManagedDisk: {
         keyName: nestedDependencies.outputs.keyVaultDiskKeyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultDiskResourceId
-        rotationToLatestKeyVersionEnabled: true
+        autoRotationDisabled: true
       }
       storageAccountName: 'sa${namePrefix}${serviceShort}001'
       storageAccountSkuName: 'Standard_ZRS'
