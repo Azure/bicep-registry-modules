@@ -42,7 +42,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}002'
       location: enforcedLocation
       tags: {
         Owner: 'Contoso MAX Team'
@@ -57,7 +57,7 @@ module testDeployment '../../../main.bicep' = [
           sku: 'standard'
           enableSoftDelete: false
           softDeleteRetentionInDays: 7
-          enablePurgeProtection: true
+          enablePurgeProtection: false // For the purposes of the test, we disable purge protection
         }
       }
     }
