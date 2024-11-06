@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "14560645908978883645"
+      "version": "0.31.34.60546",
+      "templateHash": "3428180918670888642"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource.",
@@ -442,13 +442,8 @@
               }
             },
             "daysData": {
-              "type": "array",
-              "items": {
-                "type": "object"
-              },
-              "nullable": true,
+              "$ref": "#/definitions/daysDataType",
               "metadata": {
-                "example": "      [\n        { // Monday\n          '09:00': 5\n          '22:00': 0\n        }\n        {} // Tuesday\n        {} // Wednesday\n        {} // Thursday\n        { // Friday\n          '09:00': 5\n          '22:00': 0\n        }\n        {} // Saturday\n        {} // Sunday\n      ]\n      ",
                 "description": "Optional. The number of agents needed at a specific time."
               }
             }
@@ -750,6 +745,159 @@
       "metadata": {
         "__bicep_export!": true
       }
+    },
+    "daysDataType": {
+      "type": "object",
+      "properties": {
+        "Monday": {
+          "type": "object",
+          "properties": {
+            "startTime": {
+              "type": "string"
+            },
+            "endTime": {
+              "type": "string"
+            },
+            "startAgentCount": {
+              "type": "int"
+            },
+            "endAgentCount": {
+              "type": "int"
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Monday."
+          }
+        },
+        "Tuesday": {
+          "type": "object",
+          "properties": {
+            "startTime": {
+              "type": "string"
+            },
+            "endTime": {
+              "type": "string"
+            },
+            "startAgentCount": {
+              "type": "int"
+            },
+            "endAgentCount": {
+              "type": "int"
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Tuesday."
+          }
+        },
+        "Wednesday": {
+          "type": "object",
+          "properties": {
+            "startTime": {
+              "type": "string"
+            },
+            "endTime": {
+              "type": "string"
+            },
+            "startAgentCount": {
+              "type": "int"
+            },
+            "endAgentCount": {
+              "type": "int"
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Wednesday."
+          }
+        },
+        "Thursday": {
+          "type": "object",
+          "properties": {
+            "startTime": {
+              "type": "string"
+            },
+            "endTime": {
+              "type": "string"
+            },
+            "startAgentCount": {
+              "type": "int"
+            },
+            "endAgentCount": {
+              "type": "int"
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Thursday."
+          }
+        },
+        "Friday": {
+          "type": "object",
+          "properties": {
+            "startTime": {
+              "type": "string"
+            },
+            "endTime": {
+              "type": "string"
+            },
+            "startAgentCount": {
+              "type": "int"
+            },
+            "endAgentCount": {
+              "type": "int"
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Friday."
+          }
+        },
+        "Saturday": {
+          "type": "object",
+          "properties": {
+            "startTime": {
+              "type": "string"
+            },
+            "endTime": {
+              "type": "string"
+            },
+            "startAgentCount": {
+              "type": "int"
+            },
+            "endAgentCount": {
+              "type": "int"
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Saturday."
+          }
+        },
+        "Sunday": {
+          "type": "object",
+          "properties": {
+            "startTime": {
+              "type": "string"
+            },
+            "endTime": {
+              "type": "string"
+            },
+            "startAgentCount": {
+              "type": "int"
+            },
+            "endAgentCount": {
+              "type": "int"
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of agents needed at a specific time for Sunday."
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {

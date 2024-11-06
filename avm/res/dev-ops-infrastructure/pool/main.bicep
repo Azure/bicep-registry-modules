@@ -381,26 +381,7 @@ type agentStatelessType = {
     timeZone: string
 
     @description('Optional. The number of agents needed at a specific time.')
-    @metadata({
-      example: '''
-      [
-        { // Monday
-          '09:00': 5
-          '22:00': 0
-        }
-        {} // Tuesday
-        {} // Wednesday
-        {} // Thursday
-        { // Friday
-          '09:00': 5
-          '22:00': 0
-        }
-        {} // Saturday
-        {} // Sunday
-      ]
-      '''
-    })
-    daysData: object[]?
+    daysData: daysDataType
   }?
 
   @discriminator('kind')
@@ -500,4 +481,62 @@ type managedIdentitiesType = {
 
   @description('Optional. The resource ID(s) to assign to the resource.')
   userAssignedResourceIds: string[]?
+}?
+
+type daysDataType = {
+  @description('Optional. The number of agents needed at a specific time for Monday.')
+  Monday: {
+    startTime: string
+    endTime: string
+    startAgentCount: int
+    endAgentCount: int
+  }?
+
+  @description('Optional. The number of agents needed at a specific time for Tuesday.')
+  Tuesday: {
+    startTime: string
+    endTime: string
+    startAgentCount: int
+    endAgentCount: int
+  }?
+
+  @description('Optional. The number of agents needed at a specific time for Wednesday.')
+  Wednesday: {
+    startTime: string
+    endTime: string
+    startAgentCount: int
+    endAgentCount: int
+  }?
+
+  @description('Optional. The number of agents needed at a specific time for Thursday.')
+  Thursday: {
+    startTime: string
+    endTime: string
+    startAgentCount: int
+    endAgentCount: int
+  }?
+
+  @description('Optional. The number of agents needed at a specific time for Friday.')
+  Friday: {
+    startTime: string
+    endTime: string
+    startAgentCount: int
+    endAgentCount: int
+  }?
+
+  @description('Optional. The number of agents needed at a specific time for Saturday.')
+  Saturday: {
+    startTime: string
+    endTime: string
+    startAgentCount: int
+    endAgentCount: int
+  }?
+
+  @description('Optional. The number of agents needed at a specific time for Sunday.')
+  Sunday: {
+    startTime: string
+    endTime: string
+    startAgentCount: int
+    endAgentCount: int
+  }?
 }?

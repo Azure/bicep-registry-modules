@@ -182,21 +182,20 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     agentProfile: {
       kind: 'Stateless'
       resourcePredictions: {
-        daysData: [
-          {
-            '09:00:00': 1
-            '17:00:00': 0
+        daysData: {
+          Friday: {
+            endAgentCount: 0
+            endTime: '17:00:00'
+            startAgentCount: 1
+            startTime: '09:00:00'
           }
-          {}
-          {}
-          {}
-          {
-            '09:00:00': 1
-            '17:00:00': 0
+          Monday: {
+            endAgentCount: 0
+            endTime: '17:00:00'
+            startAgentCount: 1
+            startTime: '09:00:00'
           }
-          {}
-          {}
-        ]
+        }
         timeZone: 'Central Europe Standard Time'
       }
       resourcePredictionsProfile: {
@@ -293,21 +292,20 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       "value": {
         "kind": "Stateless",
         "resourcePredictions": {
-          "daysData": [
-            {
-              "09:00:00": 1,
-              "17:00:00": 0
+          "daysData": {
+            "Friday": {
+              "endAgentCount": 0,
+              "endTime": "17:00:00",
+              "startAgentCount": 1,
+              "startTime": "09:00:00"
             },
-            {},
-            {},
-            {},
-            {
-              "09:00:00": 1,
-              "17:00:00": 0
-            },
-            {},
-            {}
-          ],
+            "Monday": {
+              "endAgentCount": 0,
+              "endTime": "17:00:00",
+              "startAgentCount": 1,
+              "startTime": "09:00:00"
+            }
+          },
           "timeZone": "Central Europe Standard Time"
         },
         "resourcePredictionsProfile": {
@@ -426,21 +424,20 @@ using 'br/public:avm/res/dev-ops-infrastructure/pool:<version>'
 param agentProfile = {
   kind: 'Stateless'
   resourcePredictions: {
-    daysData: [
-      {
-        '09:00:00': 1
-        '17:00:00': 0
+    daysData: {
+      Friday: {
+        endAgentCount: 0
+        endTime: '17:00:00'
+        startAgentCount: 1
+        startTime: '09:00:00'
       }
-      {}
-      {}
-      {}
-      {
-        '09:00:00': 1
-        '17:00:00': 0
+      Monday: {
+        endAgentCount: 0
+        endTime: '17:00:00'
+        startAgentCount: 1
+        startTime: '09:00:00'
       }
-      {}
-      {}
-    ]
+    }
     timeZone: 'Central Europe Standard Time'
   }
   resourcePredictionsProfile: {
@@ -538,21 +535,20 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     agentProfile: {
       kind: 'Stateless'
       resourcePredictions: {
-        daysData: [
-          {
-            '09:00:00': 1
-            '17:00:00': 0
+        daysData: {
+          Friday: {
+            endAgentCount: 0
+            endTime: '17:00:00'
+            startAgentCount: 1
+            startTime: '09:00:00'
           }
-          {}
-          {}
-          {}
-          {
-            '09:00:00': 1
-            '17:00:00': 0
+          Monday: {
+            endAgentCount: 0
+            endTime: '17:00:00'
+            startAgentCount: 1
+            startTime: '09:00:00'
           }
-          {}
-          {}
-        ]
+        }
         timeZone: 'Central Europe Standard Time'
       }
       resourcePredictionsProfile: {
@@ -608,21 +604,20 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       "value": {
         "kind": "Stateless",
         "resourcePredictions": {
-          "daysData": [
-            {
-              "09:00:00": 1,
-              "17:00:00": 0
+          "daysData": {
+            "Friday": {
+              "endAgentCount": 0,
+              "endTime": "17:00:00",
+              "startAgentCount": 1,
+              "startTime": "09:00:00"
             },
-            {},
-            {},
-            {},
-            {
-              "09:00:00": 1,
-              "17:00:00": 0
-            },
-            {},
-            {}
-          ],
+            "Monday": {
+              "endAgentCount": 0,
+              "endTime": "17:00:00",
+              "startAgentCount": 1,
+              "startTime": "09:00:00"
+            }
+          },
           "timeZone": "Central Europe Standard Time"
         },
         "resourcePredictionsProfile": {
@@ -692,21 +687,20 @@ using 'br/public:avm/res/dev-ops-infrastructure/pool:<version>'
 param agentProfile = {
   kind: 'Stateless'
   resourcePredictions: {
-    daysData: [
-      {
-        '09:00:00': 1
-        '17:00:00': 0
+    daysData: {
+      Friday: {
+        endAgentCount: 0
+        endTime: '17:00:00'
+        startAgentCount: 1
+        startTime: '09:00:00'
       }
-      {}
-      {}
-      {}
-      {
-        '09:00:00': 1
-        '17:00:00': 0
+      Monday: {
+        endAgentCount: 0
+        endTime: '17:00:00'
+        startAgentCount: 1
+        startTime: '09:00:00'
       }
-      {}
-      {}
-    ]
+    }
     timeZone: 'Central Europe Standard Time'
   }
   resourcePredictionsProfile: {
