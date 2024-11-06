@@ -74,10 +74,15 @@ module testDeployment '../../../main.bicep' = [
       ]
       cacheRules: [
         {
-          name: 'customRule'
+          name: 'customRuleWithAuth'
           sourceRepository: 'docker.io/library/hello-world'
           targetRepository: 'cached-docker-hub/hello-world'
           credentialSetResourceId: nestedDependencies.outputs.acrCredentialSetResourceId
+        }
+        {
+          name: 'customRuleWithoutAuth'
+          sourceRepository: 'mcr.microsoft.com/bicep/avm/*'
+          targetRepository: 'avm/*'
         }
       ]
     }

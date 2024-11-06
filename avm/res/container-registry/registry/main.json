@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "2277340268999354626"
+      "templateHash": "14076061883339486537"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR).",
@@ -1479,7 +1479,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "1396902957012921251"
+              "templateHash": "6676256769294761512"
             },
             "name": "Container Registries Cache",
             "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).",
@@ -1524,11 +1524,7 @@
               "type": "Microsoft.ContainerRegistry/registries/cacheRules",
               "apiVersion": "2023-06-01-preview",
               "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
-              "properties": {
-                "sourceRepository": "[parameters('sourceRepository')]",
-                "targetRepository": "[parameters('targetRepository')]",
-                "credentialSetResourceId": "[parameters('credentialSetResourceId')]"
-              }
+              "properties": "[if(not(empty(parameters('credentialSetResourceId'))), createObject('sourceRepository', parameters('sourceRepository'), 'targetRepository', parameters('targetRepository'), 'credentialSetResourceId', parameters('credentialSetResourceId')), createObject('sourceRepository', parameters('sourceRepository'), 'targetRepository', parameters('targetRepository')))]"
             }
           ],
           "outputs": {

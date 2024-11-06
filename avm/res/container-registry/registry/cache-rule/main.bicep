@@ -24,11 +24,16 @@ resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' ex
 resource cacheRule 'Microsoft.ContainerRegistry/registries/cacheRules@2023-06-01-preview' = {
   name: name
   parent: registry
-  properties: {
-    sourceRepository: sourceRepository
-    targetRepository: targetRepository
-    credentialSetResourceId: credentialSetResourceId
-  }
+  properties: !empty(credentialSetResourceId)
+    ? {
+        sourceRepository: sourceRepository
+        targetRepository: targetRepository
+        credentialSetResourceId: credentialSetResourceId
+      }
+    : {
+        sourceRepository: sourceRepository
+        targetRepository: targetRepository
+      }
 }
 
 @description('The Name of the Cache Rule.')
