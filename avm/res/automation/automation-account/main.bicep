@@ -323,15 +323,14 @@ module automationAccount_linkedService 'modules/linked-service.bicep' = if (!emp
   )
 }
 
-module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.2.0' = [
+module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.3.0' = [
   for (gallerySolution, index) in gallerySolutions ?? []: if (!empty(linkedWorkspaceResourceId)) {
     name: '${uniqueString(deployment().name, location)}-AutoAccount-Solution-${index}'
     params: {
       name: gallerySolution.name
       location: location
       logAnalyticsWorkspaceName: last(split(linkedWorkspaceResourceId, '/'))!
-      product: gallerySolution.product
-      publisher: gallerySolution.?publisher
+      plan: gallerySolution.plan
       enableTelemetry: enableTelemetry
     }
     // This is to support solution to law in different subscription and resource group than the automation account.
@@ -551,6 +550,8 @@ type credentialType = {
   description: string?
 }
 
+import { solutionPlanType } from 'br/public:avm/res/operations-management/solution:0.3.0'
+
 @export()
 type gallerySolutionType = {
   @description('''Required. Name of the solution.
@@ -559,12 +560,6 @@ type gallerySolutionType = {
   The solution type is case-sensitive.''')
   name: string
 
-  @description('''Required. The product name of the deployed solution.
-  For Microsoft published gallery solution it should be `OMSGallery/{solutionType}`, for example `OMSGallery/AntiMalware`.
-  For a third party solution, it can be anything.
-  This is case sensitive.''')
-  product: string
-
-  @description('Optional. The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value.')
-  publisher: string?
+  @description('Required. Plan for solution object supported by the OperationsManagement resource provider.')
+  plan: solutionPlanType
 }
