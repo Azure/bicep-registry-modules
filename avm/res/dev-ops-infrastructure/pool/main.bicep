@@ -158,18 +158,22 @@ resource managedDevOpsPool 'Microsoft.DevOpsInfrastructure/pools@2024-10-19' = {
           kind: 'Stateful'
           maxAgentLifetime: agentProfile.maxAgentLifetime
           gracePeriodTimeSpan: agentProfile.gracePeriodTimeSpan
-          resourcePredictions: {
-            timeZone: agentProfile.?resourcePredictions.timeZone
-            daysData: formattedDaysData
-          }
+          resourcePredictions: !empty(agentProfile.?resourcePredictions)
+            ? {
+                timeZone: agentProfile.?resourcePredictions.timeZone
+                daysData: formattedDaysData
+              }
+            : null
           resourcePredictionsProfile: agentProfile.?resourcePredictionsProfile
         }
       : {
           kind: 'Stateless'
-          resourcePredictions: {
-            timeZone: agentProfile.?resourcePredictions.timeZone
-            daysData: formattedDaysData
-          }
+          resourcePredictions: !empty(agentProfile.?resourcePredictions)
+            ? {
+                timeZone: agentProfile.?resourcePredictions.timeZone
+                daysData: formattedDaysData
+              }
+            : null
           resourcePredictionsProfile: agentProfile.?resourcePredictionsProfile
         }
     devCenterProjectResourceId: devCenterProjectResourceId

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "11669788801837733609"
+      "templateHash": "8153430822322180372"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource.",
@@ -1008,7 +1008,7 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "agentProfile": "[if(equals(parameters('agentProfile').kind, 'Stateful'), createObject('kind', 'Stateful', 'maxAgentLifetime', parameters('agentProfile').maxAgentLifetime, 'gracePeriodTimeSpan', parameters('agentProfile').gracePeriodTimeSpan, 'resourcePredictions', createObject('timeZone', tryGet(parameters('agentProfile'), 'resourcePredictions', 'timeZone'), 'daysData', variables('formattedDaysData')), 'resourcePredictionsProfile', tryGet(parameters('agentProfile'), 'resourcePredictionsProfile')), createObject('kind', 'Stateless', 'resourcePredictions', createObject('timeZone', tryGet(parameters('agentProfile'), 'resourcePredictions', 'timeZone'), 'daysData', variables('formattedDaysData')), 'resourcePredictionsProfile', tryGet(parameters('agentProfile'), 'resourcePredictionsProfile')))]",
+        "agentProfile": "[if(equals(parameters('agentProfile').kind, 'Stateful'), createObject('kind', 'Stateful', 'maxAgentLifetime', parameters('agentProfile').maxAgentLifetime, 'gracePeriodTimeSpan', parameters('agentProfile').gracePeriodTimeSpan, 'resourcePredictions', if(not(empty(tryGet(parameters('agentProfile'), 'resourcePredictions'))), createObject('timeZone', tryGet(parameters('agentProfile'), 'resourcePredictions', 'timeZone'), 'daysData', variables('formattedDaysData')), null()), 'resourcePredictionsProfile', tryGet(parameters('agentProfile'), 'resourcePredictionsProfile')), createObject('kind', 'Stateless', 'resourcePredictions', if(not(empty(tryGet(parameters('agentProfile'), 'resourcePredictions'))), createObject('timeZone', tryGet(parameters('agentProfile'), 'resourcePredictions', 'timeZone'), 'daysData', variables('formattedDaysData')), null()), 'resourcePredictionsProfile', tryGet(parameters('agentProfile'), 'resourcePredictionsProfile')))]",
         "devCenterProjectResourceId": "[parameters('devCenterProjectResourceId')]",
         "fabricProfile": {
           "sku": {
