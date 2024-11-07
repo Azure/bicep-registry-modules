@@ -95,6 +95,7 @@ First must pass with this parameter set to Validate prior running with it set to
   ```Bicep
   [
     'Deploy'
+    'None'
     'Validate'
   ]
   ```

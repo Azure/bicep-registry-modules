@@ -17,6 +17,7 @@ param tags object?
 @allowed([
   'Validate'
   'Deploy'
+  'None'
 ])
 param deploymentMode string
 
@@ -132,7 +133,7 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' existing = {
   name: clusterName
 }
 
-resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2024-04-01' = {
+resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2024-04-01' = if (deploymentMode != 'None') {
   name: 'default'
   parent: cluster
   properties: {

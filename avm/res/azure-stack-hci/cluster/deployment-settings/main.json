@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "16187018745411755992"
+      "templateHash": "1489938723765291456"
     },
     "name": "Azure Stack HCI Cluster Deployment Settings",
     "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource.",
@@ -39,7 +39,8 @@
       "type": "string",
       "allowedValues": [
         "Validate",
-        "Deploy"
+        "Deploy",
+        "None"
       ],
       "metadata": {
         "description": "Required. First must pass with this parameter set to Validate prior running with it set to Deploy. If either Validation or Deployment phases fail, fix the issue, then resubmit the template with the same deploymentMode to retry."
@@ -239,6 +240,7 @@
       "name": "[parameters('clusterName')]"
     },
     "deploymentSettings": {
+      "condition": "[not(equals(parameters('deploymentMode'), 'None'))]",
       "type": "Microsoft.AzureStackHCI/clusters/deploymentSettings",
       "apiVersion": "2024-04-01",
       "name": "[format('{0}/{1}', parameters('clusterName'), 'default')]",
