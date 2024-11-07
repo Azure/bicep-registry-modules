@@ -114,14 +114,14 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-var formattedDaysData = agentProfile.kind == 'Stateless' && !empty(agentProfile.?resourcePredictions.daysData)
+var formattedDaysData = agentProfile.kind == 'Stateless' && !empty(agentProfile.?resourcePredictions.?daysData)
   ? map(
       ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       day =>
-        contains(agentProfile.?resourcePredictions.daysData, day)
+        contains(agentProfile.?resourcePredictions.?daysData, day)
           ? {
-              '${agentProfile.?resourcePredictions.daysData[day].startTime}': agentProfile.?resourcePredictions.daysData[day].startAgentCount
-              '${agentProfile.?resourcePredictions.daysData[day].endTime}': agentProfile.?resourcePredictions.daysData[day].endAgentCount
+              '${agentProfile.?resourcePredictions.?daysData[day].startTime}': agentProfile.?resourcePredictions.?daysData[day].startAgentCount
+              '${agentProfile.?resourcePredictions.?daysData[day].endTime}': agentProfile.?resourcePredictions.?daysData[day].endAgentCount
             }
           : {}
     )
@@ -158,16 +158,19 @@ resource managedDevOpsPool 'Microsoft.DevOpsInfrastructure/pools@2024-10-19' = {
           kind: 'Stateful'
           maxAgentLifetime: agentProfile.maxAgentLifetime
           gracePeriodTimeSpan: agentProfile.gracePeriodTimeSpan
-          resourcePredictions: agentProfile.resourcePredictions
-          resourcePredictionsProfile: agentProfile.resourcePredictionsProfile
+          resourcePredictions: {
+            timeZone: agentProfile.?resourcePredictions.timeZone
+            daysData: formattedDaysData
+          }
+          resourcePredictionsProfile: agentProfile.?resourcePredictionsProfile
         }
       : {
           kind: 'Stateless'
           resourcePredictions: {
-            timeZone: agentProfile.resourcePredictions.timeZone
+            timeZone: agentProfile.?resourcePredictions.timeZone
             daysData: formattedDaysData
           }
-          resourcePredictionsProfile: agentProfile.resourcePredictionsProfile
+          resourcePredictionsProfile: agentProfile.?resourcePredictionsProfile
         }
     devCenterProjectResourceId: devCenterProjectResourceId
     fabricProfile: {
@@ -392,7 +395,13 @@ type agentStatefulType = {
   gracePeriodTimeSpan: string
 
   @description('Optional. Defines pool buffer/stand-by agents.')
-  resourcePredictions: object?
+  resourcePredictions: {
+    @description('Required. The time zone in which the daysData is provided. To see the list of available time zones, see: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/default-time-zones?view=windows-11#time-zones or via PowerShell command `(Get-TimeZone -ListAvailable).StandardName`.')
+    timeZone: string
+
+    @description('Optional. The number of agents needed at a specific time.')
+    daysData: daysDataType
+  }?
 
   @discriminator('kind')
   @description('Optional. Determines how the stand-by scheme should be provided.')
