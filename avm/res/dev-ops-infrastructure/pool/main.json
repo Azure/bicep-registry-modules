@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "10594528426505576326"
+      "templateHash": "11669788801837733609"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource.",
@@ -1130,13 +1130,6 @@
         "description": "The location the Managed DevOps Pool resource was deployed into."
       },
       "value": "[reference('managedDevOpsPool', '2024-10-19', 'full').location]"
-    },
-    "bla": {
-      "type": "array",
-      "metadata": {
-        "description": "bla"
-      },
-      "value": "[variables('formattedDaysData')]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",

@@ -1456,7 +1456,6 @@ Tags of the resource.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `bla` | array | bla |
 | `location` | string | The location the Managed DevOps Pool resource was deployed into. |
 | `name` | string | The name of the Managed DevOps Pool. |
 | `resourceGroupName` | string | The name of the resource group the Managed DevOps Pool resource was deployed into. |

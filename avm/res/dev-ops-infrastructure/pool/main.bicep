@@ -264,9 +264,6 @@ output resourceGroupName string = resourceGroup().name
 @description('The location the Managed DevOps Pool resource was deployed into.')
 output location string = managedDevOpsPool.location
 
-@description('bla')
-output bla array = formattedDaysData!
-
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = managedDevOpsPool.?identity.?principalId
 
