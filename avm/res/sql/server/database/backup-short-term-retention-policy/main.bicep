@@ -8,7 +8,7 @@ param serverName string
 @description('Required. The name of the parent database.')
 param databaseName string
 
-@description('Optional. Differential backup interval in hours.')
+@description('Optional. Differential backup interval in hours. For Hyperscal tiers this value will be ignored.')
 param diffBackupIntervalInHours int = 24
 
 @description('Optional. Poin-in-time retention in days.')
@@ -26,7 +26,7 @@ resource backupShortTermRetentionPolicy 'Microsoft.Sql/servers/databases/backupS
   name: 'default'
   parent: server::database
   properties: {
-    diffBackupIntervalInHours: diffBackupIntervalInHours
+    diffBackupIntervalInHours: server::database.sku.tier == 'Hyperscale' ? null : diffBackupIntervalInHours
     retentionDays: retentionDays
   }
 }
