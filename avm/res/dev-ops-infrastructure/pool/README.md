@@ -196,11 +196,10 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
             startTime: '09:00:00'
           }
         }
-        timeZone: 'Central Europe Standard Time'
+        timeZone: 'UTC'
       }
       resourcePredictionsProfile: {
-        kind: 'Automatic'
-        predictionPreference: 'Balanced'
+        kind: 'Manual'
       }
     }
     concurrency: 1
@@ -306,11 +305,10 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
               "startTime": "09:00:00"
             }
           },
-          "timeZone": "Central Europe Standard Time"
+          "timeZone": "UTC"
         },
         "resourcePredictionsProfile": {
-          "kind": "Automatic",
-          "predictionPreference": "Balanced"
+          "kind": "Manual"
         }
       }
     },
@@ -438,11 +436,10 @@ param agentProfile = {
         startTime: '09:00:00'
       }
     }
-    timeZone: 'Central Europe Standard Time'
+    timeZone: 'UTC'
   }
   resourcePredictionsProfile: {
-    kind: 'Automatic'
-    predictionPreference: 'Balanced'
+    kind: 'Manual'
   }
 }
 param concurrency = 1
@@ -534,23 +531,6 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     // Required parameters
     agentProfile: {
       kind: 'Stateless'
-      resourcePredictions: {
-        daysData: {
-          friday: {
-            endAgentCount: 0
-            endTime: '17:00:00'
-            startAgentCount: 1
-            startTime: '09:00:00'
-          }
-          monday: {
-            endAgentCount: 0
-            endTime: '17:00:00'
-            startAgentCount: 1
-            startTime: '09:00:00'
-          }
-        }
-        timeZone: 'Central Europe Standard Time'
-      }
       resourcePredictionsProfile: {
         kind: 'Automatic'
         predictionPreference: 'Balanced'
@@ -603,23 +583,6 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     "agentProfile": {
       "value": {
         "kind": "Stateless",
-        "resourcePredictions": {
-          "daysData": {
-            "friday": {
-              "endAgentCount": 0,
-              "endTime": "17:00:00",
-              "startAgentCount": 1,
-              "startTime": "09:00:00"
-            },
-            "monday": {
-              "endAgentCount": 0,
-              "endTime": "17:00:00",
-              "startAgentCount": 1,
-              "startTime": "09:00:00"
-            }
-          },
-          "timeZone": "Central Europe Standard Time"
-        },
         "resourcePredictionsProfile": {
           "kind": "Automatic",
           "predictionPreference": "Balanced"
@@ -686,23 +649,6 @@ using 'br/public:avm/res/dev-ops-infrastructure/pool:<version>'
 // Required parameters
 param agentProfile = {
   kind: 'Stateless'
-  resourcePredictions: {
-    daysData: {
-      friday: {
-        endAgentCount: 0
-        endTime: '17:00:00'
-        startAgentCount: 1
-        startTime: '09:00:00'
-      }
-      monday: {
-        endAgentCount: 0
-        endTime: '17:00:00'
-        startAgentCount: 1
-        startTime: '09:00:00'
-      }
-    }
-    timeZone: 'Central Europe Standard Time'
-  }
   resourcePredictionsProfile: {
     kind: 'Automatic'
     predictionPreference: 'Balanced'
@@ -1510,6 +1456,7 @@ Tags of the resource.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `bla` | array | bla |
 | `location` | string | The location the Managed DevOps Pool resource was deployed into. |
 | `name` | string | The name of the Managed DevOps Pool. |
 | `resourceGroupName` | string | The name of the resource group the Managed DevOps Pool resource was deployed into. |
