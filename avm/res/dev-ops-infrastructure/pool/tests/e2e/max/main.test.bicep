@@ -70,15 +70,15 @@ module testDeployment '../../../main.bicep' = [
       agentProfile: {
         kind: 'Stateless'
         resourcePredictions: {
-          timeZone: 'Central Europe Standard Time'
+          timeZone: 'UTC'
           daysData: {
-            Monday: {
+            monday: {
               startTime: '09:00:00'
               startAgentCount: 1
               endTime: '17:00:00'
               endAgentCount: 0
             }
-            Friday: {
+            friday: {
               startTime: '09:00:00'
               startAgentCount: 1
               endTime: '17:00:00'
@@ -87,8 +87,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         resourcePredictionsProfile: {
-          kind: 'Automatic'
-          predictionPreference: 'Balanced'
+          kind: 'Manual'
         }
       }
       concurrency: 1

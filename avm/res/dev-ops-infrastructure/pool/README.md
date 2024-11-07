@@ -183,13 +183,13 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       kind: 'Stateless'
       resourcePredictions: {
         daysData: {
-          Friday: {
+          friday: {
             endAgentCount: 0
             endTime: '17:00:00'
             startAgentCount: 1
             startTime: '09:00:00'
           }
-          Monday: {
+          monday: {
             endAgentCount: 0
             endTime: '17:00:00'
             startAgentCount: 1
@@ -293,13 +293,13 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         "kind": "Stateless",
         "resourcePredictions": {
           "daysData": {
-            "Friday": {
+            "friday": {
               "endAgentCount": 0,
               "endTime": "17:00:00",
               "startAgentCount": 1,
               "startTime": "09:00:00"
             },
-            "Monday": {
+            "monday": {
               "endAgentCount": 0,
               "endTime": "17:00:00",
               "startAgentCount": 1,
@@ -425,13 +425,13 @@ param agentProfile = {
   kind: 'Stateless'
   resourcePredictions: {
     daysData: {
-      Friday: {
+      friday: {
         endAgentCount: 0
         endTime: '17:00:00'
         startAgentCount: 1
         startTime: '09:00:00'
       }
-      Monday: {
+      monday: {
         endAgentCount: 0
         endTime: '17:00:00'
         startAgentCount: 1
@@ -536,13 +536,13 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       kind: 'Stateless'
       resourcePredictions: {
         daysData: {
-          Friday: {
+          friday: {
             endAgentCount: 0
             endTime: '17:00:00'
             startAgentCount: 1
             startTime: '09:00:00'
           }
-          Monday: {
+          monday: {
             endAgentCount: 0
             endTime: '17:00:00'
             startAgentCount: 1
@@ -605,13 +605,13 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         "kind": "Stateless",
         "resourcePredictions": {
           "daysData": {
-            "Friday": {
+            "friday": {
               "endAgentCount": 0,
               "endTime": "17:00:00",
               "startAgentCount": 1,
               "startTime": "09:00:00"
             },
-            "Monday": {
+            "monday": {
               "endAgentCount": 0,
               "endTime": "17:00:00",
               "startAgentCount": 1,
@@ -688,13 +688,13 @@ param agentProfile = {
   kind: 'Stateless'
   resourcePredictions: {
     daysData: {
-      Friday: {
+      friday: {
         endAgentCount: 0
         endTime: '17:00:00'
         startAgentCount: 1
         startTime: '09:00:00'
       }
-      Monday: {
+      monday: {
         endAgentCount: 0
         endTime: '17:00:00'
         startAgentCount: 1

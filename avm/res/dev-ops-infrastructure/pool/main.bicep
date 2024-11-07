@@ -114,14 +114,14 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-var formattedDaysData = agentProfile.kind == 'Stateless' && !empty(agentProfile.?resourcePredictions.?daysData)
+var formattedDaysData = !empty(agentProfile.?resourcePredictions.?daysData)
   ? map(
-      ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
       day =>
-        contains(agentProfile.?resourcePredictions.?daysData, day)
+        contains(agentProfile.resourcePredictions.daysData, day)
           ? {
-              '${agentProfile.?resourcePredictions.?daysData[day].startTime}': agentProfile.?resourcePredictions.?daysData[day].startAgentCount
-              '${agentProfile.?resourcePredictions.?daysData[day].endTime}': agentProfile.?resourcePredictions.?daysData[day].endAgentCount
+              '${agentProfile.resourcePredictions.daysData[day].startTime}': agentProfile.resourcePredictions.daysData[day].startAgentCount
+              '${agentProfile.resourcePredictions.daysData[day].endTime}': agentProfile.resourcePredictions.daysData[day].endAgentCount
             }
           : {}
     )
@@ -263,6 +263,9 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the Managed DevOps Pool resource was deployed into.')
 output location string = managedDevOpsPool.location
+
+@description('bla')
+output bla array = formattedDaysData!
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = managedDevOpsPool.?identity.?principalId
@@ -521,60 +524,39 @@ type managedIdentitiesType = {
   userAssignedResourceIds: string[]?
 }?
 
+type standbyAgentsConfigType = {
+  @description('Required. The time at which the agents are needed.')
+  startTime: string
+
+  @description('Required. The time at which the agents are no longer needed.')
+  endTime: string
+
+  @description('Required. The number of agents needed at the start time.')
+  startAgentCount: int
+
+  @description('Required. The number of agents needed at the end time.')
+  endAgentCount: int
+}?
+
 type daysDataType = {
   @description('Optional. The number of agents needed at a specific time for Monday.')
-  Monday: {
-    startTime: string
-    endTime: string
-    startAgentCount: int
-    endAgentCount: int
-  }?
+  monday: standbyAgentsConfigType
 
   @description('Optional. The number of agents needed at a specific time for Tuesday.')
-  Tuesday: {
-    startTime: string
-    endTime: string
-    startAgentCount: int
-    endAgentCount: int
-  }?
+  tuesday: standbyAgentsConfigType
 
   @description('Optional. The number of agents needed at a specific time for Wednesday.')
-  Wednesday: {
-    startTime: string
-    endTime: string
-    startAgentCount: int
-    endAgentCount: int
-  }?
+  wednesday: standbyAgentsConfigType
 
   @description('Optional. The number of agents needed at a specific time for Thursday.')
-  Thursday: {
-    startTime: string
-    endTime: string
-    startAgentCount: int
-    endAgentCount: int
-  }?
+  thursday: standbyAgentsConfigType
 
   @description('Optional. The number of agents needed at a specific time for Friday.')
-  Friday: {
-    startTime: string
-    endTime: string
-    startAgentCount: int
-    endAgentCount: int
-  }?
+  friday: standbyAgentsConfigType
 
   @description('Optional. The number of agents needed at a specific time for Saturday.')
-  Saturday: {
-    startTime: string
-    endTime: string
-    startAgentCount: int
-    endAgentCount: int
-  }?
+  saturday: standbyAgentsConfigType
 
   @description('Optional. The number of agents needed at a specific time for Sunday.')
-  Sunday: {
-    startTime: string
-    endTime: string
-    startAgentCount: int
-    endAgentCount: int
-  }?
+  sunday: standbyAgentsConfigType
 }?

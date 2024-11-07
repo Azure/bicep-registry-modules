@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "9671350045365034325"
+      "templateHash": "12019028949343932548"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource.",
@@ -760,152 +760,77 @@
         "__bicep_export!": true
       }
     },
+    "standbyAgentsConfigType": {
+      "type": "object",
+      "properties": {
+        "startTime": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The time at which the agents are needed."
+          }
+        },
+        "endTime": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The time at which the agents are no longer needed."
+          }
+        },
+        "startAgentCount": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of agents needed at the start time."
+          }
+        },
+        "endAgentCount": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of agents needed at the end time."
+          }
+        }
+      },
+      "nullable": true
+    },
     "daysDataType": {
       "type": "object",
       "properties": {
-        "Monday": {
-          "type": "object",
-          "properties": {
-            "startTime": {
-              "type": "string"
-            },
-            "endTime": {
-              "type": "string"
-            },
-            "startAgentCount": {
-              "type": "int"
-            },
-            "endAgentCount": {
-              "type": "int"
-            }
-          },
-          "nullable": true,
+        "monday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
           "metadata": {
             "description": "Optional. The number of agents needed at a specific time for Monday."
           }
         },
-        "Tuesday": {
-          "type": "object",
-          "properties": {
-            "startTime": {
-              "type": "string"
-            },
-            "endTime": {
-              "type": "string"
-            },
-            "startAgentCount": {
-              "type": "int"
-            },
-            "endAgentCount": {
-              "type": "int"
-            }
-          },
-          "nullable": true,
+        "tuesday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
           "metadata": {
             "description": "Optional. The number of agents needed at a specific time for Tuesday."
           }
         },
-        "Wednesday": {
-          "type": "object",
-          "properties": {
-            "startTime": {
-              "type": "string"
-            },
-            "endTime": {
-              "type": "string"
-            },
-            "startAgentCount": {
-              "type": "int"
-            },
-            "endAgentCount": {
-              "type": "int"
-            }
-          },
-          "nullable": true,
+        "wednesday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
           "metadata": {
             "description": "Optional. The number of agents needed at a specific time for Wednesday."
           }
         },
-        "Thursday": {
-          "type": "object",
-          "properties": {
-            "startTime": {
-              "type": "string"
-            },
-            "endTime": {
-              "type": "string"
-            },
-            "startAgentCount": {
-              "type": "int"
-            },
-            "endAgentCount": {
-              "type": "int"
-            }
-          },
-          "nullable": true,
+        "thursday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
           "metadata": {
             "description": "Optional. The number of agents needed at a specific time for Thursday."
           }
         },
-        "Friday": {
-          "type": "object",
-          "properties": {
-            "startTime": {
-              "type": "string"
-            },
-            "endTime": {
-              "type": "string"
-            },
-            "startAgentCount": {
-              "type": "int"
-            },
-            "endAgentCount": {
-              "type": "int"
-            }
-          },
-          "nullable": true,
+        "friday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
           "metadata": {
             "description": "Optional. The number of agents needed at a specific time for Friday."
           }
         },
-        "Saturday": {
-          "type": "object",
-          "properties": {
-            "startTime": {
-              "type": "string"
-            },
-            "endTime": {
-              "type": "string"
-            },
-            "startAgentCount": {
-              "type": "int"
-            },
-            "endAgentCount": {
-              "type": "int"
-            }
-          },
-          "nullable": true,
+        "saturday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
           "metadata": {
             "description": "Optional. The number of agents needed at a specific time for Saturday."
           }
         },
-        "Sunday": {
-          "type": "object",
-          "properties": {
-            "startTime": {
-              "type": "string"
-            },
-            "endTime": {
-              "type": "string"
-            },
-            "startAgentCount": {
-              "type": "int"
-            },
-            "endAgentCount": {
-              "type": "int"
-            }
-          },
-          "nullable": true,
+        "sunday": {
+          "$ref": "#/definitions/standbyAgentsConfigType",
           "metadata": {
             "description": "Optional. The number of agents needed at a specific time for Sunday."
           }

@@ -69,23 +69,6 @@ module testDeployment '../../../main.bicep' = [
       location: enforcedLocation
       agentProfile: {
         kind: 'Stateless'
-        resourcePredictions: {
-          timeZone: 'Central Europe Standard Time'
-          daysData: {
-            Monday: {
-              startTime: '09:00:00'
-              startAgentCount: 1
-              endTime: '17:00:00'
-              endAgentCount: 0
-            }
-            Friday: {
-              startTime: '09:00:00'
-              startAgentCount: 1
-              endTime: '17:00:00'
-              endAgentCount: 0
-            }
-          }
-        }
         resourcePredictionsProfile: {
           kind: 'Automatic'
           predictionPreference: 'Balanced'
