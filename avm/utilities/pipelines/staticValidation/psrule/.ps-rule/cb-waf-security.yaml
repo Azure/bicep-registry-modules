@@ -1,0 +1,12 @@
+---
+# Synopsis: Custom baseline for AVM WAF security pillar recommendations that are enforced in CI.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  name: CB.AVM.WAF.Security
+spec:
+  rule:
+    include:
+      - Azure.ACR.AdminUser
+      - Azure.AKS.AzureRBAC
+      - Azure.ACR.Firewall
