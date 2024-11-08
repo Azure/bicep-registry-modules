@@ -71,6 +71,12 @@ module testDeployment '../../../main.bicep' = [
       }
       dnsSettings: null
       ddosSettings: null
+      ipTags: [
+        {
+          ipTagType: 'RoutingPreference'
+          tag: 'Internet'
+        }
+      ]
       publicIpPrefixResourceId: null
       publicIPAllocationMethod: 'Static'
       roleAssignments: [
