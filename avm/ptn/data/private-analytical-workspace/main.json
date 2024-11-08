@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "928189945777087235"
+      "templateHash": "4437449109602171238"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
@@ -79,7 +79,7 @@
           "minValue": 0,
           "maxValue": 730,
           "metadata": {
-            "description": "Optional. Number of days data will be retained for. The dafult value is: '365'."
+            "description": "Optional. Number of days data will be retained for. The default value is: '365'."
           }
         },
         "dailyQuotaGb": {
@@ -87,7 +87,7 @@
           "nullable": true,
           "minValue": -1,
           "metadata": {
-            "description": "Optional. The workspace daily quota for ingestion. The dafult value is: '-1' (not limited)."
+            "description": "Optional. The workspace daily quota for ingestion. The default value is: '-1' (not limited)."
           }
         }
       },
@@ -100,37 +100,45 @@
       "properties": {
         "createMode": {
           "type": "string",
+          "allowedValues": [
+            "default",
+            "recover"
+          ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. The vault's create mode to indicate whether the vault need to be recovered or not. - 'recover' or 'default'. The dafult value is: 'default'."
+            "description": "Optional. The vault's create mode to indicate whether the vault need to be recovered or not. The default value is: 'default'."
           }
         },
         "sku": {
           "type": "string",
+          "allowedValues": [
+            "premium",
+            "standard"
+          ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies the SKU for the vault. - 'premium' or 'standard'. The dafult value is: 'premium'."
+            "description": "Optional. Specifies the SKU for the vault. The default value is: 'premium'."
           }
         },
         "enableSoftDelete": {
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Switch to enable/disable Key Vault's soft delete feature. The dafult value is: 'true'."
+            "description": "Optional. Switch to enable/disable Key Vault's soft delete feature. The default value is: 'true'."
           }
         },
         "softDeleteRetentionInDays": {
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Soft delete data retention days. It accepts >=7 and <=90. The dafult value is: '90'."
+            "description": "Optional. Soft delete data retention days. It accepts >=7 and <=90. The default value is: '90'."
           }
         },
         "enablePurgeProtection": {
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Provide 'true' to enable Key Vault's purge protection feature. The dafult value is: 'true'."
+            "description": "Optional. Provide 'true' to enable Key Vault's purge protection feature. The default value is: 'true'."
           }
         }
       },

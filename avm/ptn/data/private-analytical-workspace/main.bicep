@@ -825,31 +825,31 @@ type virtualNetworkType = {
 
 @export()
 type logAnalyticsWorkspaceType = {
-  @description('Optional. Number of days data will be retained for. The dafult value is: \'365\'.')
+  @description('Optional. Number of days data will be retained for. The default value is: \'365\'.')
   @minValue(0)
   @maxValue(730)
   dataRetention: int?
 
-  @description('Optional. The workspace daily quota for ingestion. The dafult value is: \'-1\' (not limited).')
+  @description('Optional. The workspace daily quota for ingestion. The default value is: \'-1\' (not limited).')
   @minValue(-1)
   dailyQuotaGb: int?
 }
 
 @export()
 type keyVaultType = {
-  @description('Optional. The vault\'s create mode to indicate whether the vault need to be recovered or not. - \'recover\' or \'default\'. The dafult value is: \'default\'.')
-  createMode: string?
+  @description('Optional. The vault\'s create mode to indicate whether the vault need to be recovered or not. The default value is: \'default\'.')
+  createMode: ('default' | 'recover')?
 
-  @description('Optional. Specifies the SKU for the vault. - \'premium\' or \'standard\'. The dafult value is: \'premium\'.')
-  sku: string?
+  @description('Optional. Specifies the SKU for the vault. The default value is: \'premium\'.')
+  sku: ('standard' | 'premium')?
 
-  @description('Optional. Switch to enable/disable Key Vault\'s soft delete feature. The dafult value is: \'true\'.')
+  @description('Optional. Switch to enable/disable Key Vault\'s soft delete feature. The default value is: \'true\'.')
   enableSoftDelete: bool?
 
-  @description('Optional. Soft delete data retention days. It accepts >=7 and <=90. The dafult value is: \'90\'.')
+  @description('Optional. Soft delete data retention days. It accepts >=7 and <=90. The default value is: \'90\'.')
   softDeleteRetentionInDays: int?
 
-  @description('Optional. Provide \'true\' to enable Key Vault\'s purge protection feature. The dafult value is: \'true\'.')
+  @description('Optional. Provide \'true\' to enable Key Vault\'s purge protection feature. The default value is: \'true\'.')
   enablePurgeProtection: bool?
 }
 
