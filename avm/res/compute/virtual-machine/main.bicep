@@ -51,6 +51,9 @@ param adminUsername string
 @secure()
 param adminPassword string = ''
 
+@description('Optional. UserData for the VM, which must be base-64 encoded. Customer should not pass any secrets in here.')
+param userData string = ''
+
 @description('Optional. Custom data associated to the VM, this value will be automatically converted into base64 to account for the expected VM format.')
 param customData string = ''
 
@@ -620,6 +623,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
       : null
     licenseType: !empty(licenseType) ? licenseType : null
+    userData: !empty(userData) ? base64(userData) : null
   }
   dependsOn: [
     vm_nic
