@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "8547912106634540653"
+      "version": "0.31.34.60546",
+      "templateHash": "15203798476281072439"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.",
@@ -740,8 +740,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "1489938723765291456"
+              "version": "0.31.34.60546",
+              "templateHash": "15623315695405850985"
             },
             "name": "Azure Stack HCI Cluster Deployment Settings",
             "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource.",
@@ -1063,10 +1063,7 @@
                     }
                   ]
                 }
-              },
-              "dependsOn": [
-                "cluster"
-              ]
+              }
             }
           },
           "outputs": {
