@@ -36,9 +36,10 @@ param inboundRouteMapResourceId string?
 @description('Optional. The Resource ID of the outbound route map.')
 param outboundRouteMapResourceId string?
 
+@description('Optional. The Labels to propagate routes to.')
 param propagatedLabelNames array = []
 
-param vnetRoutesStaticRoutes vnetRoutesStaticRoutesType?
+@description('Required. The address prefixes for the VPN Client Address Pool.')
 param vpnClientAddressPoolAddressPrefixes array = []
 
 @description('Required. The resource ID of the gateways virtual hub.')
@@ -118,7 +119,6 @@ resource p2sVpnGateway 'Microsoft.Network/p2svpnGateways@2024-01-01' = {
               ]
               labels: propagatedLabelNames
             }
-            vnetRoutes: vnetRoutesStaticRoutes
           }
           vpnClientAddressPool: {
             addressPrefixes: vpnClientAddressPoolAddressPrefixes

@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.p2svpngateway-${serv
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'vscmax'
+param serviceShort string = 'vscwaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -59,20 +59,13 @@ module testDeployment '../../../main.bicep' = [
         '10.50.50.50'
       ]
       isRoutingPreferenceInternet: false
-      enableInternetSecurity: false
-      associatedRouteTableName: 'noneRouteTable'
-      inboundRouteMapResourceId: nestedDependencies.outputs.hubRouteMapResourceId
-      outboundRouteMapResourceId: nestedDependencies.outputs.hubRouteMapResourceId
-      propagatedRouteTableNames: [
-        nestedDependencies.outputs.hubRouteTableName
-      ]
-      propagatedLabelNames: nestedDependencies.outputs.hubRouteTableLabels
+      enableInternetSecurity: true
+      associatedRouteTableName: 'defaultRouteTable'
       vpnClientAddressPoolAddressPrefixes: [
         '10.0.2.0/24'
-        '10.0.3.0/24'
       ]
       virtualHubId: nestedDependencies.outputs.virtualHubResourceId
-      vpnGatewayScaleUnit: 5
+      vpnGatewayScaleUnit: 1
       vpnServerConfigurationId: nestedDependencies.outputs.vpnServerConfigurationResourceId
       p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
     }
