@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "17541245010693350271"
+      "templateHash": "1270772577226075570"
     },
     "name": "Application Gateway for Containers",
     "description": "This module deploys an Application Gateway for Containers",
@@ -611,7 +611,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "3467431627307962290"
+              "templateHash": "16237699923821445314"
             },
             "name": "Application Gateway for Containers Association",
             "description": "This module deploys an Application Gateway for Containers Association",
@@ -640,7 +640,7 @@
             "subnetResourceId": {
               "type": "string",
               "metadata": {
-                "description": "Reuired. The resource ID of the subnet to associate with the traffic controller."
+                "description": "Required. The resource ID of the subnet to associate with the traffic controller."
               }
             }
           },
