@@ -441,8 +441,7 @@ param vpnGatewayScaleUnit = 1
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`associatedRouteTableName`](#parameter-associatedroutetablename) | string | The name of the associated route table, required if deploying in a Secure Virtual Hub; cannot be a custom route table. |
-| [`propagatedRouteTableNames`](#parameter-propagatedroutetablenames) | array | The names of the route tables to propagate to the P2S VPN Gateway. |
+| [`associatedRouteTableName`](#parameter-associatedroutetablename) | string | The name of the associated route table. Required if deploying in a Secure Virtual Hub; cannot be a custom route table. |
 
 **Optional parameters**
 
@@ -456,6 +455,7 @@ param vpnGatewayScaleUnit = 1
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`outboundRouteMapResourceId`](#parameter-outboundroutemapresourceid) | string | The Resource ID of the outbound route map. |
 | [`propagatedLabelNames`](#parameter-propagatedlabelnames) | array | The Labels to propagate routes to. |
+| [`propagatedRouteTableNames`](#parameter-propagatedroutetablenames) | array | The names of the route tables to propagate to the P2S VPN Gateway. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`vpnGatewayScaleUnit`](#parameter-vpngatewayscaleunit) | int | The scale unit of the VPN Gateway. |
 
@@ -505,7 +505,7 @@ The resource ID of the VPN Server Configuration.
 
 ### Parameter: `associatedRouteTableName`
 
-The name of the associated route table, required if deploying in a Secure Virtual Hub; cannot be a custom route table.
+The name of the associated route table. Required if deploying in a Secure Virtual Hub; cannot be a custom route table.
 
 - Required: No
 - Type: string
@@ -516,14 +516,6 @@ The name of the associated route table, required if deploying in a Secure Virtua
     'noneRouteTable'
   ]
   ```
-
-### Parameter: `propagatedRouteTableNames`
-
-The names of the route tables to propagate to the P2S VPN Gateway.
-
-- Required: No
-- Type: array
-- Default: `[]`
 
 ### Parameter: `customDnsServers`
 
@@ -608,6 +600,14 @@ The Resource ID of the outbound route map.
 ### Parameter: `propagatedLabelNames`
 
 The Labels to propagate routes to.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `propagatedRouteTableNames`
+
+The names of the route tables to propagate to the P2S VPN Gateway.
 
 - Required: No
 - Type: array
