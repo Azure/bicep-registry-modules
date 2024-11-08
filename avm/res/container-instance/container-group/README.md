@@ -60,7 +60,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -107,7 +107,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -158,7 +158,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -212,7 +212,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -232,7 +232,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -304,7 +304,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -324,7 +324,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -406,7 +406,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -426,7 +426,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -493,7 +493,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: '<memoryInGB>'
+              memoryInGB: '0.5'
             }
           }
         }
@@ -505,7 +505,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         protocol: 'Tcp'
       }
     ]
-    name: 'cicgminlow001'
+    name: 'ciclow001'
     // Non-required parameters
     location: '<location>'
   }
@@ -540,7 +540,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": "<memoryInGB>"
+                "memoryInGB": "0.5"
               }
             }
           }
@@ -556,7 +556,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       ]
     },
     "name": {
-      "value": "cicgminlow001"
+      "value": "ciclow001"
     },
     // Non-required parameters
     "location": {
@@ -591,7 +591,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: '<memoryInGB>'
+          memoryInGB: '0.5'
         }
       }
     }
@@ -603,7 +603,7 @@ param ipAddressPorts = [
     protocol: 'Tcp'
   }
 ]
-param name = 'cicgminlow001'
+param name = 'ciclow001'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -652,9 +652,13 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             }
           ]
           resources: {
+            limits: {
+              cpu: 4
+              memoryInGB: '4'
+            }
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -674,7 +678,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -753,9 +757,13 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
               }
             ],
             "resources": {
+              "limits": {
+                "cpu": 4,
+                "memoryInGB": "4"
+              },
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -775,7 +783,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -864,9 +872,13 @@ param containers = [
         }
       ]
       resources: {
+        limits: {
+          cpu: 4
+          memoryInGB: '4'
+        }
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -886,7 +898,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -959,7 +971,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 4
+              memoryInGB: '4'
             }
           }
         }
@@ -979,7 +991,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -1046,7 +1058,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 4
+                "memoryInGB": "4"
               }
             }
           }
@@ -1066,7 +1078,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -1143,7 +1155,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 4
+          memoryInGB: '4'
         }
       }
     }
@@ -1163,7 +1175,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -1231,7 +1243,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -1251,7 +1263,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
-              memoryInGB: 2
+              memoryInGB: '2'
             }
           }
         }
@@ -1317,7 +1329,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -1337,7 +1349,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
-                "memoryInGB": 2
+                "memoryInGB": "2"
               }
             }
           }
@@ -1411,7 +1423,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -1431,7 +1443,7 @@ param containers = [
       resources: {
         requests: {
           cpu: 2
-          memoryInGB: 2
+          memoryInGB: '2'
         }
       }
     }
@@ -1592,7 +1604,7 @@ The resource requests of this container instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`gpu`](#parameter-containerspropertiesresourcesrequestsgpu) | object | The GPU request of this container instance. |
-| [`memoryInGB`](#parameter-containerspropertiesresourcesrequestsmemoryingb) | int | The memory request in GB of this container instance. To specify a decimal value, use the json() function. |
+| [`memoryInGB`](#parameter-containerspropertiesresourcesrequestsmemoryingb) | string | The memory request in GB of this container instance. |
 
 ### Parameter: `containers.properties.resources.requests.cpu`
 
@@ -1639,10 +1651,10 @@ The SKU of the GPU resource.
 
 ### Parameter: `containers.properties.resources.requests.memoryInGB`
 
-The memory request in GB of this container instance. To specify a decimal value, use the json() function.
+The memory request in GB of this container instance.
 
 - Required: No
-- Type: int
+- Type: string
 
 ### Parameter: `containers.properties.resources.limits`
 
@@ -1662,7 +1674,7 @@ The resource limits of this container instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`gpu`](#parameter-containerspropertiesresourceslimitsgpu) | object | The GPU limit of this container instance. |
-| [`memoryInGB`](#parameter-containerspropertiesresourceslimitsmemoryingb) | int | The memory limit in GB of this container instance. To specify a decimal value, use the json() function. |
+| [`memoryInGB`](#parameter-containerspropertiesresourceslimitsmemoryingb) | string | The memory limit in GB of this container instance. |
 
 ### Parameter: `containers.properties.resources.limits.cpu`
 
@@ -1709,10 +1721,10 @@ The SKU of the GPU resource.
 
 ### Parameter: `containers.properties.resources.limits.memoryInGB`
 
-The memory limit in GB of this container instance. To specify a decimal value, use the json() function.
+The memory limit in GB of this container instance.
 
 - Required: No
-- Type: int
+- Type: string
 
 ### Parameter: `containers.properties.resources.securityContext`
 

@@ -284,8 +284,8 @@ type containerType = {
         @description('Optional. The GPU request of this container instance.')
         gpu: containerGpuType?
 
-        @description('Optional. The memory request in GB of this container instance. To specify a decimal value, use the json() function.')
-        memoryInGB: int?
+        @description('Optional. The memory request in GB of this container instance.')
+        memoryInGB: string?
       }
 
       @description('Optional. The resource limits of this container instance.')
@@ -296,8 +296,8 @@ type containerType = {
         @description('Optional. The GPU limit of this container instance.')
         gpu: containerGpuType?
 
-        @description('Optional. The memory limit in GB of this container instance. To specify a decimal value, use the json() function.')
-        memoryInGB: int?
+        @description('Optional. The memory limit in GB of this container instance.')
+        memoryInGB: string?
       }?
 
       @description('Optional. The security context of the container instance.')

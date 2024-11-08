@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-containerinstance.containerg
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cicgminlow'
+param serviceShort string = 'ciclow'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -57,7 +57,7 @@ module testDeployment '../../../main.bicep' = [
             resources: {
               requests: {
                 cpu: 2
-                memoryInGB: json('0.5')
+                memoryInGB: '0.5'
               }
             }
           }
