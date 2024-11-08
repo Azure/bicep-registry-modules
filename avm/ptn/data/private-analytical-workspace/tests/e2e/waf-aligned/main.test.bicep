@@ -42,7 +42,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}002'
       location: enforcedLocation
       tags: {
         'hidden-title': 'This is visible in the resource name'
@@ -58,7 +58,7 @@ module testDeployment '../../../main.bicep' = [
           sku: 'standard'
           enableSoftDelete: true
           softDeleteRetentionInDays: 90
-          enablePurgeProtection: true
+          enablePurgeProtection: false // For the purposes of the test, we disable purge protection
         }
       }
     }

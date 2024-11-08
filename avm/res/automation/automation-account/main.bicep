@@ -41,7 +41,7 @@ param variables array = []
 param linkedWorkspaceResourceId string = ''
 
 @description('Optional. List of gallerySolutions to be created in the linked log analytics workspace.')
-param gallerySolutions array = []
+param gallerySolutions gallerySolutionType[]?
 
 @description('Optional. List of softwareUpdateConfigurations to be created in the automation account.')
 param softwareUpdateConfigurations array = []
@@ -323,15 +323,14 @@ module automationAccount_linkedService 'modules/linked-service.bicep' = if (!emp
   )
 }
 
-module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.1.3' = [
-  for (gallerySolution, index) in gallerySolutions: if (!empty(linkedWorkspaceResourceId)) {
+module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.3.0' = [
+  for (gallerySolution, index) in gallerySolutions ?? []: if (!empty(linkedWorkspaceResourceId)) {
     name: '${uniqueString(deployment().name, location)}-AutoAccount-Solution-${index}'
     params: {
       name: gallerySolution.name
       location: location
       logAnalyticsWorkspaceName: last(split(linkedWorkspaceResourceId, '/'))!
-      product: gallerySolution.?product
-      publisher: gallerySolution.?publisher
+      plan: gallerySolution.plan
       enableTelemetry: enableTelemetry
     }
     // This is to support solution to law in different subscription and resource group than the automation account.
@@ -549,4 +548,18 @@ type credentialType = {
 
   @sys.description('Optional. Description of the credential.')
   description: string?
+}
+
+import { solutionPlanType } from 'br/public:avm/res/operations-management/solution:0.3.0'
+
+@export()
+type gallerySolutionType = {
+  @description('''Required. Name of the solution.
+  For solutions authored by Microsoft, the name must be in the pattern: `SolutionType(WorkspaceName)`, for example: `AntiMalware(contoso-Logs)`.
+  For solutions authored by third parties, the name should be in the pattern: `SolutionType[WorkspaceName]`, for example `MySolution[contoso-Logs]`.
+  The solution type is case-sensitive.''')
+  name: string
+
+  @description('Required. Plan for solution object supported by the OperationsManagement resource provider.')
+  plan: solutionPlanType
 }
