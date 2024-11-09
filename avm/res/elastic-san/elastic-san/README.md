@@ -8,13 +8,21 @@ This module deploys an Elastic SAN.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
+| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
+| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.ElasticSan/elasticSans` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ElasticSan/2023-01-01/elasticSans) |
+| `Microsoft.ElasticSan/elasticSans/volumegroups` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ElasticSan/2023-01-01/elasticSans/volumegroups) |
+| `Microsoft.ElasticSan/elasticSans/volumegroups/snapshots` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ElasticSan/2023-01-01/elasticSans/volumegroups/snapshots) |
+| `Microsoft.ElasticSan/elasticSans/volumegroups/volumes` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ElasticSan/2023-01-01/elasticSans/volumegroups/volumes) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -193,224 +201,56 @@ param name = 'esanwaf001'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Elastic SAN. |
+| [`name`](#parameter-name) | string | Name of the Elastic SAN. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must be between 3 and 24 characters long. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-availabilityzone) | int | Configuration of the availability zone for the Elastic SAN. Required if `Sku` is `Premium_LRS`. If this parameter is not provided, the `Sku` parameter will default to Premium_ZRS. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`baseSizeTiB`](#parameter-basesizetib) | int | Size of the Elastic SAN base capacity in Tebibytes (TiB). The supported capacity ranges from 1 Tebibyte (TiB) to 400 Tebibytes (TiB). |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`extendedCapacitySizeTiB`](#parameter-extendedcapacitysizetib) | int | Size of the Elastic SAN additional capacity in Tebibytes (TiB). The supported capacity ranges from 0 Tebibyte (TiB) to 600 Tebibytes (TiB). |
 | [`location`](#parameter-location) | string | Location for all resources. |
-| [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be `Disabled`, which necessitates the use of private endpoints. If not specified, public access will be `Disabled` by default when private endpoints are used without Virtual Network Rules. Setting public network access to `Disabled` while using Virtual Network Rules will result in an error. |
+| [`sku`](#parameter-sku) | string | Specifies the SKU for the Elastic SAN. |
 | [`tags`](#parameter-tags) | object | Tags of the Elastic SAN resource. |
-| [`zones`](#parameter-zones) | array | The Availability Zones to place the resources in. |
+| [`volumeGroups`](#parameter-volumegroups) | array | List of Elastic SAN Volume Groups to be created in the Elastic SAN. |
 
 ### Parameter: `name`
 
-Name of the Elastic SAN.
+Name of the Elastic SAN. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must be between 3 and 24 characters long.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `customerManagedKey`
+### Parameter: `availabilityZone`
 
-The customer managed key definition.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
-| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
-| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
-
-### Parameter: `customerManagedKey.keyName`
-
-The name of the customer managed key to use for encryption.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `customerManagedKey.keyVaultResourceId`
-
-The resource ID of a key vault to reference a customer managed key for encryption from.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `customerManagedKey.keyVersion`
-
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+Configuration of the availability zone for the Elastic SAN. Required if `Sku` is `Premium_LRS`. If this parameter is not provided, the `Sku` parameter will default to Premium_ZRS. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
 
 - Required: No
-- Type: string
-
-### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
-
-User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings`
-
-The diagnostic settings of the service.
-
-- Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`eventHubAuthorizationRuleResourceId`](#parameter-diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
-| [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-
-### Parameter: `diagnosticSettings.eventHubAuthorizationRuleResourceId`
-
-Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.eventHubName`
-
-Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
-
-A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
-
-- Required: No
-- Type: string
+- Type: int
 - Allowed:
   ```Bicep
   [
-    'AzureDiagnostics'
-    'Dedicated'
+    1
+    2
+    3
   ]
   ```
 
-### Parameter: `diagnosticSettings.logCategoriesAndGroups`
+### Parameter: `baseSizeTiB`
 
-The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
-
-- Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
-| [`enabled`](#parameter-diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
-
-Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+Size of the Elastic SAN base capacity in Tebibytes (TiB). The supported capacity ranges from 1 Tebibyte (TiB) to 400 Tebibytes (TiB).
 
 - Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
-
-Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
-
-Enable or disable the category explicitly. Default is `true`.
-
-- Required: No
-- Type: bool
-
-### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
-
-The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.metricCategories`
-
-The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enabled`](#parameter-diagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
-
-### Parameter: `diagnosticSettings.metricCategories.category`
-
-Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `diagnosticSettings.metricCategories.enabled`
-
-Enable or disable the category explicitly. Default is `true`.
-
-- Required: No
-- Type: bool
-
-### Parameter: `diagnosticSettings.name`
-
-The name of the diagnostic setting.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.storageAccountResourceId`
-
-Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.workspaceResourceId`
-
-Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
-
-- Required: No
-- Type: string
+- Type: int
+- Default: `1`
 
 ### Parameter: `enableTelemetry`
 
@@ -420,6 +260,14 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `extendedCapacitySizeTiB`
+
+Size of the Elastic SAN additional capacity in Tebibytes (TiB). The supported capacity ranges from 0 Tebibyte (TiB) to 600 Tebibytes (TiB).
+
+- Required: No
+- Type: int
+- Default: `0`
+
 ### Parameter: `location`
 
 Location for all resources.
@@ -428,564 +276,32 @@ Location for all resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `lock`
+### Parameter: `publicNetworkAccess`
 
-The lock settings of the service.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-lockname) | string | Specify the name of lock. |
-
-### Parameter: `lock.kind`
-
-Specify the type of lock.
+Whether or not public network access is allowed for this resource. For security reasons it should be `Disabled`, which necessitates the use of private endpoints. If not specified, public access will be `Disabled` by default when private endpoints are used without Virtual Network Rules. Setting public network access to `Disabled` while using Virtual Network Rules will result in an error.
 
 - Required: No
 - Type: string
 - Allowed:
   ```Bicep
   [
-    'CanNotDelete'
-    'None'
-    'ReadOnly'
+    'Disabled'
+    'Enabled'
   ]
   ```
 
-### Parameter: `lock.name`
+### Parameter: `sku`
 
-Specify the name of lock.
-
-- Required: No
-- Type: string
-
-### Parameter: `managedIdentities`
-
-The managed identity definition for this resource.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
-
-### Parameter: `managedIdentities.systemAssigned`
-
-Enables system assigned managed identity on the resource.
-
-- Required: No
-- Type: bool
-
-### Parameter: `managedIdentities.userAssignedResourceIds`
-
-The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
-
-- Required: No
-- Type: array
-
-### Parameter: `privateEndpoints`
-
-Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints. |
-| [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`applicationSecurityGroupResourceIds`](#parameter-privateendpointsapplicationsecuritygroupresourceids) | array | Application security groups in which the private endpoint IP configuration is included. |
-| [`customDnsConfigs`](#parameter-privateendpointscustomdnsconfigs) | array | Custom DNS configurations. |
-| [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
-| [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
-| [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
-| [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
-| [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
-| [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
-| [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
-| [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
-| [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
-| [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
-
-### Parameter: `privateEndpoints.service`
-
-The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateEndpoints.subnetResourceId`
-
-Resource ID of the subnet where the endpoint needs to be created.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
-
-Application security groups in which the private endpoint IP configuration is included.
-
-- Required: No
-- Type: array
-
-### Parameter: `privateEndpoints.customDnsConfigs`
-
-Custom DNS configurations.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
-
-### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
-
-A list of private IP addresses of the private endpoint.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
-
-FQDN that resolves to private endpoint IP address.
+Specifies the SKU for the Elastic SAN.
 
 - Required: No
 - Type: string
-
-### Parameter: `privateEndpoints.customNetworkInterfaceName`
-
-The custom name of the network interface attached to the private endpoint.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-
-### Parameter: `privateEndpoints.ipConfigurations`
-
-A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-privateendpointsipconfigurationsname) | string | The name of the resource that is unique within a resource group. |
-| [`properties`](#parameter-privateendpointsipconfigurationsproperties) | object | Properties of private endpoint IP configurations. |
-
-### Parameter: `privateEndpoints.ipConfigurations.name`
-
-The name of the resource that is unique within a resource group.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateEndpoints.ipConfigurations.properties`
-
-Properties of private endpoint IP configurations.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
-| [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
-| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
-
-### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
-
-The ID of a group obtained from the remote resource that this private endpoint should connect to.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
-
-The member name of a group obtained from the remote resource that this private endpoint should connect to.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
-
-A private IP address obtained from the private endpoint's subnet.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateEndpoints.isManualConnection`
-
-If Manual Private Link Connection is required.
-
-- Required: No
-- Type: bool
-
-### Parameter: `privateEndpoints.location`
-
-The location to deploy the private endpoint to.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.lock`
-
-Specify the type of lock.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
-
-### Parameter: `privateEndpoints.lock.kind`
-
-Specify the type of lock.
-
-- Required: No
-- Type: string
+- Default: `'Premium_ZRS'`
 - Allowed:
   ```Bicep
   [
-    'CanNotDelete'
-    'None'
-    'ReadOnly'
-  ]
-  ```
-
-### Parameter: `privateEndpoints.lock.name`
-
-Specify the name of lock.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.manualConnectionRequestMessage`
-
-A message passed to the owner of the remote resource with the manual connection request.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.name`
-
-The name of the private endpoint.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.privateDnsZoneGroup`
-
-The private DNS zone group to configure for the private endpoint.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
-
-### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
-
-The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`privateDnsZoneResourceId`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
-
-### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
-
-The resource id of the private DNS zone.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
-
-The name of the private DNS Zone Group config.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
-
-The name of the Private DNS Zone Group.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
-
-The name of the private link connection to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.resourceGroupName`
-
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.roleAssignments`
-
-Array of role assignments to create.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-privateendpointsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-privateendpointsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`condition`](#parameter-privateendpointsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
-| [`name`](#parameter-privateendpointsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
-| [`principalType`](#parameter-privateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
-
-### Parameter: `privateEndpoints.roleAssignments.principalId`
-
-The principal ID of the principal (user/group/identity) to assign the role to.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
-
-The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateEndpoints.roleAssignments.condition`
-
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
-
-Version of the condition.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '2.0'
-  ]
-  ```
-
-### Parameter: `privateEndpoints.roleAssignments.delegatedManagedIdentityResourceId`
-
-The Resource Id of the delegated managed identity resource.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.roleAssignments.description`
-
-The description of the role assignment.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.roleAssignments.name`
-
-The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.roleAssignments.principalType`
-
-The principal type of the assigned principal ID.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Device'
-    'ForeignGroup'
-    'Group'
-    'ServicePrincipal'
-    'User'
-  ]
-  ```
-
-### Parameter: `privateEndpoints.tags`
-
-Tags to be applied on all resources/resource groups in this deployment.
-
-- Required: No
-- Type: object
-
-### Parameter: `roleAssignments`
-
-Array of role assignments to create.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
-| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
-| [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
-
-### Parameter: `roleAssignments.principalId`
-
-The principal ID of the principal (user/group/identity) to assign the role to.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `roleAssignments.roleDefinitionIdOrName`
-
-The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `roleAssignments.condition`
-
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
-
-- Required: No
-- Type: string
-
-### Parameter: `roleAssignments.conditionVersion`
-
-Version of the condition.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '2.0'
-  ]
-  ```
-
-### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
-
-The Resource Id of the delegated managed identity resource.
-
-- Required: No
-- Type: string
-
-### Parameter: `roleAssignments.description`
-
-The description of the role assignment.
-
-- Required: No
-- Type: string
-
-### Parameter: `roleAssignments.name`
-
-The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
-
-- Required: No
-- Type: string
-
-### Parameter: `roleAssignments.principalType`
-
-The principal type of the assigned principal ID.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Device'
-    'ForeignGroup'
-    'Group'
-    'ServicePrincipal'
-    'User'
+    'Premium_LRS'
+    'Premium_ZRS'
   ]
   ```
 
@@ -996,28 +312,586 @@ Tags of the Elastic SAN resource.
 - Required: No
 - Type: object
 
-### Parameter: `zones`
+### Parameter: `volumeGroups`
 
-The Availability Zones to place the resources in.
+List of Elastic SAN Volume Groups to be created in the Elastic SAN.
 
 - Required: No
 - Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-volumegroupsname) | string | The name of the Elastic SAN Volume Group. The name can only contain lowercase letters, numbers and hyphens, and must begin and end with a letter or a number. Each hyphen must be preceded and followed by an alphanumeric character. The name must be between 3 and 63 characters long. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`customerManagedKey`](#parameter-volumegroupscustomermanagedkey) | object | The customer managed key definition. |
+| [`managedIdentities`](#parameter-volumegroupsmanagedidentities) | object | The managed identity definition for this resource. |
+| [`privateEndpoints`](#parameter-volumegroupsprivateendpoints) | array | Configuration details for private endpoints. |
+| [`virtualNetworkRules`](#parameter-volumegroupsvirtualnetworkrules) | array | List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint. |
+| [`volumes`](#parameter-volumegroupsvolumes) | array | List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. |
+
+### Parameter: `volumeGroups.name`
+
+The name of the Elastic SAN Volume Group. The name can only contain lowercase letters, numbers and hyphens, and must begin and end with a letter or a number. Each hyphen must be preceded and followed by an alphanumeric character. The name must be between 3 and 63 characters long.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumeGroups.customerManagedKey`
+
+The customer managed key definition.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-volumegroupscustomermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-volumegroupscustomermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVersion`](#parameter-volumegroupscustomermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`userAssignedIdentityResourceId`](#parameter-volumegroupscustomermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+
+### Parameter: `volumeGroups.customerManagedKey.keyName`
+
+The name of the customer managed key to use for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumeGroups.customerManagedKey.keyVaultResourceId`
+
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumeGroups.customerManagedKey.keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumeGroups.customerManagedKey.userAssignedIdentityResourceId`
+
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumeGroups.managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-volumegroupsmanagedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-volumegroupsmanagedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `volumeGroups.managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `volumeGroups.managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
+
+### Parameter: `volumeGroups.privateEndpoints`
+
+Configuration details for private endpoints.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`subnetResourceId`](#parameter-volumegroupsprivateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`applicationSecurityGroupResourceIds`](#parameter-volumegroupsprivateendpointsapplicationsecuritygroupresourceids) | array | Application security groups in which the Private Endpoint IP configuration is included. |
+| [`customDnsConfigs`](#parameter-volumegroupsprivateendpointscustomdnsconfigs) | array | Custom DNS configurations. |
+| [`customNetworkInterfaceName`](#parameter-volumegroupsprivateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the Private Endpoint. |
+| [`enableTelemetry`](#parameter-volumegroupsprivateendpointsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`ipConfigurations`](#parameter-volumegroupsprivateendpointsipconfigurations) | array | A list of IP configurations of the Private Endpoint. This will be used to map to the first-party Service endpoints. |
+| [`isManualConnection`](#parameter-volumegroupsprivateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
+| [`location`](#parameter-volumegroupsprivateendpointslocation) | string | The location to deploy the Private Endpoint to. |
+| [`lock`](#parameter-volumegroupsprivateendpointslock) | object | Specify the type of lock. |
+| [`manualConnectionRequestMessage`](#parameter-volumegroupsprivateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
+| [`name`](#parameter-volumegroupsprivateendpointsname) | string | The name of the Private Endpoint. |
+| [`privateDnsZoneGroup`](#parameter-volumegroupsprivateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
+| [`privateLinkServiceConnectionName`](#parameter-volumegroupsprivateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
+| [`resourceGroupName`](#parameter-volumegroupsprivateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource. |
+| [`roleAssignments`](#parameter-volumegroupsprivateendpointsroleassignments) | array | Array of role assignments to create. |
+| [`service`](#parameter-volumegroupsprivateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
+| [`tags`](#parameter-volumegroupsprivateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
+
+### Parameter: `volumeGroups.privateEndpoints.subnetResourceId`
+
+Resource ID of the subnet where the endpoint needs to be created.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.applicationSecurityGroupResourceIds`
+
+Application security groups in which the Private Endpoint IP configuration is included.
+
+- Required: No
+- Type: array
+
+### Parameter: `volumeGroups.privateEndpoints.customDnsConfigs`
+
+Custom DNS configurations.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipAddresses`](#parameter-volumegroupsprivateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-volumegroupsprivateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
+
+### Parameter: `volumeGroups.privateEndpoints.customDnsConfigs.ipAddresses`
+
+A list of private IP addresses of the private endpoint.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `volumeGroups.privateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.customNetworkInterfaceName`
+
+The custom name of the network interface attached to the Private Endpoint.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+
+### Parameter: `volumeGroups.privateEndpoints.ipConfigurations`
+
+A list of IP configurations of the Private Endpoint. This will be used to map to the first-party Service endpoints.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-volumegroupsprivateendpointsipconfigurationsname) | string | The name of the resource that is unique within a resource group. |
+| [`properties`](#parameter-volumegroupsprivateendpointsipconfigurationsproperties) | object | Properties of private endpoint IP configurations. |
+
+### Parameter: `volumeGroups.privateEndpoints.ipConfigurations.name`
+
+The name of the resource that is unique within a resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.ipConfigurations.properties`
+
+Properties of private endpoint IP configurations.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupId`](#parameter-volumegroupsprivateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-volumegroupsprivateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-volumegroupsprivateendpointsipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
+
+### Parameter: `volumeGroups.privateEndpoints.ipConfigurations.properties.groupId`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.ipConfigurations.properties.memberName`
+
+The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.ipConfigurations.properties.privateIPAddress`
+
+A private IP address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.isManualConnection`
+
+If Manual Private Link Connection is required.
+
+- Required: No
+- Type: bool
+
+### Parameter: `volumeGroups.privateEndpoints.location`
+
+The location to deploy the Private Endpoint to.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.lock`
+
+Specify the type of lock.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-volumegroupsprivateendpointslockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-volumegroupsprivateendpointslockname) | string | Specify the name of lock. |
+
+### Parameter: `volumeGroups.privateEndpoints.lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
 - Allowed:
   ```Bicep
   [
-    1
-    2
-    3
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
   ]
   ```
+
+### Parameter: `volumeGroups.privateEndpoints.lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.manualConnectionRequestMessage`
+
+A message passed to the owner of the remote resource with the manual connection request.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.name`
+
+The name of the Private Endpoint.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.privateDnsZoneGroup`
+
+The private DNS Zone Group to configure for the Private Endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-volumegroupsprivateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-volumegroupsprivateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `volumeGroups.privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-volumegroupsprivateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-volumegroupsprivateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
+
+### Parameter: `volumeGroups.privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS Zone Group config.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.privateDnsZoneGroup.name`
+
+The name of the Private DNS Zone Group.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.privateLinkServiceConnectionName`
+
+The name of the private link connection to create.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.resourceGroupName`
+
+Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-volumegroupsprivateendpointsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-volumegroupsprivateendpointsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-volumegroupsprivateendpointsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-volumegroupsprivateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-volumegroupsprivateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-volumegroupsprivateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-volumegroupsprivateendpointsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-volumegroupsprivateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `volumeGroups.privateEndpoints.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `volumeGroups.privateEndpoints.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `volumeGroups.privateEndpoints.service`
+
+The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumeGroups.privateEndpoints.tags`
+
+Tags to be applied on all resources/Resource Groups in this deployment.
+
+- Required: No
+- Type: object
+
+### Parameter: `volumeGroups.virtualNetworkRules`
+
+List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`virtualNetworkSubnetResourceId`](#parameter-volumegroupsvirtualnetworkrulesvirtualnetworksubnetresourceid) | string | The resource ID of the subnet in the virtual network. |
+
+### Parameter: `volumeGroups.virtualNetworkRules.virtualNetworkSubnetResourceId`
+
+The resource ID of the subnet in the virtual network.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumeGroups.volumes`
+
+List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-volumegroupsvolumesname) | string | The name of the Elastic SAN Volume. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must also be between 3 and 63 characters long. |
+| [`sizeGiB`](#parameter-volumegroupsvolumessizegib) | int | Size of the Elastic SAN Volume in Gibibytes (GiB). The supported capacity ranges from 1 Gibibyte (GiB) to 64 Tebibyte (TiB), equating to 65536 Gibibytes (GiB). |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`snapshots`](#parameter-volumegroupsvolumessnapshots) | array | List of Elastic SAN Volume Snapshots to be created in the Elastic SAN Volume. |
+
+### Parameter: `volumeGroups.volumes.name`
+
+The name of the Elastic SAN Volume. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must also be between 3 and 63 characters long.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumeGroups.volumes.sizeGiB`
+
+Size of the Elastic SAN Volume in Gibibytes (GiB). The supported capacity ranges from 1 Gibibyte (GiB) to 64 Tebibyte (TiB), equating to 65536 Gibibytes (GiB).
+
+- Required: Yes
+- Type: int
+
+### Parameter: `volumeGroups.volumes.snapshots`
+
+List of Elastic SAN Volume Snapshots to be created in the Elastic SAN Volume.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-volumegroupsvolumessnapshotsname) | string | The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must also be between 3 and 63 characters long. |
+
+### Parameter: `volumeGroups.volumes.snapshots.name`
+
+The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must also be between 3 and 63 characters long.
+
+- Required: Yes
+- Type: string
 
 ## Outputs
 
@@ -1027,7 +901,15 @@ The Availability Zones to place the resources in.
 | `name` | string | The name of the deployed Elastic SAN. |
 | `resourceGroupName` | string | The resource group of the deployed Elastic SAN. |
 | `resourceId` | string | The resource ID of the deployed Elastic SAN. |
-| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+| `volumeGroups` | array | Details on the deployed Elastic SAN Volume Groups. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/res/network/private-endpoint:0.9.0` | Remote reference |
 
 ## Data Collection
 

@@ -47,10 +47,14 @@ module testDeployment '../../../main.bicep' = [
   }
 ]
 
+import { volumeGroupOutputType } from '../../../main.bicep'
+
 output resourceId string = testDeployment[0].outputs.resourceId
 output name string = testDeployment[0].outputs.name
 output location string = testDeployment[0].outputs.location
 output resourceGroupName string = testDeployment[0].outputs.resourceGroupName
-output systemAssignedMIPrincipalId string = testDeployment[0].outputs.systemAssignedMIPrincipalId
+output volumeGroups volumeGroupOutputType[] = testDeployment[0].outputs.volumeGroups
 
 // TODO: Add additional outputs as needed
+
+//

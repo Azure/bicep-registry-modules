@@ -254,6 +254,10 @@ output privateEndpoints array = [
 
 // TODO: Your module should support the following optional parameters. However, please review and remove any parameters that are unnecessary.
 
+/*
+
+
+
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @sys.description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
@@ -265,6 +269,11 @@ param lock lockType?
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
+
+
+
+
+*/
 
 // @sys.description('The resource ids of the deployed Elastic SAN Volume Groups.')
 // output volumeGroupResourceIds array = [
