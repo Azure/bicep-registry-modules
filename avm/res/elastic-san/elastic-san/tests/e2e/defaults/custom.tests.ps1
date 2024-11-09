@@ -28,4 +28,15 @@ Describe 'Validate Deployment' {
             $volumeGroups | Should -BeNullOrEmpty
         }
     }
+
+    Context 'Azure Elastic SAN Tests' {
+
+        BeforeAll {
+        }
+
+        It 'Check Azure Elastic SAN' {
+
+            Test-VerifyElasticSAN -ResourceId $resourceId -ResourceGroupName $resourceGroupName -Name $name -Location $location -Tags $expectedTags  `
+                -BaseSizeTiB 1 -ExtendedCapacitySizeTiB 0 -PublicNetworkAccess 'Enabled' -SkuName 'Premium_ZRS' -VolumeGroupCount 0
+    }
 }
