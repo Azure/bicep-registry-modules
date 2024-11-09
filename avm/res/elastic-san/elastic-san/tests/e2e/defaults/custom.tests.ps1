@@ -7,6 +7,9 @@ Describe 'Validate Deployment' {
 
     BeforeAll {
 
+        . $PSScriptRoot/../../common.tests.ps1
+        $expectedTags = @{} # Default has no tags
+
         $resourceId = $TestInputData.DeploymentOutputs.resourceId.Value
         $name = $TestInputData.DeploymentOutputs.name.Value
         $location = $TestInputData.DeploymentOutputs.location.Value
@@ -21,10 +24,7 @@ Describe 'Validate Deployment' {
 
         It 'Check Output Variables' {
 
-            $resourceId | Should -Not -BeNullOrEmpty
-            $name | Should -Not -BeNullOrEmpty
-            $location | Should -Not -BeNullOrEmpty
-            $resourceGroupName | Should -Not -BeNullOrEmpty
+            Test-VerifyOutputVariables -MustBeNullOrEmpty $false -ResourceId $resourceId -name $name -Location $location -ResourceGroupName $resourceGroupName
             $volumeGroups | Should -BeNullOrEmpty
         }
     }
