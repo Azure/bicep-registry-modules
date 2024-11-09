@@ -4,12 +4,12 @@ metadata owner = 'Azure/module-maintainers'
 
 @sys.minLength(3)
 @sys.maxLength(24)
-@sys.description('Conditional. The name of the parent Elastic SAN. Required if the template is used in a standalone deployment.')
+@sys.description('Conditional. The name of the parent Elastic SAN. Required if the template is used in a standalone deployment. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must be between 3 and 24 characters long.')
 param elasticSanName string
 
 @sys.minLength(3)
 @sys.maxLength(63)
-@sys.description('Required. The name of the Elastic SAN Volume Group.')
+@sys.description('Required. The name of the Elastic SAN Volume Group. The name can only contain lowercase letters, numbers and hyphens, and must begin and end with a letter or a number. Each hyphen must be preceded and followed by an alphanumeric character. The name must be between 3 and 63 characters long.')
 param name string
 
 @sys.description('Optional. List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group.')
@@ -25,6 +25,10 @@ param managedIdentities managedIdentityAllType?
 import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @sys.description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType? // This requires KV with enabled purge protection
+
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+@sys.description('Optional. Configuration details for private endpoints.')
+param privateEndpoints privateEndpointSingleServiceType[]?
 
 // ============== //
 // Variables      //
@@ -130,6 +134,59 @@ module volumeGroup_volumes 'volume/main.bicep' = [
   }
 ]
 
+module elasticSan_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.0' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    ////////////////////name: '${uniqueString(deployment().name, location)}-ElasticSan-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name)}-ElasticSan-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? 'elasticSan'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? 'elasticSan'}-${index}'
+              properties: {
+                privateLinkServiceId: elasticSan.id
+                groupIds: [
+                  privateEndpoint.?service ?? volumeGroup.name // ????????????????????????
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? 'elasticSan'}-${index}'
+              properties: {
+                privateLinkServiceId: elasticSan.id
+                groupIds: [
+                  privateEndpoint.?service ?? volumeGroup.name // ????????????????????????
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      ////////////////////enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      ////////////////////lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
+      roleAssignments: privateEndpoint.?roleAssignments
+      ////////////////////tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
+  }
+]
+
 // ============ //
 // Outputs      //
 // ============ //
@@ -156,6 +213,17 @@ output volumes volumeOutputType[] = [
   }
 ]
 
+@sys.description('The private endpoints of the Elastic SAN Volume Group.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: elasticSan_privateEndpoints[i].outputs.name
+    resourceId: elasticSan_privateEndpoints[i].outputs.resourceId
+    groupId: elasticSan_privateEndpoints[i].outputs.groupId
+    customDnsConfig: elasticSan_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceResourceIds: elasticSan_privateEndpoints[i].outputs.networkInterfaceResourceIds
+  }
+]
+
 // ================ //
 // Definitions      //
 // ================ //
@@ -166,12 +234,12 @@ import { volumeSnapshotType, volumeSnapshotOutputType } from 'volume/main.bicep'
 type volumeType = {
   @sys.minLength(3)
   @sys.maxLength(63)
-  @sys.description('Required. The name of the Elastic SAN Volume.')
+  @sys.description('Required. The name of the Elastic SAN Volume. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must also be between 3 and 63 characters long.')
   name: string
 
   @sys.minValue(1) // 1 GiB
   @sys.maxValue(65536) // 64 TiB
-  @sys.description('Required. Size of the Elastic SAN Volume in Gibibytes (GiB).')
+  @sys.description('Required. Size of the Elastic SAN Volume in Gibibytes (GiB). The supported capacity ranges from 1 Gibibyte (GiB) to 64 Tebibyte (TiB), equating to 65536 Gibibytes (GiB).')
   sizeGiB: int
 
   @sys.description('Optional. List of Elastic SAN Volume Snapshots to be created in the Elastic SAN Volume.')
