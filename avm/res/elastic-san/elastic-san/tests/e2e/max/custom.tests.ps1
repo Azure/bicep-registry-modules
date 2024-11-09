@@ -11,7 +11,7 @@ Describe 'Validate Deployment' {
         $name = $TestInputData.DeploymentOutputs.name.Value
         $location = $TestInputData.DeploymentOutputs.location.Value
         $resourceGroupName = $TestInputData.DeploymentOutputs.resourceGroupName.Value
-        $systemAssignedMIPrincipalId = $TestInputData.DeploymentOutputs.systemAssignedMIPrincipalId.Value
+        $volumeGroups = $TestInputData.DeploymentOutputs.volumeGroups.Value
 
         # TODO: Add additional outputs as needed
     }
@@ -27,7 +27,7 @@ Describe 'Validate Deployment' {
             $name | Should -Not -BeNullOrEmpty
             $location | Should -Not -BeNullOrEmpty
             $resourceGroupName | Should -Not -BeNullOrEmpty
-            $systemAssignedMIPrincipalId | Should -Not -BeNullOrEmpty
+            $volumeGroups | Should -Not -BeNullOrEmpty
 
             # TODO: Add additional outputs as needed
         }
@@ -37,3 +37,4 @@ Describe 'Validate Deployment' {
 
     # TODO: Add additional Context Checks as needed
 }
+
