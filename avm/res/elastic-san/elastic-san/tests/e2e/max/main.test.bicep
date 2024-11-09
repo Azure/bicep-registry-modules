@@ -43,6 +43,44 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      volumeGroups: [
+        {
+          name: 'vol-grp-01'
+          volumes: [
+            {
+              name: 'vol-grp-01-vol-01'
+              sizeGiB: 1
+            }
+            {
+              name: 'vol-grp-01-vol-02'
+              sizeGiB: 2
+              snapshots: [
+                {
+                  name: 'vol-grp-01-vol-02-snap-01'
+                }
+                {
+                  name: 'vol-grp-01-vol-02-snap-02'
+                }
+              ]
+            }
+          ]
+
+          //virtualNetworkRules
+          //managedIdentities
+          //customerManagedKey
+          //privateEndpoints
+        }
+      ]
+
+      //location
+      //sku
+      //availabilityZone
+      //baseSizeTiB
+      //extendedCapacitySizeTiB
+      //publicNetworkAccess
+      //tags
+      //enableTelemetry
+
       // TODO: Include as many additional parameters as possible. Ideally all.
     }
   }

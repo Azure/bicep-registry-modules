@@ -102,7 +102,32 @@ This instance deploys the module with most of its features enabled.
 module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   name: 'elasticSanDeployment'
   params: {
+    // Required parameters
     name: 'esanmax001'
+    // Non-required parameters
+    volumeGroups: [
+      {
+        name: 'vol-grp-01'
+        volumes: [
+          {
+            name: 'vol-grp-01-vol-01'
+            sizeGiB: 1
+          }
+          {
+            name: 'vol-grp-01-vol-02'
+            sizeGiB: 2
+            snapshots: [
+              {
+                name: 'vol-grp-01-vol-02-snap-01'
+              }
+              {
+                name: 'vol-grp-01-vol-02-snap-02'
+              }
+            ]
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -119,8 +144,35 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "esanmax001"
+    },
+    // Non-required parameters
+    "volumeGroups": {
+      "value": [
+        {
+          "name": "vol-grp-01",
+          "volumes": [
+            {
+              "name": "vol-grp-01-vol-01",
+              "sizeGiB": 1
+            },
+            {
+              "name": "vol-grp-01-vol-02",
+              "sizeGiB": 2,
+              "snapshots": [
+                {
+                  "name": "vol-grp-01-vol-02-snap-01"
+                },
+                {
+                  "name": "vol-grp-01-vol-02-snap-02"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   }
 }
@@ -136,7 +188,32 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 
+// Required parameters
 param name = 'esanmax001'
+// Non-required parameters
+param volumeGroups = [
+  {
+    name: 'vol-grp-01'
+    volumes: [
+      {
+        name: 'vol-grp-01-vol-01'
+        sizeGiB: 1
+      }
+      {
+        name: 'vol-grp-01-vol-02'
+        sizeGiB: 2
+        snapshots: [
+          {
+            name: 'vol-grp-01-vol-02-snap-01'
+          }
+          {
+            name: 'vol-grp-01-vol-02-snap-02'
+          }
+        ]
+      }
+    ]
+  }
+]
 ```
 
 </details>
