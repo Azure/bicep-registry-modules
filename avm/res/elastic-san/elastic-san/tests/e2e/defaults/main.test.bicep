@@ -43,7 +43,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      // TODO: Include additional parameters as needed - BUT only Required and Conditional parameters to ensure compliance with the Azure Well-Architected Framework.
     }
   }
 ]
@@ -55,7 +54,3 @@ output name string = testDeployment[0].outputs.name
 output location string = testDeployment[0].outputs.location
 output resourceGroupName string = testDeployment[0].outputs.resourceGroupName
 output volumeGroups volumeGroupOutputType[] = testDeployment[0].outputs.volumeGroups
-
-// TODO: Add additional outputs as needed
-
-//

@@ -12,8 +12,6 @@ Describe 'Validate Deployment' {
         $location = $TestInputData.DeploymentOutputs.location.Value
         $resourceGroupName = $TestInputData.DeploymentOutputs.resourceGroupName.Value
         $volumeGroups = $TestInputData.DeploymentOutputs.volumeGroups.Value
-
-        # TODO: Add additional outputs as needed
     }
 
     Context 'Basic Tests' {
@@ -27,14 +25,7 @@ Describe 'Validate Deployment' {
             $name | Should -Not -BeNullOrEmpty
             $location | Should -Not -BeNullOrEmpty
             $resourceGroupName | Should -Not -BeNullOrEmpty
-            $volumeGroups | Should -Not -BeNullOrEmpty
-
-            # TODO: Add additional outputs as needed
+            $volumeGroups | Should -BeNullOrEmpty
         }
-
-        # TODO: Add additional Basic Checks as needed
     }
-
-    # TODO: Add additional Context Checks as needed
 }
-
