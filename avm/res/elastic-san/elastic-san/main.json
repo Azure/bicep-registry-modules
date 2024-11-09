@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "10587827911350098411"
+      "templateHash": "13366369102850944816"
     },
     "name": "Elastic SANs",
     "description": "This module deploys an Elastic SAN.",
@@ -31,7 +31,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group."
+            "description": "Optional. List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. Elastic SAN Volume Group can contain up to 1,000 volumes."
           }
         },
         "virtualNetworkRules": {
@@ -695,7 +695,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. List of Elastic SAN Volume Groups to be created in the Elastic SAN."
+        "description": "Optional. List of Elastic SAN Volume Groups to be created in the Elastic SAN. An Elastic SAN can have a maximum of 200 volume groups."
       }
     },
     "sku": {
@@ -854,7 +854,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "7277524260778911559"
+              "templateHash": "3317278347597187449"
             },
             "name": "Elastic SAN Volume Groups",
             "description": "This module deploys an Elastic SAN Volume Group.",
@@ -1437,7 +1437,7 @@
               },
               "nullable": true,
               "metadata": {
-                "description": "Optional. List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group."
+                "description": "Optional. List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. Elastic SAN Volume Group can contain up to 1,000 volumes."
               }
             },
             "virtualNetworkRules": {

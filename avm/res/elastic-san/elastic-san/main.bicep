@@ -10,7 +10,7 @@ param name string
 @sys.description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@sys.description('Optional. List of Elastic SAN Volume Groups to be created in the Elastic SAN.')
+@sys.description('Optional. List of Elastic SAN Volume Groups to be created in the Elastic SAN. An Elastic SAN can have a maximum of 200 volume groups.')
 param volumeGroups volumeGroupType[]?
 
 @sys.description('Optional. Specifies the SKU for the Elastic SAN.')
@@ -187,7 +187,7 @@ type volumeGroupType = {
   @sys.description('Required. The name of the Elastic SAN Volume Group. The name can only contain lowercase letters, numbers and hyphens, and must begin and end with a letter or a number. Each hyphen must be preceded and followed by an alphanumeric character. The name must be between 3 and 63 characters long.')
   name: string
 
-  @sys.description('Optional. List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group.')
+  @sys.description('Optional. List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. Elastic SAN Volume Group can contain up to 1,000 volumes.')
   volumes: volumeType[]?
 
   @sys.description('Optional. List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint. Each Elastic SAN Volume Group supports up to 200 virtual network rules.')

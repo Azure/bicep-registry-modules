@@ -42,7 +42,7 @@ This module deploys an Elastic SAN Volume Group.
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Private endpoints are not currently supported for Elastic SANs using zone-redundant storage (ZRS). |
 | [`virtualNetworkRules`](#parameter-virtualnetworkrules) | array | List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint. Each Elastic SAN Volume Group supports up to 200 virtual network rules. |
-| [`volumes`](#parameter-volumes) | array | List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. |
+| [`volumes`](#parameter-volumes) | array | List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. Elastic SAN Volume Group can contain up to 1,000 volumes. |
 
 ### Parameter: `name`
 
@@ -557,7 +557,7 @@ The resource ID of the subnet in the virtual network.
 
 ### Parameter: `volumes`
 
-List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group.
+List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. Elastic SAN Volume Group can contain up to 1,000 volumes.
 
 - Required: No
 - Type: array

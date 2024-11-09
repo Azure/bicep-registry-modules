@@ -220,7 +220,7 @@ param name = 'esanwaf001'
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be `Disabled`, which necessitates the use of private endpoints. If not specified, public access will be `Disabled` by default when private endpoints are used without Virtual Network Rules. Setting public network access to `Disabled` while using Virtual Network Rules will result in an error. |
 | [`sku`](#parameter-sku) | string | Specifies the SKU for the Elastic SAN. |
 | [`tags`](#parameter-tags) | object | Tags of the Elastic SAN resource. |
-| [`volumeGroups`](#parameter-volumegroups) | array | List of Elastic SAN Volume Groups to be created in the Elastic SAN. |
+| [`volumeGroups`](#parameter-volumegroups) | array | List of Elastic SAN Volume Groups to be created in the Elastic SAN. An Elastic SAN can have a maximum of 200 volume groups. |
 
 ### Parameter: `name`
 
@@ -314,7 +314,7 @@ Tags of the Elastic SAN resource.
 
 ### Parameter: `volumeGroups`
 
-List of Elastic SAN Volume Groups to be created in the Elastic SAN.
+List of Elastic SAN Volume Groups to be created in the Elastic SAN. An Elastic SAN can have a maximum of 200 volume groups.
 
 - Required: No
 - Type: array
@@ -333,7 +333,7 @@ List of Elastic SAN Volume Groups to be created in the Elastic SAN.
 | [`managedIdentities`](#parameter-volumegroupsmanagedidentities) | object | The managed identity definition for this resource. |
 | [`privateEndpoints`](#parameter-volumegroupsprivateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Private endpoints are not currently supported for Elastic SANs using zone-redundant storage (ZRS). |
 | [`virtualNetworkRules`](#parameter-volumegroupsvirtualnetworkrules) | array | List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint. Each Elastic SAN Volume Group supports up to 200 virtual network rules. |
-| [`volumes`](#parameter-volumegroupsvolumes) | array | List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. |
+| [`volumes`](#parameter-volumegroupsvolumes) | array | List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. Elastic SAN Volume Group can contain up to 1,000 volumes. |
 
 ### Parameter: `volumeGroups.name`
 
@@ -841,7 +841,7 @@ The resource ID of the subnet in the virtual network.
 
 ### Parameter: `volumeGroups.volumes`
 
-List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group.
+List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. Elastic SAN Volume Group can contain up to 1,000 volumes.
 
 - Required: No
 - Type: array
