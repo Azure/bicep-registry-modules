@@ -4,22 +4,22 @@ metadata owner = 'Azure/module-maintainers'
 
 @sys.minLength(3)
 @sys.maxLength(24)
-@sys.description('Conditional. The name of the parent Elastic SAN. Required if the template is used in a standalone deployment.')
+@sys.description('Conditional. The name of the parent Elastic SAN. Required if the template is used in a standalone deployment. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must be between 3 and 24 characters long.')
 param elasticSanName string
 
 @sys.minLength(3)
 @sys.maxLength(63)
-@sys.description('Conditional. The name of the parent Elastic SAN Volume Group. Required if the template is used in a standalone deployment.')
+@sys.description('Conditional. The name of the parent Elastic SAN Volume Group. Required if the template is used in a standalone deployment. The name can only contain lowercase letters, numbers and hyphens, and must begin and end with a letter or a number. Each hyphen must be preceded and followed by an alphanumeric character. The name must be between 3 and 63 characters long.')
 param volumeGroupName string
 
 @sys.minLength(3)
 @sys.maxLength(63)
-@sys.description('Required. The name of the Elastic SAN Volume.')
+@sys.description('Required. The name of the Elastic SAN Volume. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must also be between 3 and 63 characters long.')
 param name string
 
 @sys.minValue(1) // 1 GiB
 @sys.maxValue(65536) // 64 TiB
-@sys.description('Required. Size of the Elastic SAN Volume in Gibibytes (GiB).')
+@sys.description('Required. Size of the Elastic SAN Volume in Gibibytes (GiB). The supported capacity ranges from 1 Gibibyte (GiB) to 64 Tebibyte (TiB), equating to 65536 Gibibytes (GiB).')
 param sizeGiB int
 
 @sys.description('Optional. List of Elastic SAN Volume Snapshots to be created in the Elastic SAN Volume.')
@@ -95,7 +95,7 @@ output snapshots volumeSnapshotOutputType[] = [
 type volumeSnapshotType = {
   @sys.minLength(3)
   @sys.maxLength(63)
-  @sys.description('Required. The name of the Elastic SAN Volume Snapshot.')
+  @sys.description('Required. The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must also be between 3 and 63 characters long.')
   name: string
 }
 
