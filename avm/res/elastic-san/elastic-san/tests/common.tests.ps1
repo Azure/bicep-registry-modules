@@ -98,6 +98,12 @@ function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location
 
 
 
+    #Get-AzElasticSanSkuList
+    #Get-AzElasticSanVolume
+    #Get-AzElasticSanVolumeGroup
+    #Get-AzElasticSanVolumeSnapshot
+
+
 
 
     # TODO Logs + Test-VerifyDiagSettings

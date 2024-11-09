@@ -38,5 +38,6 @@ Describe 'Validate Deployment' {
 
             Test-VerifyElasticSAN -ResourceId $resourceId -ResourceGroupName $resourceGroupName -Name $name -Location $location -Tags $expectedTags  `
                 -BaseSizeTiB 1 -ExtendedCapacitySizeTiB 0 -PublicNetworkAccess 'Enabled' -SkuName 'Premium_ZRS' -VolumeGroupCount 0
+        }
     }
 }
