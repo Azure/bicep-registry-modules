@@ -110,5 +110,3 @@ type volumeSnapshotOutputType = {
   @sys.description('The resource group of the deployed Elastic SAN Volume Snapshot.')
   resourceGroupName: string
 }
-
-//

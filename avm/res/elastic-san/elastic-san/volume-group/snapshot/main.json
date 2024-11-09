@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "15267516298964787140"
+      "version": "0.31.34.60546",
+      "templateHash": "12294155080231981173"
     },
     "name": "Elastic SAN Volume Snapshots",
     "description": "This module deploys an Elastic SAN Volume Snapshot.",

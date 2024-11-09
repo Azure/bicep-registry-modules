@@ -267,5 +267,3 @@ type volumeOutputType = {
   @sys.description('Details on the deployed Elastic SAN Volume Snapshots.')
   snapshots: volumeSnapshotOutputType[]
 }
-
-//
