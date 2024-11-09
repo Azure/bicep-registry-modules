@@ -4,7 +4,7 @@ metadata owner = 'Azure/module-maintainers'
 
 @sys.minLength(3)
 @sys.maxLength(24)
-@sys.description('Required. Name of the Elastic SAN.')
+@sys.description('Required. Name of the Elastic SAN. The name can only contain lowercase letters, numbers, hyphens and underscores, and must begin and end with a letter or a number. Each hyphen and underscore must be preceded and followed by an alphanumeric character. The name must be between 3 and 24 characters long.')
 param name string
 
 @sys.description('Optional. Location for all resources.')
@@ -25,13 +25,13 @@ param sku string = 'Premium_ZRS'
 param availabilityZone int?
 
 @sys.minValue(1)
-@sys.maxValue(400)
-@sys.description('Optional. Size of the Elastic SAN base capacity (TiB).')
+@sys.maxValue(400) // Documentation says 400 in some regions, 100 in others
+@sys.description('Optional. Size of the Elastic SAN base capacity in Tebibytes (TiB). The supported capacity ranges from 1 Tebibyte (TiB) to 400 Tebibytes (TiB).')
 param baseSizeTiB int = 1
 
 @sys.minValue(0)
-@sys.maxValue(600) // Documentation says 600 in some regions, but the portal allows only 400
-@sys.description('Optional. Size of the Elastic SAN additional capacity (TiB).')
+@sys.maxValue(600) // Documentation says 600 in some regions, 100 in others. Portal allows only 400.
+@sys.description('Optional. Size of the Elastic SAN additional capacity in Tebibytes (TiB). The supported capacity ranges from 0 Tebibyte (TiB) to 600 Tebibytes (TiB).')
 param extendedCapacitySizeTiB int = 0
 
 @sys.description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be `Disabled`, which necessitates the use of private endpoints. If not specified, public access will be `Disabled` by default when private endpoints are used without Virtual Network Rules. Setting public network access to `Disabled` while using Virtual Network Rules will result in an error.')
@@ -66,6 +66,8 @@ var totalVirtualNetworkRules = reduce(
   (cur, next) => cur + next
 )
 
+var totalPrivateEndpoints = 0 // TODO !!!!!!!!!!!!!!!!!!!
+
 // When 'publicNetworkAccess' is explicitly set we need to use that value and not to overrule it
 // If user has set 'publicNetworkAccess' to 'Disabled' and they specified any virtual network rule, the deployment will fail
 // (Virtual Network Rules require 'Enabled' public network access)
@@ -78,7 +80,7 @@ var totalVirtualNetworkRules = reduce(
 // we can configure public network access to 'Disabled'.
 var calculatedPublicNetworkAccess = !empty(publicNetworkAccess)
   ? any(publicNetworkAccess)
-  : (totalVirtualNetworkRules > 0 ? 'Enabled' : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled'))
+  : (totalVirtualNetworkRules > 0 ? 'Enabled' : (totalPrivateEndpoints > 0 ? 'Disabled' : null))
 
 // ============== //
 // Resources      //
@@ -136,6 +138,7 @@ module elasticSan_volumeGroups 'volume-group/main.bicep' = [
       virtualNetworkRules: volumeGroup.?virtualNetworkRules
       managedIdentities: volumeGroup.?managedIdentities
       customerManagedKey: volumeGroup.?customerManagedKey
+      privateEndpoints: volumeGroup.?privateEndpoints
     }
   }
 ]
@@ -160,6 +163,8 @@ output resourceGroupName string = resourceGroup().name
 output volumeGroups volumeGroupOutputType[] = [
   for (volumeGroup, i) in (volumeGroups ?? []): {
     resourceId: elasticSan_volumeGroups[i].outputs.resourceId
+    name: elasticSan_volumeGroups[i].outputs.name
+    resourceGroupName: elasticSan_volumeGroups[i].outputs.resourceGroupName
     systemAssignedMIPrincipalId: elasticSan_volumeGroups[i].outputs.systemAssignedMIPrincipalId
     volumes: elasticSan_volumeGroups[i].outputs.volumes
   }
@@ -169,14 +174,14 @@ output volumeGroups volumeGroupOutputType[] = [
 // Definitions      //
 // ================ //
 
-import { managedIdentityAllType, customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { managedIdentityAllType, customerManagedKeyType, privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 import { volumeType, virtualNetworkRuleType, volumeOutputType } from './volume-group/main.bicep'
 
 @export()
 type volumeGroupType = {
   @sys.minLength(3)
   @sys.maxLength(63)
-  @sys.description('Required. The name of the Elastic SAN Volume Group.')
+  @sys.description('Required. The name of the Elastic SAN Volume Group. The name can only contain lowercase letters, numbers and hyphens, and must begin and end with a letter or a number. Each hyphen must be preceded and followed by an alphanumeric character. The name must be between 3 and 63 characters long.')
   name: string
 
   @sys.description('Optional. List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group.')
@@ -190,6 +195,9 @@ type volumeGroupType = {
 
   @sys.description('Optional. The customer managed key definition.')
   customerManagedKey: customerManagedKeyType?
+
+  @sys.description('Optional. Configuration details for private endpoints.')
+  privateEndpoints: privateEndpointSingleServiceType[]?
 }
 
 @export()
@@ -197,11 +205,19 @@ type volumeGroupOutputType = {
   @sys.description('The resource ID of the deployed Elastic SAN Volume Group.')
   resourceId: string
 
+  @sys.description('The name of the deployed Elastic SAN Volume Group.')
+  name: string
+
+  @sys.description('The resource group of the deployed Elastic SAN Volume Group.')
+  resourceGroupName: string
+
   @sys.description('The principal ID of the system assigned identity of the deployed Elastic SAN Volume Group.')
   systemAssignedMIPrincipalId: string
 
   @sys.description('Details on the deployed Elastic SAN Volumes.')
   volumes: volumeOutputType[]
+
+  // TODO privateEndpoints
 }
 
 /*
@@ -249,10 +265,6 @@ param lock lockType?
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
-
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
-@sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
-param privateEndpoints privateEndpointMultiServiceType[]?
 
 // @sys.description('The resource ids of the deployed Elastic SAN Volume Groups.')
 // output volumeGroupResourceIds array = [
