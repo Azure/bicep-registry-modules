@@ -266,6 +266,12 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 @sys.description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
+https://learn.microsoft.com/en-us/azure/storage/elastic-san/elastic-san-metrics
+All - Every resource log offered by the resource.
+Audit - All resource logs that record customer interactions with data or the settings of the service.
+
+
+
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
