@@ -34,6 +34,9 @@ param baseSizeTiB int = 1
 @sys.description('Optional. Size of the Elastic SAN additional capacity in Tebibytes (TiB). The supported capacity ranges from 0 Tebibyte (TiB) to 600 Tebibytes (TiB).')
 param extendedCapacitySizeTiB int = 0
 
+// By default, public access to individual volume groups is denied even if you allow it at the SAN level.
+// You need to configure network rules at volume group level to allow public access.
+// If you disable public access at the SAN level, access to the volume groups within that SAN is only available over private endpoints.
 @sys.description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be `Disabled`, which necessitates the use of private endpoints. If not specified, public access will be `Disabled` by default when private endpoints are used without Virtual Network Rules. Setting public network access to `Disabled` while using Virtual Network Rules will result in an error.')
 @sys.allowed([
   'Enabled'
@@ -187,7 +190,7 @@ type volumeGroupType = {
   @sys.description('Optional. List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group.')
   volumes: volumeType[]?
 
-  @sys.description('Optional. List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint.')
+  @sys.description('Optional. List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint. Each Elastic SAN Volume Group supports up to 200 virtual network rules.')
   virtualNetworkRules: virtualNetworkRuleType[]?
 
   @sys.description('Optional. The managed identity definition for this resource.')
@@ -196,7 +199,7 @@ type volumeGroupType = {
   @sys.description('Optional. The customer managed key definition.')
   customerManagedKey: customerManagedKeyType?
 
-  @sys.description('Optional. Configuration details for private endpoints.')
+  @sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Private endpoints are not currently supported for Elastic SANs using zone-redundant storage (ZRS).')
   privateEndpoints: privateEndpointSingleServiceType[]?
 }
 

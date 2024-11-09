@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "1594780372292427780"
+      "templateHash": "10587827911350098411"
     },
     "name": "Elastic SANs",
     "description": "This module deploys an Elastic SAN.",
@@ -41,7 +41,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint."
+            "description": "Optional. List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint. Each Elastic SAN Volume Group supports up to 200 virtual network rules."
           }
         },
         "managedIdentities": {
@@ -65,7 +65,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Configuration details for private endpoints."
+            "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Private endpoints are not currently supported for Elastic SANs using zone-redundant storage (ZRS)."
           }
         }
       },
@@ -854,7 +854,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "8600221311188388625"
+              "templateHash": "7277524260778911559"
             },
             "name": "Elastic SAN Volume Groups",
             "description": "This module deploys an Elastic SAN Volume Group.",
@@ -1447,7 +1447,7 @@
               },
               "nullable": true,
               "metadata": {
-                "description": "Optional. List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint."
+                "description": "Optional. List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint. Each Elastic SAN Volume Group supports up to 200 virtual network rules."
               }
             },
             "managedIdentities": {
@@ -1471,7 +1471,7 @@
               },
               "nullable": true,
               "metadata": {
-                "description": "Optional. Configuration details for private endpoints."
+                "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Private endpoints are not currently supported for Elastic SANs using zone-redundant storage (ZRS)."
               }
             }
           },

@@ -331,8 +331,8 @@ List of Elastic SAN Volume Groups to be created in the Elastic SAN.
 | :-- | :-- | :-- |
 | [`customerManagedKey`](#parameter-volumegroupscustomermanagedkey) | object | The customer managed key definition. |
 | [`managedIdentities`](#parameter-volumegroupsmanagedidentities) | object | The managed identity definition for this resource. |
-| [`privateEndpoints`](#parameter-volumegroupsprivateendpoints) | array | Configuration details for private endpoints. |
-| [`virtualNetworkRules`](#parameter-volumegroupsvirtualnetworkrules) | array | List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint. |
+| [`privateEndpoints`](#parameter-volumegroupsprivateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Private endpoints are not currently supported for Elastic SANs using zone-redundant storage (ZRS). |
+| [`virtualNetworkRules`](#parameter-volumegroupsvirtualnetworkrules) | array | List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint. Each Elastic SAN Volume Group supports up to 200 virtual network rules. |
 | [`volumes`](#parameter-volumegroupsvolumes) | array | List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. |
 
 ### Parameter: `volumeGroups.name`
@@ -421,7 +421,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 ### Parameter: `volumeGroups.privateEndpoints`
 
-Configuration details for private endpoints.
+Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Private endpoints are not currently supported for Elastic SANs using zone-redundant storage (ZRS).
 
 - Required: No
 - Type: array
@@ -821,7 +821,7 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 ### Parameter: `volumeGroups.virtualNetworkRules`
 
-List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint.
+List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint. Each Elastic SAN Volume Group supports up to 200 virtual network rules.
 
 - Required: No
 - Type: array
