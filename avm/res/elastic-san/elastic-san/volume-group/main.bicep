@@ -216,6 +216,10 @@ output volumes volumeOutputType[] = [
     resourceId: volumeGroup_volumes[i].outputs.resourceId
     name: volumeGroup_volumes[i].outputs.name
     resourceGroupName: volumeGroup_volumes[i].outputs.resourceGroupName
+    targetIqn: volumeGroup_volumes[i].outputs.targetIqn
+    targetPortalHostname: volumeGroup_volumes[i].outputs.targetPortalHostname
+    targetPortalPort: volumeGroup_volumes[i].outputs.targetPortalPort
+    volumeId: volumeGroup_volumes[i].outputs.volumeId
     snapshots: volumeGroup_volumes[i].outputs.snapshots
   }
 ]
@@ -270,6 +274,18 @@ type volumeOutputType = {
 
   @sys.description('The resource group of the deployed Elastic SAN Volume.')
   resourceGroupName: string
+
+  @sys.description('The iSCSI Target IQN (iSCSI Qualified Name) of the deployed Elastic SAN Volume.')
+  targetIqn: string
+
+  @sys.description('The iSCSI Target Portal Host Name of the deployed Elastic SAN Volume.')
+  targetPortalHostname: string
+
+  @sys.description('The iSCSI Target Portal Port of the deployed Elastic SAN Volume.')
+  targetPortalPort: int
+
+  @sys.description('The volume Id of the deployed Elastic SAN Volume.')
+  volumeId: string
 
   @sys.description('Details on the deployed Elastic SAN Volume Snapshots.')
   snapshots: volumeSnapshotOutputType[]

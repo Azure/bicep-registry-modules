@@ -95,6 +95,10 @@ Describe 'Validate Deployment' {
                 -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName `
                 -VolumeGroupName $volumeGroups[$vgrpidx].name `
                 -Name $volumeGroups[$vgrpidx].volumes[$volidx].name `
+                -TargetIqn $volumeGroups[$vgrpidx].volumes[$volidx].targetIqn `
+                -TargetPortalHostname $volumeGroups[$vgrpidx].volumes[$volidx].targetPortalHostname `
+                -TargetPortalPort $volumeGroups[$vgrpidx].volumes[$volidx].targetPortalPort `
+                -VolumeId $volumeGroups[$vgrpidx].volumes[$volidx].volumeId `
                 -SizeGiB $SizeGiB
             $volumeGroups[$vgrpidx].volumes[$volidx].snapshots | Should -BeNullOrEmpty
             #$volumeGroups[$vgrpidx].volumes[$volidx].snapshots.Count | Should -Be 0
@@ -115,6 +119,10 @@ Describe 'Validate Deployment' {
                 -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName `
                 -VolumeGroupName $volumeGroups[$vgrpidx].name `
                 -Name $volumeGroups[$vgrpidx].volumes[$volidx].name `
+                -TargetIqn $volumeGroups[$vgrpidx].volumes[$volidx].targetIqn `
+                -TargetPortalHostname $volumeGroups[$vgrpidx].volumes[$volidx].targetPortalHostname `
+                -TargetPortalPort $volumeGroups[$vgrpidx].volumes[$volidx].targetPortalPort `
+                -VolumeId $volumeGroups[$vgrpidx].volumes[$volidx].volumeId `
                 -SizeGiB $SizeGiB
             $volumeGroups[$vgrpidx].volumes[$volidx].snapshots | Should -Not -BeNullOrEmpty
             $volumeGroups[$vgrpidx].volumes[$volidx].snapshots.Count | Should -Be 2

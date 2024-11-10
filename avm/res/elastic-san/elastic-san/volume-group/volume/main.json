@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "5333859566157849289"
+      "templateHash": "11704403810228663372"
     },
     "name": "Elastic SAN Volumes",
     "description": "This module deploys an Elastic SAN Volume.",
@@ -258,6 +258,34 @@
         "description": "The resource group of the deployed Elastic SAN Volume."
       },
       "value": "[resourceGroup().name]"
+    },
+    "targetIqn": {
+      "type": "string",
+      "metadata": {
+        "description": "The iSCSI Target IQN (iSCSI Qualified Name) of the deployed Elastic SAN Volume."
+      },
+      "value": "[reference('volume').storageTarget.targetIqn]"
+    },
+    "targetPortalHostname": {
+      "type": "string",
+      "metadata": {
+        "description": "The iSCSI Target Portal Host Name of the deployed Elastic SAN Volume."
+      },
+      "value": "[reference('volume').storageTarget.targetPortalHostname]"
+    },
+    "targetPortalPort": {
+      "type": "int",
+      "metadata": {
+        "description": "The iSCSI Target Portal Port of the deployed Elastic SAN Volume."
+      },
+      "value": "[reference('volume').storageTarget.targetPortalPort]"
+    },
+    "volumeId": {
+      "type": "string",
+      "metadata": {
+        "description": "The volume Id of the deployed Elastic SAN Volume."
+      },
+      "value": "[reference('volume').volumeId]"
     },
     "snapshots": {
       "type": "array",

@@ -73,7 +73,7 @@ function Test-VerifyElasticSANVolumeSnapshot($ResourceId, $ElasticSanName, $Reso
     $s.VolumeName | Should -Be $VolumeName
 }
 
-function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGroupName, $VolumeGroupName, $Name, $SizeGiB) {
+function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGroupName, $VolumeGroupName, $Name, $TargetIqn, $TargetPortalHostname, $TargetPortalPort, $VolumeId, $SizeGiB) {
 
     $v = Get-AzElasticSanVolume -ElasticSanName $ElasticSanName -ResourceGroupName $ResourceGroupName -VolumeGroupName $VolumeGroupName -Name $Name
     $v | Should -Not -BeNullOrEmpty
@@ -86,14 +86,14 @@ function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGrou
     $v.Name | Should -Be $Name
     $v.ResourceGroupName | Should -Be $ResourceGroupName
     $v.SizeGiB | Should -Be $SizeGiB
-    $v.StorageTargetIqn | Should -Not -BeNullOrEmpty
-    $v.StorageTargetPortalHostname | Should -Not -BeNullOrEmpty
-    $v.StorageTargetPortalPort | Should -Not -BeNullOrEmpty
+    $v.StorageTargetIqn | Should -Be $TargetIqn
+    $v.StorageTargetPortalHostname | Should -Be $TargetPortalHostname
+    $v.StorageTargetPortalPort | Should -Be $TargetPortalPort
     $v.StorageTargetProvisioningState | Should -Be 'Succeeded'
     $v.StorageTargetStatus | Should -Be 'Running'
     #Skip $v.SystemData**
     $v.Type | Should -Be 'Microsoft.ElasticSan/elasticSans/volumeGroups/volumes'
-    $v.VolumeId | Should -Not -BeNullOrEmpty
+    $v.VolumeId | Should -Be $VolumeId
 }
 
 function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $SystemAssignedMIPrincipalId) {

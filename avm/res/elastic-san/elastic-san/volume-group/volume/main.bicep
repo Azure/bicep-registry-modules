@@ -78,6 +78,18 @@ output name string = volume.name
 @sys.description('The resource group of the deployed Elastic SAN Volume.')
 output resourceGroupName string = resourceGroup().name
 
+@sys.description('The iSCSI Target IQN (iSCSI Qualified Name) of the deployed Elastic SAN Volume.')
+output targetIqn string = volume.properties.storageTarget.targetIqn
+
+@sys.description('The iSCSI Target Portal Host Name of the deployed Elastic SAN Volume.')
+output targetPortalHostname string = volume.properties.storageTarget.targetPortalHostname
+
+@sys.description('The iSCSI Target Portal Port of the deployed Elastic SAN Volume.')
+output targetPortalPort int = volume.properties.storageTarget.targetPortalPort
+
+@sys.description('The volume Id of the deployed Elastic SAN Volume.')
+output volumeId string = volume.properties.volumeId
+
 @sys.description('Details on the deployed Elastic SAN Volume Snapshots.')
 output snapshots volumeSnapshotOutputType[] = [
   for (snapshot, i) in (snapshots ?? []): {

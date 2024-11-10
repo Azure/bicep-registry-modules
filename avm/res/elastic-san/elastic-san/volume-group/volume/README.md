@@ -93,3 +93,7 @@ The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase
 | `resourceGroupName` | string | The resource group of the deployed Elastic SAN Volume. |
 | `resourceId` | string | The resource ID of the deployed Elastic SAN Volume. |
 | `snapshots` | array | Details on the deployed Elastic SAN Volume Snapshots. |
+| `targetIqn` | string | The iSCSI Target IQN (iSCSI Qualified Name) of the deployed Elastic SAN Volume. |
+| `targetPortalHostname` | string | The iSCSI Target Portal Host Name of the deployed Elastic SAN Volume. |
+| `targetPortalPort` | int | The iSCSI Target Portal Port of the deployed Elastic SAN Volume. |
+| `volumeId` | string | The volume Id of the deployed Elastic SAN Volume. |
