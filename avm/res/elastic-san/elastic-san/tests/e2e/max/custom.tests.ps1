@@ -61,13 +61,22 @@ Describe 'Validate Deployment' {
 
 
 
-            'XTEST' | Should -Be $volumeGroups[$vgrpidx].resourceGroupName
 
 
 
 
             # Volume Group - vol-grp-01
             $vgrpidx = 0
+
+
+
+
+            'XTEST' | Should -Be $volumeGroups[$vgrpidx].resourceGroupName
+
+
+
+
+
             Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                 -ResourceId $volumeGroups[$vgrpidx].resourceId `
                 -name $volumeGroups[$vgrpidx].name `
