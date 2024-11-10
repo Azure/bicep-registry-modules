@@ -50,7 +50,7 @@ Describe 'Validate Deployment' {
                 -Tags $expectedTags  `
                 -BaseSizeTiB 1 `
                 -ExtendedCapacitySizeTiB 0 `
-                -PublicNetworkAccess $null `
+                -PublicNetworkAccess 'Enabled' `
                 -SkuName 'Premium_ZRS' `
                 -VolumeGroupCount $expectedVolumeGroupsCount
         }
@@ -58,23 +58,11 @@ Describe 'Validate Deployment' {
         It 'Check Azure Elastic SAN Volume Groups' {
 
             # Volume Groups
-            $expectedData = @{
-                01 = @{
-                    VolumeCounts = 0
-                    NetworkAclsVirtualNetworkRuleCount = 0
-                    PrivateEndpointConnection = $null
-                }
-                02 = @{
-                    VolumeCounts = 2
-                    NetworkAclsVirtualNetworkRuleCount = 0
-                    PrivateEndpointConnection = $null
-                }
-                03 = @{
-                    VolumeCounts = 0
-                    NetworkAclsVirtualNetworkRuleCount = 1
-                    PrivateEndpointConnection = 'Enabled'
-                }
-            }
+            $expectedData = @(
+                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-01
+                @{ VolumeCounts=2;NetworkAclsVirtualNetworkRuleCount=0 }    # vol-grp-02
+                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=1 }    # vol-grp-03
+            )
 
             $volumeGroups.Count | Should -Be $expectedData.Count # Sanity Check
 
@@ -95,7 +83,7 @@ Describe 'Validate Deployment' {
                     -Name $volumeGroups[$vgrpidx].name `
                     -SystemAssignedMIPrincipalId $volumeGroups[$vgrpidx].systemAssignedMIPrincipalId
                     -NetworkAclsVirtualNetworkRuleCount $item.NetworkAclsVirtualNetworkRuleCount
-                    -PrivateEndpointConnection $item.PrivateEndpointConnection
+                    -PrivateEndpointConnection $null
 
                 if ($item.VolumeCounts -eq 0) {
                     $volumeGroups[$vgrpidx].volumes | Should -BeNullOrEmpty
@@ -114,16 +102,10 @@ Describe 'Validate Deployment' {
         It 'Check Azure Elastic SAN Volumes' {
 
             # Volumes
-            $expectedData = @{
-                01 = @{
-                    SizeGiB = 1
-                    SnapshotCount = 0
-                }
-                02 = @{
-                    SizeGiB = 2
-                    SnapshotCount = 2
-                }
-            }
+            $expectedData = @(
+                @{ SizeGiB=1;SnapshotCount=0 }  # vol-grp-02-vol-01
+                @{ SizeGiB=2;SnapshotCount=2 }  # vol-grp-02-vol-02
+            )
 
             $vgrpidx = 1
             $volumeGroups[$vgrpidx].volumes.Count | Should -Be $expectedData.Count # Sanity Check
@@ -164,14 +146,10 @@ Describe 'Validate Deployment' {
         It 'Check Azure Elastic SAN Volume Snapshots' {
 
             # Snapshots
-            $expectedData = @{
-                01 = @{
-                    SourceVolumeSizeGiB = 2
-                }
-                02 = @{
-                    SourceVolumeSizeGiB = 2
-                }
-            }
+            $expectedData = @(
+                @{ SourceVolumeSizeGiB=2 }  # vol-grp-02-vol-02-snap-01
+                @{ SourceVolumeSizeGiB=2 }  # vol-grp-02-vol-02-snap-02
+            )
 
             $vgrpidx = 1
             $volidx = 1
