@@ -134,6 +134,14 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
           }
         ]
       }
+      {
+        name: 'vol-grp-03'
+        virtualNetworkRules: [
+          {
+            virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
+          }
+        ]
+      }
     ]
   }
 }
@@ -187,6 +195,14 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
               ]
             }
           ]
+        },
+        {
+          "name": "vol-grp-03",
+          "virtualNetworkRules": [
+            {
+              "virtualNetworkSubnetResourceId": "<virtualNetworkSubnetResourceId>"
+            }
+          ]
         }
       ]
     }
@@ -233,6 +249,14 @@ param volumeGroups = [
             name: '<name>'
           }
         ]
+      }
+    ]
+  }
+  {
+    name: 'vol-grp-03'
+    virtualNetworkRules: [
+      {
+        virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
       }
     ]
   }

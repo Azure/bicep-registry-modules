@@ -16,7 +16,7 @@ Describe 'Validate Deployment' {
         $resourceGroupName = $TestInputData.DeploymentOutputs.resourceGroupName.Value
         $volumeGroups = $TestInputData.DeploymentOutputs.volumeGroups.Value
 
-        # TODO: Add additional outputs as needed
+        $expectedVolumeGroupsCount = 3
     }
 
     Context 'Basic Tests' {
@@ -52,15 +52,33 @@ Describe 'Validate Deployment' {
                 -ExtendedCapacitySizeTiB 0 `
                 -PublicNetworkAccess $null `
                 -SkuName 'Premium_ZRS' `
-                -VolumeGroupCount 1
+                -VolumeGroupCount $expectedVolumeGroupsCount
         }
 
         It 'Check Azure Elastic SAN Volume Groups' {
 
-            # Volume Group - vol-grp-01 and vol-grp-02
-            $volumeCounts = @(0, 2)
+            # Volume Groups
+            $expectedData = @{
+                01 = @{
+                    VolumeCounts = 0
+                    NetworkAclsVirtualNetworkRuleCount = 0
+                    PrivateEndpointConnection = $null
+                }
+                02 = @{
+                    VolumeCounts = 2
+                    NetworkAclsVirtualNetworkRuleCount = 0
+                    PrivateEndpointConnection = $null
+                }
+                03 = @{
+                    VolumeCounts = 0
+                    NetworkAclsVirtualNetworkRuleCount = 1
+                    PrivateEndpointConnection = 'Enabled'
+                }
+            }
 
-            For ($vgrpidx=0; $vgrpidx -lt $volumeCounts.Count; $vgrpidx++) {
+            $volumeGroups.Count | Should -Be $expectedData.Count # Sanity Check
+
+            For ($vgrpidx=0; $vgrpidx -le $expectedVolumeGroupsCount; $vgrpidx++) {
 
                 Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                     -ResourceId $volumeGroups[$vgrpidx].resourceId `
@@ -74,14 +92,16 @@ Describe 'Validate Deployment' {
                     -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
                     -Name $volumeGroups[$vgrpidx].name `
                     -SystemAssignedMIPrincipalId $volumeGroups[$vgrpidx].systemAssignedMIPrincipalId
+                    -NetworkAclsVirtualNetworkRuleCount $expectedData[$vgrpidx].NetworkAclsVirtualNetworkRuleCount
+                    -PrivateEndpointConnection $expectedData[$vgrpidx].PrivateEndpointConnection
 
-                if ($volumeCounts[$vgrpidx] -eq 0) {
+                if ($expectedData[$vgrpidx].VolumeCounts -eq 0) {
                     $volumeGroups[$vgrpidx].volumes | Should -BeNullOrEmpty
                     $volumeGroups[$vgrpidx].volumes.Count | Should -Be 0
                 }
                 else {
                     $volumeGroups[$vgrpidx].volumes | Should -Not -BeNullOrEmpty
-                    $volumeGroups[$vgrpidx].volumes.Count | Should -Be $volumeCounts[$vgrpidx]
+                    $volumeGroups[$vgrpidx].volumes.Count | Should -Be $expectedData[$vgrpidx].VolumeCounts
                 }
 
                 # TODO: $volumeGroups[$vgrpidx].privateEndpoints | Should -Not -BeNullOrEmpty
@@ -91,12 +111,22 @@ Describe 'Validate Deployment' {
 
         It 'Check Azure Elastic SAN Volumes' {
 
-            # Volumes - vol-grp-02-vol-01 and vol-grp-02-vol-02
-            $vgrpidx = 1
-            $sizes = @(1, 2)
-            $snapshotCounts = @(0, 2)
+            # Volumes
+            $expectedData = @{
+                01 = @{
+                    SizeGiB = 1
+                    SnapshotCount = 0
+                }
+                02 = @{
+                    SizeGiB = 2
+                    SnapshotCount = 2
+                }
+            }
 
-            For ($volidx=0; $volidx -lt $sizes.Count; $volidx++) {
+            $vgrpidx = 1
+            $volumeGroups[$vgrpidx].volumes.Count | Should -Be $expectedData.Count # Sanity Check
+
+            For ($volidx=0; $volidx -le $expectedData.Count; $volidx++) {
 
                 Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                     -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
@@ -114,15 +144,15 @@ Describe 'Validate Deployment' {
                     -TargetPortalHostname $volumeGroups[$vgrpidx].volumes[$volidx].targetPortalHostname `
                     -TargetPortalPort $volumeGroups[$vgrpidx].volumes[$volidx].targetPortalPort `
                     -VolumeId $volumeGroups[$vgrpidx].volumes[$volidx].volumeId `
-                    -SizeGiB $sizes[$volidx]
+                    -SizeGiB $expectedData[$volidx].SizeGiB
 
-                if ($snapshotCounts[$volidx] -eq 0) {
+                if ($expectedData[$volidx].SnapshotCount -eq 0) {
                     $volumeGroups[$vgrpidx].volumes[$volidx].snapshots | Should -BeNullOrEmpty
                     $volumeGroups[$vgrpidx].volumes[$volidx].snapshots.Count | Should -Be 0
                 }
                 else {
                     $volumeGroups[$vgrpidx].volumes[$volidx].snapshots | Should -Not -BeNullOrEmpty
-                    $volumeGroups[$vgrpidx].volumes[$volidx].snapshots.Count | Should -Be $snapshotCounts[$volidx]
+                    $volumeGroups[$vgrpidx].volumes[$volidx].snapshots.Count | Should -Be $expectedData[$volidx].SnapshotCount
                 }
             }
         }
@@ -134,7 +164,10 @@ Describe 'Validate Deployment' {
             $volidx = 1
             $SourceVolumeSizeGiB = 2
 
-            For ($snapidx=0; $snapidx -lt 2; $snapidx++) {
+            $expectedSnapshotsCount = 2
+            $volumeGroups[$vgrpidx].volumes[$volidx].snapshots.Count | Should -Be $expectedSnapshotsCount # Sanity Check
+
+            For ($snapidx=0; $snapidx -le $expectedSnapshotsCount; $snapidx++) {
 
                 Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                     -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceId `

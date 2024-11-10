@@ -96,7 +96,7 @@ function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGrou
     $v.VolumeId | Should -Be $VolumeId
 }
 
-function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $SystemAssignedMIPrincipalId) {
+function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRuleCount, $PrivateEndpointConnection) {
 
     $vg = Get-AzElasticSanVolumeGroup -ElasticSanName $ElasticSanName -ResourceGroupName $ResourceGroupName -Name $Name
     $vg | Should -Not -BeNullOrEmpty
@@ -117,8 +117,18 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
     $vg.KeyVaultPropertyKeyVersion | Should -BeNullOrEmpty
     $vg.KeyVaultPropertyLastKeyRotationTimestamp | Should -BeNullOrEmpty
     $vg.Name | Should -Be $Name
-    $vg.NetworkAclsVirtualNetworkRule | Should -BeNullOrEmpty
-    $vg.PrivateEndpointConnection | Should -BeNullOrEmpty
+    if ($NetworkAclsVirtualNetworkRuleCount -ne 0) {
+        $vg.NetworkAclsVirtualNetworkRule | Should -Not -BeNullOrEmpty
+        $vg.NetworkAclsVirtualNetworkRule.Count | Should -Be $NetworkAclsVirtualNetworkRuleCount
+    }
+    else {
+        $vg.NetworkAclsVirtualNetworkRule | Should -BeNullOrEmpty
+    }
+    if ( $PrivateEndpointConnection ) {
+        $vg.PrivateEndpointConnection | Should -Be $PrivateEndpointConnection
+    } else {
+        $vg.PrivateEndpointConnection | Should -BeNullOrEmpty
+    }
     $vg.ProtocolType | Should -Be 'iSCSI'
     $vg.ResourceGroupName | Should -Be $ResourceGroupName
     #Skip $vg.SystemData**

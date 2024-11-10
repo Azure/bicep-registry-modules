@@ -25,6 +25,16 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  params: {
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    location: enforcedLocation
+  }
+}
+
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -45,18 +55,20 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       volumeGroups: [
         {
+          // Test - No Volumes
           name: 'vol-grp-01'
-          // No Volumes
         }
         {
+          // Test - Multiple Volumes
           name: 'vol-grp-02'
           volumes: [
             {
+              // Test - No Snapshots
               name: 'vol-grp-02-vol-01'
               sizeGiB: 1
-              // No Snapshots
             }
             {
+              // Test - Multiple Snapshots
               name: 'vol-grp-02-vol-02'
               sizeGiB: 2
               snapshots: [
@@ -70,8 +82,16 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
         }
+        {
+          // Test - Virtual Network Rules
+          name: 'vol-grp-03'
+          virtualNetworkRules: [
+            {
+              virtualNetworkSubnetResourceId: nestedDependencies.outputs.subnetResourceId
+            }
+          ]
+        }
 
-        //virtualNetworkRules
         //managedIdentities
         //customerManagedKey
         //privateEndpoints
