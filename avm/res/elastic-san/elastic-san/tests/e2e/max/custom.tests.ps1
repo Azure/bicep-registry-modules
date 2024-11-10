@@ -60,13 +60,13 @@ Describe 'Validate Deployment' {
             # Volume Group - vol-grp-01
             $vgrpidx = 0
             Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
-                -ResourceId $volumeGroups[$vgrpidx].ResourceId `
+                -ResourceId $volumeGroups[$vgrpidx].resourceId `
                 -name $volumeGroups[$vgrpidx].name `
                 -Location $location `
                 -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName
 
             Test-VerifyElasticSANVolumeGroup `
-                -ResourceId $volumeGroups[$vgrpidx].ResourceId `
+                -ResourceId $volumeGroups[$vgrpidx].resourceId `
                 -ElasticSanName $name `
                 -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
                 -Name $volumeGroups[$vgrpidx].name `
@@ -84,13 +84,13 @@ Describe 'Validate Deployment' {
             $volidx = 0
             $SizeGiB = 1
             Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
-                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].ResourceId `
+                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
                 -name $volumeGroups[$vgrpidx].volumes[$volidx].name `
                 -Location $location `
                 -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName
 
             Test-VerifyElasticSANVolume `
-                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].ResourceId `
+                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
                 -ElasticSanName $name `
                 -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName `
                 -Name $volumeGroups[$vgrpidx].volumes[$volidx].name `
@@ -103,13 +103,13 @@ Describe 'Validate Deployment' {
             $volidx = 1
             $SizeGiB = 2
             Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
-                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].ResourceId `
+                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
                 -name $volumeGroups[$vgrpidx].volumes[$volidx].name `
                 -Location $location `
                 -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName
 
             Test-VerifyElasticSANVolume `
-                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].ResourceId `
+                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
                 -ElasticSanName $name `
                 -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName `
                 -Name $volumeGroups[$vgrpidx].volumes[$volidx].name `
@@ -127,19 +127,19 @@ Describe 'Validate Deployment' {
             $SourceVolumeSizeGiB = 2
 
             Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
-                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].ResourceId `
+                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceId `
                 -name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
                 -Location $location `
                 -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceGroupName
 
             Test-VerifyElasticSANVolumeSnapshot `
-                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].ResourceId `
+                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
                 -ElasticSanName $name `
                 -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName `
                 -VolumeGroupName $volumeGroups[$vgrpidx].name `
                 -VolumeName $volumeGroups[$vgrpidx].volumes[$volidx].name `
                 -Name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
-                -VolumeResourceId $volumeGroups[$vgrpidx].volumes[$volidx].ResourceId `
+                -VolumeResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
                 -SourceVolumeSizeGiB $SourceVolumeSizeGiB
 
             # Snapshot - vol-grp-01-vol-02-snap-02
@@ -149,19 +149,19 @@ Describe 'Validate Deployment' {
             $SourceVolumeSizeGiB = 2
 
             Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
-                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].ResourceId `
+                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceId `
                 -name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
                 -Location $location `
                 -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceGroupName
 
             Test-VerifyElasticSANVolumeSnapshot `
-                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].ResourceId `
+                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
                 -ElasticSanName $name `
                 -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName `
                 -VolumeGroupName $volumeGroups[$vgrpidx].name `
                 -VolumeName $volumeGroups[$vgrpidx].volumes[$volidx].name `
                 -Name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
-                -VolumeResourceId $volumeGroups[$vgrpidx].volumes[$volidx].ResourceId `
+                -VolumeResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
                 -SourceVolumeSizeGiB $SourceVolumeSizeGiB
         }
     }

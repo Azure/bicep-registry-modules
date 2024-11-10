@@ -50,7 +50,7 @@ Describe 'Validate Deployment' {
                 -ExtendedCapacitySizeTiB 0 `
                 -PublicNetworkAccess $null `
                 -SkuName 'Premium_ZRS' `
-                -VolumeGroupCount 1
+                -VolumeGroupCount 0
         }
     }
 }
