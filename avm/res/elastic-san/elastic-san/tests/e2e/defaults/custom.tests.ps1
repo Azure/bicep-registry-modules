@@ -24,7 +24,11 @@ Describe 'Validate Deployment' {
 
         It 'Check Output Variables' {
 
-            Test-VerifyOutputVariables -MustBeNullOrEmpty $false -ResourceId $resourceId -name $name -Location $location -ResourceGroupName $resourceGroupName
+            Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
+                -ResourceId $resourceId `
+                -name $name `
+                -Location $location `
+                -ResourceGroupName $resourceGroupName
             $volumeGroups | Should -BeNullOrEmpty
         }
     }
@@ -36,8 +40,17 @@ Describe 'Validate Deployment' {
 
         It 'Check Azure Elastic SAN' {
 
-            Test-VerifyElasticSAN -ResourceId $resourceId -ResourceGroupName $resourceGroupName -Name $name -Location $location -Tags $expectedTags  `
-                -BaseSizeTiB 1 -ExtendedCapacitySizeTiB 0 -PublicNetworkAccess $null -SkuName 'Premium_ZRS' -VolumeGroupCount 0
+            Test-VerifyElasticSAN `
+                -ResourceId $resourceId `
+                -ResourceGroupName $resourceGroupName `
+                -name $name `
+                -Location $location `
+                -Tags $expectedTags  `
+                -BaseSizeTiB 1 `
+                -ExtendedCapacitySizeTiB 0 `
+                -PublicNetworkAccess $null `
+                -SkuName 'Premium_ZRS' `
+                -VolumeGroupCount 1
         }
     }
 }
