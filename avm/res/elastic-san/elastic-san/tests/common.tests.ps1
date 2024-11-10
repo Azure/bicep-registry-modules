@@ -110,7 +110,7 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
     $vg.IdentityPrincipalId | Should -BeNullOrEmpty
     $vg.IdentityTenantId | Should -BeNullOrEmpty
     $vg.IdentityType | Should -BeNullOrEmpty
-    $vg.IdentityUserAssignedIdentity | Should -BeNullOrEmpty
+    $vg.IdentityUserAssignedIdentity | ConvertFrom-Json | Should -BeNullOrEmpty
     $vg.KeyVaultPropertyCurrentVersionedKeyExpirationTimestamp | Should -BeNullOrEmpty
     $vg.KeyVaultPropertyCurrentVersionedKeyIdentifier | Should -BeNullOrEmpty
     $vg.KeyVaultPropertyKeyName | Should -BeNullOrEmpty
