@@ -78,7 +78,9 @@ Describe 'Validate Deployment' {
 
             $volumeGroups.Count | Should -Be $expectedData.Count # Sanity Check
 
-            For ($vgrpidx=0; $vgrpidx -le $expectedVolumeGroupsCount; $vgrpidx++) {
+            foreach ($item in $expectedData) {
+
+                $vgrpidx = $expectedData.IndexOf($item)
 
                 Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                     -ResourceId $volumeGroups[$vgrpidx].resourceId `
@@ -92,16 +94,16 @@ Describe 'Validate Deployment' {
                     -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
                     -Name $volumeGroups[$vgrpidx].name `
                     -SystemAssignedMIPrincipalId $volumeGroups[$vgrpidx].systemAssignedMIPrincipalId
-                    -NetworkAclsVirtualNetworkRuleCount $expectedData[$vgrpidx].NetworkAclsVirtualNetworkRuleCount
-                    -PrivateEndpointConnection $expectedData[$vgrpidx].PrivateEndpointConnection
+                    -NetworkAclsVirtualNetworkRuleCount $item.NetworkAclsVirtualNetworkRuleCount
+                    -PrivateEndpointConnection $item.PrivateEndpointConnection
 
-                if ($expectedData[$vgrpidx].VolumeCounts -eq 0) {
+                if ($item.VolumeCounts -eq 0) {
                     $volumeGroups[$vgrpidx].volumes | Should -BeNullOrEmpty
                     $volumeGroups[$vgrpidx].volumes.Count | Should -Be 0
                 }
                 else {
                     $volumeGroups[$vgrpidx].volumes | Should -Not -BeNullOrEmpty
-                    $volumeGroups[$vgrpidx].volumes.Count | Should -Be $expectedData[$vgrpidx].VolumeCounts
+                    $volumeGroups[$vgrpidx].volumes.Count | Should -Be $item.VolumeCounts
                 }
 
                 # TODO: $volumeGroups[$vgrpidx].privateEndpoints | Should -Not -BeNullOrEmpty
@@ -126,7 +128,9 @@ Describe 'Validate Deployment' {
             $vgrpidx = 1
             $volumeGroups[$vgrpidx].volumes.Count | Should -Be $expectedData.Count # Sanity Check
 
-            For ($volidx=0; $volidx -le $expectedData.Count; $volidx++) {
+            foreach ($item in $expectedData) {
+
+                $volidx = $expectedData.IndexOf($item)
 
                 Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                     -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
@@ -144,30 +148,39 @@ Describe 'Validate Deployment' {
                     -TargetPortalHostname $volumeGroups[$vgrpidx].volumes[$volidx].targetPortalHostname `
                     -TargetPortalPort $volumeGroups[$vgrpidx].volumes[$volidx].targetPortalPort `
                     -VolumeId $volumeGroups[$vgrpidx].volumes[$volidx].volumeId `
-                    -SizeGiB $expectedData[$volidx].SizeGiB
+                    -SizeGiB $item.SizeGiB
 
-                if ($expectedData[$volidx].SnapshotCount -eq 0) {
+                if ($item.SnapshotCount -eq 0) {
                     $volumeGroups[$vgrpidx].volumes[$volidx].snapshots | Should -BeNullOrEmpty
                     $volumeGroups[$vgrpidx].volumes[$volidx].snapshots.Count | Should -Be 0
                 }
                 else {
                     $volumeGroups[$vgrpidx].volumes[$volidx].snapshots | Should -Not -BeNullOrEmpty
-                    $volumeGroups[$vgrpidx].volumes[$volidx].snapshots.Count | Should -Be $expectedData[$volidx].SnapshotCount
+                    $volumeGroups[$vgrpidx].volumes[$volidx].snapshots.Count | Should -Be $item.SnapshotCount
                 }
             }
         }
 
         It 'Check Azure Elastic SAN Volume Snapshots' {
 
-            # Snapshots - vol-grp-02-vol-02-snap-01 and vol-grp-02-vol-02-snap-02
+            # Snapshots
+            $expectedData = @{
+                01 = @{
+                    SourceVolumeSizeGiB = 2
+                }
+                02 = @{
+                    SourceVolumeSizeGiB = 2
+                }
+            }
+
             $vgrpidx = 1
             $volidx = 1
-            $SourceVolumeSizeGiB = 2
 
-            $expectedSnapshotsCount = 2
-            $volumeGroups[$vgrpidx].volumes[$volidx].snapshots.Count | Should -Be $expectedSnapshotsCount # Sanity Check
+            $volumeGroups[$vgrpidx].volumes[$volidx].snapshots.Count | Should -Be $expectedData.Count # Sanity Check
 
-            For ($snapidx=0; $snapidx -le $expectedSnapshotsCount; $snapidx++) {
+            foreach ($item in $expectedData) {
+
+                $snapidx = $expectedData.IndexOf($item)
 
                 Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                     -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceId `
@@ -183,7 +196,7 @@ Describe 'Validate Deployment' {
                     -VolumeName $volumeGroups[$vgrpidx].volumes[$volidx].name `
                     -Name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
                     -VolumeResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
-                    -SourceVolumeSizeGiB $SourceVolumeSizeGiB
+                    -SourceVolumeSizeGiB $item.SourceVolumeSizeGiB
             }
         }
     }
