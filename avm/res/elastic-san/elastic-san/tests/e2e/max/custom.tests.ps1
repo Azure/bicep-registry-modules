@@ -79,53 +79,40 @@ Describe 'Validate Deployment' {
 
         It 'Check Azure Elastic SAN Volumes' {
 
-            # Volume - vol-grp-01-vol-01
+            # Volumes - vol-grp-01-vol-01 and vol-grp-01-vol-02
             $vgrpidx = 0
-            $volidx = 0
-            $SizeGiB = 1
-            Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
-                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
-                -name $volumeGroups[$vgrpidx].volumes[$volidx].name `
-                -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName `
-                -Location $null # Location is NOT Supported on this resource
+            $sizes = @(1, 2)
+            $snapshotCounts = @(0, 2)
 
-            Test-VerifyElasticSANVolume `
-                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
-                -ElasticSanName $name `
-                -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName `
-                -VolumeGroupName $volumeGroups[$vgrpidx].name `
-                -Name $volumeGroups[$vgrpidx].volumes[$volidx].name `
-                -TargetIqn $volumeGroups[$vgrpidx].volumes[$volidx].targetIqn `
-                -TargetPortalHostname $volumeGroups[$vgrpidx].volumes[$volidx].targetPortalHostname `
-                -TargetPortalPort $volumeGroups[$vgrpidx].volumes[$volidx].targetPortalPort `
-                -VolumeId $volumeGroups[$vgrpidx].volumes[$volidx].volumeId `
-                -SizeGiB $SizeGiB
-            $volumeGroups[$vgrpidx].volumes[$volidx].snapshots | Should -BeNullOrEmpty
-            #$volumeGroups[$vgrpidx].volumes[$volidx].snapshots.Count | Should -Be 0
+            For ($volidx=0; $volidx -lt $sizes.Count; $volidx++) {
 
-            # Volume - vol-grp-01-vol-02
-            $vgrpidx = 0
-            $volidx = 1
-            $SizeGiB = 2
-            Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
-                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
-                -name $volumeGroups[$vgrpidx].volumes[$volidx].name `
-                -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName `
-                -Location $null # Location is NOT Supported on this resource
+                Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
+                    -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
+                    -name $volumeGroups[$vgrpidx].volumes[$volidx].name `
+                    -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName `
+                    -Location $null # Location is NOT Supported on this resource
 
-            Test-VerifyElasticSANVolume `
-                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
-                -ElasticSanName $name `
-                -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName `
-                -VolumeGroupName $volumeGroups[$vgrpidx].name `
-                -Name $volumeGroups[$vgrpidx].volumes[$volidx].name `
-                -TargetIqn $volumeGroups[$vgrpidx].volumes[$volidx].targetIqn `
-                -TargetPortalHostname $volumeGroups[$vgrpidx].volumes[$volidx].targetPortalHostname `
-                -TargetPortalPort $volumeGroups[$vgrpidx].volumes[$volidx].targetPortalPort `
-                -VolumeId $volumeGroups[$vgrpidx].volumes[$volidx].volumeId `
-                -SizeGiB $SizeGiB
-            $volumeGroups[$vgrpidx].volumes[$volidx].snapshots | Should -Not -BeNullOrEmpty
-            $volumeGroups[$vgrpidx].volumes[$volidx].snapshots.Count | Should -Be 2
+                Test-VerifyElasticSANVolume `
+                    -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
+                    -ElasticSanName $name `
+                    -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].resourceGroupName `
+                    -VolumeGroupName $volumeGroups[$vgrpidx].name `
+                    -Name $volumeGroups[$vgrpidx].volumes[$volidx].name `
+                    -TargetIqn $volumeGroups[$vgrpidx].volumes[$volidx].targetIqn `
+                    -TargetPortalHostname $volumeGroups[$vgrpidx].volumes[$volidx].targetPortalHostname `
+                    -TargetPortalPort $volumeGroups[$vgrpidx].volumes[$volidx].targetPortalPort `
+                    -VolumeId $volumeGroups[$vgrpidx].volumes[$volidx].volumeId `
+                    -SizeGiB $sizes[$volidx]
+
+                if ($snapshotCounts[$volidx] -eq 0) {
+                    $volumeGroups[$vgrpidx].volumes[$volidx].snapshots | Should -BeNullOrEmpty
+                    $volumeGroups[$vgrpidx].volumes[$volidx].snapshots.Count | Should -Be 0
+                }
+                else {
+                    $volumeGroups[$vgrpidx].volumes[$volidx].snapshots | Should -Not -BeNullOrEmpty
+                    $volumeGroups[$vgrpidx].volumes[$volidx].snapshots.Count | Should -Be $snapshotCounts[$volidx]
+                }
+            }
         }
 
         It 'Check Azure Elastic SAN Volume Snapshots' {
@@ -133,10 +120,9 @@ Describe 'Validate Deployment' {
             # Snapshots - vol-grp-01-vol-02-snap-01 and vol-grp-01-vol-02-snap-02
             $vgrpidx = 0
             $volidx = 1
+            $SourceVolumeSizeGiB = 2
 
-            $sourceVolumeSizes = @(1, 2)
-
-            For ($snapidx=0; $snapidx -lt $sourceVolumeSizes.Count; $snapidx++) {
+            For ($snapidx=0; $snapidx -lt 2; $snapidx++) {
 
                 Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
                     -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceId `
@@ -152,7 +138,7 @@ Describe 'Validate Deployment' {
                     -VolumeName $volumeGroups[$vgrpidx].volumes[$volidx].name `
                     -Name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
                     -VolumeResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
-                    -SourceVolumeSizeGiB $sourceVolumeSizes[$snapidx]
+                    -SourceVolumeSizeGiB $SourceVolumeSizeGiB
             }
         }
     }
