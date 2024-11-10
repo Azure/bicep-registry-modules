@@ -117,13 +117,7 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
     $vg.KeyVaultPropertyKeyVersion | Should -BeNullOrEmpty
     $vg.KeyVaultPropertyLastKeyRotationTimestamp | Should -BeNullOrEmpty
     $vg.Name | Should -Be $Name
-    if ($NetworkAclsVirtualNetworkRuleCount -ne 0) {
-        $vg.NetworkAclsVirtualNetworkRule | Should -Not -BeNullOrEmpty
-        $vg.NetworkAclsVirtualNetworkRule.Count | Should -Be $NetworkAclsVirtualNetworkRuleCount
-    }
-    else {
-        $vg.NetworkAclsVirtualNetworkRule | Should -BeNullOrEmpty
-    }
+    $vg.NetworkAclsVirtualNetworkRule.Count | Should -Be $NetworkAclsVirtualNetworkRuleCount
     if ( $PrivateEndpointConnection ) {
         $vg.PrivateEndpointConnection | Should -Be $PrivateEndpointConnection
     } else {
