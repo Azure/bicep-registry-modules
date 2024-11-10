@@ -130,49 +130,30 @@ Describe 'Validate Deployment' {
 
         It 'Check Azure Elastic SAN Volume Snapshots' {
 
-            # Snapshot - vol-grp-01-vol-02-snap-01
+            # Snapshots - vol-grp-01-vol-02-snap-01 and vol-grp-01-vol-02-snap-02
             $vgrpidx = 0
             $volidx = 1
-            $snapidx = 0
-            $SourceVolumeSizeGiB = 2
 
-            Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
-                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceId `
-                -name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
-                -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceGroupName `
-                -Location $null # Location is NOT Supported on this resource
+            $sourceVolumeSizes = @(1, 2)
 
-            Test-VerifyElasticSANVolumeSnapshot `
-                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceId `
-                -ElasticSanName $name `
-                -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceGroupName `
-                -VolumeGroupName $volumeGroups[$vgrpidx].name `
-                -VolumeName $volumeGroups[$vgrpidx].volumes[$volidx].name `
-                -Name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
-                -VolumeResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
-                -SourceVolumeSizeGiB $SourceVolumeSizeGiB
+            For ($snapidx=0; $snapidx -lt $sourceVolumeSizes.Count; $snapidx++) {
 
-            # Snapshot - vol-grp-01-vol-02-snap-02
-            $vgrpidx = 0
-            $volidx = 1
-            $snapidx = 1
-            $SourceVolumeSizeGiB = 2
+                Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
+                    -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceId `
+                    -name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
+                    -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceGroupName `
+                    -Location $null # Location is NOT Supported on this resource
 
-            Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
-                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceId `
-                -name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
-                -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceGroupName `
-                -Location $null # Location is NOT Supported on this resource
-
-            Test-VerifyElasticSANVolumeSnapshot `
-                -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceId `
-                -ElasticSanName $name `
-                -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceGroupName `
-                -VolumeGroupName $volumeGroups[$vgrpidx].name `
-                -VolumeName $volumeGroups[$vgrpidx].volumes[$volidx].name `
-                -Name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
-                -VolumeResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
-                -SourceVolumeSizeGiB $SourceVolumeSizeGiB
+                Test-VerifyElasticSANVolumeSnapshot `
+                    -ResourceId $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceId `
+                    -ElasticSanName $name `
+                    -ResourceGroupName $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].resourceGroupName `
+                    -VolumeGroupName $volumeGroups[$vgrpidx].name `
+                    -VolumeName $volumeGroups[$vgrpidx].volumes[$volidx].name `
+                    -Name $volumeGroups[$vgrpidx].volumes[$volidx].snapshots[$snapidx].name `
+                    -VolumeResourceId $volumeGroups[$vgrpidx].volumes[$volidx].resourceId `
+                    -SourceVolumeSizeGiB $sourceVolumeSizes[$snapidx]
+            }
         }
     }
 }
