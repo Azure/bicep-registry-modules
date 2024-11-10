@@ -21,9 +21,6 @@ param serviceShort string = 'esanmax'
 @sys.description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@sys.description('Generated. Do not provide a value! This date value is used to generate a snapshot date time.')
-param baseTime string = utcNow()
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -59,10 +56,10 @@ module testDeployment '../../../main.bicep' = [
               sizeGiB: 2
               snapshots: [
                 {
-                  name: 'vol-grp-01-vol-02-snap-01-${uniqueString('${baseTime}-${iteration}')}'
+                  name: 'vol-grp-01-vol-02-snap-01-${iteration}'
                 }
                 {
-                  name: 'vol-grp-01-vol-02-snap-02-${uniqueString('${baseTime}-${iteration}')}'
+                  name: 'vol-grp-01-vol-02-snap-02-${iteration}'
                 }
               ]
             }
