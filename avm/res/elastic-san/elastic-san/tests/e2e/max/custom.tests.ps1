@@ -57,6 +57,15 @@ Describe 'Validate Deployment' {
 
         It 'Check Azure Elastic SAN Volume Groups' {
 
+
+
+
+
+            'XTEST' | Should -Be $volumeGroups[$vgrpidx].resourceGroupName
+
+
+
+
             # Volume Group - vol-grp-01
             $vgrpidx = 0
             Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
