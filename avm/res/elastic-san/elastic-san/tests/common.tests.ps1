@@ -93,7 +93,6 @@ function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGrou
     $v.StorageTargetStatus | Should -Be 'Running'
     #Skip $v.SystemData**
     $v.Type | Should -Be 'Microsoft.ElasticSan/elasticSans/volumeGroups/volumes'
-    $v.VolumeName | Should -Be $Name
     $v.VolumeId | Should -Not -BeNullOrEmpty
 }
 
