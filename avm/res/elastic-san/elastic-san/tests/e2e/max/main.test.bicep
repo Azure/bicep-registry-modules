@@ -59,10 +59,10 @@ module testDeployment '../../../main.bicep' = [
               sizeGiB: 2
               snapshots: [
                 {
-                  name: 'vol-grp-01-vol-02-snap-01-${uniqueString(baseTime)}'
+                  name: 'vol-grp-01-vol-02-snap-01-${uniqueString('${baseTime}-${iteration}')}'
                 }
                 {
-                  name: 'vol-grp-01-vol-02-snap-02-${uniqueString(baseTime)}'
+                  name: 'vol-grp-01-vol-02-snap-02-${uniqueString('${baseTime}-${iteration}')}'
                 }
               ]
             }
