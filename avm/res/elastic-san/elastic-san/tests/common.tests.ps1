@@ -49,6 +49,84 @@ function Test-VerifyDiagSettings($ResourceId, $LogAnalyticsWorkspaceResourceId, 
     for ($i = 0; $i -lt $diagCat.Count; $i++) { $diagCat[$i].Name | Should -BeIn $Logs }
 }
 
+function Test-VerifyElasticSANVolumeSnapshot($ResourceId, $ElasticSanName, $ResourceGroupName, $VolumeGroupName, $VolumeName, $Name, $VolumeResourceId, $SourceVolumeSizeGiB) {
+
+    $s = Get-AzElasticSanVolumeSnapshot -ElasticSanName $ElasticSanName -ResourceGroupName $ResourceGroupName -VolumeGroupName $VolumeGroupName -Name $Name
+    $s | Should -Not -BeNullOrEmpty
+    $s.ProvisioningState | Should -Be 'Succeeded'
+
+    $s.CreationDataSourceId | Should -Be $VolumeResourceId
+    $s.Id | Should -Be $ResourceId
+    $s.Name | Should -Be $Name
+    $s.ResourceGroupName | Should -Be $ResourceGroupName
+    $s.SourceVolumeSizeGiB | Should -Be $SourceVolumeSizeGiB
+    #Skip $s.SystemData**
+    $s.Type | Should -Be 'Microsoft.ElasticSan/elasticSans/volumeGroups/snapshots'
+    $s.VolumeName | Should -Be $VolumeName
+}
+
+function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGroupName, $VolumeGroupName, $Name, $SizeGiB) {
+
+    $v = Get-AzElasticSanVolume -ElasticSanName $ElasticSanName -ResourceGroupName $ResourceGroupName -VolumeGroupName $VolumeGroupName -Name $Name
+    $v | Should -Not -BeNullOrEmpty
+    $v.ProvisioningState | Should -Be 'Succeeded'
+
+    $v.CreationDataCreateSource | Should -Be 'None'
+    $v.CreationDataSourceId | Should -BeNullOrEmpty
+    $v.Id | Should -Be $ResourceId
+    $v.ManagedByResourceId | Should -Be 'None'
+    $v.Name | Should -Be $Name
+    $v.ResourceGroupName | Should -Be $ResourceGroupName
+    $v.SizeGiB | Should -Be $SizeGiB
+    $v.StorageTargetIqn | Should -Not -BeNullOrEmpty
+    $v.StorageTargetPortalHostname | Should -Not -BeNullOrEmpty
+    $v.StorageTargetPortalPort | Should -Not -BeNullOrEmpty
+    $v.StorageTargetProvisioningState | Should -Be 'Succeeded'
+    $v.StorageTargetStatus | Should -Be 'Running'
+    #Skip $v.SystemData**
+    $v.Type | Should -Be 'Microsoft.ElasticSan/elasticSans/volumeGroups/volumes'
+    $v.VolumeName | Should -Be $Name
+    $v.VolumeId | Should -Not -BeNullOrEmpty
+}
+
+function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name) {
+
+    $vg = Get-AzElasticSanVolumeGroup -ElasticSanName $ElasticSanName -ResourceGroupName $ResourceGroupName -Name $Name
+    $vg | Should -Not -BeNullOrEmpty
+    $vg.ProvisioningState | Should -Be 'Succeeded'
+
+    $vg.Encryption | Should -Be 'EncryptionAtRestWithPlatformKey'
+    $vg.EncryptionIdentityEncryptionUserAssignedIdentity | Should -BeNullOrEmpty
+    $vg.EnforceDataIntegrityCheckForIscsi | Should -BeNullOrEmpty
+    $vg.Id | Should -Be $ResourceId
+    $vg.IdentityPrincipalId | Should -BeNullOrEmpty
+    $vg.IdentityTenantId | Should -BeNullOrEmpty
+    $vg.IdentityType | Should -BeNullOrEmpty
+    $vg.IdentityUserAssignedIdentity | Should -BeNullOrEmpty
+    $vg.KeyVaultPropertyCurrentVersionedKeyExpirationTimestamp | Should -BeNullOrEmpty
+    $vg.KeyVaultPropertyCurrentVersionedKeyIdentifier | Should -BeNullOrEmpty
+    $vg.KeyVaultPropertyKeyName | Should -BeNullOrEmpty
+    $vg.KeyVaultPropertyKeyVaultUri | Should -BeNullOrEmpty
+    $vg.KeyVaultPropertyKeyVersion | Should -BeNullOrEmpty
+    $vg.KeyVaultPropertyLastKeyRotationTimestamp | Should -BeNullOrEmpty
+    $vg.Name | Should -Be $Name
+    $vg.NetworkAclsVirtualNetworkRule | Should -BeNullOrEmpty
+    $vg.PrivateEndpointConnection | Should -BeNullOrEmpty
+    $vg.ProtocolType | Should -Be 'iSCSI'
+    $vg.ResourceGroupName | Should -Be $ResourceGroupName
+    #Skip $vg.SystemData**
+    $vg.Type | Should -Be 'Microsoft.ElasticSan/elasticSans/volumeGroups'
+}
+
+
+
+
+
+
+
+
+
+
 function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location, $Tags, $BaseSizeTiB, $ExtendedCapacitySizeTiB, $PublicNetworkAccess, $SkuName, $VolumeGroupCount) {
 
     #AvailabilityZone : { 2 }
@@ -95,13 +173,6 @@ function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location
     #$esan.PrivateEndpointConnection[1].PrivateLinkServiceConnectionStateStatus | Should -Be 'Approved'
     #$esan.PrivateEndpointConnection[1].ProvisioningState | Should -Be 'Succeeded'
 
-
-
-
-    #Get-AzElasticSanSkuList
-    #Get-AzElasticSanVolume
-    #Get-AzElasticSanVolumeGroup
-    #Get-AzElasticSanVolumeSnapshot
 
 
 
