@@ -57,30 +57,42 @@ Describe 'Validate Deployment' {
 
         It 'Check Azure Elastic SAN Volume Groups' {
 
-            # Volume Group - vol-grp-01
-            $vgrpidx = 0
-            Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
-                -ResourceId $volumeGroups[$vgrpidx].resourceId `
-                -name $volumeGroups[$vgrpidx].name `
-                -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
-                -Location $null # Location is NOT Supported on this resource
+            # Volume Group - vol-grp-01 and vol-grp-02
+            $volumeCounts = @(0, 2)
 
-            Test-VerifyElasticSANVolumeGroup `
-                -ResourceId $volumeGroups[$vgrpidx].resourceId `
-                -ElasticSanName $name `
-                -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
-                -Name $volumeGroups[$vgrpidx].name `
-                -SystemAssignedMIPrincipalId $volumeGroups[$vgrpidx].systemAssignedMIPrincipalId
-            $volumeGroups[$vgrpidx].volumes | Should -Not -BeNullOrEmpty
-            $volumeGroups[$vgrpidx].volumes.Count | Should -Be 2
-            # TODO: $volumeGroups[$vgrpidx].privateEndpoints | Should -Not -BeNullOrEmpty
-            # TODO: $volumeGroups[$vgrpidx].privateEndpoints.Count | Should -Be 2
+            For ($vgrpidx=0; $vgrpidx -lt $volumeCounts.Count; $vgrpidx++) {
+
+                Test-VerifyOutputVariables -MustBeNullOrEmpty $false `
+                    -ResourceId $volumeGroups[$vgrpidx].resourceId `
+                    -name $volumeGroups[$vgrpidx].name `
+                    -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
+                    -Location $null # Location is NOT Supported on this resource
+
+                Test-VerifyElasticSANVolumeGroup `
+                    -ResourceId $volumeGroups[$vgrpidx].resourceId `
+                    -ElasticSanName $name `
+                    -ResourceGroupName $volumeGroups[$vgrpidx].resourceGroupName `
+                    -Name $volumeGroups[$vgrpidx].name `
+                    -SystemAssignedMIPrincipalId $volumeGroups[$vgrpidx].systemAssignedMIPrincipalId
+
+                if ($volumeCounts[$vgrpidx] -eq 0) {
+                    $volumeGroups[$vgrpidx].volumes | Should -BeNullOrEmpty
+                    $volumeGroups[$vgrpidx].volumes.Count | Should -Be 0
+                }
+                else {
+                    $volumeGroups[$vgrpidx].volumes | Should -Not -BeNullOrEmpty
+                    $volumeGroups[$vgrpidx].volumes.Count | Should -Be $volumeCounts[$vgrpidx]
+                }
+
+                # TODO: $volumeGroups[$vgrpidx].privateEndpoints | Should -Not -BeNullOrEmpty
+                # TODO: $volumeGroups[$vgrpidx].privateEndpoints.Count | Should -Be 2
+            }
         }
 
         It 'Check Azure Elastic SAN Volumes' {
 
-            # Volumes - vol-grp-01-vol-01 and vol-grp-01-vol-02
-            $vgrpidx = 0
+            # Volumes - vol-grp-02-vol-01 and vol-grp-02-vol-02
+            $vgrpidx = 1
             $sizes = @(1, 2)
             $snapshotCounts = @(0, 2)
 
@@ -117,8 +129,8 @@ Describe 'Validate Deployment' {
 
         It 'Check Azure Elastic SAN Volume Snapshots' {
 
-            # Snapshots - vol-grp-01-vol-02-snap-01 and vol-grp-01-vol-02-snap-02
-            $vgrpidx = 0
+            # Snapshots - vol-grp-02-vol-02-snap-01 and vol-grp-02-vol-02-snap-02
+            $vgrpidx = 1
             $volidx = 1
             $SourceVolumeSizeGiB = 2
 

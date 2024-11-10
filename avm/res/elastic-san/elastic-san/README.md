@@ -112,13 +112,16 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     volumeGroups: [
       {
         name: 'vol-grp-01'
+      }
+      {
+        name: 'vol-grp-02'
         volumes: [
           {
-            name: 'vol-grp-01-vol-01'
+            name: 'vol-grp-02-vol-01'
             sizeGiB: 1
           }
           {
-            name: 'vol-grp-01-vol-02'
+            name: 'vol-grp-02-vol-02'
             sizeGiB: 2
             snapshots: [
               {
@@ -162,14 +165,17 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     "volumeGroups": {
       "value": [
         {
-          "name": "vol-grp-01",
+          "name": "vol-grp-01"
+        },
+        {
+          "name": "vol-grp-02",
           "volumes": [
             {
-              "name": "vol-grp-01-vol-01",
+              "name": "vol-grp-02-vol-01",
               "sizeGiB": 1
             },
             {
-              "name": "vol-grp-01-vol-02",
+              "name": "vol-grp-02-vol-02",
               "sizeGiB": 2,
               "snapshots": [
                 {
@@ -208,13 +214,16 @@ param tags = {
 param volumeGroups = [
   {
     name: 'vol-grp-01'
+  }
+  {
+    name: 'vol-grp-02'
     volumes: [
       {
-        name: 'vol-grp-01-vol-01'
+        name: 'vol-grp-02-vol-01'
         sizeGiB: 1
       }
       {
-        name: 'vol-grp-01-vol-02'
+        name: 'vol-grp-02-vol-02'
         sizeGiB: 2
         snapshots: [
           {

@@ -46,30 +46,35 @@ module testDeployment '../../../main.bicep' = [
       volumeGroups: [
         {
           name: 'vol-grp-01'
+          // No Volumes
+        }
+        {
+          name: 'vol-grp-02'
           volumes: [
             {
-              name: 'vol-grp-01-vol-01'
+              name: 'vol-grp-02-vol-01'
               sizeGiB: 1
+              // No Snapshots
             }
             {
-              name: 'vol-grp-01-vol-02'
+              name: 'vol-grp-02-vol-02'
               sizeGiB: 2
               snapshots: [
                 {
-                  name: 'vol-grp-01-vol-02-snap-01-${iteration}'
+                  name: 'vol-grp-02-vol-02-snap-01-${iteration}'
                 }
                 {
-                  name: 'vol-grp-01-vol-02-snap-02-${iteration}'
+                  name: 'vol-grp-02-vol-02-snap-02-${iteration}'
                 }
               ]
             }
           ]
-
-          //virtualNetworkRules
-          //managedIdentities
-          //customerManagedKey
-          //privateEndpoints
         }
+
+        //virtualNetworkRules
+        //managedIdentities
+        //customerManagedKey
+        //privateEndpoints
       ]
       tags: {
         Owner: 'Contoso'
