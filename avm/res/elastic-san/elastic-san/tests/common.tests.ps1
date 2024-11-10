@@ -16,7 +16,11 @@ function Test-VerifyOutputVariables($MustBeNullOrEmpty, $ResourceId, $Name, $Loc
     } else {
         $ResourceId | Should -Not -BeNullOrEmpty
         $Name | Should -Not -BeNullOrEmpty
-        $Location | Should -Not -BeNullOrEmpty
+        if ( $Location ) {
+            $Location | Should -Not -BeNullOrEmpty
+        } else {
+            $Location | Should -BeNullOrEmpty
+        }
         $ResourceGroupName | Should -Not -BeNullOrEmpty
 
         $r = Get-AzResource -ResourceId $ResourceId
@@ -24,6 +28,8 @@ function Test-VerifyOutputVariables($MustBeNullOrEmpty, $ResourceId, $Name, $Loc
         $r.Name | Should -Be $Name
         if ( $Location ) {
             $r.Location | Should -Be $Location
+        } else {
+            $r.Location | Should -BeNullOrEmpty
         }
         $r.ResourceGroupName | Should -Be $ResourceGroupName
     }
