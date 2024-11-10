@@ -136,10 +136,11 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
 
 function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location, $Tags, $BaseSizeTiB, $ExtendedCapacitySizeTiB, $PublicNetworkAccess, $SkuName, $VolumeGroupCount) {
 
-    #AvailabilityZone : { 2 }
     $esan = Get-AzElasticSan -ResourceGroupName $ResourceGroupName -Name $Name
     $esan | Should -Not -BeNullOrEmpty
     $esan.ProvisioningState | Should -Be 'Succeeded'
+
+    #AvailabilityZone : { 2 }
     $esan.BaseSizeTiB | Should -Be $BaseSizeTiB
     $esan.ExtendedCapacitySizeTiB | Should -Be $ExtendedCapacitySizeTiB
     $esan.Id | Should -Be $ResourceId
@@ -151,15 +152,19 @@ function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location
     $esan.SkuName | Should -Be $SkuName
     $esan.SkuTier | Should -Be 'Premium'
     #Skip $esan.SystemData**
+    #Skip $esan.Tag
     #Skip $esan.TotalIops
     #Skip $esan.TotalMBps
-
     #Skip $esan.TotalSizeTiB | Should -Be $TotalSizeTiB
     #Skip $esan.TotalVolumeSizeGiB | Should -Be $TotalVolumeSizeGiB
     $esan.Type | Should -Be 'Microsoft.ElasticSan/ElasticSans'
     $esan.VolumeGroupCount | Should -Be $VolumeGroupCount
 
     Test-VerifyTagsForResource -ResourceId $esan.Id -Tags $Tags
+
+
+
+
 
 
 

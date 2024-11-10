@@ -71,6 +71,10 @@ module testDeployment '../../../main.bicep' = [
           //privateEndpoints
         }
       ]
+      tags: {
+        Owner: 'Contoso'
+        CostCenter: '123-456-789'
+      }
 
       //location
       //sku
@@ -78,7 +82,6 @@ module testDeployment '../../../main.bicep' = [
       //baseSizeTiB
       //extendedCapacitySizeTiB
       //publicNetworkAccess
-      //tags
       //enableTelemetry
 
       // TODO: Include as many additional parameters as possible. Ideally all.

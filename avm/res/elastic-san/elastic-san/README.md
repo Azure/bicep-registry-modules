@@ -105,6 +105,10 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
     // Required parameters
     name: 'esanmax001'
     // Non-required parameters
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
     volumeGroups: [
       {
         name: 'vol-grp-01'
@@ -149,6 +153,12 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       "value": "esanmax001"
     },
     // Non-required parameters
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    },
     "volumeGroups": {
       "value": [
         {
@@ -191,6 +201,10 @@ using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 // Required parameters
 param name = 'esanmax001'
 // Non-required parameters
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
 param volumeGroups = [
   {
     name: 'vol-grp-01'
