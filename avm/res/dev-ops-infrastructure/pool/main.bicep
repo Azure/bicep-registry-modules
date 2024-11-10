@@ -525,6 +525,7 @@ type managedIdentitiesType = {
   userAssignedResourceIds: string[]?
 }?
 
+@export()
 type standbyAgentsConfigType = {
   @description('Required. The time at which the agents are needed.')
   startTime: string
@@ -539,6 +540,7 @@ type standbyAgentsConfigType = {
   endAgentCount: int
 }?
 
+@export()
 type daysDataType = {
   @description('Optional. The number of agents needed at a specific time for Monday.')
   monday: standbyAgentsConfigType

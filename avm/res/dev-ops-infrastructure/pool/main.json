@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "8153430822322180372"
+      "templateHash": "14164073542984791131"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource.",
@@ -788,7 +788,10 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "daysDataType": {
       "type": "object",
@@ -836,7 +839,10 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
     }
   },
   "parameters": {
