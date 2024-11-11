@@ -156,15 +156,28 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
 
 
 
+    if ($CMK) {
+
+        $vg.KeyVaultPropertyCurrentVersionedKeyExpirationTimestamp | Should -Not -BeNullOrEmpty
+        $vg.KeyVaultPropertyCurrentVersionedKeyIdentifier | Should -Not -BeNullOrEmpty
+        $vg.KeyVaultPropertyKeyName | Should -Not -BeNullOrEmpty
+        $vg.KeyVaultPropertyKeyVaultUri | Should -Not -BeNullOrEmpty
+        $vg.KeyVaultPropertyKeyVersion | Should -Not -BeNullOrEmpty
+        $vg.KeyVaultPropertyLastKeyRotationTimestamp | Should -Not -BeNullOrEmpty
+
+    } else {
+
+        $vg.KeyVaultPropertyCurrentVersionedKeyExpirationTimestamp | Should -BeNullOrEmpty
+        $vg.KeyVaultPropertyCurrentVersionedKeyIdentifier | Should -BeNullOrEmpty
+        $vg.KeyVaultPropertyKeyName | Should -BeNullOrEmpty
+        $vg.KeyVaultPropertyKeyVaultUri | Should -BeNullOrEmpty
+        $vg.KeyVaultPropertyKeyVersion | Should -BeNullOrEmpty
+        $vg.KeyVaultPropertyLastKeyRotationTimestamp | Should -BeNullOrEmpty
+
+    }
 
 
 
-    $vg.KeyVaultPropertyCurrentVersionedKeyExpirationTimestamp | Should -BeNullOrEmpty
-    $vg.KeyVaultPropertyCurrentVersionedKeyIdentifier | Should -BeNullOrEmpty
-    $vg.KeyVaultPropertyKeyName | Should -BeNullOrEmpty
-    $vg.KeyVaultPropertyKeyVaultUri | Should -BeNullOrEmpty
-    $vg.KeyVaultPropertyKeyVersion | Should -BeNullOrEmpty
-    $vg.KeyVaultPropertyLastKeyRotationTimestamp | Should -BeNullOrEmpty
 
 
     $vg.Name | Should -Be $Name
