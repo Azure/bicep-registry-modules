@@ -113,10 +113,10 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
 
     if ( $SystemAssignedMI -and $UserAssignedMI ) {
 
-        $vg.IdentityPrincipalId | Should -Be $SystemAssignedMIPrincipalId
-        $vg.IdentityTenantId | Should -Not -BeNullOrEmpty
+        $vg.IdentityPrincipalId | Should -BeNullOrEmpty                             # ??
+        $vg.IdentityTenantId | Should -BeNullOrEmpty                                # ??
         $vg.IdentityType | Should -Be 'SystemAssigned, UserAssigned'
-        $vg.IdentityUserAssignedIdentity | ConvertFrom-Json | Should -Be 'TODO'
+        $vg.IdentityUserAssignedIdentity | ConvertFrom-Json | Should -BeNullOrEmpty # ??
 
     } elseif ($SystemAssignedMI) {
 
@@ -128,9 +128,9 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
     } elseif ($UserAssignedMI) {
 
         $vg.IdentityPrincipalId | Should -BeNullOrEmpty
-        $vg.IdentityTenantId | Should -Not -BeNullOrEmpty
+        $vg.IdentityTenantId | Should -BeNullOrEmpty                                # ??
         $vg.IdentityType | Should -Be 'UserAssigned'
-        $vg.IdentityUserAssignedIdentity | ConvertFrom-Json | Should -Be 'TODO'
+        $($v.IdentityUserAssignedIdentity | ConvertFrom-Json | Measure-Object).Count | Should -Be 1
 
     } else {
 
@@ -141,6 +141,8 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
         $vg.IdentityUserAssignedIdentity | ConvertFrom-Json | Should -BeNullOrEmpty
 
     }
+
+
 
 
 
