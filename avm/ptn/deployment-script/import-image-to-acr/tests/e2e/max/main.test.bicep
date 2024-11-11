@@ -72,7 +72,7 @@ module testDeployment '../../../main.bicep' = [
       newImageName: 'application/your-image-name:tag'
       cleanupPreference: 'OnExpiration'
       assignRbacRole: true
-      managedIdentities: { userAssignedResourcesIds: [dependencies.outputs.managedIdentityResourceId] }
+      managedIdentities: { userAssignedResourceIds: [dependencies.outputs.managedIdentityResourceId] }
       overwriteExistingImage: true
       storageAccountResourceId: dependencies.outputs.storageAccountResourceId
       subnetResourceIds: [dependencies.outputs.deploymentScriptSubnetResourceId]

@@ -21,16 +21,16 @@ This module deploys a Web or Function App.
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Web/sites` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
-| `Microsoft.Web/sites/basicPublishingCredentialsPolicies` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
-| `Microsoft.Web/sites/config` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
-| `Microsoft.Web/sites/extensions` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites/extensions) |
-| `Microsoft.Web/sites/hybridConnectionNamespaces/relays` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites/hybridConnectionNamespaces/relays) |
-| `Microsoft.Web/sites/slots` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites/slots) |
-| `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
-| `Microsoft.Web/sites/slots/config` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
-| `Microsoft.Web/sites/slots/config` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
-| `Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays) |
+| `Microsoft.Web/sites` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites) |
+| `Microsoft.Web/sites/basicPublishingCredentialsPolicies` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/basicPublishingCredentialsPolicies) |
+| `Microsoft.Web/sites/config` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/config) |
+| `Microsoft.Web/sites/extensions` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/extensions) |
+| `Microsoft.Web/sites/hybridConnectionNamespaces/relays` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/hybridConnectionNamespaces/relays) |
+| `Microsoft.Web/sites/slots` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/slots) |
+| `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/slots/basicPublishingCredentialsPolicies) |
+| `Microsoft.Web/sites/slots/config` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/sites/slots/config) |
+| `Microsoft.Web/sites/slots/config` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/slots/config) |
+| `Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites/slots/hybridConnectionNamespaces/relays) |
 
 ## Usage examples
 
