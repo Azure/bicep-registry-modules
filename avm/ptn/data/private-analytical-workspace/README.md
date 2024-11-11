@@ -37,12 +37,10 @@ This pattern module enables you to use Azure services that are typical for data 
 | `Microsoft.Network/privateDnsZones/TXT` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT) |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/virtualNetworkLinks) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Network/virtualNetworks` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/virtualNetworkPeerings) |
+| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.OperationalInsights/workspaces` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces) |
 | `Microsoft.OperationalInsights/workspaces/dataExports` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataExports) |
 | `Microsoft.OperationalInsights/workspaces/dataSources` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataSources) |
@@ -86,7 +84,14 @@ This instance deploys the module with the minimum set of required parameters.
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
   name: 'privateAnalyticalWorkspaceDeployment'
   params: {
-    name: 'dpawmin001'
+    // Required parameters
+    name: 'dpawmin002'
+    // Non-required parameters
+    advancedOptions: {
+      keyVault: {
+        enablePurgeProtection: false
+      }
+    }
   }
 }
 ```
@@ -103,8 +108,17 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
-      "value": "dpawmin001"
+      "value": "dpawmin002"
+    },
+    // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "keyVault": {
+          "enablePurgeProtection": false
+        }
+      }
     }
   }
 }
@@ -120,7 +134,14 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 ```bicep-params
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
-param name = 'dpawmin001'
+// Required parameters
+param name = 'dpawmin002'
+// Non-required parameters
+param advancedOptions = {
+  keyVault: {
+    enablePurgeProtection: false
+  }
+}
 ```
 
 </details>
@@ -140,12 +161,12 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
-    name: 'dpawmax001'
+    name: 'dpawmax002'
     // Non-required parameters
     advancedOptions: {
       keyVault: {
         createMode: 'default'
-        enablePurgeProtection: true
+        enablePurgeProtection: false
         enableSoftDelete: false
         sku: 'standard'
         softDeleteRetentionInDays: 7
@@ -184,14 +205,14 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawmax001"
+      "value": "dpawmax002"
     },
     // Non-required parameters
     "advancedOptions": {
       "value": {
         "keyVault": {
           "createMode": "default",
-          "enablePurgeProtection": true,
+          "enablePurgeProtection": false,
           "enableSoftDelete": false,
           "sku": "standard",
           "softDeleteRetentionInDays": 7
@@ -234,12 +255,12 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawmax001'
+param name = 'dpawmax002'
 // Non-required parameters
 param advancedOptions = {
   keyVault: {
     createMode: 'default'
-    enablePurgeProtection: true
+    enablePurgeProtection: false
     enableSoftDelete: false
     sku: 'standard'
     softDeleteRetentionInDays: 7
@@ -279,8 +300,13 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
-    name: 'dpawminpriv001'
+    name: 'dpawminpriv002'
     // Non-required parameters
+    advancedOptions: {
+      keyVault: {
+        enablePurgeProtection: false
+      }
+    }
     enableDatabricks: false
     tags: {
       CostCenter: '123-456-789'
@@ -304,9 +330,16 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawminpriv001"
+      "value": "dpawminpriv002"
     },
     // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "keyVault": {
+          "enablePurgeProtection": false
+        }
+      }
+    },
     "enableDatabricks": {
       "value": false
     },
@@ -331,8 +364,13 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawminpriv001'
+param name = 'dpawminpriv002'
 // Non-required parameters
+param advancedOptions = {
+  keyVault: {
+    enablePurgeProtection: false
+  }
+}
 param enableDatabricks = false
 param tags = {
   CostCenter: '123-456-789'
@@ -357,9 +395,12 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
-    name: 'dpawminpub001'
+    name: 'dpawminpu002'
     // Non-required parameters
     advancedOptions: {
+      keyVault: {
+        enablePurgeProtection: false
+      }
       networkAcls: {
         ipRules: [
           '104.43.16.94'
@@ -389,11 +430,14 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawminpub001"
+      "value": "dpawminpu002"
     },
     // Non-required parameters
     "advancedOptions": {
       "value": {
+        "keyVault": {
+          "enablePurgeProtection": false
+        },
         "networkAcls": {
           "ipRules": [
             "104.43.16.94"
@@ -425,9 +469,12 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawminpub001'
+param name = 'dpawminpu002'
 // Non-required parameters
 param advancedOptions = {
+  keyVault: {
+    enablePurgeProtection: false
+  }
   networkAcls: {
     ipRules: [
       '104.43.16.94'
@@ -458,8 +505,13 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
-    name: 'dpawuc01priv001'
+    name: 'dpawu1pr002'
     // Non-required parameters
+    advancedOptions: {
+      keyVault: {
+        enablePurgeProtection: false
+      }
+    }
     enableDatabricks: true
     tags: {
       CostCenter: '123-456-789'
@@ -483,9 +535,16 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawuc01priv001"
+      "value": "dpawu1pr002"
     },
     // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "keyVault": {
+          "enablePurgeProtection": false
+        }
+      }
+    },
     "enableDatabricks": {
       "value": true
     },
@@ -510,8 +569,13 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawuc01priv001'
+param name = 'dpawu1pr002'
 // Non-required parameters
+param advancedOptions = {
+  keyVault: {
+    enablePurgeProtection: false
+  }
+}
 param enableDatabricks = true
 param tags = {
   CostCenter: '123-456-789'
@@ -536,9 +600,12 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
-    name: 'dpawuc01pub001'
+    name: 'dpawu1pu002'
     // Non-required parameters
     advancedOptions: {
+      keyVault: {
+        enablePurgeProtection: false
+      }
       networkAcls: {
         ipRules: [
           '104.43.16.94'
@@ -568,11 +635,14 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawuc01pub001"
+      "value": "dpawu1pu002"
     },
     // Non-required parameters
     "advancedOptions": {
       "value": {
+        "keyVault": {
+          "enablePurgeProtection": false
+        },
         "networkAcls": {
           "ipRules": [
             "104.43.16.94"
@@ -604,9 +674,12 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawuc01pub001'
+param name = 'dpawu1pu002'
 // Non-required parameters
 param advancedOptions = {
+  keyVault: {
+    enablePurgeProtection: false
+  }
   networkAcls: {
     ipRules: [
       '104.43.16.94'
@@ -637,12 +710,15 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
-    name: 'dpawuc02priv001'
+    name: 'dpawu2pr002'
     // Non-required parameters
     advancedOptions: {
       databricks: {
         subnetNameBackend: '<subnetNameBackend>'
         subnetNameFrontend: '<subnetNameFrontend>'
+      }
+      keyVault: {
+        enablePurgeProtection: false
       }
       virtualNetwork: {
         subnetNamePrivateLink: '<subnetNamePrivateLink>'
@@ -672,7 +748,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawuc02priv001"
+      "value": "dpawu2pr002"
     },
     // Non-required parameters
     "advancedOptions": {
@@ -680,6 +756,9 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
         "databricks": {
           "subnetNameBackend": "<subnetNameBackend>",
           "subnetNameFrontend": "<subnetNameFrontend>"
+        },
+        "keyVault": {
+          "enablePurgeProtection": false
         },
         "virtualNetwork": {
           "subnetNamePrivateLink": "<subnetNamePrivateLink>"
@@ -713,12 +792,15 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawuc02priv001'
+param name = 'dpawu2pr002'
 // Non-required parameters
 param advancedOptions = {
   databricks: {
     subnetNameBackend: '<subnetNameBackend>'
     subnetNameFrontend: '<subnetNameFrontend>'
+  }
+  keyVault: {
+    enablePurgeProtection: false
   }
   virtualNetwork: {
     subnetNamePrivateLink: '<subnetNamePrivateLink>'
@@ -749,12 +831,15 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
-    name: 'dpawuc02pub001'
+    name: 'dpawu2pu002'
     // Non-required parameters
     advancedOptions: {
       databricks: {
         subnetNameBackend: '<subnetNameBackend>'
         subnetNameFrontend: '<subnetNameFrontend>'
+      }
+      keyVault: {
+        enablePurgeProtection: false
       }
       networkAcls: {
         ipRules: [
@@ -789,7 +874,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawuc02pub001"
+      "value": "dpawu2pu002"
     },
     // Non-required parameters
     "advancedOptions": {
@@ -797,6 +882,9 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
         "databricks": {
           "subnetNameBackend": "<subnetNameBackend>",
           "subnetNameFrontend": "<subnetNameFrontend>"
+        },
+        "keyVault": {
+          "enablePurgeProtection": false
         },
         "networkAcls": {
           "ipRules": [
@@ -835,12 +923,15 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawuc02pub001'
+param name = 'dpawu2pu002'
 // Non-required parameters
 param advancedOptions = {
   databricks: {
     subnetNameBackend: '<subnetNameBackend>'
     subnetNameFrontend: '<subnetNameFrontend>'
+  }
+  keyVault: {
+    enablePurgeProtection: false
   }
   networkAcls: {
     ipRules: [
@@ -876,12 +967,15 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
-    name: 'dpawuc03priv001'
+    name: 'dpawu3pr002'
     // Non-required parameters
     advancedOptions: {
       databricks: {
         subnetNameBackend: '<subnetNameBackend>'
         subnetNameFrontend: '<subnetNameFrontend>'
+      }
+      keyVault: {
+        enablePurgeProtection: false
       }
       virtualNetwork: {
         subnetNamePrivateLink: '<subnetNamePrivateLink>'
@@ -913,7 +1007,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawuc03priv001"
+      "value": "dpawu3pr002"
     },
     // Non-required parameters
     "advancedOptions": {
@@ -921,6 +1015,9 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
         "databricks": {
           "subnetNameBackend": "<subnetNameBackend>",
           "subnetNameFrontend": "<subnetNameFrontend>"
+        },
+        "keyVault": {
+          "enablePurgeProtection": false
         },
         "virtualNetwork": {
           "subnetNamePrivateLink": "<subnetNamePrivateLink>"
@@ -960,12 +1057,15 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawuc03priv001'
+param name = 'dpawu3pr002'
 // Non-required parameters
 param advancedOptions = {
   databricks: {
     subnetNameBackend: '<subnetNameBackend>'
     subnetNameFrontend: '<subnetNameFrontend>'
+  }
+  keyVault: {
+    enablePurgeProtection: false
   }
   virtualNetwork: {
     subnetNamePrivateLink: '<subnetNamePrivateLink>'
@@ -998,7 +1098,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
-    name: 'dpawuc03pub001'
+    name: 'dpawu3p002'
     // Non-required parameters
     advancedOptions: {
       databricks: {
@@ -1040,7 +1140,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawuc03pub001"
+      "value": "dpawu3p002"
     },
     // Non-required parameters
     "advancedOptions": {
@@ -1092,7 +1192,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawuc03pub001'
+param name = 'dpawu3p002'
 // Non-required parameters
 param advancedOptions = {
   databricks: {
@@ -1135,12 +1235,12 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
-    name: 'dpawwaf001'
+    name: 'dpawwaf002'
     // Non-required parameters
     advancedOptions: {
       keyVault: {
         createMode: 'default'
-        enablePurgeProtection: true
+        enablePurgeProtection: false
         enableSoftDelete: true
         sku: 'standard'
         softDeleteRetentionInDays: 90
@@ -1176,14 +1276,14 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawwaf001"
+      "value": "dpawwaf002"
     },
     // Non-required parameters
     "advancedOptions": {
       "value": {
         "keyVault": {
           "createMode": "default",
-          "enablePurgeProtection": true,
+          "enablePurgeProtection": false,
           "enableSoftDelete": true,
           "sku": "standard",
           "softDeleteRetentionInDays": 90
@@ -1225,12 +1325,12 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawwaf001'
+param name = 'dpawwaf002'
 // Non-required parameters
 param advancedOptions = {
   keyVault: {
     createMode: 'default'
-    enablePurgeProtection: true
+    enablePurgeProtection: false
     enableSoftDelete: true
     sku: 'standard'
     softDeleteRetentionInDays: 90
@@ -1339,43 +1439,57 @@ This parameter allows you to specify additional settings for Azure Key Vault if 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`createMode`](#parameter-advancedoptionskeyvaultcreatemode) | string | The vault's create mode to indicate whether the vault need to be recovered or not. - 'recover' or 'default'. The dafult value is: 'default'. |
-| [`enablePurgeProtection`](#parameter-advancedoptionskeyvaultenablepurgeprotection) | bool | Provide 'true' to enable Key Vault's purge protection feature. The dafult value is: 'true'. |
-| [`enableSoftDelete`](#parameter-advancedoptionskeyvaultenablesoftdelete) | bool | Switch to enable/disable Key Vault's soft delete feature. The dafult value is: 'true'. |
-| [`sku`](#parameter-advancedoptionskeyvaultsku) | string | Specifies the SKU for the vault. - 'premium' or 'standard'. The dafult value is: 'premium'. |
-| [`softDeleteRetentionInDays`](#parameter-advancedoptionskeyvaultsoftdeleteretentionindays) | int | Soft delete data retention days. It accepts >=7 and <=90. The dafult value is: '90'. |
+| [`createMode`](#parameter-advancedoptionskeyvaultcreatemode) | string | The vault's create mode to indicate whether the vault need to be recovered or not. The default value is: 'default'. |
+| [`enablePurgeProtection`](#parameter-advancedoptionskeyvaultenablepurgeprotection) | bool | Provide 'true' to enable Key Vault's purge protection feature. The default value is: 'true'. |
+| [`enableSoftDelete`](#parameter-advancedoptionskeyvaultenablesoftdelete) | bool | Switch to enable/disable Key Vault's soft delete feature. The default value is: 'true'. |
+| [`sku`](#parameter-advancedoptionskeyvaultsku) | string | Specifies the SKU for the vault. The default value is: 'premium'. |
+| [`softDeleteRetentionInDays`](#parameter-advancedoptionskeyvaultsoftdeleteretentionindays) | int | Soft delete data retention days. It accepts >=7 and <=90. The default value is: '90'. |
 
 ### Parameter: `advancedOptions.keyVault.createMode`
 
-The vault's create mode to indicate whether the vault need to be recovered or not. - 'recover' or 'default'. The dafult value is: 'default'.
+The vault's create mode to indicate whether the vault need to be recovered or not. The default value is: 'default'.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'default'
+    'recover'
+  ]
+  ```
 
 ### Parameter: `advancedOptions.keyVault.enablePurgeProtection`
 
-Provide 'true' to enable Key Vault's purge protection feature. The dafult value is: 'true'.
+Provide 'true' to enable Key Vault's purge protection feature. The default value is: 'true'.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `advancedOptions.keyVault.enableSoftDelete`
 
-Switch to enable/disable Key Vault's soft delete feature. The dafult value is: 'true'.
+Switch to enable/disable Key Vault's soft delete feature. The default value is: 'true'.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `advancedOptions.keyVault.sku`
 
-Specifies the SKU for the vault. - 'premium' or 'standard'. The dafult value is: 'premium'.
+Specifies the SKU for the vault. The default value is: 'premium'.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'premium'
+    'standard'
+  ]
+  ```
 
 ### Parameter: `advancedOptions.keyVault.softDeleteRetentionInDays`
 
-Soft delete data retention days. It accepts >=7 and <=90. The dafult value is: '90'.
+Soft delete data retention days. It accepts >=7 and <=90. The default value is: '90'.
 
 - Required: No
 - Type: int
@@ -1391,19 +1505,19 @@ This parameter allows you to specify additional settings for Azure Log Analytics
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dailyQuotaGb`](#parameter-advancedoptionsloganalyticsworkspacedailyquotagb) | int | The workspace daily quota for ingestion. The dafult value is: '-1' (not limited). |
-| [`dataRetention`](#parameter-advancedoptionsloganalyticsworkspacedataretention) | int | Number of days data will be retained for. The dafult value is: '365'. |
+| [`dailyQuotaGb`](#parameter-advancedoptionsloganalyticsworkspacedailyquotagb) | int | The workspace daily quota for ingestion. The default value is: '-1' (not limited). |
+| [`dataRetention`](#parameter-advancedoptionsloganalyticsworkspacedataretention) | int | Number of days data will be retained for. The default value is: '365'. |
 
 ### Parameter: `advancedOptions.logAnalyticsWorkspace.dailyQuotaGb`
 
-The workspace daily quota for ingestion. The dafult value is: '-1' (not limited).
+The workspace daily quota for ingestion. The default value is: '-1' (not limited).
 
 - Required: No
 - Type: int
 
 ### Parameter: `advancedOptions.logAnalyticsWorkspace.dataRetention`
 
-Number of days data will be retained for. The dafult value is: '365'.
+Number of days data will be retained for. The default value is: '365'.
 
 - Required: No
 - Type: int
@@ -1602,13 +1716,15 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/databricks/access-connector:0.2.0` | Remote reference |
-| `br/public:avm/res/databricks/workspace:0.6.0` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.7.0` | Remote reference |
-| `br/public:avm/res/network/network-security-group:0.4.0` | Remote reference |
+| `br/public:avm/res/databricks/access-connector:0.3.0` | Remote reference |
+| `br/public:avm/res/databricks/workspace:0.8.5` | Remote reference |
+| `br/public:avm/res/key-vault/vault:0.9.0` | Remote reference |
+| `br/public:avm/res/network/network-security-group:0.5.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.5.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.2.0` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.5.0` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.6.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.5.0` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.7.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Notes
 

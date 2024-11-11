@@ -21,6 +21,7 @@ This module deploys an Application Gateway for Containers Association
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the association to create. |
+| [`subnetResourceId`](#parameter-subnetresourceid) | string | The resource ID of the subnet to associate with the traffic controller. |
 
 **Conditional parameters**
 
@@ -34,15 +35,16 @@ This module deploys an Application Gateway for Containers Association
 | :-- | :-- | :-- |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 
-**Reuired parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`subnetResourceId`](#parameter-subnetresourceid) | string | The resource ID of the subnet to associate with the traffic controller. |
-
 ### Parameter: `name`
 
 Name of the association to create.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subnetResourceId`
+
+The resource ID of the subnet to associate with the traffic controller.
 
 - Required: Yes
 - Type: string
@@ -61,13 +63,6 @@ Location for all Resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-
-### Parameter: `subnetResourceId`
-
-The resource ID of the subnet to associate with the traffic controller.
-
-- Required: Yes
-- Type: string
 
 ## Outputs
 
