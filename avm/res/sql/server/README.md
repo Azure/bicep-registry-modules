@@ -2232,12 +2232,12 @@ The short term backup retention policy for the database.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`diffBackupIntervalInHours`](#parameter-databasesbackupshorttermretentionpolicydiffbackupintervalinhours) | int | Differential backup interval in hours. |
+| [`diffBackupIntervalInHours`](#parameter-databasesbackupshorttermretentionpolicydiffbackupintervalinhours) | int | Differential backup interval in hours. For Hyperscale tiers this value will be ignored. |
 | [`retentionDays`](#parameter-databasesbackupshorttermretentionpolicyretentiondays) | int | Point-in-time retention in days. |
 
 ### Parameter: `databases.backupShortTermRetentionPolicy.diffBackupIntervalInHours`
 
-Differential backup interval in hours.
+Differential backup interval in hours. For Hyperscale tiers this value will be ignored.
 
 - Required: No
 - Type: int
