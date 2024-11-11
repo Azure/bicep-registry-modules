@@ -493,7 +493,7 @@
         "description": "Optional. The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = \"True\"."
       }
     },
-    "bootDiagnostics": {
+    "bootDiagnosticEnabled": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
@@ -1064,7 +1064,7 @@
         },
         "diagnosticsProfile": {
           "bootDiagnostics": {
-            "enabled": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), true(), parameters('bootDiagnostics'))]",
+            "enabled": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), true(), parameters('bootDiagnosticEnabled'))]",
             "storageUri": "[if(not(empty(parameters('bootDiagnosticStorageAccountName'))), format('https://{0}{1}', parameters('bootDiagnosticStorageAccountName'), parameters('bootDiagnosticStorageAccountUri')), null())]"
           }
         },
