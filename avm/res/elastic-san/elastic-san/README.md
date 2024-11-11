@@ -178,6 +178,94 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
         }
         name: 'vol-grp-07'
       }
+      {
+        customerManagedKey: {
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+        }
+        name: 'vol-grp-08'
+      }
+      {
+        customerManagedKey: {
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+          userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+        }
+        name: 'vol-grp-09'
+      }
+      {
+        customerManagedKey: {
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+        }
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<cmkManagedIdentityResourceId>'
+          ]
+        }
+        name: 'vol-grp-10'
+      }
+      {
+        customerManagedKey: {
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+          userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+        }
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<cmkManagedIdentityResourceId>'
+          ]
+        }
+        name: 'vol-grp-11'
+      }
+      {
+        customerManagedKey: {
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+        }
+        managedIdentities: {
+          systemAssigned: true
+        }
+        name: 'vol-grp-12'
+      }
+      {
+        customerManagedKey: {
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+          userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+        }
+        managedIdentities: {
+          systemAssigned: true
+        }
+        name: 'vol-grp-13'
+      }
+      {
+        customerManagedKey: {
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+        }
+        managedIdentities: {
+          systemAssigned: true
+          userAssignedResourceIds: [
+            '<cmkManagedIdentityResourceId>'
+          ]
+        }
+        name: 'vol-grp-14'
+      }
+      {
+        customerManagedKey: {
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+          userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+        }
+        managedIdentities: {
+          systemAssigned: true
+          userAssignedResourceIds: [
+            '<cmkManagedIdentityResourceId>'
+          ]
+        }
+        name: 'vol-grp-15'
+      }
     ]
   }
 }
@@ -275,6 +363,94 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
             ]
           },
           "name": "vol-grp-07"
+        },
+        {
+          "customerManagedKey": {
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>"
+          },
+          "name": "vol-grp-08"
+        },
+        {
+          "customerManagedKey": {
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+          },
+          "name": "vol-grp-09"
+        },
+        {
+          "customerManagedKey": {
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>"
+          },
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<cmkManagedIdentityResourceId>"
+            ]
+          },
+          "name": "vol-grp-10"
+        },
+        {
+          "customerManagedKey": {
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+          },
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<cmkManagedIdentityResourceId>"
+            ]
+          },
+          "name": "vol-grp-11"
+        },
+        {
+          "customerManagedKey": {
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>"
+          },
+          "managedIdentities": {
+            "systemAssigned": true
+          },
+          "name": "vol-grp-12"
+        },
+        {
+          "customerManagedKey": {
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+          },
+          "managedIdentities": {
+            "systemAssigned": true
+          },
+          "name": "vol-grp-13"
+        },
+        {
+          "customerManagedKey": {
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>"
+          },
+          "managedIdentities": {
+            "systemAssigned": true,
+            "userAssignedResourceIds": [
+              "<cmkManagedIdentityResourceId>"
+            ]
+          },
+          "name": "vol-grp-14"
+        },
+        {
+          "customerManagedKey": {
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+          },
+          "managedIdentities": {
+            "systemAssigned": true,
+            "userAssignedResourceIds": [
+              "<cmkManagedIdentityResourceId>"
+            ]
+          },
+          "name": "vol-grp-15"
         }
       ]
     }
@@ -367,6 +543,94 @@ param volumeGroups = [
       ]
     }
     name: 'vol-grp-07'
+  }
+  {
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    name: 'vol-grp-08'
+  }
+  {
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    name: 'vol-grp-09'
+  }
+  {
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<cmkManagedIdentityResourceId>'
+      ]
+    }
+    name: 'vol-grp-10'
+  }
+  {
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<cmkManagedIdentityResourceId>'
+      ]
+    }
+    name: 'vol-grp-11'
+  }
+  {
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+    name: 'vol-grp-12'
+  }
+  {
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+    name: 'vol-grp-13'
+  }
+  {
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<cmkManagedIdentityResourceId>'
+      ]
+    }
+    name: 'vol-grp-14'
+  }
+  {
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<cmkManagedIdentityResourceId>'
+      ]
+    }
+    name: 'vol-grp-15'
   }
 ]
 ```
