@@ -130,7 +130,7 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
         $vg.IdentityPrincipalId | Should -BeNullOrEmpty
         $vg.IdentityTenantId | Should -BeNullOrEmpty                                # ??
         $vg.IdentityType | Should -Be 'UserAssigned'
-        $($v.IdentityUserAssignedIdentity | ConvertFrom-Json | Measure-Object).Count | Should -Be 1
+        $($vg.IdentityUserAssignedIdentity | ConvertFrom-Json).PSObject.Properties.Count | Should -Be 1
 
     } else {
 
