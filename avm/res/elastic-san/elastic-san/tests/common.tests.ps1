@@ -96,14 +96,23 @@ function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGrou
     $v.VolumeId | Should -Be $VolumeId
 }
 
-function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $SystemAssignedMI, $UserAssignedMI, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRuleCount, $PrivateEndpointConnection) {
+function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $ResourceGroupName, $Name, $SystemAssignedMI, $UserAssignedMI, $SystemAssignedMIPrincipalId, $NetworkAclsVirtualNetworkRuleCount, $CMK, $PrivateEndpointConnection) {
 
     $vg = Get-AzElasticSanVolumeGroup -ElasticSanName $ElasticSanName -ResourceGroupName $ResourceGroupName -Name $Name
     $vg | Should -Not -BeNullOrEmpty
     $vg.ProvisioningState | Should -Be 'Succeeded'
 
-    $vg.Encryption | Should -Be 'EncryptionAtRestWithPlatformKey'
-    $vg.EncryptionIdentityEncryptionUserAssignedIdentity | Should -BeNullOrEmpty
+    if ($CMK) {
+
+        $vg.Encryption | Should -Be 'EncryptionAtRestWithCustomerManagedKey'
+        $($vg.EncryptionIdentityEncryptionUserAssignedIdentity | ConvertFrom-Json).PSObject.Properties.Count | Should -Be 1
+
+    } else {
+
+        $vg.Encryption | Should -Be 'EncryptionAtRestWithPlatformKey'
+        $vg.EncryptionIdentityEncryptionUserAssignedIdentity | Should -BeNullOrEmpty
+
+    }
 
 
     $vg.EnforceDataIntegrityCheckForIscsi | Should -BeNullOrEmpty
