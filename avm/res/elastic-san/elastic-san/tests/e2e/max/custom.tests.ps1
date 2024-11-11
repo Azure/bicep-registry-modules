@@ -65,7 +65,8 @@ Describe 'Validate Deployment' {
                 @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0;SystemAssignedMI=$true;UserAssignedMI=$false }   # vol-grp-04
                 @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0;SystemAssignedMI=$false;UserAssignedMI=$true }   # vol-grp-05
                 @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0;SystemAssignedMI=$true;UserAssignedMI=$true }    # vol-grp-06
-                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0;SystemAssignedMI=$false;UserAssignedMI=$false }  # vol-grp-07
+                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0;SystemAssignedMI=$false;UserAssignedMI=$true }   # vol-grp-07 - CMK
+                @{ VolumeCounts=0;NetworkAclsVirtualNetworkRuleCount=0;SystemAssignedMI=$false;UserAssignedMI=$true }   # vol-grp-08 - CMK
             )
 
             $volumeGroups.Count | Should -Be $expectedData.Count # Sanity Check
